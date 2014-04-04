@@ -11,7 +11,7 @@
                             <i class="icon-ok-sign icon-large"></i>
                         </div>
                         <div class="col-xs-6">
-                            {{ selected_site_details.completed + selected_site_details.pending }}
+                            {{ site_assignments.completed + site_assignments.pending }}
                         </div>
                     </div>
                     <div class="row warning">
@@ -19,7 +19,7 @@
                             <i class="icon-warning-sign icon-large"></i>
                         </div>
                         <div class="col-xs-6">
-                            {{ selected_site_details.expiring }}
+                            {{ site_assignments.expiring }}
                         </div>
                     </div>
                     <div class="row danger">
@@ -27,7 +27,7 @@
                             <i class="danger icon-minus-sign-alt icon-large"></i>
                         </div>
                         <div class="col-xs-6">
-                            {{ selected_site_details.expired }}
+                            {{ site_assignments.expired }}
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                     <div class="col-xs-6 col-xs-offset-3 number-of-employees">
                         <i class="icon-user icon-large"></i>
                         <a href="#" class="employees">
-                            {{ selected_site_details.employees }}
+                            {{ site_assignments.employees }}
                         </a>
                     </div>
                 </div>
@@ -51,8 +51,9 @@
     <h1>
         <i class="icon-sitemap icon-large"></i>Current Projects
     </h1>
+
     <div class="content">
-        <div class="row" ng-repeat="project in selected_site_details.projects">
+        <div class="row" ng-repeat="project in project_assignments">
             <div class="col-md-6">
                 <a href="/employee-guard/operators/project/{{ project.id }}" class="name" target="_self">{{ project.name }}</a>
                 <em class="date">{{ project.startDate | date: 'MM/dd/yyyy' }} <i ng-show="project.startDate && project.endDate" class="icon-long-arrow-right" ></i> {{ project.endDate | date: 'MM/dd/yyyy' }}</em>

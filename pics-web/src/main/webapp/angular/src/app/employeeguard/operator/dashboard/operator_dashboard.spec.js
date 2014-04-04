@@ -1,5 +1,62 @@
 describe('The Operator Dashboard', function() {
     var scope, $http, httpMock, result;
+    var site_assignments = {
+        "id": 1,
+        "employees": 852,
+        "completed": 714,
+        "pending": 0,
+        "expiring": 24,
+        "expired": 114
+        };
+
+    var project_assignments = [
+       {
+          "employees":4,
+          "completed":3,
+          "pending":0,
+          "expiring":0,
+          "expired":1,
+          "id":4,
+          "name":"ABC Project",
+          "location":"Onsite "
+       },
+       {
+          "employees":4,
+          "completed":2,
+          "pending":0,
+          "expiring":0,
+          "expired":2,
+          "id":1,
+          "name":"Phase 3 Hermanos Building Construction Site",
+          "location":"London, UK",
+          "startDate":1385884800000,
+          "endDate":1404457200000
+       },
+       {
+          "employees":6,
+          "completed":4,
+          "pending":0,
+          "expiring":0,
+          "expired":2,
+          "id":2,
+          "name":"Walter Site Demolition",
+          "location":"Birmingham, UK",
+          "startDate":1393747200000,
+          "endDate":1418112000000
+       }
+    ];
+
+    var site_list = [{
+        id: 24,
+        name: "Fish Warehouse"
+    },{
+        id: 21,
+        name: "Dougs Ranch"
+    },{
+        id: 2,
+        name: "Barneys Warehouse"
+    }];
+
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
     beforeEach(inject(function($injector, $rootScope, $controller, $http, $httpBackend, $routeParams) {
@@ -13,47 +70,11 @@ describe('The Operator Dashboard', function() {
 
     describe('request for corporate site information', function() {
         beforeEach(function() {
-            result = {
-                "id": 1,
-                "employees": 852,
-                "completed": 714,
-                "pending": 0,
-                "expiring": 24,
-                "expired": 114,
-                "projects": [{
-                        "name": "Test Project",
-                        "startDate": "01-01-2013",
-                        "endDate": "01-02-2015",
-                        "location": "Main Building",
-                        "completed": 3,
-                        "pending": 2,
-                        "expiring": 4,
-                        "expired": 2
-                    }, {
-                        "name": "Red Dwarf",
-                        "startDate": "02-28-2013",
-                        "endDate": "03-02-2015",
-                        "location": "Offsite",
-                        "completed": 1078,
-                        "pending": 2,
-                        "expiring": 345,
-                        "expired": 992
-                    }]
-                };
-
-            site_list = [{
-                        id: 24,
-                        name: "Fish Warehouse"
-                    },{
-                        id: 21,
-                        name: "Dougs Ranch"
-                    },{
-                        id: 2,
-                        name: "Barneys Warehouse"
-                    }];
-
-            httpMock.when('GET', '/employee-guard/corporates/sites').respond(site_list);
-            httpMock.when('GET', /\/employee-guard\/corporates\/sites\/[0-9]+/).respond(result);
+            httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary\/[0-9]+/).respond(site_assignments);
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(site_assignments);
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_assignments);
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects\/[0-9]+/).respond(project_assignments);
             httpMock.flush();
         });
 
@@ -64,45 +85,15 @@ describe('The Operator Dashboard', function() {
         });
 
         it('should return individual site info if a corporate user', function() {
-            expect(scope.isCorporateSiteList(scope.siteList)).toBeTruthy();
-            expect(scope.selected_site_details.employees).toEqual(result.employees);
-            expect(scope.selected_site_details.projects).toEqual(result.projects);
-        });
-
-
-        describe('updating the selected site', function() {
-                var new_result = {
-                    "id": 23,
-                    "employees": 12,
-                    "completed": 2,
-                    "pending": 0,
-                    "expiring": 13,
-                    "expired": 3,
-                    "projects": [{
-                            "name": "Green Dwarf",
-                            "startDate": "02-28-2013",
-                            "endDate": "03-02-2015",
-                            "location": "Offsite",
-                            "completed": 1078,
-                            "pending": 2,
-                            "expiring": 345,
-                            "expired": 992
-                        }]
-                    };
-
-            it('should select a new selected site', function() {
-                scope.updateSelectedSite();
-
-                expect(scope.selected_site_details.employees).toEqual(result.employees);
-                expect(scope.selected_site_details.id).toEqual(result.id);
-                expect(scope.selected_site_details.projects).toEqual(result.projects);
-            });
+            expect(scope.hasSites(scope.siteList)).toBeTruthy();
+            expect(scope.site_assignments.employees).toEqual(site_assignments.employees);
+            expect(scope.project_assignments[0].employees).toEqual(project_assignments[0].employees);
         });
     });
 
-
     describe('request for operator site information', function() {
-        var operator_summary;
+        var operator_summary,
+            project_summary;
 
         beforeEach(function() {
             operator_summary = {
@@ -111,30 +102,32 @@ describe('The Operator Dashboard', function() {
                 "complete": 1,
                 "pending": 0,
                 "expiring": 0,
-                "expired": 0,
-                "projects": [{
-                        "name": "New Project",
-                        "start_date": "03-22-2013",
-                        "end_date": "12-02-2015",
-                        "location": "Main Building",
-                        "complete": 1,
-                        "pending": 0,
-                        "expiring": 0,
-                        "expired": 0
-                    }]
+                "expired": 0
             };
 
-            httpMock.when('GET', '/employee-guard/corporates/sites').respond('');
-            httpMock.when('GET', '/employee-guard/operators/summary').respond(operator_summary);
+            project_summary = [{
+                "name": "New Project",
+                "start_date": "03-22-2013",
+                "end_date": "12-02-2015",
+                "location": "Main Building",
+                "complete": 1,
+                "pending": 0,
+                "expiring": 0,
+                "expired": 0
+            }];
+
+            httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond('');
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(operator_summary);
+            httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_summary);
             httpMock.flush();
         });
 
         it('should return operator summary if site operator user', function() {
-            expect(scope.isCorporateSiteList(scope.selected_site_details)).toBeFalsy();
+            expect(scope.hasSites(scope.siteList)).toBeFalsy();
 
-            expect(scope.selected_site_details.id).toEqual(operator_summary.id);
-            expect(scope.selected_site_details.employees).toEqual(operator_summary.employees);
-            expect(scope.selected_site_details.projects).toEqual(operator_summary.projects);
+            expect(scope.site_assignments.id).toEqual(operator_summary.id);
+            expect(scope.site_assignments.employees).toEqual(operator_summary.employees);
+            expect(scope.project_assignments[0].name).toEqual(project_summary[0].name);
         });
     });
 
@@ -176,6 +169,4 @@ describe('The Operator Dashboard', function() {
             expect(scope.getProjectStatus(project)).toEqual(progress_bar);
         });
     });
-
-
 });

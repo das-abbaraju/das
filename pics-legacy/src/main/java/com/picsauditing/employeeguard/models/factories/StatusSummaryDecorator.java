@@ -36,8 +36,19 @@ class StatusSummaryDecorator {
 		model.setPending(statusCountMap.get(SkillStatus.Pending));
 		model.setExpiring(statusCountMap.get(SkillStatus.Expiring));
 		model.setExpired(statusCountMap.get(SkillStatus.Expired));
+		model.setEmployees(getTotalCounts(statusCountMap));
 
 		return model;
+	}
+
+	private static int getTotalCounts(final Map<SkillStatus, Integer> statusCountMap) {
+		int total = 0;
+
+		for (SkillStatus status : statusCountMap.keySet()) {
+			total += statusCountMap.get(status);
+		}
+
+		return total;
 	}
 
 	private static <T> Map<SkillStatus, Integer> getCount(final Map<T, SkillStatus> statusMap) {

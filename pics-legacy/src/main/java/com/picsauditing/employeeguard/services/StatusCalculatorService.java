@@ -240,17 +240,19 @@ public class StatusCalculatorService {
 
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, skills);
 
-		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(accountSkillEmployees, new PicsCollectionUtil.CollectionToMapConverter<Employee, AccountSkill, AccountSkillEmployee>() {
-			@Override
-			public Employee getRow(AccountSkillEmployee value) {
-				return value.getEmployee();
-			}
+		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
+				accountSkillEmployees,
+				new PicsCollectionUtil.CollectionToMapConverter<Employee, AccountSkill, AccountSkillEmployee>() {
+					@Override
+					public Employee getRow(AccountSkillEmployee value) {
+						return value.getEmployee();
+					}
 
-			@Override
-			public AccountSkill getColumn(AccountSkillEmployee value) {
-				return value.getSkill();
-			}
-		});
+					@Override
+					public AccountSkill getColumn(AccountSkillEmployee value) {
+						return value.getSkill();
+					}
+				});
 
 		Map<E, List<SkillStatus>> skillStatusPerEntityEmployee = new HashMap<>();
 		for (final E entity : entityEmployeeSkillMap.keySet()) {

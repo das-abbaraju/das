@@ -24,6 +24,7 @@ public class StatusCalculatorServiceTest {
 	public static final int CONTRACTOR_ID = 1234;
 	public static final int CORPORATE_ID = 45;
 	public static final int SITE_ID = 17;
+	public static final int PROJECT_ID = 987;
 
 	private StatusCalculatorService service;
 
@@ -137,6 +138,28 @@ public class StatusCalculatorServiceTest {
 		// all skills are expired
 		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
 				result.get(fakeEmployees.get(2))));
+	}
+
+	@Test
+	public void testGetAllSkillStatusesForEntity_NoEmployeeSkill() {
+		List<AccountSkill> skills = buildFakeAccountSkills();
+		List<Employee> employees = buildFakeEmployees();
+		List<AccountSkillEmployee> accountSkillEmployees = buildFakeAccountSkillEmployees(employees, skills);
+
+		when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
+				.thenReturn(accountSkillEmployees.subList(1, accountSkillEmployees.size()));
+
+		HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
+		entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
+
+		for (Employee employee : employees) {
+			entityEmployeeMap.get(project).put(employee, new HashSet<>(skills));
+		}
+
+		Map<Project, List<SkillStatus>> result = service.getAllSkillStatusesForEntity(entityEmployeeMap);
+
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
 	}
 
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,

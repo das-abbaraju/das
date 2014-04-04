@@ -97,7 +97,11 @@ public class ContractorProjectService {
 
 	private List<ContractorEmployeeProjectAssignment> buildAssignments(final Project project, final List<AccountSkill> requiredSkills, final int accountId) {
 		List<Employee> employees = getAssignedEmployees(project, accountId);
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+
+		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		if (!CollectionUtils.isEmpty(employees)) {
+			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+		}
 
 		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory()
 				.buildList(employees, accountSkillEmployees, requiredSkills, Collections.<Group>emptyList());

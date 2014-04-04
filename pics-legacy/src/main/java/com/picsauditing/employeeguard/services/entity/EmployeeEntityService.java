@@ -12,6 +12,7 @@ import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -55,11 +56,11 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
-	public List<Employee> getEmployeesForProjects(final List<Project> projects) {
+	public List<Employee> getEmployeesForProjects(final Collection<Project> projects) {
 		return employeeDAO.findByProjects(projects);
 	}
 
-	public Map<Project, Set<Employee>> getEmployeesByProject(final Collection<Project> projects) {
+	public Map<Project, Set<Employee>> getEmployeesByProjects(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyMap();
 		}
@@ -77,6 +78,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 						return projectRoleEmployee.getEmployee();
 					}
 				});
+	}
+
+	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Project project) {
+		return getEmployeesByProjectRoles(Arrays.asList(project));
 	}
 
 	public Map<Role, Set<Employee>> getEmployeesByProjectRoles(final Collection<Project> projects) {
@@ -118,11 +123,23 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
-		if (CollectionUtils.isEmpty(contractorIds)) {
+		return getEmployeesAssignedToSites(contractorIds, Arrays.asList(siteId));
+	}
+
+	public List<Employee> getEmployeesAssignedToSites(final Collection<Integer> contractorIds, final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(contractorIds) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyList();
 		}
 
-		return employeeDAO.findEmployeesAssignedToSiteForContractors(contractorIds, siteId);
+		List<Employee> employees = new ArrayList<>(employeeDAO.findEmployeesAssignedToSites(siteIds));
+		CollectionUtils.filter(employees, new GenericPredicate<Employee>() {
+			@Override
+			public boolean evaluateEntity(Employee employee) {
+				return contractorIds.contains(employee.getAccountId());
+			}
+		});
+
+		return employees;
 	}
 
 	public Map<Integer, Employee> getEmployeesByContractorId(final Profile profile) {
@@ -288,7 +305,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-								final int accountId) throws Exception {
+	                            final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 

@@ -53,6 +53,7 @@ public class AssignmentServiceTest {
 		Whitebox.setInternalState(service, "skillEntityService", skillEntityService);
 
 		when(accountService.getContractorIds(SITE_ID)).thenReturn(CONTRACTOR_IDS);
+		when(accountService.getContractorIds(Arrays.asList(SITE_ID))).thenReturn(CONTRACTOR_IDS);
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(CORPORATE_IDS);
 	}
 
@@ -73,7 +74,7 @@ public class AssignmentServiceTest {
 	private void setupGetEmployeeSkillsForSite(final List<Employee> employees,
 	                                           final List<Project> projects,
 	                                           final List<Role> roles,
-	                                           List<AccountSkill> skills) {
+	                                           final List<AccountSkill> skills) {
 
 		final AccountSkill skill1 = skills.get(0);
 		final AccountSkill skill2 = skills.get(1);
@@ -133,13 +134,15 @@ public class AssignmentServiceTest {
 		final Role role = buildFakeRole();
 		final List<Project> projects = buildFakeProjects();
 
-		when(employeeEntityService.getEmployeesAssignedToSite(CONTRACTOR_IDS, SITE_ID))
+		List<Integer> siteIds = Arrays.asList(SITE_ID);
+
+		when(employeeEntityService.getEmployeesAssignedToSites(CONTRACTOR_IDS, siteIds))
 				.thenReturn(employees);
-		when(projectEntityService.getProjectsForEmployeesBySiteId(employees, SITE_ID))
+		when(projectEntityService.getProjectsForEmployeesBySiteIds(employees, siteIds))
 				.thenReturn(new HashMap<Employee, Set<Project>>() {{
 					put(employees.get(0), new HashSet<>(Arrays.asList(projects.get(0))));
 				}});
-		when(roleEntityService.getSiteRolesForEmployees(employees, SITE_ID))
+		when(roleEntityService.getSiteRolesForEmployees(employees, siteIds))
 				.thenReturn(new HashMap<Employee, Set<Role>>() {{
 					put(employees.get(1), new HashSet<>(Arrays.asList(role)));
 				}});
@@ -171,7 +174,8 @@ public class AssignmentServiceTest {
 		final Role role2 = roles.get(1);
 		final Role role3 = roles.get(2);
 
-		when(employeeEntityService.getEmployeesAssignedToSite(CONTRACTOR_IDS, SITE_ID))
+		List<Integer> siteIds = Arrays.asList(SITE_ID);
+		when(employeeEntityService.getEmployeesAssignedToSites(CONTRACTOR_IDS, siteIds))
 				.thenReturn(employees);
 		when(roleEntityService.getProjectRolesForEmployees(employees, SITE_ID))
 				.thenReturn(new HashMap<Employee, Set<Role>>() {{

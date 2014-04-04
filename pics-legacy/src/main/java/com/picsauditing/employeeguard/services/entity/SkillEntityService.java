@@ -20,13 +20,13 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
+	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
-	@Autowired
-	private SiteAssignmentDAO siteAssignmentDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
@@ -194,7 +194,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-																		   final Map<Integer, Set<Integer>> siteToCorporates) {
+	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -227,6 +227,25 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 						return entity.getSkill();
 					}
 				});
+	}
+
+	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
+	                                                                       final Collection<Employee> employees) {
+		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByAccount(contractorId);
+		return PicsCollectionUtil.convertToMapOfSets(
+				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+					@Override
+					public Employee getKey(AccountSkillEmployee entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillEmployee entity) {
+						return entity.getSkill();
+					}
+				}
+		);
 	}
 
 	/* All search related methods */

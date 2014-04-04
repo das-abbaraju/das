@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,11 +67,7 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 		return query.getResultList();
 	}
 
-	public List<Project> findByAccounts(final List<Integer> accountIds) {
-		if (CollectionUtils.isEmpty(accountIds)) {
-			return Collections.emptyList();
-		}
-
+	public List<Project> findByAccounts(final Collection<Integer> accountIds) {
 		TypedQuery<Project> query = em.createQuery("FROM Project p WHERE p.accountId IN (:accountIds)", Project.class);
 		query.setParameter("accountIds", accountIds);
 		return query.getResultList();

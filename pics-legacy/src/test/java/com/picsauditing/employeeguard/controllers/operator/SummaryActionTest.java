@@ -36,7 +36,6 @@ public class SummaryActionTest extends PicsActionTest {
 	public static final int SITE_ID = 123;
 
 	private SummaryAction summaryAction;
-	private AccountService accountService = AccountServiceFactory.getAccountService();
 
 	@Mock
 	private AssignmentService assignmentService;
@@ -55,7 +54,6 @@ public class SummaryActionTest extends PicsActionTest {
 		when(permissions.getAccountId()).thenReturn(SITE_ID);
 		when(permissions.getAccountName()).thenReturn("Site Name");
 
-		Whitebox.setInternalState(summaryAction, "accountService", accountService);
 		Whitebox.setInternalState(summaryAction, "assignmentService", assignmentService);
 		Whitebox.setInternalState(summaryAction, "projectAssignmentService", projectAssignmentService);
 		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
@@ -71,7 +69,7 @@ public class SummaryActionTest extends PicsActionTest {
 	}
 
 	private void setupForIndex() {
-		Map<Employee, Set<AccountSkill>> map = mock(HashMap.class);
+		Map<Employee, Set<AccountSkill>> map = mock(Map.class);
 
 		when(assignmentService.getEmployeeSkillsForSite(SITE_ID)).thenReturn(map);
 		when(map.size()).thenReturn(2);
@@ -94,39 +92,5 @@ public class SummaryActionTest extends PicsActionTest {
 							.build(),
 							SkillStatus.Expired);
 				}});
-	}
-
-	@Test(expected = NoRightsException.class)
-	public void testList_Site() throws Exception {
-		when(permissions.isContractor()).thenReturn(true);
-
-		summaryAction.list();
-	}
-
-	@Test
-	public void testList_Corporate() throws Exception {
-		when(permissions.isCorporate()).thenReturn(true);
-
-		assertEquals(PicsActionSupport.JSON_STRING, summaryAction.list());
-		assertNotNull(summaryAction.getJsonString());
-		Approvals.verify(summaryAction.getJsonString());
-	}
-
-	@Test(expected = NoRightsException.class)
-	public void testSummary_Site() throws Exception {
-		when(permissions.isOperator()).thenReturn(true);
-		summaryAction.summary();
-	}
-
-	@Test
-	public void testSummary_Corporate() throws Exception {
-		setupForIndex();
-		when(permissions.isCorporate()).thenReturn(true);
-		when(permissions.getOperatorChildren()).thenReturn(new HashSet<>(Arrays.asList(SITE_ID)));
-
-		summaryAction.setId(Integer.toString(SITE_ID));
-		assertEquals(PicsActionSupport.JSON_STRING, summaryAction.summary());
-		assertNotNull(summaryAction.getJsonString());
-		Approvals.verify(summaryAction.getJsonString());
 	}
 }

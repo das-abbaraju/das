@@ -8,6 +8,9 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.processor.ProjectAssignmentDataSet;
+import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProcess;
+import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,45 @@ public class AssignmentService {
 	private RoleEntityService roleEntityService;
 	@Autowired
 	private SkillEntityService skillEntityService;
+
+	public Map<Project, Map<Employee, Set<AccountSkill>>> getEmployeeSkillsForProjectsUnderSite(final int siteId) {
+
+		List<Project> siteProjects = projectEntityService.getAllProjectsForSite(siteId);
+		Map<Project, Set<Employee>> projectEmployees = employeeEntityService.getEmployeesByProjects(siteProjects);
+		Map<Role, Set<Employee>> roleEmployees = getEmployeesByRole(siteId, siteProjects);
+		Map<Project, Set<AccountSkill>> projectRequiredSkill = skillEntityService
+				.getRequiredSkillsForProjects(siteProjects);
+		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(siteProjects);
+		Map<Role, Set<AccountSkill>> projectRoleSkills = skillEntityService
+				.getSkillsForRoles(PicsCollectionUtil.mergeCollectionOfCollections(projectRoles.values()));
+		Set<AccountSkill> siteAndCorporateRequiredSkills = skillEntityService
+				.getSiteRequiredSkills(siteId, accountService.getTopmostCorporateAccountIds(siteId));
+
+		ProjectAssignmentDataSet dataSet = new ProjectAssignmentDataSet.Builder()
+				.projectEmployees(projectEmployees)
+				.projectRequiredSkills(projectRequiredSkill)
+				.projectRoles(projectRoles)
+				.projectRoleSkills(projectRoleSkills)
+				.projects(siteProjects)
+				.roleEmployees(roleEmployees)
+				.siteAndCorporateRequiredSkills(siteAndCorporateRequiredSkills)
+				.build();
+
+		return new ProjectAssignmentProcess().getProjectSkillsForEmployees(dataSet);
+	}
+
+	/**
+	 * Retrieves a map of employees to both site and project roles for the specific site
+	 *
+	 * @param siteId
+	 * @param projects
+	 * @return
+	 */
+	public Map<Role, Set<Employee>> getEmployeesByRole(final int siteId, final Collection<Project> projects) {
+		return new RoleAssignmentProcess().getCorporateRoleEmployees(
+				employeeEntityService.getEmployeesByProjectRoles(projects),
+				employeeEntityService.getEmployeesBySiteRoles(Arrays.asList(siteId)));
+	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsForSite(final int siteId) {
 		Set<Employee> employeesAssignedToSite = getEmployeesAssignedToSite(siteId);
@@ -72,7 +114,7 @@ public class AssignmentService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-																	   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
+	                                                                   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}
@@ -87,10 +129,14 @@ public class AssignmentService {
 	}
 
 	public Set<Employee> getEmployeesAssignedToSite(final int siteId) {
-		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(siteId);
+		return getEmployeesAssignedToSites(Arrays.asList(siteId));
+	}
 
-		final Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployeesBySiteId(employeesAssignedToSite, siteId);
-		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteId);
+	public Set<Employee> getEmployeesAssignedToSites(final Collection<Integer> siteIds) {
+		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(siteIds);
+
+		final Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployeesBySiteIds(employeesAssignedToSite, siteIds);
+		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteIds);
 
 		return new HashSet<Employee>() {{
 			addAll(employeeProjects.keySet());
@@ -98,13 +144,13 @@ public class AssignmentService {
 		}};
 	}
 
-	private List<Employee> getSiteContractorEmployees(int siteId) {
-		List<Integer> contractorIds = accountService.getContractorIds(siteId);
-		return employeeEntityService.getEmployeesAssignedToSite(contractorIds, siteId);
+	private List<Employee> getSiteContractorEmployees(final Collection<Integer> siteIds) {
+		List<Integer> contractorIds = accountService.getContractorIds(siteIds);
+		return employeeEntityService.getEmployeesAssignedToSites(contractorIds, siteIds);
 	}
 
 	public Map<Employee, Set<Role>> getAllEmployeeRolesForSite(final int siteId) {
-		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(siteId);
+		List<Employee> employeesAssignedToSite = getSiteContractorEmployees(Arrays.asList(siteId));
 
 		final Map<Employee, Set<Role>> employeeProjectRoles = roleEntityService.getProjectRolesForEmployees(employeesAssignedToSite, siteId);
 		final Map<Employee, Set<Role>> employeeRoles = roleEntityService.getSiteRolesForEmployees(employeesAssignedToSite, siteId);
@@ -113,8 +159,16 @@ public class AssignmentService {
 	}
 
 	public Map<Project, Set<Employee>> getEmployeesAssignedToProjects(final int siteId) {
-		List<Project> projects = projectEntityService.getAllProjectsForSite(siteId);
-		return employeeEntityService.getEmployeesByProject(projects);
+		return getEmployeesAssignedToProjects(Arrays.asList(siteId));
+	}
+
+	public Map<Project, Set<Employee>> getEmployeesAssignedToProjects(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		Collection<Project> projects = projectEntityService.getProjectsBySiteIds(siteIds);
+		return employeeEntityService.getEmployeesByProjects(projects);
 	}
 
 }

@@ -19,10 +19,10 @@ public class OperatorSiteAssignmentStatusFactory {
 		OperatorSiteAssignmentStatus status = new OperatorSiteAssignmentStatus();
 		status.setId(siteId);
 		status.setName(siteName);
-		status.setEmployees(employeeCount);
 		status.setProjects(projects);
 
 		StatusSummaryDecorator.addStatusSummary(status, employeeStatuses);
+		status.setEmployees(employeeCount);
 
 		return status;
 	}
