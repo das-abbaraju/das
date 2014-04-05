@@ -8215,7 +8215,6 @@ CREATE TABLE `app_session` (
 
 LOCK TABLES `app_session` WRITE;
 /*!40000 ALTER TABLE `app_session` DISABLE KEYS */;
-INSERT INTO `app_session` VALUES ('339B3851C0166F6984D4FAA850EA2097.wolfram-alpha1','1',3600,1396593762884,'/Catalina/localhost/','¨Ì\0sr\0java.lang.Long;ã‰êÃè#ﬂ\0J\0valuexr\0java.lang.NumberÜ¨ïî‡ã\0\0xp\0\0E+y~¡sq\0~\0\0\0\0E+y¢Dsr\0java.lang.Integer‚†§˜Åá8\0I\0valuexq\0~\0\0\0sr\0java.lang.BooleanÕ rÄ’ú˙Ó\0Z\0valuexp\0sq\0~\0sq\0~\0\0\0\0E+y¢Dt\0/339B3851C0166F6984D4FAA850EA2097.wolfram-alpha1sq\0~\0\0\0\0t\0permissionssr\0#com.picsauditing.access.Permissions‘≤~ís`µÁ\0,I\0	accountIDZ\0activeI\0adminIDI\0	appUserIDZ\0approvesRelationshipsZ\0canSeeInsuranceZ\0forcePasswordResetZ\0gcFreeZ\0generalContractorZ\0loggedInI\0primaryCorporateAccountIDI\0rememberMeTimeInSecondsZ\0requiresCompetencyReviewZ\0\nrequiresOQJ\0sessionCookieTimeoutInSecondsI\0shadowedUserIDZ\0showClientSitesLinkI\0topAccountIDI\0userIDZ\0usingVersion7MenusL\0accountNamet\0Ljava/lang/String;L\0\raccountStatust\0-Lcom/picsauditing/jpa/entities/AccountStatus;L\0accountTypeq\0~\0L\0allInheritedGroupIdst\0Ljava/util/Set;L\0corporateParentq\0~\0L\0countryq\0~\0L\0countrySubdivisionq\0~\0L\0emailq\0~\0L\0faxq\0~\0L\0groupIdsq\0~\0L\0\rlinkedClientsq\0~\0L\0linkedGeneralContractorsq\0~\0L\0localet\0Ljava/util/Locale;L\0nameq\0~\0L\0operatorChildrenq\0~\0L\0permissionsq\0~\0L\0phoneq\0~\0L\0\ZreportsManagerTutorialDatet\0Ljava/util/Date;L\0shadowedUserNameq\0~\0L\0switchedToUserNameq\0~\0L\0timezonet\0Ljava/util/TimeZone;L\0usernameq\0~\0L\0usingVersion7MenusDateq\0~\0L\0visibleAuditTypesq\0~\0xp\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0ˇˇˇˇ\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0t\0\0~r\0+com.picsauditing.jpa.entities.AccountStatus\0\0\0\0\0\0\0\0\0\0xr\0java.lang.Enum\0\0\0\0\0\0\0\0\0\0xpt\0Pendingq\0~\0sr\0java.util.HashSet∫DÖïñ∏∑4\0\0xpw\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xq\0~\0q\0~\0q\0~\0q\0~\0sq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xsr\0java.util.Locale~¯`ú0˘Ï\0I\0hashcodeL\0countryq\0~\0L\0\nextensionsq\0~\0L\0languageq\0~\0L\0scriptq\0~\0L\0variantq\0~\0xpˇˇˇˇq\0~\0q\0~\0t\0enq\0~\0q\0~\0xq\0~\0sq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xsq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0xq\0~\0pq\0~\0ppq\0~\0psq\0~\0\Zw\0\0\0\0?@\0\0\0\0\0\0x');
 /*!40000 ALTER TABLE `app_session` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -8324,7 +8323,7 @@ CREATE TABLE `app_user` (
   `lastLogin` datetime DEFAULT NULL COMMENT 'The last date and time this user logged in',
   PRIMARY KEY (`id`),
   UNIQUE KEY `akApp_User` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=117481 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=141831 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8337,6 +8336,9 @@ INSERT INTO `app_user` VALUES (31,'pics-admin1','77b7741fc02bd30dea152e788a049ce
 INSERT INTO `app_user` VALUES (32,'AETestv7','629f930a9cac8a698fcda9a529ef9e2f133a9838',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (171,'pics-csr1','6d311be89fb8848a8dfa84a7f9bd45e3658f59ae','82286',NULL,NULL);
 INSERT INTO `app_user` VALUES (181,'pics-auditor1','ff06c33770f1ab6c7f300fc437409657a89e5ebd','90574',NULL,NULL);
+INSERT INTO `app_user` VALUES (550,'mmina','1ecb8ef7684a78c363733a8508bceba1da8f6ea1','1029',NULL,NULL);
+INSERT INTO `app_user` VALUES (22091,'laung','c43fe3a3d2c979537aaf7dbcdccce769c757b0b3','23157',NULL,NULL);
+INSERT INTO `app_user` VALUES (36765,'mdo','fff8ef1eec54fb869bb8a1024ac577a0363bb24','37951',NULL,NULL);
 INSERT INTO `app_user` VALUES (41081,'GROUP1100PICS Group1','',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41091,'contractor1','4d2ad9eab5440b47b2c8a292ceb07cf32e88b71d',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41101,'pics-noperm1','401114cfa3f40a93926d72d1ef64a28bbaf596ac',NULL,NULL,NULL);
@@ -8344,12 +8346,27 @@ INSERT INTO `app_user` VALUES (41111,'rbiggs','',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41121,'email@example.com','6fa4a7b1df9a31a82e845ee1d69ca6b4440e77f7','41121',NULL,NULL);
 INSERT INTO `app_user` VALUES (41131,'corporateuser','',NULL,NULL,NULL);
 INSERT INTO `app_user` VALUES (41141,'op-user','',NULL,NULL,NULL);
+INSERT INTO `app_user` VALUES (51890,'aananighian','5cbff890f20b7cebcc56bf77a2ebfaf1530d41ee','53137',NULL,NULL);
+INSERT INTO `app_user` VALUES (57363,'jbrownell','32cbcd6c6b39aeaeb90975cc489c4c97c7419f51','58636',NULL,NULL);
+INSERT INTO `app_user` VALUES (64068,'mdesio','cb6133c2f93a444946c9249d03e8f4cbbcfe6993','65381',NULL,NULL);
+INSERT INTO `app_user` VALUES (78073,'pschlesinger','95c4c9b438f665152c51adc2f15d078c2c495c54','79412',NULL,NULL);
+INSERT INTO `app_user` VALUES (78820,'rshiiya','197839e791ed52c3b349f86b47dfc9fda899a818','80159',NULL,NULL);
+INSERT INTO `app_user` VALUES (80046,'shirschberg','65b26be7d1a85dab92bed08de9b5a3423a5bc50','81385',NULL,NULL);
+INSERT INTO `app_user` VALUES (98191,'jburns','c70739f8eed0daf64ad49445da0df49d7c01d7e4','99532',NULL,NULL);
 INSERT INTO `app_user` VALUES (114319,'llumpkin','405486d3afe9c94b047d212c807cd542ee02374a','115665',NULL,NULL);
 INSERT INTO `app_user` VALUES (116679,'lquayle','7be847ceb0a908a5264112f0b481a712c74d6936','118025',NULL,NULL);
 INSERT INTO `app_user` VALUES (116680,'gfring','b63564721fa703933ae20a71f6fc75151d637c04','118026',NULL,NULL);
 INSERT INTO `app_user` VALUES (116986,'GROUP55654Utility Admin',NULL,'118332',NULL,NULL);
 INSERT INTO `app_user` VALUES (117466,'GROUP55653Madrigal Admin',NULL,'118813',NULL,NULL);
 INSERT INTO `app_user` VALUES (117471,'amitcorpuser','',NULL,NULL,NULL);
+INSERT INTO `app_user` VALUES (131073,'thelennyleonard@gmail.com','b28e1d23dfaef56a496a0f2235448fc2a21a6a1d','131073',NULL,NULL);
+INSERT INTO `app_user` VALUES (140078,'jjorgensen1','fe5fd6b8fd0f3426264b1868fcf0b6ec84ec90ac','140078',NULL,NULL);
+INSERT INTO `app_user` VALUES (140181,'emacgregor_9@hotmail.com','8cd7c8a5e610a854b7384d544345c818421ef0fb','140181',NULL,NULL);
+INSERT INTO `app_user` VALUES (141573,'emangali@picsauditing.com','a7cc18ae8bf6e6f4562c308c8721f6851af27b21','141573',NULL,NULL);
+INSERT INTO `app_user` VALUES (141608,'sspencer@picsauditing.com','ab09048924840582dfad8509684a6548969faa8','141608',NULL,NULL);
+INSERT INTO `app_user` VALUES (141717,'clee@picsauditing.com','e4818e1194b9f8cb67e47343e1c215727a10d14a','141717',NULL,NULL);
+INSERT INTO `app_user` VALUES (141719,'minammina@gmail.com','d68ecefc8557c43b06e1aa860146790754da0747','141719',NULL,NULL);
+INSERT INTO `app_user` VALUES (141827,'erwin.mangali@gmail.com','509072ed01cea9429cd7e80382b46d644cfa463c','141827',NULL,NULL);
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -26517,7 +26534,7 @@ INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Gro
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (20,'GROUP1100PICS Developer',NULL,'Yes',NULL,'First','Last','PICS Developer','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2011-03-03 16:40:34','2011-03-03 16:40:34',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (21,'GROUP1100PICS API User',NULL,'Yes',NULL,'First','Last','PICS API User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-03-26 17:30:43','2013-03-26 17:30:43',NULL,NULL,0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-02 17:07:02',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-04 09:29:40',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
 INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
