@@ -314,7 +314,7 @@ function loadSched() {
 		
 		var end = new Date(start);
 		
-		end.setMinutes(start.getMinutes() + v.duration);
+		end.setMinutes(start.getMinutes() + v.duration - 1);
 		
 		return {
 			id: v.id, 

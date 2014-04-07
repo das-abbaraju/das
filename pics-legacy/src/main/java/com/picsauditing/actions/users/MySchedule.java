@@ -278,7 +278,16 @@ public class MySchedule extends PicsActionSupport implements Preparable {
 					}
 				}
 
-				if (overlap) {
+                //TODO 1320 is a hack so that the plugin will not get a slot it cannot display.  See PICS-13067
+                if (schedule.getStartTime() > 1320) {
+                    if (schedule.getId() > 0)
+                        auditorScheduleDAO.refresh(schedule);
+                    else
+                        schedule = null;
+
+                    output = "That time extends to the next day. It will not be saved";
+
+                } else if (overlap) {
 					if (schedule.getId() > 0)
 						auditorScheduleDAO.refresh(schedule);
 					else
