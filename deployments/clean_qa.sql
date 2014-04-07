@@ -1,6 +1,6 @@
 UPDATE	app_user
 ,	users
-SET app_user.password = SHA1(CONCAT('Wait7Lib', app_user.hashSalt))
+SET app_user.password = SHA1(CONCAT('DelL0HAy', app_user.hashSalt))
 WHERE	1
 AND	users.accountID != 1100
 AND	app_user.username	= users.username
