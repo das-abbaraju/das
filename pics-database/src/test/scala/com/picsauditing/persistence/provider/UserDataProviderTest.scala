@@ -2,7 +2,6 @@ package com.picsauditing.persistence.provider
 
 import util.BaseTestSetup
 import scala.slick.driver.H2Driver.simple.Session
-import scala.slick.jdbc.meta.MTable
 import com.picsauditing.persistence.model._
 import com.picsauditing.persistence.model.UserContactInfo
 import scala.Some
@@ -11,7 +10,7 @@ import com.picsauditing.persistence.model.UserData
 class UserDataProviderTest extends BaseTestSetup {
 
   "UserDataProvider" should "return a list of User Contact Info objects based on the account ID and role provided." in new UserDataTest {
-    queryTest { prepareDatabase { service =>
+    queryTest { prepareDatabase { implicit session => service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(joePeschi, true)
@@ -20,7 +19,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return no users that are inactive." in new UserDataTest {
-    queryTest { prepareDatabase { service =>
+    queryTest { prepareDatabase { implicit session => service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, samKinison.accountID))
         expect(samKinison, false)
         expect(georgeCarlin, false)
@@ -30,7 +29,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return users only relevant to the account specified." in new UserDataTest {
-    queryTest { prepareDatabase { service =>
+    queryTest { prepareDatabase { implicit session => service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(BAR_PERMISSION, georgeCarlin.accountID))
         expect(joePeschi, true)
         expect(robinWilliams, false)
@@ -39,7 +38,7 @@ class UserDataProviderTest extends BaseTestSetup {
   }
 
   it should "return users only with the specified permission type." in new UserDataTest {
-    queryTest { prepareDatabase { service =>
+    queryTest { prepareDatabase { implicit session => service =>
         val expect = evaluateResultsFor(service.findAccountContactByRole(FOO_PERMISSION, robinWilliams.accountID))
         expect(robinWilliams, false)
       }
@@ -56,7 +55,7 @@ class UserDataProviderTest extends BaseTestSetup {
 
   trait UserDataTest extends DBTest[UserDataProvider] {
     val dbName = "UserDataTest"
-    val service = new UserDataProvider(dataSource) with H2TestingProfile
+    val service = new UserDataProvider with H2TestingProfile
 
     val testDate = new java.util.Date()
     val richardPrior = UserData(Some(4L), 9L, "Richard Prior", "richard@prior.com", "999-999-9999", "888-888-8888", "No", testDate)
@@ -69,7 +68,7 @@ class UserDataProviderTest extends BaseTestSetup {
     val BAR_PERMISSION = "Bar"
     val permissionTypes = Seq(FOO_PERMISSION, BAR_PERMISSION)
 
-    def prepareDatabase(testFunction: (UserDataProvider) => Unit) = {
+    def prepareDatabase(testFunction: Session => (UserDataProvider) => Unit) = {
       (session: Session, provider: UserDataProvider) =>
 
         implicit val s = session
@@ -88,7 +87,7 @@ class UserDataProviderTest extends BaseTestSetup {
           if comedian.username != robinWilliams.username && permission != FOO_PERMISSION
         } { userAccess += UserAccessInfo(None, comedian.id.get, permission) }
 
-        testFunction(provider)
+        testFunction(session)(provider)
     }
 
   }
