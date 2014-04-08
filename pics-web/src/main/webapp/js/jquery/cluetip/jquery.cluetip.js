@@ -445,7 +445,7 @@
         });
         if (opts.stayOpenHover) {
           $('#cluetip').bind('mouseenter.cluetipBox', function() {
-        	clearTimeout(blahOnDelay);
+        	clearTimeout(closeOnDelay);
           });
           $('#cluetip').bind('mouseleave.cluetipBox', function() {
         	closeOnDelay = setTimeout(cluetipClose, opts.delayedClose); 
