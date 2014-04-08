@@ -6,8 +6,6 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.persistence.Column;
 import javax.persistence.*;
@@ -191,8 +189,6 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
 
             return id == other.getId();
         } catch (Exception e) {
-            Logger logger = LoggerFactory.getLogger(BaseTable.class);
-            logger.error("Error comparing BaseTable objects: {}", e.getMessage());
             return false;
         }
     }
