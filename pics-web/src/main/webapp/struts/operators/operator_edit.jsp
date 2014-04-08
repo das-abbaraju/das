@@ -28,6 +28,7 @@
             <s:property value="operator.type"/>
         </s:else>
         Account</h1>
+    <s:include value="../actionMessages.jsp"></s:include>
 </s:if>
 <s:else>
     <s:include value="opHeader.jsp"></s:include>

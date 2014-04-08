@@ -176,69 +176,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.setType(getCreateType());
         }
 
-        if (operator.isRememberMeTimeEnabled()) {
-            try {
-                operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
-            } catch (NumberFormatException e) {
-                addActionError(getText("FacilitiesEdit.RememberMeInteger"));
-                return REDIRECT;
-            }
-        }
-
-        try {
-            operator.setSessionTimeout(Integer.parseInt(sessionTimeout));
-        } catch (Exception e) {
-            addActionError(getText("FacilitiesEdit.SessionTimeoutInteger"));
-            return REDIRECT;
-        }
-
-        if (facilities == null) {
-            facilities = new ArrayList<Integer>();
-            for (Facility fac : operator.getOperatorFacilities()) {
-                facilities.add(fac.getOperator().getId());
-            }
-        } else {
-            if (facilities.contains(operator.getId())) {
-                addActionError(getTextParameterized("FacilitiesEdit.CyclicalRelationship", operator.getId(),
-                        Strings.implode(facilities)));
-                return REDIRECT;
-            }
-        }
-
-        if (country == null || country.getIsoCode().isEmpty())
-        {
-            addActionError(getText("FacilitiesEdit.SelectCountry"));
-            return REDIRECT;
-        }
-        if (countrySubdivision == null || countrySubdivision.getIsoCode().isEmpty()) {
-            addActionError("Please select a subdivision");
-            return REDIRECT;
-        }
-
-        if (!country.equals(operator.getCountry())) {
-            operator.setCountry(country);
-        }
-
-        if ((!countrySubdivision.equals(operator.getCountrySubdivision()))
-                || (operator.getCountrySubdivision() == null && countrySubdivision != null)) {
-            CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
-            operator.setCountrySubdivision(contractorCountrySubdivision);
-        }
-
-        if (hasActionErrors()) {
-            return SUCCESS;
-        }
-
         List<String> errors = validateAccount(operator);
         if (errors.size() > 0) {
-            operatorDao.clear();
-            operator = operatorDao.find(operator.getId());
-
             for (String error : errors) {
-				addActionError(error);
-			}
+                addActionError(error);
+            }
 
-            return REDIRECT;
+            if (operator.getId() > 0) {
+                operatorDao.clear();
+                operator = operatorDao.find(operator.getId());
+                return REDIRECT;
+            }
+
+            return SUCCESS;
         }
 
         if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
@@ -724,14 +674,34 @@ public class FacilitiesEdit extends OperatorActionSupport {
 			errorMessages.add(getText("FacilitiesEdit.NameAtLeast2Chars"));
 		}
 
-        if (operator.getCountry() == null) {
-            errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
+        if (operator.isRememberMeTimeEnabled()) {
+            try {
+                operator.setRememberMeTimeInDays(Integer.parseInt(timeoutDays));
+            } catch (NumberFormatException e) {
+                errorMessages.add(getText("FacilitiesEdit.RememberMeInteger"));
+            }
         }
 
-        if (operator.getCountry().isHasCountrySubdivisions()
-                && (countrySubdivision == null || operator.getCountrySubdivision() == null)) {
-            errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
+        try {
+            operator.setSessionTimeout(Integer.parseInt(sessionTimeout));
+        } catch (Exception e) {
+            errorMessages.add(getText("FacilitiesEdit.SessionTimeoutInteger"));
         }
+
+        if (facilities == null) {
+            facilities = new ArrayList<Integer>();
+            for (Facility fac : operator.getOperatorFacilities()) {
+                facilities.add(fac.getOperator().getId());
+            }
+        } else {
+            int n = operator.getId();
+            if (facilities.contains(operator.getId())) {
+                errorMessages.add(getTextParameterized("FacilitiesEdit.CyclicalRelationship", operator.getId(),
+                        Strings.implode(facilities)));
+            }
+        }
+
+        validateCountryAndSubdivision(operator, errorMessages);
 
         if (operator.getDiscountPercent().compareTo(BigDecimal.ZERO) < 0
                 || operator.getDiscountPercent().compareTo(BigDecimal.ONE) > 0) {
@@ -747,6 +717,26 @@ public class FacilitiesEdit extends OperatorActionSupport {
         }
 
         return errorMessages;
+    }
+
+    private void validateCountryAndSubdivision(OperatorAccount operator, List<String> errorMessages) {
+        if (country == null || country.getIsoCode().isEmpty()) {
+            errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
+        } else {
+            country = countryDAO.findbyISO(country.getIsoCode()); // reload
+            operator.setCountry(country);
+
+            if (country.isHasCountrySubdivisions()) {
+                if ((countrySubdivision == null || countrySubdivision.getIsoCode().isEmpty())) {
+                    errorMessages.add(getText("FacilitiesEdit.PleaseFillInCountrySubdivision"));
+                } else {
+                    CountrySubdivision contractorCountrySubdivision = countrySubdivisionDAO.find(countrySubdivision.toString());
+                    operator.setCountrySubdivision(contractorCountrySubdivision);
+                }
+            } else {
+                operator.setCountrySubdivision(null);
+            }
+        }
     }
 
     // Insure that all newly added facilities get linked to all parent accounts.
