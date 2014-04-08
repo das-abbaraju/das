@@ -3,34 +3,30 @@ package com.picsauditing.persistence.provider
 import util.BaseTestSetup
 import com.picsauditing.persistence.model.{AccountData, FacilitiesData, H2TestingProfile, DBTest}
 import scala.slick.driver.H2Driver.simple.Session
-import scala.slick.jdbc.meta.MTable
 
 class FacilityRelationshipDataProviderTest extends BaseTestSetup {
 
   "FacilityRelationshipDataProvider" should "find active facility IDs for an operator ID." in new TestSetup {
-    queryTest{ withDatabase {
+    queryTest{ withDatabase { implicit session =>
       _.findFacilityIDsForCorporateOperator(GOOD_CORP_ID).contains(GOOD_OPERATOR_ID_1) shouldBe true
     }}
   }
 
   it should "find demo facility IDs for an operator ID." in new TestSetup {
-    queryTest{ withDatabase {
+    queryTest { withDatabase { implicit session =>
       _.findFacilityIDsForCorporateOperator(GOOD_CORP_ID).contains(GOOD_OPERATOR_ID_2) shouldBe true
     }}
   }
 
   it should "not find facilites with any other account status." in new TestSetup {
-    queryTest {
-      withDatabase {
+    queryTest { withDatabase { implicit session =>
           _.findFacilityIDsForCorporateOperator(GOOD_CORP_ID).contains(GOOD_OPERATOR_ID_3) shouldBe false
       }
     }
   }
 
   it should "find facilities paired with the operator ID provided." in new TestSetup {
-    queryTest {
-      withDatabase {
-        provider =>
+    queryTest { withDatabase { implicit session => provider =>
           val results = provider.findFacilityIDsForCorporateOperator(BAD_CORP_ID)
           results.contains(GOOD_OPERATOR_ID_1) shouldBe false
           results.contains(BAD_OPERATOR_ID_1) shouldBe true
@@ -39,19 +35,19 @@ class FacilityRelationshipDataProviderTest extends BaseTestSetup {
   }
 
   it should "not find facilities that do not 'auto-approve' relationships." in new TestSetup {
-    queryTest { withDatabase { _.findFacilityIDsForCorporateOperator(BAD_CORP_ID).contains(BAD_OPERATOR_ID_2) shouldBe false }}
+    queryTest { withDatabase { implicit session =>
+      _.findFacilityIDsForCorporateOperator(BAD_CORP_ID).contains(BAD_OPERATOR_ID_2) shouldBe false
+    }}
   }
 
   it should "not find facilities that are not paired with the operator ID provided." in new TestSetup {
-    queryTest {
-      withDatabase {
-          _.findFacilityIDsForCorporateOperator(GOOD_CORP_ID).contains(BAD_OPERATOR_ID_2) shouldBe false
-      }
-    }
+    queryTest { withDatabase { implicit session =>
+      _.findFacilityIDsForCorporateOperator(GOOD_CORP_ID).contains(BAD_OPERATOR_ID_2) shouldBe false
+    }}
   }
 
   trait TestSetup extends DBTest[FacilityRelationshipDataProvider] {
-    val service = new FacilityRelationshipDataProvider(dataSource) with H2TestingProfile
+    val service = new FacilityRelationshipDataProvider with H2TestingProfile
     val dbName = "FacilityRelationshitDataProvider"
 
     val GOOD_CORP_ID = 5L
@@ -77,7 +73,7 @@ class FacilityRelationshipDataProviderTest extends BaseTestSetup {
     val badAccount1 = AccountData(Some(BAD_OPERATOR_ID_1), "Un-matching active account", ACTIVE)
     val badAccount2 = AccountData(Some(BAD_OPERATOR_ID_2), "Un-matching demo account", DEMO, autoApproveRelationships = false)
 
-    def withDatabase(testFunction: FacilityRelationshipDataProvider => Unit) = {
+    def withDatabase(testFunction: Session => FacilityRelationshipDataProvider => Unit) = {
       (session: Session, provider: FacilityRelationshipDataProvider) =>
 
         implicit val s = session
@@ -91,7 +87,7 @@ class FacilityRelationshipDataProviderTest extends BaseTestSetup {
         facilities ++= Seq(matchingActiveFacility, matchingDemoFacility, matchingInactiveFacility, badFacility1, badFacility2)
         accounts ++= Seq(matchingActiveAccount, matchingDemoAccount, matchingInactiveAccount, badAccount1, badAccount2)
 
-        testFunction(provider)
+        testFunction(session)(provider)
     }
   }
 
