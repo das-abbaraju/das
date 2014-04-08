@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import java.util.List;
 
-public class OperatorSiteAssignmentStatus implements StatusSummarizable {
+public class OperatorSiteAssignmentStatus implements IdNameComposite, StatusSummarizable {
 
 	private int id;
 	private String name;

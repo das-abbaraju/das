@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.viewmodel.contractor;
+package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.services.models.AccountModel;
 
@@ -35,6 +35,23 @@ public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentS
 	@Override
 	public int compareTo(SiteAssignmentStatisticsModel that) {
 		return this.site.compareTo(that.site);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SiteAssignmentStatisticsModel that = (SiteAssignmentStatisticsModel) o;
+
+		if (site != null ? !site.equals(that.site) : that.site != null) return false;
+
+		return true;
+	}
+
+	@Override
+	public int hashCode() {
+		return site != null ? site.hashCode() : 0;
 	}
 
 	public static class Builder {

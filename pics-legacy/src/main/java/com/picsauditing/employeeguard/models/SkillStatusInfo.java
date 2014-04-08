@@ -6,6 +6,6 @@ public interface SkillStatusInfo {
 
 	SkillStatus getStatus();
 
-	void setStatus(final SkillStatus skillStatus);
+	void setStatus(SkillStatus skillStatus);
 
 }
