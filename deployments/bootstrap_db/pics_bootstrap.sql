@@ -11877,6 +11877,7 @@ CREATE TABLE `databasechangelog` (
 
 LOCK TABLES `databasechangelog` WRITE;
 /*!40000 ALTER TABLE `databasechangelog` DISABLE KEYS */;
+INSERT INTO `databasechangelog` VALUES ('1','aananighian','./liquibase/2014/Q2/aananighian1_US668_DDL_Site_Assignment_Table.sql','2014-04-07 10:42:55',219,'EXECUTED','3:148ff10664e0ddff397cf005a83286fc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','blatner','./liquibase/2014/Q1/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql','2013-12-28 11:11:36',98,'EXECUTED','3:f899b551bee00c931fb8c1f81d8da1aa','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','dalvarado','./liquibase/2013/dalvarado1_PICS-12926_Remove_bad_myschedule_timeslots.sql','2013-10-22 13:42:01',6,'EXECUTED','3:9648b94a78b8a58afd75e191e6b5c6a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','gmeurer','./liquibase/2013/gmeurer1_PICS-12602_AddTableForAggregatingTranslationLogs.sql','2013-10-22 13:42:04',12,'EXECUTED','3:643c58eed822e481005352e576e61edd','Custom SQL','',NULL,'2.0.1');
@@ -11911,6 +11912,7 @@ INSERT INTO `databasechangelog` VALUES ('16','kchase','./liquibase/2014/Q1/kchas
 INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2013/mdo17_PICS-13584_Bulk_approval_suncor_policies.sql','2013-12-19 10:48:28',96,'EXECUTED','3:2a027b0990f8c79b837eb2d74a8e2856','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql','2014-03-18 16:38:13',204,'EXECUTED','3:eb32e0a7f620a60a9757886f41966897','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('19','mdo','./liquibase/2014/Q1/mdo19_PICS-14016_invoicePayingFacilities.sql','2013-12-28 11:11:51',99,'EXECUTED','3:aab385cccb11f8f3101f712f9cab86eb','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('2','aananighian','./liquibase/2014/Q2/aananighian2_US668_DML_Populate_Site_Assignment_Table.sql','2014-04-07 10:42:55',220,'EXECUTED','3:391d2173ba13ad258b354f4720e96a92','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','gmeurer','./liquibase/2014/Q1/gmeurer2_PICS-13851_add_usage_colum_sortOrder.sql','2014-01-07 12:18:03',141,'EXECUTED','3:1f7836d12f96ed51a75868d792fbbdeb','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','jgriffith','./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql','2014-03-18 17:19:42',206,'EXECUTED','3:bd1057d8216f847416958ca5cd841d0c','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','kchase','./liquibase/2013/PICS-12919_updateTokens.sql','2013-10-25 21:43:15',16,'EXECUTED','3:c585846a8539aa98bcab5cb568b92d9a','Custom SQL','',NULL,'2.0.1');
@@ -25951,6 +25953,144 @@ INSERT INTO `site_account_skill` VALUES (29,39590,313,1,0,0,'2014-03-11 12:38:01
 INSERT INTO `site_account_skill` VALUES (30,41941,320,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
 INSERT INTO `site_account_skill` VALUES (36,29278,332,1,0,0,'2014-03-13 17:46:49',NULL,NULL);
 /*!40000 ALTER TABLE `site_account_skill` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `site_assignment`
+--
+
+DROP TABLE IF EXISTS `site_assignment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `site_assignment` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `roleID` int(11) NOT NULL,
+  `siteID` int(11) NOT NULL,
+  `employeeID` int(11) NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `updatedBy` int(11) NOT NULL DEFAULT '0',
+  `deletedBy` int(11) NOT NULL DEFAULT '0',
+  `createdDate` datetime NOT NULL,
+  `updatedDate` datetime DEFAULT NULL,
+  `deletedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ak1_site_assignment` (`roleID`,`siteID`,`employeeID`),
+  KEY `fk2_site_assignment_idx` (`siteID`),
+  KEY `fk3_site_assignment_idx` (`employeeID`),
+  CONSTRAINT `fk1_site_assignment` FOREIGN KEY (`roleID`) REFERENCES `account_group` (`id`),
+  CONSTRAINT `fk2_site_assignment` FOREIGN KEY (`siteID`) REFERENCES `accountemployeeguard` (`accountID`),
+  CONSTRAINT `fk3_site_assignment` FOREIGN KEY (`employeeID`) REFERENCES `account_employee` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1301 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `site_assignment`
+--
+
+LOCK TABLES `site_assignment` WRITE;
+/*!40000 ALTER TABLE `site_assignment` DISABLE KEYS */;
+INSERT INTO `site_assignment` VALUES (1,2,61324,61,1,0,0,'2014-03-13 18:04:32',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (11,2,61324,63,1,0,0,'2014-03-13 18:04:32',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (31,63,969,1,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (41,63,969,17,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (51,66,969,8,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (61,66,969,14,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (71,58,969,29,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (81,58,969,30,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (91,65,969,9,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (101,67,969,5,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (111,67,969,11,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (121,67,969,31,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (131,58,969,31,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (141,61,969,14,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (151,64,969,27,1,0,0,'2014-02-18 17:15:11',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (161,230,6228,1,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (171,230,6228,17,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (181,233,6228,8,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (191,233,6228,14,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (201,225,6228,29,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (211,225,6228,30,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (221,232,6228,9,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (231,234,6228,5,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (241,234,6228,11,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (251,234,6228,31,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (261,225,6228,31,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (271,228,6228,14,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (281,231,6228,27,1,0,0,'2014-03-10 23:22:35',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (291,231,29278,3,1,0,0,'2014-03-18 08:12:37',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (301,231,29278,11,1,0,0,'2014-03-18 08:12:36',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (311,231,29278,12,1,0,0,'2014-03-17 22:57:37',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (321,231,29278,13,1,0,0,'2014-03-19 09:18:12',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (331,231,29278,31,1,0,0,'2014-03-17 15:47:10',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (341,29,32078,5,1,0,0,'2014-03-06 12:36:10',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (351,29,32078,14,1,0,0,'2014-03-06 12:36:15',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (361,29,32078,18,1,0,0,'2014-03-06 12:36:17',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (371,36,32078,4,1,0,0,'2014-03-06 12:36:38',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (381,36,32078,19,1,0,0,'2014-03-06 12:36:44',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (391,36,32078,27,1,0,0,'2014-03-06 12:36:43',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (401,30,32078,29,1,0,0,'2014-03-06 12:00:55',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (411,30,32078,30,1,0,0,'2014-03-06 12:01:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (421,31,32078,32,1,0,0,'2014-03-06 12:01:09',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (431,36,32078,6,1,0,0,'2014-03-06 12:01:14',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (441,36,32078,17,1,0,0,'2014-03-06 12:01:21',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (451,36,32078,31,1,0,0,'2014-03-06 12:01:34',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (461,37,32078,13,1,0,0,'2014-03-06 12:01:49',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (471,37,32078,30,1,0,0,'2014-03-06 12:01:46',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (481,55,34885,33,1,0,0,'2014-03-04 11:46:38',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (491,55,34885,34,1,0,0,'2014-03-04 11:49:07',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (501,245,39593,1,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (511,245,39593,17,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (521,248,39593,8,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (531,248,39593,14,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (541,240,39593,29,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (551,240,39593,30,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (561,247,39593,9,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (571,249,39593,5,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (581,249,39593,11,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (591,249,39593,31,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (601,240,39593,31,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (611,243,39593,14,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (621,246,39593,27,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (631,245,41941,1,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (641,245,41941,17,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (651,248,41941,8,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (661,248,41941,14,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (671,240,41941,29,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (681,240,41941,30,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (691,247,41941,9,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (701,249,41941,5,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (711,249,41941,11,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (721,249,41941,31,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (731,240,41941,31,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (741,243,41941,14,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (751,246,41941,27,1,0,0,'2014-03-11 12:38:01',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (761,46,49791,1,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (771,46,49791,17,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (781,49,49791,8,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (791,49,49791,14,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (801,41,49791,29,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (811,41,49791,30,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (821,48,49791,9,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (831,50,49791,5,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (841,50,49791,11,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (851,50,49791,31,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (861,41,49791,31,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (871,44,49791,14,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (881,47,49791,27,1,0,0,'2014-02-11 12:54:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (891,1,55654,1,1,0,0,'2013-11-18 16:51:47',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (901,1,55654,17,1,0,0,'2013-11-18 16:51:52',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (911,2,55654,8,1,0,0,'2013-11-18 16:52:06',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (921,2,55654,14,1,0,0,'2013-11-18 16:52:29',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (931,4,55654,5,1,0,0,'2013-11-18 16:54:15',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (941,4,55654,11,1,0,0,'2014-01-03 13:49:40',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (951,4,55654,31,1,0,0,'2013-11-19 11:14:07',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (961,5,55654,9,1,0,0,'2013-11-19 11:14:32',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (971,6,55654,29,1,0,0,'2013-11-18 17:42:29',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (981,6,55654,30,1,0,0,'2013-11-18 17:42:27',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (991,3,55654,14,1,0,0,'2013-12-02 15:09:48',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (1001,6,55654,31,1,0,0,'2013-12-02 15:24:45',NULL,NULL);
+INSERT INTO `site_assignment` VALUES (1011,22,55654,27,1,0,0,'2013-12-02 15:10:58',NULL,NULL);
+/*!40000 ALTER TABLE `site_assignment` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
