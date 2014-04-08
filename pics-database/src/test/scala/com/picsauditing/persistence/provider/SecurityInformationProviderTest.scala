@@ -9,7 +9,7 @@ import java.util.Date
 class SecurityInformationProviderTest extends BaseTestSetup {
 
   "SecurityInformationProvider" should "return the latest login date for a specified account." in new SecurityDataTest {
-    queryTest { prepareDatabase { provider =>
+    queryTest { prepareDatabase { implicit session => provider =>
           val foundDate = provider.findLastAccountLogin(TEST_ACCOUNT_ID)
           foundDate shouldEqual LATEST_DATE
           foundDate shouldNot be(IMPOSSIBLE_DATE)
@@ -19,7 +19,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
 
   trait SecurityDataTest extends DBTest[SecurityInformationProvider] {
     val dbName = "SecurityDataTest"
-    val service = new SecurityInformationProvider(dataSource) with H2TestingProfile
+    val service = new SecurityInformationProvider with H2TestingProfile
     val TEST_ACCOUNT_ID = 9L
     val SOME_OTHER_ID = 10L
     val LATEST_DATE = new Date()
@@ -31,7 +31,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
     val testUser3 = UserData(None, TEST_ACCOUNT_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", EARLIER_DATE)
     val dontFindThis = UserData(None, SOME_OTHER_ID, "Still Nobody Special", "email", "phone", "fax", "Yes", IMPOSSIBLE_DATE)
 
-    def prepareDatabase(testFunction: (SecurityInformationProvider) => Unit) = {
+    def prepareDatabase(testFunction: Session => (SecurityInformationProvider) => Unit) = {
       (session: Session, provider: SecurityInformationProvider) =>
         implicit val s = session
         val p = provider.asInstanceOf[SecurityInformationProvider with H2TestingProfile]
@@ -42,7 +42,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
 
         users ++= Seq(findThis, testUser2, testUser3, dontFindThis)
 
-        testFunction(provider)
+        testFunction(session)(provider)
     }
   }
 
