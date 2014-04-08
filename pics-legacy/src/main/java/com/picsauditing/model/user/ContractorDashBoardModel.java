@@ -28,19 +28,15 @@ public class ContractorDashBoardModel {
             if (permittedUsers.size() > limit - 1) {
                 break;
             }
-            //try {
-                if (user.isGroup()) {
-                    continue;
-                }
 
-                Permissions permissions = permissionBuilder.login(user);
-                if (permissions.hasPermission(operatorPermission)) {
-                    permittedUsers.add(user);
-                }
-            /*}catch (Exception e) {
+            if (user.isGroup()) {
+                continue;
+            }
 
-                logger.error("Cannot login user", e);
-            }*/
+            Permissions permissions = permissionBuilder.login(user);
+            if (permissions.hasPermission(operatorPermission)) {
+                permittedUsers.add(user);
+            }
         }
 
         return permittedUsers;
