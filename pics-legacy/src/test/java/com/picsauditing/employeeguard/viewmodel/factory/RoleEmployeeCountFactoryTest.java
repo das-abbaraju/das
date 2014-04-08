@@ -26,8 +26,8 @@ public class RoleEmployeeCountFactoryTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
-	@Mock
-	private RoleEmployee roleEmployee;
+//	@Mock
+//	private RoleEmployee roleEmployee;
 
 	@Before
 	public void setUp() throws Exception {

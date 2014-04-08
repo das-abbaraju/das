@@ -86,12 +86,12 @@ public class SkillEngine {
 	}
 
 	private boolean isEmployeeAssignedToSite(Employee employee, int childSiteId) {
-		if (CollectionUtils.isEmpty(employee.getRoles())) {
+		if (CollectionUtils.isEmpty(employee.getSiteAssignments())) {
 			return false;
 		}
 
-		for (RoleEmployee roleEmployee : employee.getRoles()) {
-			if (roleEmployee.getRole().getAccountId() == childSiteId) {
+		for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+			if (siteAssignment.getUpdatedBy() == childSiteId) {
 				return true;
 			}
 		}

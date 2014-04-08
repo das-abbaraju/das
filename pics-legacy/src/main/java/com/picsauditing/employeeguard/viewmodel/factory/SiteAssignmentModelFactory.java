@@ -67,8 +67,8 @@ public class SiteAssignmentModelFactory {
 		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
 
 		for (Employee employee : employees) {
-			for (RoleEmployee roleEmployee : employee.getRoles()) {
-				Role role = roleEmployee.getRole();
+			for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+				Role role = siteAssignment.getRole();
 
 				if (role.getAccountId() == siteId) {
 					PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, role);

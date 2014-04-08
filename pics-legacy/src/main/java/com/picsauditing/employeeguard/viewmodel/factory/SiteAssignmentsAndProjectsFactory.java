@@ -99,8 +99,8 @@ public class SiteAssignmentsAndProjectsFactory {
 	}
 
 	private boolean employeeBelongsToSite(AccountModel site, Employee employee) {
-		for (RoleEmployee roleEmployee : employee.getRoles()) {
-			if (roleEmployee.getRole().getAccountId() == site.getId()) {
+		for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+			if (siteAssignment.getSiteId() == site.getId()) {
 				return true;
 			}
 		}

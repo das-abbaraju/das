@@ -71,8 +71,8 @@ public class RoleServiceTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
-	@Mock
-	private RoleEmployee roleEmployee;
+//	@Mock
+//	private RoleEmployee roleEmployee;
 	@Mock
 	private SkillUsage skillUsage;
 
