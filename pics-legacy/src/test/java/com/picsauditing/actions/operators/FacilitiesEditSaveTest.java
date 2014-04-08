@@ -1,5 +1,6 @@
 package com.picsauditing.actions.operators;
 
+import com.opensymphony.xwork2.Action;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
@@ -63,6 +64,8 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     @Mock
     private OperatorAccountDAO operatorDAO;
     @Mock
+    protected CountryDAO countryDAO;
+    @Mock
     private FeatureToggle featureToggle;
     @Mock
     private AccountStatusChanges accountStatusChanges;
@@ -124,17 +127,36 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         when(newCountrySubdivision.toString()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(country.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(countrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(countryDAO.findbyISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country);
 
         Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
         Whitebox.setInternalState(facilitiesEdit, "contractorOperatorService", contractorOperatorService);
         Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
         Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
+        Whitebox.setInternalState(facilitiesEdit, "countryDAO", countryDAO);
 
         facilitiesEdit.setOperator(operator);
         facilitiesEdit.setTimeoutDays(REMEMBER_ME_TIME_IN_DAYS);
         facilitiesEdit.setSessionTimeout(SESSION_TIMEOUT_IN_MINUTES);
         facilitiesEdit.setFacilities(facilities);
         facilitiesEdit.setCreateType(OPERATOR_TYPE);
+    }
+
+    @Test
+    public void testSave_RedirectOnErrorsForExistingOperator() {
+        when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
+
+        String result = facilitiesEdit.save();
+        assertEquals(PicsActionSupport.REDIRECT, result);
+    }
+
+    @Test
+    public void testSave_NoRedirectOnErrorsForNewOperator() {
+        when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
+        when(operator.getName()).thenReturn("");
+
+        String result = facilitiesEdit.save();
+        assertEquals(Action.SUCCESS, result);
     }
 
     @Test
@@ -214,6 +236,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     public void testSave_CountryChangeIsCopiedToOperator() {
         facilitiesEdit.setCountry(country2);
         when(country2.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(countryDAO.findbyISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country2);
 
         facilitiesEdit.save();
 
@@ -248,19 +271,11 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NullCountrySubdivisionDoesNotSetSetOnOperator() {
-        facilitiesEdit.setCountrySubdivision(null);
-
-        facilitiesEdit.save();
-
-        verify(operator, never()).setCountrySubdivision(any(CountrySubdivision.class));
-    }
-
-    @Test
     public void testSave_ChangeOfCountrySubdivisionFindsAndSetsResultOfFindOnOperator() {
         facilitiesEdit.setCountrySubdivision(newCountrySubdivision);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
         when(newCountrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(country.isHasCountrySubdivisions()).thenReturn(true);
 
         facilitiesEdit.save();
 
@@ -274,20 +289,12 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         when(operator.getCountrySubdivision()).thenReturn(null);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
         when(newCountrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
+        when(country.isHasCountrySubdivisions()).thenReturn(true);
 
         facilitiesEdit.save();
 
         verify(countrySubdivisionDAO).find(newCountrySubdivision.toString());
         verify(operator).setCountrySubdivision(newCountrySubdivision);
-    }
-
-    @Test
-    public void testSave_WithActionErrorsGetSuccessResponseRatherThanRedirect() {
-        facilitiesEdit.addActionError("This is a test error");
-
-        String result = facilitiesEdit.save();
-
-        assertEquals(PicsActionSupport.SUCCESS, result);
     }
 
     @Test
