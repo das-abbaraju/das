@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SiteAssignmentModel {
+
 	private final List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels;
 	private final Map<RoleInfo, Integer> roleEmployee;
 	private final int totalEmployeesAssignedToSite;
@@ -38,6 +39,7 @@ public class SiteAssignmentModel {
 	}
 
 	public static class Builder {
+
 		private List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels;
 		private Map<RoleInfo, Integer> roleEmployee;
 		private int totalEmployeesAssignedToSite;
