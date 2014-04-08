@@ -1,19 +1,14 @@
 package com.picsauditing.actions.contractors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.math.BigDecimal;
-import java.util.*;
-
-import com.picsauditing.access.OpPerms;
+import com.opensymphony.xwork2.ActionSupport;
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.billing.BrainTree;
+import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.billing.BillingNoteModel;
+import com.picsauditing.util.Strings;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,25 +17,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.opensymphony.xwork2.ActionSupport;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.PaymentDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentApplied;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.model.billing.BillingNoteModel;
-import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.BrainTreeService;
-import com.picsauditing.braintree.CreditCard;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class PaymentDetailTest extends PicsActionTest {
 
@@ -209,6 +194,20 @@ public class PaymentDetailTest extends PicsActionTest {
 
         assertEquals("error", status);
         assertEquals(1,paymentDetail.getActionErrors().size());
+    }
+
+    @Test
+    public void testProcessVoidPayment() throws Exception {
+        paymentDetail.setPayment(payment);
+        paymentDetail.setContractor(contractor);
+        when(contractor.getId()).thenReturn(1234);
+        String status = Whitebox.invokeMethod(paymentDetail, "processVoidPayment");
+
+        assertEquals("redirect", status);
+        assertEquals("BillingDetail.action?id=1234", paymentDetail.getUrl());
+        assertEquals(0,paymentDetail.getActionErrors().size());
+        verify(payment).setStatus(TransactionStatus.Void);
+        verify(paymentDAO).save(payment);
     }
 
     private List<Invoice> buildMockInvoiceListNotSameCurrency() {
