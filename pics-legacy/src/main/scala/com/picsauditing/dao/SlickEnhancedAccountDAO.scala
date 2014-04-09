@@ -9,7 +9,7 @@ class SlickEnhancedAccountDAO extends AccountDAO with PICSDataAccess {
   lazy val sipProvider = new SecurityInformationProvider with MySQLProfile
   lazy val userDataProvider = new UserDataProvider with MySQLProfile
 
-  def findAccountContactsByRole2(accountID: Int, opPerms: OpPerms) = db withSession {
+  override def findAccountContactsByRole(accountID: Int, opPerms: OpPerms) = db withSession {
     implicit session => toJava( userDataProvider findAccountContactByRole(opPerms.toString, accountID) )
   }
 
