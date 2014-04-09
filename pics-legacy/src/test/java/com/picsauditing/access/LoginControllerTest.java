@@ -16,6 +16,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import org.json.simple.JSONObject;
@@ -74,8 +75,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserService userService;
 	@Mock
 	private LanguageModel languageModel;
-    @Mock
-    private ReportUserDAO reportUserDAO;
+	@Mock
+	private ReportUserDAO reportUserDAO;
 
 	private LoginService loginService = new LoginService();
 
@@ -94,8 +95,8 @@ public class LoginControllerTest extends PicsActionTest {
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
 
 		MockitoAnnotations.initMocks(this);
-        LoginController.reportUserDAO = reportUserDAO;
-        loginController = new LoginController();
+		LoginController.reportUserDAO = reportUserDAO;
+		loginController = new LoginController();
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", hierarchyBuilder);
@@ -159,7 +160,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Cookie cookie1 = mock(Cookie.class);
 		when(cookie1.getName()).thenReturn(CookieSupport.PRELOGIN_URL_COOKIE_NAME);
 		when(cookie1.getValue()).thenReturn(PRELOGIN_URL);
-		when(request.getCookies()).thenReturn(new Cookie[] { cookie1 });
+		when(request.getCookies()).thenReturn(new Cookie[]{cookie1});
 
 		LoginService loginService = mock(LoginService.class);
 		when(loginService.postLoginHomePageTypeForRedirect(PRELOGIN_URL, user)).thenReturn(HomePageType.PreLogin);
@@ -202,22 +203,22 @@ public class LoginControllerTest extends PicsActionTest {
 		assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
 	}
 
-    @Test
-    public void testSetRedirectUrlPostLogin_DeclinedAlsoRedirectsToDeactivatedPage() throws Exception {
-        Whitebox.setInternalState(loginController, "user", user);
+	@Test
+	public void testSetRedirectUrlPostLogin_DeclinedAlsoRedirectsToDeactivatedPage() throws Exception {
+		Whitebox.setInternalState(loginController, "user", user);
 
-        LoginService loginService = mock(LoginService.class);
-        when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
-                HomePageType.Declined);
-        Whitebox.setInternalState(loginController, "loginService", loginService);
+		LoginService loginService = mock(LoginService.class);
+		when(loginService.postLoginHomePageTypeForRedirect(null, user)).thenReturn(
+				HomePageType.Declined);
+		Whitebox.setInternalState(loginController, "loginService", loginService);
 
-        String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
+		String strutsResult = Whitebox.invokeMethod(loginController, "setRedirectUrlPostLogin");
 
-        assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
-        assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
-    }
+		assertThat(PicsActionSupport.REDIRECT, is(equalTo(strutsResult)));
+		assertThat(LoginController.DEACTIVATED_ACCOUNT_PAGE, is(equalTo(loginController.getUrl())));
+	}
 
-    // As a non-admin user
+	// As a non-admin user
 	// Given user wishes to logout
 	// When user clicks on logout button
 	// Then the system clears permissions and session
@@ -338,12 +339,12 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getAppUser()).thenReturn(appUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
-        when(switchUser.isUsingVersion7Menus()).thenReturn(true);
+		when(switchUser.isUsingVersion7Menus()).thenReturn(true);
 		when(permissions.getUserId()).thenReturn(NOT_ZERO);
 		when(switchUser.getLocale()).thenReturn(Locale.ENGLISH);
-        Account account = new Account();
-        account.setType("Admin");
-        when(switchUser.getAccount()).thenReturn(account);
+		Account account = new Account();
+		account.setType("Admin");
+		when(switchUser.getAccount()).thenReturn(account);
 
 		String actionResult = loginController.execute();
 
@@ -369,9 +370,9 @@ public class LoginControllerTest extends PicsActionTest {
 	@Test
 	public void testExecute_NormalLogin() throws Exception {
 		normalLoginSetup();
-        Account account = new Account();
-        account.setType("Admin");
-        when(user.getAccount()).thenReturn(account);
+		Account account = new Account();
+		account.setType("Admin");
+		when(user.getAccount()).thenReturn(account);
 		String actionResult = loginController.execute();
 		verify(permissionBuilder).login(user);
 		verify(user).setLastLogin((Date) any());
@@ -433,7 +434,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Cookie cookie = mock(Cookie.class);
 		when(cookie.getName()).thenReturn("from");
 		when(cookie.getValue()).thenReturn("\"/Home.action");
-		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{cookie});
 
 		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
 
@@ -445,7 +446,7 @@ public class LoginControllerTest extends PicsActionTest {
 		Cookie cookie = mock(Cookie.class);
 		when(cookie.getName()).thenReturn("from");
 		when(cookie.getValue()).thenReturn("/ContractorDashboard.action?foo=1");
-		when(request.getCookies()).thenReturn(new Cookie[] { cookie });
+		when(request.getCookies()).thenReturn(new Cookie[]{cookie});
 
 		String urlPreLogin = Whitebox.invokeMethod(loginController, "getPreLoginUrl");
 
@@ -456,9 +457,9 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testExecute_RedirectNormallyIfPasswordNotExpired() throws Exception {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
-        Account account = new Account();
-        account.setType("Admin");
-        when(user.getAccount()).thenReturn(account);
+		Account account = new Account();
+		account.setType("Admin");
+		when(user.getAccount()).thenReturn(account);
 
 		String actionResult = loginController.execute();
 

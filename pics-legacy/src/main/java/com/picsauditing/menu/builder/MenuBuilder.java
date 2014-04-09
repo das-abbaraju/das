@@ -3,7 +3,7 @@ package com.picsauditing.menu.builder;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserService;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -652,7 +652,7 @@ public final class MenuBuilder {
 	}
 
 	private static boolean isPicsOrgUser(int appUserID) {
-		UserService userService = SpringUtils.getBean("UserService");
+		UserService userService = SpringUtils.getBean(SpringUtils.USER_SERVICE);
 		return userService.findByAppUserId(appUserID) != null;
 	}
 

@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import com.picsauditing.access.builders.PermissionsBuilder;
+import com.picsauditing.access.user.UserMode;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.*;
@@ -37,15 +38,15 @@ public class Permissions implements Serializable {
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 
-	private Set<Integer> allInheritedGroupIds = new HashSet<Integer>();
-	private Set<Integer> groupIds = new HashSet<Integer>();
-	private Set<UserAccess> permissions = new HashSet<UserAccess>();
+	private Set<Integer> allInheritedGroupIds = new HashSet<>();
+	private Set<Integer> groupIds = new HashSet<>();
+	private Set<UserAccess> permissions = new HashSet<>();
 	private boolean canSeeInsurance = false;
-	private Set<Integer> corporateParent = new HashSet<Integer>();
-	private Set<Integer> operatorChildren = new HashSet<Integer>();
-	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
-	private Set<Integer> linkedClients = new HashSet<Integer>();
-	private Set<Integer> linkedGeneralContractors = new HashSet<Integer>();
+	private Set<Integer> corporateParent = new HashSet<>();
+	private Set<Integer> operatorChildren = new HashSet<>();
+	private Set<Integer> visibleAuditTypes = new HashSet<>();
+	private Set<Integer> linkedClients = new HashSet<>();
+	private Set<Integer> linkedGeneralContractors = new HashSet<>();
 
 	private String username;
 	private String name;
@@ -87,7 +88,8 @@ public class Permissions implements Serializable {
 
 	private String switchedToUserName;
 
-	private boolean employeeGuardEmployeeUser;
+	private UserMode currentMode;
+	private Set<UserMode> availableUserModes = new HashSet<>();
 
 
 	public Permissions() {
@@ -871,12 +873,20 @@ public class Permissions implements Serializable {
 		return switchedToUserName;
 	}
 
-	public boolean isEmployeeGuardEmployeeUser() {
-		return employeeGuardEmployeeUser;
+	public UserMode getCurrentMode() {
+		return currentMode;
 	}
 
-	public void setEmployeeGuardEmployeeUser(boolean employeeGuardEmployeeUser) {
-		this.employeeGuardEmployeeUser = employeeGuardEmployeeUser;
+	public void setCurrentMode(UserMode currentMode) {
+		this.currentMode = currentMode;
+	}
+
+	public Set<UserMode> getAvailableUserModes() {
+		return availableUserModes;
+	}
+
+	public void setAvailableUserModes(Set<UserMode> availableUserModes) {
+		this.availableUserModes = availableUserModes;
 	}
 
 	@Override

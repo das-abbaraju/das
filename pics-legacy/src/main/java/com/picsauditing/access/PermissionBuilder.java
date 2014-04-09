@@ -1,5 +1,7 @@
 package com.picsauditing.access;
 
+import com.picsauditing.access.user.UserMode;
+import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.database.domain.Identifiable;
@@ -18,7 +20,7 @@ public class PermissionBuilder {
 	@Autowired
 	private HierarchyBuilder hierarchyBuilder;
 	@Autowired
-	private ProductSubscriptionService productSubscriptionService;
+	private UserModeProvider userModeProvider;
 	@Autowired
 	private UserDAO dao;
 
@@ -35,9 +37,18 @@ public class PermissionBuilder {
 		Permissions permissions = new Permissions();
 
 		permissions.login(appUser, identifiable);
-		permissions.setEmployeeGuardEmployeeUser(productSubscriptionService.isEmployeeGUARDEmployeeUser(appUser.getId()));
+		permissions.setAvailableUserModes(userModeProvider.getAvailableUserModes(appUser.getId()));
+		permissions.setCurrentMode(getCurrentMode(permissions));
 
 		return permissions;
+	}
+
+	private UserMode getCurrentMode(final Permissions permissions) {
+		if (permissions.getAvailableUserModes().size() == 1) {
+			return permissions.getAvailableUserModes().iterator().next();
+		}
+
+		return null;
 	}
 
 	private void build(Permissions permissions) {

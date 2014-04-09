@@ -2,7 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserService;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.jpa.entities.Report;

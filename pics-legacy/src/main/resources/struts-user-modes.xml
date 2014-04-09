@@ -1,0 +1,12 @@
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+        "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <package name="com.picsauditing.struts.controller.user" extends="com.picsauditing" namespace="/users">
+        <default-interceptor-ref name="pics-rest-stack"/>
+
+        <action name="switch-mode/{mode}" class="com.picsauditing.struts.controller.user.SwitchUserModeAction"
+                method="changeMode" />
+
+    </package>
+
+</struts>

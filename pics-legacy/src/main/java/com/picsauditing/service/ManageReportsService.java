@@ -1,34 +1,32 @@
 package com.picsauditing.service;
 
-import java.util.List;
-import java.util.Locale;
-
-import javax.persistence.NoResultException;
-
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
-import com.picsauditing.access.UserService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.ReportPaginationParameters;
+import com.picsauditing.service.user.UserService;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
 import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.ReportPaginationParameters;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.pagination.Pagination;
+import javax.persistence.NoResultException;
+import java.util.List;
+import java.util.Locale;
 
 public class ManageReportsService {
 
-    @Autowired
-    public ReportPreferencesService reportPreferencesService;
-    @Autowired
-    public PermissionService permissionService;
+	@Autowired
+	public ReportPreferencesService reportPreferencesService;
+	@Autowired
+	public PermissionService permissionService;
 	@Autowired
 	private UserService userService;
 	@Autowired
-    private ReportDAO reportDAO;
+	private ReportDAO reportDAO;
 	@Autowired
-    private ReportUserDAO reportUserDAO;
+	private ReportUserDAO reportUserDAO;
 	@Autowired
 	private UserDAO userDAO;
 	@Autowired
@@ -38,7 +36,7 @@ public class ManageReportsService {
 	@Autowired
 	private ReportPermissionAccountDAO reportPermissionAccountDAO;
 	@Autowired
-    private ReportInfoProvider reportInfoProvider;
+	private ReportInfoProvider reportInfoProvider;
 	@Autowired
 	private ReportPermissionInfoConverter reportPermissionInfoConverter;
 
@@ -52,9 +50,9 @@ public class ManageReportsService {
 
 	public List<ReportInfo> getReportsForSearch(String searchTerm, Permissions permissions, Pagination<ReportInfo> pagination) {
 		if (Strings.isEmpty(searchTerm)) {
-            List<ReportInfo> reports = reportInfoProvider.findReportSuggestions(permissions);
+			List<ReportInfo> reports = reportInfoProvider.findReportSuggestions(permissions);
 
-            reports.addAll(reportInfoProvider.findTenMostFavoritedReports(permissions, reports.size()));
+			reports.addAll(reportInfoProvider.findTenMostFavoritedReports(permissions, reports.size()));
 
 			return reports;
 		}
@@ -113,18 +111,18 @@ public class ManageReportsService {
 	}
 
 	public ReportPermissionUser shareReportWithUserOrGroup(User sharerUser, User toUser, Report report, Permissions permissions,
-			boolean editable) throws Exception {
+														   boolean editable) throws Exception {
 		if (!permissionService.canUserShareReport(sharerUser, report, permissions)) {
 			// TODO translate this
 			throw new ReportPermissionException("You cannot share a report that you cannot edit.");
 		}
 
-        ReportPermissionUser reportPermissionUser;
-        if (editable) {
-            reportPermissionUser = permissionService.grantUserEditPermission(sharerUser.getId(), toUser.getId(), report.getId());
-        } else {
-            reportPermissionUser = permissionService.grantUserViewPermission(sharerUser.getId(), toUser.getId(), report.getId());
-        }
+		ReportPermissionUser reportPermissionUser;
+		if (editable) {
+			reportPermissionUser = permissionService.grantUserEditPermission(sharerUser.getId(), toUser.getId(), report.getId());
+		} else {
+			reportPermissionUser = permissionService.grantUserViewPermission(sharerUser.getId(), toUser.getId(), report.getId());
+		}
 
 		if (!toUser.isGroup()) {
 			ReportUser reportUser = reportPreferencesService.loadOrCreateReportUser(toUser.getId(), report.getId());
@@ -133,7 +131,7 @@ public class ManageReportsService {
 			reportUserDAO.save(reportUser);
 		}
 
-        return reportPermissionUser;
+		return reportPermissionUser;
 	}
 
 	public ReportPermissionAccount shareReportWithAccountViewPermission(User sharerUser, Account toAccount, Report report, Permissions permissions) throws ReportPermissionException {
@@ -210,8 +208,8 @@ public class ManageReportsService {
 		permissionService.grantUserEditPermission(fromOwner.getId(), fromOwner.getId(), report.getId());
 
 		report.setOwner(toOwner);
-        report.setAuditColumns(fromOwner);
-        reportDAO.save(report);
+		report.setAuditColumns(fromOwner);
+		reportDAO.save(report);
 
 		return report;
 	}
@@ -237,22 +235,22 @@ public class ManageReportsService {
 	}
 
 	public ReportUser removeReportUser(User removerUser, Report report, Permissions permissions) throws Exception {
-        if (!permissionService.canUserRemoveReport(removerUser, report, permissions)) {
-            throw new Exception("User " + removerUser.getId() + " does not have permission to remove report "
-                    + report.getId());
-        }
+		if (!permissionService.canUserRemoveReport(removerUser, report, permissions)) {
+			throw new Exception("User " + removerUser.getId() + " does not have permission to remove report "
+					+ report.getId());
+		}
 
-        ReportUser reportUser = null;
+		ReportUser reportUser = null;
 
-        try {
-            reportUser = reportPreferencesService.loadReportUser(removerUser.getId(), report.getId());
-            reportUser.setHidden(true);
+		try {
+			reportUser = reportPreferencesService.loadReportUser(removerUser.getId(), report.getId());
+			reportUser.setHidden(true);
 			reportUserDAO.save(reportUser);
-        } catch (NoResultException dontCare) {
-        }
+		} catch (NoResultException dontCare) {
+		}
 
-        return reportUser;
-    }
+		return reportUser;
+	}
 
 	public Report deleteReport(User user, Report report, Permissions permissions) throws Exception {
 		checkExceptionConditionsToDeleteReport(user, report, permissions);

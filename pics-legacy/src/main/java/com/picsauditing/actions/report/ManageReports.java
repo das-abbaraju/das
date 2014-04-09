@@ -2,7 +2,7 @@ package com.picsauditing.actions.report;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.UnauthorizedException;
-import com.picsauditing.access.UserService;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
