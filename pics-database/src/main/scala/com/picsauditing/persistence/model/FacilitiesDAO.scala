@@ -15,5 +15,5 @@ trait FacilitiesDAO { this: Profile =>
     def * = (id.?, corporateID, operatorID, `type`) <> (FacilitiesData.tupled, FacilitiesData.unapply)
   }
 
-  val facilities = TableQuery[FacilitiesSchema]
+  protected[persistence] val facilities = TableQuery[FacilitiesSchema]
 }

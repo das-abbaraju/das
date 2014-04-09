@@ -37,5 +37,5 @@ trait UserDAO { this: Profile =>
     def * = (id.?, accountID, username, email, phone, fax, isActive, lastLogin) <> (UserData.tupled, UserData.unapply)
   }
 
-  val users = TableQuery[UserSchema]
+  protected[persistence] val users = TableQuery[UserSchema]
 }

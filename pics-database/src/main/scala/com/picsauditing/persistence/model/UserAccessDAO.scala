@@ -15,5 +15,5 @@ trait UserAccessDAO { this: Profile =>
      def * = (id.?, userID, accessType) <> (UserAccessInfo.tupled, UserAccessInfo.unapply)
    }
 
-   val userAccess = TableQuery[UserAccessSchema]
+   protected[persistence] val userAccess = TableQuery[UserAccessSchema]
  }

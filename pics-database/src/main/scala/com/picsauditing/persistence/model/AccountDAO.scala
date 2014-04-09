@@ -19,5 +19,5 @@ trait AccountDAO { this: Profile =>
 
   }
 
-  val accounts = TableQuery[AccountSchema]
+  protected[persistence] val accounts = TableQuery[AccountSchema]
 }
