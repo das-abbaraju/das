@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +16,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class RoleEmployeeCountFactoryTest {
+
 	public static final int ROLE_ID = 67890;
 	public static final String NAME = "Test";
 
@@ -26,8 +30,6 @@ public class RoleEmployeeCountFactoryTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
-//	@Mock
-//	private RoleEmployee roleEmployee;
 
 	@Before
 	public void setUp() throws Exception {
