@@ -1,10 +1,13 @@
 package com.picsauditing.persistence.model
 
+import scala.beans.BeanProperty
+
 
 case class UserData(
                      id: Option[Long],
                      accountID: Long,
                      username: String,
+                     name: String,
                      email: String,
                      phone: String,
                      fax: String,
@@ -12,7 +15,19 @@ case class UserData(
                      lastLogin: java.util.Date
                    )
 
-case class UserContactInfo(username: String, email: String, phone: String, fax: String)
+case class UserContactInfo(
+                            @BeanProperty
+                            id: Long,
+                            @BeanProperty
+                            username: String,
+                            @BeanProperty
+                            name: String,
+                            @BeanProperty
+                            email: String,
+                            @BeanProperty
+                            phone: String,
+                            @BeanProperty
+                            fax: String)
 
 trait UserDAO { this: Profile =>
   import profile.simple._
@@ -22,6 +37,7 @@ trait UserDAO { this: Profile =>
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
     def accountID = column[Long]("accountID")
     def username = column[String]("username")
+    def name = column[String]("name")
     def email = column[String]("email")
     def phone = column[String]("phone")
     def fax = column[String]("fax")
@@ -33,8 +49,8 @@ trait UserDAO { this: Profile =>
     ))
 
 
-    def contactinfo = (username, email, phone, fax) <> (UserContactInfo.tupled, UserContactInfo.unapply)
-    def * = (id.?, accountID, username, email, phone, fax, isActive, lastLogin) <> (UserData.tupled, UserData.unapply)
+    def contactinfo = (id, username, name, email, phone, fax) <> (UserContactInfo.tupled, UserContactInfo.unapply)
+    def * = (id.?, accountID, username, name, email, phone, fax, isActive, lastLogin) <> (UserData.tupled, UserData.unapply)
   }
 
   protected[persistence] val users = TableQuery[UserSchema]
