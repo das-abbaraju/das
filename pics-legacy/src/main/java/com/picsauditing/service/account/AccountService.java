@@ -24,8 +24,6 @@ public class AccountService {
 
     public void persist(ContractorAccount account) {
         accountDAO.save(account);
-        if (account.getId() == 0) {
-            accountDAO.refresh(account);
-        }
+        accountDAO.refresh(account);
     }
 }
