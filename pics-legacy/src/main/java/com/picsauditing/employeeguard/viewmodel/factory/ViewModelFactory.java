@@ -24,14 +24,12 @@ public class ViewModelFactory {
 	private static OperatorProjectAssignmentFactory operatorProjectAssignmentFactory = new OperatorProjectAssignmentFactory();
 	private static OperatorProjectRoleAssignmentFactory operatorProjectRoleAssignmentFactory = new OperatorProjectRoleAssignmentFactory();
 	private static OperatorSiteAssignmentModelFactory operatorSiteAssignmentModelFactory = new OperatorSiteAssignmentModelFactory();
-	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
 	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static RoleInfoFactory roleInfoFactory = new RoleInfoFactory();
 	private static RoleEmployeeCountFactory roleEmployeeCountFactory = new RoleEmployeeCountFactory();
 	private static RoleModelFactory roleModelFactory = new RoleModelFactory();
 	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
 	private static SiteAssignmentModelFactory siteAssignmentModelFactory = new SiteAssignmentModelFactory();
-	private static SiteAssignmentsAndProjectsFactory siteAssignmentsAndProjectsFactory = new SiteAssignmentsAndProjectsFactory();
 
 	public static CompanyEmployeeModelFactory getCompanyEmployeeModelFactory() {
 		return companyEmployeeModelFactory;
@@ -97,10 +95,6 @@ public class ViewModelFactory {
 		return operatorSiteAssignmentModelFactory;
 	}
 
-	public static ProjectAssignmentBreakdownFactory getProjectAssignmentBreakdownFactory() {
-		return projectAssignmentBreakdownFactory;
-	}
-
 	public static ProjectModelFactory getProjectModelFactory() {
 		return projectModelFactory;
 	}
@@ -123,9 +117,5 @@ public class ViewModelFactory {
 
 	public static SiteAssignmentModelFactory getContractorSiteAssignmentModelFactory() {
 		return siteAssignmentModelFactory;
-	}
-
-	public static SiteAssignmentsAndProjectsFactory getSiteAssignmentsAndProjectsFactory() {
-		return siteAssignmentsAndProjectsFactory;
 	}
 }

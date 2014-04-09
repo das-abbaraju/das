@@ -27,8 +27,8 @@ public class SiteAssignmentModelFactoryTest {
 	private Employee employee;
 	@Mock
 	private Role role;
-	@Mock
-	private RoleEmployee roleEmployee;
+//	@Mock
+//	private RoleEmployee roleEmployee;
 	@Mock
 	private SkillUsage skillUsage;
 
@@ -88,11 +88,11 @@ public class SiteAssignmentModelFactoryTest {
 
 	private void setupMocks(Map<AccountSkill, Set<Integer>> siteRequiredSkills) {
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
-		when(employee.getRoles()).thenReturn(Arrays.asList(roleEmployee));
+//		when(employee.getRoles()).thenReturn(Arrays.asList(roleEmployee));
 		when(employee.getProjectRoles()).thenReturn(Collections.<ProjectRoleEmployee>emptyList());
 		when(employee.getName()).thenReturn("Employee Name");
 		when(role.getAccountId()).thenReturn(SITE_ID);
-		when(roleEmployee.getRole()).thenReturn(role);
+//		when(roleEmployee.getRole()).thenReturn(role);
 		when(skillUsage.getEmployee()).thenReturn(employee);
 		when(skillUsage.getSiteAssignmentSkills()).thenReturn(Collections.<AccountSkill, Set<Integer>>emptyMap());
 		when(skillUsage.getProjectJobRoleSkills()).thenReturn(Collections.<AccountSkill, Set<Role>>emptyMap());

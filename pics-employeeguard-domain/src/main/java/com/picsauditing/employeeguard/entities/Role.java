@@ -32,8 +32,8 @@ public class Role extends AccountGroup implements Comparable<Role> {
 
 	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 5)
-	private List<RoleEmployee> employees;
+	@BatchSize(size = 10)
+	private List<SiteAssignment> siteAssignments = new ArrayList<>();
 
 	public Role() {
 	}
@@ -72,12 +72,12 @@ public class Role extends AccountGroup implements Comparable<Role> {
 		this.skills = skills;
 	}
 
-	public List<RoleEmployee> getEmployees() {
-		return employees;
+	public List<SiteAssignment> getSiteAssignments() {
+		return siteAssignments;
 	}
 
-	public void setEmployees(List<RoleEmployee> employees) {
-		this.employees = employees;
+	public void setSiteAssignments(List<SiteAssignment> siteAssignments) {
+		this.siteAssignments = siteAssignments;
 	}
 
 	@Override

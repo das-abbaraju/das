@@ -131,8 +131,8 @@ public class ProjectRoleService {
                 PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, projectRoleEmployee.getProjectRole().getRole());
             }
 
-            for (RoleEmployee roleEmployee : employee.getRoles()) {
-                PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, roleEmployee.getRole());
+            for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+                PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, siteAssignment.getRole());
             }
         }
 

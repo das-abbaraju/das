@@ -4,7 +4,7 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.List;
 
-public class CompanyEmployeeStatusModel implements SkillStatusInfo {
+public class CompanyEmployeeStatusModel implements Identifiable, SkillStatusInfo {
 
 	private int id;
 	private String firstName;

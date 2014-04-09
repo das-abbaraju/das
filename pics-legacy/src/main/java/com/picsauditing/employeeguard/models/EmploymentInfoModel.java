@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
-public class EmploymentInfoModel implements Identifiable, Nameable {
+public class EmploymentInfoModel implements IdNameComposite {
 
 	private int id;
 	private String name;

@@ -2,9 +2,11 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.RoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.util.Strings;
 import org.junit.Before;
@@ -29,8 +31,8 @@ public class EmployeeEntityServiceTest {
 	private EmployeeDAO employeeDAO;
 	@Mock
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-    @Mock
-    private SiteAssignmentDAO siteAssignmentDAO;
+	@Mock
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -268,13 +270,6 @@ public class EmployeeEntityServiceTest {
 
 	private Role buildFakeRole() {
 		return new RoleBuilder()
-				.build();
-	}
-
-	private RoleEmployee buildFakeRoleEmployee() {
-		return new RoleEmployeeBuilder()
-				.employee(buildFakeEmployee())
-				.role(buildFakeRole())
 				.build();
 	}
 

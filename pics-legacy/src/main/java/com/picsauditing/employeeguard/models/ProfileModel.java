@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
-public class ProfileModel {
+public class ProfileModel implements Identifiable {
 
 	private int id;
 	private String firstName;

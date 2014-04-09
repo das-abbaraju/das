@@ -24,7 +24,6 @@ public class StatusCalculatorServiceTest {
 	public static final int CONTRACTOR_ID = 1234;
 	public static final int CORPORATE_ID = 45;
 	public static final int SITE_ID = 17;
-	public static final int PROJECT_ID = 987;
 
 	private StatusCalculatorService service;
 
@@ -46,8 +45,6 @@ public class StatusCalculatorServiceTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
-	@Mock
-	private RoleEmployee roleEmployee;
 
 	@Before
 	public void setUp() throws Exception {
@@ -163,7 +160,7 @@ public class StatusCalculatorServiceTest {
 	}
 
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
-	                                                                  final List<AccountSkill> skills) {
+																	  final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillEmployeeBuilder()
 						.accountSkill(skills.get(0))

@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.models;
 public class ContractorSummary implements StatusSummarizable {
 
 	private int employees;
+
 	private int completed;
 	private int pending;
 	private int expiring;
