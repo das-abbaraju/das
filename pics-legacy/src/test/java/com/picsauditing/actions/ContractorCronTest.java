@@ -43,6 +43,8 @@ public class ContractorCronTest extends PicsActionTest {
 	private BasicDAO dao;
 	@Mock
 	private ContractorAccount contractor;
+    @Mock
+    private ContractorAudit contractorAudit;
 	@Mock
 	private ContractorAuditDAO contractorAuditDAO;
 	@Mock
@@ -159,6 +161,21 @@ public class ContractorCronTest extends PicsActionTest {
         Whitebox.invokeMethod(contractorCron, "runAssignAudit", contractor);
         assertNotNull(audit.getAuditor());
         assertTrue(audit.getAuditor() == origAuditor);
+    }
+
+    @Test
+    public void testSetSlaManualAudit() throws Exception {
+        List<ContractorAuditOperator> caos = new ArrayList<>();
+        List<ContractorAudit> audits = new ArrayList<>();
+        when(contractor.getAudits()).thenReturn(audits);
+        audits.add(contractorAudit);
+        when(contractorAudit.getAuditType()).thenReturn(new AuditType(AuditType.MANUAL_AUDIT));
+        when(contractorAudit.hasCaoStatus(AuditStatus.Pending)).thenReturn(true);
+        when(contractorAudit.getCurrentOperators()).thenReturn(caos);
+
+        Whitebox.invokeMethod(contractorCron, "setSlaManualAudit", contractor);
+        Mockito.verify(contractorAudit).setSlaDate(null);
+        assertNull(contractorAudit.getSlaDate());
     }
 
     @Test
@@ -310,6 +327,12 @@ public class ContractorCronTest extends PicsActionTest {
         ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
         addCaoCaop(audit, needManualAuditCao1.getOperator());
 
+        ArrayList<ContractorOperator> operators = new ArrayList<>();
+        ContractorOperator co = new ContractorOperator();
+        co.setOperatorAccount(needManualAuditCao1.getOperator());
+        operators.add(co);
+        contractor.setOperators(operators);
+
         AuditData data = EntityFactory.makeAuditData("", EntityFactory.makeAuditQuestion());
         data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
         pqf.getData().add(data);
@@ -357,11 +380,17 @@ public class ContractorCronTest extends PicsActionTest {
 		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
 
 		ContractorAuditOperator needManualAuditCao1 = addCaoCaop(pqf, EntityFactory.makeOperator());
-		addCaoCaop(audit, needManualAuditCao1.getOperator());
+        addCaoCaop(audit, needManualAuditCao1.getOperator());
 
-		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+        needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
 
-		AuditData data = EntityFactory.makeAuditData("doc", EntityFactory.makeAuditQuestion());
+        ArrayList<ContractorOperator> operators = new ArrayList<>();
+        ContractorOperator co = new ContractorOperator();
+        co.setOperatorAccount(needManualAuditCao1.getOperator());
+        operators.add(co);
+        contractor.setOperators(operators);
+
+        AuditData data = EntityFactory.makeAuditData("doc", EntityFactory.makeAuditQuestion());
 		data.setDateVerified(new Date());
 		data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
 		pqf.getData().add(data);
@@ -423,7 +452,13 @@ public class ContractorCronTest extends PicsActionTest {
 		addCaoCaop(audit, needManualAuditCao1.getOperator());
 		addCaoCaop(previousAudit, needManualAuditCao1.getOperator());
 
-		needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
+        ArrayList<ContractorOperator> operators = new ArrayList<>();
+        ContractorOperator co = new ContractorOperator();
+        co.setOperatorAccount(needManualAuditCao1.getOperator());
+        operators.add(co);
+        contractor.setOperators(operators);
+
+        needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
 		previousAudit.getOperators().get(0).changeStatus(AuditStatus.Complete, null);
 		previousAudit.setId(3);
 

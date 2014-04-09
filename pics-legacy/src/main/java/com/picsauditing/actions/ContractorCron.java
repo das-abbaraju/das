@@ -354,7 +354,7 @@ public class ContractorCron extends PicsActionSupport {
 	private void setSlaManualAudit(ContractorAccount contractor) {
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isDesktop() &&
-					audit.hasCaoStatus(AuditStatus.Pending)) {
+					audit.hasCaoStatus(AuditStatus.Pending) && audit.getCurrentOperators().size() > 0) {
 				Date beginDate = pqfAndSafetyManualSlaStartDate(contractor, audit);
 				if (beginDate == null) {
 					if (audit.getSlaDate() != null) {
@@ -402,6 +402,8 @@ public class ContractorCron extends PicsActionSupport {
     private boolean shouldResetSla(ContractorAudit audit) {
         if (!audit.getAuditType().isDesktop())
             return false;
+        if (audit.getCurrentOperators().size() == 0)
+            return true;
 
         for (ContractorAuditOperator cao:audit.getOperatorsVisible()) {
             if (cao.getCaoPermissions().size() != 0)
