@@ -22,6 +22,8 @@ public class AuditBuilder {
 	private ContractorAuditDAO conAuditDao;
 	@Autowired
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+    @Autowired
+    private ContractorAuditFileDAO contractorAuditFileDAO;
 	@Autowired
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
@@ -164,6 +166,7 @@ public class AuditBuilder {
 			ContractorAudit conAudit = iter.next();
 			if (okToRemoveAudit(conAudit, requiredAuditTypes)) {
 				iter.remove();
+                contractorAuditFileDAO.removeAllByAuditID(conAudit.getId());
 				conAuditDao.remove(conAudit);
 			}
 		}

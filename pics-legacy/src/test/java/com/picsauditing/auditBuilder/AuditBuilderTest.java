@@ -5,10 +5,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
 import com.picsauditing.util.Strings;
@@ -47,6 +44,8 @@ public class AuditBuilderTest extends PicsTest {
 	AuditDataDAO auditDataDao;
 	@Mock
 	ContractorAuditDAO conAuditDao;
+    @Mock
+    ContractorAuditFileDAO contractorAuditFileDAO;
 	@Mock
 	private AuditDecisionTableDAO auditDecisionTableDAO;
     @Mock
@@ -84,6 +83,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(auditBuilder, "conAuditDao", conAuditDao);
+		Whitebox.setInternalState(auditBuilder, "contractorAuditFileDAO", contractorAuditFileDAO);
 
 		typeRules.clear();
 		typeRuleCache.clear();
@@ -762,6 +762,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -773,6 +774,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -784,6 +786,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -795,6 +798,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -806,6 +810,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -816,6 +821,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -826,6 +832,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -839,6 +846,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
@@ -857,6 +865,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
+        verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
 		verify(conAuditDao, never()).remove(anyInt());
 	}
 
