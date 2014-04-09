@@ -19,7 +19,7 @@ public class VATWebValidator extends HystrixCommand<Boolean> {
     private static WebResource webResource;
     private static final String HYSTRIX_COMMAND_GROUP = "VATWebValidator";
     private static final String VALIDATION_OK_STRING = "true";
-    private static final String ERROR_STRING = "Trouble validating VAT code using http://isvat.appspot.com/. VAT code was: {}. This is potentially business critical!";
+    private static final String ERROR_STRING = "Trouble validating VAT code using http://isvat.appspot.com/. VAT code was: {}.";
     static final int THREAD_TIMEOUT_MS = 5000;
     private static final int THREAD_POOL_SIZE = 20;
     private static final int WEB_CONNECT_TIMEOUT_MS = 1000;
@@ -57,7 +57,7 @@ public class VATWebValidator extends HystrixCommand<Boolean> {
 
     @Override
     protected Boolean getFallback() {
-        logger.error(ERROR_STRING, vatCode);
+        logger.debug(ERROR_STRING, vatCode);
         return Boolean.TRUE;
     }
 
