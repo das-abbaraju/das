@@ -1,5 +1,8 @@
 package com.picsauditing.provisioning;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
 import com.picsauditing.jpa.entities.Account;
@@ -15,11 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ProductSubscriptionServiceImpl implements ProductSubscriptionService {
 	private Logger LOG = LoggerFactory.getLogger(ProductSubscriptionServiceImpl.class);
 
-	final static String CACHE_NAME = "product_subscription";
+
 
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
 	private CacheManager cacheManager;
+
+  @Autowired
+  private OperatorAccountDAO operatorAccountDAO;
+  @Autowired
+  private ContractorAccountDAO contractorAccountDAO;
 
 	@Override
 	public boolean hasEmployeeGUARD(final Account account) {
@@ -70,7 +78,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
 	}
 
-	private boolean isEmployeeGUARDEnabled(final int accountId) {
+    private boolean isEmployeeGUARDEnabled(final int accountId) {
 		Cache cache = cache();
 		if (cache != null) {
 			Element element = cache.get(accountId);
@@ -97,7 +105,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	}
 
 	private Cache cache() {
-		CacheManager cacheManager = cacheManager();
+		cacheManager = cacheManager();
 		Cache cache = cacheManager.getCache(CACHE_NAME);
 		return cache;
 	}
@@ -109,4 +117,75 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 			return cacheManager;
 		}
 	}
+
+
+  @Override
+  public boolean hasEmployeeGuardLegacy(final Permissions permissions) {
+    final int accountId=permissions.getAccountId();
+    Boolean status =  findFromCacheLegacy(accountId);
+    if(status!=null)
+      return status;
+
+    if(permissions.isOperatorCorporate()){
+      return operatorCorporateHasEmployeeGuardLegacy(accountId);
+    }
+
+    return contractorHasEmployeeGuardLegacy(accountId);
+  }
+
+  @Override
+  public void employeeGuardAcquiredLegacy(int accountId) {
+    removeCacheItemLegacy(accountId);
+  }
+
+  @Override
+  public void employeeGuardRemovedLegacy(int accountId) {
+    //-- Currently we dirty the cache only.
+    removeCacheItemLegacy(accountId);
+  }
+
+  private boolean contractorHasEmployeeGuardLegacy(final int accountId){
+    ContractorAccount contractorAccount=contractorAccountDAO.find(accountId);
+    Boolean status = (contractorAccount!=null && contractorAccount.isHasEmployeeGuard());
+    cacheItemLegacy(accountId, status);
+    return status;
+  }
+
+  private boolean operatorCorporateHasEmployeeGuardLegacy(final int accountId){
+    OperatorAccount operatorAccount=operatorAccountDAO.find(accountId);
+    Boolean status = operatorAccount!=null && operatorAccount.isRequiresEmployeeGuard();
+    cacheItemLegacy(accountId, status);
+    return status;
+  }
+
+  private void cacheItemLegacy(final Integer key, final Boolean value) {
+    Cache cache = cache();
+    if (cache != null) {
+      cache.put(new Element(key, value));
+    } else {
+      LOG.warn("Missing cache for product subscription service");
+    }
+  }
+
+  private void removeCacheItemLegacy(final Integer key) {
+    Cache cache = cache();
+    if (cache != null) {
+      cache.remove(key);
+    } else {
+      LOG.warn("Missing cache for product subscription service");
+    }
+  }
+
+  private Boolean findFromCacheLegacy(final int accountId){
+    Cache cache = cache();
+    if (cache != null) {
+      Element element = cache.get(accountId);
+      if (element != null && element.getObjectValue() instanceof Boolean) {
+        return (Boolean)element.getObjectValue();
+      }
+    }
+
+    return null;
+  }
+
 }
