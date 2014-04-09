@@ -3,7 +3,7 @@ package com.picsauditing.persistence.model
 import scala.slick.driver.JdbcProfile
 
 trait Profile {
-  val profile: JdbcProfile
+  protected[persistence] val profile: JdbcProfile
 }
 
 trait MySQLProfile extends Profile {
