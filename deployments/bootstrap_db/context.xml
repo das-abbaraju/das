@@ -10,7 +10,7 @@
 		type="javax.sql.DataSource" maxActive="20" maxIdle="10"
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
-		username="pics" password="8arTyRev" 
+		username="pics" password="6boNepOx" 
 		validationQuery="SELECT 1"
 		testOnBorrow="true"
 		testOnReturn="false"
@@ -20,7 +20,7 @@
 		type="javax.sql.DataSource" maxActive="20" maxIdle="10"        
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
-		username="picsro" password="6liEsbAr" 
+		username="picsro" password="Ned0KwAn" 
 		validationQuery="SELECT 1"
 		testOnBorrow="true"
 		testOnReturn="false"
@@ -44,7 +44,7 @@
 	<Manager className="org.apache.catalina.session.PersistentManager" 
 		saveOnRestart="false" minIdleSwap="-1" maxIdleSwap="600" maxIdleBackup="0">
 		<Store className="org.apache.catalina.session.JDBCStore" driverName="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://localhost:3306/pics_bootstrap?user=pics&amp;password=8arTyRev"
+			connectionURL="jdbc:mysql://localhost:3306/pics_bootstrap?user=pics&amp;password=6boNepOx"
 			sessionTable="app_session" sessionIdCol="id" sessionDataCol="sessionData"
 			sessionValidCol="validSession" sessionMaxInactiveCol="maxInactiveInterval"
 			sessionLastAccessedCol="lastAccessedTime" sessionAppCol="appName" />

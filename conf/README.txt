@@ -14,14 +14,14 @@
 						maxActive="60" maxIdle="30" maxWait="10000" removeAbandoned="true" minIdle="10"
 						validationQuery="SELECT 1" validationInterval="30000" removeAbandonedTimeout="20" 
 						driverClassName="com.mysql.jdbc.Driver" logAbandoned="true" username="pics" 
-						password="8arTyRev" url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
+						password="6boNepOx" url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
 						
 					<!-- This is a JNDI configuration for the Read-Only datasource -->
 					<Resource name="jdbc/picsro" auth="Container"
                 		type="javax.sql.DataSource" maxActive="20" maxIdle="10"
                 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
                 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
-                		username="picsro" password="6liEsbAr" 
+                		username="picsro" password="Ned0KwAn" 
                 		validationQuery="SELECT 1"
                 		testOnBorrow="true"
                 		testOnReturn="false" url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
@@ -33,7 +33,7 @@
                             removeAbandoned="true" removeAbandonedTimeout="200"
                             type="javax.sql.DataSource"
                             url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_translations"
-                            username="pics" password="8arTyRev"
+                            username="pics" password="6boNepOx"
                             validationInterval="30000" validationQuery="SELECT 1"/>
                     <!-- End Translations Data Source -->
 				</Context>
