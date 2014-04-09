@@ -20,4 +20,10 @@ class AccountServiceTest extends FlatSpec with Matchers with MockitoSugar {
     testClass.publishEvent(contractor, Registration)
     verify(mockPublisher).publishEvent(contractor, Registration)
   }
+
+  "AccountService" should "refresh the contractor so that the Country object is hydrated" in {
+    val contractor = mock[ContractorAccount]
+    testClass.persist(contractor)
+    verify(mockDao).refresh(contractor)
+  }
 }
