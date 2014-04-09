@@ -2,6 +2,8 @@ package com.picsauditing.provisioning;
 
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -19,6 +21,9 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
+	@Autowired
+	private ProfileEntityService profileEntityService;
+
 	private CacheManager cacheManager;
 
 	@Override
@@ -68,6 +73,12 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	public void removeEmployeeGUARD(final int accountId) {
 		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
 		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
+	}
+
+	@Override
+	public boolean isEmployeeGUARDEmployeeUser(final int appUserId) {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
+		return profile != null;
 	}
 
 	private boolean isEmployeeGUARDEnabled(final int accountId) {

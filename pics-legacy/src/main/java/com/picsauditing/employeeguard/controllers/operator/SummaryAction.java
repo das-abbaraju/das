@@ -34,6 +34,8 @@ public class SummaryAction extends PicsRestActionSupport {
 	/* pages */
 
 	public String index() {
+		permissions.isEmployeeGuardEmployeeUser();
+
 		jsonString = new Gson().toJson(buildOperatorSiteAssignmentStatus(permissions.getAccountId()));
 
 		return JSON_STRING;

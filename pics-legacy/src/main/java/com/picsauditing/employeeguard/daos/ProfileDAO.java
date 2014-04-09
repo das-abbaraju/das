@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Query;
 
 public class ProfileDAO extends AbstractBaseEntityDAO<Profile> {
-	private static final Logger LOG = LoggerFactory.getLogger(ProfileDAO.class);
 
 	public ProfileDAO() {
         this.type = Profile.class;

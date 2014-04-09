@@ -27,7 +27,10 @@ import java.util.*;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -3120292424348289561L;
+
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
+
+	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
 
 	private int userID;
 	private int appUserID;
@@ -76,11 +79,16 @@ public class Permissions implements Serializable {
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
 	private Date reportsManagerTutorialDate;
+
     // this is for injecting for unit tests
 	private transient LanguageModel languageModel;
+
     private int primaryCorporateAccountID;
-	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
+
 	private String switchedToUserName;
+
+	private boolean employeeGuardEmployeeUser;
+
 
 	public Permissions() {
 	}
@@ -140,7 +148,7 @@ public class Permissions implements Serializable {
         setStableLocale(user);
 	}
 
-	public void login(AppUser appUser, Identifiable identifiable) {
+	public void login(final AppUser appUser, final Identifiable identifiable) {
 		clear();
 		if (appUser == null || appUser.getId() == 0) {
 			return;
@@ -863,7 +871,15 @@ public class Permissions implements Serializable {
 		return switchedToUserName;
 	}
 
-    @Override
+	public boolean isEmployeeGuardEmployeeUser() {
+		return employeeGuardEmployeeUser;
+	}
+
+	public void setEmployeeGuardEmployeeUser(boolean employeeGuardEmployeeUser) {
+		this.employeeGuardEmployeeUser = employeeGuardEmployeeUser;
+	}
+
+	@Override
     public String toString() {
         return "Permissions{" +
                 "permissions=" + permissions +

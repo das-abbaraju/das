@@ -12,7 +12,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
@@ -53,7 +53,7 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private AppUserDAO appUserDAO;
 	@Mock
-	private ProfileService profileService;
+	private ProfileEntityService profileEntityService;
 	@Mock
 	private com.picsauditing.employeeguard.services.LoginService egLoginService;
 	@Mock
@@ -98,14 +98,13 @@ public class LoginControllerTest extends PicsActionTest {
         loginController = new LoginController();
 		super.setUp(loginController);
 
-		Whitebox.setInternalState(permissionBuilder, "featureToggle", featureToggleChecker);
 		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", hierarchyBuilder);
 		Whitebox.setInternalState(permissionBuilder, "dao", userDAO);
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "appUserDAO", appUserDAO);
-		Whitebox.setInternalState(loginController, "profileService", profileService);
+		Whitebox.setInternalState(loginController, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(loginController, "egLoginService", egLoginService);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
@@ -129,7 +128,7 @@ public class LoginControllerTest extends PicsActionTest {
 		appUserList.add(new AppUser());
 
 		when(appUserDAO.findListByUserName(anyString())).thenReturn(appUserList);
-		when(profileService.findByAppUserId(anyInt())).thenReturn(new Profile());
+		when(profileEntityService.findByAppUserId(anyInt())).thenReturn(new Profile());
 
 		JSONObject result = new JSONObject();
 		result.put("status", "SUCCESS");

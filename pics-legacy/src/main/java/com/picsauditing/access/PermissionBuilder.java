@@ -5,6 +5,7 @@ import com.picsauditing.dao.UserDAO;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.UserGroup;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class PermissionBuilder {
 	@Autowired
 	private HierarchyBuilder hierarchyBuilder;
 	@Autowired
-	private FeatureToggle featureToggle;
+	private ProductSubscriptionService productSubscriptionService;
 	@Autowired
 	private UserDAO dao;
 
@@ -26,12 +27,15 @@ public class PermissionBuilder {
 		permissions.login(user);
 		populatePermissionsWithUserInfo(permissions, user);
 		build(permissions);
+
 		return permissions;
 	}
 
-	public Permissions login(AppUser appUser, Identifiable identifiable) {
+	public Permissions login(final AppUser appUser, final Identifiable identifiable) {
 		Permissions permissions = new Permissions();
+
 		permissions.login(appUser, identifiable);
+		permissions.setEmployeeGuardEmployeeUser(productSubscriptionService.isEmployeeGUARDEmployeeUser(appUser.getId()));
 
 		return permissions;
 	}
@@ -53,7 +57,7 @@ public class PermissionBuilder {
 		permissions.setReportsManagerTutorialDate(user.getReportsManagerTutorialDate());
 	}
 
-	private Set<Integer> getDirectlyRelatedGroupIds(int userID) {
+	private Set<Integer> getDirectlyRelatedGroupIds(final int userID) {
 		User user = dao.find(userID);
 		Set<Integer> groupIds = new HashSet<Integer>();
 		for (UserGroup group : user.getGroups()) {

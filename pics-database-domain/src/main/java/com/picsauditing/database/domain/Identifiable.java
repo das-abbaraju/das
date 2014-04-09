@@ -1,7 +1,8 @@
 package com.picsauditing.database.domain;
 
 public interface Identifiable {
-	public static int SYSTEM = 1;
+
+	public static final int SYSTEM = 1;
 
 	String getFirstName();
 

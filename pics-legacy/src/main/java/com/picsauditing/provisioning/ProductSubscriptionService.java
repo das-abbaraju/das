@@ -4,11 +4,13 @@ import com.picsauditing.jpa.entities.Account;
 
 public interface ProductSubscriptionService {
 
-	boolean hasEmployeeGUARD(final Account account);
+	boolean hasEmployeeGUARD(Account account);
 
-    boolean hasEmployeeGUARD(final int accountId);
+    boolean hasEmployeeGUARD(int accountId);
 
-	void addEmployeeGUARD(final int accountId);
+	void addEmployeeGUARD(int accountId);
 
-	void removeEmployeeGUARD(final int accountId);
+	void removeEmployeeGUARD(int accountId);
+
+	boolean isEmployeeGUARDEmployeeUser(int appUserId);
 }
