@@ -11,4 +11,10 @@ trait PICSDataAccess {
 
   def db = Database.forDataSource(dataSource)
 
+  protected def toJava[X](list: => List[X]): java.util.List[X] = {
+    val out = new java.util.ArrayList[X]
+    list foreach out.add
+    out
+  }
+
 }
