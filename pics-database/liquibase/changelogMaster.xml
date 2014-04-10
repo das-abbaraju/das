@@ -204,4 +204,5 @@
 
 	<!-- 7.2.6 --> 
 	<include file="./liquibase/2014/Q2/aananighian3_US753_DML_Correct_Site_Assignment_Data.sql"/>
+	<include file="./liquibase/2014/Q2/kchase40_PICS-15064_ExtendExpiration.sql"/>
 </databaseChangeLog>
