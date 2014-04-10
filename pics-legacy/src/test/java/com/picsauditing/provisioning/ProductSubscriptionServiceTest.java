@@ -129,10 +129,5 @@ public class ProductSubscriptionServiceTest  extends PicsTest {
 
   }
 
-  @Test
-  public void testEmployeeGuardAcquiredLegacy() throws Exception {
-
-  }
-
 
 }
