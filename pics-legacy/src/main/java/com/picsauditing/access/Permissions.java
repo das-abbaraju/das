@@ -33,6 +33,8 @@ public class Permissions implements Serializable {
 
 	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
 
+	public static final Permissions EMPTY_PERMISSIONS = new Permissions();
+
 	private int userID;
 	private int appUserID;
 	private boolean loggedIn = false;

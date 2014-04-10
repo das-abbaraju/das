@@ -1,5 +1,7 @@
 package com.picsauditing.web;
 
+import com.picsauditing.access.Permissions;
+
 import java.util.Map;
 
 public interface SessionInfoProvider {
@@ -9,6 +11,8 @@ public interface SessionInfoProvider {
 	int getAccountId();
 
 	int getId();
+
+	Permissions getPermissions();
 
 	NameSpace getNamespace();
 

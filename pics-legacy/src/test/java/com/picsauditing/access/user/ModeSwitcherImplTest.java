@@ -15,7 +15,7 @@ public class ModeSwitcherImplTest {
 	public void testSwitchMode_InvalidMode() throws Exception {
 		ModeSwitcher modeSwitcher = new ModeSwitcherImpl();
 
-		modeSwitcher.switchMode(new Permissions(), UserMode.EMPLOYEE);
+		modeSwitcher.switchMode(UserMode.EMPLOYEE);
 	}
 
 	@Test
@@ -24,7 +24,7 @@ public class ModeSwitcherImplTest {
 
 		Permissions permissions = buildFakePermissions();
 
-		modeSwitcher.switchMode(permissions, UserMode.EMPLOYEE);
+		modeSwitcher.switchMode(UserMode.EMPLOYEE);
 
 		assertEquals(UserMode.EMPLOYEE, permissions.getCurrentMode());
 	}
