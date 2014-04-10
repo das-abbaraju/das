@@ -12,7 +12,7 @@ import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationExceptio
 import com.picsauditing.i18n.model.TranslationLookupData
 import scala.collection.JavaConversions._
 
-class TranslationUsageDAO extends PICSDataAccess {
+class TranslationUsageDAO extends SpringProvidedDataConnection {
   private val logger: Logger = LoggerFactory.getLogger(classOf[TranslationUsageDAO])
 
   def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, pageOrder: String,  environment: String) = sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $pageOrder, $environment) }".first

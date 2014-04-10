@@ -5,7 +5,7 @@ import com.picsauditing.access.OpPerms
 import com.picsauditing.persistence.provider.{UserDataProvider, SecurityInformationProvider}
 import com.picsauditing.persistence.model.MySQLProfile
 
-class SpringConfiguredSlickEnhancedAccountDAO extends SlickEnhancedAccountDAO with PICSDataAccess
+class SpringConfiguredSlickEnhancedAccountDAO extends SlickEnhancedAccountDAO with SpringProvidedDataConnection
 
 class SlickEnhancedAccountDAO (
 

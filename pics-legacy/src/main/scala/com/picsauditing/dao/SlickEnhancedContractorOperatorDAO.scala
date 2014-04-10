@@ -4,7 +4,7 @@ import com.picsauditing.persistence.provider.FacilityRelationshipDataProvider
 import com.picsauditing.jpa.entities.{ApprovalStatus, ContractorOperator}
 import com.picsauditing.persistence.model.MySQLProfile
 
-class SpringConfiguredSlickEnhancedContractorOperatorDAO extends SlickEnhancedContractorOperatorDAO with PICSDataAccess
+class SpringConfiguredSlickEnhancedContractorOperatorDAO extends SlickEnhancedContractorOperatorDAO with SpringProvidedDataConnection
 
 class SlickEnhancedContractorOperatorDAO (
 

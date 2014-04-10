@@ -16,7 +16,7 @@ trait SlickDatabaseAccessor {
   }
 }
 
-trait PICSDataAccess extends SlickDatabaseAccessor {
+trait SpringProvidedDataConnection extends SlickDatabaseAccessor {
 
   @Autowired
   private val dataSource: DataSource = null

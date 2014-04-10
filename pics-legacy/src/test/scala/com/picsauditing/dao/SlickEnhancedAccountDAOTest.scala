@@ -26,14 +26,14 @@ class SlickEnhancedAccountDAOTest extends FlatSpec with Matchers with MockitoSug
     when(testPerm.toString) thenReturn PERM_STRING
     when(mockUDP.findAccountContactByRole(anyString, any[Long])) thenReturn List(contactInfo1, contactInfo2)
 
-    trait MockDBAccess extends SlickDatabaseAccessor {
+    trait MockDBConnection extends SlickDatabaseAccessor {
       val db = new Database {
         override def createConnection(): Connection = mock[Connection]
         override def withSession[T](f: (JdbcDriver.Backend#Session) => T): T = f(mock[JdbcDriver.Backend#Session])
       }
     }
 
-    val slickDAO = new SlickEnhancedAccountDAO(mockSIP, mockUDP) with MockDBAccess
+    val slickDAO = new SlickEnhancedAccountDAO(mockSIP, mockUDP) with MockDBConnection
 
     val result = slickDAO.findAccountContactsByRole(TEST_ACCOUNT_ID, testPerm)
 
