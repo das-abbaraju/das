@@ -6,6 +6,13 @@
 <s:set var="isContractor" value="permissions.contractor" />
 <s:set var="userMode" value="permissions.currentMode.toString().toLowerCase()" />
 
+<s:if test="#isContractor && contractor.hasCurrentCsr()">
+    <s:url value="ContactUs.action" var="contact_us_url" />
+</s:if>
+<s:else>
+    <s:url value="Contact.action" var="contact_us_url" />
+</s:else>
+
 <s:url action="Search" var="search_url" />
 
 <div id="primary_navigation" class= "navbar-fixed-top bootstrap3">
@@ -29,18 +36,25 @@
                 <s:include value="/struts/layout/menu/_menu-item.jsp" />
             </ul>
             <s:if test="!permissions.contractor">
-            <form class="search-form navbar-form navbar-right" action="${search_url}" role="search">
-                <div class="form-group">
-                    <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
-                    <i class="icon-search icon-large"></i>
-                </div>
-                <s:set var="has_search_box_class">has-search-box</s:set>
-            </form>
+                <s:if test="#userMode != 'employee'">
+                    <form class="search-form navbar-form navbar-right" action="${search_url}" role="search">
+                        <div class="form-group">
+                            <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
+                            <i class="icon-search icon-large"></i>
+                        </div>
+                        <s:set var="has_search_box_class">has-search-box</s:set>
+                    </form>
+                    <a class="contact-us-link ${has_search_box_class}" href="/${contact_us_url}">
+                        <i class="icon-phone icon-large"></i>
+                    </a>
+                </s:if>
             </s:if>
             <s:else>
                 <s:set var="has_search_box_class" value="''" />
+                <a class="contact-us-link ${has_search_box_class}" href="/${contact_us_url}">
+                    <i class="icon-phone icon-large"></i>
+                </a>
             </s:else>
-            <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
         </nav>
     </div>
 </div>
