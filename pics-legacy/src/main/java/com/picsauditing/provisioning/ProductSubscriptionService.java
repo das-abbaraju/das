@@ -1,14 +1,22 @@
 package com.picsauditing.provisioning;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 
 public interface ProductSubscriptionService {
+  public final static String CACHE_NAME = "product_subscription";
 
-	boolean hasEmployeeGUARD(final Account account);
+	boolean hasEmployeeGUARD(Account account);
 
-    boolean hasEmployeeGUARD(final int accountId);
+  boolean hasEmployeeGUARD(int accountId);
 
-	void addEmployeeGUARD(final int accountId);
+	void addEmployeeGUARD(int accountId);
 
-	void removeEmployeeGUARD(final int accountId);
+	void removeEmployeeGUARD(int accountId);
+
+  boolean hasEmployeeGuardLegacy(Permissions permissions);
+
+  void employeeGuardAcquiredLegacy(int accountId);
+
+  void employeeGuardRemovedLegacy(int accountId);
 }
