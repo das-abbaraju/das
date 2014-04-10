@@ -10,8 +10,6 @@ import java.util.Map;
 
 public class StrutsSessionInfoProvider implements SessionInfoProvider {
 
-	private static final Permissions EMPTY_PERMISSIONS = new Permissions();
-
 	public static final String REST_ID_PARAM_KEY = "id"; // FIXME: Get this from the container
 
 	public static final String EMPLOYEEGUARD_NAMESPACE = "/employee-guard";
@@ -37,9 +35,10 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 		return NumberUtils.toInt((String) params.get(REST_ID_PARAM_KEY));
 	}
 
-	private Permissions getPermissions() {
+	@Override
+	public Permissions getPermissions() {
 		if (ActionContext.getContext() == null || ActionContext.getContext().getSession() == null) {
-			return EMPTY_PERMISSIONS;
+			return Permissions.EMPTY_PERMISSIONS;
 		}
 
 		return (Permissions) ActionContext.getContext().getSession()

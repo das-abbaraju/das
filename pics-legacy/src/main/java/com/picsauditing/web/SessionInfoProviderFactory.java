@@ -4,6 +4,7 @@ public class SessionInfoProviderFactory {
 
 	private static SessionInfoProvider sessionInfoProvider = new StrutsSessionInfoProvider();
 
+	// Just for testing
 	private static SessionInfoProvider mockSessionInfoProvider = null;
 
 	public static SessionInfoProvider getSessionInfoProvider() {
