@@ -52,7 +52,23 @@ public class ManageReportsService {
 		if (Strings.isEmpty(searchTerm)) {
 			List<ReportInfo> reports = reportInfoProvider.findReportSuggestions(permissions);
 
+<<<<<<< HEAD
 			reports.addAll(reportInfoProvider.findTenMostFavoritedReports(permissions, reports.size()));
+=======
+            List<ReportInfo> tenMostFavoritedReports = reportInfoProvider.findTenMostFavoritedReports(permissions);
+            for (ReportInfo favReport : tenMostFavoritedReports) {
+                boolean alreadyExists = false;
+                for (ReportInfo reportSuggestion : reports) {
+                    if (favReport.getId() == reportSuggestion.getId()) {
+                        alreadyExists = true;
+                    }
+                }
+
+                if (!alreadyExists && reports.size() <= 10) {
+                    reports.add(favReport);
+                }
+            }
+>>>>>>> 9eb5907... PICS-15075 Removed extra reference to same report and corrected user issue
 
 			return reports;
 		}
