@@ -1381,7 +1381,7 @@
     <!-- EmployeeGUARD V3 -->
     <include file="struts-employee-guard.xml"/>
 
-    <!-- EmployeeGUARD V3 -->
-    <include file="struts-user-modes.xml"/>
+    <!-- User Modes -->
+    <include file="struts-user-namespace.xml"/>
 
 </struts>

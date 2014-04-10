@@ -84,4 +84,8 @@ public class UserService {
 	public User findByAppUserId(int appUserId) {
 		return userDAO.findUserByAppUserID(appUserId);
 	}
+
+	public User findById(final int userId) {
+		return userDAO.find(userId);
+	}
 }

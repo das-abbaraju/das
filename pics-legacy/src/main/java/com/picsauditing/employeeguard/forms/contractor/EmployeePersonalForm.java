@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.forms.contractor;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
-import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
+import com.picsauditing.web.SessionInfoProviderFactory;
 
 public class EmployeePersonalForm implements PersonalInformationForm {
 	private String firstName;
@@ -61,14 +61,14 @@ public class EmployeePersonalForm implements PersonalInformationForm {
 		this.email = email;
 	}
 
-    @Override
-    public UniqueIndexable getUniqueIndexable() {
-        return new Employee.EmployeeAccountEmailUniqueKey(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
-                SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), this.email);
-    }
+	@Override
+	public UniqueIndexable getUniqueIndexable() {
+		return new Employee.EmployeeAccountEmailUniqueKey(SessionInfoProviderFactory.getSessionInfoProvider().getId(),
+				SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), this.email);
+	}
 
-    @Override
-    public Class<?> getType() {
-        return Employee.class;
-    }
+	@Override
+	public Class<?> getType() {
+		return Employee.class;
+	}
 }

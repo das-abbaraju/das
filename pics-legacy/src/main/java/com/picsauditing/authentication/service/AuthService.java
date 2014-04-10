@@ -31,8 +31,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 	private String hashCode;
 
 	@Autowired
-	private LoginService loginService;
-	@Autowired
 	private AppUserDAO appUserDAO;
 	@Autowired
 	private EmailHashService emailHashService;

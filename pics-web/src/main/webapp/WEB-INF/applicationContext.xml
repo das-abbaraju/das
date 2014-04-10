@@ -317,6 +317,10 @@
         <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
     </bean>
 
+    <!-- Implementation of user mode switching -->
+    <bean id="ModeSwitcher" class="com.picsauditing.access.user.ModeSwitcherImpl" />
+    <bean id="UserModeProvider" class="com.picsauditing.access.user.UserModeProviderImpl" />
+
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>

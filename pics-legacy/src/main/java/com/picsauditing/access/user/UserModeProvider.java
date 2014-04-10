@@ -6,4 +6,6 @@ public interface UserModeProvider {
 
 	Set<UserMode> getAvailableUserModes(int appUserId);
 
+	UserMode getCurrentUserMode();
+
 }

@@ -5,7 +5,8 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <action name="switch-mode/{mode}" class="com.picsauditing.struts.controller.user.SwitchUserModeAction"
-                method="changeMode" />
+                method="changeMode">
+        </action>
 
     </package>
 

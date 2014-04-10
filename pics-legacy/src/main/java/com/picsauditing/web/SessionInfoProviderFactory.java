@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.web;
+package com.picsauditing.web;
 
 public class SessionInfoProviderFactory {
 

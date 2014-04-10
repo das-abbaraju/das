@@ -9,7 +9,7 @@ import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
-import com.picsauditing.employeeguard.web.SessionInfoProviderFactory;
+import com.picsauditing.web.SessionInfoProviderFactory;
 
 import java.io.File;
 
@@ -141,17 +141,18 @@ public class EmployeeForm implements AddAnotherForm, PersonalInformationForm, Ph
 				.email(email).phoneNumber(phoneNumber).slug(employeeId).positionName(title).groups(groups).build();
 	}
 
-    @Override
-    public UniqueIndexable getUniqueIndexable() {
-        return new Employee.EmployeeAccountEmailAndSlugUniqueKey(0, SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), email, employeeId);
-    }
+	@Override
+	public UniqueIndexable getUniqueIndexable() {
+		return new Employee.EmployeeAccountEmailAndSlugUniqueKey(0,
+				SessionInfoProviderFactory.getSessionInfoProvider().getAccountId(), email, employeeId);
+	}
 
-    @Override
-    public Class<?> getType() {
-        return Employee.class;
-    }
+	@Override
+	public Class<?> getType() {
+		return Employee.class;
+	}
 
-    public static class Builder {
+	public static class Builder {
 
 		private Employee employee;
 

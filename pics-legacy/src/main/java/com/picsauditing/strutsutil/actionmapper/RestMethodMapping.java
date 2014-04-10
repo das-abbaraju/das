@@ -15,7 +15,10 @@ final class RestMethodMapping {
      * @param parsedUrlWrapper
      * @return
      */
-    public String getMethodName(HttpServletRequest request, String idParameter, ParsedUrlWrapper parsedUrlWrapper, RestMethodMapperConfig methodMapping) {
+    public String getMethodName(HttpServletRequest request,
+								String idParameter,
+								ParsedUrlWrapper parsedUrlWrapper,
+								RestMethodMapperConfig methodMapping) {
 
         if (Strings.isEmpty(idParameter)) {
 
