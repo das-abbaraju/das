@@ -26,6 +26,8 @@ update app_properties set value = 'password1' where property = 'brainTree.passwo
 update app_properties set value = 'ccprocessora' where property like '%brainTree.processor_id.us%' or property like '%brainTree.processor_id.canada%';
 update app_properties set value = 'ccprocessorb' where property like '%brainTree.processor_id.gbp%' or property like '%brainTree.processor_id.eur%';
 insert into app_properties (property, value, description) values ('Toggle.UseMockPaymentService', 'true', 'Interacts with fack BrainTree but allows registration to go through') on duplicate key update value = 'true';
-
+truncate app_error_log;
+truncate loginlog;
+truncate app_session;
 /* Update the date loaded for this database */
 UPDATE app_properties SET value = NOW() WHERE property = 'PICS.db.dateLoaded';
