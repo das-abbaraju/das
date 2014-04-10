@@ -17,6 +17,10 @@ public enum UserMode {
 		return homeUrl;
 	}
 
+	public String getModeParameterValue() {
+		return mode;
+	}
+
 	public static UserMode mapUserModeFromValue(final String value) {
 		for (UserMode userMode : UserMode.values()) {
 			if (userMode.mode.equals(value)) {

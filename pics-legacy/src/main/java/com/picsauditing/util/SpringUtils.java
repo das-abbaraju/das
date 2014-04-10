@@ -66,9 +66,11 @@ public class SpringUtils implements ApplicationContextAware {
 		SpringUtils.applicationContext = applicationContext;
 	}
 
-	public static <T> T getBean(String beanRefName, Class<T> beanClass) {
+	public static <T> T getBean(final String beanRefName, final Class<T> beanClass) {
 		T bean = null;
+
 		Assert.notNull(applicationContext, "ApplicationContext must not be null!");
+
 		try {
 			BeanFactory factory = applicationContext;
 			bean = factory.getBean(beanRefName, beanClass);
@@ -80,9 +82,11 @@ public class SpringUtils implements ApplicationContextAware {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T getBean(String beanRefName) {
+	public static <T> T getBean(final String beanRefName) {
 		T bean = null;
+
 		Assert.notNull(applicationContext, "ApplicationContext must not be null!");
+
 		try {
 			BeanFactory factory = applicationContext;
 			bean = (T) factory.getBean(beanRefName);

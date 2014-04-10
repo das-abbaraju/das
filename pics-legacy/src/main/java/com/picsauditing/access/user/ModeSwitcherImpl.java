@@ -5,8 +5,7 @@ import com.picsauditing.web.SessionInfoProviderFactory;
 
 final class ModeSwitcherImpl implements ModeSwitcher {
 
-	public final void switchMode(final UserMode switchToMode)
-			throws InvalidModeException {
+	public final void switchMode(final UserMode switchToMode) throws InvalidModeException {
 
 		Permissions permissions = SessionInfoProviderFactory.getSessionInfoProvider().getPermissions();
 

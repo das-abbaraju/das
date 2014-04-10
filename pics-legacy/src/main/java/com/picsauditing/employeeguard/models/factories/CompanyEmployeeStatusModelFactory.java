@@ -9,8 +9,8 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.List;
 
-import static com.picsauditing.employeeguard.util.UrlUtils.IMAGE_LINK;
-import static com.picsauditing.employeeguard.util.UrlUtils.buildUrl;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.IMAGE_LINK;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.buildUrl;
 
 public class CompanyEmployeeStatusModelFactory extends CompanyEmployeeModelFactory {
 
