@@ -3,6 +3,7 @@ package com.picsauditing.toggle;
 import com.picsauditing.access.Permissions;
 
 public interface FeatureToggle {
+
 	String TOGGLE_BADGE = "Toggle.Badge_v2";
     String TOGGLE_V7CHARTS = "Toggle.ShowGoogleCharts";
 	String TOGGLE_V7MENUS = "Toggle.v7Menus";
@@ -40,6 +41,7 @@ public interface FeatureToggle {
     String TOGGLE_DISABLE_TRANSLATION_SERVICE_CACHE_WARMING = "Toggle.DisableTranslationServiceCacheWarming";
     String TOGGLE_STRIKE_IRON = "Toggle.StrikeIron";
     String TOGGLE_USE_MOCK_PAYMENT_SERVICE = "Toggle.UseMockPaymentService";
+	String TOGGLE_TURN_OFF_UNNECESSARY_MENUS = "Toggle.TurnOffUnnecessaryMenus";
 
 	boolean isFeatureEnabled(String toggleName);
 
