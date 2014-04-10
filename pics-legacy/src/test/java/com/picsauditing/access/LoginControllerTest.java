@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
@@ -77,6 +78,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private LanguageModel languageModel;
 	@Mock
 	private ReportUserDAO reportUserDAO;
+	@Mock
+	private UserModeProvider userModeProvider;
 
 	private LoginService loginService = new LoginService();
 
@@ -100,7 +103,8 @@ public class LoginControllerTest extends PicsActionTest {
 		super.setUp(loginController);
 
 		Whitebox.setInternalState(permissionBuilder, "hierarchyBuilder", hierarchyBuilder);
-		Whitebox.setInternalState(permissionBuilder, "dao", userDAO);
+		Whitebox.setInternalState(permissionBuilder, "userService", userService);
+		Whitebox.setInternalState(permissionBuilder, "userModeProvider", userModeProvider);
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
@@ -337,6 +341,7 @@ public class LoginControllerTest extends PicsActionTest {
 		when(permissions.hasPermission(OpPerms.SwitchUser)).thenReturn(true);
 		loginController.setSwitchToUser(SWITCH_USER_ID);
 		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
+		when(userService.findById(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getAppUser()).thenReturn(appUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
 		when(switchUser.isUsingVersion7Menus()).thenReturn(true);
@@ -372,6 +377,7 @@ public class LoginControllerTest extends PicsActionTest {
 		normalLoginSetup();
 		Account account = new Account();
 		account.setType("Admin");
+		when(userService.findById(anyInt())).thenReturn(user);
 		when(user.getAccount()).thenReturn(account);
 		String actionResult = loginController.execute();
 		verify(permissionBuilder).login(user);
@@ -457,6 +463,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testExecute_RedirectNormallyIfPasswordNotExpired() throws Exception {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
+		when(userService.findById(anyInt())).thenReturn(user);
 		Account account = new Account();
 		account.setType("Admin");
 		when(user.getAccount()).thenReturn(account);

@@ -63,7 +63,6 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 
 			default:
 				throw new IllegalArgumentException("Unknown namespace: " + namespace);
-
 		}
 	}
 

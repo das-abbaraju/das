@@ -2,9 +2,15 @@ package com.picsauditing.web;
 
 public class SessionInfoProviderFactory {
 
-    private static SessionInfoProvider sessionInfoProvider = new StrutsSessionInfoProvider();
+	private static SessionInfoProvider sessionInfoProvider = new StrutsSessionInfoProvider();
 
-    public static SessionInfoProvider getSessionInfoProvider() {
-        return sessionInfoProvider;
-    }
+	private static SessionInfoProvider mockSessionInfoProvider = null;
+
+	public static SessionInfoProvider getSessionInfoProvider() {
+		if (mockSessionInfoProvider == null) {
+			return sessionInfoProvider;
+		}
+
+		return mockSessionInfoProvider;
+	}
 }
