@@ -6,16 +6,16 @@
 <s:set var="has_contractor_menu">
     ${has_contractor_menu}
 </s:set>
+<s:set var="userMode" value="permissions.currentMode.toString().toLowerCase()" />
 
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <%-- FIXME clean up menu links --%>
-            <s:if test="permissions.userId > 0">
-                <a class="brand" href="/"></a>
+            <s:if test="#userMode == 'employee'">
+                <a class="brand" href="/employee-guard/employee/dashboard"></a>
             </s:if>
             <s:else>
-                <a class="brand" href="/employee-guard/employee/dashboard"></a>
+                <a class="brand" href="/"></a>
             </s:else>
 
             <div class="primary-navigation-items">

@@ -4,6 +4,7 @@
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
 <s:set var="isContractor" value="permissions.contractor" />
+<s:set var="userMode" value="permissions.currentMode.toString().toLowerCase()" />
 
 <s:url action="Search" var="search_url" />
 
@@ -12,12 +13,12 @@
     <div class="container">
         <nav class="navbar navbar-default" role="navigation">
             <div class="navbar-header">
-            <s:if test="permissions.userId > 0">
-                <a class="navbar-brand" href="/">Dashboard</a>
-            </s:if>
-            <s:else>
-                <a class="navbar-brand" href="/employee-guard/employee/dashboard">Dashboard</a>
-            </s:else>
+                <s:if test="#userMode == 'employee'">
+                    <a class="navbar-brand" href="/employee-guard/employee/dashboard">Dashboard</a>
+                </s:if>
+                <s:else>
+                    <a class="navbar-brand" href="/">Dashboard</a>
+                </s:else>
             </div>
             <ul class="nav navbar-nav">
                 <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />
