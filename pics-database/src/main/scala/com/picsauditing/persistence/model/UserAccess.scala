@@ -29,7 +29,7 @@ case class UserContactInfo(
                             @BeanProperty
                             fax: String)
 
-trait UserDAO { this: Profile =>
+trait UserAccess { this: Profile =>
   import profile.simple._
   val userTableName = "users"
 
@@ -43,10 +43,7 @@ trait UserDAO { this: Profile =>
     def fax = column[String]("fax")
     def isActive = column[String]("isActive")
 
-    def lastLogin = column[java.util.Date]("lastLogin")(MappedColumnType.base[java.util.Date, java.sql.Timestamp](
-      { utilDate => new java.sql.Timestamp(utilDate.getTime) },
-      { sqlDate => new java.util.Date(sqlDate.getTime) }
-    ))
+    def lastLogin = column[java.util.Date]("lastLogin")(convertFromTimeStamp)
 
 
     def contactinfo = (id, username, name, email, phone, fax) <> (UserContactInfo.tupled, UserContactInfo.unapply)

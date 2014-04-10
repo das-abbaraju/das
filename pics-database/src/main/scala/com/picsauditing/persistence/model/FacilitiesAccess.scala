@@ -2,7 +2,7 @@ package com.picsauditing.persistence.model
 
 case class FacilitiesData(id: Option[Long], corporateID: Long, operatorID: Long, facilityType: String)
 
-trait FacilitiesDAO { this: Profile =>
+trait FacilitiesAccess { this: Profile =>
   import profile.simple._
   val facilitiesTableName = "facilities"
 

@@ -1,8 +1,8 @@
 package com.picsauditing.persistence.provider
 
-import com.picsauditing.persistence.model.{Profile, AccountDAO, UserDAO}
+import com.picsauditing.persistence.model.{Profile, AccountAccess, UserAccess}
 
-class SecurityInformationProvider extends UserDAO with AccountDAO { self: Profile =>
+class SecurityInformationProvider extends UserAccess with AccountAccess { self: Profile =>
   import profile.simple._
 
   def findLastAccountLogin(accountID: Long)(implicit session: Session): java.util.Date = accountLoginQuery(accountID).first

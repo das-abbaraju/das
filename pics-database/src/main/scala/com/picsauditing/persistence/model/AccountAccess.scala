@@ -2,7 +2,7 @@ package com.picsauditing.persistence.model
 
 case class AccountData(id: Option[Long], name: String, status: String, autoApproveRelationships: Boolean = true)
 
-trait AccountDAO { this: Profile =>
+trait AccountAccess { this: Profile =>
   import profile.simple._
   val accountTableName = "accounts"
 

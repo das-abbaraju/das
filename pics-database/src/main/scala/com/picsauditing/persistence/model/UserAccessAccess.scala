@@ -3,7 +3,7 @@ package com.picsauditing.persistence.model
 
 case class UserAccessInfo(id: Option[Long], userID: Long, accessType: String)
 
-trait UserAccessDAO { this: Profile =>
+trait UserAccessAccess { this: Profile =>
    import profile.simple._
    val userAccessTableName = "useraccess"
 

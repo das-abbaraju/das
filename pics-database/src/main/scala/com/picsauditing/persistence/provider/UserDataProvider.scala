@@ -1,9 +1,9 @@
 package com.picsauditing.persistence.provider
 
-import com.picsauditing.persistence.model.{UserContactInfo, Profile, UserAccessDAO, UserDAO}
+import com.picsauditing.persistence.model.{UserContactInfo, Profile, UserAccessAccess, UserAccess}
 
 
-class UserDataProvider extends UserDAO with UserAccessDAO { this: Profile =>
+class UserDataProvider extends UserAccess with UserAccessAccess { this: Profile =>
   import profile.simple._
 
 

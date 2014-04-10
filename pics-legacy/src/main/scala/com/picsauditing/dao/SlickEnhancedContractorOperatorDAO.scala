@@ -4,14 +4,16 @@ import com.picsauditing.persistence.provider.FacilityRelationshipDataProvider
 import com.picsauditing.jpa.entities.{ApprovalStatus, ContractorOperator}
 import com.picsauditing.persistence.model.MySQLProfile
 
+class SpringConfiguredSlickEnhancedContractorOperatorDAO extends SlickEnhancedContractorOperatorDAO with PICSDataAccess
+
 class SlickEnhancedContractorOperatorDAO (
 
   frdProvider: FacilityRelationshipDataProvider = new FacilityRelationshipDataProvider with MySQLProfile
 
-) extends ContractorOperatorDAO with PICSDataAccess {
+) extends ContractorOperatorDAO { this: SlickDatabaseAccessor =>
 
   private def findCorporateChildWithWorkStatusForContractor(co: ContractorOperator, findWorkStatus: String)(orWorkStatus: ApprovalStatus => Boolean) = {
-    if (co.getOperatorAccount.isCorporate) db withSession {
+    if (co.getOperatorAccount.isCorporate) db withSession { implicit session =>
       frdProvider.childrenWorkstatusEquals(
         workStatus = findWorkStatus,
         corporateID = co.getOperatorAccount.getId.toLong,
@@ -22,10 +24,10 @@ class SlickEnhancedContractorOperatorDAO (
     }
   }
 
-  def workStatusIsContractor = findCorporateChildWithWorkStatusForContractor(_, "C")( orWorkStatus = _.isContractor )
-  def workStatusIsPending = findCorporateChildWithWorkStatusForContractor(_ , "P")( orWorkStatus = _.isPending )
-  def workStatusIsRejected = findCorporateChildWithWorkStatusForContractor(_, "N")( orWorkStatus = _.isNo )
-  def workStatusIsApproved = findCorporateChildWithWorkStatusForContractor(_, "Y")( orWorkStatus = _.isYes )
+  def workStatusIsContractor(co: ContractorOperator) = findCorporateChildWithWorkStatusForContractor(co, "C")( orWorkStatus = _.isContractor )
+  def workStatusIsPending(co: ContractorOperator) = findCorporateChildWithWorkStatusForContractor(co, "P")( orWorkStatus = _.isPending )
+  def workStatusIsRejected(co: ContractorOperator) = findCorporateChildWithWorkStatusForContractor(co, "N")( orWorkStatus = _.isNo )
+  def workStatusIsApproved(co: ContractorOperator) = findCorporateChildWithWorkStatusForContractor(co, "Y")( orWorkStatus = _.isYes )
 
 
 }

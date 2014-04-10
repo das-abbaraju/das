@@ -1,11 +1,11 @@
 package com.picsauditing.persistence.provider
 
-import com.picsauditing.persistence.model.{ContractorOperatorPairDAO, Profile, FacilitiesDAO, AccountDAO}
+import com.picsauditing.persistence.model.{ContractorOperatorPairAccess, Profile, FacilitiesAccess, AccountAccess}
 
 class FacilityRelationshipDataProvider
-  extends AccountDAO
-  with FacilitiesDAO
-  with ContractorOperatorPairDAO
+  extends AccountAccess
+  with FacilitiesAccess
+  with ContractorOperatorPairAccess
 { this: Profile =>
 
   import profile.simple._

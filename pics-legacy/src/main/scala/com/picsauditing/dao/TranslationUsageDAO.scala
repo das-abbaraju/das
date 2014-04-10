@@ -4,7 +4,6 @@ import scala.slick.driver.MySQLDriver.simple._
 import com.picsauditing.model.database.TranslationUsages
 import com.picsauditing.i18n.model.database.TranslationUsage
 import java.util.Date
-import Database.threadLocalSession
 import java.sql.SQLIntegrityConstraintViolationException
 import scala.slick.jdbc.{GetResult, StaticQuery => Q}
 import Q.interpolation
@@ -27,7 +26,7 @@ class TranslationUsageDAO extends PICSDataAccess {
         t.environment === environment
   } yield t.id
 
-  def translationsUsedSince(date: Date): java.util.Map[String, java.util.Set[String]] = db withSession {
+  def translationsUsedSince(date: Date): java.util.Map[String, java.util.Set[String]] = db withSession { implicit session =>
     (for { t <- TranslationUsages if t.lastUsed > new java.sql.Date(date.getTime) } yield t)
       .list.groupBy(_.getMsgKey) map { case (k, v) => k -> setAsJavaSet(v.map(_.getMsgLocale).toSet)}
   }
@@ -40,7 +39,7 @@ class TranslationUsageDAO extends PICSDataAccess {
   }
 
   def doLogKeyUsageBySProc(keyUsage: TranslationLookupData) = {
-    db withSession {
+    db withSession { implicit session =>
       try {
         usageEtlSProc(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getPageOrder, keyUsage.getEnvironment)
       } catch {
@@ -55,7 +54,7 @@ class TranslationUsageDAO extends PICSDataAccess {
   }
 
   def doLogKeyUsageByInsert(keyUsage: TranslationLookupData) = {
-    db withSession {
+    db withSession { implicit session =>
       findIdByKeyLocalePageEnv(keyUsage.getMsgKey, keyUsage.getLocaleResponse, keyUsage.getPageName, keyUsage.getEnvironment).firstOption match {
         case None => { insertNewTranslationKeyUsage(keyUsage) }
         case Some(id) => { updateTranslationKeyUsageTimeById(id) }

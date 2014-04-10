@@ -2,7 +2,7 @@ package com.picsauditing.persistence.model
 
 case class ContractorOperatorPairData(id: Option[Long], operatorID: Long, contractorID: Long, workStatus: String)
 
-trait ContractorOperatorPairDAO { this: Profile =>
+trait ContractorOperatorPairAccess { this: Profile =>
 
   import profile.simple._
   val contractorOperatorTableName = "contractor_operator"

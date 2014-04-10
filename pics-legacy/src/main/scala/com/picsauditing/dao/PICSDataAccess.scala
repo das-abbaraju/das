@@ -2,14 +2,10 @@ package com.picsauditing.dao
 
 import org.springframework.beans.factory.annotation.Autowired
 import javax.sql.DataSource
-import scala.slick.session.Database
+import scala.slick.driver.JdbcDriver.simple.Database
 
-trait PICSDataAccess {
-
-  @Autowired
-  private val dataSource: DataSource = null
-
-  def db = Database.forDataSource(dataSource)
+trait SlickDatabaseAccessor {
+  val db: Database
 
   implicit class ConvertedList[X](list: List[X]) {
     def toJava: java.util.List[X] = {
@@ -18,5 +14,13 @@ trait PICSDataAccess {
       out
     }
   }
+}
+
+trait PICSDataAccess extends SlickDatabaseAccessor {
+
+  @Autowired
+  private val dataSource: DataSource = null
+
+  lazy val db = Database.forDataSource(dataSource)
 
 }
