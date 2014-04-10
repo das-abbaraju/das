@@ -200,6 +200,7 @@
 	<include file="./liquibase/2014/Q2/kchase38_PICS-14983_ExtendExpDate.sql"/>
 	<include file="./liquibase/2014/Q2/aananighian1_US668_DDL_Site_Assignment_Table.sql"/>
 	<include file="./liquibase/2014/Q2/aananighian2_US668_DML_Populate_Site_Assignment_Table.sql"/>
+	<include file="./liquibase/2014/Q2/kchase39_PICS-13699_UpdateTranslations.sql"/>
 
 	<!-- 7.2.6 --> 
 	<include file="./liquibase/2014/Q2/aananighian3_US753_DML_Correct_Site_Assignment_Data.sql"/>
