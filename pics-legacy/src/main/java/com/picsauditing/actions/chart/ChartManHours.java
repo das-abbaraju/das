@@ -1,16 +1,11 @@
 package com.picsauditing.actions.chart;
 
+import com.picsauditing.search.SelectSQL;
+import com.picsauditing.util.chart.*;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
-import com.picsauditing.search.SelectSQL;
-import com.picsauditing.util.chart.ChartSingleSeries;
-import com.picsauditing.util.chart.ChartType;
-import com.picsauditing.util.chart.DataRow;
-import com.picsauditing.util.chart.FusionChart;
-import com.picsauditing.util.chart.Set;
-import com.picsauditing.util.chart.TrendLine;
 
 @SuppressWarnings("serial")
 public class ChartManHours extends ChartSSAction {
@@ -48,7 +43,7 @@ public class ChartManHours extends ChartSSAction {
 		
 		SelectSQL sql = new SelectSQL("contractor_audit ca");
 		sql.addField("ca.auditFor AS label");
-		sql.addField("pqf3.answer AS value");
+		sql.addField("REPLACE(pqf3.answer,',','') AS value");
 		sql.addField("pqf.answer + pqf2.answer AS link");
 		sql.addJoin("JOIN pqfdata pqf ON pqf.auditID = ca.id");
 		sql.addJoin("JOIN pqfdata pqf2 ON pqf2.auditID = ca.id");
