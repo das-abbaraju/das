@@ -30,7 +30,7 @@ case class UserContactInfo(
                             fax: String)
 
 trait UserAccess { this: Profile =>
-  import simple._
+  import profile.simple._
   val userTableName = "users"
 
   class UserSchema(tag: Tag) extends Table[UserData](tag, userTableName) {

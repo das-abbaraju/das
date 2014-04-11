@@ -7,7 +7,7 @@ import scala.collection.JavaConversions._
 import com.picsauditing.persistence.provider.TranslationUsageProvider
 import com.picsauditing.persistence.model.MySQLProfile
 
-class SpringConfiguredTranslationUsageDAO extends SlickEnhancedAccountDAO with SpringProvidedDataConnection
+class SpringConfiguredTranslationUsageDAO extends TranslationUsageDAO with SpringProvidedDataConnection
 
 class TranslationUsageDAO (
   usageProvider: TranslationUsageProvider = new TranslationUsageProvider with MySQLProfile

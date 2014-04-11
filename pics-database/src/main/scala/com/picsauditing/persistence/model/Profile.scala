@@ -4,7 +4,6 @@ import scala.slick.driver.JdbcProfile
 
 trait Profile {
   protected[persistence] val profile: JdbcProfile
-  protected[persistence] val simple = profile.simple
 
 }
 

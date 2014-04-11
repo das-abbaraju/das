@@ -20,7 +20,7 @@ case class TranslationUsage(
 )
 
 trait TranslationUsageAccess { this: Profile =>
-  import simple._
+  import profile.simple._
   val translationUsageTableName = "translation_usage"
 
 

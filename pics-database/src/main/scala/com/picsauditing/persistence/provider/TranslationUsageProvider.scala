@@ -6,7 +6,7 @@ import Q.interpolation
 import scala.collection.JavaConversions._
 
 class TranslationUsageProvider extends TranslationUsageAccess { this: Profile =>
-  import simple._
+  import profile.simple._
 
   def translationsUsedSince(date: java.sql.Date)(implicit session: Session) = {
     val q = for { t <- translationUsages if t.lastUsed > date } yield t
