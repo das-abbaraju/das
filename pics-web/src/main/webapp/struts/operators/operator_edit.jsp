@@ -555,8 +555,8 @@
         <li>
             <label>EmployeeGUARD&trade;:</label>
             <s:radio
-                    list="#{'Yes':'Yes','No':'No'}"
-                    name="operator.hasEGV3"
+                    list="#{'true':'Yes','false':'No'}"
+                    name="operator.requiresEmployeeGuard"
                     theme="pics"
                     cssClass="inline"
                     />
