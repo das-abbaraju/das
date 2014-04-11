@@ -83,12 +83,16 @@ public final class MenuBuilder {
 	}
 
 	private static void buildEGMenubar(MenuComponent menubar, Permissions permissions) {
-		ProfileService profileService = SpringUtils.getBean("ProfileService");
-		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
-		int id = profile == null ? 1 : profile.getId();
+		int id = getEmployeeGUARDProfileId(permissions);
 
 		menubar.addChild("Skills", "/employee-guard/employee/skills", "employee_skills");
 		menubar.addChild("Profile", "/employee-guard/employee/profile/" + id, "employee_profile");
+	}
+
+	private static int getEmployeeGUARDProfileId(final Permissions permissions) {
+		ProfileService profileService = SpringUtils.getBean("ProfileService");
+		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
+		return profile == null ? 1 : profile.getId();
 	}
 
 	// For Operators, Corporate users, and PICS employees
@@ -610,11 +614,9 @@ public final class MenuBuilder {
     private static void addUserMenu(MenuComponent menu, Permissions permissions) {
 		MenuComponent userMenu = menu.addChild(permissions.getName(), null, "user_menu");
 
-		if (permissions.hasPermission(OpPerms.EditProfile)) {
-			userMenu.addChild(getText("menu.Profile"), "ProfileEdit.action", "profile_edit");
-		}
+		addProfileMenuItem(permissions, userMenu);
 
-		if (permissions.hasPermission(OpPerms.MyCalendar)) {
+		if (permissions.hasPermission(OpPerms.MyCalendar) && !inEmployeeMode(permissions)) {
 			userMenu.addChild("My Schedule", "MySchedule.action", "my_schedule");
 		}
 
@@ -634,6 +636,19 @@ public final class MenuBuilder {
 
         removeMenuIfEmpty(menu, userMenu);
     }
+
+	private static void addProfileMenuItem(final Permissions permissions, final MenuComponent userMenu) {
+		boolean inEmployeeMode = inEmployeeMode(permissions);
+
+		if (permissions.hasPermission(OpPerms.EditProfile) && !inEmployeeMode) {
+			userMenu.addChild(getText("menu.Profile"), "ProfileEdit.action", "profile_edit");
+		}
+
+		if (inEmployeeMode) {
+			int profileId = getEmployeeGUARDProfileId(permissions);
+			userMenu.addChild(getText("menu.Profile"), "/employee-guard/employee/profile/" + profileId, "");
+		}
+	}
 
 	private static void addEmployeeGUARDUserMode(Permissions permissions, MenuComponent userMenu) {
 		if (isEmployeeGUARDAndPICSORGUser(permissions)) {
