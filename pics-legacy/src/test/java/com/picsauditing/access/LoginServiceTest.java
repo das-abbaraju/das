@@ -1,27 +1,25 @@
 package com.picsauditing.access;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import java.util.Date;
-
-import javax.security.auth.login.AccountLockedException;
-import javax.security.auth.login.AccountNotFoundException;
-import javax.security.auth.login.FailedLoginException;
-
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
+import javax.security.auth.login.AccountLockedException;
+import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
+import java.util.Date;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class LoginServiceTest {
 	private LoginService loginService;
@@ -79,17 +77,17 @@ public class LoginServiceTest {
 		assertThat(HomePageType.Declined, is(equalTo(homePageType)));
 	}
 
-    @Test
-    public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
-        when(account.isContractor()).thenReturn(true);
-        when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
+	@Test
+	public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
+		when(account.isContractor()).thenReturn(true);
+		when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
 
-        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-        assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
-    }
+		assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
+	}
 
-    @Test
+	@Test
 	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithPreLoginUrl() throws Exception {
 		when(account.isContractor()).thenReturn(true);
 		when(account.getStatus()).thenReturn(AccountStatus.Active);
@@ -209,7 +207,7 @@ public class LoginServiceTest {
 		verify(user).setForcePasswordReset(true);
 		verify(user).setResetHash("");
 		verify(user).unlockLogin();
-        verify(user).setPasswordChanged(null);
+		verify(user).setPasswordChanged(null);
 	}
 
 	@Test(expected = AccountNotFoundException.class)

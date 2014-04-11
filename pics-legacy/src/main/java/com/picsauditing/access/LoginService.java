@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,9 +14,10 @@ import java.util.Calendar;
 @SuppressWarnings("serial")
 public class LoginService {
 
+	protected static final int MAX_FAILED_ATTEMPTS = 6;
+
 	@Autowired
 	protected UserService userService;
-	protected static final int MAX_FAILED_ATTEMPTS = 6;
 
 	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public User loginNormally(String username, String password) throws LoginException {
@@ -165,7 +167,7 @@ public class LoginService {
 			user.setForcePasswordReset(true);
 			user.setResetHash("");
 			user.unlockLogin();
-            user.setPasswordChanged(null);
+			user.setPasswordChanged(null);
 		}
 	}
 

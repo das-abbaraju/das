@@ -1,4 +1,4 @@
-package com.picsauditing.access;
+package com.picsauditing.service.user;
 
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import java.text.ParseException;
 import java.util.Calendar;
@@ -19,15 +20,21 @@ public class UserServiceTest {
 
 	UserService userService = new UserService();
 
-	@Mock private User user;
-	@Mock private UserDAO userDAO;
-	@Mock private Account account;
+	@Mock
+	private User user;
+
+	@Mock
+	private UserDAO userDAO;
+	@Mock
+	private Account account;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
 		setupNormalUser();
-		userService.userDAO = userDAO;
+
+		Whitebox.setInternalState(userService, "userDAO", userDAO);
 	}
 
 	@Test
@@ -116,5 +123,4 @@ public class UserServiceTest {
 		cal.add(Calendar.MONTH, -monthsAgo);
 		return cal.getTime();
 	}
-
 }

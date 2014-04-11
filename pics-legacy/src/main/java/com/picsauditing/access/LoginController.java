@@ -6,7 +6,7 @@ import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
@@ -45,7 +45,9 @@ import java.util.TreeMap;
  */
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
+
 	private static final int ONE_SECOND = 1;
+
 	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
@@ -62,7 +64,7 @@ public class LoginController extends PicsActionSupport {
 	@Autowired
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
-	private ProfileService profileService;
+	private ProfileEntityService profileEntityService;
 
 	private User user;
 	private String email;
@@ -259,7 +261,7 @@ public class LoginController extends PicsActionSupport {
 			} else {
 				AppUser appUser = appUserDAO.findByAppUserID(permissions.getAppUserID());
 				if (appUser != null) {
-					Profile profile = profileService.findByAppUserId(appUser.getId());
+					Profile profile = profileEntityService.findByAppUserId(appUser.getId());
 					permissions.login(appUser, profile);
 				} else {
 					setActionErrorHeader(getText("Login.Failed"));
@@ -267,6 +269,7 @@ public class LoginController extends PicsActionSupport {
 				}
 			}
 		}
+
 		ActionContext.getContext().getSession().put("permissions", permissions);
 	}
 
@@ -349,7 +352,7 @@ public class LoginController extends PicsActionSupport {
 			if (user != null) {
 				user = loginService.loginNormally(user, username, password);
 			} else {
-				Profile profile = profileService.findByAppUserId(appUser.getId());
+				Profile profile = profileEntityService.findByAppUserId(appUser.getId());
 				if (profile == null) {
 					setActionErrorHeader(getText("Login.Failed"));
 					logAndMessageError(getText("Login.PasswordIncorrect"));

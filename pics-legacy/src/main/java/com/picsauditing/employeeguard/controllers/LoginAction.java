@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LoginAction extends PicsRestActionSupport implements AjaxValidator {
+
 	private static final long serialVersionUID = 3274071143261978073L;
 
 	@Autowired

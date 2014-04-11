@@ -317,6 +317,10 @@
         <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
     </bean>
 
+    <!-- Implementation of user mode switching -->
+    <bean id="ModeSwitcher" class="com.picsauditing.access.user.ModeSwitcherImpl" />
+    <bean id="UserModeProvider" class="com.picsauditing.access.user.UserModeProviderImpl" />
+
     <!-- Autocompletes -->
     <bean id="AccountUserAutocompleteService"
           class="com.picsauditing.actions.autocomplete.AccountUserAutoCompleteService"/>
@@ -346,7 +350,6 @@
           class="com.picsauditing.actions.autocomplete.CountrySubdivisionAutocompleteService"/>
     <bean id="TradeAutocompleteService" class="com.picsauditing.actions.autocomplete.TradeAutocompleteService"/>
     <bean id="UserGroupAutocompleteService" class="com.picsauditing.actions.autocomplete.UserGroupAutocompleteService"/>
-    <bean id="UserService" class="com.picsauditing.access.UserService"/>
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>

@@ -5,6 +5,8 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -21,6 +23,9 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
+	@Autowired
+	private ProfileEntityService profileEntityService;
+
 	private CacheManager cacheManager;
 
 	@Autowired
@@ -85,6 +90,12 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		} catch (Exception e) {
 			LOG.warn("Error removing accountId {} from EmployeeGUARD", accountId);
 		}
+	}
+
+	@Override
+	public boolean isEmployeeGUARDEmployeeUser(final int appUserId) {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
+		return profile != null;
 	}
 
 	private boolean isEmployeeGUARDEnabled(final int accountId) {

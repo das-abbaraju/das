@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import com.picsauditing.access.builders.PermissionsBuilder;
+import com.picsauditing.access.user.UserMode;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.jpa.entities.*;
@@ -27,22 +28,27 @@ import java.util.*;
 public class Permissions implements Serializable {
 
 	private static final long serialVersionUID = -3120292424348289561L;
+
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
+
+	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
+
+	public static final Permissions EMPTY_PERMISSIONS = new Permissions();
 
 	private int userID;
 	private int appUserID;
 	private boolean loggedIn = false;
 	private boolean forcePasswordReset = false;
 
-	private Set<Integer> allInheritedGroupIds = new HashSet<Integer>();
-	private Set<Integer> groupIds = new HashSet<Integer>();
-	private Set<UserAccess> permissions = new HashSet<UserAccess>();
+	private Set<Integer> allInheritedGroupIds = new HashSet<>();
+	private Set<Integer> groupIds = new HashSet<>();
+	private Set<UserAccess> permissions = new HashSet<>();
 	private boolean canSeeInsurance = false;
-	private Set<Integer> corporateParent = new HashSet<Integer>();
-	private Set<Integer> operatorChildren = new HashSet<Integer>();
-	private Set<Integer> visibleAuditTypes = new HashSet<Integer>();
-	private Set<Integer> linkedClients = new HashSet<Integer>();
-	private Set<Integer> linkedGeneralContractors = new HashSet<Integer>();
+	private Set<Integer> corporateParent = new HashSet<>();
+	private Set<Integer> operatorChildren = new HashSet<>();
+	private Set<Integer> visibleAuditTypes = new HashSet<>();
+	private Set<Integer> linkedClients = new HashSet<>();
+	private Set<Integer> linkedGeneralContractors = new HashSet<>();
 
 	private String username;
 	private String name;
@@ -76,11 +82,17 @@ public class Permissions implements Serializable {
 	private boolean usingVersion7Menus;
 	private Date usingVersion7MenusDate;
 	private Date reportsManagerTutorialDate;
+
     // this is for injecting for unit tests
 	private transient LanguageModel languageModel;
+
     private int primaryCorporateAccountID;
-	public static final String SESSION_PERMISSIONS_COOKIE_KEY = "permissions";
+
 	private String switchedToUserName;
+
+	private UserMode currentMode;
+	private Set<UserMode> availableUserModes = new HashSet<>();
+
 
 	public Permissions() {
 	}
@@ -140,7 +152,7 @@ public class Permissions implements Serializable {
         setStableLocale(user);
 	}
 
-	public void login(AppUser appUser, Identifiable identifiable) {
+	public void login(final AppUser appUser, final Identifiable identifiable) {
 		clear();
 		if (appUser == null || appUser.getId() == 0) {
 			return;
@@ -863,7 +875,23 @@ public class Permissions implements Serializable {
 		return switchedToUserName;
 	}
 
-    @Override
+	public UserMode getCurrentMode() {
+		return currentMode;
+	}
+
+	public void setCurrentMode(UserMode currentMode) {
+		this.currentMode = currentMode;
+	}
+
+	public Set<UserMode> getAvailableUserModes() {
+		return availableUserModes;
+	}
+
+	public void setAvailableUserModes(Set<UserMode> availableUserModes) {
+		this.availableUserModes = availableUserModes;
+	}
+
+	@Override
     public String toString() {
         return "Permissions{" +
                 "permissions=" + permissions +

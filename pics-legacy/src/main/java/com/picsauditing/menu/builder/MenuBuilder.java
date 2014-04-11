@@ -3,7 +3,8 @@ package com.picsauditing.menu.builder;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserService;
+import com.picsauditing.access.user.UserMode;
+import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -15,16 +16,17 @@ import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.search.Database;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -51,7 +53,7 @@ public final class MenuBuilder {
 			buildNotLoggedInMenubar(menubar);
 		} else {
 			if (permissions.getUserId() > 0) {
-				if (inEmployeeMode()) {
+				if (inEmployeeMode(permissions)) {
 					buildEGMenubar(menubar, permissions);
 				} else {
 					buildPICSMenu(permissions, favoriteReports, menubar);
@@ -81,12 +83,16 @@ public final class MenuBuilder {
 	}
 
 	private static void buildEGMenubar(MenuComponent menubar, Permissions permissions) {
-		ProfileService profileService = SpringUtils.getBean("ProfileService");
-		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
-		int id = profile == null ? 1 : profile.getId();
+		int id = getEmployeeGUARDProfileId(permissions);
 
 		menubar.addChild("Skills", "/employee-guard/employee/skills", "employee_skills");
 		menubar.addChild("Profile", "/employee-guard/employee/profile/" + id, "employee_profile");
+	}
+
+	private static int getEmployeeGUARDProfileId(final Permissions permissions) {
+		ProfileService profileService = SpringUtils.getBean("ProfileService");
+		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
+		return profile == null ? 1 : profile.getId();
 	}
 
 	// For Operators, Corporate users, and PICS employees
@@ -608,24 +614,19 @@ public final class MenuBuilder {
     private static void addUserMenu(MenuComponent menu, Permissions permissions) {
 		MenuComponent userMenu = menu.addChild(permissions.getName(), null, "user_menu");
 
-		if (permissions.hasPermission(OpPerms.EditProfile)) {
-			userMenu.addChild(getText("menu.Profile"), "ProfileEdit.action", "profile_edit");
-		}
+		addProfileMenuItem(permissions, userMenu);
 
-		if (permissions.hasPermission(OpPerms.MyCalendar)) {
+		if (permissions.hasPermission(OpPerms.MyCalendar) && !inEmployeeMode(permissions)) {
 			userMenu.addChild("My Schedule", "MySchedule.action", "my_schedule");
 		}
 
 		FeatureToggle featureToggleChecker = SpringUtils.getBean(SpringUtils.FEATURE_TOGGLE);
-		if (featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+		if (featureToggleChecker != null && featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)
+				&& !inEmployeeMode(permissions)) {
 			userMenu.addChild(getText("Menu.SwitchToVersion6"), "ProfileEdit!version6Menu.action?u=" + permissions.getUserId(), "switch_to_v6");
-
-			if (isBothEGandPOUser(permissions)) {
-				if (inAdminMode()) {
-					userMenu.addChild(getText("Menu.SwitchToEmployeeMode"), "employee-guard/employee/dashboard", "");
-				}
-			}
 		}
+
+		addEmployeeGUARDUserMode(permissions, userMenu);
 
 		if (switchedToAnotherUser(permissions)) {
 			userMenu.addChild(getText("SwitchBack.title"), "Login.action?button=switchBack", "switch_back");
@@ -636,7 +637,36 @@ public final class MenuBuilder {
         removeMenuIfEmpty(menu, userMenu);
     }
 
-    public static void removeMenuIfEmpty(MenuComponent menu, MenuComponent submenu) {
+	private static void addProfileMenuItem(final Permissions permissions, final MenuComponent userMenu) {
+		boolean inEmployeeMode = inEmployeeMode(permissions);
+
+		if (permissions.hasPermission(OpPerms.EditProfile) && !inEmployeeMode) {
+			userMenu.addChild(getText("menu.Profile"), "ProfileEdit.action", "profile_edit");
+		}
+
+		if (inEmployeeMode) {
+			int profileId = getEmployeeGUARDProfileId(permissions);
+			userMenu.addChild(getText("menu.Profile"), "/employee-guard/employee/profile/" + profileId, "");
+		}
+	}
+
+	private static void addEmployeeGUARDUserMode(Permissions permissions, MenuComponent userMenu) {
+		if (isEmployeeGUARDAndPICSORGUser(permissions)) {
+			if (inAdminMode(permissions)) {
+				userMenu.addChild(getText("Switch to Employee Mode"),
+						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
+								UserMode.EMPLOYEE.getModeParameterValue()), "");
+			}
+
+			if (inEmployeeMode(permissions)) {
+				userMenu.addChild(getText("Switch to Admin Mode"),
+						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
+								UserMode.ADMIN.getModeParameterValue()), "");
+			}
+		}
+	}
+
+	public static void removeMenuIfEmpty(MenuComponent menu, MenuComponent submenu) {
         if (!submenu.hasChildren()) {
             boolean removed = menu.removeChild(submenu);
 
@@ -646,31 +676,16 @@ public final class MenuBuilder {
         }
     }
 
-    private static boolean isBothEGandPOUser(Permissions permissions) {
-		int appUserID = permissions.getAppUserID();
-		return permissions.getUserId() > 0 && isEmployeeGUARDUser(appUserID);
+    private static boolean isEmployeeGUARDAndPICSORGUser(final Permissions permissions) {
+		return permissions.getAvailableUserModes().containsAll(Arrays.asList(UserMode.ADMIN, UserMode.EMPLOYEE));
 	}
 
-	private static boolean isPicsOrgUser(int appUserID) {
-		UserService userService = SpringUtils.getBean("UserService");
-		return userService.findByAppUserId(appUserID) != null;
+	private static boolean inAdminMode(final Permissions permissions) {
+		return permissions.getCurrentMode() == UserMode.ADMIN;
 	}
 
-	private static boolean isPicsOrgUser(Permissions permissions) {
-		return permissions.getUserId() > 0;
-	}
-
-	private static boolean isEmployeeGUARDUser(int appUserID) {
-		ProfileService profileService = SpringUtils.getBean("ProfileService");
-		return profileService.findByAppUserId(appUserID) != null;
-	}
-
-	private static boolean inAdminMode() {
-		return !ServletActionContext.getRequest().getRequestURI().contains("employee-guard");
-	}
-
-	private static boolean inEmployeeMode() {
-		return ServletActionContext.getRequest().getRequestURI().contains("employee-guard/employee");
+	private static boolean inEmployeeMode(final Permissions permissions) {
+		return permissions.getCurrentMode() == UserMode.EMPLOYEE;
 	}
 
 	private static boolean switchedToAnotherUser(Permissions permissions) {
