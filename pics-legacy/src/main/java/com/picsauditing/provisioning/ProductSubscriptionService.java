@@ -4,7 +4,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
 
 public interface ProductSubscriptionService {
-	
+
 	public final static String CACHE_NAME = "product_subscription";
 
 	boolean hasEmployeeGUARD(Account account);
