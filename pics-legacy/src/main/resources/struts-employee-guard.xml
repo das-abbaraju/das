@@ -67,6 +67,8 @@
         </action>
 
         <!-- Role -->
+        <action name="roles" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
         <action name="role" class="com.picsauditing.employeeguard.controllers.operator.RoleAction">
             <result name="create">/struts/employee-guard/operator/role/create.jsp</result>
             <result name="show">/struts/employee-guard/operator/role/show.jsp</result>
