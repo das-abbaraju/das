@@ -4,6 +4,14 @@
 <s:set var="menu_size" value="menu.children.size()" />
 <s:set var="last_menu_index" value="menu.children.size() - 1" />
 <s:set var="isContractor" value="permissions.contractor" />
+<s:set var="userMode" value="permissions.currentMode.toString().toLowerCase()" />
+
+<s:if test="#isContractor && contractor.hasCurrentCsr()">
+    <s:url value="ContactUs.action" var="contact_us_url" />
+</s:if>
+<s:else>
+    <s:url value="Contact.action" var="contact_us_url" />
+</s:else>
 
 <s:url action="Search" var="search_url" />
 
@@ -12,12 +20,12 @@
     <div class="container">
         <nav class="navbar navbar-default" role="navigation">
             <div class="navbar-header">
-            <s:if test="permissions.userId > 0">
-                <a class="navbar-brand" href="/">Dashboard</a>
-            </s:if>
-            <s:else>
-                <a class="navbar-brand" href="/employee-guard/employee/dashboard">Dashboard</a>
-            </s:else>
+                <s:if test="#userMode == 'employee'">
+                    <a class="navbar-brand" href="/employee-guard/employee/dashboard">Dashboard</a>
+                </s:if>
+                <s:else>
+                    <a class="navbar-brand" href="/">Dashboard</a>
+                </s:else>
             </div>
             <ul class="nav navbar-nav">
                 <s:set var="menu_items" value="menu.children.subList(0, #last_menu_index)" />
@@ -28,18 +36,25 @@
                 <s:include value="/struts/layout/menu/_menu-item.jsp" />
             </ul>
             <s:if test="!permissions.contractor">
-            <form class="search-form navbar-form navbar-right" action="${search_url}" role="search">
-                <div class="form-group">
-                    <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
-                    <i class="icon-search icon-large"></i>
-                </div>
-                <s:set var="has_search_box_class">has-search-box</s:set>
-            </form>
+                <s:if test="#userMode != 'employee'">
+                    <form class="search-form navbar-form navbar-right" action="${search_url}" role="search">
+                        <div class="form-group">
+                            <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
+                            <i class="icon-search icon-large"></i>
+                        </div>
+                        <s:set var="has_search_box_class">has-search-box</s:set>
+                    </form>
+                    <a class="contact-us-link ${has_search_box_class}" href="/${contact_us_url}">
+                        <i class="icon-phone icon-large"></i>
+                    </a>
+                </s:if>
             </s:if>
             <s:else>
                 <s:set var="has_search_box_class" value="''" />
+                <a class="contact-us-link ${has_search_box_class}" href="/${contact_us_url}">
+                    <i class="icon-phone icon-large"></i>
+                </a>
             </s:else>
-            <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
         </nav>
     </div>
 </div>

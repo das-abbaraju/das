@@ -7,16 +7,17 @@
     ${has_contractor_menu}
 </s:set>
 
+<s:if test="#isContractor && contractor.hasCurrentCsr()">
+    <s:url action="ContactUs" var="contact_us_url" />
+</s:if>
+<s:else>
+    <s:url action="Contact" var="contact_us_url" />
+</s:else>
+
 <div id="primary_navigation" class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <nav class="container">
-            <%-- FIXME clean up menu links --%>
-            <s:if test="permissions.userId > 0">
-                <a class="brand" href="/"></a>
-            </s:if>
-            <s:else>
-                <a class="brand" href="/employee-guard/employee/dashboard"></a>
-            </s:else>
+            <a class="brand" href="/"></a>
 
             <div class="primary-navigation-items">
                 <ul class="nav pull-left">
@@ -48,7 +49,9 @@
             </s:else>
 
             <div>
-                <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}"><i class="icon-phone icon-large"></i></a>
+                <a class="contact-us-link ${has_search_box_class}" href="${contact_us_url}">
+                    <i class="icon-phone icon-large"></i>
+                </a>
             </div>
         </nav>
     </div>
