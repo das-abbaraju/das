@@ -30,7 +30,7 @@ case class UserContactInfo(
                             fax: String)
 
 trait UserAccess { this: Profile =>
-  import profile.simple._
+  import simple._
   val userTableName = "users"
 
   class UserSchema(tag: Tag) extends Table[UserData](tag, userTableName) {
@@ -48,6 +48,12 @@ trait UserAccess { this: Profile =>
 
     def contactinfo = (id, username, name, email, phone, fax) <> (UserContactInfo.tupled, UserContactInfo.unapply)
     def * = (id.?, accountID, username, name, email, phone, fax, isActive, lastLogin) <> (UserData.tupled, UserData.unapply)
+
+
+    implicit val convertFromTimeStamp = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
+      { utilDate => new java.sql.Timestamp(utilDate.getTime) },
+      { sqlDate => new java.util.Date(sqlDate.getTime) }
+    )
   }
 
   protected[persistence] val users = TableQuery[UserSchema]

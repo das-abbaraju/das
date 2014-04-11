@@ -1,45 +1,68 @@
 package com.picsauditing.persistence.provider
 
-import com.picsauditing.persistence.model.{TranslationUsage, Profile, TranslationUsageAccess}
+import com.picsauditing.persistence.model.{Profile, TranslationUsageAccess}
 import scala.slick.jdbc.{StaticQuery => Q}
 import Q.interpolation
+import scala.collection.JavaConversions._
 
 class TranslationUsageProvider extends TranslationUsageAccess { this: Profile =>
-  import profile.simple._
+  import simple._
 
-  private def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, pageOrder: String,  environment: String) = sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $pageOrder, $environment) }".first
-
-  private val findTranslationByKeyLocalPageEnv = Compiled {
-    (msgKey: Column[String], msgLocale: Column[String], pageName: Column[String], environment: Column[String]) =>
-      for {
-        t <- translationUsages if t.msgKey === msgKey && t.msgLocale === msgLocale && t.pageName === pageName && t.environment === environment
-      } yield t
+  def translationsUsedSince(date: java.sql.Date)(implicit session: Session) = {
+    val q = for { t <- translationUsages if t.lastUsed > date } yield t
+    q.list.groupBy( _.msgKey ) map { case (k, v) => k -> setAsJavaSet(v map { _.msgLocale } toSet) }
   }
 
-
-  def insertNewTranslationKeyUsage(keyUsage: TranslationLookupData) = {
-    try {
-      translationUsages.insert(
-        TranslationUsage(
-          None,
-          keyUsage.getMsgKey,
-          keyUsage.getLocaleResponse,
-          keyUsage.getPageName,
-          Some(keyUsage.getPageOrder),
-          keyUsage.getEnvironment,
-          Some(new Date()),
-          Some(new Date()),
-          None,
-          None
-        )
-      )
-    } catch {
-      case e: SQLIntegrityConstraintViolationException => {
-        // ignore this exception - since we are async, there's a chance that this will be inserted between our
-        // select and this insert. This isn't a problem. The granularity on this logging is per day. So consider
-        // our work done if we end up here
-      }
-    }
+  def logKeyUsage(msgKey: String, msgLocale: String, pageName: String, pageOrder: String, environment: String)(session: Session) = {
+    usageEtlSProc(msgKey, msgLocale, pageName, pageOrder, environment)(session)
   }
+
+  private def usageEtlSProc(msgKey: String, msgLocale: String, pageName: String, pageOrder: String, environment: String)(implicit session: Session) =
+    sqlu"{ call etlTranslationUsage($msgKey, $msgLocale, $pageName, $pageOrder, $environment) }".first
+
+  /*
+    What follows represents the original implimentation code prior to using the stored procedure,
+    converted to slick 2 syntax. If you're interested, or need to see the original, it can be found
+    in `pics-legacy/src/main/scala/com/picsauditing/dao/TranslationUsageDAO.scala`'s git history.
+   */
+//
+//  private def getCurrentTime = new java.sql.Date(new java.util.Date().getTime)
+//
+//  def insertNewTranslationKeyUsage(msgKey: String, localeResponse: String, pageName: String, pageOrder: Option[String], environment: String) = {
+//    implicit session: Session => {
+//      val now = getCurrentTime
+//      translationUsages.insert(
+//        TranslationUsage(
+//          None,
+//          msgKey,
+//          localeResponse,
+//          pageName,
+//          pageOrder,
+//          environment,
+//          Some(now),
+//          Some(now),
+//          None,
+//          None
+//        )
+//      )
+//    }
+//  }
+//
+//  def updateTranslationKeyUsageTime(translationUsageId: Long) = { implicit session: Session =>
+//    val now = getCurrentTime
+//    (
+//      for {
+//        usage <- translationUsages if usage.id === translationUsageId && usage.lastUsed < now
+//      } yield (usage.lastUsed, usage.synchronizedBatch, usage.synchronizedDate)
+//    ) update(now, null, null)
+//  }
+//
+//
+//  private val findTranslationUsageByKeyLocalPageEnv = Compiled {
+//    (msgKey: Column[String], msgLocale: Column[String], pageName: Column[String], environment: Column[String]) =>
+//      for {
+//        t <- translationUsages if t.msgKey === msgKey && t.msgLocale === msgLocale && t.pageName === pageName && t.environment === environment
+//      } yield t
+//  }
 
 }
