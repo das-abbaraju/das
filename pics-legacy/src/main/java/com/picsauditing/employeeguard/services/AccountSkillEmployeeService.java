@@ -175,16 +175,16 @@ public class AccountSkillEmployeeService {
 
 	private List<AccountSkillEmployee> getNewAccountSkillEmployees(final Role role) {
 		List<AccountSkillRole> skills = role.getSkills();
-		List<RoleEmployee> employees = role.getEmployees();
+		List<SiteAssignment> siteAssignments = role.getSiteAssignments();
 
 		List<AccountSkillEmployee> skillEmployees = new ArrayList<>();
 
 		Date now = new Date();
 
-		if (CollectionUtils.isNotEmpty(skills) && CollectionUtils.isNotEmpty(employees)) {
+		if (CollectionUtils.isNotEmpty(skills) && CollectionUtils.isNotEmpty(siteAssignments)) {
 			for (AccountSkillRole skillRole : skills) {
-				for (RoleEmployee groupEmployee : employees) {
-					AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillRole.getSkill(), groupEmployee.getEmployee());
+				for (SiteAssignment siteAssignment : siteAssignments) {
+					AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee(skillRole.getSkill(), siteAssignment.getEmployee());
 					accountSkillEmployee.setStartDate(now);
 
 					skillEmployees.add(accountSkillEmployee);

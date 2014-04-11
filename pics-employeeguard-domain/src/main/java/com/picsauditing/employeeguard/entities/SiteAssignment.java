@@ -2,12 +2,14 @@ package com.picsauditing.employeeguard.entities;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "site_assignment")
+@Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO site_assignment (createdBy, createdDate, deletedBy, deletedDate, employeeID, roleID, siteID, updatedBy, updatedDate) VALUES (?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE site_assignment SET deletedDate = NOW() WHERE id = ?")
 public class SiteAssignment implements BaseEntity {
@@ -24,6 +26,7 @@ public class SiteAssignment implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "employeeID", nullable = false)
+//	@Where(clause = "deletedDate IS NULL")
 	private Employee employee;
 
 	private int createdBy;

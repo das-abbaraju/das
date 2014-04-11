@@ -39,8 +39,6 @@ public class RoleEntityServiceTest {
 	@Mock
 	private RoleDAO roleDAO;
 	@Mock
-	private RoleEmployeeDAO roleEmployeeDAO;
-	@Mock
 	private SiteAssignmentDAO siteAssignmentDAO;
 
 	@Before

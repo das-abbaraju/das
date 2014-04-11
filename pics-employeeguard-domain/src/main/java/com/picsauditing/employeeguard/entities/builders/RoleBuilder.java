@@ -38,39 +38,12 @@ public class RoleBuilder extends AbstractBaseEntityBuilder<Role, RoleBuilder> {
 		return this;
 	}
 
-	public RoleBuilder employees(int[] employees) {
-		if (!ArrayUtils.isEmpty(employees)) {
-			entity.getEmployees().clear();
-
-			for (int employeeId : employees) {
-				Employee employee = new Employee();
-				employee.setId(employeeId);
-
-				RoleEmployee groupEmployee = new RoleEmployee(employee, entity);
-				entity.getEmployees().add(groupEmployee);
-			}
-		}
-
-		return this;
-	}
-
 	public RoleBuilder skills(List<AccountSkill> skills) {
 		entity.getSkills().clear();
 
 		for (AccountSkill accountSkill : skills) {
 			AccountSkillRole accountSkillRole = new AccountSkillRole(entity, accountSkill);
 			entity.getSkills().add(accountSkillRole);
-		}
-
-		return this;
-	}
-
-	public RoleBuilder employees(List<Employee> employees) {
-		entity.getEmployees().clear();
-
-		for (Employee employee : employees) {
-			RoleEmployee groupEmployee = new RoleEmployee(employee, entity);
-			entity.getEmployees().add(groupEmployee);
 		}
 
 		return this;

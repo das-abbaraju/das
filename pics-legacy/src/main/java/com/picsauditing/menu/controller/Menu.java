@@ -11,6 +11,7 @@ import com.picsauditing.menu.MenuWriter;
 import com.picsauditing.menu.builder.ContractorSubmenuBuilder;
 import com.picsauditing.menu.builder.MenuBuilder;
 import com.picsauditing.report.RecordNotFoundException;
+import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class Menu extends PicsActionSupport {
 
+	@Autowired
+	private FeatureToggle featureToggle;
 	@Autowired
 	private ReportUserDAO reportUserDao;
 
@@ -85,6 +88,10 @@ public class Menu extends PicsActionSupport {
 	}
 
 	public String contractorSubmenuBootstrap3() throws RecordNotFoundException {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_TURN_OFF_UNNECESSARY_MENUS)) {
+			return NONE;
+		}
+
 		contractor = findContractor();
 
 		if (contractor != null) {
@@ -95,6 +102,10 @@ public class Menu extends PicsActionSupport {
 	}
 
 	public String operatorSubmenu() throws RecordNotFoundException {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_TURN_OFF_UNNECESSARY_MENUS)) {
+			return NONE;
+		}
+
 		menu = buildContractorSubmenu(false);
 		jsonArray = MenuWriter.convertMenuToJSON(menu);
 
@@ -125,6 +136,10 @@ public class Menu extends PicsActionSupport {
 	}
 
 	public boolean isShowContractorSubmenu() {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_TURN_OFF_UNNECESSARY_MENUS)) {
+			return false;
+		}
+
 		loadPermissions();
 
 		if (permissions.isContractor() || !permissions.isUsingVersion7Menus()) {
@@ -157,10 +172,6 @@ public class Menu extends PicsActionSupport {
 		}
 
 		return null;
-	}
-
-	private Map<String, Object> valueStackContext() {
-		return ActionContext.getContext().getValueStack().getContext();
 	}
 
 	private boolean auditorCanViewAnAudit() {
@@ -223,6 +234,10 @@ public class Menu extends PicsActionSupport {
 	}
 
 	public MenuComponent getContractorMenu() throws RecordNotFoundException {
+		if (featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_TURN_OFF_UNNECESSARY_MENUS)) {
+			return null;
+		}
+
 		MenuComponent menu = contractorSubmenuBuilder.buildMenubar(contractor, permissions, false);
 		MenuComponent companyMenu = MenuBuilder.getCompanyMenuFor(contractor, permissions);
 

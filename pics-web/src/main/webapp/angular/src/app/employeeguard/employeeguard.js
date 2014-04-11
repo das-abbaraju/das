@@ -9,9 +9,6 @@ angular.module('PICS.employeeguard', [
     $locationProvider.html5Mode(true);
 
     $routeProvider
-        .when('/employee-guard/operators/employees/:id', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
         .when('/employee-guard/operators/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
         })
@@ -20,6 +17,12 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/operators/projects', {
             templateUrl: '/angular/src/app/employeeguard/operator/project/project_list.tpl.html'
+        })
+        .when('/employee-guard/operators/roles', {
+            templateUrl: '/angular/src/app/employeeguard/operator/role/role_list.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'

@@ -420,7 +420,7 @@ public class FlagDataCalculator {
 				}
 				return false;
 			} catch (Exception e) {
-				logger.error("Datatype is {} but values were not {} s", dataType, dataType);
+				logger.warn("Datatype is {} but values was not. (FlagCriteriaContractor {})", dataType, conCriteria.getId());
 				return true;
 			}
 		}

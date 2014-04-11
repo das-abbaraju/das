@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-public class ProfileAssignmentModel implements Comparable<ProfileAssignmentModel> {
+public class ProfileAssignmentModel implements Nameable, Comparable<ProfileAssignmentModel> {
 
 	private String name;
 	private SkillStatus status;

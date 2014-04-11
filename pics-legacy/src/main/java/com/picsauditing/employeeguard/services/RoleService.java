@@ -78,8 +78,8 @@ public class RoleService {
 		roleInDatabase.setSkills(accountSkillGroups);
 		roleInDatabase = roleDAO.save(roleInDatabase);
 
-		for (RoleEmployee roleEmployee : roleInDatabase.getEmployees()) {
-			accountSkillEmployeeService.linkEmployeeToSkills(roleEmployee.getEmployee(), appUserId, timestamp);
+		for (SiteAssignment siteAssignment : roleInDatabase.getSiteAssignments()) {
+			accountSkillEmployeeService.linkEmployeeToSkills(siteAssignment.getEmployee(), appUserId, timestamp);
 		}
 
 		return roleInDatabase;
@@ -107,7 +107,7 @@ public class RoleService {
 		Date createdDate = new Date();
 		EntityHelper.setCreateAuditFields(role, appUserId, createdDate);
 		EntityHelper.setCreateAuditFields(role.getSkills(), appUserId, createdDate);
-		EntityHelper.setCreateAuditFields(role.getEmployees(), appUserId, createdDate);
+//		EntityHelper.setCreateAuditFields(role., appUserId, createdDate);
 
 		role = roleDAO.save(role);
 		accountSkillEmployeeService.linkEmployeesToSkill(role, appUserId);

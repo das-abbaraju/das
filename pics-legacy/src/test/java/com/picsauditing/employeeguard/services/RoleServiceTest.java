@@ -31,6 +31,7 @@ public class RoleServiceTest {
 	public static final int USER_ID = 6;
 
 	private RoleService roleService;
+
 	private EntityAuditInfo auditInfo = new EntityAuditInfo.Builder()
 			.appUserId(USER_ID)
 			.timestamp(new Date())
@@ -54,6 +55,7 @@ public class RoleServiceTest {
 	private SkillEngine skillEngine;
 	@Mock
 	private SkillUsageLocator skillUsageLocator;
+
 	// Entities
 	@Mock
 	private AccountSkillEmployee accountSkillEmployee;
@@ -71,8 +73,6 @@ public class RoleServiceTest {
 	private ProjectRoleEmployee projectRoleEmployee;
 	@Mock
 	private Role role;
-	@Mock
-	private RoleEmployee roleEmployee;
 	@Mock
 	private SkillUsage skillUsage;
 

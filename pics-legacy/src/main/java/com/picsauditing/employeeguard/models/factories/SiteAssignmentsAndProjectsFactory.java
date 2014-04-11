@@ -1,17 +1,19 @@
-package com.picsauditing.employeeguard.viewmodel.factory;
+package com.picsauditing.employeeguard.models.factories;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
+import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.ProjectStatisticsModel;
+import com.picsauditing.employeeguard.models.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
-import com.picsauditing.employeeguard.viewmodel.contractor.ProjectAssignmentBreakdown;
-import com.picsauditing.employeeguard.viewmodel.contractor.ProjectStatisticsModel;
-import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentStatisticsModel;
+import com.picsauditing.employeeguard.models.ProjectAssignmentBreakdown;
+import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -99,8 +101,8 @@ public class SiteAssignmentsAndProjectsFactory {
 	}
 
 	private boolean employeeBelongsToSite(AccountModel site, Employee employee) {
-		for (RoleEmployee roleEmployee : employee.getRoles()) {
-			if (roleEmployee.getRole().getAccountId() == site.getId()) {
+		for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+			if (siteAssignment.getSiteId() == site.getId()) {
 				return true;
 			}
 		}
@@ -270,7 +272,7 @@ public class SiteAssignmentsAndProjectsFactory {
 	}
 
 	private List<ProjectStatisticsModel> buildProjectStatistics(final Map<AccountModel, Set<Project>> accountsToProjects,
-	                                                            final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
+																final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
 		Set<Project> projects = PicsCollectionUtil.extractAndFlattenValuesFromMap(accountsToProjects);
 		List<ContractorProjectForm> contractorProjects = ViewModelFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
@@ -289,7 +291,7 @@ public class SiteAssignmentsAndProjectsFactory {
 				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
 
-			ProjectAssignmentBreakdown assignmentBreakdown = ViewModelFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
+			ProjectAssignmentBreakdown assignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
 			projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
 		}
 

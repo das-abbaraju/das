@@ -15,9 +15,11 @@ import java.util.Date;
 @SQLInsert(sql = "INSERT INTO project_account_group_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, projectGroupID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE project_account_group_employee SET deletedDate = NOW() WHERE id = ?")
 public class ProjectRoleEmployee implements BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
 	@ManyToOne
 	@JoinColumn(name = "projectGroupID", nullable = false)
 	private ProjectRole projectRole;
@@ -27,9 +29,9 @@ public class ProjectRoleEmployee implements BaseEntity {
 	private Employee employee;
 
 	private int createdBy;
-
 	private int updatedBy;
 	private int deletedBy;
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 

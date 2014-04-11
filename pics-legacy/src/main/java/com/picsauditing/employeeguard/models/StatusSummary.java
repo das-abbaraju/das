@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
-public class StatusSummary {
+public class StatusSummary implements Identifiable, StatusSummarizable {
 
     private int id;
 	private int employees;

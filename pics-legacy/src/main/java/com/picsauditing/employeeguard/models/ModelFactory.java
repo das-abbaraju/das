@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.models.factories.*;
+import com.picsauditing.employeeguard.models.factories.ProjectAssignmentBreakdownFactory;
 
 public class ModelFactory {
 
@@ -13,10 +14,12 @@ public class ModelFactory {
 	private static ProfileAssignmentModelFactory profileAssignmentModelFactory = new ProfileAssignmentModelFactory();
 	private static ProfileModelFactory profileModelFactory = new ProfileModelFactory();
 	private static ProjectAssignmentModelFactory projectAssignmentModelFactory = new ProjectAssignmentModelFactory();
+	private static ProjectAssignmentBreakdownFactory projectAssignmentBreakdownFactory = new ProjectAssignmentBreakdownFactory();
 	private static ProjectModelFactory projectModelFactory = new ProjectModelFactory();
 	private static ProjectStatusModelFactory projectStatusModelFactory = new ProjectStatusModelFactory();
 	private static RoleModelFactory roleModelFactory = new RoleModelFactory();
 	private static RoleStatusModelFactory roleStatusModelFactory = new RoleStatusModelFactory();
+	private static SiteAssignmentsAndProjectsFactory siteAssignmentsAndProjectsFactory = new SiteAssignmentsAndProjectsFactory();
 	private static SkillModelFactory skillModelFactory = new SkillModelFactory();
 	private static SkillStatusModelFactory skillStatusModelFactory = new SkillStatusModelFactory();
 	private static StatusSummaryFactory statusSummaryFactory = new StatusSummaryFactory();
@@ -58,6 +61,10 @@ public class ModelFactory {
 		return projectAssignmentModelFactory;
 	}
 
+	public static ProjectAssignmentBreakdownFactory getProjectAssignmentBreakdownFactory() {
+		return projectAssignmentBreakdownFactory;
+	}
+
 	public static ProjectModelFactory getProjectModelFactory() {
 		return projectModelFactory;
 	}
@@ -72,6 +79,10 @@ public class ModelFactory {
 
 	public static RoleStatusModelFactory getRoleStatusModelFactory() {
 		return roleStatusModelFactory;
+	}
+
+	public static SiteAssignmentsAndProjectsFactory getSiteAssignmentsAndProjectsFactory() {
+		return siteAssignmentsAndProjectsFactory;
 	}
 
 	public static SkillModelFactory getSkillModelFactory() {

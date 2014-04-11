@@ -44,4 +44,10 @@ public class ContractorAuditFileDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+    public void removeAllByAuditID(int auditID) {
+        Query query = em.createQuery("DELETE FROM ContractorAuditFile c "
+                + "WHERE c.audit.id = :auditID");
+        query.setParameter("auditID", auditID);
+        query.executeUpdate();
+    }
 }

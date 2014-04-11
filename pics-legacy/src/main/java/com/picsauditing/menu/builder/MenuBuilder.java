@@ -455,7 +455,7 @@ public final class MenuBuilder {
 
 		if (permissions.isOperatorCorporate()) {
 			ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-			if (productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId())) {
+			if (productSubscriptionService.hasEmployeeGuardLegacy(permissions)) {
 				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operators/dashboard");
 			}
 		}
