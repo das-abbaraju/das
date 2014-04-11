@@ -10,6 +10,7 @@ import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.operators.FacilitiesEditModel;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.toggle.FeatureToggle;
 import junit.framework.AssertionFailedError;
@@ -89,6 +90,8 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     private ContractorOperator contractorOperator2;
     @Mock
     private Naics naics;
+	@Mock
+	private ProductSubscriptionService productSubscriptionService;
 
     @Before
     public void setUp() throws Exception {
@@ -134,6 +137,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         Whitebox.setInternalState(facilitiesEdit, "operatorDao", operatorDAO);
         Whitebox.setInternalState(facilitiesEdit, "accountStatusChanges", accountStatusChanges);
         Whitebox.setInternalState(facilitiesEdit, "countryDAO", countryDAO);
+		Whitebox.setInternalState(facilitiesEdit, "productSubscriptionService", productSubscriptionService);
 
         facilitiesEdit.setOperator(operator);
         facilitiesEdit.setTimeoutDays(REMEMBER_ME_TIME_IN_DAYS);

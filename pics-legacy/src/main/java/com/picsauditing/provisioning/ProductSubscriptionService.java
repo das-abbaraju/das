@@ -16,7 +16,6 @@ public interface ProductSubscriptionService {
 	void removeEmployeeGUARD(int accountId);
 
 	boolean isEmployeeGUARDEmployeeUser(int appUserId);
-
 	boolean hasEmployeeGuardLegacy(Permissions permissions);
 
 	void employeeGuardAcquiredLegacy(int accountId);

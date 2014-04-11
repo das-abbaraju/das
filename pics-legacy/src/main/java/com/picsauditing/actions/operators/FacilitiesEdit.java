@@ -8,6 +8,7 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.operators.FacilitiesEditModel;
 import com.picsauditing.model.operators.FacilitiesEditStatus;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.service.contractor.ContractorOperatorService;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -42,6 +43,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private AccountStatusChanges accountStatusChanges;
     @Autowired
     protected ContractorOperatorService contractorOperatorService;
+	@Autowired
+	private ProductSubscriptionService productSubscriptionService;
 
     private String createType;
     private List<Integer> facilities;
@@ -74,7 +77,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         id = operator.getId();
 
-        facilities = new ArrayList<Integer>();
+        facilities = new ArrayList<>();
         if (operator.isCorporate()) {
             for (Facility fac : operator.getOperatorFacilities()) {
                 facilities.add(fac.getOperator().getId());
@@ -287,10 +290,22 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         operator = saveClientSite();
 
+		employeeGUARDProductSubscriptionNotification(operator);
+
         addActionMessage(getText("FacilitiesEdit.SuccessfullySaved", new Object[]{operator.getName()}));
 
         return REDIRECT;
     }
+
+	private void employeeGUARDProductSubscriptionNotification(final OperatorAccount operatorAccount) {
+		int operatorId = operatorAccount.getId();
+
+		if (operatorAccount.isRequiresEmployeeGuard()) {
+			productSubscriptionService.addEmployeeGUARD(operatorId);
+		} else {
+			productSubscriptionService.removeEmployeeGUARD(operatorId);
+		}
+	}
 
     private OperatorAccount saveClientSite() {
     	if (operator.getStatus().isDeactivated()) {

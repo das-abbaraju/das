@@ -18,9 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProductSubscriptionServiceImpl implements ProductSubscriptionService {
+
 	private Logger LOG = LoggerFactory.getLogger(ProductSubscriptionServiceImpl.class);
-
-
 
 	@Autowired
 	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
@@ -29,10 +28,10 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 
 	private CacheManager cacheManager;
 
-  @Autowired
-  private OperatorAccountDAO operatorAccountDAO;
-  @Autowired
-  private ContractorAccountDAO contractorAccountDAO;
+	@Autowired
+	private OperatorAccountDAO operatorAccountDAO;
+	@Autowired
+	private ContractorAccountDAO contractorAccountDAO;
 
 	@Override
 	public boolean hasEmployeeGUARD(final Account account) {
@@ -74,13 +73,23 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 
 	@Override
 	public void addEmployeeGUARD(final int accountId) {
-		accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+		try {
+			accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+		} catch (Exception e) {
+			LOG.warn("Error adding accountId {} to EmployeeGUARD", accountId);
+		}
 	}
 
 	@Override
 	public void removeEmployeeGUARD(final int accountId) {
-		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
-		accountEmployeeGuardDAO.remove(accountEmployeeGuard);
+		try {
+			AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
+			if (accountEmployeeGuard != null) {
+				accountEmployeeGuardDAO.remove(accountEmployeeGuard);
+			}
+		} catch (Exception e) {
+			LOG.warn("Error removing accountId {} from EmployeeGUARD", accountId);
+		}
 	}
 
 	@Override
@@ -89,7 +98,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		return profile != null;
 	}
 
-    private boolean isEmployeeGUARDEnabled(final int accountId) {
+	private boolean isEmployeeGUARDEnabled(final int accountId) {
 		Cache cache = cache();
 		if (cache != null) {
 			Element element = cache.get(accountId);
@@ -130,73 +139,73 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	}
 
 
-  @Override
-  public boolean hasEmployeeGuardLegacy(final Permissions permissions) {
-    final int accountId=permissions.getAccountId();
-    Boolean status =  findFromCacheLegacy(accountId);
-    if(status!=null)
-      return status;
+	@Override
+	public boolean hasEmployeeGuardLegacy(final Permissions permissions) {
+		final int accountId = permissions.getAccountId();
+		Boolean status = findFromCacheLegacy(accountId);
+		if (status != null)
+			return status;
 
-    if(permissions.isOperatorCorporate()){
-      return operatorCorporateHasEmployeeGuardLegacy(accountId);
-    }
+		if (permissions.isOperatorCorporate()) {
+			return operatorCorporateHasEmployeeGuardLegacy(accountId);
+		}
 
-    return contractorHasEmployeeGuardLegacy(accountId);
-  }
+		return contractorHasEmployeeGuardLegacy(accountId);
+	}
 
-  @Override
-  public void employeeGuardAcquiredLegacy(int accountId) {
-    removeCacheItemLegacy(accountId);
-  }
+	@Override
+	public void employeeGuardAcquiredLegacy(int accountId) {
+		removeCacheItemLegacy(accountId);
+	}
 
-  @Override
-  public void employeeGuardRemovedLegacy(int accountId) {
-    //-- Currently we dirty the cache only.
-    removeCacheItemLegacy(accountId);
-  }
+	@Override
+	public void employeeGuardRemovedLegacy(int accountId) {
+		//-- Currently we dirty the cache only.
+		removeCacheItemLegacy(accountId);
+	}
 
-  private boolean contractorHasEmployeeGuardLegacy(final int accountId){
-    ContractorAccount contractorAccount=contractorAccountDAO.find(accountId);
-    Boolean status = (contractorAccount!=null && contractorAccount.isHasEmployeeGuard());
-    cacheItemLegacy(accountId, status);
-    return status;
-  }
+	private boolean contractorHasEmployeeGuardLegacy(final int accountId) {
+		ContractorAccount contractorAccount = contractorAccountDAO.find(accountId);
+		Boolean status = (contractorAccount != null && contractorAccount.isHasEmployeeGuard());
+		cacheItemLegacy(accountId, status);
+		return status;
+	}
 
-  private boolean operatorCorporateHasEmployeeGuardLegacy(final int accountId){
-    OperatorAccount operatorAccount=operatorAccountDAO.find(accountId);
-    Boolean status = operatorAccount!=null && operatorAccount.isRequiresEmployeeGuard();
-    cacheItemLegacy(accountId, status);
-    return status;
-  }
+	private boolean operatorCorporateHasEmployeeGuardLegacy(final int accountId) {
+		OperatorAccount operatorAccount = operatorAccountDAO.find(accountId);
+		Boolean status = operatorAccount != null && operatorAccount.isRequiresEmployeeGuard();
+		cacheItemLegacy(accountId, status);
+		return status;
+	}
 
-  private void cacheItemLegacy(final Integer key, final Boolean value) {
-    Cache cache = cache();
-    if (cache != null) {
-      cache.put(new Element(key, value));
-    } else {
-      LOG.warn("Missing cache for product subscription service");
-    }
-  }
+	private void cacheItemLegacy(final Integer key, final Boolean value) {
+		Cache cache = cache();
+		if (cache != null) {
+			cache.put(new Element(key, value));
+		} else {
+			LOG.warn("Missing cache for product subscription service");
+		}
+	}
 
-  private void removeCacheItemLegacy(final Integer key) {
-    Cache cache = cache();
-    if (cache != null) {
-      cache.remove(key);
-    } else {
-      LOG.warn("Missing cache for product subscription service");
-    }
-  }
+	private void removeCacheItemLegacy(final Integer key) {
+		Cache cache = cache();
+		if (cache != null) {
+			cache.remove(key);
+		} else {
+			LOG.warn("Missing cache for product subscription service");
+		}
+	}
 
-  private Boolean findFromCacheLegacy(final int accountId){
-    Cache cache = cache();
-    if (cache != null) {
-      Element element = cache.get(accountId);
-      if (element != null && element.getObjectValue() instanceof Boolean) {
-        return (Boolean)element.getObjectValue();
-      }
-    }
+	private Boolean findFromCacheLegacy(final int accountId) {
+		Cache cache = cache();
+		if (cache != null) {
+			Element element = cache.get(accountId);
+			if (element != null && element.getObjectValue() instanceof Boolean) {
+				return (Boolean) element.getObjectValue();
+			}
+		}
 
-    return null;
-  }
+		return null;
+	}
 
 }
