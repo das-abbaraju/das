@@ -815,6 +815,7 @@ public final class MenuBuilder {
 	private static MenuComponent buildUniqueFavoritesMenuComponent() {
 		MenuComponent menuComponent = new MenuComponent();
 		menuComponent.setName("Favorites"); // this should be i18n
+
 		// This should always be in English because the front-end is using it to
 		// determine what to replace
 		menuComponent.setHtmlId("Favorites");
