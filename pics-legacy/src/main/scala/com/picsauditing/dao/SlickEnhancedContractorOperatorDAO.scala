@@ -12,7 +12,7 @@ class SlickEnhancedContractorOperatorDAO (
 
 ) extends ContractorOperatorDAO { this: SlickDatabaseAccessor =>
 
-  private def findCorporateChildWithWorkStatusForContractor(co: ContractorOperator, findWorkStatus: String)(orWorkStatus: ApprovalStatus => Boolean) = {
+  private def findCorporateChildWithWorkStatusForContractor(co: ContractorOperator, findWorkStatus: String)(orWorkStatus: ApprovalStatus => Boolean): Boolean = {
     if (co.getOperatorAccount.isCorporate) db withSession { implicit session =>
       frdProvider.childrenWorkstatusEquals(
         workStatus = findWorkStatus,

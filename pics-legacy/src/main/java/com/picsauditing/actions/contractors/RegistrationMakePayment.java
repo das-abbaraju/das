@@ -16,10 +16,7 @@ import com.picsauditing.braintree.BrainTreeHash;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.braintree.exception.BrainTreeServiceErrorResponseException;
 import com.picsauditing.braintree.exception.NoBrainTreeServiceResponseException;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.PaymentDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -75,6 +72,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 	private DataObservable saleCommissionDataObservable;
 	@Autowired
 	private BillingNoteModel billingNoteModel;
+    @Autowired
+    private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -313,8 +312,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 	}
 
     private void updateWorkStatusForAutoApproveRelationships() {
-        for (ContractorOperator co:contractor.getOperators()) {
-            if (co.isWorkStatusPending() && co.getOperatorAccount().isAutoApproveRelationships()) {
+        for (ContractorOperator co : contractor.getOperators()) {
+            if (contractorOperatorDAO.workStatusIsPending(co) && co.getOperatorAccount().isAutoApproveRelationships()) {
                 co.setWorkStatus(ApprovalStatus.Y);
                 contractorAccountDao.save(contractor);
             }

@@ -32,7 +32,7 @@ class FacilityRelationshipDataProvider
     activeAutoApprovingFacilitiesFor(operatorID).list.distinct
 
 
-  def childrenWorkstatusEquals(workStatus: String, corporateID: Long, contractorID: Long)(implicit session: Session) =
+  def childrenWorkstatusEquals(workStatus: String, corporateID: Long, contractorID: Long)(implicit session: Session): Boolean =
     queryForChildrenWorkStatus(workStatus, corporateID, contractorID).firstOption.isDefined
     // This is a tooling error, because the IDE has a problem with macros. It compiles and runs just fine.
 
