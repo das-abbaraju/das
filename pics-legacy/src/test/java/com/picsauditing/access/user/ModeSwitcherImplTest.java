@@ -6,47 +6,67 @@ import com.picsauditing.web.SessionInfoProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ModeSwitcherImplTest {
 
-	@Mock
-	private Permissions permissions;
+	private ModeSwitcher modeSwitcher;
+
 	@Mock
 	private SessionInfoProvider sessionInfoProvider;
 
 	@Before
 	public void setUp() {
-		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+		MockitoAnnotations.initMocks(this);
 
-		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		modeSwitcher = new ModeSwitcherImpl();
+
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 	}
 
 	@Test(expected = InvalidModeException.class)
 	public void testSwitchMode_InvalidMode() throws Exception {
-		ModeSwitcher modeSwitcher = new ModeSwitcherImpl();
+		when(sessionInfoProvider.getPermissions()).thenReturn(new Permissions());
 
 		modeSwitcher.switchMode(UserMode.EMPLOYEE);
 	}
 
 	@Test
 	public void testSwitchMode() throws Exception {
-		ModeSwitcher modeSwitcher = new ModeSwitcherImpl();
+		Permissions permissions = setupTestSwitchMode();
 
 		modeSwitcher.switchMode(UserMode.EMPLOYEE);
 
-		assertEquals(UserMode.EMPLOYEE, permissions.getCurrentMode());
+		verifyTestSwitchMode(permissions);
 	}
 
-	private void setupMockPermissions() {
-		when(permissions.getCurrentMode()).thenReturn(UserMode.ADMIN);
-		when(permissions.getAvailableUserModes())
-				.thenReturn(new HashSet<>(Arrays.asList(UserMode.ADMIN, UserMode.EMPLOYEE)));
+	private Permissions setupTestSwitchMode() {
+		Permissions permissions = buildFakePermissions();
+		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		return permissions;
 	}
+
+	private void verifyTestSwitchMode(Permissions permissions) {
+		assertEquals(UserMode.EMPLOYEE, permissions.getCurrentMode());
+		verify(sessionInfoProvider).putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+		verify(sessionInfoProvider).getPermissions();
+	}
+
+	private Permissions buildFakePermissions() {
+		Permissions permissions = new Permissions();
+
+		permissions.setCurrentMode(UserMode.ADMIN);
+		permissions.setAvailableUserModes(new HashSet<>(Arrays.asList(UserMode.ADMIN, UserMode.EMPLOYEE)));
+
+		return permissions;
+	}
+
 }
