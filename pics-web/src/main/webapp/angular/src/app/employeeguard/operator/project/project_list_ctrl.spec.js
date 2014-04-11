@@ -55,7 +55,6 @@ describe('An Operator Project List', function() {
         });
 
         it("should set orderByField to 'site'", function() {
-            scope.setUserType();
             expect(scope.orderByField).toEqual('site');
         });
     });
