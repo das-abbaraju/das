@@ -521,9 +521,12 @@ public class AuditPercentCalculator {
                 if (percentVerified >= 100) {
                     percentVerified = 100;
                 }
-            } else {
+            } else if (!conAudit.getAuditType().getClassType().isPolicy()) {
                 percentComplete = 100;
                 percentVerified = 100;
+            } else {
+                // Note: this should never happen, but putting in logging just in case.
+                logger.warn("Policy with no required questions {}", conAudit);
             }
 
             cao.setPercentComplete(percentComplete);

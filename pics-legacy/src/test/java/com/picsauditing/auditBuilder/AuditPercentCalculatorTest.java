@@ -812,6 +812,55 @@ public class AuditPercentCalculatorTest {
 	}
 
     @Test
+    public void testPolicyNoRequiredQuestionsIsNotPushedTo100Percent() throws Exception {
+        List<ContractorAuditOperator> caos = new ArrayList<>();
+        caos.add(contractorAuditOperator);
+        List<AuditCatData> auditCatDatas = new ArrayList<>();
+        auditCatDatas.add(catData);
+
+        setupMocksForZeroQuestionsRequired();
+        when(contractorAudit.getOperators()).thenReturn(caos);
+        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+
+        calculator.percentCalculateComplete(contractorAudit);
+
+        verify(contractorAuditOperator).setPercentComplete(0);
+        verify(contractorAuditOperator).setPercentVerified(0);
+    }
+
+    @Test
+    public void testNonPolicyNoRequiredQuestionsIsNotPushedTo100Percent() throws Exception {
+        List<ContractorAuditOperator> caos = new ArrayList<>();
+        caos.add(contractorAuditOperator);
+        List<AuditCatData> auditCatDatas = new ArrayList<>();
+        auditCatDatas.add(catData);
+
+        setupMocksForZeroQuestionsRequired();
+        when(contractorAudit.getOperators()).thenReturn(caos);
+        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+
+        calculator.percentCalculateComplete(contractorAudit);
+
+        verify(contractorAuditOperator).setPercentComplete(100);
+        verify(contractorAuditOperator).setPercentVerified(100);
+    }
+
+    private void setupMocksForZeroQuestionsRequired() {
+        when(contractorAudit.getContractorAccount()).thenReturn(contractor);
+        when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
+        when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Pending);
+        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
+        when(catData.isOverride()).thenReturn(true);
+        when(catData.isApplies()).thenReturn(true);
+        when(catData.getNumRequired()).thenReturn(0);
+        when(catData.getRequiredCompleted()).thenReturn(0);
+        when(catData.getNumVerified()).thenReturn(0);
+        when(catData.getNumAnswered()).thenReturn(0);
+    }
+
+    @Test
     public void testPercentCalculateComplete_PolicySubmittedOrAfter()
             throws Exception {
         List<ContractorAuditOperator> caos = new ArrayList<>();
