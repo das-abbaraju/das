@@ -115,18 +115,9 @@
                     <li class="success">
                         <div class="row">
                             <div class="col-md-1 col-xs-1">
-                                <i class="icon-ok-circle"></i>
-                            </div>
-                            <div class="col-md-9 col-xs-9">Pending Approval</div>
-                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.pending}</div>
-                        </div>
-                    </li>
-                    <li class="success">
-                        <div class="row">
-                            <div class="col-md-1 col-xs-1">
                                 <i class="icon-ok-sign"></i>
                             </div>
-                            <div class="col-md-9 col-xs-9">Complete and Approved</div>
+                            <div class="col-md-9 col-xs-9">Complete</div>
                             <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.complete}</div>
                         </div>
                     </li>
