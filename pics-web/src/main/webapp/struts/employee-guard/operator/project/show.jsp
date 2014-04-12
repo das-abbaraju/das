@@ -139,7 +139,7 @@
     <div class="col-md-4">
         <section class="employee-guard-section" data-url="${operator_project_url}">
             <h1>
-                <i class="icon-sitemap icon-large"></i> Assigned Employees
+                <i class="icon-map-marker icon-large"></i> Assigned Employees
             </h1>
 
             <div class="content">
