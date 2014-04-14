@@ -61,7 +61,7 @@
 
             function onSearchQuerySuggestionsRendered() {
                 addUnderCursorStateToFirstResult();
-                PICS.getClass('widget.TableStripe').init('.tt-suggestions .tt-suggestion');
+                PICS.getClass('widget.StripeCollection').init('.tt-suggestions .tt-suggestion');
             }
 
             function onSearchElFocus() {
