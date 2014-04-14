@@ -11,8 +11,8 @@
                 <children>
                     <breadcrumb>
                         <hint>project</hint>
-                        <label>Assignments and Projects</label>
-                        <uri>/employee-guard/operators/project</uri>
+                        <label>Projects</label>
+                        <uri>/employee-guard/operators/projects</uri>
                         <children>
                             <breadcrumb>
                                 <hint>{projectId}</hint>

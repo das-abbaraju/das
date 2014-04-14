@@ -94,6 +94,12 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		}
 	}
 
+	@Override
+	public boolean isEmployeeGUARDEmployeeUser(final int appUserId) {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
+		return profile != null;
+	}
+
 	private boolean isEmployeeGUARDEnabled(final int accountId) {
 		Cache cache = cache();
 		if (cache != null) {
@@ -132,12 +138,6 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		} else {
 			return cacheManager;
 		}
-	}
-
-	@Override
-	public boolean isEmployeeGUARDEmployeeUser(final int appUserId) {
-		Profile profile = profileEntityService.findByAppUserId(appUserId);
-		return profile != null;
 	}
 
 	@Override
