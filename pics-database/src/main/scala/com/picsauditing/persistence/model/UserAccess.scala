@@ -21,14 +21,25 @@ case class UserContactInfo(
                             id: Long,
                             @BeanProperty
                             username: String,
-                            @BeanProperty
                             name: Option[String],
-                            @BeanProperty
                             email: Option[String],
-                            @BeanProperty
                             phone: Option[String],
-                            @BeanProperty
-                            fax: Option[String])
+                            fax: Option[String]
+                            ) {
+
+  private def nullify[T](input: Option[T]): T = {
+    input match {
+      case Some(value) => value
+      case None => null.asInstanceOf[T]
+    }
+  }
+
+  def getName = nullify(name)
+  def getEmail = nullify(email)
+  def getPhone = nullify(phone)
+  def getFax = nullify(fax)
+
+}
 
 trait UserAccess { this: Profile =>
   import profile.simple._
