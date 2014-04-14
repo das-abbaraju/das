@@ -12,7 +12,8 @@ case class UserData(
                      phone: String,
                      fax: String,
                      isActive: String,
-                     lastLogin: Option[java.util.Date]
+                     lastLogin: Option[java.util.Date],
+                     appUserID: Option[Long]
                    )
 
 case class UserContactInfo(
@@ -50,7 +51,7 @@ trait UserAccess { this: Profile =>
     def appUser = foreignKey("app_user_fk", appUserID.get, appUsers)(_.id)
 
     def contactinfo = (id, username, name.?, email.?, phone.?, fax.?) <> (UserContactInfo.tupled, UserContactInfo.unapply)
-    def * = (id.?, accountID, username, name, email, phone, fax, isActive, lastLogin.?) <> (UserData.tupled, UserData.unapply)
+    def * = (id.?, accountID, username, name, email, phone, fax, isActive, lastLogin.?, appUserID) <> (UserData.tupled, UserData.unapply)
 
 
     implicit val convertFromTimeStamp = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
