@@ -6,6 +6,8 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.menu.builder.AuditMenuBuilder;
+import com.picsauditing.provisioning.ProductSubscriptionService;
+import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +15,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 
@@ -30,9 +33,13 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 	private AuditMenuBuilder auditMenuBuilder;
 
 	@Mock
+	private ApplicationContext applicationContext;
+	@Mock
 	private ContractorAccount contractorAccount;
 	@Mock
 	private Permissions permissions;
+	@Mock
+	private ProductSubscriptionService productSubscriptionService;
 	@Mock
 	private URLUtils urlUtils;
 
@@ -43,9 +50,11 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		auditMenuBuilder = new AuditMenuBuilder(contractorAccount, permissions);
 
 		when(contractorAccount.getStatus()).thenReturn(AccountStatus.Active);
+		when(applicationContext.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE)).thenReturn(productSubscriptionService);
 
 		Whitebox.setInternalState(auditMenuBuilder, "locale", Locale.US);
 		Whitebox.setInternalState(auditMenuBuilder, "urlUtils", urlUtils);
+		Whitebox.setInternalState(SpringUtils.class, "applicationContext", applicationContext);
 	}
 
 	@Test(expected = IllegalArgumentException.class)

@@ -2,6 +2,7 @@ package com.picsauditing.provisioning;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.ContractorAccount;
 
 public interface ProductSubscriptionService {
 
@@ -18,6 +19,8 @@ public interface ProductSubscriptionService {
 	boolean isEmployeeGUARDEmployeeUser(int appUserId);
 
 	boolean hasEmployeeGuardLegacy(Permissions permissions);
+
+	boolean hasLegacyEmployeeGUARD(ContractorAccount contractor);
 
 	void employeeGuardAcquiredLegacy(int accountId);
 

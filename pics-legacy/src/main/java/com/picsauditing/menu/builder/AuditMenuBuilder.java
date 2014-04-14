@@ -6,6 +6,7 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.contractors.ContractorDocuments;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
@@ -14,7 +15,6 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
-import com.picsauditing.web.SessionInfoProviderFactory;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;
 import org.slf4j.Logger;
@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class AuditMenuBuilder {
+
 	private static final Logger LOG = LoggerFactory.getLogger(AuditMenuBuilder.class);
 	private static final Logger PROFILER = LoggerFactory.getLogger("org.perf4j.DebugTimingLogger");
 	private static final StopWatch STOPWATCH = new Slf4JStopWatch(PROFILER);
@@ -271,13 +272,16 @@ public class AuditMenuBuilder {
 			if (hasEmployeeGUARD() && (permissions.isPicsEmployee() || permissions.isAdmin())) {
 				MenuComponent notPermitted = new MenuComponent("No Permitted", Strings.EMPTY_STRING);
 				addToServiceMenu(Service.EMPLOYEEGUARD, notPermitted);
+				addLegacyEmployeeGUARDMenu();
 			} else if (hasEmployeeGUARD() && permissions.isOperatorCorporate()) {
-				MenuComponent assignments = new MenuComponent("Assignments", "/employee-guard/operators/assignments");
+				MenuComponent assignments = new MenuComponent("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
 				addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
+				addLegacyEmployeeGUARDMenu();
 			} else if (hasEmployeeGUARD() && permissions.isContractor()) {
 				buildEmployeeMenu();
+				addLegacyEmployeeGUARDMenu();
 			} else {
-				buildLegacyEmployeeGUARDMenu();
+				buildLegacyEmployeeGUARDMenu(new DefaultEmployeeGUARDMenuServiceAppender());
 			}
 		} catch (Exception exception) {
 			LOG.error("Error building EmployeeGUARD section in AuditMenuBuilder", exception);
@@ -285,23 +289,35 @@ public class AuditMenuBuilder {
 	}
 
 	private void buildEmployeeMenu() {
-		MenuComponent summary = new MenuComponent("Summary", "/employee-guard/contractor/dashboard");
+		MenuComponent summary = new MenuComponent("Summary", EmployeeGUARDUrlUtils.CONTRACTOR_SUMMARY);
 		addToServiceMenu(Service.EMPLOYEEGUARD, summary);
 
-		MenuComponent employees = new MenuComponent("Employees", "/employee-guard/contractor/employee");
+		MenuComponent employees = new MenuComponent("Employees", EmployeeGUARDUrlUtils.CONTRACTOR_EMPLOYEES);
 		addToServiceMenu(Service.EMPLOYEEGUARD, employees);
 
-		MenuComponent assignments = new MenuComponent("Employee Assignments", "/employee-guard/contractor/project");
+		MenuComponent assignments = new MenuComponent("Employee Assignments", EmployeeGUARDUrlUtils.CONTRACTOR_ASSIGNMENTS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
 
-		MenuComponent groups = new MenuComponent("Employee Groups", "/employee-guard/contractor/employee-group");
+		MenuComponent groups = new MenuComponent("Employee Groups", EmployeeGUARDUrlUtils.CONTRACTOR_GROUPS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, groups);
 
-		MenuComponent skills = new MenuComponent("Skills", "/employee-guard/contractor/skill");
+		MenuComponent skills = new MenuComponent("Skills", EmployeeGUARDUrlUtils.CONTRACTOR_SKILLS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, skills);
 	}
 
-	private void buildLegacyEmployeeGUARDMenu() {
+	private void addLegacyEmployeeGUARDMenu() {
+		if (!hasLegacyEmployeeGUARD()) {
+			return;
+		}
+
+		MenuComponent legacy = new MenuComponent("Legacy", Strings.EMPTY_STRING);
+		legacy.setLevel(2);
+		addToServiceMenu(Service.EMPLOYEEGUARD, legacy);
+
+		buildLegacyEmployeeGUARDMenu(new EmployeeGUARDMenuLegacySubMenuAppender(legacy));
+	}
+
+	private void buildLegacyEmployeeGUARDMenu(final MenuAppender menuAppender) {
 		if (contractorSafetyOrNonContractorUser() && employeeGUARDApplicable()) {
 			String employeeDashboardPage = urlUtils().getActionUrl("EmployeeDashboard", "id", contractor.getId());
 			MenuComponent summary = new MenuComponent(getText(SUMMARY), employeeDashboardPage);
@@ -310,13 +326,13 @@ public class AuditMenuBuilder {
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.ContractorAdmin)) {
 				String manageEmployeesPage = urlUtils().getActionUrl("ManageEmployees", "id", contractor.getId());
 				MenuComponent manageEmployees = new MenuComponent(getText("ManageEmployees.title"), manageEmployeesPage);
-				addToServiceMenu(Service.EMPLOYEEGUARD, manageEmployees);
+				menuAppender.appendMenuComponent(manageEmployees);
 			}
 
 			if (permissions.isAdmin() || permissions.hasPermission(OpPerms.DefineRoles)) {
 				String manageJobRolesPage = urlUtils().getActionUrl("ManageJobRoles", "id", contractor.getId());
 				MenuComponent jobRoles = new MenuComponent(getText("ManageJobRoles.title"), manageJobRolesPage);
-				addToServiceMenu(Service.EMPLOYEEGUARD, jobRoles);
+				menuAppender.appendMenuComponent(jobRoles);
 			}
 
 			while (iterator.hasNext()) {
@@ -327,7 +343,7 @@ public class AuditMenuBuilder {
 						String year = DateBean.format(audit.getEffectiveDateLabel(), "yy");
 						childMenu.setName(getText(audit.getAuditType().getI18nKey("name")) + " '" + year);
 						childMenu.setUrl("Audit.action?auditID=" + audit.getId());
-						addToServiceMenu(Service.EMPLOYEEGUARD, childMenu);
+						menuAppender.appendMenuComponent(childMenu);
 					}
 
 					iterator.remove();
@@ -336,20 +352,19 @@ public class AuditMenuBuilder {
 
 			if (permissions.isContractor()) {
 				MenuComponent employeeCompetencies = new MenuComponent(getText("EmployeeCompetencies.title"), "EmployeeCompetencies.action", "employee_competencies");
-				addToServiceMenu(Service.EMPLOYEEGUARD, employeeCompetencies);
+				menuAppender.appendMenuComponent(employeeCompetencies);
 			}
 
 			MenuComponent competencyMatrix = new MenuComponent(getText("global.HSECompetencyMatrix"), urlUtils().getActionUrl("JobCompetencyMatrix", "id", permissions.getAccountId()), "employee_competencies");
-			addToServiceMenu(Service.EMPLOYEEGUARD, competencyMatrix);
+			menuAppender.appendMenuComponent(competencyMatrix);
 
 			if (canManuallyAddAudits()) {
 				String auditOverridePage = urlUtils().getActionUrl("AuditOverride", "id", contractor.getId());
 				MenuComponent createNewAudit = new MenuComponent(getText("EmployeeGUARD.CreateNewAudit"), auditOverridePage);
-				addToServiceMenu(Service.EMPLOYEEGUARD, createNewAudit);
+				menuAppender.appendMenuComponent(createNewAudit);
 			}
 
-			addV3EGMenuItemToEGEnabledContractor();
-			addToStartOfServiceMenu(Service.EMPLOYEEGUARD, summary);
+			menuAppender.pushToTopOfMenu(summary);
 		}
 	}
 
@@ -358,17 +373,9 @@ public class AuditMenuBuilder {
 		return productSubscriptionService.hasEmployeeGUARD(contractor.getId());
 	}
 
-	private void addV3EGMenuItemToEGEnabledContractor() {
-		if (permissions.isContractor()) {
-			ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-			if (productSubscriptionService.hasEmployeeGuardLegacy(permissions)) {
-				MenuComponent egV3 = new MenuComponent();
-				egV3.setUrl("/employee-guard/contractor/dashboard");
-				egV3.setTitle("Version 3");
-				egV3.setName("Version 3");
-				addToServiceMenu(Service.EMPLOYEEGUARD, egV3);
-			}
-		}
+	private boolean hasLegacyEmployeeGUARD() {
+		ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
+		return productSubscriptionService.hasLegacyEmployeeGUARD(contractor);
 	}
 
 	private boolean employeeGUARDApplicable() {
@@ -664,5 +671,45 @@ public class AuditMenuBuilder {
 
 	public enum Service {
 		DOCUGUARD, INSUREGUARD, EMPLOYEEGUARD, AUDITGUARD, CLIENT_REVIEWS
+	}
+
+	private interface MenuAppender {
+
+		void appendMenuComponent(MenuComponent menuComponent);
+
+		void pushToTopOfMenu(MenuComponent menuComponent);
+
+	}
+
+	private class DefaultEmployeeGUARDMenuServiceAppender implements MenuAppender {
+
+		@Override
+		public void appendMenuComponent(MenuComponent menuComponent) {
+			addToServiceMenu(Service.EMPLOYEEGUARD, menuComponent);
+		}
+
+		@Override
+		public void pushToTopOfMenu(MenuComponent menuComponent) {
+			addToStartOfServiceMenu(Service.EMPLOYEEGUARD, menuComponent);
+		}
+	}
+
+	private class EmployeeGUARDMenuLegacySubMenuAppender implements MenuAppender {
+
+		private MenuComponent parentMenuComponent;
+
+		public EmployeeGUARDMenuLegacySubMenuAppender(final MenuComponent parentMenuComponent) {
+			this.parentMenuComponent = parentMenuComponent;
+		}
+
+		@Override
+		public void appendMenuComponent(MenuComponent menuComponent) {
+			parentMenuComponent.addChild(menuComponent);
+		}
+
+		@Override
+		public void pushToTopOfMenu(MenuComponent menuComponent) {
+			parentMenuComponent.getChildren().add(0, menuComponent);
+		}
 	}
 }

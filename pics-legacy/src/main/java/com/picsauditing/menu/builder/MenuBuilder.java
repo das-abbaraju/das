@@ -10,6 +10,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
@@ -84,8 +85,10 @@ public final class MenuBuilder {
 	private static void buildEGMenubar(MenuComponent menubar, Permissions permissions) {
 		int id = getEmployeeGUARDProfileId(permissions);
 
-		menubar.addChild("Skills", "/employee-guard/employee/skills", "employee_skills");
-		menubar.addChild("Profile", "/employee-guard/employee/profile/" + id, "employee_profile");
+		menubar.addChild("Profile", EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, id),
+				"employee_profile");
+		menubar.addChild("Skills", EmployeeGUARDUrlUtils.EMPLOYEE_SKILLS, "employee_skills");
+		menubar.addChild("My Files", EmployeeGUARDUrlUtils.EMPLOYEE_MY_FILES, "employee_my_files");
 	}
 
 	private static int getEmployeeGUARDProfileId(final Permissions permissions) {
@@ -337,19 +340,7 @@ public final class MenuBuilder {
 		String auditBuilder = urlUtils.getActionUrl("AuditBuilder", "id", -1);
 		devMenu.addChild(getText("AuditBuilder.header"), auditBuilder, "audit_builder");
 
-		buildEmployeeGUARD(devMenu);
-
 		removeMenuIfEmpty(menubar, devMenu);
-	}
-
-	private static void buildEmployeeGUARD(MenuComponent devMenu) {
-		MenuComponent employeeGUARD = devMenu.addChild("EmployeeGUARD");
-
-		employeeGUARD.addChild("Operator Dashboard", "/employee-guard/operators/dashboard");
-		employeeGUARD.addChild("Contractor Dashboard", "/employee-guard/contractor/dashboard");
-		employeeGUARD.addChild("Employee Dashboard", "/employee-guard/employee/dashboard");
-
-		removeMenuIfEmpty(devMenu, employeeGUARD);
 	}
 
 	private static void buildCronSubmenu(MenuComponent devMenu) {
@@ -368,11 +359,11 @@ public final class MenuBuilder {
 		}
 
 		MenuComponent employeeGUARDMenu = menubar.addChild("EmployeeGUARD");
-		employeeGUARDMenu.addChild("Dashboard", "/employee-guard/operators/dashboard");
-		employeeGUARDMenu.addChild("Assignments", "/employee-guard/operators/assignments");
-		employeeGUARDMenu.addChild("Projects", "/employee-guard/operators/projects");
-		employeeGUARDMenu.addChild("Job Roles", "/employee-guard/operators/role");
-		employeeGUARDMenu.addChild("Skills", "/employee-guard/operators/skill");
+		employeeGUARDMenu.addChild("Summary", EmployeeGUARDUrlUtils.OPERATOR_SUMMARY);
+		employeeGUARDMenu.addChild("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
+		employeeGUARDMenu.addChild("Projects", EmployeeGUARDUrlUtils.OPERATOR_PROJECTS);
+		employeeGUARDMenu.addChild("Job Roles", EmployeeGUARDUrlUtils.OPERATOR_JOB_ROLES);
+		employeeGUARDMenu.addChild("Skills", EmployeeGUARDUrlUtils.OPERATOR_SKILLS);
 	}
 
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
@@ -464,12 +455,6 @@ public final class MenuBuilder {
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			manageMenu.addChild("QuickBooks Sync", "QBSyncList.action?currency=USD", "QuickBooksSync_USD");
 			manageMenu.addChild("QuickBooks Sync Edit", "QBSyncEdit.action", "QuickBooksSyncEdit");
-		}
-
-		if (permissions.isOperatorCorporate()) {
-			if (hasLegacyEmployeeGUARD(permissions)) {
-				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operators/dashboard");
-			}
 		}
 
 		// FIXME Remove when no longer needed!
@@ -668,7 +653,8 @@ public final class MenuBuilder {
 
 		if (inEmployeeMode) {
 			int profileId = getEmployeeGUARDProfileId(permissions);
-			userMenu.addChild(getText("menu.Profile"), "/employee-guard/employee/profile/" + profileId, "");
+			userMenu.addChild(getText("menu.Profile"),
+					EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, profileId), "");
 		}
 	}
 

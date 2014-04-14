@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 public class FeeService {
+
     @Autowired
     private InvoiceFeeDAO feeDAO;
     @Autowired
@@ -487,6 +488,10 @@ public class FeeService {
 
 	public static boolean isRevRecDeferred(InvoiceFee fee) {
 		return !fee.isTax() && !fee.isFree();
+	}
+
+	public FeeClassParameters buildFeeClassParametersForContractor(final ContractorAccount contractor) {
+		return new FeeClassParameters(contractor);
 	}
 
     public class FeeClassParameters {

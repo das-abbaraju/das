@@ -94,8 +94,12 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 			return Collections.emptyList();
 		}
 
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+				"JOIN " +
+				"WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
+
 		query.setParameter("profile", profile);
+
 		return query.getResultList();
 	}
 
