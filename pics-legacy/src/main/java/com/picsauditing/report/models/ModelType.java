@@ -47,6 +47,7 @@ public enum ModelType {
     ReportUsers,
 	SingleOperatorContractors,
     Subscriptions,
+    Transactions,
     UserAssignments,
     UserGroups,
 	Users;
