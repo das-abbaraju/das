@@ -6,12 +6,12 @@ import scala.beans.BeanProperty
 case class UserData(
                      id: Option[Long],
                      accountID: Long,
-                     username: Option[String],
-                     name: Option[String],
-                     email: Option[String],
-                     phone: Option[String],
-                     fax: Option[String],
-                     isActive: Option[String],
+                     username: String,
+                     name: String,
+                     email: String,
+                     phone: String,
+                     fax: String,
+                     isActive: String,
                      lastLogin: Option[java.util.Date]
                    )
 
@@ -48,10 +48,9 @@ trait UserAccess { this: Profile =>
 
     def appUserID = column[Option[Long]]("appUserID")
     def appUser = foreignKey("app_user_fk", appUserID.get, appUsers)(_.id)
-    def appUserName = for ( au <- appUser ) yield au.username
 
-    def contactinfo = (id, appUserName, name.?, email.?, phone.?, fax.?) <> (UserContactInfo.tupled, UserContactInfo.unapply)
-    def * = (id.?, accountID, username.?, name.?, email.?, phone.?, fax.?, isActive.?, lastLogin.?) <> (UserData.tupled, UserData.unapply)
+    def contactinfo = (id, username, name.?, email.?, phone.?, fax.?) <> (UserContactInfo.tupled, UserContactInfo.unapply)
+    def * = (id.?, accountID, username, name, email, phone, fax, isActive, lastLogin.?) <> (UserData.tupled, UserData.unapply)
 
 
     implicit val convertFromTimeStamp = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
@@ -66,6 +65,6 @@ trait UserAccess { this: Profile =>
     def * = (id, username)
   }
 
-  protected[persistence] val users = TableQuery[UserSchema]
   protected[persistence] val appUsers = TableQuery[AppUserSchema]
+  protected[persistence] val users = TableQuery[UserSchema]
 }

@@ -19,10 +19,10 @@ public class AccountContactMapper implements RowMapper<UserContactInfo> {
         return new UserContactInfo(
                 rs.getInt(USER_ID_FIELD),
                 rs.getString(USERNAME_FIELD),
-                rs.getString(USER_NAME_FIELD),
-                rs.getString(USER_EMAIL_FIELD),
-                rs.getString(USER_PHONE_FIELD),
-                rs.getString(USER_FAX_FIELD)
+                scala.Option.apply(rs.getString(USER_NAME_FIELD)),
+                scala.Option.apply(rs.getString(USER_EMAIL_FIELD)),
+                scala.Option.apply(rs.getString(USER_PHONE_FIELD)),
+                scala.Option.apply(rs.getString(USER_FAX_FIELD))
                 );
     }
 }

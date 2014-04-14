@@ -26,10 +26,10 @@ class SecurityInformationProviderTest extends BaseTestSetup {
     val EARLIER_DATE = new Date(LATEST_DATE.getTime - 10000)
     val IMPOSSIBLE_DATE = new Date(LATEST_DATE.getTime + 10000)
 
-    val findThis = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(LATEST_DATE))
-    val testUser2 = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(EARLIER_DATE))
-    val testUser3 = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(EARLIER_DATE))
-    val dontFindThis = UserData(None, SOME_OTHER_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(IMPOSSIBLE_DATE))
+    val findThis = UserData(None, TEST_ACCOUNT_ID, "xx", "Nobody Special", "email", "phone", "fax", "Yes", Some(LATEST_DATE))
+    val testUser2 = UserData(None, TEST_ACCOUNT_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", Some(EARLIER_DATE))
+    val testUser3 = UserData(None, TEST_ACCOUNT_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", Some(EARLIER_DATE))
+    val dontFindThis = UserData(None, SOME_OTHER_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", Some(IMPOSSIBLE_DATE))
 
     def prepareDatabase(testFunction: Session => (SecurityInformationProvider) => Unit) = {
       (session: Session, provider: SecurityInformationProvider) =>
@@ -38,6 +38,7 @@ class SecurityInformationProviderTest extends BaseTestSetup {
         import p._
         import p.profile.simple._
 
+        createTable(appUserTableName, appUsers.ddl.create)
         createTable(userTableName, users.ddl.create)
 
         users ++= Seq(findThis, testUser2, testUser3, dontFindThis)
