@@ -58,11 +58,11 @@ class UserDataProviderTest extends BaseTestSetup {
     val service = new UserDataProvider with H2TestingProfile
 
     val testDate = new java.util.Date()
-    val richardPrior = UserData(Some(4L), 9L, "rprior", "Richard Prior", "richard@prior.com", "999-999-9999", "888-888-8888", "No", testDate)
-    val robinWilliams = UserData(Some(0L), 9L, "rwilliams", "Robin Williams", "robin@williams.com", "777-777-7777", "666-666-6666", "Yes", testDate)
-    val joePeschi = UserData(Some(1L), 5L, "jpeschi", "Joe Peschi", "joe@peschi.com", "555-555-5555", "444-444-4444", "Yes", testDate)
-    val georgeCarlin = UserData(Some(2L), 5L, "gcarlin", "George Carlin", "mr_conductor@shiningtimestation.com", "333-333-3333", "222-222-2222", "No", testDate)
-    val samKinison = UserData(Some(3L), 5L, "skinison", "Sam Kinison", "aaaaaaah@marriedforthreeyears.com", "111-111-1111", "000-000-0000", "No", testDate)
+    val richardPrior = UserData(Some(4L), 9L, Some("rprior"), Some("Richard Prior"), Some("richard@prior.com"), Some("999-999-9999"), Some("888-888-8888"), Some("No"), Some(testDate))
+    val robinWilliams = UserData(Some(0L), 9L, Some("rwilliams"), Some("Robin Williams"), Some("robin@williams.com"), Some("777-777-7777"), Some("666-666-6666"), Some("Yes"), Some(testDate))
+    val joePeschi = UserData(Some(1L), 5L, Some("jpeschi"), Some("Joe Peschi"), Some("joe@peschi.com"),Some( "555-555-5555"), Some("444-444-4444"), Some("Yes"), Some(testDate))
+    val georgeCarlin = UserData(Some(2L), 5L, Some("gcarlin"), Some("George Carlin"), Some("mr_conductor@shiningtimestation.com"), Some("333-333-3333"), Some("222-222-2222"), Some("No"), Some(testDate))
+    val samKinison = UserData(Some(3L), 5L, Some("skinison"), Some("Sam Kinison"), Some("aaaaaaah@marriedforthreeyears.com"), Some("111-111-1111"), Some("000-000-0000"), Some("No"), Some(testDate))
     val comedians = Seq(richardPrior, robinWilliams, joePeschi, georgeCarlin, samKinison)
     val FOO_PERMISSION = "Foo"
     val BAR_PERMISSION = "Bar"

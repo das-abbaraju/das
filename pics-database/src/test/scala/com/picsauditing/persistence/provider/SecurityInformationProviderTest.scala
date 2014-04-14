@@ -26,10 +26,10 @@ class SecurityInformationProviderTest extends BaseTestSetup {
     val EARLIER_DATE = new Date(LATEST_DATE.getTime - 10000)
     val IMPOSSIBLE_DATE = new Date(LATEST_DATE.getTime + 10000)
 
-    val findThis = UserData(None, TEST_ACCOUNT_ID, "xx", "Nobody Special", "email", "phone", "fax", "Yes", LATEST_DATE)
-    val testUser2 = UserData(None, TEST_ACCOUNT_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", EARLIER_DATE)
-    val testUser3 = UserData(None, TEST_ACCOUNT_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", EARLIER_DATE)
-    val dontFindThis = UserData(None, SOME_OTHER_ID, "xx", "Still Nobody Special", "email", "phone", "fax", "Yes", IMPOSSIBLE_DATE)
+    val findThis = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(LATEST_DATE))
+    val testUser2 = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(EARLIER_DATE))
+    val testUser3 = UserData(None, TEST_ACCOUNT_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(EARLIER_DATE))
+    val dontFindThis = UserData(None, SOME_OTHER_ID, Some("xx"), Some("Still Nobody Special"), Some("email"), Some("phone"), Some("fax"), Some("Yes"), Some(IMPOSSIBLE_DATE))
 
     def prepareDatabase(testFunction: Session => (SecurityInformationProvider) => Unit) = {
       (session: Session, provider: SecurityInformationProvider) =>
