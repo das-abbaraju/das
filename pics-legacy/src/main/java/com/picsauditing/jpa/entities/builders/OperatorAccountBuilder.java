@@ -101,4 +101,9 @@ public class OperatorAccountBuilder {
         operator.setRequiresEmployeeGuard(false);
         return this;
     }
+
+    public OperatorAccountBuilder onSiteServices() {
+        operator.setOnsiteServices(true);
+        return this;
+    }
 }
