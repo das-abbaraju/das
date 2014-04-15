@@ -4,8 +4,8 @@ import com.picsauditing.controller.PicsRestActionSupport;
 
 public class AngularLoaderAction extends PicsRestActionSupport {
 
-    public String load() {
-        return BLANK;
-    }
+	public String load() {
+		return BLANK;
+	}
 
 }

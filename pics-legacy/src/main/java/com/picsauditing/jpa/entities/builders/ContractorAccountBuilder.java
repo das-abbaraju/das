@@ -82,4 +82,9 @@ public class ContractorAccountBuilder {
         contractor.setCountry(country);
         return this;
     }
+
+    public ContractorAccountBuilder safetyRisk(LowMedHigh safetyRisk) {
+        contractor.setSafetyRisk(safetyRisk);
+        return this;
+    }
 }
