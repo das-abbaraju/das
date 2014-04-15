@@ -19,6 +19,7 @@ import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -80,6 +81,7 @@ public class LoginController extends PicsActionSupport {
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
+
 		if (button == null) {
 			if (sessionCookieIsValidAndNotExpired()) {
 				switchToUser = getClientSessionUserID();
@@ -323,16 +325,16 @@ public class LoginController extends PicsActionSupport {
 		return doLogin();
 	}
 
-    private String getResendEmailAction(String server, String userName) {
-        String serverName = server.replace("http://", "https://");
+	private String getResendEmailAction(String server, String userName) {
+		String serverName = server.replace("http://", "https://");
 
-        Map<String, Object> parameters = new TreeMap<>();
-        parameters.put("username", userName);
+		Map<String, Object> parameters = new TreeMap<>();
+		parameters.put("username", userName);
 
-        URLUtils urlUtils = new URLUtils();
+		URLUtils urlUtils = new URLUtils();
 
-        return serverName + urlUtils.getActionUrl("AccountRecovery", parameters);
-    }
+		return serverName + urlUtils.getActionUrl("AccountRecovery", parameters);
+	}
 
 	private String loginNormally() throws Exception {
 		if (!verifyCookiesAreEnabled()) {
@@ -363,6 +365,8 @@ public class LoginController extends PicsActionSupport {
 
 					if ("SUCCESS".equals(result.get("status").toString())) {
 						doSetCookie(result.get("cookie").toString(), 10);
+						SessionInfoProviderFactory.getSessionInfoProvider()
+								.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 						return setUrlForRedirect("/employee-guard/employee/dashboard");
 					} else {
 						setActionErrorHeader(getText("Login.Failed"));

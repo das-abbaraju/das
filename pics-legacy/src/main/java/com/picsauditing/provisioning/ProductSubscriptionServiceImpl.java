@@ -1,5 +1,6 @@
 package com.picsauditing.provisioning;
 
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -10,6 +11,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.SpringUtils;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -138,7 +140,6 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		}
 	}
 
-
 	@Override
 	public boolean hasEmployeeGuardLegacy(final Permissions permissions) {
 		final int accountId = permissions.getAccountId();
@@ -151,6 +152,15 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		}
 
 		return contractorHasEmployeeGuardLegacy(accountId);
+	}
+
+	@Override
+	public boolean hasLegacyEmployeeGUARD(final ContractorAccount contractor) {
+		FeeService feeService = SpringUtils.getBean(SpringUtils.FEE_SERVICE);
+
+		FeeService.FeeClassParameters feeClassParameters = feeService.buildFeeClassParametersForContractor(contractor);
+		return feeClassParameters.isHasHseCompetency() || feeClassParameters.isRequiresOQ()
+				|| contractor.isHasEmployeeGUARDTag();
 	}
 
 	@Override
