@@ -118,13 +118,15 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getLoadReportAndDataUrl: function () {
+        getLoadReportAndDataUrl: function (page, limit) {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi.action?';
 
             var params = {
                 includeReport: true,
-                includeData: true
+                includeData: true,
+                page: page,
+                limit: limit
             };
 
             Ext.apply(params, base_api_params);
