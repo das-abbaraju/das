@@ -9,11 +9,13 @@ import com.picsauditing.auditBuilder.AuditTypeRuleCache;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.util.AnswerMap;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.PermissionToViewContractor;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mock;
@@ -21,12 +23,12 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RegistrationServiceEvaluationTest extends PicsTest {
 	RegistrationServiceEvaluation serviceEvaluation;
@@ -47,7 +49,11 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
     protected OperatorAccount operator;
     @Mock
     protected ServiceRiskCalculator serviceRiskCalculator;
+    @Mock
+    private EmployeeGuardRulesService employeeGuardRulesService;
 
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
 
     private ContractorAccount contractor;
 
@@ -74,6 +80,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "serviceRiskCalculator", serviceRiskCalculator);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "employeeGuardRulesService", employeeGuardRulesService);
 	}
 
     @Test
@@ -220,6 +227,26 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		Whitebox.invokeMethod(serviceEvaluation, "calculateRiskLevels");
 		assertEquals("High", contractor.getProductRisk().toString());
 	}
+
+    @Test
+    public void testNextStep_EmployeeGuardRulesEnabled() throws Exception {
+        serviceEvaluation.setContractor(contractor);
+
+        Whitebox.invokeMethod(serviceEvaluation, "runEmployeeGuardRules");
+
+        verify(employeeGuardRulesService).runEmployeeGuardRules(contractor);
+    }
+
+    @Test
+    public void testNextStep_EmployeeGuardRulesDisabled() throws Exception {
+        togglzRule.disable(Features.USE_NEW_EMPLOYEE_GUARD_RULES);
+
+        serviceEvaluation.setContractor(contractor);
+
+        Whitebox.invokeMethod(serviceEvaluation, "runEmployeeGuardRules");
+
+        verify(employeeGuardRulesService, never()).runEmployeeGuardRules(contractor);
+    }
 
 	@Test
 	public void testValidateAnswers_MaterialSupplier() {

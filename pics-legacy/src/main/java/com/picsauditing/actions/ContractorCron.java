@@ -6,6 +6,7 @@ import com.picsauditing.actions.cron.AuditCategoryJobException;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
@@ -155,6 +156,7 @@ public class ContractorCron extends PicsActionSupport {
             runRulesBasedInsuranceCriteria(contractor);
             runEmployeeGuardRules(contractor);
 
+
 			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
 
@@ -207,11 +209,9 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
     private void runEmployeeGuardRules(ContractorAccount contractor) {
-        if (!runStep(ContractorCronStep.EmployeeGuardRules)) {
-            return;
+        if (runStep(ContractorCronStep.EmployeeGuardRules) && Features.USE_NEW_EMPLOYEE_GUARD_RULES.isActive()) {
+            employeeGuardRulesService.runEmployeeGuardRules(contractor);
         }
-
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
     }
 
     private void runRulesBasedInsuranceCriteria(ContractorAccount contractor) {
