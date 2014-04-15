@@ -272,14 +272,14 @@ public class AuditMenuBuilder {
 			if (hasEmployeeGUARD() && (permissions.isPicsEmployee() || permissions.isAdmin())) {
 				MenuComponent notPermitted = new MenuComponent("No Permitted", Strings.EMPTY_STRING);
 				addToServiceMenu(Service.EMPLOYEEGUARD, notPermitted);
-				addLegacyEmployeeGUARDMenu();
+				addLegacyEmployeeGUARDSubMenu();
 			} else if (hasEmployeeGUARD() && permissions.isOperatorCorporate()) {
 				MenuComponent assignments = new MenuComponent("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
 				addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
-				addLegacyEmployeeGUARDMenu();
+				addLegacyEmployeeGUARDSubMenu();
 			} else if (hasEmployeeGUARD() && permissions.isContractor()) {
-				buildEmployeeMenu();
-				addLegacyEmployeeGUARDMenu();
+				buildEmployeeGUARDMenu();
+				addLegacyEmployeeGUARDSubMenu();
 			} else {
 				buildLegacyEmployeeGUARDMenu(new DefaultEmployeeGUARDMenuServiceAppender());
 			}
@@ -288,7 +288,7 @@ public class AuditMenuBuilder {
 		}
 	}
 
-	private void buildEmployeeMenu() {
+	private void buildEmployeeGUARDMenu() {
 		MenuComponent summary = new MenuComponent("Summary", EmployeeGUARDUrlUtils.CONTRACTOR_SUMMARY);
 		addToServiceMenu(Service.EMPLOYEEGUARD, summary);
 
@@ -305,16 +305,16 @@ public class AuditMenuBuilder {
 		addToServiceMenu(Service.EMPLOYEEGUARD, skills);
 	}
 
-	private void addLegacyEmployeeGUARDMenu() {
+	private void addLegacyEmployeeGUARDSubMenu() {
 		if (!hasLegacyEmployeeGUARD()) {
 			return;
 		}
 
-		MenuComponent legacy = new MenuComponent("Legacy", Strings.EMPTY_STRING);
-		legacy.setLevel(2);
-		addToServiceMenu(Service.EMPLOYEEGUARD, legacy);
+		MenuComponent legacySubMenu = new MenuComponent("Legacy", Strings.EMPTY_STRING);
+		legacySubMenu.setLevel(2);
+		addToServiceMenu(Service.EMPLOYEEGUARD, legacySubMenu);
 
-		buildLegacyEmployeeGUARDMenu(new EmployeeGUARDMenuLegacySubMenuAppender(legacy));
+		buildLegacyEmployeeGUARDMenu(new EmployeeGUARDMenuLegacySubMenuAppender(legacySubMenu));
 	}
 
 	private void buildLegacyEmployeeGUARDMenu(final MenuAppender menuAppender) {
@@ -681,6 +681,10 @@ public class AuditMenuBuilder {
 
 	}
 
+	/**
+	 * This is used to build the Legacy EmployeeGUARD Menu when a Contractor only
+	 * uses Legacy EmployeeGUARD
+	 */
 	private class DefaultEmployeeGUARDMenuServiceAppender implements MenuAppender {
 
 		@Override
@@ -694,6 +698,9 @@ public class AuditMenuBuilder {
 		}
 	}
 
+	/**
+	 * This is used to build the EmployeeGUARD Legacy Sub-Menu
+	 */
 	private class EmployeeGUARDMenuLegacySubMenuAppender implements MenuAppender {
 
 		private MenuComponent parentMenuComponent;

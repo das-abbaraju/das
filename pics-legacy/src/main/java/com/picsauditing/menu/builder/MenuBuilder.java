@@ -54,12 +54,12 @@ public final class MenuBuilder {
 		} else {
 			if (permissions.getUserId() > 0) {
 				if (inEmployeeMode(permissions)) {
-					buildEGMenubar(menubar, permissions);
+					buildEmployeeGUARDMenuBarForEmployeeUser(menubar, permissions);
 				} else {
 					buildPICSMenu(permissions, favoriteReports, menubar);
 				}
 			} else if (permissions.getAppUserID() > 0) {
-				buildEGMenubar(menubar, permissions);
+				buildEmployeeGUARDMenuBarForEmployeeUser(menubar, permissions);
 			}
 
 			addUserMenu(menubar, permissions);
@@ -82,7 +82,7 @@ public final class MenuBuilder {
 		}
 	}
 
-	private static void buildEGMenubar(MenuComponent menubar, Permissions permissions) {
+	private static void buildEmployeeGUARDMenuBarForEmployeeUser(MenuComponent menubar, Permissions permissions) {
 		int id = getEmployeeGUARDProfileId(permissions);
 
 		menubar.addChild("Profile", EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, id),
@@ -155,7 +155,7 @@ public final class MenuBuilder {
 													  List<ReportUser> favoriteReports) {
 		addCompanyMenu(menubar, permissions);
 		addReportsMenu(menubar, favoriteReports, permissions);
-		addEmployeeGUARDMenu(menubar, permissions);
+		addOperatorEmployeeGUARDMenu(menubar, permissions);
 		addManageMenu(menubar, permissions);
 		addSupportMenu(menubar, permissions);
 	}
@@ -353,7 +353,7 @@ public final class MenuBuilder {
 		removeMenuIfEmpty(devMenu, cronSubmenu);
 	}
 
-	private static void addEmployeeGUARDMenu(final MenuComponent menubar, final Permissions permissions) {
+	private static void addOperatorEmployeeGUARDMenu(final MenuComponent menubar, final Permissions permissions) {
 		if (!hasEmployeeGUARD(permissions)) {
 			return;
 		}
