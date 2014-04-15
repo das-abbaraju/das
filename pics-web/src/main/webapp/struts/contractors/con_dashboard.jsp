@@ -828,11 +828,11 @@
 							<s:text name="User.email"/>:
 							<a href="mailto:<s:property value="email" />" class="email"><s:property value="email"/></a>
 
-							<s:if test="phone.length() > 0">
+							<s:if test="phone != null && phone.length() > 0">
 								/ <s:text name="User.phone"/>: <s:property value="phone"/>
 							</s:if>
 
-							<s:if test="fax.length() > 0">
+							<s:if test="fax != null && fax.length() > 0">
 								/ <s:text name="User.fax"/>: <s:property value="fax"/>
 							</s:if>
 						</p>

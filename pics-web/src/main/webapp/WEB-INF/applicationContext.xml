@@ -27,7 +27,8 @@
     <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
     <bean id="BasicDAO" class="com.picsauditing.dao.BasicDAO"/>
 
-    <bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
+    <!--<bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>-->
+    <bean id="AccountDAO" class="com.picsauditing.dao.SpringConfiguredSlickEnhancedAccountDAO"/>
     <bean id="AccountUserDAO" class="com.picsauditing.dao.AccountUserDAO"/>
     <bean id="AmBestDAO" class="com.picsauditing.dao.AmBestDAO"/>
     <bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
@@ -54,7 +55,8 @@
     <bean id="ContractorAuditOperatorDAO" class="com.picsauditing.dao.ContractorAuditOperatorDAO"/>
     <bean id="ContractorAuditOperatorWorkflowDAO" class="com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO"/>
     <bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
-    <bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>
+    <!--<bean id="ContractorOperatorDAO" class="com.picsauditing.dao.ContractorOperatorDAO"/>-->
+    <bean id="ContractorOperatorDAO" class="com.picsauditing.dao.SpringConfiguredSlickEnhancedContractorOperatorDAO"/>
     <bean id="ContractorRegistrationRequestDAO" class="com.picsauditing.dao.ContractorRegistrationRequestDAO"/>
     <bean id="ContractorTagDAO" class="com.picsauditing.dao.ContractorTagDAO"/>
     <bean id="CountryDAO" class="com.picsauditing.dao.CountryDAO"/>
@@ -382,7 +384,7 @@
 
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.i18n.service.TranslateRestClient"/>
-    <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.TranslationUsageDAO" scope="prototype"/>
+    <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.SpringConfiguredTranslationUsageDAO" scope="prototype"/>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"

@@ -6,7 +6,7 @@ import com.picsauditing.dao.mapper.AccountContactMapper;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.model.contractor.AccountContact;
+import com.picsauditing.persistence.model.UserContactInfo;
 import com.picsauditing.search.Database;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
@@ -23,7 +23,7 @@ public class AccountDAO extends PicsDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(AccountDAO.class);
     private static final String ACCOUNT_CONTACTS_BY_ROLE_SQL =
-            "select u.id, u.name, u.email, u.phone, u.fax from users u " +
+            "select u.id, u.username, u.name, u.email, u.phone, u.fax from users u " +
             "join useraccess ua on ua.userID = u.id " +
             "where ua.accessType = '%s' " +
             "and u.isActive = 'Yes' " +
@@ -124,9 +124,9 @@ public class AccountDAO extends PicsDAO {
         return (Date) q.getSingleResult();
     }
 
-    public List<AccountContact> findAccountContactsByRole(int accountID, OpPerms opPerms) {
+    public List<UserContactInfo> findAccountContactsByRole(int accountID, OpPerms opPerms) {
         String sql = String.format(ACCOUNT_CONTACTS_BY_ROLE_SQL, opPerms.toString(), accountID);
-        List<AccountContact> results = new ArrayList<>();
+        List<UserContactInfo> results = new ArrayList<>();
         Database db = new Database();
         try {
             results = db.select(sql, new AccountContactMapper());

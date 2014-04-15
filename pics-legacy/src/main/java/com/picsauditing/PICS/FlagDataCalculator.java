@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.dao.SlickEnhancedContractorOperatorDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;
@@ -14,6 +15,7 @@ import java.util.*;
 
 public class FlagDataCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;
+    private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 	protected BasicDAO dao;
 
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
@@ -57,6 +59,13 @@ public class FlagDataCalculator {
 			return dao;
 		}
 	}
+
+    private SlickEnhancedContractorOperatorDAO contractorOperatorDAO() {
+        if (contractorOperatorDAO == null) {
+            return SpringUtils.getBean(SpringUtils.CONTRACTOR_OPERATOR_DAO);
+        }
+        return contractorOperatorDAO ;
+    }
 
 	public List<FlagData> calculate() {
 		flagCriteriaDao = flagCriteriaDao();
@@ -569,11 +578,11 @@ public class FlagDataCalculator {
 
 		// Operator Relationship Approval
 		if (!operator.isAutoApproveRelationships()) {
-			if (co.isWorkStatusPending()) {
+			if (contractorOperatorDAO().workStatusIsPending(co)) {
 				// Operator needs to approve/reject this contractor
 				return WaitingOn.Operator;
 			}
-			if (co.isWorkStatusRejected()) {
+			if (contractorOperatorDAO().workStatusIsRejected(co)) {
 				// Operator has already rejected this
 				// contractor, and there's nothing else
 				// they can do

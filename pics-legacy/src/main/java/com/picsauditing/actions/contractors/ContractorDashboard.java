@@ -35,7 +35,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			.getLogger(ContractorDashboard.class);
 
 	@Autowired
-	private ContractorOperatorDAO contractorOperatorDAO;
+	private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private AuditDataDAO dataDAO;
 	@Autowired
@@ -915,7 +915,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public boolean isHasPendingGeneralContractors() {
 		for (ContractorOperator contractorOperator : contractor.getOperators()) {
 			if (contractorOperator.getOperatorAccount().isGeneralContractor()
-					&& contractorOperator.isWorkStatusContractor())
+					&&  contractorOperatorDAO.workStatusIsContractor(contractorOperator))
 				return true;
 		}
 
@@ -1099,8 +1099,8 @@ public class ContractorDashboard extends ContractorActionSupport {
         stopwatch.start();
         List<OperatorAccount> operators = new ArrayList<>();
 
-        for (ContractorOperator operator:co.getContractorAccount().getOperators()) {
-            if (operator.isWorkStatusPending()
+        for (ContractorOperator operator : co.getContractorAccount().getOperators()) {
+            if (contractorOperatorDAO.workStatusIsPending(operator)
                     && operator.getOperatorAccount().isCorporate()
                     && co.getOperatorAccount().isOrIsDescendantOf(operator.getOperatorAccount().getId())) {
                 operators.add(operator.getOperatorAccount());
