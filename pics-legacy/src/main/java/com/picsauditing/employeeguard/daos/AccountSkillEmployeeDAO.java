@@ -35,7 +35,10 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 
 	public List<AccountSkillEmployee> findBySkill(AccountSkill skill) {
 		if (skill != null) {
-			TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.skill = :skill AND ase.employee.deletedBy = 0 AND ase.employee.deletedDate IS NULL", AccountSkillEmployee.class);
+			TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+					"WHERE ase.skill = :skill " +
+					"AND ase.employee.deletedBy = 0 " +
+					"AND ase.employee.deletedDate IS NULL", AccountSkillEmployee.class);
 			query.setParameter("skill", skill);
 			return query.getResultList();
 		}
@@ -75,7 +78,10 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public AccountSkillEmployee findByProfileAndSkill(final Profile profile, final AccountSkill skill) {
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.profile = :profile AND ase.skill = :skill", AccountSkillEmployee.class);
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+				"WHERE ase.employee.profile = :profile " +
+				"AND ase.skill = :skill", AccountSkillEmployee.class);
+
 		query.setParameter("profile", profile);
 		query.setParameter("skill", skill);
 
@@ -94,8 +100,11 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 			return Collections.emptyList();
 		}
 
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+				"WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
+
 		query.setParameter("profile", profile);
+
 		return query.getResultList();
 	}
 

@@ -9,24 +9,30 @@ import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.messaging.Publisher;
 import com.picsauditing.search.Database;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.toggle.FeatureToggle;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ContractorCronTest extends PicsActionTest {
@@ -63,6 +69,11 @@ public class ContractorCronTest extends PicsActionTest {
     private UserAssignmentDAO userAssignmentDAO;
     @Mock
     private MessagePublisherService messageService;
+    @Mock
+    private EmployeeGuardRulesService employeeGuardRulesService;
+
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
 
 	@Before
 	public void setUp() throws Exception {
@@ -77,6 +88,7 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
         Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
         Whitebox.setInternalState(contractorCron, "messageService", messageService);
+        Whitebox.setInternalState(contractorCron, "employeeGuardRulesService", employeeGuardRulesService);
 
         when(messageService.getFlagChangePublisher()).thenReturn(flagChangePublisher);
 	}
@@ -1187,7 +1199,23 @@ public class ContractorCronTest extends PicsActionTest {
 	    assertEquals(FlagColor.Green, corporateRollupData.get(corporateWithGreenFlag));
     }
 
-	@Ignore
+    @Test
+    public void testRunEmployeeGuardRules_FeatureEnabled() throws Exception {
+        setupStep(ContractorCronStep.EmployeeGuardRules);
+        Whitebox.invokeMethod(contractorCron, "runEmployeeGuardRules", contractor);
+        verify(employeeGuardRulesService).runEmployeeGuardRules(contractor);
+    }
+
+    @Test
+    public void testRunEmployeeGuardRules_FeatureDisabled() throws Exception {
+        togglzRule.disable(Features.USE_NEW_EMPLOYEE_GUARD_RULES);
+        setupStep(ContractorCronStep.EmployeeGuardRules);
+        Whitebox.invokeMethod(contractorCron, "runEmployeeGuardRules", contractor);
+        verify(employeeGuardRulesService, never()).runEmployeeGuardRules(contractor);
+    }
+
+
+    @Ignore
 	public void testOverrideStillApplicable() throws Exception {
 		Boolean result;
 

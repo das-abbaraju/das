@@ -384,7 +384,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			if (!permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest())) {
 				return false;
 			}
-		} catch (Exception e) {
+        } catch (IllegalStateException badState) {
+            logger.error("This error was part of tracking PICS-15054.  user id {}", permissions.getUserId());
+            logger.error("PicsActionSupport: Error occurred trying to login: {} {}", badState.getMessage(), badState.getStackTrace());
+            return false;
+        } catch (Exception e) {
 			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}

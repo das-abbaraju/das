@@ -6,7 +6,7 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.CountrySubdivisionDAO;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.contractor.AccountContact;
+import com.picsauditing.persistence.model.UserContactInfo;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -284,8 +284,8 @@ public class AccountActionSupport extends PicsActionSupport {
         return getFuzzyDate(lastLogin);
     }
 
-    public List<AccountContact> getAccountContactsByRole(OpPerms opPerms) {
-        List<AccountContact> results = accountDAO.findAccountContactsByRole(account.getId(), opPerms);
+    public List<UserContactInfo> getAccountContactsByRole(OpPerms opPerms) {
+        List<UserContactInfo> results = accountDAO.findAccountContactsByRole(account.getId(), opPerms);
         return results;
     }
 }

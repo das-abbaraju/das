@@ -7,6 +7,7 @@ import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.Strings;
@@ -55,7 +56,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	private boolean requireTransportation;
 	private String servicesHelpText = "";
 
-	private List<ContractorType> conTypes = new ArrayList<ContractorType>();
+	private List<ContractorType> conTypes = new ArrayList<>();
 
 	private String readyToProvideSsipDetails;
 
@@ -245,9 +246,9 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 
-		employeeGuardRulesService.runEmployeeGuardRules(contractor);
+        runEmployeeGuardRules();
 
-		billingService.syncBalance(contractor);
+        billingService.syncBalance(contractor);
 		feeService.calculateContractorInvoiceFees(contractor, false);
 		contractorAccountDao.save(contractor);
 
@@ -267,7 +268,13 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		return setUrlForRedirect(getRegistrationStep().getUrl());
 	}
 
-	private void recalculateAuditPercentages() {
+    private void runEmployeeGuardRules() {
+        if (Features.USE_NEW_EMPLOYEE_GUARD_RULES.isActive()) {
+		    employeeGuardRulesService.runEmployeeGuardRules(contractor);
+        }
+    }
+
+    private void recalculateAuditPercentages() {
 		for (ContractorAudit audit:contractor.getAudits()) {
 			auditPercentCalculator.percentCalculateComplete(audit, true);
 		}

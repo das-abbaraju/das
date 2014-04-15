@@ -1,15 +1,13 @@
 package com.picsauditing.provisioning;
 
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
 import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.web.SessionInfoProviderFactory;
+import com.picsauditing.util.SpringUtils;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -32,7 +30,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	@Override
 	public void addEmployeeGUARD(final int accountId) {
 		try {
-      removeCacheItem(accountId);
+			removeCacheItem(accountId);
 
 			accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
 		} catch (Exception e) {
@@ -43,7 +41,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	@Override
 	public void removeEmployeeGUARD(final int accountId) {
 		try {
-      removeCacheItem(accountId);
+			removeCacheItem(accountId);
 
 			AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
 			if (accountEmployeeGuard != null) {
@@ -61,26 +59,39 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	}
 
 	@Override
-	public boolean hasEmployeeGuard(final Permissions permissions) {
-		final int accountId = permissions.getAccountId();
+	public boolean hasEmployeeGUARD(final Permissions permissions) {
+		return hasEmployeeGUARD(permissions.getAccountId());
+
+	}
+
+	@Override
+	public boolean hasEmployeeGUARD(final int accountId) {
 		Boolean status = findFromCache(accountId);
 		if (status != null)
 			return status;
 
-    return anyUserTypeHasEmployeeGuard(accountId);
-
+		return anyUserTypeHasEmployeeGuard(accountId);
 	}
 
-  private boolean anyUserTypeHasEmployeeGuard(final int accountId){
-    Boolean status=false;
-    AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
-    if (accountEmployeeGuard != null) {
-      status=true;
-    }
+	@Override
+	public boolean hasLegacyEmployeeGUARD(final ContractorAccount contractor) {
+		FeeService feeService = SpringUtils.getBean(SpringUtils.FEE_SERVICE);
 
-    cacheItem(accountId, status);
-    return status;
-  }
+		FeeService.FeeClassParameters feeClassParameters = feeService.buildFeeClassParametersForContractor(contractor);
+		return feeClassParameters.isHasHseCompetency() || feeClassParameters.isRequiresOQ()
+				|| contractor.isHasEmployeeGUARDTag();
+	}
+
+	private boolean anyUserTypeHasEmployeeGuard(final int accountId) {
+		Boolean status = false;
+		AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
+		if (accountEmployeeGuard != null) {
+			status = true;
+		}
+
+		cacheItem(accountId, status);
+		return status;
+	}
 
 	private void cacheItem(final Integer key, final Boolean value) {
 		Cache cache = cache();
@@ -112,18 +123,17 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		return null;
 	}
 
-  private Cache cache() {
-    cacheManager = cacheManager();
-    Cache cache = cacheManager.getCache(CACHE_NAME);
-    return cache;
-  }
+	private Cache cache() {
+		cacheManager = cacheManager();
+		Cache cache = cacheManager.getCache(CACHE_NAME);
+		return cache;
+	}
 
-  private CacheManager cacheManager() {
-    if (cacheManager == null) {
-      return CacheManager.getInstance();
-    } else {
-      return cacheManager;
-    }
-  }
-
+	private CacheManager cacheManager() {
+		if (cacheManager == null) {
+			return CacheManager.getInstance();
+		} else {
+			return cacheManager;
+		}
+	}
 }

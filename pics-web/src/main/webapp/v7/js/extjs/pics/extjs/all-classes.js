@@ -66363,12 +66363,23 @@ Ext.define('PICS.data.ServerCommunication', {
                 });
             },
 
-            loadReportAndData: function () {
+            // TODO: Potential DRY principle violation. LoadReportAndData and LoadData do
+            // much of the same thing, with only a couple differences.
+            loadReportAndData: function (page, limit) {
                 var report_store = Ext.StoreManager.get('report.Reports'),
                     report = report_store.first(),
                     report_id = report.get('id'),
+                    data_table_store = Ext.StoreManager.get('report.DataTables'),
+                    page = page ? page : 1,
+                    limit = limit ? limit : data_table_store.pageSize,
                     has_unsaved_changes = report.getHasUnsavedChanges(),
-                    url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl();
+                    url = PICS.data.ServerCommunicationUrl.getLoadReportAndDataUrl(page, limit);
+
+                // updates the stores limit tracker
+                data_table_store.setLimit(limit);
+
+                // updates the stores page tracker
+                data_table_store.setPage(page);
 
                 // add data table loading mask
                 startDataTableLoading();
@@ -66776,13 +66787,15 @@ Ext.define('PICS.data.ServerCommunicationUrl', {
             return path + Ext.Object.toQueryString(params);
         },
 
-        getLoadReportAndDataUrl: function () {
+        getLoadReportAndDataUrl: function (page, limit) {
             var base_api_params = this.getBaseApiParams(),
                 path = 'ReportApi.action?';
 
             var params = {
                 includeReport: true,
-                includeData: true
+                includeData: true,
+                page: page,
+                limit: limit
             };
 
             Ext.apply(params, base_api_params);
