@@ -324,7 +324,7 @@ public class AuditMenuBuilder {
 	private void addV3EGMenuItemToEGEnabledContractor() {
 		if (permissions.isContractor()) {
 			ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-			if (productSubscriptionService.hasEmployeeGuardLegacy(permissions)) {
+			if (productSubscriptionService.hasEmployeeGuard(permissions)) {
 				MenuComponent egV3 = new MenuComponent();
 				egV3.setUrl("/employee-guard/contractor/dashboard");
 				egV3.setTitle("Version 3");

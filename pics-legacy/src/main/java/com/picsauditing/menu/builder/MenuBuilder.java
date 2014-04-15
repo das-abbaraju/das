@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.access.user.UserMode;
-import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -455,7 +454,7 @@ public final class MenuBuilder {
 
 		if (permissions.isOperatorCorporate()) {
 			ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-			if (productSubscriptionService.hasEmployeeGuardLegacy(permissions)) {
+			if (productSubscriptionService.hasEmployeeGuard(permissions)) {
 				manageMenu.addChild("EmployeeGUARD", "/employee-guard/operators/dashboard");
 			}
 		}
