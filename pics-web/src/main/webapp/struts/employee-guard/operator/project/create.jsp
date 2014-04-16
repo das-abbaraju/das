@@ -3,7 +3,7 @@
 <%@ taglib prefix="tw" uri="/WEB-INF/tags/twitter-bootstrap.tld" %>
 
 <%-- Url --%>
-<s:url action="project" var="operator_project_list_url"/>
+<s:url action="projects" var="operator_project_list_url"/>
 <s:url action="project" method="create" var="operator_project_create_url"/>
 
 <%-- Page title --%>

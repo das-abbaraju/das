@@ -34,6 +34,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECTS;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECT_CREATE;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
@@ -41,9 +43,11 @@ import static org.mockito.Mockito.when;
 
 @UseReporter(DiffReporter.class)
 public class ProjectActionTest extends PicsActionTest {
+
 	public static final String ID = "id";
-	public static final String LIST_URL = "/employee-guard/operators/project";
-	public static final String CREATE_URL = "/employee-guard/operators/project/create";
+	public static final String PROJECT_URL_PREFIX = "/employee-guard/operators/project/";
+
+	// Class under test
 	private ProjectAction projectAction;
 
 	private AccountService accountService;
@@ -139,7 +143,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setProjectForm(new ProjectForm());
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.insert());
-		assertEquals(LIST_URL, projectAction.getUrl());
+		assertEquals(OPERATOR_PROJECTS, projectAction.getUrl());
 		verify(projectService).save(any(Project.class), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 	}
 
@@ -150,7 +154,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setProjectForm(projectForm);
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.insert());
-		assertEquals(CREATE_URL, projectAction.getUrl());
+		assertEquals(OPERATOR_PROJECT_CREATE, projectAction.getUrl());
 		verify(projectService).save(any(Project.class), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 	}
 
@@ -159,7 +163,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setProjectNameSkillsForm(new ProjectNameSkillsForm());
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.update());
-		assertTrue(projectAction.getUrl().startsWith(LIST_URL + "/"));
+		assertTrue(projectAction.getUrl().startsWith(PROJECT_URL_PREFIX));
 		verify(projectService).update(any(Project.class), any(ProjectNameSkillsForm.class), eq(Identifiable.SYSTEM));
 	}
 
@@ -168,7 +172,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setProjectRolesForm(new ProjectRolesForm());
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.update());
-		assertTrue(projectAction.getUrl().startsWith(LIST_URL + "/"));
+		assertTrue(projectAction.getUrl().startsWith(PROJECT_URL_PREFIX));
 		verify(projectService).update(any(Project.class), any(ProjectRolesForm.class), eq(Identifiable.SYSTEM));
 	}
 
@@ -177,6 +181,6 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setId(ID);
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.delete());
-		assertEquals(LIST_URL, projectAction.getUrl());
+		assertEquals(OPERATOR_PROJECTS, projectAction.getUrl());
 	}
 }
