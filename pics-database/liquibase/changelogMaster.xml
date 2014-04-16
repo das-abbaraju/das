@@ -208,4 +208,5 @@
 
 	<!-- 7.2.7 -->
 	<include file="./liquibase/2014/Q2/cjones1_PICS-13537_Drop_Webcam.sql"/>
+	<include file="./liquibase/2014/Q2/aphatarphekar1_US790_DDL_add_deletedDate_AccountEmployeeGuard_Table.sql"/>
 </databaseChangeLog>
