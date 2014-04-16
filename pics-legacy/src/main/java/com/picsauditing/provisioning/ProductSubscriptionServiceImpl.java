@@ -32,7 +32,7 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		try {
 			removeCacheItem(accountId);
 
-			accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+			accountEmployeeGuardDAO.merge(new AccountEmployeeGuard(accountId));
 		} catch (Exception e) {
 			LOG.warn("Error adding accountId {} to EmployeeGUARD", accountId);
 		}
