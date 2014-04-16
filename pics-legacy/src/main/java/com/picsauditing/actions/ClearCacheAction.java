@@ -19,6 +19,7 @@ import com.picsauditing.service.i18n.TranslationServiceFactory;
 
 @SuppressWarnings("serial")
 public class ClearCacheAction extends PicsActionSupport {
+
 	public static String CLEAR_CACHE_PROPERTY = "PICS.clear_cache";
 
 	@Autowired

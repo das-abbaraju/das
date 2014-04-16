@@ -467,12 +467,7 @@ public final class MenuBuilder {
 
 	private static boolean hasEmployeeGUARD(final Permissions permissions) {
 		ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-		return productSubscriptionService.hasEmployeeGUARD(permissions.getAccountId());
-	}
-
-	private static boolean hasLegacyEmployeeGUARD(final Permissions permissions) {
-		ProductSubscriptionService productSubscriptionService = SpringUtils.getBean(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE);
-		return productSubscriptionService.hasEmployeeGuardLegacy(permissions);
+		return productSubscriptionService.hasEmployeeGUARD(permissions);
 	}
 
 	private static void addReportsMenu(MenuComponent menubar, List<ReportUser> favoriteReports, Permissions permissions) {

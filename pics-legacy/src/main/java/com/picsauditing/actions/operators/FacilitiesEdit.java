@@ -300,12 +300,20 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private void employeeGUARDProductSubscriptionNotification(final OperatorAccount operatorAccount) {
 		int operatorId = operatorAccount.getId();
 
+    /*
+      operatorAccount.isRequiresEmployeeGuard()
+      TODO:This property is not required whenever this registration module or OperatorAccount entity is refactored
+    * whether user has EG or not is checked for somewhere else and not in operatoraccount entity
+    *
+    * */
+
 		if (operatorAccount.isRequiresEmployeeGuard()) {
 			productSubscriptionService.addEmployeeGUARD(operatorId);
 		} else {
 			productSubscriptionService.removeEmployeeGUARD(operatorId);
 		}
-	}
+
+  }
 
     private OperatorAccount saveClientSite() {
     	if (operator.getStatus().isDeactivated()) {

@@ -1,133 +1,129 @@
 package com.picsauditing.provisioning;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO;
+import com.picsauditing.employeeguard.entities.AccountEmployeeGuard;
+import com.picsauditing.web.SessionInfoProvider;
 import net.sf.ehcache.CacheManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
-/*
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.*;
-*/
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class ProductSubscriptionServiceTest  extends PicsTest {
-  private ProductSubscriptionService productSubscriptionService;
-  private ContractorAccount contractor;
-  private OperatorAccount operator;
-  private static final Integer operatorId=100;
-  private static final Integer contractorId=200;
+public class ProductSubscriptionServiceTest {
 
-  @Mock
-  private Permissions permissions;
+	private ProductSubscriptionService productSubscriptionService;
+	private AccountEmployeeGuard operatorAccountEmployeeGuard;
+	private AccountEmployeeGuard contractorAccountEmployeeGuard;
+	private static final Integer operatorId = 100;
+	private static final Integer contractorId = 200;
 
-  @Mock
-  protected ContractorAccountDAO contractorAccountDAO;
+	@Mock
+	private Permissions permissions;
 
-  @Mock
-  private OperatorAccountDAO operatorAccountDAO;
+	@Mock
+	private AccountEmployeeGuardDAO accountEmployeeGuardDAO;
 
-  @Mock
-  private CacheManager cacheManager;
+	@Mock
+	private CacheManager cacheManager;
 
+	@Mock
+	SessionInfoProvider sessionInfoProvider;
 
-  @Before
-  public void setUp() throws Exception {
-    MockitoAnnotations.initMocks(this);
-    super.setUp();
-    productSubscriptionService = new ProductSubscriptionServiceImpl();
-    autowireDAOsFromDeclaredMocks(productSubscriptionService, this);
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		productSubscriptionService = new ProductSubscriptionServiceImpl();
+		CacheManager.getInstance().getCache(ProductSubscriptionService.CACHE_NAME).removeAll();
+		operatorAccountEmployeeGuard = new AccountEmployeeGuard(operatorId);
+		contractorAccountEmployeeGuard = new AccountEmployeeGuard(contractorId);
+		Whitebox.setInternalState(productSubscriptionService, "accountEmployeeGuardDAO", accountEmployeeGuardDAO);
+	}
 
+	private Boolean hasEmployeeGuard_OperatorHasEG() throws Exception {
+		when(permissions.isContractor()).thenReturn(false);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(operatorId);
+		when(accountEmployeeGuardDAO.find(operatorAccountEmployeeGuard.getAccountId())).thenReturn(operatorAccountEmployeeGuard);
+		when(permissions.getAccountId()).thenReturn(operatorAccountEmployeeGuard.getAccountId());
+		return productSubscriptionService.hasEmployeeGUARD(permissions);
 
-    CacheManager.getInstance().getCache(ProductSubscriptionService.CACHE_NAME).removeAll();
+	}
 
-  }
+	private Boolean hasEmployeeGuard_ContratorHasEG() throws Exception {
+		when(permissions.isContractor()).thenReturn(true);
+		when(permissions.isOperatorCorporate()).thenReturn(false);
+		when(permissions.getAccountId()).thenReturn(contractorAccountEmployeeGuard.getAccountId());
+		when(accountEmployeeGuardDAO.find(contractorAccountEmployeeGuard.getAccountId())).thenReturn(contractorAccountEmployeeGuard);
+		when(permissions.getAccountId()).thenReturn(contractorAccountEmployeeGuard.getAccountId());
+		return productSubscriptionService.hasEmployeeGUARD(permissions);
+	}
 
-  private Boolean hasEmployeeGuardLegacy_OperatorHasEG() throws Exception{
-    operator = EntityFactory.makeOperator();
-    operator.setId(operatorId);
-    operator.setRequiresEmployeeGuard(true);
-    when(permissions.isContractor()).thenReturn(false);
-    when(permissions.isOperatorCorporate()).thenReturn(true);
-    when(operatorAccountDAO.find(operator.getId())).thenReturn(operator);
-    when(permissions.getAccountId()).thenReturn(operator.getId());
+	@Test
+	public void testHasEmployeeGuard_OperatorHasEG_PullFromDB() throws Exception {
 
-    return productSubscriptionService.hasEmployeeGuardLegacy(permissions);
+		boolean status = hasEmployeeGuard_OperatorHasEG();
 
-  }
+		assertTrue("Expected Operator to have EmployeeGuard", status);
+	}
 
-  private Boolean hasEmployeeGuardLegacy_ContratorHasEG() throws Exception{
-    contractor = EntityFactory.makeContractor();
-    contractor.setId(contractorId);
-    contractor.setHasEmployeeGuard(true);
-    when(permissions.isContractor()).thenReturn(true);
-    when(permissions.isOperatorCorporate()).thenReturn(false);
-    when(contractorAccountDAO.find(contractor.getId())).thenReturn(contractor);
-    when(permissions.getAccountId()).thenReturn(contractor.getId());
-    return productSubscriptionService.hasEmployeeGuardLegacy(permissions);
+	@Test
+	public void testHasEmployeeGuard_OperatorHasEG_PullFromCache() throws Exception {
+		hasEmployeeGuard_OperatorHasEG();
+		hasEmployeeGuard_OperatorHasEG();
 
-  }
+		Boolean status = Whitebox.invokeMethod(productSubscriptionService, "findFromCache", operatorId);
+		assertTrue("Expected findFromCache to return true", status);
 
+	}
 
-  @Test
-  public void testHasEmployeeGuardLegacy_OperatorHasEG_PullFromDB() throws Exception {
+	@Test
+	public void testHasEmployeeGuard_ContractorHasEG_PullFromDB() throws Exception {
+		boolean status = hasEmployeeGuard_ContratorHasEG();
 
-    boolean status=hasEmployeeGuardLegacy_OperatorHasEG();
+		assertTrue("Expected Contrator to have EmployeeGuard", status);
 
-    assertTrue("Expected Operator to have EmployeeGuard", status);
-  }
+	}
 
-  @Test
-  public void testHasEmployeeGuardLegacy_OperatorHasEG_PullFromCache() throws Exception {
-    hasEmployeeGuardLegacy_OperatorHasEG();
-    hasEmployeeGuardLegacy_OperatorHasEG();
+	@Test
+	public void testHasEmployeeGuard_ContractorHasEG_PullFromCache() throws Exception {
+		hasEmployeeGuard_ContratorHasEG();
+		hasEmployeeGuard_ContratorHasEG();
 
-    Boolean status=Whitebox.invokeMethod(productSubscriptionService, "findFromCacheLegacy", operator.getId());
-    assertTrue("Expected findFromCacheLegacy to return true", status);
+		Boolean status = Whitebox.invokeMethod(productSubscriptionService, "findFromCache", contractorId);
+		assertTrue("Expected findFromCache to return true", status);
 
-  }
+	}
 
-  @Test
-  public void testHasEmployeeGuardLegacy_ContractorHasEG_PullFromDB() throws Exception {
-    boolean status=hasEmployeeGuardLegacy_ContratorHasEG();
+	@Test
+	public void testEmployeeGuardRemoved() throws Exception {
+		hasEmployeeGuard_OperatorHasEG();
 
-    assertTrue("Expected Contrator to have EmployeeGuard", status);
+		when(accountEmployeeGuardDAO.find(operatorAccountEmployeeGuard.getAccountId())).thenReturn(operatorAccountEmployeeGuard);
 
-  }
+		productSubscriptionService.removeEmployeeGUARD(operatorAccountEmployeeGuard.getAccountId());
 
-  @Test
-  public void testHasEmployeeGuardLegacy_ContractorHasEG_PullFromCache() throws Exception {
-    hasEmployeeGuardLegacy_ContratorHasEG();
-    hasEmployeeGuardLegacy_ContratorHasEG();
+		Boolean status = Whitebox.invokeMethod(productSubscriptionService, "findFromCache", operatorAccountEmployeeGuard.getAccountId());
+		assertNull("Expected findFromCache to return null", null);
+		verify(accountEmployeeGuardDAO).remove(any(AccountEmployeeGuard.class));
+	}
 
-    Boolean status=Whitebox.invokeMethod(productSubscriptionService, "findFromCacheLegacy", contractor.getId());
-    assertTrue("Expected findFromCacheLegacy to return true", status);
+	@Test
+	public void testAddEmployeeGuard() throws Exception {
 
-  }
+		hasEmployeeGuard_OperatorHasEG();
 
-  @Test
-  public void testEmployeeGuardRemovedLegacy() throws Exception {
-    hasEmployeeGuardLegacy_OperatorHasEG();
+		productSubscriptionService.addEmployeeGUARD(operatorAccountEmployeeGuard.getAccountId());
 
-    //-- Currently we dirty the cache only.
-    productSubscriptionService.employeeGuardRemovedLegacy(operator.getId());
-
-    Boolean status=Whitebox.invokeMethod(productSubscriptionService, "findFromCacheLegacy", operator.getId());
-    assertNull("Expected findFromCacheLegacy to return null", null);
-
-  }
-
+		Boolean status = Whitebox.invokeMethod(productSubscriptionService, "findFromCache", operatorAccountEmployeeGuard.getAccountId());
+		assertNull("Expected findFromCache to return null", null);
+	}
 
 }

@@ -2,114 +2,127 @@ package com.picsauditing.service.employeeGuard;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import java.util.logging.Logger;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
 
 public class EmployeeGuardRulesServiceTest {
-    @Mock
-    private Logger logger;
 
-    private ContractorAccount contractor;
-    private EmployeeGuardRulesService employeeGuardRulesService;
+	@Mock
+	private ProductSubscriptionService productSubscriptionService;
 
-    @Before
-    public void setup() {
-        employeeGuardRulesService = new EmployeeGuardRulesService();
-    }
+	private ContractorAccount contractor;
+	private EmployeeGuardRulesService employeeGuardRulesService;
 
-    @Test
-    public void testRunEmployeeGuardRules_OnSiteServices_WorksForEmployeeGuardOperator() {
-        contractor = ContractorAccount.builder()
-                .onSiteServices()
-                .operator(OperatorAccount.builder()
-                        .requiresEmployeeGuard()
-                        .build())
-                .build();
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService = new EmployeeGuardRulesService();
 
-        assertTrue(contractor.isHasEmployeeGuard());
-    }
+		Whitebox.setInternalState(employeeGuardRulesService, "productSubscriptionService", productSubscriptionService);
+	}
 
-    @Test
-    public void testRunEmployeeGuardRules_OnSiteServices_WorksForEmployeeGuardOperatorAndAnother() {
-        contractor = ContractorAccount.builder()
-                .onSiteServices()
-                .operator(OperatorAccount.builder()
-                        .doesNotRequireEmployeeGuard()
-                        .build())
-                .operator(OperatorAccount.builder()
-                        .requiresEmployeeGuard()
-                        .build())
-                .build();
+	@Test
+	public void testRunEmployeeGuardRules_OnSiteServices_WorksForEmployeeGuardOperator() {
+		contractor = ContractorAccount.builder()
+				.onSiteServices()
+				.operator(OperatorAccount.builder()
+						.requiresEmployeeGuard()
+						.build())
+				.build();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        assertTrue(contractor.isHasEmployeeGuard());
-    }
+		assertTrue(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).addEmployeeGUARD(contractor.getId());
+	}
 
-    @Test
-    public void testRunEmployeeGuardRules_OnSiteServices_DoesNotWorkForEmployeeGuardOperator() {
-        contractor = ContractorAccount.builder()
-                .onSiteServices()
-                .operator(OperatorAccount.builder()
-                        .doesNotRequireEmployeeGuard()
-                        .build())
-                .build();
+	@Test
+	public void testRunEmployeeGuardRules_OnSiteServices_WorksForEmployeeGuardOperatorAndAnother() {
+		contractor = ContractorAccount.builder()
+				.onSiteServices()
+				.operator(OperatorAccount.builder()
+						.doesNotRequireEmployeeGuard()
+						.build())
+				.operator(OperatorAccount.builder()
+						.requiresEmployeeGuard()
+						.build())
+				.build();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        assertFalse(contractor.isHasEmployeeGuard());
-    }
+		assertTrue(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).addEmployeeGUARD(contractor.getId());
+	}
 
-    @Test
-    public void testRunEmployeeGuardRules_NotOnSiteServices_WorksForEmployeeGuardOperator() {
-        contractor = ContractorAccount.builder()
-                .doesNotPerformOnSiteServices()
-                .operator(OperatorAccount.builder()
-                        .doesNotRequireEmployeeGuard()
-                        .build())
-                .build();
+	@Test
+	public void testRunEmployeeGuardRules_OnSiteServices_DoesNotWorkForEmployeeGuardOperator() {
+		contractor = ContractorAccount.builder()
+				.onSiteServices()
+				.operator(OperatorAccount.builder()
+						.doesNotRequireEmployeeGuard()
+						.build())
+				.build();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        assertFalse(contractor.isHasEmployeeGuard());
-    }
+		assertFalse(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).removeEmployeeGUARD(contractor.getId());
+	}
 
-    @Test
-    public void testRunEmployeeGuardRules_NotOnSiteServices_DoesNotWorkForEmployeeGuardOperator() {
-        contractor = ContractorAccount.builder()
-                .onSiteServices()
-                .operator(OperatorAccount.builder()
-                        .doesNotRequireEmployeeGuard()
-                        .build())
-                .build();
+	@Test
+	public void testRunEmployeeGuardRules_NotOnSiteServices_WorksForEmployeeGuardOperator() {
+		contractor = ContractorAccount.builder()
+				.doesNotPerformOnSiteServices()
+				.operator(OperatorAccount.builder()
+						.doesNotRequireEmployeeGuard()
+						.build())
+				.build();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        assertFalse(contractor.isHasEmployeeGuard());
-    }
+		assertFalse(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).removeEmployeeGUARD(contractor.getId());
+	}
 
-    @Test
-    public void testRunEmployeeGuardRules_OnsiteServices_ParentOperatorRequiresEmployeeGuard() {
-        contractor = ContractorAccount.builder()
-                .onSiteServices()
-                .operator(OperatorAccount.builder()
-                        .doesNotRequireEmployeeGuard()
-                        .parentAccount(OperatorAccount.builder()
-                                .requiresEmployeeGuard()
-                                .build())
-                        .build())
-                .build();
+	@Test
+	public void testRunEmployeeGuardRules_NotOnSiteServices_DoesNotWorkForEmployeeGuardOperator() {
+		contractor = ContractorAccount.builder()
+				.onSiteServices()
+				.operator(OperatorAccount.builder()
+						.doesNotRequireEmployeeGuard()
+						.build())
+				.build();
 
-        employeeGuardRulesService.runEmployeeGuardRules(contractor);
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
 
-        assertTrue(contractor.isHasEmployeeGuard());
-    }
+		assertFalse(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).removeEmployeeGUARD(contractor.getId());
+	}
+
+	@Test
+	public void testRunEmployeeGuardRules_OnsiteServices_ParentOperatorRequiresEmployeeGuard() {
+		contractor = ContractorAccount.builder()
+				.onSiteServices()
+				.operator(OperatorAccount.builder()
+						.doesNotRequireEmployeeGuard()
+						.parentAccount(OperatorAccount.builder()
+								.requiresEmployeeGuard()
+								.build())
+						.build())
+				.build();
+
+		employeeGuardRulesService.runEmployeeGuardRules(contractor);
+
+		assertTrue(contractor.isHasEmployeeGuard());
+		verify(productSubscriptionService).addEmployeeGUARD(contractor.getId());
+	}
 }
