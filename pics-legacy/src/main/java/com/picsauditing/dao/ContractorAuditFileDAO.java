@@ -44,6 +44,7 @@ public class ContractorAuditFileDAO extends PicsDAO {
 		return q.getResultList();
 	}
 
+    @Transactional(propagation = Propagation.NESTED)
     public void removeAllByAuditID(int auditID) {
         Query query = em.createQuery("DELETE FROM ContractorAuditFile c "
                 + "WHERE c.audit.id = :auditID");
