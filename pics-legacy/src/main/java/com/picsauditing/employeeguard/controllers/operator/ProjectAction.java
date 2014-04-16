@@ -22,7 +22,6 @@ import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.employeeguard.validators.project.ProjectFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
@@ -32,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
+
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECTS;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECT_CREATE;
 
 @SuppressWarnings("serial")
 public class ProjectAction extends PicsRestActionSupport implements AjaxValidator {
@@ -188,7 +190,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		projectService.save(project, permissions.getAccountId(), permissions.getAppUserID());
 
 		if (projectForm.isAddAnother()) {
-			return setUrlForRedirect(EmployeeGUARDUrlUtils.OPERATOR_PROJECT_CREATE);
+			return setUrlForRedirect(OPERATOR_PROJECT_CREATE);
 		}
 
 		return redirectToList();
@@ -215,7 +217,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private String redirectToList() throws Exception {
-		return setUrlForRedirect(EmployeeGUARDUrlUtils.OPERATOR_PROJECTS);
+		return setUrlForRedirect(OPERATOR_PROJECTS);
 	}
 
 	/* validation */
