@@ -8,6 +8,7 @@ public final class EmployeeGUARDUrlUtils {
 	public static final String OPERATOR_PROJECTS = "/employee-guard/operators/projects";
 	public static final String OPERATOR_JOB_ROLES = "/employee-guard/operators/role";
 	public static final String OPERATOR_SKILLS = "/employee-guard/operators/skill";
+	public static final String OPERATOR_PROJECT_CREATE = "/employee-guard/operators/project/create";
 
 	/* Contractor Links */
 	public static final String CONTRACTOR_SUMMARY = "/employee-guard/contractor/dashboard";

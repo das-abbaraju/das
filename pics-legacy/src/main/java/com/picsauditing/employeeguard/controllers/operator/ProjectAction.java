@@ -32,6 +32,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECTS;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.OPERATOR_PROJECT_CREATE;
+
 @SuppressWarnings("serial")
 public class ProjectAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectAction.class);
@@ -187,7 +190,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 		projectService.save(project, permissions.getAccountId(), permissions.getAppUserID());
 
 		if (projectForm.isAddAnother()) {
-			return setUrlForRedirect("/employee-guard/operators/project/create");
+			return setUrlForRedirect(OPERATOR_PROJECT_CREATE);
 		}
 
 		return redirectToList();
@@ -214,7 +217,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private String redirectToList() throws Exception {
-		return setUrlForRedirect("/employee-guard/operators/project");
+		return setUrlForRedirect(OPERATOR_PROJECTS);
 	}
 
 	/* validation */
