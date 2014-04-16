@@ -32,7 +32,10 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 		try {
 			removeCacheItem(accountId);
 
-			accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+			AccountEmployeeGuard accountEmployeeGuard = accountEmployeeGuardDAO.find(accountId);
+			if (accountEmployeeGuard == null) {
+				accountEmployeeGuardDAO.save(new AccountEmployeeGuard(accountId));
+			}
 		} catch (Exception e) {
 			LOG.warn("Error adding accountId {} to EmployeeGUARD", accountId);
 		}
@@ -61,7 +64,6 @@ public class ProductSubscriptionServiceImpl implements ProductSubscriptionServic
 	@Override
 	public boolean hasEmployeeGUARD(final Permissions permissions) {
 		return hasEmployeeGUARD(permissions.getAccountId());
-
 	}
 
 	@Override
