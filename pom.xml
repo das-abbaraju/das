@@ -51,9 +51,27 @@
         <struts.version>2.3.4.1</struts.version>
         <compileSource>1.6</compileSource>
         <drools.version>5.5.0.Final</drools.version>
-        <jacoco.version>0.6.2.201302030002</jacoco.version>
+        <jacoco.version>0.7.1-SNAPSHOT</jacoco.version>
         <jersey.version>1.17</jersey.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <argLineX>-Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:-UseSplitVerifier</argLineX>
+            </properties>
+        </profile>
+        <profile>
+            <id>jacoco</id>
+            <properties>
+                <argLineX>-Xms512m -Xmx1024m -XX:MaxPermSize=512m -XX:-UseSplitVerifier ${argLine}</argLineX>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>
