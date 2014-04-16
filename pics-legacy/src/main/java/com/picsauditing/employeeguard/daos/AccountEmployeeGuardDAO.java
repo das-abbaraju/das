@@ -17,6 +17,7 @@ public class AccountEmployeeGuardDAO {
 	@PersistenceContext
 	protected EntityManager em;
 
+	@Transactional(readOnly = true)
 	public AccountEmployeeGuard find(int accountId) {
 		if (accountId == 0) {
 			return null;

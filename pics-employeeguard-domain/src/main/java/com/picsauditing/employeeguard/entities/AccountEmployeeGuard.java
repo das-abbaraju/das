@@ -7,6 +7,8 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.Date;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @Entity
 @Table(name = "accountemployeeguard")
 @Where(clause = "deletedDate IS NULL")
@@ -15,13 +17,14 @@ import java.util.Date;
 public class AccountEmployeeGuard {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = IDENTITY)
 	private int id;
 
-	@Column(name = "accountID")
+	@Column(name = "accountID", nullable = false, unique = true)
 	private int accountId;
 
 	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "deletedDate", nullable = true)
 	private Date deletedDate;
 
 	public AccountEmployeeGuard() {
