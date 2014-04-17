@@ -13,6 +13,9 @@ import org.jacoco.core.analysis.*;
 import org.jacoco.core.data.*;
 import org.jacoco.core.runtime.RemoteControlReader;
 import org.jacoco.core.runtime.RemoteControlWriter;
+import org.jacoco.core.tools.ExecFileLoader;
+import org.jacoco.report.*;
+import org.jacoco.report.html.HTMLFormatter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -38,7 +41,8 @@ import static java.lang.String.format;
 @ContextConfiguration(locations={"ContractorCronSmallSetCodeCoverage-context.xml"})
 public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(ContractorCronSmallSetCodeCoverage.class);
-    private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
+    // private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
+    private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=ContractorETL&steps=Flag";
     private static final int MAX_CONTRACTORS_WITH_NO_IMPROVEMENT = 200;
     private static final String ENVIRONMENT_VAR_FOR_PROTOCOL = "protocol";
     private static final String ENVIRONMENT_VAR_FOR_HOST = "host";
@@ -47,24 +51,26 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
 
     public static final String JACOCO_EXEC_PATH = "/tmp/jacoco.exec";
     public static final String JACOCO_EXEC_PATH_BACKUP = "/tmp/jacoco.exec.backup";
+    public static final String COVERAGE_REPORT_DIR = "/tmp/coveragereport";
+    public static final String SOURCE_DIR = "pics-legacy/src/main/java";
+    public static final String CLASS_DIR = "pics-legacy/target/classes";
     public static final String OPERATOR_TAG = "SmokeTestContractor";
-    private String protocol = "https";
-    private String host = "demo1.picsorganizer.com";
-    private String cronPort = "";
+
+    private static ApplicationContext applicationContext;
+
+    private String protocol = "http";
+    private String host = "localhost";
+    private String cronPort = "8080";
     private int dumpPort = 9010;
     private boolean dump = true;
     private boolean reset = false;
     private boolean append = true;
-    private ExecutionDataStore executionDataStore;
     private OperatorTag operatorTag;
     private List<Integer> contractorIdsNotYetRun;
     private List<Integer> smokeTestContractorIds;
-
     private int totalContractorsRun = 0;
     private int numberOfTriesWithNoCoverageIncrease = 0;
     private int previousTotalLinesCovered = 0;
-
-    private static ApplicationContext applicationContext;
 
     @Autowired
     private ContractorAccountDAO contractorDAO;
@@ -74,16 +80,28 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     @Test
     public void run() throws Exception {
         configureRunningEnvironment();
+        logRunningEnvironment();
         resetForNewRun();
-        while (numberOfTriesWithNoCoverageIncrease < MAX_CONTRACTORS_WITH_NO_IMPROVEMENT) {
+        while (shouldStillRun()) {
+            logger.debug("Number of tries with no increase is {}", numberOfTriesWithNoCoverageIncrease);
+            logger.debug("Current lines covered is {}", previousTotalLinesCovered);
             runNextContractor();
         }
+        generateFinalAnalysis();
+    }
+
+    private boolean shouldStillRun() {
+        return contractorIdsNotYetRun.size() > 0 && numberOfTriesWithNoCoverageIncrease < MAX_CONTRACTORS_WITH_NO_IMPROVEMENT;
+    }
+
+    private void generateFinalAnalysis() throws IOException {
+        logger.debug("Running coverage report");
+        createReport();
+        logger.debug("Logging final report");
         logFinalState();
     }
 
     private void runNextContractor() throws Exception {
-        logger.debug("Number of tries with no increase is {}", numberOfTriesWithNoCoverageIncrease);
-        logger.debug("Current lines covered is {}", previousTotalLinesCovered);
         Integer id = nextContractorIdAndRemoveFromNotYetRun();
         logger.debug("Running contractor {}", id);
         backupCoverageDataForNextContractor();
@@ -100,13 +118,21 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         logger.info("Smoke Test Contractor IDs: {}", smokeTestContractorIds);
     }
 
+    private void createReport() throws IOException {
+        final IBundleCoverage bundleCoverage = analyzeStructure().getBundle("Contractor Cron Coverage");
+        final HTMLFormatter htmlFormatter = new HTMLFormatter();
+        final IReportVisitor visitor = htmlFormatter.createVisitor(new FileMultiReportOutput(new File(COVERAGE_REPORT_DIR)));
+        ExecFileLoader execFileLoader = loadExecutionData();
+        visitor.visitInfo(execFileLoader.getSessionInfoStore().getInfos(), execFileLoader.getExecutionDataStore().getContents());
+        visitor.visitBundle(bundleCoverage, new DirectorySourceFileLocator(new File(SOURCE_DIR), "utf-8", 4));
+        visitor.visitEnd();
+    }
+
     private void configureRunningEnvironment() {
         determineHostToRunAgainst();
         determineCronHostPort();
         determineHttpOrHttps();
         determineJacocoDumpPort();
-
-        logRunningEnvironment();
     }
 
     private void logRunningEnvironment() {
@@ -157,7 +183,7 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
 
     private void checkIfContractorAddsCoverage(Integer id) throws Exception {
         dump();
-        int newLinesCovered = analyze();
+        int newLinesCovered = totalLinesCovered();
         if (newLinesCovered > previousTotalLinesCovered) {
             addContractorToCoverageSet(id, newLinesCovered);
         } else {
@@ -214,7 +240,9 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         resetContractorTags();
         new File(JACOCO_EXEC_PATH).delete();
         new File(JACOCO_EXEC_PATH_BACKUP).delete();
+        new File(COVERAGE_REPORT_DIR).delete();
         contractorIdsNotYetRun = contractorDAO.findContractorsNeedingRecalculation(Integer.MAX_VALUE, new HashSet<Integer>());
+        // contractorIdsNotYetRun = contractorDAO.findContractorsNeedingRecalculation(5, new HashSet<Integer>());
     }
 
     private void resetContractorTags() throws Exception {
@@ -252,11 +280,15 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         }
     }
 
-    private int analyze() throws Exception {
-        loadExecutionData();
+    private CoverageBuilder analyzeStructure() throws IOException {
         final CoverageBuilder builder = new CoverageBuilder();
-        final Analyzer analyzer = new Analyzer(executionDataStore, builder);
-        analyzer.analyzeAll(new File("target/classes"));
+        final Analyzer analyzer = new Analyzer(loadExecutionDataStore(), builder);
+        analyzer.analyzeAll(new File(CLASS_DIR));
+        return builder;
+    }
+
+    private int totalLinesCovered() throws Exception {
+        final CoverageBuilder builder = analyzeStructure();
         int totalLinesCovered = 0;
         Collection<IClassCoverage> classCoverages = builder.getClasses();
         for (IClassCoverage classCoverage : classCoverages) {
@@ -266,7 +298,7 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         return totalLinesCovered;
     }
 
-    private void loadExecutionData() throws IOException {
+    private ExecFileLoader loadExecutionData() throws IOException {
         final ExecFileLoader loader = new ExecFileLoader();
         InputStream in = null;
         try {
@@ -278,7 +310,11 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
                 in.close();
             }
         }
-        executionDataStore = loader.getExecutionDataStore();
+        return loader;
+    }
+
+    private ExecutionDataStore loadExecutionDataStore() throws IOException {
+        return loadExecutionData().getExecutionDataStore();
     }
 
     private void dump() throws Exception {
