@@ -1,0 +1,21 @@
+.operator-employee-page {
+    #side-navigation .nav > li > a {
+        padding-right: 15px;
+    }
+
+    #side-navigation .nav .nav {
+        display: block;
+    }
+
+    #side-navigation {
+        .nav > li.active {
+            a {
+                padding-right: 14px;
+            }
+        }
+
+        i {
+            background-color: transparent;
+        }
+    }
+}

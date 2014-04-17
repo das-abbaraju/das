@@ -1,0 +1,68 @@
+<div ng-controller="employeeSkillListCtrl" class="operator-employee-page">
+    <div class="container">
+        <pagetitle title="Skills"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li class="active">Skills</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="bs-sidebar">
+                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+                        <ul class="nav" role="menu">
+                            <li ng-class="{active: selectedMenuItem == 'all'}">
+                                <a href="/employee-guard/employee/skillz">All
+                                {{ skillModel }}
+                                    <skillstatusicon status="{{ overallStatus }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                            <li class="nav-divider"></li>
+                            <li ng-repeat="site in sites" ng-class="{active: selectedMenuItem == site.slug}">
+                                <a href="/employee-guard/employee/skillz/sites/{{ site.slug }}">
+                                    {{ site.name }}
+                                    <skillstatusicon status="{{ site.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                                <ul class="nav" role="submenu">
+                                    <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == project.slug}">
+                                        <a href="/employee-guard/employee/skillz/projects/{{ project.slug }}">
+                                            {{ project.name }}
+                                            <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div ng-switch on="getSelectedView()">
+                    <div ng-switch-when="site">
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                        <span ng-repeat="project in skillList.projects">
+                            <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
+                        </span>
+                    </div>
+                    <div ng-switch-when="project">
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                    </div>
+                    <div ng-switch-default>
+                        <span ng-repeat="site in sites">
+                            <employeeskillsection title="{{ site.name }}" skills="site.skills"></employeeskillsection>
+                            <span ng-repeat="project in site.projects">
+                                <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
+                            </span>
+                        </span>
+                    </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>

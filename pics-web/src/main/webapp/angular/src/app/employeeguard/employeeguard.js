@@ -29,5 +29,14 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/employee/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz/sites/:siteSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
         });
 });
