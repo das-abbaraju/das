@@ -13,16 +13,16 @@
                     <div class="col-md-9">
                         <p class="name">{{ employee.firstName }} {{employee.lastName}}</p>
                         <ul class="list-unstyled">
-                            <li ng-repeat-start="company in employee.companies">
+                            <li class="company" ng-repeat-start="company in employee.companies">
                                 {{ company.name }}
                             </li>
-                            <li ng-repeat-end>
+                            <li class="title" ng-repeat-end>
                                 {{ company.title }}
                             </li>
                         </ul>
                     </div>
                     <div class="col-md-3">
-                        <skillstatusicon status="{{highlightedStatus}}" class="pull-right"></skillstatusicon>
+                        <skillstatusicon status="{{ employeeStatusIcon }}" class="pull-right"></skillstatusicon>
                     </div>
                 </div>
             </div>
@@ -30,10 +30,62 @@
 
         <div class="row">
             <div class="col-md-3">
-                <skillnavigationmenu employee="employee" onmenuitemclick="changeSubView"></skillnavigationmenu>
+                <div class="bs-sidebar">
+                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+                        <ul class="nav" role="menu">
+                            <li ng-class="{active: selectedMenuItem == 'all'}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}">All
+                                    <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                            <li class="nav-divider"></li>
+                            <li>
+                                <span class="nav-title">Job Roles</span>
+                            </li>
+                            <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/role/{{ role.slug }}">
+                                    {{ role.name }}
+                                    <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+
+                            <li class="nav-divider"></li>
+                            <li>
+                                <span class="nav-title">Projects</span>
+                            </li>
+
+                            <li ng-repeat="project in projects" ng-class="{active: selectedMenuItem == project.slug}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/project/{{ project.name | removeInvalidCharactersFromUrl }}">
+                                    {{ project.name }}
+                                    <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
             </div>
             <div class="col-md-9">
-                <ng-include src="'/angular/src/app/employeeguard/operator/employee/' + subview + '.tpl.html'"></ng-include>
+                <div ng-switch on="getSelectedView()">
+                    <employeeskillsection title="Required by Site or Project" skills="requiredSkills"></employeeskillsection>
+
+                    <div ng-switch-when="role">
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                    </div>
+                    <div ng-switch-when="project">
+                        <span ng-repeat="role in skillList.roles">
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills"></employeeskillsection>
+                        </span>
+                    </div>
+                    <div ng-switch-default>
+                        <span ng-repeat="project in skillList.skills">
+                            <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
+                        </span>
+
+                        <span ng-repeat="role in roles">
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills"></employeeskillsection>
+                        </span>
+                    </div>
+               </div>
             </div>
         </div>
     </div>

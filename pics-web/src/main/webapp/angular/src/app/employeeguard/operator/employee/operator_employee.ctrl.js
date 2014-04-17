@@ -1,56 +1,106 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
-    var subview = 'all',
-        employee = EmployeeSkills.get(),
-        model;
+.controller('operatorEmployeeCtrl', function ($scope, EmployeeCompanyInfo, SkillModel, SkillList, $routeParams) {
+    var skillModel;
 
-    function onSuccess(result) {
-        model = new Employee(result);
+    $scope.employee = EmployeeCompanyInfo.get();
+    $scope.skillList = SkillList.get();
 
-        $scope.projectSkills = model.getAllProjectSkills();
-        $scope.projectRoles = model.getAllProjectRoles();
+    $scope.employee.$promise.then(function(employee) {
+        $scope.employeeStatusIcon = employee.status;
+    });
 
-        $scope.highlightedStatus = $scope.employee.status;
+    $scope.skillList.$promise.then(function (result) {
+        skillModel = new SkillModel(result);
+        loadMenuItems();
+        selectViewModel();
+    });
+
+    function loadAllRequiredSkills() {
+        $scope.requiredSkills = skillModel.getAllRequiredSkills();
     }
 
-    function onError(error) {
-        console.log(error);
+    function loadMenuItems() {
+        $scope.projects = skillModel.getProjects();
+        $scope.roles = skillModel.getRoles();
     }
 
-    function changeSubView(template_name, subview_name) {
-        $scope.subview = template_name;
-        $scope.subview_name = subview_name;
-
-        switch (template_name) {
-            case 'project':
-                $scope.currentProject = model.getProjectByName(subview_name);
-                $scope.updateHighlightedStatus($scope.currentProject.status);
-                break;
-            case 'role':
-                $scope.currentRole = model.getRoleByName(subview_name);
-                $scope.updateHighlightedStatus($scope.currentRole.status);
-                break;
-            case 'all':
-                $scope.updateHighlightedStatus($scope.employee.status);
-                break;
-            default:
-                break;
+    function selectViewModel() {
+        if ($routeParams.roleSlug) {
+            loadRoleModel();
+        } else if ($routeParams.projectSlug) {
+            loadProjectModel();
+        } else {
+            loadDefaultModel();
         }
     }
 
-    function updateHighlightedStatus(status) {
-        $scope.highlightedStatus = status;        
+    function loadRoleModel() {
+        var slugname = $routeParams.roleSlug;
+
+        $scope.requiredSkills = skillModel.getSiteAndCorpRequiredSkills();
+        $scope.skillList = skillModel.getRoleBySlug(slugname);
+        setEmployeeStatusIcon($scope.skillList.status);
+        setSelectedMenuItem(slugname);
+        setViewTitle(skillModel.getRoleNameBySlug(slugname));
     }
 
-    employee.$promise.then(onSuccess, onError);
+    function loadProjectModel() {
+        var slugname = $routeParams.projectSlug;
+
+        $scope.requiredSkills = skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname);
+        $scope.skillList = skillModel.getProjectBySlug(slugname);
+        setEmployeeStatusIcon($scope.skillList.status);
+        setSelectedMenuItem(slugname);
+        setViewTitle(skillModel.getProjectNameBySlug(slugname));
+    }
+
+    function loadDefaultModel() {
+        $scope.requiredSkills = skillModel.getAllRequiredSkills();
+        setSelectedMenuItem('all');
+    }
+
+    function setEmployeeStatusIcon(status) {
+        $scope.employeeStatusIcon = status;
+    }
+
+    function setSelectedMenuItem(item) {
+        $scope.selectedMenuItem = item;
+    }
+
+    function setViewTitle(name) {
+        $scope.viewTitle = name;
+    }
+
+    $scope.getSelectedView = function() {
+        var view;
+
+        if ($routeParams.roleSlug) {
+            view = 'role';
+        } else if ($routeParams.projectSlug) {
+            view = 'project';
+        } else {
+            view = 'all';
+        }
+
+        return view;
+    };
 
     angular.extend($scope, {
-        subview: subview,
-        employee: employee,
-        onSuccess: onSuccess,
-        onError: onError,
-        changeSubView: changeSubView,
-        updateHighlightedStatus: updateHighlightedStatus
+        loadMenuItems: loadMenuItems,
+        selectViewModel: selectViewModel,
+        loadRoleModel: loadRoleModel,
+        loadProjectModel: loadProjectModel,
+        setEmployeeStatusIcon: setEmployeeStatusIcon,
+        setSelectedMenuItem: setSelectedMenuItem,
+        setViewTitle: setViewTitle
     });
+})
+
+.filter('removeInvalidCharactersFromUrl', function () {
+        return function (text) {
+
+            var str = text.replace(/\s+/g, '');
+            return str;
+        };
 });

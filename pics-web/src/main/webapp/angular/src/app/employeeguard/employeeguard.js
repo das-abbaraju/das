@@ -24,6 +24,12 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
+        .when('/employee-guard/operators/employees/:id/role/:roleSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/project/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })
