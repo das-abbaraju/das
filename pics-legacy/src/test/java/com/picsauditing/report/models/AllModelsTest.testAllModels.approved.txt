@@ -1578,6 +1578,9 @@ InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
+InvoiceSapId
+InvoiceSapLastSync
+InvoiceSapSync
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
@@ -1825,6 +1828,9 @@ PaymentInvoicePaymentInvoiceTax
 PaymentInvoicePaymentInvoiceTaxlessTotalAmount
 PaymentInvoicePaymentUpdateDate
 PaymentPaymentMethod
+PaymentSapId
+PaymentSapLastSync
+PaymentSapSync
 PaymentStatus
 PaymentTotalAmount
 PaymentTransactionID
@@ -1957,6 +1963,30 @@ SubscriptionUserAccountTransportationServices
 SubscriptionUserID
 SubscriptionUserIsActive
 SubscriptionUserName
+
+Model: Transactions
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountID
+AccountName
+AccountSapLastSync
+AccountSapSync
+AccountStatus
+TransactionAmountApplied
+TransactionCreationDate
+TransactionCurrency
+TransactionDueDate
+TransactionID
+TransactionInvoiceType
+TransactionNotes
+TransactionPaidDate
+TransactionPoNumber
+TransactionSapId
+TransactionSapLastSync
+TransactionSapSync
+TransactionStatus
+TransactionTotalAmount
+TransactionTransactionType
 
 Model: UserAssignments
 Permission: Permissions{permissions=[]}

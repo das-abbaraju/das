@@ -95,6 +95,7 @@ public abstract class Transaction extends BaseTable {
 	}
 
 	@Temporal(TemporalType.DATE)
+    @ReportField(type = FieldType.DateTime, importance = FieldImportance.Low)
 	public Date getSapLastSync() {
 		return sapLastSync;
 	}
@@ -103,6 +104,7 @@ public abstract class Transaction extends BaseTable {
 		this.sapLastSync = sapLastSync;
 	}
 
+    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
     public boolean isSapSync() {
         return sapSync;
     }
@@ -112,6 +114,7 @@ public abstract class Transaction extends BaseTable {
     }
 
     @Column(name = "sapID")
+    @ReportField(type = FieldType.Integer, importance = FieldImportance.Low)
 	public String getSapId() {
 		return sapId;
 	}

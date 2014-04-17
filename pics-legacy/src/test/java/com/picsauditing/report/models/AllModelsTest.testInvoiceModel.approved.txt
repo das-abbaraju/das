@@ -54,6 +54,9 @@ InvoiceInvoiceType
 InvoiceNotes
 InvoicePaidDate
 InvoicePoNumber
+InvoiceSapId
+InvoiceSapLastSync
+InvoiceSapSync
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
