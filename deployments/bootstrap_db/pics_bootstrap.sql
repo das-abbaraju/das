@@ -1795,10 +1795,13 @@ DROP TABLE IF EXISTS `accountemployeeguard`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accountemployeeguard` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `accountID` int(11) NOT NULL,
-  PRIMARY KEY (`accountID`),
+  `deletedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `accountID_UNIQUE` (`accountID`),
   CONSTRAINT `fk1_accountemployeeguard` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=341 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1807,40 +1810,40 @@ CREATE TABLE `accountemployeeguard` (
 
 LOCK TABLES `accountemployeeguard` WRITE;
 /*!40000 ALTER TABLE `accountemployeeguard` DISABLE KEYS */;
-INSERT INTO `accountemployeeguard` VALUES (14);
-INSERT INTO `accountemployeeguard` VALUES (500);
-INSERT INTO `accountemployeeguard` VALUES (969);
-INSERT INTO `accountemployeeguard` VALUES (1100);
-INSERT INTO `accountemployeeguard` VALUES (1957);
-INSERT INTO `accountemployeeguard` VALUES (6228);
-INSERT INTO `accountemployeeguard` VALUES (11257);
-INSERT INTO `accountemployeeguard` VALUES (16659);
-INSERT INTO `accountemployeeguard` VALUES (27998);
-INSERT INTO `accountemployeeguard` VALUES (27999);
-INSERT INTO `accountemployeeguard` VALUES (29278);
-INSERT INTO `accountemployeeguard` VALUES (29605);
-INSERT INTO `accountemployeeguard` VALUES (32078);
-INSERT INTO `accountemployeeguard` VALUES (32081);
-INSERT INTO `accountemployeeguard` VALUES (34884);
-INSERT INTO `accountemployeeguard` VALUES (34885);
-INSERT INTO `accountemployeeguard` VALUES (34886);
-INSERT INTO `accountemployeeguard` VALUES (39022);
-INSERT INTO `accountemployeeguard` VALUES (39023);
-INSERT INTO `accountemployeeguard` VALUES (39067);
-INSERT INTO `accountemployeeguard` VALUES (39226);
-INSERT INTO `accountemployeeguard` VALUES (39590);
-INSERT INTO `accountemployeeguard` VALUES (39593);
-INSERT INTO `accountemployeeguard` VALUES (41941);
-INSERT INTO `accountemployeeguard` VALUES (42894);
-INSERT INTO `accountemployeeguard` VALUES (49787);
-INSERT INTO `accountemployeeguard` VALUES (49790);
-INSERT INTO `accountemployeeguard` VALUES (49791);
-INSERT INTO `accountemployeeguard` VALUES (54578);
-INSERT INTO `accountemployeeguard` VALUES (55023);
-INSERT INTO `accountemployeeguard` VALUES (55653);
-INSERT INTO `accountemployeeguard` VALUES (55654);
-INSERT INTO `accountemployeeguard` VALUES (59164);
-INSERT INTO `accountemployeeguard` VALUES (61324);
+INSERT INTO `accountemployeeguard` VALUES (1,14,NULL);
+INSERT INTO `accountemployeeguard` VALUES (11,500,NULL);
+INSERT INTO `accountemployeeguard` VALUES (21,969,NULL);
+INSERT INTO `accountemployeeguard` VALUES (31,1100,NULL);
+INSERT INTO `accountemployeeguard` VALUES (41,1957,NULL);
+INSERT INTO `accountemployeeguard` VALUES (51,6228,NULL);
+INSERT INTO `accountemployeeguard` VALUES (61,11257,NULL);
+INSERT INTO `accountemployeeguard` VALUES (71,16659,NULL);
+INSERT INTO `accountemployeeguard` VALUES (81,27998,NULL);
+INSERT INTO `accountemployeeguard` VALUES (91,27999,NULL);
+INSERT INTO `accountemployeeguard` VALUES (101,29278,NULL);
+INSERT INTO `accountemployeeguard` VALUES (111,29605,NULL);
+INSERT INTO `accountemployeeguard` VALUES (121,32078,NULL);
+INSERT INTO `accountemployeeguard` VALUES (131,32081,NULL);
+INSERT INTO `accountemployeeguard` VALUES (141,34884,NULL);
+INSERT INTO `accountemployeeguard` VALUES (151,34885,NULL);
+INSERT INTO `accountemployeeguard` VALUES (161,34886,NULL);
+INSERT INTO `accountemployeeguard` VALUES (171,39022,NULL);
+INSERT INTO `accountemployeeguard` VALUES (181,39023,NULL);
+INSERT INTO `accountemployeeguard` VALUES (191,39067,NULL);
+INSERT INTO `accountemployeeguard` VALUES (201,39226,NULL);
+INSERT INTO `accountemployeeguard` VALUES (211,39590,NULL);
+INSERT INTO `accountemployeeguard` VALUES (221,39593,NULL);
+INSERT INTO `accountemployeeguard` VALUES (231,41941,NULL);
+INSERT INTO `accountemployeeguard` VALUES (241,42894,NULL);
+INSERT INTO `accountemployeeguard` VALUES (251,49787,NULL);
+INSERT INTO `accountemployeeguard` VALUES (261,49790,NULL);
+INSERT INTO `accountemployeeguard` VALUES (271,49791,NULL);
+INSERT INTO `accountemployeeguard` VALUES (281,54578,NULL);
+INSERT INTO `accountemployeeguard` VALUES (291,55023,NULL);
+INSERT INTO `accountemployeeguard` VALUES (301,55653,NULL);
+INSERT INTO `accountemployeeguard` VALUES (311,55654,NULL);
+INSERT INTO `accountemployeeguard` VALUES (321,59164,NULL);
+INSERT INTO `accountemployeeguard` VALUES (331,61324,NULL);
 /*!40000 ALTER TABLE `accountemployeeguard` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -11878,7 +11881,9 @@ CREATE TABLE `databasechangelog` (
 LOCK TABLES `databasechangelog` WRITE;
 /*!40000 ALTER TABLE `databasechangelog` DISABLE KEYS */;
 INSERT INTO `databasechangelog` VALUES ('1','aananighian','./liquibase/2014/Q2/aananighian1_US668_DDL_Site_Assignment_Table.sql','2014-04-07 10:42:55',219,'EXECUTED','3:148ff10664e0ddff397cf005a83286fc','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('1','aphatarphekar','./liquibase/2014/Q2/aphatarphekar1_US790_DDL_add_deletedDate_AccountEmployeeGuard_Table.sql','2014-04-16 08:56:21',225,'EXECUTED','3:47b638f30f93a3faa5a0b0b6ae885f04','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','blatner','./liquibase/2014/Q1/blatner1_PICS-13997_add_facility_count_to_contractor_fee.sql','2013-12-28 11:11:36',98,'EXECUTED','3:f899b551bee00c931fb8c1f81d8da1aa','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('1','cjones','./liquibase/2014/Q2/cjones1_PICS-13537_Drop_Webcam.sql','2014-04-16 08:56:21',224,'EXECUTED','3:d057c4c9dccdd7cc8cc6d66341e9122a','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','dalvarado','./liquibase/2013/dalvarado1_PICS-12926_Remove_bad_myschedule_timeslots.sql','2013-10-22 13:42:01',6,'EXECUTED','3:9648b94a78b8a58afd75e191e6b5c6a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','gmeurer','./liquibase/2013/gmeurer1_PICS-12602_AddTableForAggregatingTranslationLogs.sql','2013-10-22 13:42:04',12,'EXECUTED','3:643c58eed822e481005352e576e61edd','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('1','jgriffith','./liquibase/2014/Q1/jgriffith1_PICS-14278_Contractors_for_Momentive.sql','2014-01-23 15:19:13',153,'EXECUTED','3:f64eb8d05ca2ab5c15e8a7b34237cd62','Custom SQL','',NULL,'2.0.1');
@@ -11913,6 +11918,7 @@ INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2013/mdo17_PICS-
 INSERT INTO `databasechangelog` VALUES ('17','mdo','./liquibase/2014/Q1/dalvarado_US351_recreate_contactor_certificate_table.sql','2014-03-18 16:38:13',204,'EXECUTED','3:eb32e0a7f620a60a9757886f41966897','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('19','mdo','./liquibase/2014/Q1/mdo19_PICS-14016_invoicePayingFacilities.sql','2013-12-28 11:11:51',99,'EXECUTED','3:aab385cccb11f8f3101f712f9cab86eb','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','aananighian','./liquibase/2014/Q2/aananighian2_US668_DML_Populate_Site_Assignment_Table.sql','2014-04-07 10:42:55',220,'EXECUTED','3:391d2173ba13ad258b354f4720e96a92','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('2','aphatarphekar','./liquibase/2014/Q2/aphatarphekar2_US790_DML_add_EmployeeGUARD_For_Accounts.sql','2014-04-16 12:56:41',226,'EXECUTED','3:e830225be1ea90ad536577f436fdf0b3','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','gmeurer','./liquibase/2014/Q1/gmeurer2_PICS-13851_add_usage_colum_sortOrder.sql','2014-01-07 12:18:03',141,'EXECUTED','3:1f7836d12f96ed51a75868d792fbbdeb','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','jgriffith','./liquibase/2014/Q1/jgriffith2_TA774_DDL_Remove_SSN_Column.sql','2014-03-18 17:19:42',206,'EXECUTED','3:bd1057d8216f847416958ca5cd841d0c','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('2','kchase','./liquibase/2013/PICS-12919_updateTokens.sql','2013-10-25 21:43:15',16,'EXECUTED','3:c585846a8539aa98bcab5cb568b92d9a','Custom SQL','',NULL,'2.0.1');
@@ -26817,46 +26823,6 @@ SET character_set_client = utf8;
   `counts` tinyint NOT NULL
 ) ENGINE=MyISAM */;
 SET character_set_client = @saved_cs_client;
-
---
--- Table structure for table `webcam`
---
-
-DROP TABLE IF EXISTS `webcam`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `webcam` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `make` varchar(100) DEFAULT NULL,
-  `model` varchar(100) DEFAULT NULL,
-  `active` tinyint(3) unsigned DEFAULT NULL,
-  `conID` int(11) DEFAULT NULL,
-  `receivedDate` datetime DEFAULT NULL,
-  `sentDate` datetime DEFAULT NULL,
-  `receivedBy` int(11) DEFAULT NULL,
-  `sendBy` int(11) DEFAULT NULL,
-  `serialNumber` varchar(100) DEFAULT NULL,
-  `carrier` varchar(50) DEFAULT NULL,
-  `shippingMethod` varchar(30) DEFAULT NULL,
-  `trackingNumber` varchar(100) DEFAULT NULL,
-  `replacementCost` tinyint(4) unsigned NOT NULL DEFAULT '0',
-  `createdBy` int(11) DEFAULT NULL,
-  `updatedBy` int(11) DEFAULT NULL,
-  `creationDate` datetime DEFAULT NULL,
-  `updateDate` datetime DEFAULT NULL,
-  `trackingNumberIncoming` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `webcam`
---
-
-LOCK TABLES `webcam` WRITE;
-/*!40000 ALTER TABLE `webcam` DISABLE KEYS */;
-/*!40000 ALTER TABLE `webcam` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `widget`
