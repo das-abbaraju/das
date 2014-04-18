@@ -52,7 +52,7 @@ public class AccountRecovery extends PicsActionSupport {
 
 		String emailError = inputValidator.validateEmail(email);
 		if (!emailError.equals(InputValidator.NO_ERROR)) {
-			addActionError(getText(emailError));
+			addActionError(getText("AccountRecovery.error.NoUserName"));
 			return "username";
 		}
 
