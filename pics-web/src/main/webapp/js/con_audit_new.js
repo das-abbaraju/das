@@ -149,6 +149,8 @@
 				success: function(html, status, XMLHttpRequest) {
 					var state = $.bbq.getState();
 
+					$(document).trigger('hideCluetip');
+
 					$('li.current').removeClass('current');
 					$('#auditViewArea').html(html).unblock();
 
