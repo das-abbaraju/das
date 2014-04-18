@@ -1,16 +1,17 @@
 package com.picsauditing.jpa.entities;
 
 import java.io.Serializable;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 //@MappedSuperclass
 public abstract class BaseTable implements /*JSONable,*/ Serializable/*, Autocompleteable, JSONAware, Translatable, RowsIdentifiableByKey*/ {
-//
-//    protected int id;
-//    protected User createdBy;
-//    protected User updatedBy;
-//    protected Date creationDate;
-//    protected Date updateDate;
+
+    protected int id;
+    protected User createdBy;
+    protected User updatedBy;
+    protected Date creationDate;
+    protected Date updateDate;
 //
 //    public BaseTable() {
 //    }
@@ -101,25 +102,25 @@ public abstract class BaseTable implements /*JSONable,*/ Serializable/*, Autocom
 //        this.updateDate = updateDate;
 //    }
 //
-//    public void setAuditColumns() {
-//        updateDate = new Date();
-//
-//        if (createdBy == null) {
-//            createdBy = updatedBy;
-//        }
-//        if (creationDate == null) {
-//            creationDate = updateDate;
-//        }
-//    }
-//
-//    public void setAuditColumns(User user) {
-//        if (user != null) {
-//            updatedBy = user;
-//        }
-//
-//        setAuditColumns();
-//    }
-//
+    public void setAuditColumns() {
+        updateDate = new Date();
+
+        if (createdBy == null) {
+            createdBy = updatedBy;
+        }
+        if (creationDate == null) {
+            creationDate = updateDate;
+        }
+    }
+
+    public void setAuditColumns(User user) {
+        if (user != null) {
+            updatedBy = user;
+        }
+
+        setAuditColumns();
+    }
+
 //    public void setAuditColumns(Permissions permissions) {
 //        if (permissions == null) {
 //            setAuditColumns();
