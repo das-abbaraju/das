@@ -6,7 +6,7 @@ package com.picsauditing.jpa.entities;
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ java.io.Serializable {
 
-//    public static final int PQF = 1;
+    public static final int PQF = 1;
 //    public static final int MANUAL_AUDIT = 2;
 //    public static final int IMPLEMENTATION_AUDIT = 3;
 //    public static final int VCA_AUDIT = 466;
@@ -355,10 +355,10 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //    }
 //
 //    @Transient
-//    public boolean isPicsPqf() {
-//        return (id == PQF);
-//    }
-//
+    public boolean isPicsPqf() {
+        return (id == PQF);
+    }
+
 //    @Transient
 //    public boolean isPqf() {
 //        return this.getClassType().isPqf();

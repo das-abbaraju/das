@@ -19,8 +19,8 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    private MultiYearScope multiYearScope = null;
 //    protected AuditStatus requiredStatus = AuditStatus.Complete;
 //    private String requiredStatusComparison;
-//    private String defaultValue;
-//    private boolean allowCustomValue = false;
+    private String defaultValue;
+    private boolean allowCustomValue = false;
 //    private String dataType = "string";
 //    private boolean flaggableWhenMissing = false;
 //    private boolean insurance = false;
@@ -178,23 +178,23 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    }
 //
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getDefaultValue() {
-//        return defaultValue;
-//    }
-//
-//    public void setDefaultValue(String defaultValue) {
-//        this.defaultValue = defaultValue;
-//    }
-//
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
-//    public boolean isAllowCustomValue() {
-//        return allowCustomValue;
-//    }
-//
-//    public void setAllowCustomValue(boolean allowCustomValue) {
-//        this.allowCustomValue = allowCustomValue;
-//    }
-//
+    public boolean isAllowCustomValue() {
+        return allowCustomValue;
+    }
+
+    public void setAllowCustomValue(boolean allowCustomValue) {
+        this.allowCustomValue = allowCustomValue;
+    }
+
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
 //    public String getDataType() {
 //        return dataType;

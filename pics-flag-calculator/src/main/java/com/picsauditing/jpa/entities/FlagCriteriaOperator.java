@@ -6,9 +6,9 @@ package com.picsauditing.jpa.entities;
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaOperator extends BaseTable {
 //    private OperatorAccount operator;
-//    private FlagCriteria criteria;
+    private FlagCriteria criteria;
     private FlagColor flag = FlagColor.Red;
-//    private String hurdle;
+    private String hurdle;
 //    private int affected = 0;
 //    private Date lastCalculated;
 //    private OperatorTag tag;
@@ -42,14 +42,14 @@ public class FlagCriteriaOperator extends BaseTable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "criteriaID", nullable = false)
-//    public FlagCriteria getCriteria() {
-//        return criteria;
-//    }
-//
-//    public void setCriteria(FlagCriteria criteria) {
-//        this.criteria = criteria;
-//    }
-//
+    public FlagCriteria getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(FlagCriteria criteria) {
+        this.criteria = criteria;
+    }
+
 //    @Enumerated(EnumType.STRING)
 //    @JoinColumn(nullable = false)
 //    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
@@ -62,14 +62,14 @@ public class FlagCriteriaOperator extends BaseTable {
 //    }
 //
 //    @ReportField(importance = FieldImportance.Required)
-//    public String getHurdle() {
-//        return hurdle;
-//    }
-//
-//    public void setHurdle(String hurdle) {
-//        this.hurdle = hurdle;
-//    }
-//
+    public String getHurdle() {
+        return hurdle;
+    }
+
+    public void setHurdle(String hurdle) {
+        this.hurdle = hurdle;
+    }
+
 //    public int getAffected() {
 //        return affected;
 //    }
