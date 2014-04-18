@@ -3,6 +3,9 @@ package com.picsauditing.jpa.entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author PICS
  *
@@ -14,8 +17,8 @@ import org.slf4j.LoggerFactory;
 public class ContractorAudit /*extends AbstractIndexableTable*/ {
     private Logger logger = LoggerFactory.getLogger(ContractorAudit.class);
 
-//    private AuditType auditType;
-//    private ContractorAccount contractorAccount;
+    private AuditType auditType;
+    private ContractorAccount contractorAccount;
 //    private Employee employee;
 //    private Date expiresDate;
 //    private Date effectiveDate;
@@ -50,30 +53,30 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //
 //    private List<AuditCatData> categories = new ArrayList<AuditCatData>();
 //    private List<AuditData> data = new ArrayList<AuditData>();
-//    private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+    private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
 //    private Map<AuditStatus, Integer> caoStats = null;
 //    private ContractorAudit previousAudit;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "auditTypeID")
-//    public AuditType getAuditType() {
-//        return auditType;
-//    }
-//
-//    public void setAuditType(AuditType auditType) {
-//        this.auditType = auditType;
-//    }
-//
+    public AuditType getAuditType() {
+        return auditType;
+    }
+
+    public void setAuditType(AuditType auditType) {
+        this.auditType = auditType;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "conID")
-//    public ContractorAccount getContractorAccount() {
-//        return contractorAccount;
-//    }
-//
-//    public void setContractorAccount(ContractorAccount contractor) {
-//        this.contractorAccount = contractor;
-//    }
-//
+    public ContractorAccount getContractorAccount() {
+        return contractorAccount;
+    }
+
+    public void setContractorAccount(ContractorAccount contractor) {
+        this.contractorAccount = contractor;
+    }
+
 //    @ManyToOne
 //    @NotFound(action = NotFoundAction.IGNORE)
 //    @JoinColumn(name = "employeeID")
@@ -86,10 +89,10 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //    }
 //
 //    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
-//    public List<ContractorAuditOperator> getOperators() {
-//        return operators;
-//    }
-//
+    public List<ContractorAuditOperator> getOperators() {
+        return operators;
+    }
+
 //    // TODO replace old uses of getOperators with sorted one
 //    @Transient
 //    public List<ContractorAuditOperator> getSortedOperators() {
@@ -98,10 +101,10 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //        return caos;
 //    }
 //
-//    public void setOperators(List<ContractorAuditOperator> operators) {
-//        this.operators = operators;
-//    }
-//
+    public void setOperators(List<ContractorAuditOperator> operators) {
+        this.operators = operators;
+    }
+
 //    // TODO Should we pass in permissions to this? See ConInsureGuard.java
 //    // execute() lines 54-67
 //    @Transient

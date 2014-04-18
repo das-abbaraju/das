@@ -73,7 +73,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private boolean dontReassign;
 //    private boolean autoAddClientSite = true;
 //
-//    private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+    private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 //    protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
 //    private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
     private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
@@ -120,14 +120,14 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //    @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 //    @Where(clause = "expiresDate > NOW() OR expiresDate IS NULL")
-//    public List<ContractorAudit> getAudits() {
-//        return this.audits;
-//    }
-//
-//    public void setAudits(List<ContractorAudit> audits) {
-//        this.audits = audits;
-//    }
-//
+    public List<ContractorAudit> getAudits() {
+        return this.audits;
+    }
+
+    public void setAudits(List<ContractorAudit> audits) {
+        this.audits = audits;
+    }
+
 //    @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
 //    public List<ContractorOperator> getOperators() {
 //        return this.operators;
@@ -1367,10 +1367,10 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
         return accountLevel;
     }
 
-//    public void setAccountLevel(AccountLevel accountLevel) {
-//        this.accountLevel = accountLevel;
-//    }
-//
+    public void setAccountLevel(AccountLevel accountLevel) {
+        this.accountLevel = accountLevel;
+    }
+
 //    @Transient
 //    public BigDecimal getNewMembershipAmount() {
 //        BigDecimal newTotal = BigDecimal.ZERO;

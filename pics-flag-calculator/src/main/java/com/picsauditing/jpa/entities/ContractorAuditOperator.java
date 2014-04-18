@@ -1,19 +1,22 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 //@SuppressWarnings("serial")
 //@Entity
 //@Table(name = "contractor_audit_operator")
 public class ContractorAuditOperator extends BaseTable /*implements Comparable<ContractorAuditOperator>*/ {
 
-//    private ContractorAudit audit;
+    private ContractorAudit audit;
 //    private OperatorAccount operator;
-//    private AuditStatus status = AuditStatus.Pending;
+    private AuditStatus status = AuditStatus.Pending;
 //    private Date statusChangedDate;
 //    private int percentComplete;
 //    private int percentVerified;
-//    private boolean visible = true;
+    private boolean visible = true;
 //    private FlagColor flag = null;
-//    private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
+    private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 //    private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
 //    private AuditSubStatus auditSubStatus;
 //
@@ -23,10 +26,10 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //        return audit;
 //    }
 //
-//    public void setAudit(ContractorAudit audit) {
-//        this.audit = audit;
-//    }
-//
+    public void setAudit(ContractorAudit audit) {
+        this.audit = audit;
+    }
+
 //    /**
 //     * @return The "inherited" operator/corporate/division that is associated
 //     *         with this CAO
@@ -48,17 +51,17 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //        return status;
 //    }
 //
-//    /**
-//     * Don't use this! Use changeStatus instead
-//     *
-//     * @deprecated
-//     * @param auditStatus
-//     * @see ContractorAuditOperator.changeStatus()
-//     */
-//    public void setStatus(AuditStatus status) {
-//        this.status = status;
-//    }
-//
+    /**
+     * Don't use this! Use changeStatus instead
+     *
+     * @deprecated
+     * @param auditStatus
+     * @see ContractorAuditOperator.changeStatus()
+     */
+    public void setStatus(AuditStatus status) {
+        this.status = status;
+    }
+
 //    @Transient
 //    public ContractorAuditOperatorWorkflow changeStatus(AuditStatus auditStatus, Permissions permissions) {
 //        if (auditStatus.equals(status))
@@ -98,14 +101,14 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //        return statusChangedDate;
 //    }
 //
-//    public boolean isVisible() {
-//        return visible;
-//    }
-//
-//    public void setVisible(boolean visible) {
-//        this.visible = visible;
-//    }
-//
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
 //    @Transient
 //    public boolean isTopCaowUserNote() {
 //        if (CollectionUtils.isNotEmpty(caoWorkflow)) {
@@ -180,14 +183,14 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //    }
 //
 //    @OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
-//    public List<ContractorAuditOperatorPermission> getCaoPermissions() {
-//        return caoPermissions;
-//    }
-//
-//    public void setCaoPermissions(List<ContractorAuditOperatorPermission> caoPermissions) {
-//        this.caoPermissions = caoPermissions;
-//    }
-//
+    public List<ContractorAuditOperatorPermission> getCaoPermissions() {
+        return caoPermissions;
+    }
+
+    public void setCaoPermissions(List<ContractorAuditOperatorPermission> caoPermissions) {
+        this.caoPermissions = caoPermissions;
+    }
+
 //    @OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
 //    public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
 //        return caoWorkflow;
