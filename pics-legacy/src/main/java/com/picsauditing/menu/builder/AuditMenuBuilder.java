@@ -269,15 +269,17 @@ public class AuditMenuBuilder {
 
 	private void buildEmployeeGUARDSection() {
 		try {
-			if (hasEmployeeGUARD() && (permissions.isPicsEmployee() || permissions.isAdmin())) {
-				MenuComponent notPermitted = new MenuComponent("No Permitted", Strings.EMPTY_STRING);
+			boolean hasEmployeeGUARD = hasEmployeeGUARD();
+
+			if (hasEmployeeGUARD && (permissions.isPicsEmployee() || permissions.isAdmin())) {
+				MenuComponent notPermitted = new MenuComponent("Not Permitted", Strings.EMPTY_STRING);
 				addToServiceMenu(Service.EMPLOYEEGUARD, notPermitted);
 				addLegacyEmployeeGUARDSubMenu();
-			} else if (hasEmployeeGUARD() && permissions.isOperatorCorporate()) {
+			} else if (hasEmployeeGUARD && permissions.isOperatorCorporate()) {
 				MenuComponent assignments = new MenuComponent("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
 				addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
 				addLegacyEmployeeGUARDSubMenu();
-			} else if (hasEmployeeGUARD() && permissions.isContractor()) {
+			} else if (hasEmployeeGUARD && permissions.isContractor()) {
 				buildEmployeeGUARDMenu();
 				addLegacyEmployeeGUARDSubMenu();
 			} else {
