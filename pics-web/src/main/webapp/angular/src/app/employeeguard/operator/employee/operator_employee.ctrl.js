@@ -1,16 +1,15 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, EmployeeCompanyInfo, SkillModel, SkillList, $routeParams) {
+.controller('operatorEmployeeCtrl', function ($scope, EmployeeCompanyInfo, SkillModel, SkillList, $routeParams, $filter) {
     var skillModel;
 
-    $scope.employee = EmployeeCompanyInfo.get();
-    $scope.skillList = SkillList.get();
-
-    $scope.employee.$promise.then(function(employee) {
+    // $scope.employee = EmployeeCompanyInfo.get();
+    EmployeeCompanyInfo.get(function(employee) {
+        $scope.employee = employee;
         $scope.employeeStatusIcon = employee.status;
     });
 
-    $scope.skillList.$promise.then(function (result) {
+    $scope.skillList = SkillList.get(function(result) {
         skillModel = new SkillModel(result);
         loadMenuItems();
         selectViewModel();
@@ -26,50 +25,57 @@ angular.module('PICS.employeeguard')
     }
 
     function selectViewModel() {
+        var model;
+
         if ($routeParams.roleSlug) {
-            loadRoleModel();
+            model = getRoleModel();
+            setScopeModel(model);
         } else if ($routeParams.projectSlug) {
-            loadProjectModel();
+            model = getProjectModel();
+            setScopeModel(model);
         } else {
-            loadDefaultModel();
+            model = getDefaultModel();
+            setScopeModel(model);
         }
     }
 
-    function loadRoleModel() {
+    function setScopeModel(model) {
+        $scope.requiredSkills = model.requiredSkills;
+        $scope.skillList = model.skillList;
+        $scope.employeeStatusIcon = model.employeeStatusIcon;
+        $scope.selectedMenuItem = model.selectedMenuItem;
+        $scope.viewTitle = model.viewTitle;
+    }
+
+    function getRoleModel() {
         var slugname = $routeParams.roleSlug;
 
-        $scope.requiredSkills = skillModel.getSiteAndCorpRequiredSkills();
-        $scope.skillList = skillModel.getRoleBySlug(slugname);
-        setEmployeeStatusIcon($scope.skillList.status);
-        setSelectedMenuItem(slugname);
-        setViewTitle(skillModel.getRoleNameBySlug(slugname));
+        return {
+            requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
+            skillList: skillModel.getRoleBySlug(slugname),
+            employeeStatusIcon: skillModel.getRoleBySlug(slugname).status,
+            selectedMenuItem: slugname,
+            viewTitle: skillModel.getRoleNameBySlug(slugname)
+        };
     }
 
-    function loadProjectModel() {
+    function getProjectModel() {
         var slugname = $routeParams.projectSlug;
 
-        $scope.requiredSkills = skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname);
-        $scope.skillList = skillModel.getProjectBySlug(slugname);
-        setEmployeeStatusIcon($scope.skillList.status);
-        setSelectedMenuItem(slugname);
-        setViewTitle(skillModel.getProjectNameBySlug(slugname));
+        return {
+            requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
+            skillList: skillModel.getProjectBySlug(slugname),
+            employeeStatusIcon: skillModel.getProjectBySlug(slugname).status,
+            selectedMenuItem: slugname,
+            viewTitle: skillModel.getProjectNameBySlug(slugname)
+        };
     }
 
-    function loadDefaultModel() {
-        $scope.requiredSkills = skillModel.getAllRequiredSkills();
-        setSelectedMenuItem('all');
-    }
-
-    function setEmployeeStatusIcon(status) {
-        $scope.employeeStatusIcon = status;
-    }
-
-    function setSelectedMenuItem(item) {
-        $scope.selectedMenuItem = item;
-    }
-
-    function setViewTitle(name) {
-        $scope.viewTitle = name;
+    function getDefaultModel() {
+        return {
+            requiredSkills: skillModel.getAllRequiredSkills(),
+            selectedMenuItem: 'all'
+        };
     }
 
     $scope.getSelectedView = function() {
@@ -89,18 +95,16 @@ angular.module('PICS.employeeguard')
     angular.extend($scope, {
         loadMenuItems: loadMenuItems,
         selectViewModel: selectViewModel,
-        loadRoleModel: loadRoleModel,
-        loadProjectModel: loadProjectModel,
-        setEmployeeStatusIcon: setEmployeeStatusIcon,
-        setSelectedMenuItem: setSelectedMenuItem,
-        setViewTitle: setViewTitle
+        getRoleModel: getRoleModel,
+        getProjectModel: getProjectModel,
+        getDefaultModel: getDefaultModel
     });
 })
 
 .filter('removeInvalidCharactersFromUrl', function () {
         return function (text) {
 
-            var str = text.replace(/\s+/g, '');
+            var str = text.replace(/\s+/g, '-').toLowerCase();
             return str;
         };
 });

@@ -138,7 +138,7 @@ describe('An Operator Skill Data Model', function() {
                     }
             ];
 
-            expect(skillModel.getProjectRequiredSkillsBySlug('BobSuperFunTime')).toEqual(projectSkills);
+            expect(skillModel.getProjectRequiredSkillsBySlug('bob-super-fun-time')).toEqual(projectSkills);
         });
 
         it('should get project required skills AND site required by slug', function() {
@@ -160,7 +160,7 @@ describe('An Operator Skill Data Model', function() {
                     }
             ];
 
-            expect(skillModel.getProjectAndSiteRequiredSkillsBySlug('BobSuperFunTime')).toEqual(projectSkills);
+            expect(skillModel.getProjectAndSiteRequiredSkillsBySlug('bob-super-fun-time')).toEqual(projectSkills);
         });
 
         it('should get all site and corp required skills', function() {
@@ -194,20 +194,20 @@ describe('An Operator Skill Data Model', function() {
                      ],
                      "status":"Completed",
                      "name":"Dead by Dawn",
-                     "slug":"DeadbyDawn"
+                     "slug":"dead-by-dawn"
                    };
-            expect(skillModel.getRoleBySlug('DeadbyDawn')).toEqual(selected_role);
+            expect(skillModel.getRoleBySlug('dead-by-dawn')).toEqual(selected_role);
         });
 
         it('should return the selected role name by slug', function() {
-            expect(skillModel.getRoleNameBySlug('DeadbyDawn')).toEqual('Dead by Dawn');
+            expect(skillModel.getRoleNameBySlug('dead-by-dawn')).toEqual('Dead by Dawn');
         });
 
         it('should return only the selected project by slug', function() {
             var selected_project = {
               "id":4,
               "name":"Bob Super Fun Time",
-              "slug":"BobSuperFunTime",
+              "slug":"bob-super-fun-time",
               "status": "Expiring",
               "roles":[
                  {
@@ -233,11 +233,11 @@ describe('An Operator Skill Data Model', function() {
               }
             };
 
-            expect(skillModel.getProjectBySlug('BobSuperFunTime')).toEqual(selected_project);
+            expect(skillModel.getProjectBySlug('bob-super-fun-time')).toEqual(selected_project);
         });
 
         it('should return only the selected project name by slug', function() {
-            expect(skillModel.getProjectNameBySlug('BobSuperFunTime')).toEqual('Bob Super Fun Time');
+            expect(skillModel.getProjectNameBySlug('bob-super-fun-time')).toEqual('Bob Super Fun Time');
         });
     });
 });

@@ -25,7 +25,7 @@ describe('An Operator Employee', function() {
           {
             id:1,
             name:"Blue Buffalo",
-            slug:"BlueBuffalo",
+            slug:"blue-buffalo",
             status:"Expired",
             "required": {
                 "skills": [
@@ -65,7 +65,7 @@ describe('An Operator Employee', function() {
           {
             id:41,
             name:"Red Rocket",
-            slug:"RedRocket",
+            slug:"red-rocket",
             status:"Expiring",
             "required": {
                 "skills": [
@@ -121,7 +121,7 @@ describe('An Operator Employee', function() {
              id:24,
              status:"Expiring",
              name:"Destructor The Great",
-             slug:"DestructorTheGreat"
+             slug:"destructor-the-great"
           },
           {
              skills:[
@@ -140,7 +140,7 @@ describe('An Operator Employee', function() {
              id:24,
              status:"Completed",
              name:"Redemption",
-             slug:"Redemption"
+             slug:"redemption"
           }
         ]
     };
@@ -187,13 +187,13 @@ describe('An Operator Employee', function() {
     }));
 
     it("should set the view type to role", function() {
-        routeParams.roleSlug = 'Destructor';
+        routeParams.roleSlug = 'destructor';
 
         expect(scope.getSelectedView()).toEqual('role');
     });
 
     it("should set the view type to project", function() {
-        routeParams.projectSlug = 'CompleteannihilationoftheplanetKrypton';
+        routeParams.projectSlug = 'complete-annihilation-of-the-planet-krypton';
 
         expect(scope.getSelectedView()).toEqual('project');
     });
@@ -211,7 +211,7 @@ describe('An Operator Employee', function() {
 
     describe("Role model", function() {
         it('should have site and corp required skills', function() {
-            routeParams.roleSlug = 'Redemption';
+            routeParams.roleSlug = 'redemption';
             scope.selectViewModel();
 
             var requiredSkills = [
@@ -236,28 +236,28 @@ describe('An Operator Employee', function() {
         });
 
         it('should have the skill list for a selected role', function() {
-            routeParams.roleSlug = 'Redemption';
+            routeParams.roleSlug = 'redemption';
             scope.selectViewModel();
 
             expect(scope.skillList).toEqual(result.roles[1]);
         });
 
         it('should set the selected menu item to role name', function() {
-            routeParams.roleSlug = 'Redemption';
+            routeParams.roleSlug = 'redemption';
             scope.selectViewModel();
 
-            expect(scope.selectedMenuItem).toEqual('Redemption');
+            expect(scope.selectedMenuItem).toEqual('redemption');
         });
 
         it('should set the employee status icon to the role status', function() {
-            routeParams.roleSlug = 'Redemption';
+            routeParams.roleSlug = 'redemption';
             scope.selectViewModel();
 
             expect(scope.employeeStatusIcon).toEqual('Completed');
         });
 
         it('should set the view title to the role name', function() {
-            routeParams.roleSlug = 'DestructorTheGreat';
+            routeParams.roleSlug = 'destructor-the-great';
             scope.selectViewModel();
 
             expect(scope.viewTitle).toEqual('Destructor The Great');
@@ -266,7 +266,7 @@ describe('An Operator Employee', function() {
 
     describe("Project model", function() {
         it('should have project, site and corp required skills', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+            routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
             var requiredSkills = [
@@ -301,29 +301,29 @@ describe('An Operator Employee', function() {
         });
 
         it('should have the skill list for a selected project', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+            routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
             expect(scope.skillList).toEqual(result.projects[0]);
         });
 
         it('should have the selected menu item to project name', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+            routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
-            expect(scope.selectedMenuItem).toEqual('BlueBuffalo');
+            expect(scope.selectedMenuItem).toEqual('blue-buffalo');
         });
 
 
         it('should set the employee status icon to the project status', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+            routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
             expect(scope.employeeStatusIcon).toEqual('Expired');
         });
 
         it('should set the view title to the project name', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+            routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
             expect(scope.viewTitle).toEqual('Blue Buffalo');

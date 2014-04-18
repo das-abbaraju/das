@@ -43,7 +43,7 @@
                                 <span class="nav-title">Job Roles</span>
                             </li>
                             <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
-                                <a href="/employee-guard/operators/employees/{{ employee.id }}/role/{{ role.slug }}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/roles/{{ role.slug }}">
                                     {{ role.name }}
                                     <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
                                 </a>
@@ -55,7 +55,7 @@
                             </li>
 
                             <li ng-repeat="project in projects" ng-class="{active: selectedMenuItem == project.slug}">
-                                <a href="/employee-guard/operators/employees/{{ employee.id }}/project/{{ project.name | removeInvalidCharactersFromUrl }}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/projects/{{ project.name | removeInvalidCharactersFromUrl }}">
                                     {{ project.name }}
                                     <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
                                 </a>
