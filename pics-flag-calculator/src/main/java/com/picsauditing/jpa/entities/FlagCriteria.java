@@ -9,7 +9,7 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    private FlagCriteriaCategory backwardCompatibleCategory;
     private FlagCriteriaCategory category;
 //    private int displayOrder = 999;
-//    private AuditQuestion question;
+    private AuditQuestion question;
     private AuditType auditType;
 //    private OshaType oshaType;
 //    private OshaRateType oshaRateType;
@@ -22,7 +22,7 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
     private String defaultValue;
     private boolean allowCustomValue = false;
     private String dataType = "string";
-//    private boolean flaggableWhenMissing = false;
+    private boolean flaggableWhenMissing = false;
 //    private boolean insurance = false;
 //    private FlagCriteriaOptionCode optionCode;
 //
@@ -49,14 +49,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 
 //    @ManyToOne
 //    @JoinColumn(name = "questionID", nullable = true)
-//    public AuditQuestion getQuestion() {
-//        return question;
-//    }
-//
-//    public void setQuestion(AuditQuestion question) {
-//        this.question = question;
-//    }
-//
+    public AuditQuestion getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(AuditQuestion question) {
+        this.question = question;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "auditTypeID", nullable = true)
     public AuditType getAuditType() {
@@ -205,14 +205,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
     }
 
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
-//    public boolean isFlaggableWhenMissing() {
-//        return flaggableWhenMissing;
-//    }
-//
-//    public void setFlaggableWhenMissing(boolean flaggableWhenMissing) {
-//        this.flaggableWhenMissing = flaggableWhenMissing;
-//    }
-//
+    public boolean isFlaggableWhenMissing() {
+        return flaggableWhenMissing;
+    }
+
+    public void setFlaggableWhenMissing(boolean flaggableWhenMissing) {
+        this.flaggableWhenMissing = flaggableWhenMissing;
+    }
+
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
 //    public boolean isInsurance() {
 //        return insurance;

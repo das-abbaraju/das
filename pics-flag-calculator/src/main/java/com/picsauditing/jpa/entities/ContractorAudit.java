@@ -27,7 +27,7 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //    private Date assignedDate;
 //    private Date paidDate;
 //    private OperatorAccount requestingOpAccount;
-//    private int score;
+    private int score;
 //    private boolean manuallyAdded;
 //    private boolean needsIndexing = true;
 //    private String auditFor;
@@ -241,22 +241,22 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //        this.auditLocation = auditLocation;
 //    }
 //
-//    /**
-//     * We may need to move this over to CAO someday
-//     *
-//     * @return
-//     */
+    /**
+     * We may need to move this over to CAO someday
+     *
+     * @return
+     */
 //    @ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
-//    public int getScore() {
-//        return score;
-//    }
-//
-//    public void setScore(int score) {
-//        this.score = score;
-//    }
-//
-//    // Child tables
-//
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    // Child tables
+
 //    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
 //    public List<AuditCatData> getCategories() {
 ////		// TODO clean up categories
@@ -656,14 +656,14 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //    }
 //
 //    @Transient
-//    public boolean hasCaoStatus(AuditStatus auditStatus) {
-//        for (ContractorAuditOperator cao : this.operators) {
-//            if (cao.isVisible() && cao.getStatus().equals(auditStatus))
-//                return true;
-//        }
-//        return false;
-//    }
-//
+    public boolean hasCaoStatus(AuditStatus auditStatus) {
+        for (ContractorAuditOperator cao : this.operators) {
+            if (cao.isVisible() && cao.getStatus().equals(auditStatus))
+                return true;
+        }
+        return false;
+    }
+
 //    @Transient
 //    public boolean hasCaoStatusBefore(AuditStatus auditStatus) {
 //        for (ContractorAuditOperator cao : this.operators) {
@@ -674,22 +674,22 @@ public class ContractorAudit /*extends AbstractIndexableTable*/ {
 //    }
 //
 //    @Transient
-//    public boolean hasCaoStatusAfter(AuditStatus auditStatus) {
-//        return hasCaoStatusAfter(auditStatus, false);
-//    }
-//
+    public boolean hasCaoStatusAfter(AuditStatus auditStatus) {
+        return hasCaoStatusAfter(auditStatus, false);
+    }
+
 //    @Transient
-//    public boolean hasCaoStatusAfter(AuditStatus auditStatus, boolean ignoreNotApplicable) {
-//        for (ContractorAuditOperator cao : this.operators) {
-//            if (ignoreNotApplicable && cao.getStatus().equals(AuditStatus.NotApplicable))
-//                continue;
-//            if (cao.isVisible() && cao.getStatus().after(auditStatus)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
+    public boolean hasCaoStatusAfter(AuditStatus auditStatus, boolean ignoreNotApplicable) {
+        for (ContractorAuditOperator cao : this.operators) {
+            if (ignoreNotApplicable && cao.getStatus().equals(AuditStatus.NotApplicable))
+                continue;
+            if (cao.isVisible() && cao.getStatus().after(auditStatus)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 //    @Transient
 //    public boolean isVisibleTo(Permissions permissions) {
 //        if (permissions.isContractor())

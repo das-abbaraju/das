@@ -47,10 +47,10 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //    @Column(name = "status", nullable = false)
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Required)
-//    public AuditStatus getStatus() {
-//        return status;
-//    }
-//
+    public AuditStatus getStatus() {
+        return status;
+    }
+
     /**
      * Don't use this! Use changeStatus instead
      *
@@ -245,14 +245,14 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 //    }
 //
 //    @Transient
-//    public boolean hasCaop(int opID) {
-//        for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
-//            if (caop.getOperator().getId() == opID)
-//                return true;
-//        }
-//        return false;
-//    }
-//
+    public boolean hasCaop(int opID) {
+        for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
+            if (caop.getOperator().getId() == opID)
+                return true;
+        }
+        return false;
+    }
+
 //    @Transient
 //    public boolean hasOnlyCaop(int opID) {
 //        if (getCaoPermissions().size() == 1) {
