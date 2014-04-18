@@ -29,7 +29,7 @@ public class ProfileDocumentServiceFactory {
 		when(profileDocumentService.search(anyString(), anyInt())).thenReturn(profileDocuments);
 		when(profileDocumentService.getDocumentFile(any(ProfileDocument.class), anyString())).thenReturn(file);
 		when(profileDocumentService.create(any(Profile.class), any(DocumentForm.class), anyString(), anyInt())).thenReturn(profileDocument);
-		when(profileDocumentService.update(anyString(), anyInt(), any(ProfileDocument.class), anyInt(), any(File.class), anyString(), anyString())).thenReturn(profileDocument);
+		when(profileDocumentService.update(anyInt(), any(Profile.class), any(ProfileDocument.class), anyInt(), any(File.class), anyString(), anyString())).thenReturn(profileDocument);
 		when(profileDocumentService.getPhotoDocumentFromProfile(any(Profile.class))).thenReturn(profileDocument);
 
 		return profileDocumentService;

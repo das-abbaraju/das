@@ -26,16 +26,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DocumentActionTest extends PicsActionTest {
+
 	private static final String TEST = "Test";
 	public static final String ID = "ID";
+	public static final int DOCUMENT_ID = 102;
 
 	private DocumentAction documentAction;
 
 	private ProfileService profileService;
 	private ProfileDocumentService profileDocumentService;
 
-    @Mock
-    private FormBuilderFactory formBuilderFactory;
+	@Mock
+	private FormBuilderFactory formBuilderFactory;
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,11 +51,11 @@ public class DocumentActionTest extends PicsActionTest {
 
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 
-        Whitebox.setInternalState(documentAction, "formBuilderFactory", formBuilderFactory);
+		Whitebox.setInternalState(documentAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(documentAction, "profileService", profileService);
 		Whitebox.setInternalState(documentAction, "profileDocumentService", profileDocumentService);
 
-        when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
+		when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
 	}
 
 	@Test
@@ -123,21 +125,12 @@ public class DocumentActionTest extends PicsActionTest {
 		verify(profileDocumentService).create(any(Profile.class), any(DocumentForm.class), anyString(), eq(Identifiable.SYSTEM));
 	}
 
-//	@Test
-//	public void testUpdate() throws Exception {
-//		documentAction.setDocumentForm(new DocumentForm());
-//		assertEquals(PicsActionSupport.REDIRECT, documentAction.update());
-//		assertTrue(documentAction.getUrl().startsWith("/employee-guard/employee/file/"));
-//		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-//		verify(profileDocumentService).update(anyString(), eq(Identifiable.SYSTEM), any(ProfileDocument.class), eq(Identifiable.SYSTEM));
-//	}
-
 	@Test
 	public void testDelete() throws Exception {
 		documentAction.setId(ID);
 		assertEquals(PicsActionSupport.REDIRECT, documentAction.delete());
 		assertEquals("/employee-guard/employee/file", documentAction.getUrl());
 		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(profileDocumentService).delete(ID, Identifiable.SYSTEM, Identifiable.SYSTEM);
+		verify(profileDocumentService).delete(DOCUMENT_ID, Identifiable.SYSTEM);
 	}
 }

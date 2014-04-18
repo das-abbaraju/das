@@ -94,6 +94,10 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	public AccountSkill() {
 	}
 
+	public AccountSkill(int id) {
+		this.id = id;
+	}
+
 	public AccountSkill(int id, int accountId) {
 		this.id = id;
 		this.accountId = accountId;
@@ -289,36 +293,36 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		return 0;
 	}
 
-    public final static class AccountSkillUniqueIndex implements UniqueIndexable {
+	public final static class AccountSkillUniqueIndex implements UniqueIndexable {
 
-        private final int id;
-        private final int accountId;
-        private final SkillType skillType;
-        private final String name;
+		private final int id;
+		private final int accountId;
+		private final SkillType skillType;
+		private final String name;
 
-        public AccountSkillUniqueIndex(final int id, final int accountId, final SkillType skillType, final String name) {
-            this.id = id;
-            this.accountId = accountId;
-            this.skillType = skillType;
-            this.name = name;
-        }
+		public AccountSkillUniqueIndex(final int id, final int accountId, final SkillType skillType, final String name) {
+			this.id = id;
+			this.accountId = accountId;
+			this.skillType = skillType;
+			this.name = name;
+		}
 
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {{
-                put("accountId", accountId);
-                put("skillType", skillType);
-                put("name", name);
-            }});
-        }
+		@Override
+		public Map<String, Object> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Object>() {{
+				put("accountId", accountId);
+				put("skillType", skillType);
+				put("name", name);
+			}});
+		}
 
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
+		@Override
+		public int getId() {
+			return id;
+		}
+	}
 
-    @Override
+	@Override
 	public String toString() {
 		return id + " " + name;
 	}

@@ -79,4 +79,9 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	public void putInSession(final String key, final Object value) {
 		ActionContext.getContext().getSession().put(key, value);
 	}
+
+	@Override
+	public String getReferer() {
+		return ServletActionContext.getRequest().getHeader("Referer");
+	}
 }

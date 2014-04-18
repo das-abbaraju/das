@@ -67,6 +67,10 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	public Employee() {
 	}
 
+	public Employee(int id) {
+		this.id = id;
+	}
+
 	public Employee(int id, int accountId) {
 		this.id = id;
 		this.accountId = accountId;

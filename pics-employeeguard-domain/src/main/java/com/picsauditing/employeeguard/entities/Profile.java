@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.database.domain.Identifiable;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -55,6 +56,7 @@ public class Profile implements BaseEntity, Identifiable {
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 2)
 	private List<Employee> employees = new ArrayList<>();
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)

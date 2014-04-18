@@ -72,7 +72,6 @@
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
-    <bean id="RoleAssignmentHelper" class="com.picsauditing.employeeguard.services.RoleAssignmentHelper"/>
 
     <!-- Factories -->
     <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder"/>

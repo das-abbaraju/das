@@ -22,4 +22,6 @@ public interface SessionInfoProvider {
 
 	void putInSession(String key, Object value);
 
+	String getReferer();
+
 }

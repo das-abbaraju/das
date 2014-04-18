@@ -254,4 +254,14 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 
 		return query.getResultList();
 	}
+
+	@Transactional(propagation = Propagation.NESTED)
+	public void delete(final ProfileDocument profileDocument) {
+		Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase " +
+				"WHERE ase.profileDocument = :profileDocument");
+
+		query.setParameter("profileDocument", profileDocument);
+
+		query.executeUpdate();
+	}
 }
