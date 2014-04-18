@@ -26,7 +26,7 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //    protected String name;
 //    protected String nameIndex;
 //    // private char active;
-//    protected AccountStatus status = AccountStatus.Pending;
+    protected AccountStatus status = AccountStatus.Pending;
 //    protected String dbaName;
 //    protected String address;
 //    protected String address2;
@@ -362,14 +362,14 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //    @Enumerated(EnumType.STRING)
 //    @Column(name = "status", nullable = false)
 //    @ReportField(type = FieldType.AccountStatus, i18nKeyPrefix = "AccountStatus", importance = FieldImportance.Required)
-//    public AccountStatus getStatus() {
-//        return status;
-//    }
-//
-//    public void setStatus(AccountStatus status) {
-//        this.status = status;
-//    }
-//
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
 //    /**
 //     * True if QuickBooks Web Connector needs to pull this record into
 //     * QuickBooks

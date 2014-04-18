@@ -7,7 +7,7 @@ package com.picsauditing.jpa.entities;
 public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria>*/ {
 
 //    private FlagCriteriaCategory backwardCompatibleCategory;
-//    private FlagCriteriaCategory category;
+    private FlagCriteriaCategory category;
 //    private int displayOrder = 999;
 //    private AuditQuestion question;
     private AuditType auditType;
@@ -43,10 +43,10 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //        return category;
 //    }
 //
-//    public void setCategory(FlagCriteriaCategory category) {
-//        this.category = category;
-//    }
-//
+    public void setCategory(FlagCriteriaCategory category) {
+        this.category = category;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "questionID", nullable = true)
 //    public AuditQuestion getQuestion() {
