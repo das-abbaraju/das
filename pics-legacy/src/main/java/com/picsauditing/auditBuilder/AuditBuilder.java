@@ -475,8 +475,6 @@ public class AuditBuilder {
 		for (OperatorAccount governingBody : caosToEnsureExist) {
 			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
-            conAuditDao.refresh(conAudit);
-
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getOperator().equals(governingBody)) {
 					cao = cao2;
