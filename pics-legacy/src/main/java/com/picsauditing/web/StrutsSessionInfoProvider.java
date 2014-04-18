@@ -2,6 +2,7 @@ package com.picsauditing.web;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.util.Strings;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
@@ -9,11 +10,6 @@ import org.apache.struts2.ServletActionContext;
 import java.util.Map;
 
 public class StrutsSessionInfoProvider implements SessionInfoProvider {
-
-	public static final String REST_ID_PARAM_KEY = "id"; // FIXME: Get this from the container
-
-	public static final String EMPLOYEEGUARD_NAMESPACE = "/employee-guard";
-	public static final String PICSORG_NAMESPACE = "/";
 
 	@Override
 	public int getUserId() {
@@ -51,6 +47,10 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 
 	@Override
 	public NameSpace getNamespace() {
+		if (ServletActionContext.getActionMapping() == null) {
+			return NameSpace.NONE;
+		}
+
 		String namespace = ServletActionContext.getActionMapping().getNamespace();
 
 		switch (namespace) {
@@ -78,5 +78,9 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	@Override
 	public void putInSession(final String key, final Object value) {
 		ActionContext.getContext().getSession().put(key, value);
+	}
+
+	public String getURI() {
+		return ServletActionContext.getRequest().getRequestURI();
 	}
 }

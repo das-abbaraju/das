@@ -4,6 +4,7 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.web.NameSpace;
+import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -43,7 +44,10 @@ final class UserModeProviderImpl implements UserModeProvider {
 	public UserMode getCurrentUserMode() {
 		NameSpace nameSpace = SessionInfoProviderFactory.getSessionInfoProvider().getNamespace();
 
-		if (nameSpace == NameSpace.EMPLOYEEGUARD) {
+		String uri = SessionInfoProviderFactory.getSessionInfoProvider().getURI();
+
+		if (nameSpace == NameSpace.EMPLOYEEGUARD
+				|| (uri != null && uri.contains(SessionInfoProvider.EMPLOYEEGUARD_NAMESPACE))) {
 			return UserMode.EMPLOYEE;
 		}
 

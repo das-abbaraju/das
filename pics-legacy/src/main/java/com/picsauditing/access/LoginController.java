@@ -361,7 +361,7 @@ public class LoginController extends PicsActionSupport {
 					return ERROR;
 				} else {
 					JSONObject result = egLoginService.loginViaRest(username, password);
-					permissions = permissionBuilder.login(appUser, profile);
+					permissions = permissionBuilder.employeeUserLogin(appUser, profile);
 
 					if ("SUCCESS".equals(result.get("status").toString())) {
 						doSetCookie(result.get("cookie").toString(), 10);
