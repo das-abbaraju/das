@@ -10,10 +10,10 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
     private String answer;
 //    private String answer2;
 //    private boolean verified;
-//
-//    public FlagCriteriaContractor() {
-//    }
-//
+
+    public FlagCriteriaContractor() {
+    }
+
     public FlagCriteriaContractor(ContractorAccount ca, FlagCriteria fc, String answer) {
         contractor = ca;
         criteria = fc;
@@ -42,14 +42,14 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
 //    }
 //
 //    @ReportField(importance = FieldImportance.Required)
-//    public String getAnswer() {
-//        return answer;
-//    }
-//
-//    public void setAnswer(String answer) {
-//        this.answer = answer;
-//    }
-//
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
 //    public String getAnswer2() {
 //        return answer2;
 //    }
