@@ -1,6 +1,9 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -20,7 +23,7 @@ public class FlagCalculator {
 //
 //    // Assume this is true for the contractor in question
     private boolean worksForOperator = true;
-//    private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
+    private final Logger logger = LoggerFactory.getLogger(FlagCalculator.class);
 
     public FlagCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
         setContractorCriteria(contractorCriteria);
@@ -161,20 +164,16 @@ public class FlagCalculator {
         String hurdle = criteria.getDefaultValue();
         ContractorAccount con = conCriteria.getContractor();
 
-//        if (criteria.isAllowCustomValue() && Strings.isNotEmpty(opCriteria.getHurdle())) {
-//            hurdle = opCriteria.getHurdle();
-//        }
+        if (criteria.isAllowCustomValue() && StringUtils.isNotEmpty(opCriteria.getHurdle())) {
+            hurdle = opCriteria.getHurdle();
+        }
+
 //        if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
 //            String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
 //            if (newHurdle != null) {
 //                hurdle = newHurdle;
 //            }
 //        }
-//
-//        // if ("Statistics".equals(criteria.getCategory()) &&
-//        // !isStatisticValidForOperator(opCriteria.getOperator(), con)) {
-//        // return null;
-//        // }
 //
 //        // Check if we need to match tags
 //        if (opCriteria.getTag() != null) {
