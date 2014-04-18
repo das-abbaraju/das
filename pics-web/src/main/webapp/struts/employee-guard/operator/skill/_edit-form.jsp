@@ -52,12 +52,12 @@
             <s:include value="/struts/employee-guard/operator/skill/_training-form.jsp"/>
         </s:if>
 
-        <s:set var="selected_roles" value="operatorSkillForm.groups"/>
+        <s:set var="selected_roles" value="operatorSkillForm.roles"/>
 
         <div class="form-group">
             <tw:label labelName="groups" class="col-md-3 control-label">Job Roles</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
+                <tw:select selectName="roles" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
                     <s:iterator value="roles" var="operator_role">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_roles" var="selected_role">

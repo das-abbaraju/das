@@ -80,6 +80,23 @@ public class AccountSkillBuilder {
 		return this;
 	}
 
+	public AccountSkillBuilder roles(String[] roles) {
+		if (!ArrayUtils.isEmpty(roles)) {
+			accountSkill.getRoles().clear();
+
+			for (String role : roles) {
+				Role accountRole = new Role();
+				accountRole.setName(role);
+				accountRole.setAccountId(accountSkill.getAccountId());
+				AccountSkillRole accountSkillRole = new AccountSkillRole(accountRole, accountSkill);
+
+				accountSkill.getRoles().add(accountSkillRole);
+			}
+		}
+
+		return this;
+	}
+
 	public AccountSkill build() {
 		return accountSkill;
 	}

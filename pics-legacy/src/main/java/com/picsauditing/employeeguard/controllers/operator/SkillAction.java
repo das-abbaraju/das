@@ -9,6 +9,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
@@ -16,8 +17,10 @@ import com.picsauditing.employeeguard.forms.operator.RequiredSiteSkillForm;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.skill.OperatorSkillFormValidator;
+import com.picsauditing.employeeguard.viewmodel.factory.RoleEmployeeCountFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
@@ -45,6 +48,9 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	@Autowired
 	private RequiredSiteSkillFormConverter requiredSiteSkillFormConverter;
 
+  @Autowired
+  private RoleEntityService roleEntityService;
+
 	/* Forms */
 	@FormBinding({"operator_skill_create", "operator_skill_edit"})
 	private OperatorSkillForm operatorSkillForm;
@@ -56,7 +62,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Models */
 	private AccountSkill skill;
 	private List<AccountSkill> skills;
-	private List<Group> roles;
+	private List<Role> roles;
 
 	private List<AccountSkill> requiredSkills;
 	private Map<AccountModel, List<AccountSkill>> siteSkills;
@@ -110,7 +116,8 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	}
 
 	private void loadRoles() {
-		roles = roleService.getGroupsForAccount(permissions.getAccountId());
+    List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
+		roles = roleEntityService.findRolesForCorporateAccounts(accountIds);
 	}
 
 	@SkipValidation
@@ -224,7 +231,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		return skills;
 	}
 
-	public List<Group> getRoles() {
+	public List<Role> getRoles() {
 		return roles;
 	}
 
