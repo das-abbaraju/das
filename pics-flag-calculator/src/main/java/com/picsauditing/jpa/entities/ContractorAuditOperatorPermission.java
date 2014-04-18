@@ -9,7 +9,7 @@ public class ContractorAuditOperatorPermission implements Serializable {
 
 //    private int id;
 //    private ContractorAuditOperator cao;
-//    private OperatorAccount operator;
+    private OperatorAccount operator;
 //    private ContractorAuditOperator previousCao;
 //
 //    @Id
@@ -35,14 +35,14 @@ public class ContractorAuditOperatorPermission implements Serializable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "opID")
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
-//    public void setOperator(OperatorAccount operator) {
-//        this.operator = operator;
-//    }
-//
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
+    public void setOperator(OperatorAccount operator) {
+        this.operator = operator;
+    }
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "previousCaoID")
 //    public ContractorAuditOperator getPreviousCao() {

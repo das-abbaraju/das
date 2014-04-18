@@ -533,20 +533,20 @@ public class FlagCalculator {
 //        return false;
 //    }
 //
-//    private boolean isAuditVisibleToOperator(ContractorAudit ca, OperatorAccount op) {
-//        for (ContractorAuditOperator cao : ca.getOperators()) {
-//            if (cao.isVisible()) {
-//                for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-//                    if (caop.getOperator().getId() == op.getId()) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        }
-//
-//        return false;
-//    }
-//
+    private boolean isAuditVisibleToOperator(ContractorAudit ca, OperatorAccount op) {
+        for (ContractorAuditOperator cao : ca.getOperators()) {
+            if (cao.isVisible()) {
+                for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+                    if (caop.getOperator().getId() == op.getId()) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 //    public WaitingOn calculateWaitingOn(ContractorOperator co) {
 //
 //        ContractorAccount contractor = co.getContractorAccount();
