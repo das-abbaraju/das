@@ -42,6 +42,7 @@ public class FlagDataCalculatorTest {
 
 	private static final int ALBERTA_WCB_AUDIT_TYPE_ID = 145;
 	private static final int OPERATOR_ID_FOR_CAOP = 11111;
+    private static final int FAKE_CRITERIA_ID = 123;
 
 	private FlagDataCalculator calculator;
 	private FlagCriteriaContractor fcCon;
@@ -122,6 +123,79 @@ public class FlagDataCalculatorTest {
         featureToggle = SpringUtils.getBean("FeatureToggle");
         reset(featureToggle);
 	}
+
+    @Test
+    public void testIsFlaggableContractor_NoContractorCriteria() throws Exception {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = new HashMap<>();
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlaggableContractor");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsFlaggableContractor_NoContractor() throws Exception {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = makeContractorCriteria(null);
+
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlaggableContractor");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsFlaggableContractor_PendingContractor() throws Exception {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = makeContractorCriteria(contractor);
+
+        contractor.setStatus(AccountStatus.Pending);
+
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlaggableContractor");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsFlaggableContractor_DeactivatedContractor() throws Exception {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = makeContractorCriteria(contractor);
+
+        contractor.setStatus(AccountStatus.Deactivated);
+
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlaggableContractor");
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsFlaggableContractor_ActiveContractor() throws Exception {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = makeContractorCriteria(contractor);
+
+        contractor.setStatus(AccountStatus.Active);
+
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlaggableContractor");
+        assertTrue(result);
+    }
+
+    private Map<FlagCriteria, FlagCriteriaContractor> makeContractorCriteria(ContractorAccount contractor) {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = new HashMap<>();
+        fc = createFlagCriteria(FAKE_CRITERIA_ID);
+        fcCon = new FlagCriteriaContractor(contractor, fc, "answer");
+
+        contractorCriteria.put(fc, fcCon);
+
+        return contractorCriteria;
+    }
+
+    private FlagCriteria createFlagCriteria(int id) {
+        FlagCriteria fc = new FlagCriteria();
+        fc.setId(id);
+        fc.setCategory(null);
+
+        return fc;
+    }
 
     @Test
     public void testAuditIsApplicableForThisOperator() throws Exception {

@@ -24,14 +24,14 @@ public abstract class BaseTable implements /*JSONable,*/ Serializable/*, Autocom
 //    @GeneratedValue(strategy = IDENTITY)
 //    @Column(nullable = false)
 //    @IndexableField(type = IndexValueType.STRINGTYPE, weight = 10)
-//    public int getId() {
-//        return id;
-//    }
-//
-//    public void setId(int id) {
-//        this.id = id;
-//    }
-//
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 //    @Transient
 //    public String getI18nKey() {
 //        return getClass().getSimpleName() + "." + id;
