@@ -20,6 +20,8 @@ import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
+import com.picsauditing.web.NameSpace;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -644,12 +646,6 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.EditProfile) && !inEmployeeMode) {
 			userMenu.addChild(getText("menu.Profile"), "ProfileEdit.action", "profile_edit");
-		}
-
-		if (inEmployeeMode) {
-			int profileId = getEmployeeGUARDProfileId(permissions);
-			userMenu.addChild(getText("menu.Profile"),
-					EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, profileId), "");
 		}
 	}
 

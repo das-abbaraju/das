@@ -1,5 +1,6 @@
 package com.picsauditing.access;
 
+import com.picsauditing.access.user.UserMode;
 import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.UserDAO;
@@ -33,11 +34,12 @@ public class PermissionBuilder {
 		return permissions;
 	}
 
-	public Permissions login(final AppUser appUser, final Identifiable identifiable) {
+	public Permissions employeeUserLogin(final AppUser appUser, final Identifiable identifiable) {
 		Permissions permissions = new Permissions();
 
 		permissions.login(appUser, identifiable);
 		addUserModeInfo(permissions, appUser.getId());
+		permissions.setCurrentMode(UserMode.EMPLOYEE);
 
 		return permissions;
 	}

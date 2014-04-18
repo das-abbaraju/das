@@ -360,7 +360,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 					AppUserDAO appUserDAO = SpringUtils.getBean("AppUserDAO");
 					AppUser appUser = appUserDAO.find(appUserID);
 
-					permissions = permissionBuilder.login(appUser, profile);
+					permissions = permissionBuilder.employeeUserLogin(appUser, profile);
 
 					ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 				}
