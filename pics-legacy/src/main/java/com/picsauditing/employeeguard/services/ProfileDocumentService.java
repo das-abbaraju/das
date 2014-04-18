@@ -31,11 +31,11 @@ public class ProfileDocumentService {
 	@Autowired
 	private PhotoUtil photoUtil;
 
-	public ProfileDocument getDocument(String id) {
-		return profileDocumentDAO.find(NumberUtils.toInt(id));
+	public ProfileDocument getDocument(final int id) {
+		return profileDocumentDAO.find(id);
 	}
 
-	public List<ProfileDocument> getDocumentsForProfile(int profileId) {
+	public List<ProfileDocument> getDocumentsForProfile(final int profileId) {
 		return profileDocumentDAO.findByProfileId(profileId);
 	}
 
@@ -101,8 +101,6 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase.setFileName(newFileName + "." + extension);
 			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
-
-//		insertEmployeeSkillsForDocument(profile, skillId, profileDocumentFromDatabase);
 
 		return profileDocumentFromDatabase;
 	}

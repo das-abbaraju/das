@@ -69,7 +69,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String show() {
-		document = profileDocumentService.getDocument(id);
+		document = profileDocumentService.getDocument(getNumericId());
 
 		return SHOW;
 	}
@@ -83,7 +83,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	@SkipValidation
 	public String editFileSection() {
 		if (documentForm == null) {
-			document = profileDocumentService.getDocument(id);
+			document = profileDocumentService.getDocument(getNumericId());
 			documentForm = new DocumentForm.Builder().profileDocument(document).build();
 		} else {
 			document = documentForm.buildProfileDocument();
@@ -95,7 +95,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	// TODO: Use different strategies within a FileService to retrieve the file based on DocumentType
 	@SkipValidation
 	public String download() {
-		ProfileDocument document = profileDocumentService.getDocument(id);
+		ProfileDocument document = profileDocumentService.getDocument(getNumericId());
 
 		byte[] output = null;
 		try {

@@ -25,7 +25,7 @@ public class ProfileDocumentServiceFactory {
 		ProfileDocument profileDocument = new ProfileDocumentBuilder().name("Document 1").endDate(new Date()).build();
 		List<ProfileDocument> profileDocuments = Arrays.asList(profileDocument, new ProfileDocumentBuilder().name("Document 2").build());
 		when(profileDocumentService.getDocumentsForProfile(anyInt())).thenReturn(profileDocuments);
-		when(profileDocumentService.getDocument(anyString())).thenReturn(profileDocument);
+		when(profileDocumentService.getDocument(anyInt())).thenReturn(profileDocument);
 		when(profileDocumentService.search(anyString(), anyInt())).thenReturn(profileDocuments);
 		when(profileDocumentService.getDocumentFile(any(ProfileDocument.class), anyString())).thenReturn(file);
 		when(profileDocumentService.create(any(Profile.class), any(DocumentForm.class), anyString(), anyInt())).thenReturn(profileDocument);

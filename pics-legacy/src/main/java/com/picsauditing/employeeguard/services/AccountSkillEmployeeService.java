@@ -233,7 +233,7 @@ public class AccountSkillEmployeeService {
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
-			ProfileDocument document = profileDocumentService.getDocument(Integer.toString(skillDocumentForm.getDocumentId()));
+			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
 			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
 		} else if (skillType.isTraining()) {
 			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {

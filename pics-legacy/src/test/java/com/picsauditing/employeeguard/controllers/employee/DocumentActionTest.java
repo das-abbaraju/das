@@ -83,7 +83,7 @@ public class DocumentActionTest extends PicsActionTest {
 		documentAction.setId(ID);
 		assertEquals(PicsRestActionSupport.SHOW, documentAction.show());
 		assertNotNull(documentAction.getDocument());
-		verify(profileDocumentService).getDocument(ID);
+		verify(profileDocumentService).getDocument(DOCUMENT_ID);
 	}
 
 	@Test
@@ -106,14 +106,14 @@ public class DocumentActionTest extends PicsActionTest {
 		assertEquals("edit-form", documentAction.editFileSection());
 		assertNotNull(documentAction.getDocument());
 		assertNotNull(documentAction.getDocumentForm());
-		verify(profileDocumentService).getDocument(ID);
+		verify(profileDocumentService).getDocument(DOCUMENT_ID);
 	}
 
 	@Test
 	public void testDownload() throws Exception {
 		documentAction.setId(ID);
 		assertEquals(PicsActionSupport.FILE_DOWNLOAD, documentAction.download());
-		verify(profileDocumentService).getDocument(ID);
+		verify(profileDocumentService).getDocument(DOCUMENT_ID);
 		verify(profileDocumentService).getDocumentFile(any(ProfileDocument.class), anyString());
 	}
 
