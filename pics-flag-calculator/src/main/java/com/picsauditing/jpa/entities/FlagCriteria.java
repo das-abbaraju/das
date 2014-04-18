@@ -15,13 +15,13 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    private OshaRateType oshaRateType;
 //    private String label;
 //    private String description;
-//    private String comparison;
+    private String comparison;
 //    private MultiYearScope multiYearScope = null;
-//    protected AuditStatus requiredStatus = AuditStatus.Complete;
-//    private String requiredStatusComparison;
+    protected AuditStatus requiredStatus = AuditStatus.Complete;
+    private String requiredStatusComparison;
     private String defaultValue;
     private boolean allowCustomValue = false;
-//    private String dataType = "string";
+    private String dataType = "string";
 //    private boolean flaggableWhenMissing = false;
 //    private boolean insurance = false;
 //    private FlagCriteriaOptionCode optionCode;
@@ -139,14 +139,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    }
 //
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getComparison() {
-//        return comparison;
-//    }
-//
-//    public void setComparison(String comparison) {
-//        this.comparison = comparison;
-//    }
-//
+    public String getComparison() {
+        return comparison;
+    }
+
+    public void setComparison(String comparison) {
+        this.comparison = comparison;
+    }
+
 //    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.MultiYearScope, importance = FieldImportance.Average)
@@ -160,23 +160,23 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Average)
-//    public AuditStatus getRequiredStatus() {
-//        return requiredStatus;
-//    }
-//
-//    public void setRequiredStatus(AuditStatus requiredStatus) {
-//        this.requiredStatus = requiredStatus;
-//    }
-//
+    public AuditStatus getRequiredStatus() {
+        return requiredStatus;
+    }
+
+    public void setRequiredStatus(AuditStatus requiredStatus) {
+        this.requiredStatus = requiredStatus;
+    }
+
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getRequiredStatusComparison() {
-//        return requiredStatusComparison;
-//    }
-//
-//    public void setRequiredStatusComparison(String requiredStatusComparison) {
-//        this.requiredStatusComparison = requiredStatusComparison;
-//    }
-//
+    public String getRequiredStatusComparison() {
+        return requiredStatusComparison;
+    }
+
+    public void setRequiredStatusComparison(String requiredStatusComparison) {
+        this.requiredStatusComparison = requiredStatusComparison;
+    }
+
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
     public String getDefaultValue() {
         return defaultValue;
@@ -196,14 +196,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
     }
 
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getDataType() {
-//        return dataType;
-//    }
-//
-//    public void setDataType(String dataType) {
-//        this.dataType = dataType;
-//    }
-//
+    public String getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
+    }
+
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
 //    public boolean isFlaggableWhenMissing() {
 //        return flaggableWhenMissing;

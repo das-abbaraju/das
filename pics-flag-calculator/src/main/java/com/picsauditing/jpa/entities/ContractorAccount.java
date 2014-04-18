@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "contractor_info")
@@ -62,6 +65,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private Date lastRecalculation;
 //    private String tradesSelf;
 //    private String tradesSub;
+
 //    private int score;
 //    private Date tradesUpdated;
 //    private LcCorPhase lcCorPhase;
@@ -72,7 +76,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
 //    protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
 //    private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
-//    private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
+    private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 //    private List<Certificate> certificates = new ArrayList<Certificate>();
 //    private List<JobContractor> jobSites = new ArrayList<JobContractor>();
 //    private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
@@ -187,14 +191,14 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.REMOVE, CascadeType.MERGE})
-//    public List<ContractorTag> getOperatorTags() {
-//        return operatorTags;
-//    }
-//
-//    public void setOperatorTags(List<ContractorTag> operatorTags) {
-//        this.operatorTags = operatorTags;
-//    }
-//
+    public List<ContractorTag> getOperatorTags() {
+        return operatorTags;
+    }
+
+    public void setOperatorTags(List<ContractorTag> operatorTags) {
+        this.operatorTags = operatorTags;
+    }
+
 //    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.REMOVE})
 //    public List<Certificate> getCertificates() {
 //        return certificates;

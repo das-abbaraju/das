@@ -11,7 +11,7 @@ public class FlagCriteriaOperator extends BaseTable {
     private String hurdle;
 //    private int affected = 0;
 //    private Date lastCalculated;
-//    private OperatorTag tag;
+    private OperatorTag tag;
 //
 //    public static final Comparator<FlagCriteriaOperator> COMPARATOR = new Comparator<FlagCriteriaOperator>() {
 //        public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
@@ -88,14 +88,14 @@ public class FlagCriteriaOperator extends BaseTable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "tagID")
-//    public OperatorTag getTag() {
-//        return tag;
-//    }
-//
-//    public void setTag(OperatorTag tag) {
-//        this.tag = tag;
-//    }
-//
+    public OperatorTag getTag() {
+        return tag;
+    }
+
+    public void setTag(OperatorTag tag) {
+        this.tag = tag;
+    }
+
 //    @Transient
 //    public boolean isNeedsRecalc() {
 //        if (lastCalculated != null) {
