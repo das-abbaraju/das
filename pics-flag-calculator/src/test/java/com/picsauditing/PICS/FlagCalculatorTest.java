@@ -58,20 +58,20 @@ public class FlagCalculatorTest {
         ca = EntityFactory.makeContractorAudit(1, contractor);
         operator = EntityFactory.makeOperator();
         cao = EntityFactory.makeContractorAuditOperator(ca);
-//
-//        fc = new FlagCriteria();
-//        fc.setId(1);
-//        fc.setCategory(FlagCriteriaCategory.Safety);
-//
+
+        fc = new FlagCriteria();
+        fc.setId(1);
+        fc.setCategory(FlagCriteriaCategory.Safety);
+
 //        AuditQuestion question = EntityFactory.makeAuditQuestion();
 //        question.getAuditType().setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
-//
+
 //        fc.setQuestion(question);
-        // fc.setAuditType(EntityFactory.makeAuditType(1));
-//        fc.setComparison("=");
+//        fc.setAuditType(EntityFactory.makeAuditType(1));
+        fc.setComparison("=");
 //        fc.setDataType(FlagCriteria.STRING);
-//        fc.setDefaultValue("Default");
-//
+        fc.setDefaultValue("Default");
+
 //        fcCon = new FlagCriteriaContractor();
 //        fcCon.setContractor(contractor);
 //        fcCon.setCriteria(fc);
@@ -414,49 +414,42 @@ public class FlagCalculatorTest {
 //        return fc;
 //    }
 //
-//    @Test
-//    public void testFlagCAO_noRequiredStatus() throws Exception {
-//        Boolean flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertTrue("if the criteria has no required status, flagCAO should be true", flagCAO);
-//    }
-//
-//    @Test
-//    public void testFlagCAO_CaoStatusAfterRequiredStatus() throws Exception {
-//        Boolean flagCAO;
-//        fc.setRequiredStatus(AuditStatus.Submitted);
-//        // cao.changeStatus is doing db interaction and permission testing which is not
-//        // relevant to this test.... so.... violate encapsulation.
-//        Whitebox.setInternalState(cao, "status", AuditStatus.Complete);
-//
-//        fc.setRequiredStatusComparison(">");
-//        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertFalse("compare is '>', cao status is after criteria required status, flagCAO should be false", flagCAO);
-//
-//        fc.setRequiredStatusComparison("=");
-//        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertTrue("compare is '=', cao status is after criteria required status, flagCAO should be true", flagCAO);
-//
-//        fc.setRequiredStatusComparison("!=");
-//        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertFalse("compare is '!=', cao status is after criteria required status, flagCAO should be false", flagCAO);
-//
-//        fc.setRequiredStatusComparison("<");
-//        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertTrue("compare is '<', cao status is after criteria required status, flagCAO should be true", flagCAO);
-//
-//        fc.setRequiredStatusComparison("");
-//        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
-//        assertTrue("compare is default (blank), cao status is after criteria required status, flagCAO should be true", flagCAO);
-//
-//    }
-//
-//	/* TODO
-//	 * public void testFlagCAO_CaoStatusBeforeRequiredStatus() throws Exception {
-//	 * public void testFlagCAO_CaoStatusEqualRequiredStatus() throws Exception {
-//	 * public void testFlagCAO_CaoStatusMissing() throws Exception {
-//	 * public void testFlagCAO_RequiredStatusMissing() throws Exception {
-//	 */
-//
+    @Test
+    public void testFlagCAO_noRequiredStatus() throws Exception {
+        Boolean flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertTrue("if the criteria has no required status, flagCAO should be true", flagCAO);
+    }
+
+    @Test
+    public void testFlagCAO_CaoStatusAfterRequiredStatus() throws Exception {
+        Boolean flagCAO;
+        fc.setRequiredStatus(AuditStatus.Submitted);
+        // cao.changeStatus is doing db interaction and permission testing which is not
+        // relevant to this test.... so.... violate encapsulation.
+        Whitebox.setInternalState(cao, "status", AuditStatus.Complete);
+
+        fc.setRequiredStatusComparison(">");
+        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertFalse("compare is '>', cao status is after criteria required status, flagCAO should be false", flagCAO);
+
+        fc.setRequiredStatusComparison("=");
+        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertTrue("compare is '=', cao status is after criteria required status, flagCAO should be true", flagCAO);
+
+        fc.setRequiredStatusComparison("!=");
+        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertFalse("compare is '!=', cao status is after criteria required status, flagCAO should be false", flagCAO);
+
+        fc.setRequiredStatusComparison("<");
+        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertTrue("compare is '<', cao status is after criteria required status, flagCAO should be true", flagCAO);
+
+        fc.setRequiredStatusComparison("");
+        flagCAO = Whitebox.invokeMethod(calculator, "flagCAO", fc, cao);
+        assertTrue("compare is default (blank), cao status is after criteria required status, flagCAO should be true", flagCAO);
+
+    }
+
     @Test
     public void testIsAuditVisibleToOperator_noCAOs() throws Exception {
         Boolean isAuditVisible = Whitebox.invokeMethod(calculator, "isAuditVisibleToOperator", ca, operator);

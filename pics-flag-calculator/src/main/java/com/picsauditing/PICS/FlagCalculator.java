@@ -746,36 +746,29 @@ public class FlagCalculator {
 //                && auditFor.equals(audit.getAuditFor());
 //    }
 //
-//    /**
-//     *
-//     * @param criteria
-//     * @param cao
-//     * @return
-//     */
-//    private boolean flagCAO(FlagCriteria criteria, ContractorAuditOperator cao) {
-//        if (criteria.getRequiredStatus() == null) {
-//            return true;
-//        }
-//
-//        String compare = criteria.getRequiredStatusComparison();
-//        if (Strings.isEmpty(compare)) {
-//            compare = "<";
-//        }
-//
-//        if (compare.equals(">")) {
-//            return !cao.getStatus().after(criteria.getRequiredStatus());
-//        }
-//        if (compare.equals("=")) {
-//            return !cao.getStatus().equals(criteria.getRequiredStatus());
-//        }
-//        if (compare.equals("!=")) {
-//            return cao.getStatus().equals(criteria.getRequiredStatus());
-//        }
-//
-//        // Default is "<"
-//        return !cao.getStatus().before(criteria.getRequiredStatus());
-//    }
-//
+    private boolean flagCAO(FlagCriteria criteria, ContractorAuditOperator cao) {
+        if (criteria.getRequiredStatus() == null) {
+            return true;
+        }
+
+        String compare = criteria.getRequiredStatusComparison();
+        if (StringUtils.isEmpty(compare)) {
+            compare = "<";
+        }
+
+        if (compare.equals(">")) {
+            return !cao.getStatus().after(criteria.getRequiredStatus());
+        }
+        if (compare.equals("=")) {
+            return !cao.getStatus().equals(criteria.getRequiredStatus());
+        }
+        if (compare.equals("!=")) {
+            return cao.getStatus().equals(criteria.getRequiredStatus());
+        }
+
+        return !cao.getStatus().before(criteria.getRequiredStatus());
+    }
+
     public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
         operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
         for (FlagCriteriaOperator value : list) {
