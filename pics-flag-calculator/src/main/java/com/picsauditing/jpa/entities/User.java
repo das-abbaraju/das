@@ -10,7 +10,7 @@ public class User extends BaseTable implements java.io.Serializable/*, Comparabl
 //
 //    public static String DEFAULT_AUDITOR = "- Auditor -";
 //    public static String DELETED_PREFIX = "DELETE-";
-//    public static int SYSTEM = 1;
+    public static int SYSTEM = 1;
 //    public static int GROUP_ADMIN = 10;
 //    public static int GROUP_AUDITOR = 11;
 //    public static int GROUP_CSR = 959;
@@ -95,10 +95,10 @@ public class User extends BaseTable implements java.io.Serializable/*, Comparabl
 //        this.name = name;
 //    }
 //
-//    public User(int id) {
-//        this.id = id;
-//    }
-//
+    public User(int id) {
+        this.id = id;
+    }
+
 //    @SuppressWarnings("deprecation")
 //    public User(User u, boolean copyAll) {
 //        if (copyAll) {

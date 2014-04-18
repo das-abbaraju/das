@@ -16,7 +16,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //    public static final int FIELD = 5;
 //    public static final int DA = 6;
 //    public static final int WELCOME = 9;
-//    public static final int ANNUALADDENDUM = 11;
+    public static final int ANNUALADDENDUM = 11;
 //    public static final int EXCESS_LIABILITY = 16;
 //
 //    // AKA Competency Review
@@ -380,10 +380,10 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //    }
 //
 //    @Transient
-//    public boolean isAnnualAddendum() {
-//        return (id == ANNUALADDENDUM);
-//    }
-//
+    public boolean isAnnualAddendum() {
+        return (id == ANNUALADDENDUM);
+    }
+
 //    @Transient
 //    public boolean isWCB() {
 //        return CANADIAN_PROVINCES.contains(id);

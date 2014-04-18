@@ -106,18 +106,18 @@ public enum FlagColor {
 //        return this.equals(Clear);
 //    }
 //
-//    public boolean isWorseThan(FlagColor flagColor2) {
-//        if (flagColor2 == null) {
-//            return true;
-//        }
-//
-//        if (this.compareTo(flagColor2) < 0) {
-//            return true;
-//        }
-//
-//        return false;
-//    }
-//
+    public boolean isWorseThan(FlagColor flagColor2) {
+        if (flagColor2 == null) {
+            return true;
+        }
+
+        if (this.compareTo(flagColor2) < 0) {
+            return true;
+        }
+
+        return false;
+    }
+
 //    @Transient
 //    @Override
 //    public String getI18nKey() {

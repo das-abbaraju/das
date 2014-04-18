@@ -7,7 +7,7 @@ package com.picsauditing.jpa.entities;
 public class FlagCriteriaOperator extends BaseTable {
 //    private OperatorAccount operator;
 //    private FlagCriteria criteria;
-//    private FlagColor flag = FlagColor.Red;
+    private FlagColor flag = FlagColor.Red;
 //    private String hurdle;
 //    private int affected = 0;
 //    private Date lastCalculated;
@@ -53,9 +53,9 @@ public class FlagCriteriaOperator extends BaseTable {
 //    @Enumerated(EnumType.STRING)
 //    @JoinColumn(nullable = false)
 //    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
-//    public FlagColor getFlag() {
-//        return flag;
-//    }
+    public FlagColor getFlag() {
+        return flag;
+    }
 //
 //    public void setFlag(FlagColor flag) {
 //        this.flag = flag;

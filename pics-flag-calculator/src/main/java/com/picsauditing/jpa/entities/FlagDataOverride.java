@@ -9,7 +9,7 @@ public class FlagDataOverride extends BaseTable {
 //    private OperatorAccount operator;
 //    private ContractorOperator contractorOperator;
 //    private FlagCriteria criteria;
-//    private FlagColor forceflag;
+    private FlagColor forceflag;
 //    private Date forceEnd;
 //    private String year;
 //
@@ -57,9 +57,9 @@ public class FlagDataOverride extends BaseTable {
 //
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
-//    public FlagColor getForceflag() {
-//        return forceflag;
-//    }
+    public FlagColor getForceflag() {
+        return forceflag;
+    }
 //
 //    public void setForceflag(FlagColor forceflag) {
 //        this.forceflag = forceflag;

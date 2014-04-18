@@ -10,7 +10,7 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    private FlagCriteriaCategory category;
 //    private int displayOrder = 999;
 //    private AuditQuestion question;
-//    private AuditType auditType;
+    private AuditType auditType;
 //    private OshaType oshaType;
 //    private OshaRateType oshaRateType;
 //    private String label;
@@ -59,10 +59,10 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //
 //    @ManyToOne
 //    @JoinColumn(name = "auditTypeID", nullable = true)
-//    public AuditType getAuditType() {
-//        return auditType;
-//    }
-//
+    public AuditType getAuditType() {
+        return auditType;
+    }
+
 //    public void setAuditType(AuditType auditType) {
 //        this.auditType = auditType;
 //    }

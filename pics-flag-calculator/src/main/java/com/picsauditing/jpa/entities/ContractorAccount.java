@@ -37,10 +37,10 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private PaymentMethod paymentMethod = PaymentMethod.CreditCard;
 //    private boolean ccOnFile = false;
 //    private Date ccExpiration;
-//    private boolean soleProprietor;
+    private boolean soleProprietor;
 //    private Boolean competitorMembership;
 //    private boolean showInDirectory = true;
-//    private AccountLevel accountLevel = AccountLevel.Full;
+    private AccountLevel accountLevel = AccountLevel.Full;
 //    // TODO Tech Debt: PICS-13969
 //    private String vatId;
 //
@@ -1332,10 +1332,10 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//    public boolean getSoleProprietor() {
-//        return soleProprietor;
-//    }
-//
+    public boolean getSoleProprietor() {
+        return soleProprietor;
+    }
+
 //    public void setSoleProprietor(boolean soleProprietor) {
 //        this.soleProprietor = soleProprietor;
 //    }
@@ -1359,10 +1359,10 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.AccountLevel, importance = FieldImportance.Average)
-//    public AccountLevel getAccountLevel() {
-//        return accountLevel;
-//    }
-//
+    public AccountLevel getAccountLevel() {
+        return accountLevel;
+    }
+
 //    public void setAccountLevel(AccountLevel accountLevel) {
 //        this.accountLevel = accountLevel;
 //    }
