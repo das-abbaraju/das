@@ -8326,7 +8326,7 @@ CREATE TABLE `app_user` (
   `lastLogin` datetime DEFAULT NULL COMMENT 'The last date and time this user logged in',
   PRIMARY KEY (`id`),
   UNIQUE KEY `akApp_User` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=141831 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=141851 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8370,6 +8370,8 @@ INSERT INTO `app_user` VALUES (141608,'sspencer@picsauditing.com','ab09048924840
 INSERT INTO `app_user` VALUES (141717,'clee@picsauditing.com','e4818e1194b9f8cb67e47343e1c215727a10d14a','141717',NULL,NULL);
 INSERT INTO `app_user` VALUES (141719,'minammina@gmail.com','d68ecefc8557c43b06e1aa860146790754da0747','141719',NULL,NULL);
 INSERT INTO `app_user` VALUES (141827,'erwin.mangali@gmail.com','509072ed01cea9429cd7e80382b46d644cfa463c','141827',NULL,NULL);
+INSERT INTO `app_user` VALUES (141831,'ivantest','9619391738cd6b752ceabdc194da91dc98f2dcc2','141831',NULL,NULL);
+INSERT INTO `app_user` VALUES (141841,'cluc@clucompany.com','e510a70736ca1199507007c0e72158acf2b8c41e','141841',NULL,NULL);
 /*!40000 ALTER TABLE `app_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
