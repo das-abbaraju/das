@@ -967,15 +967,15 @@ public class FlagCalculator {
 //        }
 //    }
 //
-//    private void addFlagDataOverride(FlagDataOverride fdo) {
-//        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
-//        if (list == null) {
-//            list = new ArrayList<FlagDataOverride>();
-//            overrides.put(fdo.getCriteria(), list);
-//        }
-//        list.add(fdo);
-//    }
-//
+    private void addFlagDataOverride(FlagDataOverride fdo) {
+        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
+        if (list == null) {
+            list = new ArrayList<FlagDataOverride>();
+            overrides.put(fdo.getCriteria(), list);
+        }
+        list.add(fdo);
+    }
+
     private void removeFlagDataOverride(FlagDataOverride fdo) {
         List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
         if (list != null) {
