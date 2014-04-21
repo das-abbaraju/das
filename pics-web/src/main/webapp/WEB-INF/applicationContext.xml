@@ -283,6 +283,10 @@
     </bean>
 
     <bean id="EmailBuilderService" class="com.picsauditing.service.email.EmailBuilderService"/>
+    <bean id="AccountRecoveryEmailService" class="com.picsauditing.service.email.AccountRecoveryEmailService" >
+        <constructor-arg ref="EmailTemplateDAO" />
+        <constructor-arg ref="EmailSender" />
+    </bean>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
     <bean id="AuditDataSaveEventListener" class="com.picsauditing.model.events.AuditDataSaveEventListener"
