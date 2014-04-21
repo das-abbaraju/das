@@ -2,11 +2,9 @@ package com.picsauditing.actions;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuildErrorException;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.email.AccountRecoveryEmailService;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.URLUtils;
@@ -21,18 +19,15 @@ import java.util.List;
 public class AccountRecovery extends PicsActionSupport {
 	@Autowired
 	private UserDAO userDAO;
-    @Autowired
-    private EmailTemplateDAO emailTemplateDAO;
-	@Autowired
-	private EmailSender emailSender;
 	@Autowired
 	private InputValidator inputValidator;
+    @Autowired
+    private AccountRecoveryEmailService emails;
 
 	private String email, username;
 	private URLUtils urlUtils;
 
-    private AccountRecoveryEmailService accountRecoveryEmails;
-    private AccountRecoveryMessages accountRecoveryMessages;
+    private AccountRecoveryMessages messages = new AccountRecoveryMessages(this);
 
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
@@ -59,22 +54,22 @@ public class AccountRecovery extends PicsActionSupport {
 	public String findName() throws Exception {
 
         if (!inputValidator.validateEmail(email).equals(InputValidator.NO_ERROR)) {
-            messages().addNoUserNameError();
+            messages.addNoUserNameError();
 			return USERNAME;
 		}
 
 		final List<User> matchingUsers = recoverableUserFilter.grep(userDAO.findByEmail(email.trim()));
 
 		if (matchingUsers.isEmpty()) {
-            messages().addUserEmailNotFoundError();
+            messages.addUserEmailNotFoundError();
             return accountRecoveryRedirect();
 		} else {
             try {
-                emails().sendUsernameRecoveryEmail(matchingUsers);
-                messages().addUsernameEmailSentMessage();
+                emails.sendUsernameRecoveryEmail(matchingUsers);
+                messages.addUsernameEmailSentMessage();
                 return loginRedirect();
             } catch (Exception e) {
-                messages().addNoEmailSentError();
+                messages.addNoEmailSentError();
                 return USERNAME;
             }
         }
@@ -95,31 +90,31 @@ public class AccountRecovery extends PicsActionSupport {
 	@Anonymous
 	public String resetPassword() {
 		if (Strings.isEmpty(username) || username.startsWith("DELETE-")) {
-            messages().addBlankUsernameSubmittedError();
+            messages.addBlankUsernameSubmittedError();
 			return PASSWORD;
 		}
 
         final User user = userDAO.findName(username);
 
         if (user == null) {
-            messages().addUserNotFoundError();
+            messages.addUserNotFoundError();
         } else if (!user.isActiveB()) {
-            messages().addUserNotActiveError();
+            messages.addUserNotActiveError();
         } else {
             try {
 
                 addResetHashTo(user);
                 userDAO.save(user);
 
-                emails().sendRecoveryEmail(user, getRequestHost());
-                messages().successfulEmailSendTo(user);
+                emails.sendRecoveryEmail(user, getRequestHost());
+                messages.successfulEmailSendTo(user);
 
                 return setUrlForRedirect("Login.action");
 
             } catch (EmailBuildErrorException e) {
-                messages().failedEmailSend();
+                messages.failedEmailSend();
             } catch (IOException e) {
-                messages().addUsernameNotFoundError();
+                messages.addUsernameNotFoundError();
             }
         }
 
@@ -156,20 +151,6 @@ public class AccountRecovery extends PicsActionSupport {
 		}
 		return urlUtils;
 	}
-
-    private AccountRecoveryMessages messages() {
-        if (accountRecoveryMessages == null) {
-            accountRecoveryMessages = new AccountRecoveryMessages(this);
-        }
-        return accountRecoveryMessages;
-    }
-
-    private AccountRecoveryEmailService emails() {
-        if (accountRecoveryEmails == null) {
-            accountRecoveryEmails = new AccountRecoveryEmailService(emailTemplateDAO, emailSender);
-        }
-        return accountRecoveryEmails;
-    }
 
 
 }

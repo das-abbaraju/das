@@ -6,15 +6,14 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.service.email.AccountRecoveryEmailService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,16 +38,8 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 
 	private AccountRecovery accountRecovery;
 
-	@Mock
-	private EmailBuilder emailBuilder;
-	@Mock
-	private EmailQueue emailQueue;
-	@Mock
-	private EmailSender emailSender;
-	@Mock
-	private EmailTemplate emailTemplate;
-	@Mock
-	private EmailTemplateDAO emailTemplateDAO;
+    @Mock
+    private AccountRecoveryEmailService emails;
 	@Mock
 	private URLUtils urlUtils;
 	@Mock
@@ -63,9 +54,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 
 		accountRecovery = new AccountRecovery();
 
-		Whitebox.setInternalState(accountRecovery, "emailBuilder", emailBuilder);
-		Whitebox.setInternalState(accountRecovery, "emailSender", emailSender);
-		Whitebox.setInternalState(accountRecovery, "emailTemplateDAO", emailTemplateDAO);
+        Whitebox.setInternalState(accountRecovery, "emails", emails);
 		Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
 		Whitebox.setInternalState(accountRecovery, "urlUtils", urlUtils);
 		Whitebox.setInternalState(accountRecovery, "userDAO", userDAO);
@@ -76,7 +65,6 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertEquals(USERNAME, accountRecovery.findName());
 		assertTrue(accountRecovery.hasActionErrors());
 
-		verify(emailSender, never()).send(any(EmailQueue.class));
 
 		accountRecovery.setEmail("");
 
@@ -84,9 +72,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
+        verifyZeroInteractions(emails);
 		verify(userDAO, never()).findByEmail(anyString());
 	}
 
@@ -98,9 +84,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
+        verifyZeroInteractions(emails);
 		verify(userDAO, never()).findByEmail(anyString());
 	}
 
@@ -117,9 +101,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertFalse(accountRecovery.hasActionMessages());
 		assertEquals(url, accountRecovery.getUrl());
 
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
+        verifyZeroInteractions(emails);
 		verify(userDAO).findByEmail(anyString());
 	}
 
@@ -132,8 +114,6 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		List<User> matchingUsers = new ArrayList<>();
 		matchingUsers.add(user);
 
-		when(emailBuilder.build()).thenReturn(emailQueue);
-		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
 		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
 		when(urlUtils.getActionUrl(loginUrl)).thenReturn(loginUrl);
 		when(user.getEmail()).thenReturn(email);
@@ -146,10 +126,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertTrue(accountRecovery.hasActionMessages());
 		assertEquals(loginUrl, accountRecovery.getUrl());
 
-		verify(emailBuilder).build();
-		verify(emailSender).send(any(EmailQueue.class));
-		verify(emailTemplateDAO).find(anyInt());
-		verify(user).getEmail();
+        verify(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
 		verify(userDAO).findByEmail(anyString());
 	}
 
@@ -161,8 +138,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		List<User> matchingUsers = new ArrayList<>();
 		matchingUsers.add(user);
 
-		when(emailBuilder.build()).thenThrow(new IOException());
-		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
+        doThrow(new IOException()).when(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
 		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
 		when(user.getEmail()).thenReturn(email);
 		when(userDAO.findByEmail(anyString())).thenReturn(matchingUsers);
@@ -173,10 +149,7 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
-		verify(emailBuilder).build();
-		verify(emailSender, never()).send(any(EmailQueue.class));
-		verify(emailTemplateDAO).find(anyInt());
-		verify(user).getEmail();
+        verify(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
 		verify(userDAO).findByEmail(anyString());
 	}
 
