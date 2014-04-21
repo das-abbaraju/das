@@ -1,18 +1,20 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "flag_data_override")
 public class FlagDataOverride extends BaseTable {
 
 //    private ContractorAccount contractor;
-//    private OperatorAccount operator;
+    private OperatorAccount operator;
 //    private ContractorOperator contractorOperator;
 //    private FlagCriteria criteria;
     private FlagColor forceflag;
-//    private Date forceEnd;
-//    private String year;
-//
+    private Date forceEnd;
+    private String year;
+
 //    @ManyToOne
 //    @JoinColumns(
 //            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
@@ -37,14 +39,14 @@ public class FlagDataOverride extends BaseTable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "opID", nullable = false)
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
-//    public void setOperator(OperatorAccount operator) {
-//        this.operator = operator;
-//    }
-//
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
+    public void setOperator(OperatorAccount operator) {
+        this.operator = operator;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "criteriaID", nullable = false)
 //    public FlagCriteria getCriteria() {
@@ -75,21 +77,21 @@ public class FlagDataOverride extends BaseTable {
 //    }
 //
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getYear() {
-//        return year;
-//    }
-//
-//    public void setYear(String year) {
-//        this.year = year;
-//    }
-//
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
 //    @Transient
-//    public boolean isInForce() {
-//        if (forceEnd == null)
-//            return false;
-//        return forceEnd.after(new Date());
-//    }
-//
+    public boolean isInForce() {
+        if (forceEnd == null)
+            return false;
+        return forceEnd.after(new Date());
+    }
+
 //    @Override
 //    public Object clone() {
 //        FlagDataOverride flagDataOverride = new FlagDataOverride();
