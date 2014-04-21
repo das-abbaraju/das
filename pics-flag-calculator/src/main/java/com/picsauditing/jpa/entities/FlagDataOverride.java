@@ -9,7 +9,7 @@ public class FlagDataOverride extends BaseTable {
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
-//    private ContractorOperator contractorOperator;
+    private ContractorOperator contractorOperator;
     private FlagCriteria criteria;
     private FlagColor forceflag;
     private Date forceEnd;
@@ -19,24 +19,24 @@ public class FlagDataOverride extends BaseTable {
 //    @JoinColumns(
 //            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
 //                    @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
-//    public ContractorOperator getContractorOperator() {
-//        return contractorOperator;
-//    }
-//
-//    public void setContractorOperator(ContractorOperator contractorOperator) {
-//        this.contractorOperator = contractorOperator;
-//    }
-//
+    public ContractorOperator getContractorOperator() {
+        return contractorOperator;
+    }
+
+    public void setContractorOperator(ContractorOperator contractorOperator) {
+        this.contractorOperator = contractorOperator;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "conID", nullable = false)
-//    public ContractorAccount getContractor() {
-//        return contractor;
-//    }
-//
-//    public void setContractor(ContractorAccount contractor) {
-//        this.contractor = contractor;
-//    }
-//
+    public ContractorAccount getContractor() {
+        return contractor;
+    }
+
+    public void setContractor(ContractorAccount contractor) {
+        this.contractor = contractor;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "opID", nullable = false)
     public OperatorAccount getOperator() {
@@ -123,36 +123,36 @@ public class FlagDataOverride extends BaseTable {
         this.setUpdateDate(source.getUpdateDate());
         this.setUpdatedBy(source.getUpdatedBy());
     }
-//    @Override
-//    public boolean equals(Object that) {
-//        if (!(that instanceof FlagDataOverride))
-//            return false;
-//        FlagDataOverride flagDataOverride = (FlagDataOverride) that;
-//
-//        // See if we are missing key information that prevents from even knowing what this object represents,
-//        // much less that the two objects represent the same thing.
-//        if (flagDataOverride.getCriteria() == null || this.getCriteria() == null || flagDataOverride.getContractor() == null ||
-//                this.getContractor() == null || flagDataOverride.getOperator() == null || this.getOperator() == null
-//                || flagDataOverride.getContractorOperator() == null || this.getContractorOperator() == null)
-//            return false;
-//
-//        // Note: We are purposefully NOT caring if the ID is the same or not
-//        // Compare everything else except the audit fields...
-//        if (this.getCriteria().getId() != flagDataOverride.getCriteria().getId())
-//            return false;
-//        if (this.getContractor().getId() != flagDataOverride.getContractor().getId())
-//            return false;
-//        if (this.getOperator().getId() != flagDataOverride.getOperator().getId())
-//            return false;
-//        if (this.getContractorOperator().getId() != flagDataOverride.getContractorOperator().getId())
-//            return false;
-//        if (this.getForceflag() != flagDataOverride.getForceflag())
-//            return false;
-//        if (this.getForceEnd() != flagDataOverride.getForceEnd())
-//            return false;
-//        if (this.getYear() != flagDataOverride.getYear())
-//            return false;
-//
-//        return true;
-//    }
+    @Override
+    public boolean equals(Object that) {
+        if (!(that instanceof FlagDataOverride))
+            return false;
+        FlagDataOverride flagDataOverride = (FlagDataOverride) that;
+
+        // See if we are missing key information that prevents from even knowing what this object represents,
+        // much less that the two objects represent the same thing.
+        if (flagDataOverride.getCriteria() == null || this.getCriteria() == null || flagDataOverride.getContractor() == null ||
+                this.getContractor() == null || flagDataOverride.getOperator() == null || this.getOperator() == null
+                || flagDataOverride.getContractorOperator() == null || this.getContractorOperator() == null)
+            return false;
+
+        // Note: We are purposefully NOT caring if the ID is the same or not
+        // Compare everything else except the audit fields...
+        if (this.getCriteria().getId() != flagDataOverride.getCriteria().getId())
+            return false;
+        if (this.getContractor().getId() != flagDataOverride.getContractor().getId())
+            return false;
+        if (this.getOperator().getId() != flagDataOverride.getOperator().getId())
+            return false;
+        if (this.getContractorOperator().getId() != flagDataOverride.getContractorOperator().getId())
+            return false;
+        if (this.getForceflag() != flagDataOverride.getForceflag())
+            return false;
+        if (this.getForceEnd() != flagDataOverride.getForceEnd())
+            return false;
+        if (this.getYear() != flagDataOverride.getYear())
+            return false;
+
+        return true;
+    }
 }
