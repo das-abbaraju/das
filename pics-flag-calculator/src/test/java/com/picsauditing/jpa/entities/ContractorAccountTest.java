@@ -1,5 +1,9 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.model.entities.ContractorAccount;
+import com.picsauditing.model.entities.ContractorTrade;
+import com.picsauditing.model.entities.Trade;
+import com.picsauditing.service.TradeService;
 import org.junit.Test;
 
 import java.util.HashSet;
@@ -102,7 +106,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
     contractor.getTrades().add(makeContractorTrade(makeTrade(1, null, 2.0f), 5, false));
     contractor.getTrades().add(makeContractorTrade(makeTrade(2, null, 8.0f), 5, false));
 
-    assertEquals(5, contractor.getWeightedIndustryAverage(), 1);
+    assertEquals(5, TradeService.getWeightedIndustryAverage(contractor), 1);
 }
 
     @Test
@@ -112,7 +116,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         contractor.getTrades().add(makeContractorTrade(makeTrade(1, null, 2.0f), 5, true));
         contractor.getTrades().add(makeContractorTrade(makeTrade(2, null, 8.0f), 5, false));
 
-        assertEquals(2, contractor.getWeightedIndustryAverage(), 1);
+        assertEquals(2, TradeService.getWeightedIndustryAverage(contractor), 1);
     }
 
 //    @Test
