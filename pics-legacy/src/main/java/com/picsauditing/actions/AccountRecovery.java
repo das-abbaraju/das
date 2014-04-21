@@ -31,8 +31,8 @@ public class AccountRecovery extends PicsActionSupport {
 	private String email, username;
 	private URLUtils urlUtils;
 
-    private AccountRecoveryEmailService accountRecoveryEmails = new AccountRecoveryEmailService(emailTemplateDAO, emailSender);
-    private AccountRecoveryMessages accountRecoveryMessages = new AccountRecoveryMessages(this);
+    private AccountRecoveryEmailService accountRecoveryEmails;
+    private AccountRecoveryMessages accountRecoveryMessages;
 
     private static final String PASSWORD = "password";
     private static final String USERNAME = "username";
