@@ -16,25 +16,20 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class AccountRecoveryEmailService {
-    /*
-        Warning!!
-        Due to the side-effects inherent in the way EmailBuilder and URLUtils are written, this is not a thread-safe class!
-        Do not autowire / spring-inject this class!
-     */
 
     private final EmailTemplateDAO templateDAO;
     private final EmailSender sender;
-    private final EmailBuilder builder;
+    private EmailBuilder overrideBuilder;
     private final URLUtils urlUtils;
 
     public AccountRecoveryEmailService(EmailTemplateDAO templateDAO, EmailSender sender) {
-        this(templateDAO, sender, new EmailBuilder(), new URLUtils());
+        this(templateDAO, sender, null, new URLUtils());
     }
 
     protected AccountRecoveryEmailService(EmailTemplateDAO templateDAO, EmailSender sender, EmailBuilder builder, URLUtils urlUtils) {
         this.templateDAO = templateDAO;
         this.sender = sender;
-        this.builder = builder;
+        this.overrideBuilder = builder;
         this.urlUtils = urlUtils;
     }
 
@@ -78,12 +73,18 @@ public class AccountRecoveryEmailService {
     }
 
     private EmailQueue email(User user, EmailTemplate template, Map<String, Object> templateParameters) throws IOException, EmailBuildErrorException {
+        final EmailBuilder builder = getBuilder();
+
         builder.setTemplate(template);
         builder.setFromAddress(EmailAddressUtils.PICS_CUSTOMER_SERVICE_EMAIL_ADDRESS);
         builder.setToAddresses(user.getEmail());
         builder.addAllTokens(templateParameters);
 
         return builder.build();
+    }
+
+    private EmailBuilder getBuilder() {
+        return (overrideBuilder == null) ? new EmailBuilder() : overrideBuilder;
     }
 
 }
