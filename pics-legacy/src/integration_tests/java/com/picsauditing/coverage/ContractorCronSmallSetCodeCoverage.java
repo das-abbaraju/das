@@ -41,13 +41,13 @@ import static java.lang.String.format;
 @ContextConfiguration(locations={"ContractorCronSmallSetCodeCoverage-context.xml"})
 public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAware {
     private static Logger logger = LoggerFactory.getLogger(ContractorCronSmallSetCodeCoverage.class);
-    // private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=All&button=Run";
-    private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&steps=ContractorETL&steps=Flag";
+    private static final String cronUrl = "%s://%s%s/ContractorCronAjax.action?conID=%s&%s";
     private static final int MAX_CONTRACTORS_WITH_NO_IMPROVEMENT = 200;
     private static final String ENVIRONMENT_VAR_FOR_PROTOCOL = "protocol";
     private static final String ENVIRONMENT_VAR_FOR_HOST = "host";
     private static final String ENVIRONMENT_VAR_FOR_PORT = "port";
     private static final String ENVIRONMENT_VAR_FOR_DUMP_PORT = "dumpPort";
+    private static final String ENVIRONMENT_VAR_FOR_CRON_STEPS = "cronSteps";
 
     public static final String JACOCO_EXEC_PATH = "/tmp/jacoco.exec";
     public static final String JACOCO_EXEC_PATH_BACKUP = "/tmp/jacoco.exec.backup";
@@ -61,6 +61,7 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     private String protocol = "http";
     private String host = "localhost";
     private String cronPort = "8080";
+    private String cronSteps = "steps=All";
     private int dumpPort = 9010;
     private boolean dump = true;
     private boolean reset = false;
@@ -133,6 +134,7 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         determineCronHostPort();
         determineHttpOrHttps();
         determineJacocoDumpPort();
+        determineCronStepsToRun();
     }
 
     private void logRunningEnvironment() {
@@ -170,6 +172,21 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
         }
     }
 
+    private void determineCronStepsToRun() {
+        String cronStepsToRun = System.getProperty(ENVIRONMENT_VAR_FOR_CRON_STEPS);
+        if (!Strings.isEmpty(cronStepsToRun)) {
+            StringBuffer urlArgs = new StringBuffer();
+            String[] steps = cronStepsToRun.split(",");
+            for (int i = 0; i < steps.length; i++) {
+                if (i != 0) {
+                    urlArgs.append("&");
+                }
+                urlArgs.append("steps=").append(steps[i]);
+            }
+            cronSteps = urlArgs.toString();
+        }
+    }
+
     private Integer nextContractorIdAndRemoveFromNotYetRun() {
         Integer id = contractorIdsNotYetRun.get((int) (Math.random() * (contractorIdsNotYetRun.size() - 1)));
         contractorIdsNotYetRun.remove(id);
@@ -192,7 +209,7 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     }
 
     private void addContractorToCoverageSet(Integer id, int newLinesCovered) {
-        logger.debug("Contractor {} increased coverage from {} to {}", new Object[] {id, previousTotalLinesCovered, newLinesCovered});
+        logger.debug("Contractor {} increased coverage from {} to {}", new Object[]{id, previousTotalLinesCovered, newLinesCovered});
         saveContractorTag(newContractorTag(contractorDAO.find(id)));
         smokeTestContractorIds.add(id);
         previousTotalLinesCovered = newLinesCovered;
@@ -220,9 +237,9 @@ public class ContractorCronSmallSetCodeCoverage implements ApplicationContextAwa
     private String cronUrl(Integer id) {
         String urlToRun;
         if (Strings.isEmpty(cronPort)) {
-            urlToRun = format(cronUrl, protocol, host, "", id);
+            urlToRun = format(cronUrl, protocol, host, "", id, cronSteps);
         } else {
-            urlToRun = format(cronUrl, protocol, host, ":"+cronPort, id);
+            urlToRun = format(cronUrl, protocol, host, ":"+cronPort, id, cronSteps);
         }
         return urlToRun;
     }
