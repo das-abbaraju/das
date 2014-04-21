@@ -1,18 +1,20 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.Date;
+
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "flag_data_override")
 public class FlagDataOverride extends BaseTable {
 
-//    private ContractorAccount contractor;
-//    private OperatorAccount operator;
+    private ContractorAccount contractor;
+    private OperatorAccount operator;
 //    private ContractorOperator contractorOperator;
-//    private FlagCriteria criteria;
+    private FlagCriteria criteria;
     private FlagColor forceflag;
-//    private Date forceEnd;
-//    private String year;
-//
+    private Date forceEnd;
+    private String year;
+
 //    @ManyToOne
 //    @JoinColumns(
 //            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
@@ -37,59 +39,59 @@ public class FlagDataOverride extends BaseTable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "opID", nullable = false)
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
-//    public void setOperator(OperatorAccount operator) {
-//        this.operator = operator;
-//    }
-//
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
+    public void setOperator(OperatorAccount operator) {
+        this.operator = operator;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "criteriaID", nullable = false)
-//    public FlagCriteria getCriteria() {
-//        return criteria;
-//    }
-//
-//    public void setCriteria(FlagCriteria criteria) {
-//        this.criteria = criteria;
-//    }
-//
+    public FlagCriteria getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(FlagCriteria criteria) {
+        this.criteria = criteria;
+    }
+
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
     public FlagColor getForceflag() {
         return forceflag;
     }
-//
-//    public void setForceflag(FlagColor forceflag) {
-//        this.forceflag = forceflag;
-//    }
-//
+
+    public void setForceflag(FlagColor forceflag) {
+        this.forceflag = forceflag;
+    }
+
 //    @ReportField(type = FieldType.Date, importance = FieldImportance.Required)
-//    public Date getForceEnd() {
-//        return forceEnd;
-//    }
-//
-//    public void setForceEnd(Date forceEnd) {
-//        this.forceEnd = forceEnd;
-//    }
-//
+    public Date getForceEnd() {
+        return forceEnd;
+    }
+
+    public void setForceEnd(Date forceEnd) {
+        this.forceEnd = forceEnd;
+    }
+
 //    @ReportField(type = FieldType.String, importance = FieldImportance.Low)
-//    public String getYear() {
-//        return year;
-//    }
-//
-//    public void setYear(String year) {
-//        this.year = year;
-//    }
-//
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
 //    @Transient
-//    public boolean isInForce() {
-//        if (forceEnd == null)
-//            return false;
-//        return forceEnd.after(new Date());
-//    }
-//
+    public boolean isInForce() {
+        if (forceEnd == null)
+            return false;
+        return forceEnd.after(new Date());
+    }
+
 //    @Override
 //    public Object clone() {
 //        FlagDataOverride flagDataOverride = new FlagDataOverride();
@@ -101,26 +103,26 @@ public class FlagDataOverride extends BaseTable {
 //        flagDataOverride.setAuditColumns();
 //        return flagDataOverride;
 //    }
-//    /**
-//     * FlagDataOverride has an unusual data architecture in that the overrides need to "track" the criteria they are
-//     * overriding from year to year, which requires adjusting the data at year's end. However,
-//     * a Hibernate fluke involving the order in which Delete's are performed (always last) means it's not a simple
-//     * matter of moving a record by deleting it and re-inserting it (because we get a key violation before the delet
-//     * actually occurs). So, we are getting around this by reusing existing records and updating them by shifting
-//     * the contents (the payload). The payload is all non-key fields.
-//     * @param source
-//     */
-//    public void copyPayloadFrom(FlagDataOverride source) {
-//        assert (source != null);
-//        this.setForceEnd(source.getForceEnd());
-//        this.setForceflag(source.getForceflag());
-//        this.setYear(source.getYear());
-//
-//        this.setCreatedBy(source.getCreatedBy());
-//        this.setCreationDate(source.getCreationDate());
-//        this.setUpdateDate(source.getUpdateDate());
-//        this.setUpdatedBy(source.getUpdatedBy());
-//    }
+    /**
+     * FlagDataOverride has an unusual data architecture in that the overrides need to "track" the criteria they are
+     * overriding from year to year, which requires adjusting the data at year's end. However,
+     * a Hibernate fluke involving the order in which Delete's are performed (always last) means it's not a simple
+     * matter of moving a record by deleting it and re-inserting it (because we get a key violation before the delet
+     * actually occurs). So, we are getting around this by reusing existing records and updating them by shifting
+     * the contents (the payload). The payload is all non-key fields.
+     * @param source
+     */
+    public void copyPayloadFrom(FlagDataOverride source) {
+        assert (source != null);
+        this.setForceEnd(source.getForceEnd());
+        this.setForceflag(source.getForceflag());
+        this.setYear(source.getYear());
+
+        this.setCreatedBy(source.getCreatedBy());
+        this.setCreationDate(source.getCreationDate());
+        this.setUpdateDate(source.getUpdateDate());
+        this.setUpdatedBy(source.getUpdatedBy());
+    }
 //    @Override
 //    public boolean equals(Object that) {
 //        if (!(that instanceof FlagDataOverride))

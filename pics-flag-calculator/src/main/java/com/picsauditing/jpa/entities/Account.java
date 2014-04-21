@@ -16,9 +16,9 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //    // FIXME These should really be enums
 //    public static final String ADMIN_ACCOUNT_TYPE = "Admin";
 //    public static final String ASSESSMENT_ACCOUNT_TYPE = "Assessment";
-//    public static final String CONTRACTOR_ACCOUNT_TYPE = "Contractor";
-//    public static final String CORPORATE_ACCOUNT_TYPE = "Corporate";
-//    public static final String OPERATOR_ACCOUNT_TYPE = "Operator";
+    public static final String CONTRACTOR_ACCOUNT_TYPE = "Contractor";
+    public static final String CORPORATE_ACCOUNT_TYPE = "Corporate";
+    public static final String OPERATOR_ACCOUNT_TYPE = "Operator";
 //
 //    // Assessment Centers
 //    static public int ASSESSMENT_NCCER = 11069;
@@ -41,7 +41,7 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //    protected Trade mainTrade;
 //    private Naics naics;
 //    private boolean naicsValid;
-//    protected String type;
+    protected String type;
 //    protected boolean qbSync;
 //    protected String qbListID;
 //    protected String qbListCAID;
@@ -454,20 +454,20 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //        return getQbListID();
 //    }
 //
-//    /**
-//     * Contractor, Operator, Admin, Corporate
-//     *
-//     * @return
-//     */
+    /**
+     * Contractor, Operator, Admin, Corporate
+     *
+     * @return
+     */
 //    @IndexableField(type = IndexValueType.STRINGTYPE, weight = 2)
-//    public String getType() {
-//        return type;
-//    }
-//
-//    public void setType(String type) {
-//        this.type = type;
-//    }
-//
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
 //    @ReportField(width = 200, requiredPermissions = OpPerms.AllOperators)
 //    public String getReason() {
 //        return reason;

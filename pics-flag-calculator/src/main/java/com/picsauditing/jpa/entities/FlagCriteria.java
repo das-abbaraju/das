@@ -16,7 +16,7 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    private String label;
 //    private String description;
     private String comparison;
-//    private MultiYearScope multiYearScope = null;
+    private MultiYearScope multiYearScope = null;
     protected AuditStatus requiredStatus = AuditStatus.Complete;
     private String requiredStatusComparison;
     private String defaultValue;
@@ -150,14 +150,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.MultiYearScope, importance = FieldImportance.Average)
-//    public MultiYearScope getMultiYearScope() {
-//        return multiYearScope;
-//    }
-//
-//    public void setMultiYearScope(MultiYearScope multiYearScope) {
-//        this.multiYearScope = multiYearScope;
-//    }
-//
+    public MultiYearScope getMultiYearScope() {
+        return multiYearScope;
+    }
+
+    public void setMultiYearScope(MultiYearScope multiYearScope) {
+        this.multiYearScope = multiYearScope;
+    }
+
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.AuditStatus, importance = FieldImportance.Average)
     public AuditStatus getRequiredStatus() {

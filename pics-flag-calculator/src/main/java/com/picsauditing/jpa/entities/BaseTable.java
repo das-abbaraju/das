@@ -50,24 +50,24 @@ public abstract class BaseTable implements /*JSONable,*/ Serializable/*, Autocom
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "createdBy", nullable = true)
-//    public User getCreatedBy() {
-//        return createdBy;
-//    }
-//
-//    public void setCreatedBy(User createdBy) {
-//        this.createdBy = createdBy;
-//    }
-//
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "updatedBy", nullable = true)
-//    public User getUpdatedBy() {
-//        return updatedBy;
-//    }
-//
-//    public void setUpdatedBy(User updatedBy) {
-//        this.updatedBy = updatedBy;
-//    }
-//
+    public User getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(User updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
 //    @Transient
 //    public User getUpdatedBy2() {
 //        if (getUpdatedBy() == null) {
@@ -85,23 +85,23 @@ public abstract class BaseTable implements /*JSONable,*/ Serializable/*, Autocom
 //    }
 //
 //    @Temporal(TemporalType.TIMESTAMP)
-//    public Date getCreationDate() {
-//        return creationDate;
-//    }
-//
-//    public void setCreationDate(Date creationDate) {
-//        this.creationDate = creationDate;
-//    }
-//
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
 //    @Temporal(TemporalType.TIMESTAMP)
-//    public Date getUpdateDate() {
-//        return updateDate;
-//    }
-//
-//    public void setUpdateDate(Date updateDate) {
-//        this.updateDate = updateDate;
-//    }
-//
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
     public void setAuditColumns() {
         updateDate = new Date();
 

@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public class FlagCalculator {
     private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
     private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
     private OperatorAccount operator = null;
-//    private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
+    private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
 //
 //    // Assume this is true for the contractor in question
     private boolean worksForOperator = true;
@@ -788,13 +789,13 @@ public class FlagCalculator {
         this.overrides = overridesMap;
     }
 
-//    public Map<Integer, List<Integer>> getCorrespondingMultiYearCriteria() {
-//        return correspondingMultiYearCriteria;
-//    }
-//
-//    public void setCorrespondingMultiYearCriteria(Map<Integer, List<Integer>> equivalentMultiYearCriteria) {
-//        this.correspondingMultiYearCriteria = equivalentMultiYearCriteria;
-//    }
+    public Map<Integer, List<Integer>> getCorrespondingMultiYearCriteria() {
+        return correspondingMultiYearCriteria;
+    }
+
+    public void setCorrespondingMultiYearCriteria(Map<Integer, List<Integer>> equivalentMultiYearCriteria) {
+        this.correspondingMultiYearCriteria = equivalentMultiYearCriteria;
+    }
 
     public boolean isWorksForOperator() {
         return worksForOperator;
@@ -925,17 +926,17 @@ public class FlagCalculator {
 //
 //        return fdo2;
 //    }
-//
-//    private FlagDataOverride searchOverridesByCriteria(
-//            List<FlagDataOverride> fdos, FlagCriteria key) {
-//        for (FlagDataOverride fdo : fdos) {
-//            if (fdo.getCriteria().equals(key)) {
-//                return fdo;
-//            }
-//        }
-//        return null;
-//    }
-//
+
+    private FlagDataOverride searchOverridesByCriteria(
+            List<FlagDataOverride> fdos, FlagCriteria key) {
+        for (FlagDataOverride fdo : fdos) {
+            if (fdo.getCriteria().equals(key)) {
+                return fdo;
+            }
+        }
+        return null;
+    }
+
 //    private void shiftOverrides(List<FlagDataOverride> fdos) {
 //        // put fdos in reverse MultiYearScope sorted order for easier traversal
 //        Collections.sort(fdos, new Comparator<FlagDataOverride>() {
@@ -968,34 +969,34 @@ public class FlagCalculator {
 //        list.add(fdo);
 //    }
 //
-//    private void removeFlagDataOverride(FlagDataOverride fdo) {
-//        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
-//        if (list != null) {
-//            list.remove(fdo);
-//        }
-//    }
-//
-//    private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
-//        ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
-//        for (int id : criteriaIds) {
-//            FlagCriteria criteriaKey = new FlagCriteria();
-//            criteriaKey.setId(id);
-//            List<FlagDataOverride> flList = overrides.get(criteriaKey);
-//            if (flList == null) {
-//                continue;
-//            }
-//            if (flList.size() > 0) {
-//                for (FlagDataOverride flagDataOverride : flList) {
-//                    if (operator.isApplicableFlagOperator(flagDataOverride.getOperator())
-//                            && flagDataOverride.isInForce()) {
-//                        fdos.add(flagDataOverride);
-//                    }
-//                }
-//            }
-//        }
-//        return fdos;
-//    }
-//
+    private void removeFlagDataOverride(FlagDataOverride fdo) {
+        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
+        if (list != null) {
+            list.remove(fdo);
+        }
+    }
+
+    private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
+        ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
+        for (int id : criteriaIds) {
+            FlagCriteria criteriaKey = new FlagCriteria();
+            criteriaKey.setId(id);
+            List<FlagDataOverride> flList = overrides.get(criteriaKey);
+            if (flList == null) {
+                continue;
+            }
+            if (flList.size() > 0) {
+                for (FlagDataOverride flagDataOverride : flList) {
+                    if (operator.isApplicableFlagOperator(flagDataOverride.getOperator())
+                            && flagDataOverride.isInForce()) {
+                        fdos.add(flagDataOverride);
+                    }
+                }
+            }
+        }
+        return fdos;
+    }
+
 //    private FlagCriteria getNextCriteria(FlagCriteria criteria) {
 //        MultiYearScope nextYear;
 //
@@ -1019,28 +1020,28 @@ public class FlagCalculator {
 //
 //        return null;
 //    }
-//
-//    private String extractYear(String year) {
-//        if (Strings.isEmpty(year)) {
-//            return null;
-//        }
-//
-//        int index;
-//        index = year.indexOf(":");
-//        if (index >= 0) {
-//            year = year.substring(index + 1);
-//        }
-//
-//        index = year.indexOf("<br");
-//        if (index >= 0) {
-//            year = year.substring(0, index);
-//        }
-//
-//        year = year.trim();
-//
-//        return year;
-//    }
-//
+
+    private String extractYear(String year) {
+        if (StringUtils.isEmpty(year)) {
+            return null;
+        }
+
+        int index;
+        index = year.indexOf(":");
+        if (index >= 0) {
+            year = year.substring(index + 1);
+        }
+
+        index = year.indexOf("<br");
+        if (index >= 0) {
+            year = year.substring(0, index);
+        }
+
+        year = year.trim();
+
+        return year;
+    }
+
 //    /**
 //     *
 //     * @param conAudit

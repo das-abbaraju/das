@@ -386,13 +386,13 @@ public class EntityFactory {
         return makeContractorAuditOperator(audit, AuditStatus.Complete);
     }
 
-//    public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
-//        Facility facility = new Facility();
-//        facility.setOperator(operator);
-//        facility.setCorporate(corporate);
-//        return facility;
-//    }
-//
+    public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
+        Facility facility = new Facility();
+        facility.setOperator(operator);
+        facility.setCorporate(corporate);
+        return facility;
+    }
+
 //    public static FlagCriteria makeFlagCriteria() {
 //        FlagCriteria flagCriteria = new FlagCriteria();
 //        flagCriteria.setId(counter++);

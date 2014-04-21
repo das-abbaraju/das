@@ -1,5 +1,8 @@
 package com.picsauditing.jpa.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "operators")
@@ -20,8 +23,8 @@ public class OperatorAccount extends Account {
 //    public static final int TESORO = 1436;
 //    public static final int VALSPAR_GARLAND = 23335;
 //
-//    private OperatorAccount parent;
-//
+    private OperatorAccount parent;
+
 //    private OperatorAccount inheritFlagCriteria;
 //    private OperatorAccount inheritInsuranceCriteria;
 //
@@ -32,7 +35,7 @@ public class OperatorAccount extends Account {
 //    private YesNo approvesRelationships = YesNo.No;
 //    private boolean verifiedByPics = true;
 //    private OshaType oshaType = OshaType.OSHA;
-//    private boolean primaryCorporate = false;
+    private boolean primaryCorporate = false;
 //    private boolean autoApproveInsurance = false;
 //    private String requiredTags;
 //    private BigDecimal activationFee;
@@ -43,7 +46,7 @@ public class OperatorAccount extends Account {
 //    private boolean requiresEmployeeGuard;
 //
 //    private List<Facility> corporateFacilities = new ArrayList<Facility>();
-//    private List<Facility> operatorFacilities = new ArrayList<Facility>();
+    private List<Facility> operatorFacilities = new ArrayList<Facility>();
 //    private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 //    private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 //    private List<OperatorAccount> childOperators = new ArrayList<OperatorAccount>();
@@ -157,14 +160,14 @@ public class OperatorAccount extends Account {
 //    }
 //
 //    @ReportField(type = FieldType.Boolean)
-//    public boolean isPrimaryCorporate() {
-//        return primaryCorporate;
-//    }
-//
-//    public void setPrimaryCorporate(boolean primaryCorporate) {
-//        this.primaryCorporate = primaryCorporate;
-//    }
-//
+    public boolean isPrimaryCorporate() {
+        return primaryCorporate;
+    }
+
+    public void setPrimaryCorporate(boolean primaryCorporate) {
+        this.primaryCorporate = primaryCorporate;
+    }
+
 //    @ReportField(type = FieldType.Boolean)
 //    public boolean isAutoApproveInsurance() {
 //        return autoApproveInsurance;
@@ -384,14 +387,14 @@ public class OperatorAccount extends Account {
 //     */
 //    @OneToMany(mappedBy = "corporate")
 //    @Where(clause = "type IS NULL")
-//    public List<Facility> getOperatorFacilities() {
-//        return operatorFacilities;
-//    }
-//
-//    public void setOperatorFacilities(List<Facility> operatorFacilities) {
-//        this.operatorFacilities = operatorFacilities;
-//    }
-//
+    public List<Facility> getOperatorFacilities() {
+        return operatorFacilities;
+    }
+
+    public void setOperatorFacilities(List<Facility> operatorFacilities) {
+        this.operatorFacilities = operatorFacilities;
+    }
+
 //    /**
 //     * @return a list of all the "direct" child operators/corporates mapped
 //     *         through operator.parentID for example, BASF would contain BASF
@@ -409,34 +412,34 @@ public class OperatorAccount extends Account {
 //
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "parentID", nullable = true)
-//    public OperatorAccount getParent() {
-//        return parent;
-//    }
-//
-//    public void setParent(OperatorAccount parent) {
-//        this.parent = parent;
-//    }
-//
-//    public boolean isOrIsDescendantOf(int id) {
-//        if (this.id == id) {
-//            return true;
-//        }
-//        return isDescendantOf(id);
-//    }
-//
-//    public boolean isDescendantOf(int id) {
-//        if (getParent() == null) {
-//            // No parent exists
-//            return false;
-//        }
-//        if (getParent().getId() == id) {
-//            // Yes, the parent matches
-//            return true;
-//        }
-//        // Maybe the grandparent is a descendant of id
-//        return getParent().isDescendantOf(id);
-//    }
-//
+    public OperatorAccount getParent() {
+        return parent;
+    }
+
+    public void setParent(OperatorAccount parent) {
+        this.parent = parent;
+    }
+
+    public boolean isOrIsDescendantOf(int id) {
+        if (this.id == id) {
+            return true;
+        }
+        return isDescendantOf(id);
+    }
+
+    public boolean isDescendantOf(int id) {
+        if (getParent() == null) {
+            // No parent exists
+            return false;
+        }
+        if (getParent().getId() == id) {
+            // Yes, the parent matches
+            return true;
+        }
+        // Maybe the grandparent is a descendant of id
+        return getParent().isDescendantOf(id);
+    }
+
 //    /**
 //     * @return a list of contractors linked to this operator
 //     */
@@ -714,23 +717,23 @@ public class OperatorAccount extends Account {
 //    }
 //
 //    @Transient
-//    public boolean isApplicableFlagOperator(OperatorAccount flagOperator) {
-//        boolean isApplicable = false;
-//
-//        isApplicable = isOrIsDescendantOf(flagOperator.getId());
-//
-//        if (!isApplicable) {
-//            for (Facility facility : flagOperator.getOperatorFacilities()) {
-//                if (facility.getOperator().equals(this)) {
-//                    isApplicable = true;
-//                    break;
-//                }
-//            }
-//        }
-//
-//        return isApplicable;
-//    }
-//
+    public boolean isApplicableFlagOperator(OperatorAccount flagOperator) {
+        boolean isApplicable = false;
+
+        isApplicable = isOrIsDescendantOf(flagOperator.getId());
+
+        if (!isApplicable) {
+            for (Facility facility : flagOperator.getOperatorFacilities()) {
+                if (facility.getOperator().equals(this)) {
+                    isApplicable = true;
+                    break;
+                }
+            }
+        }
+
+        return isApplicable;
+    }
+
 //    @Transient
 //    public boolean isGeneralContractorFree() {
 //        return isGeneralContractor() && "No".equals(getDoContractorsPay());
