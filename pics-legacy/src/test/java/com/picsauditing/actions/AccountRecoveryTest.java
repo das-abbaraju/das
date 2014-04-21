@@ -3,8 +3,6 @@ package com.picsauditing.actions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -13,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.PicsActionTest;
 import com.picsauditing.service.email.AccountRecoveryEmailService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,18 +19,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.URLUtils;
 import com.picsauditing.validator.InputValidator;
 
-public class AccountRecoveryTest extends PicsTranslationTest {
+public class AccountRecoveryTest extends PicsActionTest {
 
 	private static final String PASSWORD = "password";
 	private static final String USERNAME = "username";
@@ -53,6 +46,8 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 
 
 		accountRecovery = new AccountRecovery();
+
+        super.setUp(accountRecovery);
 
         Whitebox.setInternalState(accountRecovery, "emails", emails);
 		Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
