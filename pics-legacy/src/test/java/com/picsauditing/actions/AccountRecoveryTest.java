@@ -3,52 +3,39 @@ package com.picsauditing.actions;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.service.email.AccountRecoveryEmailService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsTranslationTest;
-import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.UserDAO;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.mail.EmailBuilder;
-import com.picsauditing.mail.EmailSender;
 import com.picsauditing.util.URLUtils;
 import com.picsauditing.validator.InputValidator;
 
-public class AccountRecoveryTest extends PicsTranslationTest {
+public class AccountRecoveryTest extends PicsActionTest {
 
 	private static final String PASSWORD = "password";
 	private static final String USERNAME = "username";
+    private static final String TESTING_EMAIL = "tester@picsauditing.com";
+    private static final String RECOVER_USERNAME_URL = "/AccountRecovery!recoverUsername";
+    private static final String LOGIN_URL = "Login";
 
 	private AccountRecovery accountRecovery;
 
-	@Mock
-	private EmailBuilder emailBuilder;
-	@Mock
-	private EmailQueue emailQueue;
-	@Mock
-	private EmailSender emailSender;
-	@Mock
-	private EmailTemplate emailTemplate;
-	@Mock
-	private EmailTemplateDAO emailTemplateDAO;
+    @Mock
+    private AccountRecoveryEmailService emails;
 	@Mock
 	private URLUtils urlUtils;
 	@Mock
@@ -62,137 +49,135 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 
 
 		accountRecovery = new AccountRecovery();
+        Whitebox.setInternalState(accountRecovery, "emails", emails);
+        Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
+        Whitebox.setInternalState(accountRecovery, "urlUtils", urlUtils);
+        Whitebox.setInternalState(accountRecovery, "userDAO", userDAO);
 
-		Whitebox.setInternalState(accountRecovery, "emailBuilder", emailBuilder);
-		Whitebox.setInternalState(accountRecovery, "emailSender", emailSender);
-		Whitebox.setInternalState(accountRecovery, "emailTemplateDAO", emailTemplateDAO);
-		Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
-		Whitebox.setInternalState(accountRecovery, "urlUtils", urlUtils);
-		Whitebox.setInternalState(accountRecovery, "userDAO", userDAO);
+        super.setUp(accountRecovery);
 	}
 
 	@Test
 	public void testFindName_EmailIsNullOrEmpty() throws Exception {
-		assertEquals(USERNAME, accountRecovery.findName());
-		assertTrue(accountRecovery.hasActionErrors());
-
-		verify(emailSender, never()).send(any(EmailQueue.class));
-
-		accountRecovery.setEmail("");
-
-		assertEquals(USERNAME, accountRecovery.findName());
-		assertTrue(accountRecovery.hasActionErrors());
-		assertFalse(accountRecovery.hasActionMessages());
-
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
-		verify(userDAO, never()).findByEmail(anyString());
+        accountRecovery.setEmail(null);
+        testFindName_WithErrors();
 	}
 
-	@Test
-	public void testFindName_EmailIsInvalid() throws Exception {
-		accountRecovery.setEmail("Test email");
+    @Test
+    public void testFindName_EmailIsEmpty() throws Exception {
+        accountRecovery.setEmail("");
+        testFindName_WithErrors();
+    }
 
-		assertEquals(USERNAME, accountRecovery.findName());
-		assertTrue(accountRecovery.hasActionErrors());
-		assertFalse(accountRecovery.hasActionMessages());
+    @Test
+    public void testFindName_EmailIsInvalid() throws Exception {
+        accountRecovery.setEmail("Test TESTING_EMAIL");
+        testFindName_WithErrors();
+    }
 
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
-		verify(userDAO, never()).findByEmail(anyString());
-	}
+    private void testFindName_WithErrors() throws Exception {
+
+        final String result = accountRecovery.findName();
+
+        assertEquals(USERNAME, result);
+        assertTrue(accountRecovery.hasActionErrors());
+        assertFalse(accountRecovery.hasActionMessages());
+
+        verifyZeroInteractions(emails);
+        verify(userDAO, never()).findByEmail(anyString());
+
+    }
+
 
 	@Test
 	public void testFindName_EmailMatchesNoUsers() throws Exception {
-		String url = "/AccountRecovery!recoverUsername";
-		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
+		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(RECOVER_USERNAME_URL);
 		when(userDAO.findByEmail(anyString())).thenReturn(Collections.<User> emptyList());
 
-		accountRecovery.setEmail("tester@picsauditing.com");
+		accountRecovery.setEmail(TESTING_EMAIL);
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+        final String result = accountRecovery.findName();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
-		assertEquals(url, accountRecovery.getUrl());
+		assertEquals(RECOVER_USERNAME_URL, accountRecovery.getUrl());
 
-		verify(emailBuilder, never()).build();
-		verify(emailTemplateDAO, never()).find(anyInt());
-		verify(emailSender, never()).send(any(EmailQueue.class));
+        verifyZeroInteractions(emails);
 		verify(userDAO).findByEmail(anyString());
 	}
 
 	@Test
 	public void testFindName_EmailMatchesAtLeastOneUser() throws Exception {
-		String email = "tester@picsauditing.com";
-		String url = "/AccountRecovery!recoverUsername";
-		String loginUrl = "Login";
 
-		List<User> matchingUsers = new ArrayList<>();
+		final List<User> matchingUsers = new ArrayList<>();
 		matchingUsers.add(user);
 
-		when(emailBuilder.build()).thenReturn(emailQueue);
-		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
-		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
-		when(urlUtils.getActionUrl(loginUrl)).thenReturn(loginUrl);
-		when(user.getEmail()).thenReturn(email);
+		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(RECOVER_USERNAME_URL);
+		when(urlUtils.getActionUrl(LOGIN_URL)).thenReturn(LOGIN_URL);
+		when(user.getEmail()).thenReturn(TESTING_EMAIL);
 		when(userDAO.findByEmail(anyString())).thenReturn(matchingUsers);
 
-		accountRecovery.setEmail(email);
+        accountRecovery.setEmail(TESTING_EMAIL);
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.findName());
+        final String result = accountRecovery.findName();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
 		assertFalse(accountRecovery.hasActionErrors());
 		assertTrue(accountRecovery.hasActionMessages());
-		assertEquals(loginUrl, accountRecovery.getUrl());
+		assertEquals(LOGIN_URL, accountRecovery.getUrl());
 
-		verify(emailBuilder).build();
-		verify(emailSender).send(any(EmailQueue.class));
-		verify(emailTemplateDAO).find(anyInt());
-		verify(user).getEmail();
+        verify(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
 		verify(userDAO).findByEmail(anyString());
 	}
 
 	@Test
 	public void testFindName_EmailMatchesAtLeastOneUserButThrowsExceptionSending() throws Exception {
-		String email = "tester@picsauditing.com";
-		String url = "/AccountRecovery!recoverUsername";
 
 		List<User> matchingUsers = new ArrayList<>();
 		matchingUsers.add(user);
 
-		when(emailBuilder.build()).thenThrow(new IOException());
-		when(emailTemplateDAO.find(anyInt())).thenReturn(emailTemplate);
-		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(url);
-		when(user.getEmail()).thenReturn(email);
+        doThrow(new IOException()).when(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
+		when(urlUtils.getActionUrl("AccountRecovery", "recoverUsername")).thenReturn(RECOVER_USERNAME_URL);
+		when(user.getEmail()).thenReturn(TESTING_EMAIL);
 		when(userDAO.findByEmail(anyString())).thenReturn(matchingUsers);
 
-		accountRecovery.setEmail(email);
+		accountRecovery.setEmail(TESTING_EMAIL);
 
-		assertEquals(USERNAME, accountRecovery.findName());
+        final String result = accountRecovery.findName();
+
+		assertEquals(USERNAME, result);
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
-		verify(emailBuilder).build();
-		verify(emailSender, never()).send(any(EmailQueue.class));
-		verify(emailTemplateDAO).find(anyInt());
-		verify(user).getEmail();
+        verify(emails).sendUsernameRecoveryEmail(anyListOf(User.class));
 		verify(userDAO).findByEmail(anyString());
 	}
 
 	@Test
-	public void testResetPassword_EmptyOrNullOrDeletedUserName() throws Exception {
-		assertEquals(PASSWORD, accountRecovery.resetPassword());
-		assertTrue(accountRecovery.hasActionErrors());
+	public void testResetPassword_NullDeletedUserName() throws Exception {
+        accountRecovery.setUsername(null);
+        testResetPassword_expectErrors();
+    }
 
-		accountRecovery.setUsername("");
-		assertEquals(PASSWORD, accountRecovery.resetPassword());
-		assertTrue(accountRecovery.hasActionErrors());
+    @Test
+    public void testResetPassword_EmptyUsername() throws Exception {
+        accountRecovery.setUsername("");
+        testResetPassword_expectErrors();
+    }
 
+    @Test
+    public void testResetPassword_DeletedUsername() throws Exception {
 		accountRecovery.setUsername("DELETE-test");
-		assertEquals(PASSWORD, accountRecovery.resetPassword());
-		assertTrue(accountRecovery.hasActionErrors());
+        testResetPassword_expectErrors();
 	}
+
+    private void testResetPassword_expectErrors() {
+        final String result = accountRecovery.resetPassword();
+
+        assertEquals(PASSWORD, result);
+        assertTrue(accountRecovery.hasActionErrors());
+    }
 
 	@Test
 	public void testResetPassword_UsernameReturnsNullUser() throws Exception {
@@ -200,9 +185,9 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 
 		when(userDAO.findName(anyString())).thenReturn(null);
 
-		accountRecovery.resetPassword();
+        final String result = accountRecovery.resetPassword();
 
-		assertEquals(PASSWORD, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, result);
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
@@ -217,9 +202,9 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		when(user.isActiveB()).thenReturn(false);
 		when(userDAO.findName(anyString())).thenReturn(user);
 
-		accountRecovery.resetPassword();
+        final String result = accountRecovery.resetPassword();
 
-		assertEquals(PASSWORD, accountRecovery.resetPassword());
+		assertEquals(PASSWORD, result);
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
 
@@ -234,7 +219,9 @@ public class AccountRecoveryTest extends PicsTranslationTest {
 		when(user.isActiveB()).thenReturn(true);
 		when(userDAO.findName(anyString())).thenReturn(user);
 
-		assertEquals(PicsActionSupport.REDIRECT, accountRecovery.resetPassword());
+        final String result = accountRecovery.resetPassword();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
 		assertFalse(accountRecovery.hasActionErrors());
 		assertTrue(accountRecovery.hasActionMessages());
 		assertEquals("Login.action", accountRecovery.getUrl());
