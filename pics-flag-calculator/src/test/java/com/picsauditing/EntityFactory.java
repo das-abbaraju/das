@@ -1,5 +1,6 @@
 package com.picsauditing;
 
+import com.picsauditing.model.entities.Facility;
 import com.picsauditing.model.entities.*;
 
 import java.util.ArrayList;
@@ -390,7 +391,6 @@ public class EntityFactory {
         return makeContractorAuditOperator(audit, AuditStatus.Complete);
     }
 
-<<<<<<< HEAD
     public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
         Facility facility = new Facility();
         facility.setOperator(operator);
@@ -398,23 +398,10 @@ public class EntityFactory {
         return facility;
     }
 
-//    public static FlagCriteria makeFlagCriteria() {
-//        FlagCriteria flagCriteria = new FlagCriteria();
-//        flagCriteria.setId(counter++);
-//        flagCriteria.setCategory(FlagCriteriaCategory.Audits);
-=======
-//    public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
-//        Facility facility = new Facility();
-//        facility.setOperator(operator);
-//        facility.setCorporate(corporate);
-//        return facility;
-//    }
-//
     public static FlagCriteria makeFlagCriteria() {
         FlagCriteria flagCriteria = new FlagCriteria();
         flagCriteria.setId(counter++);
         flagCriteria.setCategory(FlagCriteriaCategory.Audits);
->>>>>>> 49198d6... TA1348 isFlagged() brought in.
 //        flagCriteria.setInsurance(false);
         return flagCriteria;
     }

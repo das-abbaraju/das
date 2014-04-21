@@ -8,13 +8,8 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
     private ContractorAccount contractor;
     private FlagCriteria criteria;
     private String answer;
-<<<<<<< HEAD:pics-flag-calculator/src/main/java/com/picsauditing/jpa/entities/FlagCriteriaContractor.java
     private String answer2;
-//    private boolean verified;
-=======
-//    private String answer2;
     private boolean verified;
->>>>>>> 49198d6... TA1348 isFlagged() brought in.:pics-flag-calculator/src/main/java/com/picsauditing/model/entities/FlagCriteriaContractor.java
 
     public FlagCriteriaContractor() {
     }
@@ -54,7 +49,6 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
         this.answer = answer;
     }
 
-<<<<<<< HEAD:pics-flag-calculator/src/main/java/com/picsauditing/jpa/entities/FlagCriteriaContractor.java
     public String getAnswer2() {
         return answer2;
     }
@@ -63,23 +57,6 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
         this.answer2 = answer2;
     }
 
-//    public boolean isVerified() {
-//        return verified;
-//    }
-//
-//    public void setVerified(boolean verified) {
-//        this.verified = verified;
-//    }
-//
-=======
-//    public String getAnswer2() {
-//        return answer2;
-//    }
-//
-//    public void setAnswer2(String answer2) {
-//        this.answer2 = answer2;
-//    }
-//
     public boolean isVerified() {
         return verified;
     }
@@ -88,7 +65,6 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
         this.verified = verified;
     }
 
->>>>>>> 49198d6... TA1348 isFlagged() brought in.:pics-flag-calculator/src/main/java/com/picsauditing/model/entities/FlagCriteriaContractor.java
 //    @Override
 //    public boolean equals(Object other) {
 //        FlagCriteriaContractor fcc = (FlagCriteriaContractor) other;

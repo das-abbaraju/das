@@ -1,8 +1,5 @@
 package com.picsauditing.model.entities;
 
-import com.picsauditing.model.entities.BaseTable;
-import com.picsauditing.model.entities.OperatorAccount;
-
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "facilities")

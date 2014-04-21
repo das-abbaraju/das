@@ -1,14 +1,9 @@
 package com.picsauditing.flagcalculator;
 
-<<<<<<< HEAD:pics-flag-calculator/src/main/java/com/picsauditing/PICS/FlagCalculator.java
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.util.Strings;
-=======
 import com.picsauditing.model.entities.*;
 import com.picsauditing.service.AuditService;
 import com.picsauditing.service.TradeService;
 import com.picsauditing.util.DateBean;
->>>>>>> 49198d6... TA1348 isFlagged() brought in.:pics-flag-calculator/src/main/java/com/picsauditing/flagcalculator/FlagCalculator.java
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,18 +159,18 @@ public class FlagCalculator {
      *         returned from this method when flagging does not apply.
      */
     private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
-//        if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
-//            throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
-//        }
-//
-//        FlagCriteria criteria = opCriteria.getCriteria();
-//        String hurdle = criteria.getDefaultValue();
-//        ContractorAccount con = conCriteria.getContractor();
-//
-//        if (criteria.isAllowCustomValue() && StringUtils.isNotEmpty(opCriteria.getHurdle())) {
-//            hurdle = opCriteria.getHurdle();
-//        }
-//
+        if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
+            throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
+        }
+
+        FlagCriteria criteria = opCriteria.getCriteria();
+        String hurdle = criteria.getDefaultValue();
+        ContractorAccount con = conCriteria.getContractor();
+
+        if (criteria.isAllowCustomValue() && StringUtils.isNotEmpty(opCriteria.getHurdle())) {
+            hurdle = opCriteria.getHurdle();
+        }
+
 //        if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
 //            String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
 //            if (newHurdle != null) {

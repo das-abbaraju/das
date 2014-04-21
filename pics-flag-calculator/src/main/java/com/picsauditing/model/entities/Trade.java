@@ -1,5 +1,8 @@
 package com.picsauditing.model.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SuppressWarnings("serial")
 //@Entity
 //@Table(name = "ref_trade")
@@ -33,11 +36,11 @@ public class Trade extends BaseTable {
 //	private String help;
 //
 //	private List<TradeAlternate> alternates = new ArrayList<TradeAlternate>();
-//	private List<Trade> children = new ArrayList<Trade>();
-//
-//	public Trade() {
-//	}
-//
+	private List<Trade> children = new ArrayList<>();
+
+	public Trade() {
+	}
+
 	public Trade(int id) {
 		this.id = id;
 	}
@@ -368,14 +371,14 @@ public class Trade extends BaseTable {
 //	}
 //
 //	@OneToMany(mappedBy = "parent")
-//	public List<Trade> getChildren() {
-//		return children;
-//	}
-//
-//	public void setChildren(List<Trade> children) {
-//		this.children = children;
-//	}
-//
+	public List<Trade> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Trade> children) {
+		this.children = children;
+	}
+
 //	@Override
 //	@Transient
 //	public List<IndexObject> getIndexValues() {

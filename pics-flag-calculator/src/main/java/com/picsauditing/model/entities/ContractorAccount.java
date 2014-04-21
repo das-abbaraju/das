@@ -1417,34 +1417,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @Transient
-<<<<<<< HEAD:pics-flag-calculator/src/main/java/com/picsauditing/jpa/entities/ContractorAccount.java
-    public float getWeightedIndustryAverage() {
-        float sum = 0;
-        int activitySum = 0;
-
-        if (trades.size() > 0) {
-            if (hasSelfPerformedTrades()) {
-                for (ContractorTrade t : trades) {
-                    if (t.isSelfPerformed()) {
-                        sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-                        activitySum += t.getActivityPercent();
-                    }
-                }
-            } else {
-                for (ContractorTrade t : trades) {
-                    sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-                    activitySum += t.getActivityPercent();
-                }
-            }
-            return sum / activitySum;
-        } else {
-            return 0;
-        }
-    }
-
-//    @Transient
-=======
->>>>>>> 49198d6... TA1348 isFlagged() brought in.:pics-flag-calculator/src/main/java/com/picsauditing/model/entities/ContractorAccount.java
 //    public boolean hasWiaCriteria() {
 //        for (FlagCriteriaContractor fcc : flagCriteria) {
 //            if (OshaRateType.TrirWIA.equals(fcc.getCriteria().getOshaRateType())) {
@@ -1465,19 +1437,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        return false;
 //    }
 //
-<<<<<<< HEAD:pics-flag-calculator/src/main/java/com/picsauditing/jpa/entities/ContractorAccount.java
-//    @Transient
-    public boolean hasSelfPerformedTrades() {
-        for (ContractorTrade t : trades) {
-            if (t.isSelfPerformed()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-=======
->>>>>>> 49198d6... TA1348 isFlagged() brought in.:pics-flag-calculator/src/main/java/com/picsauditing/model/entities/ContractorAccount.java
 //    /**
 //     * @return a list of invoices sorted by creationDate DESC
 //     */
