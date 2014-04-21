@@ -1,6 +1,10 @@
 describe('An Operator Employee', function() {
     var scope, $httpBackend, routeParams;
 
+    var employe_info_dev_url = '/angular/json/operator/employee_skills/employee_info.json';
+    var whoami_url = '/employee-guard/operators/who-am-i';
+    var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
+
     var result = {
         "required": {
             "skills": [
@@ -160,6 +164,25 @@ describe('An Operator Employee', function() {
        ]
     };
 
+    var corporate_user = {
+       "userId":116679,
+       "accountId":55653,
+       "name":"Lydia Rodarte-Quayle",
+       "type":"CORPORATE"
+    };
+
+    var site_list = [{
+        "id": 55654,
+        "name": "Power Utility Company"
+    },{
+        id: 54522,
+        "name": "Ancon Marine"
+    },{
+        id: 2,
+        name: "Barneys Warehouse"
+    }];
+
+
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
     beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, EmployeeCompanyInfo, SkillModel, SkillList) {
@@ -167,12 +190,14 @@ describe('An Operator Employee', function() {
 
         routeParams = $routeParams;
 
-        //This needs to come first!!
         $httpBackend.when('GET', /\/employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
 
-        $httpBackend.when('GET', '/angular/json/operator/employee_skills/employee_info.json').respond(employee_info);
-        $httpBackend.when('GET', '/angular/json/operator/employee_skills/skill_list.json').respond(result);
-
+        $httpBackend.when('GET', employe_info_dev_url).respond(employee_info);
+        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list[0-9]+.json/).respond(result);
+        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list.json/).respond(result);
+        $httpBackend.when('GET', whoami_url).respond(corporate_user);
+        $httpBackend.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);
+        $httpBackend.when('GET', corp_sites_dev_url).respond(site_list);
 
 
         scope = $rootScope.$new();
@@ -180,7 +205,6 @@ describe('An Operator Employee', function() {
             $scope: scope
         });
 
-        //This needs to come after controller is loaded
         $httpBackend.flush();
 
         scope.employeeStatusIcon = result.status;
@@ -208,6 +232,29 @@ describe('An Operator Employee', function() {
         expect(scope.projects).toEqual(result.projects);
         expect(scope.roles).toEqual(result.roles);
     });
+
+
+    describe("Corporate user", function() {
+        it("should have a list of sites", function() {
+            expect(angular.isArray(scope.siteList)).toBeTruthy();
+        });
+
+        it("should select the first site in the list if no id provided", function() {
+            expect(scope.selected_site).toEqual(55654);
+        });
+
+        it("should select the site provided in route params", function() {
+            scope.loadSkillList(2);
+            expect(scope.selected_site).toEqual(2);
+        });
+
+        it("should not redirect on the base page when no site id is provided", function() {
+            scope.initialState = true;
+            scope.loadSelectedSiteData();
+            expect(scope.initialState).toBeFalsy();
+        });
+    });
+
 
     describe("Role model", function() {
         it('should have site and corp required skills', function() {

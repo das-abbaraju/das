@@ -5,7 +5,8 @@ angular.module('PICS.directives')
         restrict: 'E',
         scope: {
             title: '@',
-            skills: '='
+            skills: '=',
+            icon: '@'
         },
         templateUrl: '/angular/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
     };

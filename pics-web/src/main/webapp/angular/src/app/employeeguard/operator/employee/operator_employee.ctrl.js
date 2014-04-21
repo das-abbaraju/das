@@ -1,23 +1,52 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, EmployeeCompanyInfo, SkillModel, SkillList, $routeParams, $filter) {
+.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI) {
     var skillModel;
 
-    // $scope.employee = EmployeeCompanyInfo.get();
     EmployeeCompanyInfo.get(function(employee) {
         $scope.employee = employee;
         $scope.employeeStatusIcon = employee.status;
     });
 
-    $scope.skillList = SkillList.get(function(result) {
-        skillModel = new SkillModel(result);
-        loadMenuItems();
-        selectViewModel();
+    WhoAmI.get(function(user) {
+        $scope.user = user.type.toLowerCase();
+
+        if ($scope.user === 'corporate') {
+            SiteList.query(function(sites) {
+                $scope.siteList = sites;
+
+                if (!$routeParams.siteId) {
+                    $scope.initialState = true;
+                    loadSkillList(sites[0].id);
+                } else {
+                    loadSkillList($routeParams.siteId);
+                }
+            });
+        } else {
+            loadSkillList();
+        }
     });
 
-    function loadAllRequiredSkills() {
-        $scope.requiredSkills = skillModel.getAllRequiredSkills();
+    function loadSkillList(id) {
+        $scope.selected_site = id;
+
+        $scope.skillList = SkillList.get({id: id}, function(result) {
+            skillModel = new SkillModel(result);
+            loadMenuItems();
+            selectViewModel();
+        });
     }
+
+    $scope.loadSelectedSiteData = function(site_id) {
+        if ($scope.initialState) {
+            $scope.initialState = false;
+            return;
+        }
+
+        if (site_id !== 'null') {
+            $location.path('/employee-guard/operators/employees/' + $routeParams.id +'/sites/' + site_id);
+        }
+    };
 
     function loadMenuItems() {
         $scope.projects = skillModel.getProjects();
@@ -42,9 +71,12 @@ angular.module('PICS.employeeguard')
     function setScopeModel(model) {
         $scope.requiredSkills = model.requiredSkills;
         $scope.skillList = model.skillList;
-        $scope.employeeStatusIcon = model.employeeStatusIcon;
         $scope.selectedMenuItem = model.selectedMenuItem;
         $scope.viewTitle = model.viewTitle;
+
+        if (model.employeeStatusIcon) {
+            $scope.employeeStatusIcon = model.employeeStatusIcon;
+        }
     }
 
     function getRoleModel() {
@@ -94,6 +126,7 @@ angular.module('PICS.employeeguard')
 
     angular.extend($scope, {
         loadMenuItems: loadMenuItems,
+        loadSkillList: loadSkillList,
         selectViewModel: selectViewModel,
         getRoleModel: getRoleModel,
         getProjectModel: getProjectModel,

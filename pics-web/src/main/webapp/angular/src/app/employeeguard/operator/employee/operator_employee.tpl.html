@@ -30,16 +30,56 @@
 
         <div class="row">
             <div class="col-md-3">
+                <div class="panel panel-primary" ng-show="user === 'corporate'">
+                    <div class="panel-heading ">
+                        <h3 class="panel-title">Site Selection</h3>
+                    </div>
+                    <div class="panel-body">
+                        <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadSelectedSiteData(selected_site)">
+                            <option value="null">Select a site...</option>
+                            <option ng-repeat="site in siteList | orderBy:'name'" ng-selected="{{ site.id === selected_site }}" value="{{ site.id }}">{{ site.name }}</option>
+                        </select>
+                    </div>
+                </div>
                 <div class="bs-sidebar">
-                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
-                        <ul class="nav" role="menu">
+                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation" ng-switch="user">
+                        <ul class="nav" role="menu" ng-switch-when="corporate">
                             <li ng-class="{active: selectedMenuItem == 'all'}">
-                                <a href="/employee-guard/operators/employees/{{ employee.id }}">All
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}">All
                                     <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
                             <li class="nav-divider"></li>
-                            <li>
+                            <li ng-show="roles">
+                                <span class="nav-title">Job Roles</span>
+                            </li>
+                            <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}/roles/{{ role.slug }}">
+                                    {{ role.name }}
+                                    <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+
+                            <li class="nav-divider" ng-show="projects"></li>
+                            <li ng-show="projects">
+                                <span class="nav-title">Projects</span>
+                            </li>
+
+                            <li ng-repeat="project in projects" ng-class="{active: selectedMenuItem == project.slug}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}/projects/{{ project.name | removeInvalidCharactersFromUrl }}">
+                                    {{ project.name }}
+                                    <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav" role="menu" ng-switch-default>
+                            <li ng-class="{active: selectedMenuItem == 'all'}">
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/">All
+                                    <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                            <li class="nav-divider"></li>
+                            <li ng-show="roles">
                                 <span class="nav-title">Job Roles</span>
                             </li>
                             <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
@@ -49,8 +89,8 @@
                                 </a>
                             </li>
 
-                            <li class="nav-divider"></li>
-                            <li>
+                            <li class="nav-divider" ng-show="projects"></li>
+                            <li ng-show="projects">
                                 <span class="nav-title">Projects</span>
                             </li>
 
@@ -66,23 +106,23 @@
             </div>
             <div class="col-md-9">
                 <div ng-switch on="getSelectedView()">
-                    <employeeskillsection title="Required by Site or Project" skills="requiredSkills"></employeeskillsection>
+                    <employeeskillsection ng-show="requiredSkills" title="Required by Site or Project" skills="requiredSkills" icon="map-marker"></employeeskillsection>
 
                     <div ng-switch-when="role">
-                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" icon="group"></employeeskillsection>
                     </div>
                     <div ng-switch-when="project">
                         <span ng-repeat="role in skillList.roles">
-                            <employeeskillsection title="{{ role.name }}" skills="role.skills"></employeeskillsection>
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group"></employeeskillsection>
                         </span>
                     </div>
                     <div ng-switch-default>
                         <span ng-repeat="project in skillList.skills">
-                            <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
+                            <employeeskillsection title="{{ project.name }}" skills="project.skills" icon="group"></employeeskillsection>
                         </span>
 
                         <span ng-repeat="role in roles">
-                            <employeeskillsection title="{{ role.name }}" skills="role.skills"></employeeskillsection>
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group"></employeeskillsection>
                         </span>
                     </div>
                </div>
