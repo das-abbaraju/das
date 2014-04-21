@@ -164,7 +164,7 @@ public class SkillService {
 
     if(SessionInfoProviderFactory.getSessionInfoProvider().getPermissions().isContractor()) {
       updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
-      // If we're making this skill required then we can't associate this skill with roles/groups
+      // If we're making this skill required then we can't associate this skill with groups
       if (accountSkillInDatabase.getRuleType().isRequired()) {
         accountSkillInDatabase.getGroups().clear();
       }
@@ -284,12 +284,12 @@ public class SkillService {
       return Collections.emptyList();
     }
 
-    List<String> groupNames = new ArrayList<>();
-    for (AccountSkillRole AccountSkillGroup : accountSkillRoles) {
-      groupNames.add(AccountSkillGroup.getRole().getName());
+    List<String> roleNames = new ArrayList<>();
+    for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+      roleNames.add(accountSkillRole.getRole().getName());
     }
 
-    return groupNames;
+    return roleNames;
   }
 
 	@Deprecated
