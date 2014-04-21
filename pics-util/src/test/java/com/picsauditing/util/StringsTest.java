@@ -310,7 +310,16 @@ public class StringsTest {
 		assertEquals(Strings.EMPTY_STRING, Strings.stripNonAlphaNumericCharacters("!@#$%^&*()"));
 	}
 
-	@Test
+    @Test
+    public void testImplode_List() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        assertEquals("1,2,3", Strings.implode(list));
+    }
+
+    @Test
 	public void testImplode_WhenIPassInAnEmptyList_ThenItReturnsEmptyString() {
 		assertEquals("", Strings.implode(Collections.EMPTY_LIST));
 	}

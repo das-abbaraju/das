@@ -1,6 +1,7 @@
 package com.picsauditing.PICS;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -932,17 +933,17 @@ public class FlagCalculator {
 //
 //        return fdo2;
 //    }
-//
-//    private FlagDataOverride searchOverridesByCriteria(
-//            List<FlagDataOverride> fdos, FlagCriteria key) {
-//        for (FlagDataOverride fdo : fdos) {
-//            if (fdo.getCriteria().equals(key)) {
-//                return fdo;
-//            }
-//        }
-//        return null;
-//    }
-//
+
+    private FlagDataOverride searchOverridesByCriteria(
+            List<FlagDataOverride> fdos, FlagCriteria key) {
+        for (FlagDataOverride fdo : fdos) {
+            if (fdo.getCriteria().equals(key)) {
+                return fdo;
+            }
+        }
+        return null;
+    }
+
 //    private void shiftOverrides(List<FlagDataOverride> fdos) {
 //        // put fdos in reverse MultiYearScope sorted order for easier traversal
 //        Collections.sort(fdos, new Comparator<FlagDataOverride>() {
@@ -975,13 +976,13 @@ public class FlagCalculator {
 //        list.add(fdo);
 //    }
 //
-//    private void removeFlagDataOverride(FlagDataOverride fdo) {
-//        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
-//        if (list != null) {
-//            list.remove(fdo);
-//        }
-//    }
-//
+    private void removeFlagDataOverride(FlagDataOverride fdo) {
+        List<FlagDataOverride> list = overrides.get(fdo.getCriteria());
+        if (list != null) {
+            list.remove(fdo);
+        }
+    }
+
     private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
         ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
         for (int id : criteriaIds) {
@@ -1026,7 +1027,7 @@ public class FlagCalculator {
 //
 //        return null;
 //    }
-//
+
     private String extractYear(String year) {
         if (StringUtils.isEmpty(year)) {
             return null;
