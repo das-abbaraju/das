@@ -156,18 +156,18 @@ public class FlagCalculator {
      *         returned from this method when flagging does not apply.
      */
     private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
-        if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
-            throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
-        }
-
-        FlagCriteria criteria = opCriteria.getCriteria();
-        String hurdle = criteria.getDefaultValue();
-        ContractorAccount con = conCriteria.getContractor();
-
-        if (criteria.isAllowCustomValue() && StringUtils.isNotEmpty(opCriteria.getHurdle())) {
-            hurdle = opCriteria.getHurdle();
-        }
-
+//        if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
+//            throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
+//        }
+//
+//        FlagCriteria criteria = opCriteria.getCriteria();
+//        String hurdle = criteria.getDefaultValue();
+//        ContractorAccount con = conCriteria.getContractor();
+//
+//        if (criteria.isAllowCustomValue() && StringUtils.isNotEmpty(opCriteria.getHurdle())) {
+//            hurdle = opCriteria.getHurdle();
+//        }
+//
 //        if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
 //            String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
 //            if (newHurdle != null) {

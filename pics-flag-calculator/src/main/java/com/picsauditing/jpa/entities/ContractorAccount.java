@@ -2,6 +2,8 @@ package com.picsauditing.jpa.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 @SuppressWarnings("serial")
 //@Entity
@@ -79,7 +81,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
     private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 //    private List<Certificate> certificates = new ArrayList<Certificate>();
 //    private List<JobContractor> jobSites = new ArrayList<JobContractor>();
-//    private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
+    private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
 //    private List<AssessmentResultStage> assessmentResultStages = new ArrayList<AssessmentResultStage>();
 //    private List<ContractorOperatorNumber> contractorOperatorNumbers = new ArrayList<ContractorOperatorNumber>();
 //    private List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators = new ArrayList<>();
@@ -653,14 +655,14 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //    @OneToMany(mappedBy = "contractor")
 //    @Sort(type = SortType.NATURAL)
-//    public Set<ContractorTrade> getTrades() {
-//        return trades;
-//    }
-//
-//    public void setTrades(Set<ContractorTrade> trades) {
-//        this.trades = trades;
-//    }
-//
+    public Set<ContractorTrade> getTrades() {
+        return trades;
+    }
+
+    public void setTrades(Set<ContractorTrade> trades) {
+        this.trades = trades;
+    }
+
 //    @OneToMany(mappedBy = "picsAccount")
 //    public List<AssessmentResultStage> getAssessmentResultStages() {
 //        return assessmentResultStages;
@@ -1477,30 +1479,30 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @Transient
-//    public float getWeightedIndustryAverage() {
-//        float sum = 0;
-//        int activitySum = 0;
-//
-//        if (trades.size() > 0) {
-//            if (hasSelfPerformedTrades()) {
-//                for (ContractorTrade t : trades) {
-//                    if (t.isSelfPerformed()) {
-//                        sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-//                        activitySum += t.getActivityPercent();
-//                    }
-//                }
-//            } else {
-//                for (ContractorTrade t : trades) {
-//                    sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
-//                    activitySum += t.getActivityPercent();
-//                }
-//            }
-//            return sum / activitySum;
-//        } else {
-//            return 0;
-//        }
-//    }
-//
+    public float getWeightedIndustryAverage() {
+        float sum = 0;
+        int activitySum = 0;
+
+        if (trades.size() > 0) {
+            if (hasSelfPerformedTrades()) {
+                for (ContractorTrade t : trades) {
+                    if (t.isSelfPerformed()) {
+                        sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+                        activitySum += t.getActivityPercent();
+                    }
+                }
+            } else {
+                for (ContractorTrade t : trades) {
+                    sum += t.getActivityPercent() * t.getTrade().getNaicsTRIRI();
+                    activitySum += t.getActivityPercent();
+                }
+            }
+            return sum / activitySum;
+        } else {
+            return 0;
+        }
+    }
+
 //    @Transient
 //    public boolean hasWiaCriteria() {
 //        for (FlagCriteriaContractor fcc : flagCriteria) {
@@ -1523,15 +1525,15 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @Transient
-//    public boolean hasSelfPerformedTrades() {
-//        for (ContractorTrade t : trades) {
-//            if (t.isSelfPerformed()) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
+    public boolean hasSelfPerformedTrades() {
+        for (ContractorTrade t : trades) {
+            if (t.isSelfPerformed()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 //    /**
 //     * @return a list of invoices sorted by creationDate DESC
 //     */

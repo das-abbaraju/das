@@ -12,7 +12,7 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
     private AuditQuestion question;
     private AuditType auditType;
 //    private OshaType oshaType;
-//    private OshaRateType oshaRateType;
+    private OshaRateType oshaRateType;
 //    private String label;
 //    private String description;
     private String comparison;
@@ -81,14 +81,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
 //    @Enumerated(EnumType.STRING)
 //    @ReportField(type = FieldType.OshaRateType, importance = FieldImportance.Average)
-//    public OshaRateType getOshaRateType() {
-//        return oshaRateType;
-//    }
-//
-//    public void setOshaRateType(OshaRateType oshaRateType) {
-//        this.oshaRateType = oshaRateType;
-//    }
-//
+    public OshaRateType getOshaRateType() {
+        return oshaRateType;
+    }
+
+    public void setOshaRateType(OshaRateType oshaRateType) {
+        this.oshaRateType = oshaRateType;
+    }
+
 //    @Transient
 //    public String getLabel() {
 //        if (label != null) {
