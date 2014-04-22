@@ -164,6 +164,7 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 				"WHERE e.accountId IN (:accountIds) " +
 				"AND p.accountId = :siteId " +
 				"AND e.profile.id = :profileId", Employee.class);
+
 		query.setParameter("accountIds", accountIds);
 		query.setParameter("siteId", siteId);
 		query.setParameter("profileId", profileId);

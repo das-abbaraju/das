@@ -139,6 +139,13 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		});
 	}
 
+	public Set<AccountSkill> getSiteAndCorporateRequiredSkills(final int siteId, final Collection<Integer> corporateAccountIds) {
+		Set<Integer> siteAndParentAccountIds = new HashSet<>(corporateAccountIds);
+		siteAndParentAccountIds.add(siteId);
+
+		return new HashSet<>(accountSkillDAO.findSiteAndCorporateRequiredSkills(siteAndParentAccountIds));
+	}
+
 	public Map<Integer, Set<AccountSkill>> getSiteRequiredSkills(final Collection<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyMap();
@@ -194,7 +201,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
+																		   final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -230,7 +237,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	}
 
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
-	                                                                       final Collection<Employee> employees) {
+																		   final Collection<Employee> employees) {
 		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByAccount(contractorId);
 		return PicsCollectionUtil.convertToMapOfSets(
 				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
