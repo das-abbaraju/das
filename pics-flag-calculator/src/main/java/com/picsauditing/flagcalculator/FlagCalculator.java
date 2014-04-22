@@ -26,11 +26,12 @@ public class FlagCalculator {
     private boolean worksForOperator = true;
     private final Logger logger = LoggerFactory.getLogger(FlagCalculator.class);
 
-    public FlagCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
+    public FlagCalculator(Collection<FlagCriteriaContractor> contractorCriteria, FlagCriteriaDAO flagCriteriaDAO) {
         setContractorCriteria(contractorCriteria);
+        this.flagCriteriaDAO = flagCriteriaDAO;
     }
 
-    public FlagCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
+    public FlagCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria, FlagCriteriaDAO flagCriteriaDAO) {
         contractorCriteria = new HashMap<>();
         contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
         operatorCriteria = new HashMap<>();
@@ -38,9 +39,12 @@ public class FlagCalculator {
             operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
         }
         operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
+        this.flagCriteriaDAO = flagCriteriaDAO;
     }
 
-    public FlagCalculator() {}
+    public FlagCalculator(FlagCriteriaDAO flagCriteriaDAO) {
+        this.flagCriteriaDAO = flagCriteriaDAO;
+    }
 
 
     public List<FlagData> calculate() {
