@@ -4,7 +4,7 @@
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Contractor Cron Coverage Run" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
       <boolProp name="TestPlan.functional_mode">false</boolProp>
-      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
       <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
         <collectionProp name="Arguments.arguments"/>
       </elementProp>
@@ -177,6 +177,80 @@
         <stringProp name="password">8arTyRev</stringProp>
       </JDBCDataSource>
       <hashTree/>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Reset Smoketest Tags" enabled="false">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <longProp name="ThreadGroup.start_time">1398107682000</longProp>
+        <longProp name="ThreadGroup.end_time">1398107682000</longProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+          <collectionProp name="CookieManager.cookies"/>
+          <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        </CookieManager>
+        <hashTree/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Reset Smoketest tags and tag from CSV File" enabled="true"/>
+        <hashTree>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Tag ID" enabled="true">
+            <stringProp name="dataSource">PICS_ALPHA1</stringProp>
+            <stringProp name="queryType">Select Statement</stringProp>
+            <stringProp name="query">select id from operator_tag where tag = &apos;SmokeTestContractor&apos;;</stringProp>
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="variableNames">TAG_ID</stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+          </JDBCSampler>
+          <hashTree/>
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Reset SmokeTest tags" enabled="true">
+            <stringProp name="dataSource">PICS_ALPHA1</stringProp>
+            <stringProp name="queryType">Update Statement</stringProp>
+            <stringProp name="query">delete from contractor_tag where tagID = ${TAG_ID_1}</stringProp>
+            <stringProp name="queryArguments"></stringProp>
+            <stringProp name="queryArgumentsTypes"></stringProp>
+            <stringProp name="variableNames"></stringProp>
+            <stringProp name="resultVariable"></stringProp>
+            <stringProp name="queryTimeout"></stringProp>
+          </JDBCSampler>
+          <hashTree/>
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Tag Contractors from CSV File" enabled="true">
+            <boolProp name="LoopController.continue_forever">true</boolProp>
+            <intProp name="LoopController.loops">-1</intProp>
+          </LoopController>
+          <hashTree>
+            <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
+              <stringProp name="filename">ContractorCronCoverageContractorIDs.csv</stringProp>
+              <stringProp name="fileEncoding"></stringProp>
+              <stringProp name="variableNames">CONTRACTOR_ID,CONTRACTOR_NAME</stringProp>
+              <stringProp name="delimiter">,</stringProp>
+              <boolProp name="quotedData">true</boolProp>
+              <boolProp name="recycle">false</boolProp>
+              <boolProp name="stopThread">true</boolProp>
+              <stringProp name="shareMode">shareMode.all</stringProp>
+            </CSVDataSet>
+            <hashTree/>
+            <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Tag Contractors from CSV" enabled="true">
+              <stringProp name="dataSource">PICS_ALPHA1</stringProp>
+              <stringProp name="queryType">Update Statement</stringProp>
+              <stringProp name="query">insert into contractor_tag (conID, tagID) values (${CONTRACTOR_ID}, ${TAG_ID_1})</stringProp>
+              <stringProp name="queryArguments"></stringProp>
+              <stringProp name="queryArgumentsTypes"></stringProp>
+              <stringProp name="variableNames"></stringProp>
+              <stringProp name="resultVariable"></stringProp>
+              <stringProp name="queryTimeout"></stringProp>
+            </JDBCSampler>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Contractor Cron" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -264,68 +338,7 @@
           </HTTPSamplerProxy>
           <hashTree/>
         </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Rest Smoketest tags and tag from CSV File" enabled="true"/>
-        <hashTree>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Tag ID" enabled="true">
-            <stringProp name="dataSource">PICS_ALPHA1</stringProp>
-            <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select id from operator_tag where tag = &apos;SmokeTestContractor&apos;;</stringProp>
-            <stringProp name="queryArguments"></stringProp>
-            <stringProp name="queryArgumentsTypes"></stringProp>
-            <stringProp name="variableNames">TAG_ID</stringProp>
-            <stringProp name="resultVariable"></stringProp>
-            <stringProp name="queryTimeout"></stringProp>
-          </JDBCSampler>
-          <hashTree>
-            <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
-              <boolProp name="displayJMeterProperties">false</boolProp>
-              <boolProp name="displayJMeterVariables">true</boolProp>
-              <boolProp name="displaySamplerProperties">true</boolProp>
-              <boolProp name="displaySystemProperties">false</boolProp>
-            </DebugPostProcessor>
-            <hashTree/>
-          </hashTree>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Reset SmokeTest tags" enabled="true">
-            <stringProp name="dataSource">PICS_ALPHA1</stringProp>
-            <stringProp name="queryType">Update Statement</stringProp>
-            <stringProp name="query">delete from contractor_tag where tagID = ${TAG_ID_1}</stringProp>
-            <stringProp name="queryArguments"></stringProp>
-            <stringProp name="queryArgumentsTypes"></stringProp>
-            <stringProp name="variableNames"></stringProp>
-            <stringProp name="resultVariable"></stringProp>
-            <stringProp name="queryTimeout"></stringProp>
-          </JDBCSampler>
-          <hashTree/>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Tag Contractors from CSV File" enabled="true">
-            <boolProp name="LoopController.continue_forever">true</boolProp>
-            <intProp name="LoopController.loops">-1</intProp>
-          </LoopController>
-          <hashTree>
-            <CSVDataSet guiclass="TestBeanGUI" testclass="CSVDataSet" testname="CSV Data Set Config" enabled="true">
-              <stringProp name="filename">ContractorCronCoverageContractorIDs.csv</stringProp>
-              <stringProp name="fileEncoding"></stringProp>
-              <stringProp name="variableNames">CONTRACTOR_ID,CONTRACTOR_NAME</stringProp>
-              <stringProp name="delimiter">,</stringProp>
-              <boolProp name="quotedData">true</boolProp>
-              <boolProp name="recycle">false</boolProp>
-              <boolProp name="stopThread">true</boolProp>
-              <stringProp name="shareMode">shareMode.all</stringProp>
-            </CSVDataSet>
-            <hashTree/>
-            <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Tag Contractors from CSV" enabled="true">
-              <stringProp name="dataSource">PICS_ALPHA1</stringProp>
-              <stringProp name="queryType">Update Statement</stringProp>
-              <stringProp name="query">insert into contractor_tag (conID, tagID) values (${CONTRACTOR_ID}, ${TAG_ID_1})</stringProp>
-              <stringProp name="queryArguments"></stringProp>
-              <stringProp name="queryArgumentsTypes"></stringProp>
-              <stringProp name="variableNames"></stringProp>
-              <stringProp name="resultVariable"></stringProp>
-              <stringProp name="queryTimeout"></stringProp>
-            </JDBCSampler>
-            <hashTree/>
-          </hashTree>
-        </hashTree>
-        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Use Smoketest tagged contractors" enabled="false"/>
+        <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Use Smoketest tagged contractors" enabled="true"/>
         <hashTree>
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Toggle state to restore at end of test" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
@@ -352,7 +365,7 @@
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Smoketest Contractor IDs" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select a.id from accounts a join contractor_tag ct on ct.conID = a.id join operator_tag ot on ot.id = ct.tagID where ot.tag = &apos;SmokeTestContractor&apos; limit 2</stringProp>
+            <stringProp name="query">select a.id from accounts a join contractor_tag ct on ct.conID = a.id join operator_tag ot on ot.id = ct.tagID where ot.tag = &apos;SmokeTestContractor&apos;</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="variableNames">SMOKETEST_CONTRACTOR_ID</stringProp>
@@ -422,7 +435,7 @@
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Flags After First Run" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select flag, baselineFlag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
+            <stringProp name="query">select flag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="variableNames"></stringProp>
@@ -530,7 +543,7 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Flags After Second Run" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select flag, baselineFlag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
+            <stringProp name="query">select flag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="variableNames"></stringProp>
@@ -546,8 +559,6 @@ second = vars.getObject(&quot;SECONDRUN_FLAGS&quot;);
 for(int i = 0; i &lt; first.size(); i++) {
 	flagBefore = first.get(i).get(&quot;flag&quot;);
 	flagAfter = second.get(i).get(&quot;flag&quot;);
-	baseLineFlagBefore = first.get(i).get(&quot;baselineFlag&quot;);
-	baseLineFlagAfter = second.get(i).get(&quot;baselineFlag&quot;);
 	log.info(&quot;flagBefore is &quot; + flagBefore);
 	log.info(&quot;flagAfter is &quot; + flagAfter);
 	if ((flagBefore == null &amp;&amp; flagAfter != null) || (flagBefore != null &amp;&amp; !flagBefore.equals(flagAfter))) {
@@ -555,21 +566,13 @@ for(int i = 0; i &lt; first.size(); i++) {
 		FailureMessage = &quot;flag colors have changed&quot;;
 		break;
 	}
-	log.info(&quot;baseLineFlagBefore is &quot; + baseLineFlagBefore);
-	log.info(&quot;baseLineFlagAfter is &quot; + baseLineFlagAfter);
-	if ((baseLineFlagBefore == null &amp;&amp; baseLineFlagAfter != null) || (baseLineFlagBefore != null &amp;&amp; !baseLineFlagBefore.equals(baseLineFlagAfter))) {
-		Failure = true;
-		FailureMessage = &quot;baseline flag colors have changed&quot;;
-		break;
-	}
-
 }</stringProp>
               <stringProp name="BeanShellAssertion.filename"></stringProp>
               <stringProp name="BeanShellAssertion.parameters"></stringProp>
               <boolProp name="BeanShellAssertion.resetInterpreter">true</boolProp>
             </BeanShellAssertion>
             <hashTree/>
-            <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
+            <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="false">
               <boolProp name="displayJMeterProperties">false</boolProp>
               <boolProp name="displayJMeterVariables">true</boolProp>
               <boolProp name="displaySamplerProperties">true</boolProp>

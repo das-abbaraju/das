@@ -111,6 +111,26 @@ public class ContractorAccountTest {
 	}
 
     @Test
+    public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+        contractor.getTrades().add(makeContractorTrade(makeTrade(1, null, 2.0f), 5, false));
+        contractor.getTrades().add(makeContractorTrade(makeTrade(2, null, 8.0f), 5, false));
+
+        assertEquals(5, contractor.getWeightedIndustryAverage(), 1);
+    }
+
+    @Test
+    public void testGetWeightedIndustryAverage_SelfPerformedTrades() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+        contractor.getTrades().add(makeContractorTrade(makeTrade(1, null, 2.0f), 5, true));
+        contractor.getTrades().add(makeContractorTrade(makeTrade(2, null, 8.0f), 5, false));
+
+        assertEquals(2, contractor.getWeightedIndustryAverage(), 1);
+    }
+
+    @Test
     public void testGetTopTrade_NoTrade() {
         ContractorAccount contractor = new ContractorAccount();
         assertNull(contractor.getTopTrade());

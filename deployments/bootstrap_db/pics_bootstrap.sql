@@ -1801,7 +1801,7 @@ CREATE TABLE `accountemployeeguard` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `accountID_UNIQUE` (`accountID`),
   CONSTRAINT `fk1_accountemployeeguard` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=341 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=332 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1922,7 +1922,7 @@ CREATE TABLE `accounts` (
   KEY `type` (`type`,`status`),
   KEY `fk1_accounts` (`contactID`),
   CONSTRAINT `fk1_accounts` FOREIGN KEY (`contactID`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55671 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=55662 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8326,7 +8326,7 @@ CREATE TABLE `app_user` (
   `lastLogin` datetime DEFAULT NULL COMMENT 'The last date and time this user logged in',
   PRIMARY KEY (`id`),
   UNIQUE KEY `akApp_User` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=141851 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=141842 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8586,7 +8586,7 @@ CREATE TABLE `audit_category` (
   KEY `parent` (`parentID`),
   KEY `auditTypeCategory` (`auditTypeID`,`parentID`),
   CONSTRAINT `FK_audit_category` FOREIGN KEY (`auditTypeID`) REFERENCES `audit_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3751 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3742 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -8660,7 +8660,7 @@ CREATE TABLE `audit_category_rule` (
   CONSTRAINT `FK_audit_category_rule_question` FOREIGN KEY (`questionID`) REFERENCES `audit_question` (`id`),
   CONSTRAINT `FK_audit_category_rule_tag` FOREIGN KEY (`tagID`) REFERENCES `operator_tag` (`id`),
   CONSTRAINT `FK_audit_category_rule_trade` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -10935,7 +10935,7 @@ CREATE TABLE `audit_type_rule` (
   CONSTRAINT `FK_audit_type_rule_question` FOREIGN KEY (`questionID`) REFERENCES `audit_question` (`id`),
   CONSTRAINT `FK_audit_type_rule_tag` FOREIGN KEY (`tagID`) REFERENCES `operator_tag` (`id`),
   CONSTRAINT `FK_audit_type_rule_trade` FOREIGN KEY (`tradeID`) REFERENCES `ref_trade` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -11184,7 +11184,7 @@ CREATE TABLE `contractor_audit` (
   KEY `auditorID` (`auditorID`),
   KEY `previousAudit` (`previousAuditID`),
   CONSTRAINT `previousAudit` FOREIGN KEY (`previousAuditID`) REFERENCES `contractor_audit` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -11411,7 +11411,7 @@ CREATE TABLE `contractor_fee` (
   `newFacilityCount` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `conFee` (`conID`,`feeClass`)
-) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -11582,7 +11582,7 @@ CREATE TABLE `contractor_operator` (
   KEY `opID` (`opID`),
   CONSTRAINT `FK_contractor_operator_con` FOREIGN KEY (`conID`) REFERENCES `accounts` (`id`),
   CONSTRAINT `FK_contractor_operator_op` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -12826,7 +12826,7 @@ CREATE TABLE `facilities` (
   KEY `corporateID` (`corporateID`),
   CONSTRAINT `FK_facilities_corporateID` FOREIGN KEY (`corporateID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_facilities_opID` FOREIGN KEY (`opID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8541 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8522 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14108,7 +14108,7 @@ CREATE TABLE `invoice_fee` (
   `discountOperatorID` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `fee` (`fee`)
-) ENGINE=InnoDB AUTO_INCREMENT=981 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=364 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -14575,7 +14575,7 @@ CREATE TABLE `invoice_fee_country` (
   KEY `country` (`country`),
   CONSTRAINT `FK_invoice_fee_country_country` FOREIGN KEY (`country`) REFERENCES `ref_country` (`isoCode`) ON DELETE CASCADE,
   CONSTRAINT `FK_invoice_fee_country_fee` FOREIGN KEY (`feeID`) REFERENCES `invoice_fee` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=18551 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=18550 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -23601,7 +23601,7 @@ CREATE TABLE `note` (
   KEY `creationDate` (`creationDate`,`accountID`),
   KEY `employee` (`employeeID`),
   CONSTRAINT `FK_note` FOREIGN KEY (`employeeID`) REFERENCES `employee` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -25450,7 +25450,7 @@ CREATE TABLE `ref_time_zone` (
   `zoneName` varchar(200) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `ak_ref_time_zone` (`countryCode`,`zoneName`)
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=102 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -25991,7 +25991,7 @@ CREATE TABLE `site_assignment` (
   CONSTRAINT `fk1_site_assignment` FOREIGN KEY (`roleID`) REFERENCES `account_group` (`id`),
   CONSTRAINT `fk2_site_assignment` FOREIGN KEY (`siteID`) REFERENCES `accountemployeeguard` (`accountID`),
   CONSTRAINT `fk3_site_assignment` FOREIGN KEY (`employeeID`) REFERENCES `account_employee` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1301 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1012 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -26387,7 +26387,7 @@ CREATE TABLE `useraccess` (
   PRIMARY KEY (`accessID`),
   UNIQUE KEY `user_type` (`userID`,`accessType`),
   KEY `access_type` (`accessType`)
-) ENGINE=InnoDB AUTO_INCREMENT=331761 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=331752 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -26586,7 +26586,7 @@ CREATE TABLE `usergroup` (
   KEY `roleID` (`groupID`),
   CONSTRAINT `FK_usergroup_group` FOREIGN KEY (`groupID`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_usergroup_user` FOREIGN KEY (`userID`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -26670,7 +26670,7 @@ CREATE TABLE `users` (
   KEY `fk1_Users` (`appUserID`),
   CONSTRAINT `fk1_Users` FOREIGN KEY (`appUserID`) REFERENCES `app_user` (`id`),
   CONSTRAINT `FK_userAccount` FOREIGN KEY (`accountID`) REFERENCES `accounts` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=118831 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=118822 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --

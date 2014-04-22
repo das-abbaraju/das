@@ -1,6 +1,11 @@
 package com.picsauditing;
 
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.entities.Facility;
+import com.picsauditing.model.entities.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * This generates jpa objects that we can then use in our unit testing
@@ -157,15 +162,15 @@ public class EntityFactory {
 //        return conAudit;
 //    }
 //
-//    public static ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
-//        ContractorAudit conAudit = new ContractorAudit();
-//        conAudit.setAuditType(makeAuditType(auditTypeID));
-//        conAudit.setContractorAccount(contractor);
+    public static ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
+        ContractorAudit conAudit = new ContractorAudit();
+        conAudit.setAuditType(makeAuditType(auditTypeID));
+        conAudit.setContractorAccount(contractor);
 //        conAudit.setAuditFor(auditFor);
 //        conAudit.setCreationDate(new Date());
-//        return conAudit;
-//    }
-//
+        return conAudit;
+    }
+
 //    public static OshaAudit makeOshaAudit(ContractorAccount contractor, String auditFor) {
 //        ContractorAudit audit = makeAnnualUpdate(11, contractor, auditFor);
 //        OshaAudit oshaAudit = new OshaAudit(audit);
@@ -214,46 +219,46 @@ public class EntityFactory {
 //        auditType.setClassType(AuditTypeClass.Audit);
 //        auditType.setMonthsToExpire(12);
 //        auditType.setPeriod(AuditTypePeriod.None);
-//        Workflow workFlow = makeWorkflowNoSubmitted();
-//        auditType.setWorkFlow(workFlow);
+        Workflow workFlow = makeWorkflowNoSubmitted();
+        auditType.setWorkFlow(workFlow);
         return auditType;
     }
 
-//    public static Workflow makeWorkflowNoSubmitted() {
-//        Workflow workFlow = new Workflow();
-//        WorkflowStep step1 = new WorkflowStep();
+    public static Workflow makeWorkflowNoSubmitted() {
+        Workflow workFlow = new Workflow();
+        WorkflowStep step1 = new WorkflowStep();
 //        step1.setOldStatus(AuditStatus.Pending);
-//        step1.setNewStatus(AuditStatus.Complete);
-//
-//        WorkflowStep step2 = new WorkflowStep();
+        step1.setNewStatus(AuditStatus.Complete);
+
+        WorkflowStep step2 = new WorkflowStep();
 //        step2.setOldStatus(AuditStatus.Resubmit);
-//        step2.setNewStatus(AuditStatus.Complete);
-//
-//        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
-//        steps.add(step1);
-//        steps.add(step2);
-//        workFlow.setSteps(steps);
-//        return workFlow;
-//    }
-//
-//    public static Workflow makeWorkflowWithSubmitted() {
-//        Workflow workFlow = new Workflow();
-//
-//        WorkflowStep step1 = new WorkflowStep();
+        step2.setNewStatus(AuditStatus.Complete);
+
+        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+        steps.add(step1);
+        steps.add(step2);
+        workFlow.setSteps(steps);
+        return workFlow;
+    }
+
+    public static Workflow makeWorkflowWithSubmitted() {
+        Workflow workFlow = new Workflow();
+
+        WorkflowStep step1 = new WorkflowStep();
 //        step1.setOldStatus(AuditStatus.Pending);
-//        step1.setNewStatus(AuditStatus.Submitted);
-//
-//        WorkflowStep step2 = new WorkflowStep();
+        step1.setNewStatus(AuditStatus.Submitted);
+
+        WorkflowStep step2 = new WorkflowStep();
 //        step2.setOldStatus(AuditStatus.Submitted);
-//        step2.setNewStatus(AuditStatus.Complete);
-//
-//        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
-//        steps.add(step1);
-//        steps.add(step2);
-//        workFlow.setSteps(steps);
-//        return workFlow;
-//    }
-//
+        step2.setNewStatus(AuditStatus.Complete);
+
+        List<WorkflowStep> steps = new ArrayList<WorkflowStep>();
+        steps.add(step1);
+        steps.add(step2);
+        workFlow.setSteps(steps);
+        return workFlow;
+    }
+
 //    /**
 //     * Add an Approved CAO to the passed in ConAudit
 //     *
@@ -269,34 +274,34 @@ public class EntityFactory {
 //        return cao;
 //    }
 //
-//    public static AuditQuestion makeAuditQuestion() {
-//        AuditQuestion question = new AuditQuestion();
-//        question.setId(counter++);
+    public static AuditQuestion makeAuditQuestion() {
+        AuditQuestion question = new AuditQuestion();
+        question.setId(counter++);
 //        question.setName("jUnit Question " + question.getId());
 //        question.setDependentRequired(new ArrayList<AuditQuestion>());
 //        question.setDependentVisible(new ArrayList<AuditQuestion>());
-//        long time = (new Date()).getTime();
+        long time = (new Date()).getTime();
 //        question.setEffectiveDate(new Date(time - (24 * 60 * 60 * 1000L)));
 //        question.setExpirationDate(new Date(time + (24 * 60 * 60 * 1000L)));
-//        question.setCategory(makeAuditCategory());
-//        return question;
-//    }
-//
-//    public static AuditCategory makeAuditCategory() {
-//        return makeAuditCategory(counter++);
-//    }
-//
-//    public static AuditCategory makeAuditCategory(int categoryId) {
-//        AuditCategory auditCategory = new AuditCategory();
-//        auditCategory.setId(categoryId);
+        question.setCategory(makeAuditCategory());
+        return question;
+    }
+
+    public static AuditCategory makeAuditCategory() {
+        return makeAuditCategory(counter++);
+    }
+
+    public static AuditCategory makeAuditCategory(int categoryId) {
+        AuditCategory auditCategory = new AuditCategory();
+        auditCategory.setId(categoryId);
 //        auditCategory.setName("Audit Category " + categoryId);
 //        auditCategory.setNumber(categoryId);
-//        auditCategory.setAuditType(makeAuditType());
+        auditCategory.setAuditType(makeAuditType());
 //        auditCategory.setEffectiveDate(new Date());
 //        auditCategory.setExpirationDate(AuditQuestion.END_OF_TIME);
-//        return auditCategory;
-//    }
-//
+        return auditCategory;
+    }
+
 //    public static AuditData makeAuditData(String answer) {
 //        return makeAuditData(answer, makeAuditQuestion());
 //    }
@@ -386,21 +391,21 @@ public class EntityFactory {
         return makeContractorAuditOperator(audit, AuditStatus.Complete);
     }
 
-//    public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
-//        Facility facility = new Facility();
-//        facility.setOperator(operator);
-//        facility.setCorporate(corporate);
-//        return facility;
-//    }
-//
-//    public static FlagCriteria makeFlagCriteria() {
-//        FlagCriteria flagCriteria = new FlagCriteria();
-//        flagCriteria.setId(counter++);
-//        flagCriteria.setCategory(FlagCriteriaCategory.Audits);
+    public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {
+        Facility facility = new Facility();
+        facility.setOperator(operator);
+        facility.setCorporate(corporate);
+        return facility;
+    }
+
+    public static FlagCriteria makeFlagCriteria() {
+        FlagCriteria flagCriteria = new FlagCriteria();
+        flagCriteria.setId(counter++);
+        flagCriteria.setCategory(FlagCriteriaCategory.Audits);
 //        flagCriteria.setInsurance(false);
-//        return flagCriteria;
-//    }
-//
+        return flagCriteria;
+    }
+
 //    public static FlagCriteria makeFlagCriteriaAuditType() {
 //        FlagCriteria flagCriteria = makeFlagCriteria();
 //        flagCriteria.setAuditType(EntityFactory.makeAuditType(counter++));
@@ -431,27 +436,27 @@ public class EntityFactory {
 //        return flagData;
 //    }
 //
-//    public static FlagCriteriaContractor makeFlagCriteriaContractor(String answer) {
-//        FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor();
-//        flagCriteriaContractor.setId(counter++);
-//        flagCriteriaContractor.setAnswer(answer);
-//        flagCriteriaContractor.setContractor(makeContractor());
-//        flagCriteriaContractor.setCriteria(makeFlagCriteria());
-//
-//        return flagCriteriaContractor;
-//    }
-//
-//    public static FlagCriteriaOperator makeFlagCriteriaOperator(String hurdle) {
-//        FlagCriteriaOperator flagCriterisOperator = new FlagCriteriaOperator();
-//        flagCriterisOperator.setId(counter++);
-//        flagCriterisOperator.setCriteria(makeFlagCriteria());
+    public static FlagCriteriaContractor makeFlagCriteriaContractor(String answer) {
+        FlagCriteriaContractor flagCriteriaContractor = new FlagCriteriaContractor();
+        flagCriteriaContractor.setId(counter++);
+        flagCriteriaContractor.setAnswer(answer);
+        flagCriteriaContractor.setContractor(makeContractor());
+        flagCriteriaContractor.setCriteria(makeFlagCriteria());
+
+        return flagCriteriaContractor;
+    }
+
+    public static FlagCriteriaOperator makeFlagCriteriaOperator(String hurdle) {
+        FlagCriteriaOperator flagCriterisOperator = new FlagCriteriaOperator();
+        flagCriterisOperator.setId(counter++);
+        flagCriterisOperator.setCriteria(makeFlagCriteria());
 //        flagCriterisOperator.setFlag(FlagColor.Red);
 //        flagCriterisOperator.setOperator(makeOperator());
-//        flagCriterisOperator.setHurdle(hurdle);
-//
-//        return flagCriterisOperator;
-//    }
-//
+        flagCriterisOperator.setHurdle(hurdle);
+
+        return flagCriterisOperator;
+    }
+
 //    public static void addUserPermission(Permissions permissions, OpPerms opPerm) {
 //        UserAccess userAccess = new UserAccess();
 //        userAccess.setOpPerm(opPerm);

@@ -136,32 +136,7 @@ public class Utilities {
 		return c.getTime();
 	}
 
-	// TODO: Remove this from the Utilities class. This is not a general
-	// purpose utility.
-	public static float getIndustryAverage(boolean lwcr, ContractorAccount contractor) {
-		float answer = 0f;
-		ContractorTrade trade = contractor.getTopTrade();
-
-		if (trade == null) {
-			return answer;
-		}
-
-		if (!lwcr) {
-			answer = trade.getTrade().getNaicsTRIRI();
-		} else {
-			answer = trade.getTrade().getNaicsLWCRI();
-		}
-		return answer;
-	}
-
-	// TODO: Remove from the Utilities class. This is not a general purpose
-	// Utility.
-	public static float getDartIndustryAverage(Naics naics) {
-		NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-		return naicsDAO.getDartIndustryAverage(naics);
-	}
-
-	/**
+    /**
 	 * Only to be used with smaller collections. There will be a performance
 	 * bottle neck when used on larger collections.
 	 */

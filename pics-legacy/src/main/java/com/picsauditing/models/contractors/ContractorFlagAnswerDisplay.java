@@ -1,5 +1,6 @@
 package com.picsauditing.models.contractors;
 
+import com.picsauditing.PICS.IndustryAverage;
 import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -66,10 +67,10 @@ public class ContractorFlagAnswerDisplay extends PicsActionSupport {
 					if (fco.getCriteria().equals(fc) && fco.getCriteria().equals(f.getCriteria())) {
 						answer += getText("ContractorFlag.OshaAnswer2");
 						if (fc.getOshaRateType().equals(OshaRateType.LwcrNaics))
-							answer += (Utilities.getIndustryAverage(true, contractor) * Float.parseFloat(fco
+							answer += (IndustryAverage.getLwcrIndustryAverage(contractor) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						if (fc.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-							answer += (Utilities.getIndustryAverage(false, contractor) * Float.parseFloat(fco
+							answer += (IndustryAverage.getTrirIndustryAverage(contractor) * Float.parseFloat(fco
 									.criteriaValue())) / 100;
 						}
 					}
