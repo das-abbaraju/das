@@ -22,6 +22,7 @@ public class EmailHash implements Serializable {
 	@JoinColumn(name = "employeeID")
 	private SoftDeletedEmployee employee;
 
+	@Column(name = "email")
 	private String emailAddress;
 
 	@Temporal(TemporalType.TIMESTAMP)

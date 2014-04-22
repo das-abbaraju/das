@@ -30,6 +30,21 @@ public class EmailHashDAO {
 		}
 	}
 
+	public EmailHash findByEmployee(final int employeeId, final String email) {
+		TypedQuery<EmailHash> query = em.createQuery("FROM EmailHash eh " +
+				"WHERE eh.employee.id = :employeeId " +
+				"AND eh.emailAddress = :email", EmailHash.class);
+
+		query.setParameter("employeeId", employeeId);
+		query.setParameter("email", email);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	@Transactional(propagation = Propagation.NESTED)
 	public EmailHash save(EmailHash o) {
 		if (o.getId() == 0) {

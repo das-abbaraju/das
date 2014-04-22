@@ -47,7 +47,7 @@ public class EmailHashService {
 
 	public EmailHash createNewHash(final SoftDeletedEmployee employeeRecord) throws Exception {
 		EmailHash emailHash = new EmailHash();
-		emailHash.setCreationDate(DateBean.today());
+		emailHash.setCreatedDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employeeRecord.getEmail());
 		emailHash.setEmployee(employeeRecord);
@@ -58,14 +58,21 @@ public class EmailHashService {
 		byte[] hashed = msgDigest.digest();
 
 		BigInteger number = new BigInteger(1, hashed);
-		emailHash.setHash(number.toString(16).replace("+", "_"));
+		emailHash.setHashCode(number.toString(16).replace("+", "_"));
 
 		return emailHashDAO.save(emailHash);
 	}
 
+	/**
+	 * Should throw an exception if the email address already exists in the system
+	 *
+	 * @param employee
+	 * @return
+	 * @throws Exception
+	 */
 	public EmailHash createNewHash(final Employee employee) throws Exception {
 		EmailHash emailHash = new EmailHash();
-		emailHash.setCreationDate(DateBean.today());
+		emailHash.setCreatedDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employee.getEmail());
 
@@ -77,7 +84,7 @@ public class EmailHashService {
 		byte[] hashed = msgDigest.digest();
 
 		BigInteger number = new BigInteger(1, hashed);
-		emailHash.setHash(number.toString(16).replace("+", "_"));
+		emailHash.setHashCode(number.toString(16).replace("+", "_"));
 
 		return emailHashDAO.save(emailHash);
 	}
