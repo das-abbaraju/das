@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "email_hash")
+@Table(name = "employee_email_hash")
 public class EmailHash implements Serializable {
 
 	@Id
@@ -19,7 +19,7 @@ public class EmailHash implements Serializable {
 	private String hash;
 
 	@ManyToOne
-	@JoinColumn(name = "account_employeeID")
+	@JoinColumn(name = "employeeID")
 	private SoftDeletedEmployee employee;
 
 	private String emailAddress;

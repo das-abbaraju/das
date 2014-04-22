@@ -47,7 +47,7 @@ public class EmailHashService {
 
 	public EmailHash createNewHash(final SoftDeletedEmployee employeeRecord) throws Exception {
 		EmailHash emailHash = new EmailHash();
-		emailHash.setCreationDate(new Date());
+		emailHash.setCreationDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employeeRecord.getEmail());
 		emailHash.setEmployee(employeeRecord);
@@ -65,7 +65,7 @@ public class EmailHashService {
 
 	public EmailHash createNewHash(final Employee employee) throws Exception {
 		EmailHash emailHash = new EmailHash();
-		emailHash.setCreationDate(new Date());
+		emailHash.setCreationDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employee.getEmail());
 
