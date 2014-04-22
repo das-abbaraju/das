@@ -149,19 +149,19 @@ public class EntityFactory {
         return conAudit;
     }
 
-//    /**
-//     * make an Active conAudit for the given contractor of the given typeID
-//     *
-//     * @param auditType
-//     * @return
-//     */
-//    public static ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
-//        ContractorAudit conAudit = new ContractorAudit();
-//        conAudit.setAuditType(auditType);
-//        conAudit.setContractorAccount(contractor);
-//        return conAudit;
-//    }
-//
+    /**
+     * make an Active conAudit for the given contractor of the given typeID
+     *
+     * @param auditType
+     * @return
+     */
+    public static ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
+        ContractorAudit conAudit = new ContractorAudit();
+        conAudit.setAuditType(auditType);
+        conAudit.setContractorAccount(contractor);
+        return conAudit;
+    }
+
     public static ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
         ContractorAudit conAudit = new ContractorAudit();
         conAudit.setAuditType(makeAuditType(auditTypeID));

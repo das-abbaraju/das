@@ -613,7 +613,7 @@ public class FlagCalculator {
     private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
         String auditYear = null;
 
-        List<Integer> criteriaIds = new ArrayList<Integer>();
+        List<Integer> criteriaIds = new ArrayList<>();
         FlagCriteriaContractor fcc = contractorCriteria.get(key);
         if (correspondingMultiYearCriteria.containsKey(key.getId())) {
             auditYear = extractYear(fcc.getAnswer2());

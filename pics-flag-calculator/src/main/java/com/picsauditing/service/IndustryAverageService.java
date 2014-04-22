@@ -1,8 +1,8 @@
 package com.picsauditing.service;
 
-import com.picsauditing.model.entities.ContractorAccount;
-import com.picsauditing.model.entities.ContractorTrade;
-import com.picsauditing.model.entities.Naics;
+import com.picsauditing.flagcalculator.entities.ContractorAccount;
+import com.picsauditing.flagcalculator.entities.ContractorTrade;
+import com.picsauditing.flagcalculator.entities.Naics;
 
 public class IndustryAverageService {
     public static float getTrirIndustryAverage(ContractorAccount contractor) {

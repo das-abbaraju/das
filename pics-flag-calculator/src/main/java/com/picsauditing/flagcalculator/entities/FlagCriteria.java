@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Entity
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria>*/ {
+public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
 
 //    private FlagCriteriaCategory backwardCompatibleCategory;
     private FlagCriteriaCategory category;
-//    private int displayOrder = 999;
+    private int displayOrder = 999;
     private AuditQuestion question;
     private AuditType auditType;
 //    private OshaType oshaType;
@@ -216,15 +216,14 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //        this.insurance = insurance;
 //    }
 //
-//    @ReportField(type = FieldType.Integer, importance = FieldImportance.Low)
-//    public int getDisplayOrder() {
-//        return displayOrder;
-//    }
-//
-//    public void setDisplayOrder(int displayOrder) {
-//        this.displayOrder = displayOrder;
-//    }
-//
+    public int getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
 //    @Enumerated(EnumType.STRING)
 //    @Column(nullable = true)
 //    @ReportField(type = FieldType.FlagCriteriaOptionCode, importance = FieldImportance.Low)
@@ -285,11 +284,10 @@ public class FlagCriteria extends BaseTable /*implements Comparable<FlagCriteria
 //        return json;
 //    }
 //
-//    @Override
-//    public int compareTo(FlagCriteria o) {
-//        return ((Integer) displayOrder).compareTo(o.displayOrder);
-//    }
-//
+    public int compareTo(FlagCriteria o) {
+        return ((Integer) displayOrder).compareTo(o.displayOrder);
+    }
+
 //    public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
 //        return;
 //    }

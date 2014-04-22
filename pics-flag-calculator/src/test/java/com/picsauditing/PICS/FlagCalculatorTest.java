@@ -4,10 +4,13 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.flagcalculator.dao.FlagCriteriaDAO;
 import com.picsauditing.flagcalculator.entities.*;
+import com.picsauditing.flagcalculator.service.AuditService;
 import com.picsauditing.flagcalculator.util.DateBean;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -28,29 +31,24 @@ public class FlagCalculatorTest {
 
     private FlagCalculator calculator;
     private FlagCriteriaContractor fcCon;
-//    private FlagCriteriaOperator fcOp;
+    private FlagCriteriaOperator fcOp;
     private FlagCriteria fc;
-//    List<FlagCriteriaContractor> conCrits;
-//    List<FlagCriteriaOperator> opCrits;
+    List<FlagCriteriaContractor> conCrits;
+    List<FlagCriteriaOperator> opCrits;
 //    Map<AuditType, List<ContractorAuditOperator>> caoMap;
     private ContractorAccount contractor;
     private ContractorAudit ca;
     private OperatorAccount operator;
     private ContractorAuditOperator cao;
     private FlagCriteria lastYearCriteria;
-//    private FlagCriteria twoYearCriteria;
-//    private FlagCriteria threeYearCriteria;
-//    private FlagCriteria nullCriteria;
-//    private FeatureToggle featureToggle;
+    private FlagCriteria twoYearCriteria;
+    private FlagCriteria threeYearCriteria;
+    private FlagCriteria nullCriteria;
 
     @Mock
     private FlagCriteriaDAO flagCriteriaDao;
-//    @Mock
-//    protected FlagDataOverrideDAO flagDataOverrideDAO;
-//    @Mock
-//    protected BasicDAO dao;
-//    @Mock
-//    protected FlagCriteria multiCriteria;
+    @Mock
+    protected FlagCriteria multiCriteria;
 
     @Before
     public void setUp() throws Exception {
@@ -66,45 +64,38 @@ public class FlagCalculatorTest {
         fc.setId(1);
         fc.setCategory(FlagCriteriaCategory.Safety);
 
-//        AuditQuestion question = EntityFactory.makeAuditQuestion();
-//        question.getAuditType().setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
+        AuditQuestion question = EntityFactory.makeAuditQuestion();
+        AuditService.getAuditType(question).setWorkFlow(EntityFactory.makeWorkflowWithSubmitted());
 
-//        fc.setQuestion(question);
-//        fc.setAuditType(EntityFactory.makeAuditType(1));
+        fc.setQuestion(question);
+        fc.setAuditType(EntityFactory.makeAuditType(1));
         fc.setComparison("=");
 //        fc.setDataType(FlagCriteria.STRING);
         fc.setDefaultValue("Default");
 
-//        fcCon = new FlagCriteriaContractor();
-//        fcCon.setContractor(contractor);
-//        fcCon.setCriteria(fc);
-//        fcCon.setAnswer("Default");
-//
-//        fcOp = new FlagCriteriaOperator();
-//        fcOp.setCriteria(fc);
-//        fcOp.setFlag(FlagColor.Green);
+        fcCon = new FlagCriteriaContractor();
+        fcCon.setContractor(contractor);
+        fcCon.setCriteria(fc);
+        fcCon.setAnswer("Default");
 
-//        conCrits = new ArrayList<FlagCriteriaContractor>();
-//        conCrits.add(fcCon);
-//
-//        opCrits = new ArrayList<FlagCriteriaOperator>();
-//        opCrits.add(fcOp);
-//
-//		/* Initialize the calculator */
-        calculator = new FlagCalculator(flagCriteriaDao);
-//        calculator = new FlagCalculator(conCrits);
+        fcOp = new FlagCriteriaOperator();
+        fcOp.setCriteria(fc);
+        fcOp.setFlag(FlagColor.Green);
+
+        conCrits = new ArrayList<>();
+        conCrits.add(fcCon);
+
+        opCrits = new ArrayList<>();
+        opCrits.add(fcOp);
+
+		/* Initialize the calculator */
+        calculator = new FlagCalculator(conCrits,flagCriteriaDao);
 //        caoMap = null;
-//
-        lastYearCriteria = createFlagCriteria(1, MultiYearScope.LastYearOnly);
-//        twoYearCriteria = createFlagCriteria(2, MultiYearScope.TwoYearsAgo);
-//        threeYearCriteria = createFlagCriteria(3, MultiYearScope.ThreeYearsAgo);
-//        nullCriteria = createFlagCriteria(5, null);
-//
-//        Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
-//        Whitebox.setInternalState(calculator, "dao", dao);
 
-//        featureToggle = SpringUtils.getBean("FeatureToggle");
-//        reset(featureToggle);
+        lastYearCriteria = createFlagCriteria(1, MultiYearScope.LastYearOnly);
+        twoYearCriteria = createFlagCriteria(2, MultiYearScope.TwoYearsAgo);
+        threeYearCriteria = createFlagCriteria(3, MultiYearScope.ThreeYearsAgo);
+        nullCriteria = createFlagCriteria(5, null);
     }
 
     @Test
@@ -180,234 +171,233 @@ public class FlagCalculatorTest {
         return fc;
     }
 
-//    @Test
-//    public void testAuditIsApplicableForThisOperator() throws Exception {
-//        Boolean applicable;
-//
-//        calculator.setWorksForOperator(false);
-//        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fcOp, fc, contractor);
-//        assertTrue(applicable);
-//
-//        calculator.setWorksForOperator(true);
-//        fc.getQuestion().getCategory().setAuditType(ca.getAuditType());
-//        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fcOp, fc, contractor);
-//        assertFalse(applicable);
-//    }
-//
-//    @Test
-//    public void testAuditTypeHasMultiple() throws Exception {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//        AuditType auditType = EntityFactory.makeAuditType();
-//        auditType.setHasMultiple(true);
-//        List<ContractorAudit> audits = makeContractorAudits(contractor, auditType);
-//        contractor.setAudits(audits);
-//
-//        when(multiCriteria.getAuditType()).thenReturn(auditType);
-//        when(multiCriteria.getRequiredStatus()).thenReturn(AuditStatus.Resubmit);
-//        calculator.setOperator(audits.get(0).getOperators().get(0).getOperator());
-//
-//        Boolean result;
-//        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
-//        assertNotNull(result);
-//        assertTrue(result.booleanValue());
-//
-//        audits.get(0).getOperators().get(0).changeStatus(AuditStatus.Complete, null);
-//        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
-//        assertNotNull(result);
-//        assertTrue(result.booleanValue());
-//
-//        audits.get(1).getOperators().get(0).changeStatus(AuditStatus.Complete, null);
-//        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
-//        assertNotNull(result);
-//        assertFalse(result.booleanValue());
-//    }
-//
-//    private List<ContractorAudit> makeContractorAudits(ContractorAccount contractor, AuditType auditType) {
-//        OperatorAccount operator = EntityFactory.makeOperator();
-//
-//        List<ContractorAudit> audits = new ArrayList<>();
-//        ContractorAudit audit1 = createAudit(auditType, contractor);
-//        addCaoCaop(audit1, operator);
-//        audits.add(audit1);
-//        ContractorAudit audit2 = createAudit(auditType, contractor);
-//        addCaoCaop(audit2, operator);
-//        audits.add(audit2);
-//        return audits;
-//    }
-//
-//    private ContractorAudit createAudit(AuditType auditType, ContractorAccount contractor) {
-//        ContractorAudit audit = EntityFactory.makeContractorAudit(auditType, contractor);
-//        contractor.getAudits().add(audit);
-//
-//        return audit;
-//    }
-//
-//    private void addCaoCaop(ContractorAudit audit, OperatorAccount operator) {
-//        ContractorAuditOperator cao = new ContractorAuditOperator();
-//        cao.setAudit(audit);
-//        cao.setOperator(operator);
-//        cao.changeStatus(AuditStatus.Pending, null);
-//
-//        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+    @Test
+    public void testAuditIsApplicableForThisOperator() throws Exception {
+        Boolean applicable;
+
+        calculator.setWorksForOperator(false);
+        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fc, contractor);
+        assertTrue(applicable);
+
+        calculator.setWorksForOperator(true);
+        fc.getQuestion().getCategory().setAuditType(ca.getAuditType());
+        applicable = Whitebox.invokeMethod(calculator, "auditIsApplicableForThisOperator", fc, contractor);
+        assertFalse(applicable);
+    }
+
+    @Test
+    public void testAuditTypeHasMultiple() throws Exception {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+        AuditType auditType = EntityFactory.makeAuditType();
+        auditType.setHasMultiple(true);
+        List<ContractorAudit> audits = makeContractorAudits(contractor, auditType);
+        contractor.setAudits(audits);
+
+        when(multiCriteria.getAuditType()).thenReturn(auditType);
+        when(multiCriteria.getRequiredStatus()).thenReturn(AuditStatus.Resubmit);
+        calculator.setOperator(audits.get(0).getOperators().get(0).getOperator());
+
+        Boolean result;
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertTrue(result.booleanValue());
+
+        audits.get(0).getOperators().get(0).setStatus(AuditStatus.Complete);
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertTrue(result.booleanValue());
+
+        audits.get(1).getOperators().get(0).setStatus(AuditStatus.Complete);
+        result = Whitebox.invokeMethod(calculator, "checkAuditStatus", multiCriteria, contractor);
+        assertNotNull(result);
+        assertFalse(result.booleanValue());
+    }
+
+    private List<ContractorAudit> makeContractorAudits(ContractorAccount contractor, AuditType auditType) {
+        OperatorAccount operator = EntityFactory.makeOperator();
+
+        List<ContractorAudit> audits = new ArrayList<>();
+        ContractorAudit audit1 = createAudit(auditType, contractor);
+        addCaoCaop(audit1, operator);
+        audits.add(audit1);
+        ContractorAudit audit2 = createAudit(auditType, contractor);
+        addCaoCaop(audit2, operator);
+        audits.add(audit2);
+        return audits;
+    }
+
+    private ContractorAudit createAudit(AuditType auditType, ContractorAccount contractor) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(auditType, contractor);
+        contractor.getAudits().add(audit);
+
+        return audit;
+    }
+
+    private void addCaoCaop(ContractorAudit audit, OperatorAccount operator) {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setAudit(audit);
+        cao.setOperator(operator);
+        cao.setStatus(AuditStatus.Pending);
+
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 //        caop.setCao(cao);
-//        caop.setOperator(operator);
-//        cao.getCaoPermissions().add(caop);
-//
-//        audit.getOperators().add(cao);
-//    }
-//
-//    @Test
-//    public void testClearFlags() throws Exception {
-//        calculator.setOperatorCriteria(opCrits);
-//
-//        contractor.setStatus(AccountStatus.Pending);
-//        List<FlagData> list = calculator.calculate();
-//        assertTrue(list.size() == 0);
-//
-//        contractor.setStatus(AccountStatus.Requested);
-//        list = calculator.calculate();
-//        assertTrue(list.size() == 0);
-//
-//        contractor.setStatus(AccountStatus.Declined);
-//        list = calculator.calculate();
-//        assertTrue(list.size() == 0);
-//    }
-//
-//    @Test
-//    public void testFlagDataOverrideAdjustment() throws Exception {
-//        Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<FlagCriteria, List<FlagDataOverride>>();
-//        FlagDataOverride override = null;
-//
-//        createCorrespondingCriteriaLists();
-//        createContractorAnswers();
-//
-//        ArrayList<FlagCriteria> criteriaList = new ArrayList<FlagCriteria>();
-//        criteriaList.add(lastYearCriteria);
-//        criteriaList.add(twoYearCriteria);
-//        criteriaList.add(threeYearCriteria);
-//        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
-//
-//        // no year, no fdo
-//        overrides.clear();
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
-//        assertNull(override);
-//
-//        // no year, fdo
-//        overrides.clear();
-//        addFlagDataOverride(overrides, nullCriteria, "blah");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
-//        assertNotNull(override);
-//
-//        // now do year criteria
-//        // no fdo
-//        overrides.clear();
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
-//        assertNull(override);
-//
-//        // override for current year, no adjustments - this is the normal case
-//        overrides.clear();
-//        addFlagDataOverride(overrides, lastYearCriteria, "2012");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
-//        assertNotNull(override);
-//
-//        // new year adjustments
-//        // single fdo for 2011, push to 2 year
-//        overrides.clear();
-//        addFlagDataOverride(overrides, lastYearCriteria, "2011");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
-//        assertNull(override);
-//        assertNotNull(overrides.get(twoYearCriteria));
-//        assertNotNull(overrides.get(twoYearCriteria).get(0));
-//
-//        // 2 fdo for 2011 last and 2010 two years; 2011 being retrieved and moved to two years
-//        overrides.clear();
-//        addFlagDataOverride(overrides, lastYearCriteria, "2011");
-//        addFlagDataOverride(overrides, twoYearCriteria, "2010");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
-//        assertNotNull(override);
-//        assertEquals(override.getCriteria(), twoYearCriteria);
-//
-//        // 2 fdo for 2011 last and 2010 two years; 2010 and then 2011
-//        overrides.clear();
-//        addFlagDataOverride(overrides, lastYearCriteria, "2011");
-//        addFlagDataOverride(overrides, twoYearCriteria, "2010");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", threeYearCriteria, operator);
-//        assertNotNull(override);
-//        assertEquals(override.getCriteria(), threeYearCriteria);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
-//        assertNotNull(override);
-//        assertEquals(override.getCriteria().getMultiYearScope(), MultiYearScope.TwoYearsAgo);
-//
-//        // three deleted in/out of order
-//        overrides.clear();
-//        addFlagDataOverride(overrides, lastYearCriteria, "2011");
-//        addFlagDataOverride(overrides, twoYearCriteria, "2010");
-//        addFlagDataOverride(overrides, threeYearCriteria, "2009");
-//        Whitebox.setInternalState(calculator, "overrides", overrides);
-//        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
-//        assertNotNull(override);
-//        assertEquals(override.getCriteria(), twoYearCriteria);
-//    }
-//
+        caop.setOperator(operator);
+        cao.getCaoPermissions().add(caop);
+
+        audit.getOperators().add(cao);
+    }
+
+    @Test
+    public void testClearFlags() throws Exception {
+        calculator.setOperatorCriteria(opCrits);
+
+        contractor.setStatus(AccountStatus.Pending);
+        List<FlagData> list = calculator.calculate();
+        assertTrue(list.size() == 0);
+
+        contractor.setStatus(AccountStatus.Requested);
+        list = calculator.calculate();
+        assertTrue(list.size() == 0);
+
+        contractor.setStatus(AccountStatus.Declined);
+        list = calculator.calculate();
+        assertTrue(list.size() == 0);
+    }
+
+    @Test
+    @Ignore
+    public void testFlagDataOverrideAdjustment() throws Exception {
+        Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<>();
+        FlagDataOverride override = null;
+
+        createCorrespondingCriteriaLists();
+        createContractorAnswers();
+
+        ArrayList<FlagCriteria> criteriaList = new ArrayList<>();
+        criteriaList.add(lastYearCriteria);
+        criteriaList.add(twoYearCriteria);
+        criteriaList.add(threeYearCriteria);
+        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+
+        // no year, no fdo
+        overrides.clear();
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
+        assertNull(override);
+
+        // no year, fdo
+        overrides.clear();
+        addFlagDataOverride(overrides, nullCriteria, "blah");
+        calculator.setOverrides(overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
+        assertNotNull(override);
+
+        // now do year criteria
+        // no fdo
+        overrides.clear();
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
+        assertNull(override);
+
+        // override for current year, no adjustments - this is the normal case
+        overrides.clear();
+        addFlagDataOverride(overrides, lastYearCriteria, "2012");
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
+        assertNotNull(override);
+
+        // new year adjustments
+        // single fdo for 2011, push to 2 year
+        overrides.clear();
+        addFlagDataOverride(overrides, lastYearCriteria, "2011");
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", lastYearCriteria, operator);
+        assertNull(override);
+        assertNotNull(overrides.get(twoYearCriteria));
+        assertNotNull(overrides.get(twoYearCriteria).get(0));
+
+        // 2 fdo for 2011 last and 2010 two years; 2011 being retrieved and moved to two years
+        overrides.clear();
+        addFlagDataOverride(overrides, lastYearCriteria, "2011");
+        addFlagDataOverride(overrides, twoYearCriteria, "2010");
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
+        assertNotNull(override);
+        assertEquals(override.getCriteria(), twoYearCriteria);
+
+        // 2 fdo for 2011 last and 2010 two years; 2010 and then 2011
+        overrides.clear();
+        addFlagDataOverride(overrides, lastYearCriteria, "2011");
+        addFlagDataOverride(overrides, twoYearCriteria, "2010");
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", threeYearCriteria, operator);
+        assertNotNull(override);
+        assertEquals(override.getCriteria(), threeYearCriteria);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
+        assertNotNull(override);
+        assertEquals(override.getCriteria().getMultiYearScope(), MultiYearScope.TwoYearsAgo);
+
+        // three deleted in/out of order
+        overrides.clear();
+        addFlagDataOverride(overrides, lastYearCriteria, "2011");
+        addFlagDataOverride(overrides, twoYearCriteria, "2010");
+        addFlagDataOverride(overrides, threeYearCriteria, "2009");
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", twoYearCriteria, operator);
+        assertNotNull(override);
+        assertEquals(override.getCriteria(), twoYearCriteria);
+    }
+
 //    private MultiYearScope getScope(Map<FlagCriteria, List<FlagDataOverride>> overrides, FlagCriteria criteria) {
 //        return overrides.get(criteria).get(0).getCriteria().getMultiYearScope();
 //    }
 //
-//    private void createContractorAnswers() {
-//        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
-//        addFlagCriteriaContrtactor(contractorCriteria, lastYearCriteria, "2012");
-//        addFlagCriteriaContrtactor(contractorCriteria, twoYearCriteria, "2011");
-//        addFlagCriteriaContrtactor(contractorCriteria, threeYearCriteria, "2010");
-//        addFlagCriteriaContrtactor(contractorCriteria, nullCriteria, null);
-//
-//        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
-//    }
-//
-//    private void createCorrespondingCriteriaLists() {
-//        Map<Integer, List<Integer>> correspondingMultiYearCriteria = new HashMap<Integer, List<Integer>>();
-//        ArrayList<Integer> ids = new ArrayList<Integer>();
-//        ids.add(1);
-//        ids.add(2);
-//        ids.add(3);
-//        correspondingMultiYearCriteria.put(1, ids);
-//        correspondingMultiYearCriteria.put(2, ids);
-//        correspondingMultiYearCriteria.put(3, ids);
-//        Whitebox.setInternalState(calculator, "correspondingMultiYearCriteria", correspondingMultiYearCriteria);
-//    }
-//
-//
-//
-//    private void addFlagDataOverride(
-//            Map<FlagCriteria, List<FlagDataOverride>> overrides,
-//            FlagCriteria criteria, String year) {
-//        ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
-//        FlagDataOverride fdo = new FlagDataOverride();
-//        fdo.setCriteria(criteria);
-//        fdo.setYear(year);
-//        fdo.setOperator(operator);
-//        Calendar date = Calendar.getInstance();
-//        date.add(Calendar.YEAR, 1);
-//        fdo.setForceEnd(date.getTime());
-//
-//        fdos.add(fdo);
-//        overrides.put(criteria, fdos);
-//    }
-//
-//    private void addFlagCriteriaContrtactor(Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria, FlagCriteria criteria, String answer2) {
-//        FlagCriteriaContractor fcc = new FlagCriteriaContractor();
-//        fcc.setCriteria(criteria);
-//        fcc.setAnswer2(answer2);
-//
-//        contractorCriteria.put(criteria, fcc);
-//    }
-//
+    private void createContractorAnswers() {
+        Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
+        addFlagCriteriaContrtactor(contractorCriteria, lastYearCriteria, "2012");
+        addFlagCriteriaContrtactor(contractorCriteria, twoYearCriteria, "2011");
+        addFlagCriteriaContrtactor(contractorCriteria, threeYearCriteria, "2010");
+        addFlagCriteriaContrtactor(contractorCriteria, nullCriteria, null);
+
+        Whitebox.setInternalState(calculator, "contractorCriteria", contractorCriteria);
+    }
+
+    private void createCorrespondingCriteriaLists() {
+        Map<Integer, List<Integer>> correspondingMultiYearCriteria = new HashMap<Integer, List<Integer>>();
+        ArrayList<Integer> ids = new ArrayList<Integer>();
+        ids.add(1);
+        ids.add(2);
+        ids.add(3);
+        correspondingMultiYearCriteria.put(1, ids);
+        correspondingMultiYearCriteria.put(2, ids);
+        correspondingMultiYearCriteria.put(3, ids);
+        Whitebox.setInternalState(calculator, "correspondingMultiYearCriteria", correspondingMultiYearCriteria);
+    }
+
+    private void addFlagDataOverride(
+            Map<FlagCriteria, List<FlagDataOverride>> overrides,
+            FlagCriteria criteria, String year) {
+        ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
+        FlagDataOverride fdo = new FlagDataOverride();
+        fdo.setCriteria(criteria);
+        fdo.setYear(year);
+        fdo.setOperator(operator);
+        Calendar date = Calendar.getInstance();
+        date.add(Calendar.YEAR, 1);
+        fdo.setForceEnd(date.getTime());
+
+        fdos.add(fdo);
+        overrides.put(criteria, fdos);
+    }
+
+    private void addFlagCriteriaContrtactor(Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria, FlagCriteria criteria, String answer2) {
+        FlagCriteriaContractor fcc = new FlagCriteriaContractor();
+        fcc.setCriteria(criteria);
+        fcc.setAnswer2(answer2);
+
+        contractorCriteria.put(criteria, fcc);
+    }
+
     private FlagCriteria createFlagCriteria(int id, MultiYearScope scope) {
         FlagCriteria fc = new FlagCriteria();
         fc.setId(id);
@@ -1353,22 +1343,22 @@ public class FlagCalculatorTest {
         return operatorFlagCriteria;
     }
 
-//    @Test
-//    public void testFindCaosForCurrentWCB() throws Exception {
-//        ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
-//
-//        int yearForCurrentWCB = yearForCurrentWCB();
-//        List<ContractorAudit> audits = buildMockAuditList(yearForCurrentWCB, AuditStatus.Approved);
-//        when(contractor.getAudits()).thenReturn(audits);
-//
-//        List<ContractorAuditOperator> caos = Whitebox.invokeMethod(calculator, "findCaosForCurrentWCB", contractor,
-//                EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
-//
-//        assertNotNull(caos);
-//        assertFalse(caos.isEmpty());
-//        assertEquals(yearForCurrentWCB, caos.get(0).getId());
-//    }
-//
+    @Test
+    public void testFindCaosForCurrentWCB() throws Exception {
+        ContractorAccount contractor = Mockito.mock(ContractorAccount.class);
+
+        int yearForCurrentWCB = yearForCurrentWCB();
+        List<ContractorAudit> audits = buildMockAuditList(yearForCurrentWCB, AuditStatus.Approved);
+        when(contractor.getAudits()).thenReturn(audits);
+
+        List<ContractorAuditOperator> caos = Whitebox.invokeMethod(calculator, "findCaosForCurrentWCB", contractor,
+                EntityFactory.makeAuditType(ALBERTA_WCB_AUDIT_TYPE_ID));
+
+        assertNotNull(caos);
+        assertFalse(caos.isEmpty());
+        assertEquals(yearForCurrentWCB, caos.get(0).getId());
+    }
+
     private int yearForCurrentWCB() {
         if (DateBean.isGracePeriodForWCB()) {
             return DateBean.getPreviousWCBYear();
