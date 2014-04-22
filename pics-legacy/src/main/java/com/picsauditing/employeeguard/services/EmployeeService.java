@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
@@ -44,6 +45,10 @@ public class EmployeeService {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
+	@Autowired
+	private EmailHashService emailHashService;
+	@Autowired
+	private EmailService emailService;
 
 	@Deprecated
 	public Employee findEmployee(final String id) {
@@ -102,8 +107,8 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
-	                                                                  final int siteId,
-	                                                                  final Employee employee) {
+																	  final int siteId,
+																	  final Employee employee) {
 		if (employee.getProfile() == null) {
 			return Arrays.asList(employee);
 		}
@@ -170,7 +175,8 @@ public class EmployeeService {
 		}
 	}
 
-	public void importEmployees(final File file, final int accountId, final int appUserId) throws Exception {
+	public void importEmployees(final File file, final int accountId, final String accountName,
+								final int appUserId) throws Exception {
 		EmployeeFileImportService fileImportService = new EmployeeFileImportService();
 		fileImportService.importFile(file);
 
@@ -180,6 +186,23 @@ public class EmployeeService {
 		}
 
 		employeeDAO.save(processedEmployees);
+
+		sendEmployeeEmails(processedEmployees, accountName);
+	}
+
+	private void sendEmployeeEmails(final List<Employee> processedEmployees, final String accountName) {
+		if (CollectionUtils.isEmpty(processedEmployees)) {
+			return;
+		}
+
+		try {
+			for (Employee employee : processedEmployees) {
+				EmailHash hash = emailHashService.createNewHash(employee);
+				emailService.sendEGWelcomeEmail(hash, accountName);
+			}
+		} catch (Exception e) {
+			LOG.error("Error while sending emails to uploaded employees", e);
+		}
 	}
 
 	public byte[] exportEmployees(final int accountId) throws Exception {

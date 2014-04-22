@@ -2,15 +2,20 @@ package com.picsauditing.employeeguard.entities;
 
 
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
+import com.picsauditing.util.Strings;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name="email_hash")
-public class EmailHash {
+@Table(name = "email_hash")
+public class EmailHash implements Serializable {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
 	private String hash;
 
 	@ManyToOne
@@ -71,6 +76,8 @@ public class EmailHash {
 
 	@Override
 	public String toString() {
-		return id + "-" + employee.getId() + "-" + emailAddress + "-" + creationDate.toString();
+		return getId() + "-"
+				+ (getEmailAddress() != null ? getEmailAddress() : Strings.EMPTY_STRING) + "-"
+				+ (getCreationDate() != null ? Strings.EMPTY_STRING : getCreationDate().toString());
 	}
 }

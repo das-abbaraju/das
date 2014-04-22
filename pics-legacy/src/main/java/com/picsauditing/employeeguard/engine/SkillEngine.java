@@ -4,7 +4,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;

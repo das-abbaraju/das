@@ -19,6 +19,8 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -173,8 +175,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		int accountId = permissions.getAccountId();
 		employee = employeeService.save(employeeForm, getFtpDir(), accountId, permissions.getAppUserID());
 
+		AccountModel accountModel = accountService.getAccountById(accountId);
 		EmailHash hash = emailHashService.createNewHash(employee);
-		emailService.sendEGWelcomeEmail(hash);
+		emailService.sendEGWelcomeEmail(hash, accountModel.getName());
 
 		if (addAnother(employeeForm)) {
 			return setUrlForRedirect("/employee-guard/contractor/employee/create");

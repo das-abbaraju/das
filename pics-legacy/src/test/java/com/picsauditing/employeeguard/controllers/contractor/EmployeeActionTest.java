@@ -12,6 +12,8 @@ import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
@@ -36,7 +38,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EmployeeActionTest extends PicsActionTest {
+
 	public static final String ID = "ID";
+
 	private EmployeeAction employeeAction;
 
 	private EmailHashService emailHashService;
@@ -74,6 +78,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
         when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
         when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
+		when(accountService.getAccountById(anyInt())).thenReturn(new AccountModel.Builder().name("Test Account").build());
 
         Whitebox.setInternalState(employeeAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeAction, "emailService", emailService);
@@ -165,7 +170,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
-		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class));
+		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
 
 	@Test
@@ -179,7 +184,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
-		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class));
+		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
 
 	@Test

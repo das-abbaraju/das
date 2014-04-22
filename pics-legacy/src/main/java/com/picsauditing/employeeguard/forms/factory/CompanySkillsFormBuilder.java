@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;

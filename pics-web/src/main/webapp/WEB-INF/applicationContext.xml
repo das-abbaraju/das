@@ -319,7 +319,6 @@
     <bean id="MessageService" class="com.picsauditing.messaging.MessagePublisherService">
         <property name="csrAssignmentSinglePublisher" ref="CsrAssignmentSinglePublisher"/>
         <property name="flagChangePublisher" ref="FlagChangePublisher"/>
-        <property name="employeeGuardPublisher" ref="EmployeeGuardPublisher"/>
         <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
     </bean>
 

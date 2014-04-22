@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.services.factory;
 
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
