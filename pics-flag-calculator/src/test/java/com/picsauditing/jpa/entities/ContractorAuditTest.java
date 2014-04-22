@@ -1,6 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.model.entities.AuditStatus;
+import com.picsauditing.model.entities.ContractorAudit;
+import com.picsauditing.model.entities.ContractorAuditOperator;
 import org.junit.Before;
 import org.junit.Test;
 

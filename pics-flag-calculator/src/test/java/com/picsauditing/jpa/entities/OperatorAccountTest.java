@@ -1,6 +1,8 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.model.entities.Facility;
+import com.picsauditing.model.entities.OperatorAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
