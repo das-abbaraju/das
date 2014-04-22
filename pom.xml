@@ -32,13 +32,13 @@
         <!-- If you're lazy, then only add the dependencies to module poms -->
         <repository>
             <id>pics</id>
-            <url>http://maven.picsauditing.com</url>
+            <url>http://maven.picsauditing.com/internal</url>
         </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
             <id>pics</id>
-            <url>http://maven.picsauditing.com</url>
+            <url>http://maven.picsauditing.com/internal</url>
         </pluginRepository>
     </pluginRepositories>
 
