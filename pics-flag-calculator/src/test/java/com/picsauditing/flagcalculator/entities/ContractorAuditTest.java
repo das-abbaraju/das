@@ -1,9 +1,6 @@
-package com.picsauditing.jpa.entities;
+package com.picsauditing.flagcalculator.entities;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.flagcalculator.entities.AuditStatus;
-import com.picsauditing.flagcalculator.entities.ContractorAudit;
-import com.picsauditing.flagcalculator.entities.ContractorAuditOperator;
+import com.picsauditing.flagcalculator.EntityFactory;
 import com.picsauditing.flagcalculator.service.AuditService;
 import org.junit.Before;
 import org.junit.Test;

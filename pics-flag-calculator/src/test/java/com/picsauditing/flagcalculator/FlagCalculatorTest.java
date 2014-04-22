@@ -1,7 +1,5 @@
-package com.picsauditing.PICS;
+package com.picsauditing.flagcalculator;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.flagcalculator.dao.FlagCriteriaDAO;
 import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.flagcalculator.service.AuditService;
@@ -265,6 +263,48 @@ public class FlagCalculatorTest {
     }
 
     @Test
+    public void testFlagDataOverrideAdjustment_noYearNoFdo() throws Exception {
+        Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<>();
+        FlagDataOverride override = null;
+
+        createCorrespondingCriteriaLists();
+        createContractorAnswers();
+
+        ArrayList<FlagCriteria> criteriaList = new ArrayList<>();
+        criteriaList.add(lastYearCriteria);
+        criteriaList.add(twoYearCriteria);
+        criteriaList.add(threeYearCriteria);
+        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+
+        overrides.clear();
+        Whitebox.setInternalState(calculator, "overrides", overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
+        assertNull(override);
+    }
+
+    @Test
+    @Ignore
+    public void testFlagDataOverrideAdjustment_noYearFdo() throws Exception {
+        Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<>();
+        FlagDataOverride override = null;
+
+        createCorrespondingCriteriaLists();
+        createContractorAnswers();
+
+        ArrayList<FlagCriteria> criteriaList = new ArrayList<>();
+        criteriaList.add(lastYearCriteria);
+        criteriaList.add(twoYearCriteria);
+        criteriaList.add(threeYearCriteria);
+        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+
+        overrides.clear();
+        addFlagDataOverride(overrides, nullCriteria, "blah");
+        calculator.setOverrides(overrides);
+        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
+        assertNotNull(override);
+    }
+
+    @Test
     @Ignore
     public void testFlagDataOverrideAdjustment() throws Exception {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = new HashMap<>();
@@ -278,19 +318,6 @@ public class FlagCalculatorTest {
         criteriaList.add(twoYearCriteria);
         criteriaList.add(threeYearCriteria);
         when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
-
-        // no year, no fdo
-        overrides.clear();
-        Whitebox.setInternalState(calculator, "overrides", overrides);
-        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
-        assertNull(override);
-
-        // no year, fdo
-        overrides.clear();
-        addFlagDataOverride(overrides, nullCriteria, "blah");
-        calculator.setOverrides(overrides);
-        override = Whitebox.invokeMethod(calculator, "hasForceDataFlag", nullCriteria, operator);
-        assertNotNull(override);
 
         // now do year criteria
         // no fdo

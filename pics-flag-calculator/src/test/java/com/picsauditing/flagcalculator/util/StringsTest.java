@@ -1,4 +1,4 @@
-package com.picsauditing.util;
+package com.picsauditing.flagcalculator.util;
 
 import com.picsauditing.flagcalculator.util.Strings;
 import org.junit.Test;

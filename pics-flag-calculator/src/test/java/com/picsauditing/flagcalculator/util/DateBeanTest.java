@@ -1,4 +1,4 @@
-package com.picsauditing.PICS;
+package com.picsauditing.flagcalculator.util;
 
 import com.picsauditing.flagcalculator.util.DateBean;
 import org.junit.Ignore;

@@ -1,4 +1,4 @@
-package com.picsauditing;
+package com.picsauditing.flagcalculator;
 
 import com.picsauditing.flagcalculator.entities.Facility;
 import com.picsauditing.flagcalculator.entities.*;
