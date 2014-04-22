@@ -1,4 +1,4 @@
-package com.picsauditing.service;
+package com.picsauditing.flagcalculator.service;
 
 import com.picsauditing.flagcalculator.entities.ContractorAccount;
 import com.picsauditing.flagcalculator.entities.ContractorTrade;
