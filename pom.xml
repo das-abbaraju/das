@@ -26,63 +26,53 @@
         <module>pics-flag-calculator</module>
     </modules>
 
-    <repositories>
+	<repositories>
         <!-- Don't add any more repositories here -->
-        <!-- Always add new dependencies to maven.picsauditing.com -->
+        <!-- Always add new dependencies to archiva.picsauditing.com -->
         <!-- If you're lazy, then only add the dependencies to module poms -->
-		<!-- 
-        <repository>
-            <id>pics</id>
-            <url>http://maven.picsauditing.com/internal</url>
-        </repository>
-		-->
-    	<repository>
-	      <id>pics</id>
-    	  <url>http://archiva.picsauditing.com/repository/internal/</url>
-	      <releases>
-        	<enabled>true</enabled>
-    	  </releases>
-	      <snapshots>
-        	<enabled>false</enabled>
-    	  </snapshots>
-	    </repository>
-    	<repository>
-	      <id>pics-snapshots</id>
-    	  <url>http://archiva.picsauditing.com/repository/snapshots/</url>
-	      <releases>
-        	<enabled>false</enabled>
-    	  </releases>
-	      <snapshots>
-        	<enabled>true</enabled>
-    	  </snapshots>
-	    </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-		<!--
-            <id>pics</id>
-            <url>http://maven.picsauditing.com/internal</url>
-		-->
-	      <id>pics</id>
-    	  <url>http://archiva.picsauditing.com/repository/internal/</url>
-	      <releases>
-        	<enabled>true</enabled>
-    	  </releases>
-	      <snapshots>
-        	<enabled>false</enabled>
-    	  </snapshots>
-        </pluginRepository>
-    	<pluginRepository>
-	      <id>pics-snapshots</id>
-    	  <url>http://archiva.picsauditing.com/repository/snapshots/</url>
-	      <releases>
-        	<enabled>false</enabled>
-    	  </releases>
-	      <snapshots>
-        	<enabled>true</enabled>
-    	  </snapshots>
-	    </pluginRepository>
-    </pluginRepositories>
+		<repository>
+			<id>pics</id>
+			<url>http://archiva.picsauditing.com/repository/internal/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>pics-snapshots</id>
+			<url>http://archiva.picsauditing.com/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>pics</id>
+			<url>http://archiva.picsauditing.com/repository/internal/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>pics-snapshots</id>
+			<url>http://archiva.picsauditing.com/repository/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			</pluginRepository>
+	</pluginRepositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
