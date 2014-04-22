@@ -18,6 +18,23 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 		this.type = SiteAssignment.class;
 	}
 
+	public SiteAssignment find(final int siteId, final int roleId, final int employeeId) {
+		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
+				"WHERE sa.siteId = :siteId " +
+				"AND sa.role.id = :roleId " +
+				"AND sa.employee.id = :employeeId", SiteAssignment.class);
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public List<SiteAssignment> findBySiteIdAndContractorId(final int siteId, final int contractorId) {
 		return findBySiteIdAndContractorIds(siteId, Arrays.asList(contractorId));
 	}
@@ -33,23 +50,30 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 		return query.getResultList();
 	}
 
+	public void delete(final Employee employee, final Role role, final int siteId) {
+		delete(employee.getId(), role.getId(), siteId);
+	}
+
 	@Transactional(propagation = Propagation.NESTED)
-	public void deleteAssignmentByEmployeeRoleSiteId(final Employee employee, final Role role, final int siteId) {
+	public void delete(final int employeeId, final int roleId, final int siteId) {
 		Query query = em.createQuery("DELETE FROM SiteAssignment sa " +
 				"WHERE sa.siteId = :siteId " +
-				"AND sa.employee = :employee " +
-				"AND sa.role = :role");
+				"AND sa.employee.id = :employeeId " +
+				"AND sa.role = :roleId");
+
 		query.setParameter("siteId", siteId);
-		query.setParameter("employee", employee);
-		query.setParameter("role", role);
+		query.setParameter("employeeId", employeeId);
+		query.setParameter("roleId", roleId);
 
 		query.executeUpdate();
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public void deleteByEmployeeIdAndSiteId(final int employeeId, final int siteId) {
 		Query query = em.createQuery("DELETE FROM SiteAssignment sa " +
 				"WHERE sa.siteId = :siteId " +
 				"AND sa.employee.id = :employeeId");
+
 		query.setParameter("siteId", siteId);
 		query.setParameter("employeeId", employeeId);
 

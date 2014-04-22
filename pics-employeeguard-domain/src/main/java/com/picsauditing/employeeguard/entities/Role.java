@@ -56,6 +56,10 @@ public class Role extends AccountGroup implements Comparable<Role> {
 		super.deletedDate = group.deletedDate;
 	}
 
+	public Role(int id) {
+		this.id = id;
+	}
+
 	public List<ProjectRole> getProjects() {
 		return projects;
 	}

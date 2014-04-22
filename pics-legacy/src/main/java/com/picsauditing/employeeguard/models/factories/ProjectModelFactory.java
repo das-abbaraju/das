@@ -41,13 +41,13 @@ public class ProjectModelFactory {
 		return projectModels;
 	}
 
-	public ProjectModel create(final Project project, final List<? extends RoleModel> roles, final List<? extends SkillModel> skills) {
+	public ProjectModel create(final Project project, final List<RoleModel> roles, final List<SkillModel> skills) {
 		return createWithSiteName(project, roles, skills, null);
 	}
 
 	public ProjectModel createWithSiteName(final Project project,
-	                                       final List<? extends RoleModel> roles,
-	                                       final List<? extends SkillModel> skills,
+	                                       final List<RoleModel> roles,
+	                                       final List<SkillModel> skills,
 	                                       final AccountModel accountModel) {
 
 		ProjectModel projectModel = new ProjectModel();

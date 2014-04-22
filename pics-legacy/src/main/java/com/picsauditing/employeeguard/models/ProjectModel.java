@@ -8,8 +8,8 @@ public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectM
 	private int id;
 	private String name;
 	private String site;
-	private List<? extends RoleModel> roles;
-	private List<? extends SkillModel> skills;
+	private List<RoleModel> roles;
+	private List<SkillModel> skills;
 	private String location;
 	private Long startDate;
 	private Long endDate;
@@ -46,15 +46,15 @@ public class ProjectModel implements Identifiable, Nameable, Comparable<ProjectM
 		return roles;
 	}
 
-	public void setRoles(List<? extends RoleModel> roles) {
+	public void setRoles(List<RoleModel> roles) {
 		this.roles = roles;
 	}
 
-	public List<? extends SkillModel> getSkills() {
+	public List<SkillModel> getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<? extends SkillModel> skills) {
+	public void setSkills(List<SkillModel> skills) {
 		this.skills = skills;
 	}
 

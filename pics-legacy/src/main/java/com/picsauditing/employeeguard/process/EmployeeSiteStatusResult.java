@@ -10,6 +10,7 @@ import java.util.Set;
 
 public class EmployeeSiteStatusResult {
 
+	private Set<Project> projects;
 	private Map<AccountSkill, SkillStatus> skillStatus;
 	private Map<Role, Set<AccountSkill>> roleSkills;
 	private Map<Project, Set<AccountSkill>> projectRequiredSkills;
@@ -17,6 +18,14 @@ public class EmployeeSiteStatusResult {
 	private Set<AccountSkill> siteAndCorporateRequiredSkills;
 	private Map<Project, SkillStatus> projectStatuses;
 	private Map<Role, SkillStatus> roleStatuses;
+
+	public Set<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Set<Project> projects) {
+		this.projects = projects;
+	}
 
 	public Map<AccountSkill, SkillStatus> getSkillStatus() {
 		return skillStatus;

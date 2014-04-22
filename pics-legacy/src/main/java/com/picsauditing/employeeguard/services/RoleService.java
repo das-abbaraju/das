@@ -33,8 +33,6 @@ public class RoleService {
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
-	private RoleAssignmentHelper roleAssignmentHelper;
-	@Autowired
 	private RoleDAO roleDAO;
 	@Autowired
 	private SkillEngine skillEngine;
@@ -239,34 +237,5 @@ public class RoleService {
 		}
 
 		return accountSkillEmployees;
-	}
-
-	public void unassignEmployeeFromRole(final Employee employee, final int roleId, final int siteId) {
-		Role corporateRole = roleDAO.find(roleId);
-
-		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee, corporateRole);
-		roleAssignmentHelper.deleteSiteRoleFromEmployee(employee, corporateRole, siteId);
-
-		List<AccountSkillEmployee> employeeSkillsToRemove = new ArrayList<>(employee.getSkills());
-		SkillUsage skillUsage = skillUsageLocator.getSkillUsagesForEmployee(employee);
-
-		List<AccountSkillEmployee> employeeSkillsToKeep = accountSkillEmployeeDAO.findByEmployeeAndSkills(employee, new ArrayList<>(skillUsage.allSkills()));
-		employeeSkillsToRemove.removeAll(employeeSkillsToKeep);
-
-		accountSkillEmployeeDAO.deleteByIds(PicsCollectionUtil.getIdsFromCollection(employeeSkillsToRemove,
-				new PicsCollectionUtil.Identitifable<AccountSkillEmployee, Integer>() {
-
-					@Override
-					public Integer getId(AccountSkillEmployee accountSkillEmployee) {
-						return accountSkillEmployee.getId();
-					}
-				}));
-	}
-
-	public void unassignEmployeeFromSite(final Employee employee, final int siteId) {
-		roleAssignmentHelper.deleteProjectRolesFromEmployee(employee.getId(), siteId);
-		roleAssignmentHelper.deleteSiteRolesFromEmployee(employee.getId(), siteId);
-
-		skillEngine.updateSiteSkillsForEmployee(employee, siteId);
 	}
 }

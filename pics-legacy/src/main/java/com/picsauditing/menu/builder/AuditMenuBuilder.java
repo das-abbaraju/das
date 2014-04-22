@@ -272,7 +272,11 @@ public class AuditMenuBuilder {
 			boolean hasEmployeeGUARD = hasEmployeeGUARD();
 
 			if (hasEmployeeGUARD && (permissions.isPicsEmployee() || permissions.isAdmin())) {
+<<<<<<< Updated upstream
 				MenuComponent notPermitted = new MenuComponent("Not Permitted", Strings.EMPTY_STRING);
+=======
+				MenuComponent notPermitted = new MenuComponent("No Permitted", Strings.EMPTY_STRING);
+>>>>>>> Stashed changes
 				addToServiceMenu(Service.EMPLOYEEGUARD, notPermitted);
 				addLegacyEmployeeGUARDSubMenu();
 			} else if (hasEmployeeGUARD && permissions.isOperatorCorporate()) {

@@ -4,13 +4,13 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
 import java.util.List;
 
-public class ProjectStatusModel implements SkillStatusInfo {
+public class ProjectStatusModel implements IdNameComposite, SkillStatusInfo {
 
 	private int id;
 	private String name;
 	private SkillStatus status;
 	private List<RoleStatusModel> roles;
-	private List<SkillStatusModel> skills;
+	private RequiredSkills skills;
 
 	public int getId() {
 		return id;
@@ -44,11 +44,11 @@ public class ProjectStatusModel implements SkillStatusInfo {
 		this.roles = roles;
 	}
 
-	public List<SkillStatusModel> getSkills() {
+	public RequiredSkills getSkills() {
 		return skills;
 	}
 
-	public void setSkills(List<SkillStatusModel> skills) {
+	public void setSkills(RequiredSkills skills) {
 		this.skills = skills;
 	}
 }

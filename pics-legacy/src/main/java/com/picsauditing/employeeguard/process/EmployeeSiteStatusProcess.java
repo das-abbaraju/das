@@ -37,6 +37,8 @@ public class EmployeeSiteStatusProcess {
 		Employee employee = employeeEntityService.find(employeeId);
 		Set<Project> projects = projectEntityService.getProjectsForEmployeeBySiteId(employee, siteId);
 
+		employeeSiteStatusResult.setProjects(projects);
+
 		employeeSiteStatusResult = addProjectRoles(employeeSiteStatusResult, projects, employee);
 		employeeSiteStatusResult = addSiteAndCorporateSkills(employeeSiteStatusResult, siteId, parentSites);
 		employeeSiteStatusResult = addProjectRequiredSkills(employeeSiteStatusResult, projects);

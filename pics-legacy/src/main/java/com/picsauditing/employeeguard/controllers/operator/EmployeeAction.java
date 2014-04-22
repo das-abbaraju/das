@@ -101,12 +101,17 @@ public class EmployeeAction extends PicsRestActionSupport {
 				roleStatusMap);
 	}
 
-	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap, Map<Project, SkillStatus> projectStatusMap, Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap, Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap) {
-		return ModelFactory.getProjectStatusModelFactory().create(
-				projectRoleMap.keySet(),
-				projectIdToRoleStatusModelMap,
-				projectIdToSkillStatusModelMap,
-				projectStatusMap);
+	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap,
+															Map<Project, SkillStatus> projectStatusMap,
+															Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap,
+															Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap) {
+//		return ModelFactory.getProjectStatusModelFactory().create(
+//				projectRoleMap.keySet(),
+//				projectIdToRoleStatusModelMap,
+//				projectIdToSkillStatusModelMap,
+//				projectStatusMap);
+
+		return null;
 	}
 
 	private List<RoleStatusModel> getRoleStatusModels(Map<Role, Set<AccountSkill>> roleSkillMap, Map<Role, SkillStatus> roleStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
