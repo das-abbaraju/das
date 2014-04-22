@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class EntityFactory {
 
-    private static int counter = 100;
+    private static int counter = 10000;
 //    private static HashMap<String, Country> countries;
 //    private static Map<String, CountrySubdivision> countrySubdivisions;
 //
