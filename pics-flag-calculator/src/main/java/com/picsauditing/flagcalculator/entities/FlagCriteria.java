@@ -31,10 +31,10 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 //    private boolean insurance = false;
 //    private FlagCriteriaOptionCode optionCode;
 //
-//    public static final String BOOLEAN = "boolean";
-//    public static final String NUMBER = "number";
-//    public static final String DATE = "date";
-//    public static final String STRING = "string";
+    public static final String BOOLEAN = "boolean";
+    public static final String NUMBER = "number";
+    public static final String DATE = "date";
+    public static final String STRING = "string";
 //
 //    public static final int EMR_AVERAGE_ID = 506;
 //    public static final int ANNUAL_UPDATE_ID = 142;

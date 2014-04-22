@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "flag_criteria_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaOperator extends BaseTable {
-//    private OperatorAccount operator;
+    private OperatorAccount operator;
     private FlagCriteria criteria;
     private FlagColor flag = FlagColor.Red;
     private String hurdle;
@@ -37,14 +37,14 @@ public class FlagCriteriaOperator extends BaseTable {
 //
 //    @ManyToOne
 //    @JoinColumn(name = "opID", nullable = false)
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
-//    public void setOperator(OperatorAccount operator) {
-//        this.operator = operator;
-//    }
-//
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
+    public void setOperator(OperatorAccount operator) {
+        this.operator = operator;
+    }
+
     @ManyToOne
     @JoinColumn(name = "criteriaID", nullable = false)
     public FlagCriteria getCriteria() {

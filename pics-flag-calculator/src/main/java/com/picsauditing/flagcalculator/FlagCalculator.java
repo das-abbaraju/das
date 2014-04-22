@@ -1,11 +1,8 @@
 package com.picsauditing.flagcalculator;
 
-import com.picsauditing.flagcalculator.dao.FlagCriteriaDAO;
+import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.*;
-import com.picsauditing.flagcalculator.service.AccountService;
-import com.picsauditing.flagcalculator.service.AuditService;
-import com.picsauditing.flagcalculator.service.FlagService;
-import com.picsauditing.flagcalculator.service.TradeService;
+import com.picsauditing.flagcalculator.service.*;
 import com.picsauditing.flagcalculator.util.DateBean;
 import com.picsauditing.flagcalculator.util.Strings;
 import org.apache.commons.lang.StringUtils;
@@ -15,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 public class FlagCalculator {
-    private FlagCriteriaDAO flagCriteriaDAO;
+    private FlagCalculatorDAO flagCalculatorDAO;
 
     private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
     private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
@@ -26,12 +23,12 @@ public class FlagCalculator {
     private boolean worksForOperator = true;
     private final Logger logger = LoggerFactory.getLogger(FlagCalculator.class);
 
-    public FlagCalculator(Collection<FlagCriteriaContractor> contractorCriteria, FlagCriteriaDAO flagCriteriaDAO) {
+    public FlagCalculator(Collection<FlagCriteriaContractor> contractorCriteria, FlagCalculatorDAO flagCalculatorDAO) {
         setContractorCriteria(contractorCriteria);
-        this.flagCriteriaDAO = flagCriteriaDAO;
+        this.flagCalculatorDAO = flagCalculatorDAO;
     }
 
-    public FlagCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria, FlagCriteriaDAO flagCriteriaDAO) {
+    public FlagCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria, FlagCalculatorDAO flagCalculatorDAO) {
         contractorCriteria = new HashMap<>();
         contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
         operatorCriteria = new HashMap<>();
@@ -39,11 +36,11 @@ public class FlagCalculator {
             operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
         }
         operatorCriteria.get(opCriteria.getCriteria()).add(opCriteria);
-        this.flagCriteriaDAO = flagCriteriaDAO;
+        this.flagCalculatorDAO = flagCalculatorDAO;
     }
 
-    public FlagCalculator(FlagCriteriaDAO flagCriteriaDAO) {
-        this.flagCriteriaDAO = flagCriteriaDAO;
+    public FlagCalculator(FlagCalculatorDAO flagCalculatorDAO) {
+        this.flagCalculatorDAO = flagCalculatorDAO;
     }
 
 
@@ -335,17 +332,17 @@ public class FlagCalculator {
                             return answer2 > TradeService.getWeightedIndustryAverage(con) * hurdle2 / 100;
                         }
 
-//                        if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-//                            return answer2 > (Utilities.getIndustryAverage(true, conCriteria.getContractor()) * hurdle2) / 100;
-//                        }
-//
-//                        if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-//                            return answer2 > (Utilities.getIndustryAverage(false, conCriteria.getContractor()) * hurdle2) / 100;
-//                        }
-//
-//                        if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
-//                            return answer2 > (Utilities.getDartIndustryAverage(conCriteria.getContractor().getNaics()) * hurdle2) / 100;
-//                        }
+                        if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+                            return answer2 > (IndustryAverageService.getLwcrIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
+                        }
+
+                        if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+                            return answer2 > (IndustryAverageService.getTrirIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
+                        }
+
+                        if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
+                            return answer2 > (IndustryAverageService.getDartIndustryAverage(conCriteria.getContractor().getNaics(), flagCalculatorDAO) * hurdle2) / 100;
+                        }
                     }
 
                     if (comparison.equals("=")) {
@@ -677,9 +674,9 @@ public class FlagCalculator {
                 removeFlagDataOverride(fdo3);
             }
             fdo1.setCriteria(key);
-            flagCriteriaDAO.save(fdo1);
+            flagCalculatorDAO.save(fdo1);
             if (fdo3 != null) {
-                flagCriteriaDAO.deleteData(FlagDataOverride.class, "id=" + fdo3.getId());
+                flagCalculatorDAO.deleteData(FlagDataOverride.class, "id=" + fdo3.getId());
             }
             addFlagDataOverride(fdo1);
             return fdo1;
@@ -691,8 +688,8 @@ public class FlagCalculator {
             removeFlagDataOverride(fdo2);
 
             fdo2.copyPayloadFrom(fdo1);
-            flagCriteriaDAO.save(fdo2);
-            flagCriteriaDAO.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
+            flagCalculatorDAO.save(fdo2);
+            flagCalculatorDAO.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
             addFlagDataOverride(fdo2);
             return fdo2;
         }
@@ -710,14 +707,14 @@ public class FlagCalculator {
 
         fdo3.copyPayloadFrom(fdo2);
         try {
-            flagCriteriaDAO.save(fdo3);
+            flagCalculatorDAO.save(fdo3);
         } catch (Exception e) {
             logger.error(e.toString());
         }
 
         fdo2.copyPayloadFrom(fdo1);
-        flagCriteriaDAO.save(fdo2);
-        flagCriteriaDAO.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
+        flagCalculatorDAO.save(fdo2);
+        flagCalculatorDAO.deleteData(FlagDataOverride.class, "id=" + fdo1.getId());
         addFlagDataOverride(fdo3);
         addFlagDataOverride(fdo2);
 
@@ -748,10 +745,10 @@ public class FlagCalculator {
             FlagCriteria nextCriteria = getNextCriteria(fdo.getCriteria());
             if (nextCriteria != null) {
                 fdo.setCriteria(nextCriteria);
-                flagCriteriaDAO.save(fdo);
+                flagCalculatorDAO.save(fdo);
                 addFlagDataOverride(fdo);
             } else {
-                flagCriteriaDAO.deleteData(FlagDataOverride.class, "id=" + fdo.getId());
+                flagCalculatorDAO.deleteData(FlagDataOverride.class, "id=" + fdo.getId());
             }
         }
     }
@@ -806,7 +803,7 @@ public class FlagCalculator {
 
         List<Integer> idList = correspondingMultiYearCriteria.get(criteria.getId());
 
-        List<FlagCriteria> criteriaList = flagCriteriaDAO.findWhere("id IN (" + Strings.implode(idList) + ")");
+        List<FlagCriteria> criteriaList = flagCalculatorDAO.findWhere("id IN (" + Strings.implode(idList) + ")");
 
         for (FlagCriteria foundCriteria : criteriaList) {
             if (nextYear.equals(foundCriteria.getMultiYearScope())) {

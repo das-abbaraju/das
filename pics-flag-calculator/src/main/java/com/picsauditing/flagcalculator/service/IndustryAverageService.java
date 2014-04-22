@@ -1,5 +1,6 @@
 package com.picsauditing.flagcalculator.service;
 
+import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.ContractorAccount;
 import com.picsauditing.flagcalculator.entities.ContractorTrade;
 import com.picsauditing.flagcalculator.entities.Naics;
@@ -31,9 +32,7 @@ public class IndustryAverageService {
         return answer;
     }
 
-    public static float getDartIndustryAverage(Naics naics) {
-//        NaicsDAO naicsDAO = SpringUtils.getBean("NaicsDAO");
-//        return naicsDAO.getDartIndustryAverage(naics);
-        return 4f; //TODO remove
+    public static float getDartIndustryAverage(Naics naics, FlagCalculatorDAO flagCalculatorDAO) {
+        return flagCalculatorDAO.getDartIndustryAverage(naics);
     }
 }

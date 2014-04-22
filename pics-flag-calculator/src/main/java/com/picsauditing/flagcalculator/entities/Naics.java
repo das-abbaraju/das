@@ -7,25 +7,25 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "naics")
 public class Naics implements java.io.Serializable {
-//	private String code;
+	private String code;
 //	private float trir;
 //	private float lwcr;
-//	private float dart;
+	private float dart;
 //
 //	@Id
 //	@Column(nullable = false, length = 6)
 //	@ReportField(importance = FieldImportance.Required)
-//	public String getCode() {
-//		return code;
-//	}
-//
-//	public void setCode(String code) {
-//		if (code != null) {
-//			code = code.trim();
-//		}
-//		this.code = code;
-//	}
-//
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		if (code != null) {
+			code = code.trim();
+		}
+		this.code = code;
+	}
+
 //	public float getTrir() {
 //		return trir;
 //	}
@@ -42,11 +42,11 @@ public class Naics implements java.io.Serializable {
 //		this.lwcr = lwcr;
 //	}
 //
-//	public float getDart() {
-//		return dart;
-//	}
-//
-//	public void setDart(float dart) {
-//		this.dart = dart;
-//	}
+	public float getDart() {
+		return dart;
+	}
+
+	public void setDart(float dart) {
+		this.dart = dart;
+	}
 }
