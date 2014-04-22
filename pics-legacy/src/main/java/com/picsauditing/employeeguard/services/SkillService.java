@@ -24,10 +24,10 @@ import java.util.*;
 @Deprecated
 public class SkillService {
 
-  @Autowired
-  private AccountGroupDAO accountGroupDAO;
-  @Autowired
-  private RoleDAO roleDAO;
+	@Autowired
+	private AccountGroupDAO accountGroupDAO;
+	@Autowired
+	private RoleDAO roleDAO;
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -163,17 +163,16 @@ public class SkillService {
 
 		AccountSkill accountSkillInDatabase = skillEntityService.update(updatedAccountSkill, updated);
 
-    if(SessionInfoProviderFactory.getSessionInfoProvider().getPermissions().isContractor()) {
-      updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
-      // If we're making this skill required then we can't associate this skill with roles/groups
-      if (accountSkillInDatabase.getRuleType().isRequired()) {
-        accountSkillInDatabase.getGroups().clear();
-      }
-    }
-    else{
-      updateAccountSkillRoles(accountSkillInDatabase, updatedAccountSkill, appUserId);
-    }
+		if (SessionInfoProviderFactory.getSessionInfoProvider().getPermissions().isContractor()) {
+			updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
 
+			// If we're making this skill required then we can't associate this skill with groups
+			if (accountSkillInDatabase.getRuleType().isRequired()) {
+				accountSkillInDatabase.getGroups().clear();
+			}
+		} else {
+			updateAccountSkillRoles(accountSkillInDatabase, updatedAccountSkill, appUserId);
+		}
 
 
 		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, updated);
@@ -187,11 +186,11 @@ public class SkillService {
 		accountSkillInDatabase.getGroups().addAll(accountSkillGroups);
 	}
 
-  private void updateAccountSkillRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
-    List<AccountSkillRole> accountSkillRoles = getLinkedRoles(accountSkillInDatabase, updatedSkill, appUserId);
-    accountSkillInDatabase.getRoles().clear();
-    accountSkillInDatabase.getRoles().addAll(accountSkillRoles);
-  }
+	private void updateAccountSkillRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+		List<AccountSkillRole> accountSkillRoles = getLinkedRoles(accountSkillInDatabase, updatedSkill, appUserId);
+		accountSkillInDatabase.getRoles().clear();
+		accountSkillInDatabase.getRoles().addAll(accountSkillRoles);
+	}
 
 	public void setRequiredSkillsForSite(List<AccountSkill> requiredSkills, String id, int appUserID) {
 		List<SiteSkill> newSiteSkills = new ArrayList<>();
@@ -243,29 +242,29 @@ public class SkillService {
 		return accountSkillGroups;
 	}
 
-  private List<AccountSkillRole> getLinkedRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
-    BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
-    List<AccountSkillRole> accountSkillRoles = IntersectionAndComplementProcess.intersection(updatedSkill.getRoles(),
-            accountSkillInDatabase.getRoles(), AccountSkillRole.COMPARATOR, callback);
+	private List<AccountSkillRole> getLinkedRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
+		List<AccountSkillRole> accountSkillRoles = IntersectionAndComplementProcess.intersection(updatedSkill.getRoles(),
+				accountSkillInDatabase.getRoles(), AccountSkillRole.COMPARATOR, callback);
 
-    List<String> roleNames = getRoleNames(accountSkillRoles);
+		List<String> roleNames = getRoleNames(accountSkillRoles);
 
-    if (CollectionUtils.isNotEmpty(roleNames)) {
-      List<Role> roles = roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(updatedSkill.getAccountId()), roleNames);
+		if (CollectionUtils.isNotEmpty(roleNames)) {
+			List<Role> roles = roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(updatedSkill.getAccountId()), roleNames);
 
-      for (AccountSkillRole accountSkillRole : accountSkillRoles) {
-        Role role = accountSkillRole.getRole();
-        int index = roles.indexOf(role);
-        if (index >= 0) {
-          accountSkillRole.setRole(roles.get(index));
-        }
-      }
-    }
+			for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+				Role role = accountSkillRole.getRole();
+				int index = roles.indexOf(role);
+				if (index >= 0) {
+					accountSkillRole.setRole(roles.get(index));
+				}
+			}
+		}
 
-    accountSkillRoles.addAll(callback.getRemovedEntities());
+		accountSkillRoles.addAll(callback.getRemovedEntities());
 
-    return accountSkillRoles;
-  }
+		return accountSkillRoles;
+	}
 
 	private List<String> getGroupNames(List<AccountSkillGroup> AccountSkillGroups) {
 		if (CollectionUtils.isEmpty(AccountSkillGroups)) {
@@ -280,18 +279,18 @@ public class SkillService {
 		return groupNames;
 	}
 
-  private List<String> getRoleNames(List<AccountSkillRole> accountSkillRoles) {
-    if (CollectionUtils.isEmpty(accountSkillRoles)) {
-      return Collections.emptyList();
-    }
+	private List<String> getRoleNames(List<AccountSkillRole> accountSkillRoles) {
+		if (CollectionUtils.isEmpty(accountSkillRoles)) {
+			return Collections.emptyList();
+		}
 
-    List<String> groupNames = new ArrayList<>();
-    for (AccountSkillRole AccountSkillGroup : accountSkillRoles) {
-      groupNames.add(AccountSkillGroup.getRole().getName());
-    }
+		List<String> roleNames = new ArrayList<>();
+		for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+			roleNames.add(accountSkillRole.getRole().getName());
+		}
 
-    return groupNames;
-  }
+		return roleNames;
+	}
 
 	@Deprecated
 	public void delete(String id, int accountId, int appUserId) {
@@ -432,7 +431,7 @@ public class SkillService {
 	}
 
 	public Map<Project, Set<AccountSkill>> getAllProjectSkillsForEmployeeProjectRoles(final int siteId,
-	                                                                                  final Map<Project, Set<Role>> projectRoleMap) {
+																					  final Map<Project, Set<Role>> projectRoleMap) {
 		if (MapUtils.isEmpty(projectRoleMap)) {
 			return Collections.emptyMap();
 		}
@@ -477,7 +476,7 @@ public class SkillService {
 	}
 
 	private Map<Project, Set<AccountSkill>> appendProjectRequiredSkills(final Map<Project, Set<AccountSkill>> projectSkillMap,
-	                                                                    final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
+																		final Map<Project, Set<AccountSkill>> projectRequiredSkillsMap) {
 		if (MapUtils.isEmpty(projectRequiredSkillsMap) || MapUtils.isEmpty(projectSkillMap)) {
 			return projectSkillMap;
 		}
@@ -523,7 +522,7 @@ public class SkillService {
 	}
 
 	private Map<Role, Set<AccountSkill>> populateRoleSkillsMapIfEmpty(final Collection<Role> corporateRoles,
-	                                                                  final Map<Role, Set<AccountSkill>> roleSkillsMap) {
+																	  final Map<Role, Set<AccountSkill>> roleSkillsMap) {
 		if (MapUtils.isNotEmpty(roleSkillsMap)) {
 			return roleSkillsMap;
 		}
@@ -537,7 +536,7 @@ public class SkillService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-	                                                                   final List<AccountSkill> siteAndCorporateRequiredSkills) {
+																	   final List<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}

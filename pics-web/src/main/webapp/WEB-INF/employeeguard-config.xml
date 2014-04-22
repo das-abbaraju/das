@@ -9,6 +9,7 @@
     <bean id="AppUserDAO" class="com.picsauditing.authentication.dao.AppUserDAO"/>
     <bean id="EmailHashDAO" class="com.picsauditing.authentication.dao.EmailHashDAO"/>
     <bean id="AccountGroupDAO" class="com.picsauditing.employeeguard.daos.AccountGroupDAO"/>
+    <bean id="AccountRoleDAO" class="com.picsauditing.employeeguard.daos.AccountRoleDAO"/>
     <bean id="AccountGroupEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO"/>
     <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
     <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
