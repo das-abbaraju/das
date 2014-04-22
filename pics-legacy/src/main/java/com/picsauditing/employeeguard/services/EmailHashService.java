@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class EmailHashService {
@@ -71,21 +72,50 @@ public class EmailHashService {
 	 * @throws Exception
 	 */
 	public EmailHash createNewHash(final Employee employee) throws Exception {
+		if (employee.getId() <= 0 || Strings.isEmpty(employee.getEmail())) {
+			throw new CannotCreateEmailHashException();
+		}
+
+		EmailHash emailHash = findHash(employee);
+		if (emailHash == null) {
+			return createNewEmailHash(employee);
+		}
+
+		return updateEmailHash(emailHash, employee);
+	}
+
+	private EmailHash createNewEmailHash(final Employee employee) throws NoSuchAlgorithmException {
 		EmailHash emailHash = new EmailHash();
+
 		emailHash.setCreatedDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employee.getEmail());
-
 		emailHash.setEmployee(new SoftDeletedEmployee(employee.getId()));
 
+		emailHash.setHashCode(buildHashCode(emailHash));
+
+		return emailHashDAO.save(emailHash);
+	}
+
+	private EmailHash findHash(final Employee employee) {
+		return emailHashDAO.findByEmployee(employee.getId(), employee.getEmail());
+	}
+
+	private EmailHash updateEmailHash(final EmailHash emailHash, final Employee employee) throws NoSuchAlgorithmException {
+		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
+		emailHash.setEmailAddress(employee.getEmail());
+		emailHash.setHashCode(buildHashCode(emailHash));
+
+		return emailHashDAO.save(emailHash);
+	}
+
+	private String buildHashCode(final EmailHash emailHash) throws NoSuchAlgorithmException {
 		String hash = emailHash.toString();
 		MessageDigest msgDigest = MessageDigest.getInstance("MD5");
 		msgDigest.update(hash.getBytes());
 		byte[] hashed = msgDigest.digest();
 
 		BigInteger number = new BigInteger(1, hashed);
-		emailHash.setHashCode(number.toString(16).replace("+", "_"));
-
-		return emailHashDAO.save(emailHash);
+		return number.toString(16).replace("+", "_");
 	}
 }

@@ -2,7 +2,10 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.employeeguard.daos.*;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectDAO;
+import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
@@ -33,15 +36,13 @@ public class ProjectServiceTest extends PicsTranslationTest {
 	private ProjectService projectService;
 
 	@Mock
-	private AccountGroupDAO accountGroupDAO;
-	@Mock
 	private AccountSkillDAO accountSkillDAO;
 	@Mock
 	private EmployeeDAO employeeDAO;
 	@Mock
 	private ProjectDAO projectDAO;
-    @Mock
-    private RoleDAO roleDAO;
+	@Mock
+	private RoleDAO roleDAO;
 
 	private AccountService accountService;
 	private AccountSkillEmployeeService accountSkillEmployeeService;
@@ -54,7 +55,6 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		accountService = AccountServiceFactory.getAccountService();
 		accountSkillEmployeeService = AccountSkillEmployeeServiceFactory.getAccountSkillEmployeeService();
 
-		Whitebox.setInternalState(projectService, "accountGroupDAO", accountGroupDAO);
 		Whitebox.setInternalState(projectService, "accountService", accountService);
 		Whitebox.setInternalState(projectService, "accountSkillDAO", accountSkillDAO);
 		Whitebox.setInternalState(projectService, "accountSkillEmployeeService", accountSkillEmployeeService);
@@ -115,8 +115,8 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		String roleName = "The Role";
 
 		List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setName(roleName);
+		Role role = new Role();
+		role.setName(roleName);
 		roles.add(role);
 
 		when(roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(roleName))).thenReturn(roles);

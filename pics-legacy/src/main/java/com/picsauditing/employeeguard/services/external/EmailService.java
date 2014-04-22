@@ -18,9 +18,22 @@ public class EmailService {
 		emailBuilder.setToAddresses(hash.getEmailAddress());
 		emailBuilder.setFromAddress("PICS <info@picsauditing.com>");
 		emailBuilder.setTemplate(EG_WELCOME_EMAIL);
-		emailBuilder.addToken("hash", hash);
+		emailBuilder.addToken("hash", new EmailHashWrapper(hash.getHashCode()));
 		emailBuilder.addToken("CompanyName", accountName);
 
 		emailSender.sendNow(emailBuilder.build());
+	}
+
+	public static class EmailHashWrapper {
+
+		private String emailHashCode;
+
+		public EmailHashWrapper(final String emailHashCode) {
+			this.emailHashCode = emailHashCode;
+		}
+
+		public String getHash() {
+			return emailHashCode;
+		}
 	}
 }

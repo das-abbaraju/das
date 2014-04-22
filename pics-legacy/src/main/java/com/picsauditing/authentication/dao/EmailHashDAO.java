@@ -19,7 +19,7 @@ public class EmailHashDAO {
 
 	public EmailHash findByHash(final String hash) {
 		TypedQuery<EmailHash> query = em.createQuery("FROM EmailHash eh " +
-				"WHERE eh.hash = :hash", EmailHash.class);
+				"WHERE eh.hashCode = :hash", EmailHash.class);
 
 		query.setParameter("hash", hash);
 
