@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.picsauditing.PICS.IndustryAverage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +25,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -238,7 +237,7 @@ public class OshaDisplayTest extends PicsTranslationTest {
 		Naics contractorNaics = new Naics();
 		contractorNaics.setCode("81");
 		when(contractor.getNaics()).thenReturn(contractorNaics);
-		when(Utilities.getDartIndustryAverage(contractorNaics)).thenReturn(1.3f);
+		when(IndustryAverage.getDartIndustryAverage(contractorNaics)).thenReturn(1.3f);
 		when(operator.getInheritFlagCriteria()).thenReturn(operator);
 		when(canadianOperator.getInheritFlagCriteria()).thenReturn(canadianOperator);
 		when(operator.getOshaType()).thenReturn(OshaType.OSHA);

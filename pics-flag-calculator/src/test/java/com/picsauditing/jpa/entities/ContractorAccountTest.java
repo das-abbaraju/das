@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.HashSet;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
 
 public class ContractorAccountTest {
@@ -119,76 +120,76 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         assertEquals(2, TradeService.getWeightedIndustryAverage(contractor), 1);
     }
 
-//    @Test
-//    public void testGetTopTrade_NoTrade() {
-//        ContractorAccount contractor = new ContractorAccount();
-//        assertNull(contractor.getTopTrade());
-//    }
-//
-//    @Test
-//    public void testGetTopTrade_OnlySelfPerformed() {
-//        ContractorAccount contractor = new ContractorAccount();
-//        contractor.setTrades(new HashSet<ContractorTrade>());
-//
-//        Trade subcontractedTrir = makeTrade(1, null, 4.0f);
-//        ContractorTrade subcontractorTrade = makeContractorTrade(subcontractedTrir, 5, false);
-//        Trade selfTrir = makeTrade(1, null, 4.0f);
-//        ContractorTrade selfTrade = makeContractorTrade(selfTrir, 5, true);
-//
-//        contractor.getTrades().add(subcontractorTrade);
-//        contractor.getTrades().add(selfTrade);
-//
-//        assertEquals(selfTrade, contractor.getTopTrade());
-//    }
-//
-//    @Test
-//    public void testGetTopTrade_MultipleSelfTrades_HighestActivity() {
-//        ContractorAccount contractor = new ContractorAccount();
-//        contractor.setTrades(new HashSet<ContractorTrade>());
-//
-//        Trade lowTrir = makeTrade(1, null, 2.0f);
-//        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 2, true);
-//        ContractorTrade highTrade = makeContractorTrade(lowTrir, 5, true);
-//
-//        contractor.getTrades().add(lowTrade);
-//        contractor.getTrades().add(highTrade);
-//
-//        assertEquals(highTrade, contractor.getTopTrade());
-//    }
-//
-//    @Test
-//    public void testGetTopTrade_MultipleSelfTrades_HighestTrir() {
-//        ContractorAccount contractor = new ContractorAccount();
-//        contractor.setTrades(new HashSet<ContractorTrade>());
-//
-//        Trade lowTrir = makeTrade(1, null, 2.0f);
-//        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 5, true);
-//        Trade highTrir = makeTrade(1, null, 4.0f);
-//        ContractorTrade highTrade = makeContractorTrade(highTrir, 5, true);
-//
-//        contractor.getTrades().add(lowTrade);
-//        contractor.getTrades().add(highTrade);
-//
-//        assertEquals(highTrade, contractor.getTopTrade());
-//    }
-//
-//    @Test
-//    public void testGetTopTrade_MultipleSelfTrades_HighestTrirParent() {
-//        ContractorAccount contractor = new ContractorAccount();
-//        contractor.setTrades(new HashSet<ContractorTrade>());
-//
-//        Trade lowTrir = makeTrade(1, null, 2.0f);
-//        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 5, true);
-//        Trade highTrir = makeTrade(1, null, 4.0f);
-//        Trade noTrir = makeTrade(1, highTrir, null);
-//        ContractorTrade highTrade = makeContractorTrade(noTrir, 5, true);
-//
-//        contractor.getTrades().add(lowTrade);
-//        contractor.getTrades().add(highTrade);
-//
-//        assertEquals(highTrade, contractor.getTopTrade());
-//    }
-//
+    @Test
+    public void testGetTopTrade_NoTrade() {
+        ContractorAccount contractor = new ContractorAccount();
+        assertNull(contractor.getTopTrade());
+    }
+
+    @Test
+    public void testGetTopTrade_OnlySelfPerformed() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+
+        Trade subcontractedTrir = makeTrade(1, null, 4.0f);
+        ContractorTrade subcontractorTrade = makeContractorTrade(subcontractedTrir, 5, false);
+        Trade selfTrir = makeTrade(1, null, 4.0f);
+        ContractorTrade selfTrade = makeContractorTrade(selfTrir, 5, true);
+
+        contractor.getTrades().add(subcontractorTrade);
+        contractor.getTrades().add(selfTrade);
+
+        assertEquals(selfTrade, contractor.getTopTrade());
+    }
+
+    @Test
+    public void testGetTopTrade_MultipleSelfTrades_HighestActivity() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+
+        Trade lowTrir = makeTrade(1, null, 2.0f);
+        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 2, true);
+        ContractorTrade highTrade = makeContractorTrade(lowTrir, 5, true);
+
+        contractor.getTrades().add(lowTrade);
+        contractor.getTrades().add(highTrade);
+
+        assertEquals(highTrade, contractor.getTopTrade());
+    }
+
+    @Test
+    public void testGetTopTrade_MultipleSelfTrades_HighestTrir() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+
+        Trade lowTrir = makeTrade(1, null, 2.0f);
+        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 5, true);
+        Trade highTrir = makeTrade(1, null, 4.0f);
+        ContractorTrade highTrade = makeContractorTrade(highTrir, 5, true);
+
+        contractor.getTrades().add(lowTrade);
+        contractor.getTrades().add(highTrade);
+
+        assertEquals(highTrade, contractor.getTopTrade());
+    }
+
+    @Test
+    public void testGetTopTrade_MultipleSelfTrades_HighestTrirParent() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+
+        Trade lowTrir = makeTrade(1, null, 2.0f);
+        ContractorTrade lowTrade = makeContractorTrade(lowTrir, 5, true);
+        Trade highTrir = makeTrade(1, null, 4.0f);
+        Trade noTrir = makeTrade(1, highTrir, null);
+        ContractorTrade highTrade = makeContractorTrade(noTrir, 5, true);
+
+        contractor.getTrades().add(lowTrade);
+        contractor.getTrades().add(highTrade);
+
+        assertEquals(highTrade, contractor.getTopTrade());
+    }
+
     private ContractorTrade makeContractorTrade(Trade trade, int activity, boolean selfPerformed) {
         ContractorTrade cTrade = new ContractorTrade();
         cTrade.setTrade(trade);

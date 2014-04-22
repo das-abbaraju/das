@@ -9,13 +9,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import com.picsauditing.PICS.IndustryAverage;
 import com.picsauditing.i18n.service.TranslationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.PICS.OshaOrganizer;
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
@@ -236,7 +236,7 @@ public class OshaDisplay {
 
 	private String getIndustryAverage(OshaType oshaType, OshaRateType rateType) {
 		if (rateType == OshaRateType.LwcrAbsolute) {
-			return String.valueOf(Utilities.getIndustryAverage(true, contractor));
+			return String.valueOf(IndustryAverage.getLwcrIndustryAverage(contractor));
 		} else if (rateType == OshaRateType.TrirAbsolute || rateType == OshaRateType.TrirNaics) {
 			if (oshaType != OshaType.OSHA && oshaType != OshaType.MSHA) {
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
@@ -244,11 +244,11 @@ public class OshaDisplay {
 			if (contractor.getNaics() == null || Strings.isEmpty(contractor.getNaics().getCode())) {
 				return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 			}
-			return String.valueOf(Utilities.getIndustryAverage(false, contractor));
+			return String.valueOf(IndustryAverage.getTrirIndustryAverage(contractor));
 		} else if (rateType == OshaRateType.TrirWIA) {
 			return String.format("%.2g%n", contractor.getWeightedIndustryAverage()) + "*";
 		} else if (rateType == OshaRateType.Dart) {
-			return String.valueOf(Utilities.getDartIndustryAverage(contractor.getNaics()));
+			return String.valueOf(IndustryAverage.getDartIndustryAverage(contractor.getNaics()));
 		}
 		return null;
 	}
@@ -319,7 +319,7 @@ public class OshaDisplay {
 					+ fco.getCriteria().getComparison()
 					+ " "
 					+ Strings.formatDecimalComma(Double.toString(hurdle / 100
-							* Utilities.getIndustryAverage(false, contractor))) + "</nobr>";
+							* IndustryAverage.getTrirIndustryAverage(contractor))) + "</nobr>";
 
 		} else if (OshaRateType.DartNaics.equals(fco.getCriteria().getOshaRateType())) {
 			float hurdle = (fco.getHurdle() != null) ? Float.valueOf(fco.getHurdle()) : 100;
