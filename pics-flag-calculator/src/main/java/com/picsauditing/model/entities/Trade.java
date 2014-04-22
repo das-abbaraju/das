@@ -30,7 +30,7 @@ public class Trade extends BaseTable {
 //	private boolean needsIndexing;
 //	private boolean selectable = true;
 	private Float naicsTRIR;
-//	private Float naicsLWCR;
+	private Float naicsLWCR;
 //	private String name;
 //	private String name2;
 //	private String help;
@@ -641,25 +641,35 @@ public class Trade extends BaseTable {
 		this.naicsTRIR = naicsTRIR;
 	}
 
-//	@ReportField(importance = FieldImportance.Average, type = FieldType.Float)
-//	public Float getNaicsLWCR() {
-//		return naicsLWCR;
-//	}
-//
-//	public void setNaicsLWCR(Float naicsLWCR) {
-//		this.naicsLWCR = naicsLWCR;
-//	}
-//
+    public Float getNaicsTRIRI() {
+        if (naicsTRIR != null && naicsTRIR != 0.0) {
+            return naicsTRIR;
+        } else if (parent != null) {
+            return parent.getNaicsTRIRI();
+        } else {
+            return Float.valueOf(4);
+        }
+    }
+
+    //	@ReportField(importance = FieldImportance.Average, type = FieldType.Float)
+	public Float getNaicsLWCR() {
+		return naicsLWCR;
+	}
+
+	public void setNaicsLWCR(Float naicsLWCR) {
+		this.naicsLWCR = naicsLWCR;
+	}
+
 //	@Transient
-//	public Float getNaicsLWCRI() {
-//		if (naicsLWCR != null && naicsLWCR != 0.0) {
-//			return naicsLWCR;
-//		} else if (parent != null) {
-//			return parent.getNaicsLWCRI();
-//		} else {
-//			return Float.valueOf(4);
-//		}
-//	}
+	public Float getNaicsLWCRI() {
+		if (naicsLWCR != null && naicsLWCR != 0.0) {
+			return naicsLWCR;
+		} else if (parent != null) {
+			return parent.getNaicsLWCRI();
+		} else {
+			return Float.valueOf(4);
+		}
+	}
 //
 //	@Transient
 //	public boolean isRemoved() {

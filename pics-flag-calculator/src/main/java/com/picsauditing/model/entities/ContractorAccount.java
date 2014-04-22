@@ -720,35 +720,35 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    }
 //
 //    @Transient
-//    public ContractorTrade getTopTrade() {
-//        ContractorTrade topTrade = null;
-//        List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
-//
-//        for (ContractorTrade trade : getTradesSorted()) {
-//            if (!trade.isSelfPerformed())
-//                continue;
-//
-//            if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
-//                topTrade = trade;
-//                listOfSameTradeActivity.clear();
-//                listOfSameTradeActivity.add(trade);
-//            } else if (trade.getActivityPercent() == topTrade.getActivityPercent()) {
-//                listOfSameTradeActivity.add(trade);
-//            }
-//        }
-//
-//        if (listOfSameTradeActivity.size() > 1) {
-//            topTrade = null;
-//            for (ContractorTrade trade : listOfSameTradeActivity) {
-//                if (topTrade == null || trade.getTrade().getNaicsTRIRI() > topTrade.getTrade().getNaicsTRIRI()) {
-//                    topTrade = trade;
-//                }
-//            }
-//        }
-//
-//        return topTrade;
-//    }
-//
+    public ContractorTrade getTopTrade() {
+        ContractorTrade topTrade = null;
+        List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
+
+        for (ContractorTrade trade : trades) {
+            if (!trade.isSelfPerformed())
+                continue;
+
+            if (topTrade == null || trade.getActivityPercent() > topTrade.getActivityPercent()) {
+                topTrade = trade;
+                listOfSameTradeActivity.clear();
+                listOfSameTradeActivity.add(trade);
+            } else if (trade.getActivityPercent() == topTrade.getActivityPercent()) {
+                listOfSameTradeActivity.add(trade);
+            }
+        }
+
+        if (listOfSameTradeActivity.size() > 1) {
+            topTrade = null;
+            for (ContractorTrade trade : listOfSameTradeActivity) {
+                if (topTrade == null || trade.getTrade().getNaicsTRIRI() > topTrade.getTrade().getNaicsTRIRI()) {
+                    topTrade = trade;
+                }
+            }
+        }
+
+        return topTrade;
+    }
+
 //    @Transient
 //    public String getTopTradesNaicsCode() {
 //        Trade trade = getTopTrade().getTrade();
