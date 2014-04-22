@@ -20,12 +20,17 @@ import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.FailedLoginException;
 
 public class AccountAction extends PicsRestActionSupport implements AjaxValidator {
+
 	private static final long serialVersionUID = -3897271223264803860L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(AccountAction.class);
 
 	@Autowired
 	private AppUserService appUserService;
@@ -48,17 +53,21 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String index() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
-		}
+		try {
+			if (!emailHashService.hashIsValid(hashCode)) {
+				throw new PageNotFoundException();
+			}
 
-		EmailHash emailHash = emailHashService.findByHash(hashCode);
+			EmailHash emailHash = emailHashService.findByHash(hashCode);
 
-		profile = new Profile();
-		if (emailHash.getEmployee() != null) {
-			profile.setFirstName(emailHash.getEmployee().getFirstName());
-			profile.setLastName(emailHash.getEmployee().getLastName());
-			profile.setEmail(emailHash.getEmailAddress());
+			profile = new Profile();
+			if (emailHash.getEmployee() != null) {
+				profile.setFirstName(emailHash.getEmployee().getFirstName());
+				profile.setLastName(emailHash.getEmployee().getLastName());
+				profile.setEmail(emailHash.getEmailAddress());
+			}
+		} catch (Exception e) {
+			LOG.error("Error in index() method ", e);
 		}
 
 		return LIST;
@@ -66,8 +75,12 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String create() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
+		try {
+			if (!emailHashService.hashIsValid(hashCode)) {
+				throw new PageNotFoundException();
+			}
+		} catch (Exception e) {
+			LOG.error("Error in create() method ", e);
 		}
 
 		return CREATE;
