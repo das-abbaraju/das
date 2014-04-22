@@ -24,8 +24,7 @@ import java.util.*;
 
 @Deprecated
 public class ProjectService {
-	@Autowired
-	private AccountGroupDAO accountGroupDAO;
+
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -76,6 +75,10 @@ public class ProjectService {
 
 			for (AccountModel child : children) {
 				childIds.add(child.getId());
+			}
+
+			if (CollectionUtils.isEmpty(childIds)) {
+				return Collections.emptyList();
 			}
 
 			return projectDAO.findByAccounts(childIds); // a list of site ids
@@ -335,6 +338,7 @@ public class ProjectService {
 	public Map<Project, Set<Role>> getProjectRolesForEmployee(final int siteId, final Employee employee) {
 		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findBySiteAndEmployee(siteId, employee),
 				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+
 					@Override
 					public Project getKey(ProjectRole projectRole) {
 						return projectRole.getProject();
