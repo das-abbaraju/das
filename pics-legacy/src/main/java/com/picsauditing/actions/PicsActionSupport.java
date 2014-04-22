@@ -340,8 +340,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			permissions = permissionBuilder.login(user);
 			ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 		} catch (Exception e) {
-			logger.error("Alex made this change.");
-			logger.error("Problem autologging in.  Id supplied was: {}", userID, e);
+			logger.error("Problem autologging in.  Id supplied was: {}", userID);
 		}
 	}
 

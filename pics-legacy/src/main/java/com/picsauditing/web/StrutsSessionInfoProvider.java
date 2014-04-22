@@ -48,20 +48,17 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	@Override
 	public NameSpace getNamespace() {
 		if (ServletActionContext.getActionMapping() == null) {
-			return NameSpace.NONE;
+			return NameSpace.UNKNOWN;
 		}
 
 		String namespace = ServletActionContext.getActionMapping().getNamespace();
 
-		switch (namespace) {
-			case EMPLOYEEGUARD_NAMESPACE:
-				return NameSpace.EMPLOYEEGUARD;
-
-			case PICSORG_NAMESPACE:
-				return NameSpace.PICSORG;
-
-			default:
-				throw new IllegalArgumentException("Unknown namespace: " + namespace);
+		if (Strings.isEmpty(namespace)) {
+			return NameSpace.UNKNOWN;
+		} else if (namespace.startsWith(EMPLOYEEGUARD_NAMESPACE)) {
+			return NameSpace.EMPLOYEEGUARD;
+		} else {
+			return NameSpace.PICSORG;
 		}
 	}
 

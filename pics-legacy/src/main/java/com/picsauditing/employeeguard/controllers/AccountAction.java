@@ -53,21 +53,17 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String index() throws Exception {
-		try {
-			if (!emailHashService.hashIsValid(hashCode)) {
-				throw new PageNotFoundException();
-			}
+		if (!emailHashService.hashIsValid(hashCode)) {
+			throw new PageNotFoundException();
+		}
 
-			EmailHash emailHash = emailHashService.findByHash(hashCode);
+		EmailHash emailHash = emailHashService.findByHash(hashCode);
 
-			profile = new Profile();
-			if (emailHash.getEmployee() != null) {
-				profile.setFirstName(emailHash.getEmployee().getFirstName());
-				profile.setLastName(emailHash.getEmployee().getLastName());
-				profile.setEmail(emailHash.getEmailAddress());
-			}
-		} catch (Exception e) {
-			LOG.error("Error in index() method ", e);
+		profile = new Profile();
+		if (emailHash.getEmployee() != null) {
+			profile.setFirstName(emailHash.getEmployee().getFirstName());
+			profile.setLastName(emailHash.getEmployee().getLastName());
+			profile.setEmail(emailHash.getEmailAddress());
 		}
 
 		return LIST;
@@ -75,12 +71,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String create() throws Exception {
-		try {
-			if (!emailHashService.hashIsValid(hashCode)) {
-				throw new PageNotFoundException();
-			}
-		} catch (Exception e) {
-			LOG.error("Error in create() method ", e);
+		if (!emailHashService.hashIsValid(hashCode)) {
+			throw new PageNotFoundException();
 		}
 
 		return CREATE;
