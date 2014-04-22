@@ -2,8 +2,8 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.flagcalculator.FlagCalculator;
-import com.picsauditing.model.entities.*;
-import com.picsauditing.util.DateBean;
+import com.picsauditing.flagcalculator.entities.*;
+import com.picsauditing.flagcalculator.util.DateBean;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -1291,7 +1291,7 @@ public class FlagCalculatorTest {
 //        when(contractorAuditOperator2012.getAudit()).thenReturn(contractorAudit);
         when(contractorAuditOperator2012.getStatus()).thenReturn(auditStatus);
         when(contractorAuditOperator2012.isVisible()).thenReturn(true);
-        when(contractorAuditOperator2012.hasCaop(operator.getId())).thenReturn(true);
+//        when(contractorAuditOperator2012.hasCaop(operator.getId())).thenReturn(true);
 
         contractorAudit.setOperators(Arrays.asList(contractorAuditOperator2012));
     }
@@ -1408,7 +1408,7 @@ public class FlagCalculatorTest {
         when(cao.getId()).thenReturn(auditForYear);
         when(cao.isVisible()).thenReturn(true);
         when(audit.getOperators()).thenReturn(Arrays.asList(cao));
-        when(cao.hasCaop(OPERATOR_ID_FOR_CAOP)).thenReturn(true);
+//        when(cao.hasCaop(OPERATOR_ID_FOR_CAOP)).thenReturn(true);
         when(cao.getStatus()).thenReturn(caoStatus);
         when(cao.getOperator()).thenReturn(operator);
         when(caop.getOperator()).thenReturn(operator);

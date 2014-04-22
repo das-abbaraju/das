@@ -1,9 +1,10 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.model.entities.AuditStatus;
-import com.picsauditing.model.entities.ContractorAudit;
-import com.picsauditing.model.entities.ContractorAuditOperator;
+import com.picsauditing.flagcalculator.entities.AuditStatus;
+import com.picsauditing.flagcalculator.entities.ContractorAudit;
+import com.picsauditing.flagcalculator.entities.ContractorAuditOperator;
+import com.picsauditing.flagcalculator.service.AuditService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -152,14 +153,14 @@ public class ContractorAuditTest {
     public void testHasCaoStatusAfterFalse() {
         contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit,
                 AuditStatus.Resubmitted)));
-        assertFalse(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
+        assertFalse(AuditService.hasCaoStatusAfter(contractorAudit, AuditStatus.Resubmitted));
     }
 
     @Test
     public void testHasCaoStatusAfterTrue() {
         contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit,
                 AuditStatus.Complete)));
-        assertTrue(contractorAudit.hasCaoStatusAfter(AuditStatus.Resubmitted));
+        assertTrue(AuditService.hasCaoStatusAfter(contractorAudit, AuditStatus.Resubmitted));
     }
 
 //    @Test
@@ -180,14 +181,14 @@ public class ContractorAuditTest {
     public void testHasCaoStatusFalse() {
         contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit,
                 AuditStatus.Pending)));
-        assertFalse(contractorAudit.hasCaoStatus(AuditStatus.Resubmitted));
+        assertFalse(AuditService.hasCaoStatus(contractorAudit, AuditStatus.Resubmitted));
     }
 
     @Test
     public void testHasCaoStatusTrue() {
         contractorAudit.setOperators(Arrays.asList(EntityFactory.makeContractorAuditOperator(contractorAudit,
                 AuditStatus.Approved)));
-        assertTrue(contractorAudit.hasCaoStatus(AuditStatus.Approved));
+        assertTrue(AuditService.hasCaoStatus(contractorAudit, AuditStatus.Approved));
     }
 
     @Test
@@ -199,8 +200,8 @@ public class ContractorAuditTest {
         contractorAudit.getOperators().add(cao1);
         contractorAudit.getOperators().add(cao2);
 
-        assertFalse(contractorAudit.hasCaoStatusAfter(AuditStatus.Submitted, true));
-        assertTrue(contractorAudit.hasCaoStatusAfter(AuditStatus.Submitted, false));
+        assertFalse(AuditService.hasCaoStatusAfter(contractorAudit, AuditStatus.Submitted, true));
+        assertTrue(AuditService.hasCaoStatusAfter(contractorAudit, AuditStatus.Submitted, false));
     }
 
 //    @Test

@@ -1,7 +1,7 @@
 package com.picsauditing;
 
-import com.picsauditing.model.entities.Facility;
-import com.picsauditing.model.entities.*;
+import com.picsauditing.flagcalculator.entities.Facility;
+import com.picsauditing.flagcalculator.entities.*;
 
 import java.util.ArrayList;
 import java.util.Date;

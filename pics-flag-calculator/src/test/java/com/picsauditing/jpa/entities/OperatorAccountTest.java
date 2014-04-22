@@ -1,8 +1,9 @@
 package com.picsauditing.jpa.entities;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.model.entities.Facility;
-import com.picsauditing.model.entities.OperatorAccount;
+import com.picsauditing.flagcalculator.entities.Facility;
+import com.picsauditing.flagcalculator.entities.OperatorAccount;
+import com.picsauditing.flagcalculator.service.AccountService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -110,10 +111,10 @@ public class OperatorAccountTest {
         parent.setPrimaryCorporate(true);
         facilityop.getOperatorFacilities().add(facility);
 
-        assertTrue(operator.isApplicableFlagOperator(operator));
-        assertTrue(operator.isApplicableFlagOperator(parent));
-        assertTrue(operator.isApplicableFlagOperator(facilityop));
-        assertFalse(operator.isApplicableFlagOperator(notapplicable));
+        assertTrue(AccountService.isApplicableFlagOperator(operator, operator));
+        assertTrue(AccountService.isApplicableFlagOperator(operator, parent));
+        assertTrue(AccountService.isApplicableFlagOperator(operator, facilityop));
+        assertFalse(AccountService.isApplicableFlagOperator(operator, notapplicable));
     }
 
 //    @Test

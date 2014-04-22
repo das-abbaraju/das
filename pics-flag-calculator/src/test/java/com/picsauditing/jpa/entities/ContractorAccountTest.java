@@ -1,9 +1,9 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.model.entities.ContractorAccount;
-import com.picsauditing.model.entities.ContractorTrade;
-import com.picsauditing.model.entities.Trade;
-import com.picsauditing.service.TradeService;
+import com.picsauditing.flagcalculator.entities.ContractorAccount;
+import com.picsauditing.flagcalculator.entities.ContractorTrade;
+import com.picsauditing.flagcalculator.entities.Trade;
+import com.picsauditing.flagcalculator.service.TradeService;
 import org.junit.Test;
 
 import java.util.HashSet;
