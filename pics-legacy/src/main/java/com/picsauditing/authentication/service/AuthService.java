@@ -91,8 +91,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			verifyPasswordIsCorrect(username, password);
 			verifyEmployeeGuardStatus();
 
-			loadPermissions();
-
 			//addClientSessionCookieToResponse();
 
 			//TODO - verifyUserStatusForLogin(user);
