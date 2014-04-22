@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -14,9 +15,7 @@ import org.powermock.reflect.Whitebox;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyListOf;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -52,6 +51,18 @@ public class RoleEntityServiceTest {
 		Whitebox.setInternalState(roleEntityService, "roleDAO", roleDAO);
 		Whitebox.setInternalState(roleEntityService, "siteAssignmentDAO", siteAssignmentDAO);
 	}
+
+  @Test
+  public void testFindRolesForCorporateAccounts_NoAccountsProvided(){
+    List<Role> roles=roleEntityService.findRolesForCorporateAccounts(CollectionUtils.EMPTY_COLLECTION);
+    assertTrue(roles.isEmpty());
+  }
+
+  @Test
+  public void testFindRolesForCorporateAccounts_AccountProvided(){
+    roleEntityService.findRolesForCorporateAccounts(Arrays.asList(ACCOUNT_ID));
+    verify(roleDAO).findByAccounts(anyCollection());
+  }
 
 	@Test
 	public void testFind() throws Exception {

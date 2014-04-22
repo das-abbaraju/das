@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
@@ -12,6 +11,7 @@ import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -23,8 +23,10 @@ import java.util.*;
 @Deprecated
 public class SkillService {
 
-	@Autowired
-	private AccountGroupDAO accountGroupDAO;
+  @Autowired
+  private AccountGroupDAO accountGroupDAO;
+  @Autowired
+  private RoleDAO roleDAO;
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -159,16 +161,21 @@ public class SkillService {
 				.build();
 
 		AccountSkill accountSkillInDatabase = skillEntityService.update(updatedAccountSkill, updated);
-		updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
 
-		// If we're making this skill required then we can't associate this skill with groups
-		if (accountSkillInDatabase.getRuleType().isRequired()) {
-			accountSkillInDatabase.getGroups().clear();
-		}
+    if(SessionInfoProviderFactory.getSessionInfoProvider().getPermissions().isContractor()) {
+      updateAccountSkillGroups(accountSkillInDatabase, updatedAccountSkill, appUserId);
+      // If we're making this skill required then we can't associate this skill with groups
+      if (accountSkillInDatabase.getRuleType().isRequired()) {
+        accountSkillInDatabase.getGroups().clear();
+      }
+    }
+    else{
+      updateAccountSkillRoles(accountSkillInDatabase, updatedAccountSkill, appUserId);
+    }
+
+
 
 		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, updated);
-
-		accountSkillEmployeeService.linkEmployeesToSkill(accountSkillInDatabase, appUserId);
 
 		return accountSkillDAO.save(accountSkillInDatabase);
 	}
@@ -178,6 +185,12 @@ public class SkillService {
 		accountSkillInDatabase.getGroups().clear();
 		accountSkillInDatabase.getGroups().addAll(accountSkillGroups);
 	}
+
+  private void updateAccountSkillRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+    List<AccountSkillRole> accountSkillRoles = getLinkedRoles(accountSkillInDatabase, updatedSkill, appUserId);
+    accountSkillInDatabase.getRoles().clear();
+    accountSkillInDatabase.getRoles().addAll(accountSkillRoles);
+  }
 
 	public void setRequiredSkillsForSite(List<AccountSkill> requiredSkills, String id, int appUserID) {
 		List<SiteSkill> newSiteSkills = new ArrayList<>();
@@ -229,6 +242,30 @@ public class SkillService {
 		return accountSkillGroups;
 	}
 
+  private List<AccountSkillRole> getLinkedRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+    BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
+    List<AccountSkillRole> accountSkillRoles = IntersectionAndComplementProcess.intersection(updatedSkill.getRoles(),
+            accountSkillInDatabase.getRoles(), AccountSkillRole.COMPARATOR, callback);
+
+    List<String> roleNames = getRoleNames(accountSkillRoles);
+
+    if (CollectionUtils.isNotEmpty(roleNames)) {
+      List<Role> roles = roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(updatedSkill.getAccountId()), roleNames);
+
+      for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+        Role role = accountSkillRole.getRole();
+        int index = roles.indexOf(role);
+        if (index >= 0) {
+          accountSkillRole.setRole(roles.get(index));
+        }
+      }
+    }
+
+    accountSkillRoles.addAll(callback.getRemovedEntities());
+
+    return accountSkillRoles;
+  }
+
 	private List<String> getGroupNames(List<AccountSkillGroup> AccountSkillGroups) {
 		if (CollectionUtils.isEmpty(AccountSkillGroups)) {
 			return Collections.emptyList();
@@ -241,6 +278,19 @@ public class SkillService {
 
 		return groupNames;
 	}
+
+  private List<String> getRoleNames(List<AccountSkillRole> accountSkillRoles) {
+    if (CollectionUtils.isEmpty(accountSkillRoles)) {
+      return Collections.emptyList();
+    }
+
+    List<String> roleNames = new ArrayList<>();
+    for (AccountSkillRole accountSkillRole : accountSkillRoles) {
+      roleNames.add(accountSkillRole.getRole().getName());
+    }
+
+    return roleNames;
+  }
 
 	@Deprecated
 	public void delete(String id, int accountId, int appUserId) {

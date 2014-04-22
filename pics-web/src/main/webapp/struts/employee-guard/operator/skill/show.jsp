@@ -79,7 +79,8 @@
                             Required for all employees
                         </s:if>
                         <s:else>
-                            <s:set var="operator_roles" value="skill.groups"/>
+                            <s:set var="operator_roles" value="skill.roles"/>
+
                             <s:include value="/struts/employee-guard/operator/role/_list.jsp"/>
                         </s:else>
                     </dd>

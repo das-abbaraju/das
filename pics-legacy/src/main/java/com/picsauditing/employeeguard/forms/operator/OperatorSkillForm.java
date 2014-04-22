@@ -20,7 +20,7 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 	boolean addAnother;
 
 	/* Collections */
-	private String[] groups;
+	private String[] roles;
 
 	public String getName() {
 		return name;
@@ -78,12 +78,12 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 		this.doesNotExpire = doesNotExpire;
 	}
 
-	public String[] getGroups() {
-		return groups;
+	public String[] getRoles() {
+		return roles;
 	}
 
-	public void setGroups(String[] groups) {
-		this.groups = groups;
+	public void setRoles(String[] roles) {
+		this.roles = roles;
 	}
 
 	@Override
@@ -98,12 +98,12 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 
 	public AccountSkill buildAccountSkill() {
 		return new AccountSkillBuilder().name(name).description(description).skillType(skillType).required(required)
-				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).doesNotExpire(doesNotExpire).build();
+				.intervalType(intervalType).intervalPeriod(intervalPeriod).roles(roles).doesNotExpire(doesNotExpire).build();
 	}
 
 	public AccountSkill buildAccountSkill(int id, int accountId) {
 		return new AccountSkillBuilder(id, accountId).name(name).description(description).skillType(skillType).required(required)
-				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).doesNotExpire(doesNotExpire).build();
+				.intervalType(intervalType).intervalPeriod(intervalPeriod).roles(roles).doesNotExpire(doesNotExpire).build();
 	}
 
 	@Override
@@ -136,13 +136,13 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 			form.setIntervalPeriod(accountSkill.getIntervalPeriod());
 			form.setDoesNotExpire(!accountSkill.getIntervalType().isApplicableExpiration() && accountSkill.getIntervalPeriod() == 0);
 
-			String[] groups = new String[accountSkill.getGroups().size()];
+			String[] roles = new String[accountSkill.getRoles().size()];
 			int counter = 0;
-			for (AccountSkillGroup accountSkillGroup : accountSkill.getGroups()) {
-				groups[counter++] = accountSkillGroup.getGroup().getName();
+			for (AccountSkillRole accountSkillRole: accountSkill.getRoles()) {
+				roles[counter++] = accountSkillRole.getRole().getName();
 			}
 
-			form.setGroups(groups);
+			form.setRoles(roles);
 
 			return form;
 		}
