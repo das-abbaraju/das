@@ -332,17 +332,17 @@ public class FlagCalculator {
                             return answer2 > TradeService.getWeightedIndustryAverage(con) * hurdle2 / 100;
                         }
 
-//                        if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
-//                            return answer2 > (IndustryAverageService.getLwcrIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
-//                        }
-//
-//                        if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
-//                            return answer2 > (IndustryAverageService.getTrirIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
-//                        }
-//
-//                        if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
-//                            return answer2 > (IndustryAverageService.getDartIndustryAverage(conCriteria.getContractor().getNaics(), flagCalculatorDAO) * hurdle2) / 100;
-//                        }
+                        if (criteria.getOshaRateType().equals(OshaRateType.LwcrNaics)) {
+                            return answer2 > (IndustryAverageService.getLwcrIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
+                        }
+
+                        if (criteria.getOshaRateType().equals(OshaRateType.TrirNaics)) {
+                            return answer2 > (IndustryAverageService.getTrirIndustryAverage(conCriteria.getContractor()) * hurdle2) / 100;
+                        }
+
+                        if (criteria.getOshaRateType().equals(OshaRateType.DartNaics)) {
+                            return answer2 > (IndustryAverageService.getDartIndustryAverage(conCriteria.getContractor().getNaics(), flagCalculatorDAO) * hurdle2) / 100;
+                        }
                     }
 
                     if (comparison.equals("=")) {
