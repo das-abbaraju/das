@@ -2,11 +2,13 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.flagcalculator.FlagCalculator;
+import com.picsauditing.flagcalculator.dao.FlagCriteriaDAO;
 import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.flagcalculator.util.DateBean;
 import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
@@ -41,8 +43,8 @@ public class FlagCalculatorTest {
 //    private FlagCriteria nullCriteria;
 //    private FeatureToggle featureToggle;
 
-//    @Mock
-//    private FlagCriteriaDAO flagCriteriaDao;
+    @Mock
+    private FlagCriteriaDAO flagCriteriaDao;
 //    @Mock
 //    protected FlagDataOverrideDAO flagDataOverrideDAO;
 //    @Mock
@@ -89,7 +91,7 @@ public class FlagCalculatorTest {
 //        opCrits.add(fcOp);
 //
 //		/* Initialize the calculator */
-        calculator = new FlagCalculator();
+        calculator = new FlagCalculator(flagCriteriaDao);
 //        calculator = new FlagCalculator(conCrits);
 //        caoMap = null;
 //
