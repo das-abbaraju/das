@@ -1,6 +1,6 @@
 package com.picsauditing.flagcalculator;
 
-import com.picsauditing.flagcalculator.dao.FlagCriteriaDAO;
+import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.flagcalculator.service.AuditService;
 import com.picsauditing.flagcalculator.util.DateBean;
@@ -44,7 +44,7 @@ public class FlagCalculatorTest {
     private FlagCriteria nullCriteria;
 
     @Mock
-    private FlagCriteriaDAO flagCriteriaDao;
+    private FlagCalculatorDAO flagCalculatorDao;
     @Mock
     protected FlagCriteria multiCriteria;
 
@@ -87,7 +87,7 @@ public class FlagCalculatorTest {
         opCrits.add(fcOp);
 
 		/* Initialize the calculator */
-        calculator = new FlagCalculator(conCrits,flagCriteriaDao);
+        calculator = new FlagCalculator(conCrits, flagCalculatorDao);
 //        caoMap = null;
 
         lastYearCriteria = createFlagCriteria(1, MultiYearScope.LastYearOnly);
@@ -274,7 +274,7 @@ public class FlagCalculatorTest {
         criteriaList.add(lastYearCriteria);
         criteriaList.add(twoYearCriteria);
         criteriaList.add(threeYearCriteria);
-        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+        when(flagCalculatorDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
 
         overrides.clear();
         Whitebox.setInternalState(calculator, "overrides", overrides);
@@ -295,7 +295,7 @@ public class FlagCalculatorTest {
         criteriaList.add(lastYearCriteria);
         criteriaList.add(twoYearCriteria);
         criteriaList.add(threeYearCriteria);
-        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+        when(flagCalculatorDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
 
         overrides.clear();
         addFlagDataOverride(overrides, nullCriteria, "blah");
@@ -317,7 +317,7 @@ public class FlagCalculatorTest {
         criteriaList.add(lastYearCriteria);
         criteriaList.add(twoYearCriteria);
         criteriaList.add(threeYearCriteria);
-        when(flagCriteriaDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
+        when(flagCalculatorDao.findWhere(Matchers.anyString())).thenReturn(criteriaList);
 
         // now do year criteria
         // no fdo
@@ -610,7 +610,7 @@ public class FlagCalculatorTest {
 //    @Test
 //    public void testInsuranceCriteria() {
 //        FlagDataCalculator calculator = setupInsuranceCriteria("10", "5");
-//        Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+//        Whitebox.setInternalState(calculator, "flagCalculatorDao", flagCalculatorDao);
 //        Whitebox.setInternalState(calculator, "dao", dao);
 //
 //        List<FlagData> list = calculator.calculate();
@@ -622,7 +622,7 @@ public class FlagCalculatorTest {
 //    @Test
 //    public void testInsuranceCriteria_rulesBasedInsuranceCriteria() {
 //        FlagDataCalculator calculator = setupRulesBasedInsuranceCriteria("10", "5");
-//        Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+//        Whitebox.setInternalState(calculator, "flagCalculatorDao", flagCalculatorDao);
 //        Whitebox.setInternalState(calculator, "dao", dao);
 //
 //        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA)).thenReturn(true);
@@ -636,7 +636,7 @@ public class FlagCalculatorTest {
 //    @Test
 //    public void testInsuranceCriteria_rulesBasedInsuranceCriteriaGreen() {
 //        FlagDataCalculator calculator = setupRulesBasedInsuranceCriteria("10", "10");
-//        Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+//        Whitebox.setInternalState(calculator, "flagCalculatorDao", flagCalculatorDao);
 //        Whitebox.setInternalState(calculator, "dao", dao);
 //
 //        when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA)).thenReturn(true);
@@ -959,7 +959,7 @@ public class FlagCalculatorTest {
 //        // outside the test class setup method - and confusing. I'm at least making it LOCAL
 //        // to this one test and not redefining the instance variable here in some random place
 //        FlagDataCalculator calculator = new FlagDataCalculator(conCrits);
-//        Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
+//        Whitebox.setInternalState(calculator, "flagCalculatorDao", flagCalculatorDao);
 //        Whitebox.setInternalState(calculator, "dao", dao);
 //
 //        // calculator.setCaoMap(caoMap);
