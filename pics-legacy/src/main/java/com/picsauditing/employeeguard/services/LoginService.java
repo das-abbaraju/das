@@ -3,7 +3,9 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.security.EncodedMessage;
+import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.util.Strings;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -24,7 +26,7 @@ public class LoginService {
 	@Autowired
 	private AppUserDAO appUserDAO;
     @Autowired
-    private AppPropertyDAO appPropertyDAO;
+	private AppPropertyService appPropertyService;
 
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
@@ -55,12 +57,12 @@ public class LoginService {
     }
 
     private String callRESTService(String path, String query) {
-        String host = requestHost();
+        String host = getRequestHost();
         UriBuilder uriBuilder = UriBuilder.fromPath(path);
         uriBuilder.replaceQuery(query);
         uriBuilder.host(host);
         uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
-        uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
+        uriBuilder.port(("localhost".equals(host) ? getRequestHostPort() : -1));
 
 		LOG.info(uriBuilder.toString());
 
@@ -84,7 +86,11 @@ public class LoginService {
 	    return jsonObject.toString();
     }
 
-    private String requestHost() {
-        return appPropertyDAO.getProperty("AuthServiceHost");
-    }
+	private String getRequestHost() {
+		return appPropertyService.getPropertyString(AppProperty.AUTH_SERVICE_HOST);
+	}
+
+	private int getRequestHostPort() {
+		return appPropertyService.getPropertyInt(AppProperty.AUTH_SERVICE_HOST_PORT, 8080);
+	}
 }

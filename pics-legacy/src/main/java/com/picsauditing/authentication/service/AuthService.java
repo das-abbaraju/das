@@ -106,6 +106,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			json.put("status", "FAIL");
+			LOG.error("error in authenticateByCredentials", e);
 		}
 
 		return JSON;

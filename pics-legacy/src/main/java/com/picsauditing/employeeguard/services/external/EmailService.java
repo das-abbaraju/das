@@ -19,7 +19,7 @@ public class EmailService {
 		emailBuilder.setToAddresses(emailHash.getEmailAddress());
 		emailBuilder.setFromAddress("PICS <info@picsauditing.com>");
 		emailBuilder.setTemplate(EG_WELCOME_EMAIL);
-		emailBuilder.addToken("emailHash", new EmailHashWrapper(emailHash));
+		emailBuilder.addToken("hash", new EmailHashWrapper(emailHash));
 		emailBuilder.addToken("CompanyName", accountName);
 
 		emailSender.sendNow(emailBuilder.build());
