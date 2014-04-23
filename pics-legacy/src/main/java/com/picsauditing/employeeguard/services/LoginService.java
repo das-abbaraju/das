@@ -61,6 +61,8 @@ public class LoginService {
         uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
         uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
 
+		LOG.info(uriBuilder.toString());
+
         try {
             Client client = Client.create(new DefaultClientConfig());
             WebResource webResource = client.resource(uriBuilder.build());

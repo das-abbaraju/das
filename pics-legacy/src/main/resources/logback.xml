@@ -65,6 +65,20 @@
 		</timeBasedFileNamingAndTriggeringPolicy>
 	</appender>
 
+    <appender name="EmployeeGUARDAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${destination}_employee_guard.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss},%msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${destination}_pdf_generation_%d{yyyy-MM-dd}.log</FileNamePattern>
+        </rollingPolicy>
+        <maxHistory>10</maxHistory>
+        <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+            <maxFileSize>100MB</maxFileSize>
+        </timeBasedFileNamingAndTriggeringPolicy>
+    </appender>
+
 	<!-- Perf4J appenders -->
 
 	<appender name="graphExecutionTimes" class="org.perf4j.logback.GraphingStatisticsAppender">
@@ -156,6 +170,21 @@
     <logger name="com.picsauditing.coverage.ContractorCronSmallSetCodeCoverage">
         <appender-ref ref="STDOUT"/>
         <level value="debug"/>
+    </logger>
+
+    <logger name="com.picsauditing.employeeguard.controllers.LoginAction">
+        <appender-ref ref="EmployeeGUARDAppender"/>
+        <level value="debug" />
+    </logger>
+
+    <logger name="com.picsauditing.employeeguard.controllers.AccountAction">
+        <appender-ref ref="EmployeeGUARDAppender"/>
+        <level value="debug" />
+    </logger>
+
+    <logger name="com.picsauditing.authentication.service.AuthService">
+        <appender-ref ref="EmployeeGUARDAppender"/>
+        <level value="debug" />
     </logger>
 
 </configuration>
