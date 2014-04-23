@@ -17,13 +17,15 @@ import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.util.Strings;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 public class AuthService extends PicsApiSupport implements ParameterAware {
 
-	//TODO - logging
+	private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
 
 	private String ssoToken;
 	private String username;
@@ -75,6 +77,8 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			json.put("status", "SUCCESS");
 			json.put("id", newAppUser.getId());
 		}
+
+		LOG.error("Auth Service result = {}", json.toJSONString());
 
 		return JSON;
 	}
