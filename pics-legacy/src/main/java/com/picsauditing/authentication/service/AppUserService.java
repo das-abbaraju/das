@@ -1,6 +1,7 @@
 package com.picsauditing.authentication.service;
 
-import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.service.AppPropertyService;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -14,7 +15,7 @@ import javax.ws.rs.core.UriBuilder;
 public class AppUserService {
 
 	@Autowired
-	private AppPropertyDAO appPropertyDAO;
+	private AppPropertyService appPropertyService;
 
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
 
@@ -33,12 +34,12 @@ public class AppUserService {
 	}
 
 	private String callRESTService(String path, String query) {
-		String host = requestHost();
+		String host = getRequestHost();
 		UriBuilder uriBuilder = UriBuilder.fromPath(path);
 		uriBuilder.replaceQuery(query);
 		uriBuilder.host(host);
 		uriBuilder.scheme("localhost".equals(host) ? "http" : "https");
-		uriBuilder.port(("localhost".equals(host) ? 8080 : -1));
+		uriBuilder.port(("localhost".equals(host) ? getRequestHostPort() : -1));
 
 		Client client = Client.create(new DefaultClientConfig());
 		WebResource webResource = client.resource(uriBuilder.build());
@@ -46,7 +47,11 @@ public class AppUserService {
 		return response.getEntity(String.class);
 	}
 
-	private String requestHost() {
-		return appPropertyDAO.getProperty("AuthServiceHost");
+	private String getRequestHost() {
+		return appPropertyService.getPropertyString(AppProperty.AUTH_SERVICE_HOST);
+	}
+
+	private int getRequestHostPort() {
+		return appPropertyService.getPropertyInt(AppProperty.AUTH_SERVICE_HOST_PORT, 8080);
 	}
 }

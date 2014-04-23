@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services.external;
 
 import com.picsauditing.employeeguard.entities.EmailHash;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,28 +13,38 @@ public class EmailService {
 	@Autowired
 	private EmailSender emailSender;
 
-	public void sendEGWelcomeEmail(final EmailHash hash, final String accountName) throws Exception {
+	public void sendEGWelcomeEmail(final EmailHash emailHash, final String accountName) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 
-		emailBuilder.setToAddresses(hash.getEmailAddress());
+		emailBuilder.setToAddresses(emailHash.getEmailAddress());
 		emailBuilder.setFromAddress("PICS <info@picsauditing.com>");
 		emailBuilder.setTemplate(EG_WELCOME_EMAIL);
-		emailBuilder.addToken("hash", new EmailHashWrapper(hash.getHashCode()));
+		emailBuilder.addToken("emailHash", new EmailHashWrapper(emailHash));
 		emailBuilder.addToken("CompanyName", accountName);
 
 		emailSender.sendNow(emailBuilder.build());
 	}
 
+	/**
+	 * Wrapper class to provide same properties to the email template that existed with previous
+	 * emailHash.
+	 */
 	public static class EmailHashWrapper {
 
 		private String emailHashCode;
+		private SoftDeletedEmployee softDeletedEmployee;
 
-		public EmailHashWrapper(final String emailHashCode) {
-			this.emailHashCode = emailHashCode;
+		public EmailHashWrapper(final EmailHash emailHash) {
+			this.emailHashCode = emailHash.getHashCode();
+			this.softDeletedEmployee = emailHash.getEmployee();
 		}
 
 		public String getHash() {
 			return emailHashCode;
+		}
+
+		public SoftDeletedEmployee getEmployee() {
+			return softDeletedEmployee;
 		}
 	}
 }

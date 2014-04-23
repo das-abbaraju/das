@@ -12,21 +12,9 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class AppUserDAO {
-	protected EntityManager em;
-	protected QueryMetaData queryMetaData = null;
 
 	@PersistenceContext
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
-
-	public QueryMetaData getQueryMetaData() {
-		return queryMetaData;
-	}
-
-	public void setQueryMetaData(QueryMetaData queryMetaData) {
-		this.queryMetaData = queryMetaData;
-	}
+	private EntityManager em;
 
 	@Transactional(propagation = Propagation.NESTED)
 	public AppUser save(AppUser o) {
@@ -35,6 +23,9 @@ public class AppUserDAO {
 		} else {
 			o = em.merge(o);
 		}
+
+		em.flush();
+
 		return o;
 	}
 
@@ -47,7 +38,9 @@ public class AppUserDAO {
 			where = "";
 		if (where.length() > 0)
 			where = "WHERE " + where;
+
 		Query query = em.createQuery("select a from AppUser a " + where);
+
 		return query.getResultList();
 	}
 

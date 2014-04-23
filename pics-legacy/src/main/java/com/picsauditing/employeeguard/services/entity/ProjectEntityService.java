@@ -192,6 +192,9 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	}
 
 	public void removeEmployeeFromProjectRole(final Project project, final int roleId, final int employeeId) {
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO
+				.findProjectRoleEmployees(project.getId(), roleId, employeeId);
+
 		projectRoleEmployeeDAO.delete(project, roleId, employeeId);
 	}
 

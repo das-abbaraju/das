@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmployee> {
-	
+
 	public ProjectRoleEmployeeDAO() {
 		this.type = ProjectRoleEmployee.class;
 	}
@@ -136,7 +136,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndProjects(final Collection<Employee> employees,
-	                                                            final Collection<Project> projects) {
+																final Collection<Project> projects) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -150,12 +150,12 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
-	                                                          final int siteId) {
+															  final int siteId) {
 		return findByEmployeesAndSiteIds(employees, Arrays.asList(siteId));
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
-	                                                           final Collection<Integer> siteIds) {
+															   final Collection<Integer> siteIds) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -216,6 +216,25 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 				"AND pre.employee.id = :employeeId");
 
 		query.setParameter("siteId", siteId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findProjectRoleEmployees(final int projectId,
+															 final int roleId,
+															 final int employeeId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"JOIN pr.role r " +
+				"JOIN pre.employee e " +
+				"WHERE p.id = :projectId " +
+				"AND r.id = :roleId " +
+				"AND e.id = :employeeId", ProjectRoleEmployee.class);
+
+		query.setParameter("projectId", projectId);
 		query.setParameter("roleId", roleId);
 		query.setParameter("employeeId", employeeId);
 
