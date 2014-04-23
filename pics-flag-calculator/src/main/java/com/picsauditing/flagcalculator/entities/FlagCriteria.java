@@ -16,7 +16,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     private int displayOrder = 999;
     private AuditQuestion question;
     private AuditType auditType;
-//    private OshaType oshaType;
+    private OshaType oshaType;
     private OshaRateType oshaRateType;
 //    private String label;
 //    private String description;
@@ -28,9 +28,9 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     private boolean allowCustomValue = false;
     private String dataType = "string";
     private boolean flaggableWhenMissing = false;
-//    private boolean insurance = false;
-//    private FlagCriteriaOptionCode optionCode;
-//
+    private boolean insurance = false;
+    private FlagCriteriaOptionCode optionCode;
+
     public static final String BOOLEAN = "boolean";
     public static final String NUMBER = "number";
     public static final String DATE = "date";
@@ -41,13 +41,12 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 //
 //    public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 //
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, importance = FieldImportance.Required)
-//    @Column(name = "category")
-//    public FlagCriteriaCategory getCategory() {
-//        return category;
-//    }
-//
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
+    public FlagCriteriaCategory getCategory() {
+        return category;
+    }
+
     public void setCategory(FlagCriteriaCategory category) {
         this.category = category;
     }
@@ -72,17 +71,15 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
-//    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(type = FieldType.OshaType, importance = FieldImportance.Average)
-//    public OshaType getOshaType() {
-//        return oshaType;
-//    }
-//
-//    public void setOshaType(OshaType oshaType) {
-//        this.oshaType = oshaType;
-//    }
-//
+    @Enumerated(EnumType.STRING)
+    public OshaType getOshaType() {
+        return oshaType;
+    }
+
+    public void setOshaType(OshaType oshaType) {
+        this.oshaType = oshaType;
+    }
+
     @Enumerated(EnumType.STRING)
     public OshaRateType getOshaRateType() {
         return oshaRateType;
@@ -207,15 +204,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.flaggableWhenMissing = flaggableWhenMissing;
     }
 
-//    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
-//    public boolean isInsurance() {
-//        return insurance;
-//    }
-//
-//    public void setInsurance(boolean insurance) {
-//        this.insurance = insurance;
-//    }
-//
+    public boolean isInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(boolean insurance) {
+        this.insurance = insurance;
+    }
+
     public int getDisplayOrder() {
         return displayOrder;
     }
@@ -224,37 +220,16 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.displayOrder = displayOrder;
     }
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(nullable = true)
-//    @ReportField(type = FieldType.FlagCriteriaOptionCode, importance = FieldImportance.Low)
-//    public FlagCriteriaOptionCode getOptionCode() {
-//        return optionCode;
-//    }
-//
-//    public void setOptionCode(FlagCriteriaOptionCode optionCode) {
-//        this.optionCode = optionCode;
-//    }
-//
-//    /**
-//     * @return the question ID if this criteria should include
-//     */
-//    public Integer includeExcess() {
-//        if (!insurance || optionCode == null) {
-//            return null;
-//        }
-//
-//        // We should consider putting this into the DB eventually
-//        if (optionCode == FlagCriteriaOptionCode.ExcessAggregate) {
-//            return AuditQuestion.EXCESS_AGGREGATE;
-//        }
-//
-//        if (optionCode == FlagCriteriaOptionCode.ExcessEachOccurrence) {
-//            return AuditQuestion.EXCESS_EACH;
-//        }
-//
-//        return null;
-//    }
-//
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
+    public FlagCriteriaOptionCode getOptionCode() {
+        return optionCode;
+    }
+
+    public void setOptionCode(FlagCriteriaOptionCode optionCode) {
+        this.optionCode = optionCode;
+    }
+
 //    @Override
 //    public String toString() {
 //        return category + ": " + getDescription();

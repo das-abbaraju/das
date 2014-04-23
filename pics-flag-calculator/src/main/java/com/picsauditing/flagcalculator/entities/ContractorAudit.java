@@ -51,9 +51,9 @@ public class ContractorAudit extends BaseTable {
 //    private Integer ruleID;
 //    private Date slaDate;
 //
-//    private List<AuditCatData> categories = new ArrayList<AuditCatData>();
-//    private List<AuditData> data = new ArrayList<AuditData>();
-    private List<ContractorAuditOperator> operators = new ArrayList<ContractorAuditOperator>();
+    private List<AuditCatData> categories = new ArrayList<>();
+    private List<AuditData> data = new ArrayList<>();
+    private List<ContractorAuditOperator> operators = new ArrayList<>();
 //    private Map<AuditStatus, Integer> caoStats = null;
 //    private ContractorAudit previousAudit;
 //
@@ -248,29 +248,28 @@ public class ContractorAudit extends BaseTable {
 
     // Child tables
 
-//    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
-//    public List<AuditCatData> getCategories() {
-//		// TODO clean up categories
-//		for (AuditCatData auditCatData : categories) {
-//			if (!auditCatData.getCategory().getAuditType().equals(auditType)) {
-//			}
-//		}
-//        return categories;
-//    }
-//
-//    public void setCategories(List<AuditCatData> categories) {
-//        this.categories = categories;
-//    }
-//
-//    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
-//    public List<AuditData> getData() {
-//        return data;
-//    }
-//
-//    public void setData(List<AuditData> data) {
-//        this.data = data;
-//    }
-//
+    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
+    public List<AuditCatData> getCategories() {
+		for (AuditCatData auditCatData : categories) {
+			if (!auditCatData.getCategory().getAuditType().equals(auditType)) {
+			}
+		}
+        return categories;
+    }
+
+    public void setCategories(List<AuditCatData> categories) {
+        this.categories = categories;
+    }
+
+    @OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
+    public List<AuditData> getData() {
+        return data;
+    }
+
+    public void setData(List<AuditData> data) {
+        this.data = data;
+    }
+
 //    // TRANSIENT ///////////////////////////////
 //
 //    /**
@@ -617,15 +616,6 @@ public class ContractorAudit extends BaseTable {
 //    }
 //
 //    @Transient
-//    public boolean isCategoryApplicable(int catID) {
-//        for (AuditCatData acd : this.categories) {
-//            if (acd.getCategory().getId() == catID && acd.isApplies())
-//                return true;
-//        }
-//        return false;
-//    }
-//
-//    @Transient
 //    public ContractorAuditOperator getCao(OperatorAccount operator) {
 //        return getCao(operator.getOperatorHeirarchy());
 //    }
@@ -680,46 +670,6 @@ public class ContractorAudit extends BaseTable {
 //        }
 //
 //        return false;
-//    }
-//
-//    @Transient
-//    public Set<AuditCategory> getVisibleCategories() {
-//        Set<AuditCategory> visibleCategories = new HashSet<AuditCategory>();
-//        for (AuditCatData categoryData : this.getCategories()) {
-//            // Find all applicable categories
-//            if (categoryData.isApplies()) {
-//                visibleCategories.add(categoryData.getCategory());
-//            }
-//        }
-//
-//        // If the ancestors aren't applicable, then remove category
-//        Iterator<AuditCategory> iterator = visibleCategories.iterator();
-//        while (iterator.hasNext()) {
-//            AuditCategory category = iterator.next();
-//            AuditCategory parent = category.getParent();
-//
-//            // Breadcrumbs in case we have a cyclical relationship somewhere
-//            Set<Integer> alreadyProcessed = new HashSet<Integer>();
-//            alreadyProcessed.add(category.getId());
-//
-//            while (parent != null) {
-//                if (alreadyProcessed.contains(parent.getId())) {
-//                    logger.warn("Audit Categories {} have a cyclical relationship! Please check the configuration.",
-//                            Strings.implode(alreadyProcessed));
-//                    break;
-//                }
-//
-//                if (!visibleCategories.contains(parent)) {
-//                    iterator.remove();
-//                    break;
-//                }
-//
-//                alreadyProcessed.add(parent.getId());
-//                parent = parent.getParent();
-//            }
-//        }
-//
-//        return visibleCategories;
 //    }
 //
 //    @Transient

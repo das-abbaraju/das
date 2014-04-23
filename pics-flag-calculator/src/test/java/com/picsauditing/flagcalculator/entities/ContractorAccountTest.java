@@ -1,15 +1,24 @@
 package com.picsauditing.flagcalculator.entities;
 
+import com.picsauditing.flagcalculator.EntityFactory;
+import com.picsauditing.flagcalculator.service.AuditService;
 import com.picsauditing.flagcalculator.service.TradeService;
+import com.picsauditing.flagcalculator.util.YearList;
+import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.MockitoAnnotations;
 
+import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Map;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ContractorAccountTest {
-//    private ContractorAccount contractor;
+    private ContractorAccount contractor;
 //    private ContractorAccount contractorUnderTest;
 //    private List<ContractorOperator> testOperators;
 //    private OperatorAccount testOperator1 = new OperatorAccount();
@@ -60,11 +69,11 @@ public class ContractorAccountTest {
 //        CO_3.setOperatorAccount(testOperator3);
 //    }
 //
-//    @Before
-//    public void setup() {
-//        MockitoAnnotations.initMocks(this);
-//
-//        contractor = EntityFactory.makeContractor();
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+
+        contractor = EntityFactory.makeContractor();
 //        contractorUnderTest = new ContractorAccount();
 //        testOperators = new ArrayList<>();
 //        accountUsers = new ArrayList<>();
@@ -74,8 +83,8 @@ public class ContractorAccountTest {
 //        Whitebox.setInternalState(contractorUnderTest, "countryDAO", countryDAO);
 //        Whitebox.setInternalState(contractorUnderTest, "inputValidator", new InputValidator());
 //        Whitebox.setInternalState(contractorUnderTest, "vatValidator", new VATValidator());
-//    }
-//
+    }
+
 //    @After
 //    public void cleanup() {
 //        testOperator2.setParent(null);
@@ -208,121 +217,121 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         return trade;
     }
 
-//    @Test
-//    public void testGetAfterPendingAnnualUpdates_3Pending() {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//
-//        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
-//        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
-//        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Pending);
-//
-//        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//    }
-//
-//    @Test
-//    public void testGetAfterPendingAnnualUpdates_MiddlePending() {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//
-//        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
-//        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
-//        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
-//
-//        assertEquals(lastYear, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertEquals(null, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//    }
-//
-//
-//    @Test
-//    public void testGetAfterPendingAnnualUpdates_RecentPending() {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//
-//        contractor.setYearList(createTestYearList());
-//
-//        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
-//        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
-//        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
-//
-//        Map<MultiYearScope, ContractorAudit> annualUpdates = contractor.getAfterPendingAnnualUpdates();
-//
-//        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
-//        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
-//        assertEquals(null, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
-//    }
-//
-//    @Test
-//    public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//
-//        contractor.setYearList(createTestYearList());
-//
-//        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
-//        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
-//        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
-//        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
-//
-//        Map<MultiYearScope, ContractorAudit> annualUpdates = contractor.getAfterPendingAnnualUpdates();
-//
-//        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
-//        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
-//        assertEquals(fourYears, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
-//    }
-//
-//    private YearList createTestYearList() {
-//        YearList yearlist = new YearList();
-//        Calendar d = Calendar.getInstance();
-//        d.set(d.get(Calendar.YEAR), 0, 1);
-//        yearlist.setToday(d.getTime());
-//
-//        return yearlist;
-//    }
-//
-//    @Test
-//    public void testGetAfterPendingAnnualUpdates_FourYears() {
-//        ContractorAccount contractor = EntityFactory.makeContractor();
-//
-//        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
-//        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
-//        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
-//        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
-//
-//        assertEquals(lastYear, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertEquals(twoYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertEquals(threeYears, contractor.getAfterPendingAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//    }
-//
-//    private ContractorAudit createAnnualUpdate(int yearsAgo, ContractorAccount contractor, AuditStatus status) {
-//        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM,contractor);
-//
-//        Calendar expirationDate = Calendar.getInstance();
-//        expirationDate.add(Calendar.YEAR, 3);
-//
-//        Calendar currentDate = Calendar.getInstance();
-//        currentDate.add(Calendar.YEAR, yearsAgo);
-//        int year = currentDate.get(Calendar.YEAR);
-//
-//        audit.setAuditFor("" + year);
-//        audit.setExpiresDate(expirationDate.getTime());
-//        addCao(audit, EntityFactory.makeOperator(), status);
-//
-//        return audit;
-//    }
-//
-//    private void addCao(ContractorAudit audit, OperatorAccount operator, AuditStatus status) {
-//        ContractorAuditOperator cao = new ContractorAuditOperator();
-//        cao.setAudit(audit);
+    @Test
+    public void testGetAfterPendingAnnualUpdates_3Pending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Pending);
+
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_MiddlePending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+
+        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+    }
+
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_RecentPending() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        YearList yearList = createTestYearList();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+
+        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(contractor);
+
+        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        YearList yearList = createTestYearList();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
+
+        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(contractor);
+
+        assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
+        assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
+        assertEquals(fourYears, annualUpdates.get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    private YearList createTestYearList() {
+        YearList yearlist = new YearList();
+        Calendar d = Calendar.getInstance();
+        d.set(d.get(Calendar.YEAR), 0, 1);
+        yearlist.setToday(d.getTime());
+
+        return yearlist;
+    }
+
+    @Test
+    public void testGetAfterPendingAnnualUpdates_FourYears() {
+        ContractorAccount contractor = EntityFactory.makeContractor();
+
+        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Complete);
+        ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
+        ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
+        ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
+
+        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(twoYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+    }
+
+    private ContractorAudit createAnnualUpdate(int yearsAgo, ContractorAccount contractor, AuditStatus status) {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+
+        Calendar expirationDate = Calendar.getInstance();
+        expirationDate.add(Calendar.YEAR, 3);
+
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.add(Calendar.YEAR, yearsAgo);
+        int year = currentDate.get(Calendar.YEAR);
+
+        audit.setAuditFor("" + year);
+        audit.setExpiresDate(expirationDate.getTime());
+        addCao(audit, EntityFactory.makeOperator(), status);
+
+        return audit;
+    }
+
+    private void addCao(ContractorAudit audit, OperatorAccount operator, AuditStatus status) {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setAudit(audit);
 //        cao.changeStatus(status, null);
-//        cao.setOperator(operator);
-//        audit.getOperators().add(cao);
-//
-//        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        cao.setOperator(operator);
+        audit.getOperators().add(cao);
+
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 //        caop.setCao(cao);
-//        caop.setOperator(operator);
-//        cao.getCaoPermissions().add(caop);
-//    }
-//
+        caop.setOperator(operator);
+        cao.getCaoPermissions().add(caop);
+    }
+
 //    @Test
 //    public void testGetCurrentCsr_ReturnsCurrentCsr() throws Exception {
 //        User currentCsr = mock(User.class);
@@ -451,69 +460,69 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
 //        assertFalse(contractor.isOnlyAssociatedWith(OperatorAccount.SUNCOR));
 //    }
 //
-//    @Ignore
-//    @Test
-//    public void testGetCompleteAnnualUpdates() {
-//        OperatorAccount operator = EntityFactory.makeOperator();
-//        ContractorAudit auditThreeYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
-//        ContractorAudit auditTwoYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
-//        ContractorAudit auditLastYear = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
-//
-//        ContractorAuditOperator caoThreeYears = EntityFactory.addCao(auditThreeYears, operator);
-//        ContractorAuditOperator caoTwoYears = EntityFactory.addCao(auditTwoYears, operator);
-//        ContractorAuditOperator caoLastYear = EntityFactory.addCao(auditLastYear, operator);
-//
-//        Calendar cal = Calendar.getInstance();
-//        int currentYear = cal.get(Calendar.YEAR);
-//        auditLastYear.setAuditFor("" + (currentYear - 1));
-//        auditTwoYears.setAuditFor("" + (currentYear - 2));
-//        auditThreeYears.setAuditFor("" + (currentYear - 3));
-//        cal.add(Calendar.YEAR, 3);
-//        auditThreeYears.setExpiresDate(cal.getTime());
-//        auditTwoYears.setExpiresDate(cal.getTime());
-//        auditLastYear.setExpiresDate(cal.getTime());
-//
-//        contractor.getAudits().add(auditThreeYears);
-//        contractor.getAudits().add(auditTwoYears);
-//        contractor.getAudits().add(auditLastYear);
-//
-//        caoThreeYears.setStatus(AuditStatus.Pending);
-//        caoTwoYears.setStatus(AuditStatus.Pending);
-//        caoLastYear.setStatus(AuditStatus.Pending);
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//
-//        caoThreeYears.setStatus(AuditStatus.Pending);
-//        caoTwoYears.setStatus(AuditStatus.Complete);
-//        caoLastYear.setStatus(AuditStatus.Complete);
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//
-//        caoThreeYears.setStatus(AuditStatus.Complete);
-//        caoTwoYears.setStatus(AuditStatus.Pending);
-//        caoLastYear.setStatus(AuditStatus.Complete);
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//
-//        caoThreeYears.setStatus(AuditStatus.Complete);
-//        caoTwoYears.setStatus(AuditStatus.Complete);
-//        caoLastYear.setStatus(AuditStatus.Pending);
-//        assertNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//
-//        caoThreeYears.setStatus(AuditStatus.Complete);
-//        caoTwoYears.setStatus(AuditStatus.Complete);
-//        caoLastYear.setStatus(AuditStatus.Complete);
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.LastYearOnly));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.TwoYearsAgo));
-//        assertNotNull(contractor.getCompleteAnnualUpdates().get(MultiYearScope.ThreeYearsAgo));
-//
-//    }
-//
+    @Ignore
+    @Test
+    public void testGetCompleteAnnualUpdates() {
+        OperatorAccount operator = EntityFactory.makeOperator();
+        ContractorAudit auditThreeYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+        ContractorAudit auditTwoYears = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+        ContractorAudit auditLastYear = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
+
+        ContractorAuditOperator caoThreeYears = EntityFactory.addCao(auditThreeYears, operator);
+        ContractorAuditOperator caoTwoYears = EntityFactory.addCao(auditTwoYears, operator);
+        ContractorAuditOperator caoLastYear = EntityFactory.addCao(auditLastYear, operator);
+
+        Calendar cal = Calendar.getInstance();
+        int currentYear = cal.get(Calendar.YEAR);
+        auditLastYear.setAuditFor("" + (currentYear - 1));
+        auditTwoYears.setAuditFor("" + (currentYear - 2));
+        auditThreeYears.setAuditFor("" + (currentYear - 3));
+        cal.add(Calendar.YEAR, 3);
+        auditThreeYears.setExpiresDate(cal.getTime());
+        auditTwoYears.setExpiresDate(cal.getTime());
+        auditLastYear.setExpiresDate(cal.getTime());
+
+        contractor.getAudits().add(auditThreeYears);
+        contractor.getAudits().add(auditTwoYears);
+        contractor.getAudits().add(auditLastYear);
+
+        caoThreeYears.setStatus(AuditStatus.Pending);
+        caoTwoYears.setStatus(AuditStatus.Pending);
+        caoLastYear.setStatus(AuditStatus.Pending);
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+
+        caoThreeYears.setStatus(AuditStatus.Pending);
+        caoTwoYears.setStatus(AuditStatus.Complete);
+        caoLastYear.setStatus(AuditStatus.Complete);
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+
+        caoThreeYears.setStatus(AuditStatus.Complete);
+        caoTwoYears.setStatus(AuditStatus.Pending);
+        caoLastYear.setStatus(AuditStatus.Complete);
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+
+        caoThreeYears.setStatus(AuditStatus.Complete);
+        caoTwoYears.setStatus(AuditStatus.Complete);
+        caoLastYear.setStatus(AuditStatus.Pending);
+        assertNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+
+        caoThreeYears.setStatus(AuditStatus.Complete);
+        caoTwoYears.setStatus(AuditStatus.Complete);
+        caoLastYear.setStatus(AuditStatus.Complete);
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
+        assertNotNull(AuditService.getCompleteAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+
+    }
+
 //    @Test
 //    public void testHasVatId_null() {
 //        ContractorAccount testAccount = new ContractorAccount();
