@@ -332,7 +332,7 @@ public class ProjectService {
 	}
 
 	@Deprecated
-	public List<Project> getProjectsForEmployee(final Employee employee) {
+	public Set<Project> getProjectsForEmployee(final Employee employee) {
 		return projectEntityService.getProjectsForEmployee(employee);
 	}
 

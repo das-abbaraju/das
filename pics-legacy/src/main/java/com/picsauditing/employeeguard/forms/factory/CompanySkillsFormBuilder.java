@@ -70,7 +70,7 @@ public class CompanySkillsFormBuilder {
 	private void addProjectSiteSkillInfo(Profile profile, List<CompanySkillInfo> companySkillInfoList) {
 		Set<Integer> allAccountIds = new HashSet<>();
 		for (Employee employee : profile.getEmployees()) {
-			List<Project> employeeProjects = projectService.getProjectsForEmployee(employee);
+			Set<Project> employeeProjects = projectService.getProjectsForEmployee(employee);
 			List<Integer> accounts = ExtractorUtil.extractList(employeeProjects, new Extractor<Project, Integer>() {
 				@Override
 				public Integer extract(Project project) {

@@ -223,7 +223,28 @@ public class StatusCalculatorService {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
 				.findByEmployeeAndSkills(employee, skills);
 
+		Map<AccountSkill, SkillStatus> skillStatuses = getAccountSkillStatusMap(accountSkillEmployees);
+		addExpiredStatusToSkillsEmployeeIsMissing(skills, skillStatuses);
+
+		return skillStatuses;
+	}
+
+	private void addExpiredStatusToSkillsEmployeeIsMissing(final Collection<AccountSkill> skills,
+														   Map<AccountSkill, SkillStatus> skillStatuses) {
+		if (MapUtils.isEmpty(skillStatuses)) {
+			skillStatuses = new HashMap<>();
+		}
+
+		for (AccountSkill accountSkill : skills) {
+			if (!skillStatuses.containsKey(accountSkill)) {
+				skillStatuses.put(accountSkill, SkillStatus.Expired);
+			}
+		}
+	}
+
+	private Map<AccountSkill, SkillStatus> getAccountSkillStatusMap(List<AccountSkillEmployee> accountSkillEmployees) {
 		return PicsCollectionUtil.convertToMap(accountSkillEmployees,
+
 				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, AccountSkill, SkillStatus>() {
 					@Override
 					public AccountSkill getKey(AccountSkillEmployee entity) {

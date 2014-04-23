@@ -273,6 +273,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		);
 	}
 
+	public Set<AccountSkill> getGroupSkillsForEmployee(final Employee employee) {
+		return new HashSet<>(accountSkillDAO.findGroupSkillsForEmployee(employee));
+	}
+
 	/* All search related methods */
 
 	@Override
@@ -330,5 +334,4 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
 	}
-
 }

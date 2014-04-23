@@ -197,4 +197,8 @@ public class AssignmentService {
 
 		projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
 	}
+
+	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
+		return employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
+	}
 }

@@ -89,7 +89,7 @@ public class ProjectEntityServiceTest {
 		List<Project> projects = Arrays.asList(buildFakeProject(null));
 		when(projectDAO.findByEmployee(any(Employee.class))).thenReturn(projects);
 
-		List<Project> result = projectEntityService.getProjectsForEmployee(new Employee());
+		Set<Project> result = projectEntityService.getProjectsForEmployee(new Employee());
 
 		assertEquals(projects, result);
 	}

@@ -7,6 +7,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 
@@ -187,4 +188,16 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		return query.getResultList();
 	}
 
+	public List<AccountSkill> findGroupSkillsForEmployee(final Employee employee) {
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT s FROM AccountSkillGroup asg " +
+				"JOIN asg.skill s " +
+				"JOIN asg.group g " +
+				"JOIN g.employees age " +
+				"JOIN age.employee e " +
+				"WHERE e = :employee", AccountSkill.class);
+
+		query.setParameter("employee", employee);
+
+		return query.getResultList();
+	}
 }

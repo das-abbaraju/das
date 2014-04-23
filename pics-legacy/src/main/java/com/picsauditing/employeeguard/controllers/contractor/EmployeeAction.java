@@ -16,9 +16,12 @@ import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.process.EmployeeSkillData;
+import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -39,10 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @AuthenticationAware
 public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
@@ -54,6 +54,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private EmailService emailService;
 	@Autowired
@@ -72,6 +74,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
 	private ProjectRoleService projectRoleService;
+	@Autowired
+	private EmployeeSkillDataProcess employeeSkillDataProcess;
+	@Autowired
+	private AssignmentService assignmentService;
 
 	/* Forms */
 	@FormBinding("contractor_employee_create")
@@ -115,7 +121,14 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public String show() throws PageNotFoundException {
 		loadEmployee();
-		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employee.getSkills());
+
+		Set<Integer> corporateAndSiteIds = employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
+		List<Integer> allSiteAndCorporateIds = accountService.getTopmostCorporateAccountIds(corporateAndSiteIds);
+		EmployeeSkillData employeeSkillData = employeeSkillDataProcess.buildEmployeeSkillData(employee, allSiteAndCorporateIds);
+		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employeeSkillData.getSkillStatuses());
+
+		Collections.sort(skillInfoList);
+
 		loadEmployeeAssignments(employee);
 
 		return SHOW;
@@ -213,7 +226,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private void loadEmployee() {
-		employee = employeeService.findEmployee(id, permissions.getAccountId());
+		employee = employeeEntityService.find(getNumericId(), permissions.getAccountId());
 	}
 
 	private void loadEmployeeAssignments(Employee employee) {

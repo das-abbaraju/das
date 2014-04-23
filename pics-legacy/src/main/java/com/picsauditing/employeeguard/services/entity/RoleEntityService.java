@@ -202,6 +202,10 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Set<Role> getAllSiteRolesForEmployee(final Employee employee) {
+		return new HashSet<>(roleDAO.findRolesForEmployee(employee));
+	}
+
 	/* All Search Methods */
 
 	@Override

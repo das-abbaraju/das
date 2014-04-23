@@ -92,8 +92,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 				});
 	}
 
-	public List<Project> getProjectsForEmployee(final Employee employee) {
-		return projectDAO.findByEmployee(employee);
+	public Set<Project> getProjectsForEmployee(final Employee employee) {
+		return new HashSet<>(projectDAO.findByEmployee(employee));
 	}
 
 	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {

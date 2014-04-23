@@ -227,6 +227,21 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
+
+	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Employee employee) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployee(employee);
+		if (CollectionUtils.isEmpty(siteAssignments)) {
+			return Collections.emptySet();
+		}
+
+		Set<Integer> siteIds = new HashSet<>();
+		for (SiteAssignment siteAssignment : siteAssignments) {
+			siteIds.add(siteAssignment.getSiteId());
+		}
+
+		return siteIds;
+	}
+
 	/* All Search Methods */
 
 	@Override
