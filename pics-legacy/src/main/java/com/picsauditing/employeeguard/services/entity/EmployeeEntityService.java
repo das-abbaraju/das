@@ -53,10 +53,18 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
 	public List<Employee> getEmployeesForProjects(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyList();
+		}
+
 		return employeeDAO.findByProjects(projects);
 	}
 
@@ -223,11 +231,11 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 	@Override
 	public List<Employee> search(final String searchTerm, final int accountId) {
-		if (Strings.isNotEmpty(searchTerm)) {
-			return employeeDAO.search(searchTerm, accountId);
+		if (Strings.isEmpty(searchTerm)) {
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		return employeeDAO.search(searchTerm, accountId);
 	}
 
 	/* All Save Methods */

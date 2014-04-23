@@ -77,6 +77,7 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 		ActionContext.getContext().getSession().put(key, value);
 	}
 
+	@Override
 	public String getURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}

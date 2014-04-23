@@ -65,7 +65,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void testGetProject() throws Exception {
-		projectService.getProject("1", Account.PicsID);
+		projectService.getProject(1, Account.PicsID);
 		verify(projectDAO).findProjectByAccount(1, Account.PicsID);
 	}
 
@@ -139,7 +139,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		Project project = new Project();
 		when(projectDAO.findProjectByAccount(1, Account.PicsID)).thenReturn(project);
 
-		projectService.delete("1", Account.PicsID, Identifiable.SYSTEM);
+		projectService.delete(1, Account.PicsID);
 
 		verify(projectDAO).delete(project);
 	}

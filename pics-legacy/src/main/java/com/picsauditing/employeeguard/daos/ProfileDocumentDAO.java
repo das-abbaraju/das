@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
+
 	private static final String FIND_DOCUMENTS_BY_PROFILE_ID = "FROM ProfileDocument d " +
 			"WHERE d.profile.id = :profileId";
 
@@ -26,24 +27,30 @@ public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
 		super.type = ProfileDocument.class;
 	}
 
-	public List<ProfileDocument> findByProfileId(int profileId) {
+	public List<ProfileDocument> findByProfileId(final int profileId) {
 		TypedQuery<ProfileDocument> query = em.createQuery(FIND_DOCUMENTS_BY_PROFILE_ID, ProfileDocument.class);
+
 		query.setParameter("profileId", profileId);
+
 		return query.getResultList();
 	}
 
-	public ProfileDocument findByDocumentIdAndProfileId(int documentId, int profileId) {
+	public ProfileDocument findByDocumentIdAndProfileId(final int documentId, final int profileId) {
 		TypedQuery<ProfileDocument> query = em.createQuery(FIND_DOCUMENT_BY_DOCUMENT_ID_AND_PROFILE_ID,
 				ProfileDocument.class);
+
 		query.setParameter("documentId", documentId);
 		query.setParameter("profileId", profileId);
+
 		return query.getSingleResult();
 	}
 
-	public List<ProfileDocument> search(String searchTerm, int profileId) {
+	public List<ProfileDocument> search(final String searchTerm, final int profileId) {
 		TypedQuery<ProfileDocument> query = em.createQuery(DOCUMENT_SEARCH, ProfileDocument.class);
+
 		query.setParameter("profileId", profileId);
 		query.setParameter("searchTerm", "%" + searchTerm + "%");
+
 		return query.getResultList();
 	}
 

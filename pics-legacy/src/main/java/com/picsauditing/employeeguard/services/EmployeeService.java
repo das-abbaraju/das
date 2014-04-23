@@ -113,7 +113,7 @@ public class EmployeeService {
 			return Arrays.asList(employee);
 		}
 
-		return employeeDAO.findEmployeesAssignedToSiteByProfile(contractorIds, siteId, employee.getProfile().getId());
+		return employeeDAO.findEmployeesAssignedToSiteByProfile(contractorIds, siteId, employee.getProfile());
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
@@ -125,13 +125,10 @@ public class EmployeeService {
 		Date now = new Date();
 
 		setEmployeeAuditingFields(employee, accountId, appUserId);
-		setPersistedEntitiesOnJoinTables(employee, accountId);
+		setEmployeeGroups(employee, accountId);
 		EntityHelper.setCreateAuditFields(employee.getGroups(), appUserId, now);
 
-		employee = employeeDAO.save(employee);
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
-
-		return employee;
+		return employeeDAO.save(employee);
 	}
 
 	public Employee save(final EmployeeForm employeeForm, final String directory, final int accountId, final int appUserId) throws Exception {
@@ -144,10 +141,14 @@ public class EmployeeService {
 		return employee;
 	}
 
-	private void setPersistedEntitiesOnJoinTables(Employee employee, int accountId) {
+	private void setEmployeeGroups(Employee employee, int accountId) {
 		List<String> groupNames = new ArrayList<>();
 		for (GroupEmployee groupEmployee : employee.getGroups()) {
 			groupNames.add(groupEmployee.getGroup().getName());
+		}
+
+		if (CollectionUtils.isEmpty(groupNames)) {
+			return;
 		}
 
 		List<Group> persistedGroups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, groupNames);
@@ -299,11 +300,7 @@ public class EmployeeService {
 		employeeInDatabase.setPositionName(updatedEmployee.getPositionName());
 
 		EntityHelper.setUpdateAuditFields(employeeInDatabase, appUserId, timestamp);
-		employeeInDatabase = employeeDAO.save(employeeInDatabase);
-
-		accountSkillEmployeeService.linkEmployeeToSkills(employeeInDatabase, appUserId, timestamp);
-
-		return employeeInDatabase;
+		return employeeDAO.save(employeeInDatabase);
 	}
 
 	@Deprecated
@@ -317,9 +314,12 @@ public class EmployeeService {
 		employee.setPositionName(employeeEmploymentForm.getTitle());
 
 		if (ArrayUtils.isNotEmpty(employeeEmploymentForm.getGroups())) {
-			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
-			for (Group group : groups) {
-				employee.getGroups().add(new GroupEmployee(employeeFromDatabase, group));
+			List<String> names = Arrays.asList(employeeEmploymentForm.getGroups());
+			if (CollectionUtils.isNotEmpty(names)) {
+				List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, names);
+				for (Group group : groups) {
+					employee.getGroups().add(new GroupEmployee(employeeFromDatabase, group));
+				}
 			}
 		}
 

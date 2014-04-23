@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
@@ -53,8 +52,6 @@ public class RoleServiceTest {
 	private SiteAssignmentDAO siteAssignmentDAO;
 	@Mock
 	private SkillEngine skillEngine;
-	@Mock
-	private SkillUsageLocator skillUsageLocator;
 
 	// Entities
 	@Mock
@@ -89,21 +86,6 @@ public class RoleServiceTest {
 		Whitebox.setInternalState(roleService, "roleDAO", roleDAO);
 		Whitebox.setInternalState(roleService, "siteAssignmentDAO", siteAssignmentDAO);
 		Whitebox.setInternalState(roleService, "skillEngine", skillEngine);
-		Whitebox.setInternalState(roleService, "skillUsageLocator", skillUsageLocator);
-	}
-
-	@Test
-	public void testAssignEmployeeToSite() {
-		setupTestForAssigningEmployeeToSite();
-
-		roleService.assignEmployeeToRole(SITE_ID, CORPORATE_ROLE_ID, buildFakeEmployee(), auditInfo);
-
-		verifyTest();
-	}
-
-	private void setupTestForAssigningEmployeeToSite() {
-		List<Integer> corporateIds = Arrays.asList(CORPORATE_ID);
-		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(corporateIds);
 	}
 
 	@Test
@@ -141,8 +123,6 @@ public class RoleServiceTest {
 		when(employee.getSkills()).thenReturn(accountSkillEmployees);
 		when(roleDAO.find(CORPORATE_ROLE_ID)).thenReturn(role);
 		when(skillUsage.allSkills()).thenReturn(accountSkills);
-		when(skillUsageLocator.getSkillUsagesForEmployee(employee)).thenReturn(skillUsage);
-
 
 		verify(accountSkillEmployeeDAO).deleteByIds(anyListOf(Integer.class));
 	}
@@ -150,17 +130,5 @@ public class RoleServiceTest {
 	private void setUpUnassignEmployeeFromSite() {
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(employee.getId()).thenReturn(EMPLOYEE_ID);
-	}
-
-	private void verifyTest() {
-		verify(accountSkillEmployeeService).save(anyListOf(AccountSkillEmployee.class));
-	}
-
-	private Employee buildFakeEmployee() {
-		return new EmployeeBuilder()
-				.accountId(561)
-				.email("test@test.com")
-				.slug("ABE456A2")
-				.build();
 	}
 }

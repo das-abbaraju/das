@@ -33,8 +33,8 @@ public class GroupService {
 	private ProjectService projectService;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-    @Autowired
-    private RoleDAO roleDAO;
+	@Autowired
+	private RoleDAO roleDAO;
 
 	public Group getGroup(String id, int accountId) {
 		return accountGroupDAO.findGroupByAccount(NumberUtils.toInt(id), accountId);
@@ -44,7 +44,11 @@ public class GroupService {
 		return accountGroupDAO.findByAccount(accountId);
 	}
 
-	public List<Group> getGroupsForAccounts(final List<Integer> accountIds) {
+	public List<Group> getGroupsForAccounts(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
 		return accountGroupDAO.findByAccounts(accountIds);
 	}
 
@@ -64,9 +68,7 @@ public class GroupService {
 		EntityHelper.setCreateAuditFields(group.getSkills(), appUserId, createdDate);
 		EntityHelper.setCreateAuditFields(group.getEmployees(), appUserId, createdDate);
 
-		group = accountGroupDAO.save(group);
-		accountSkillEmployeeService.linkEmployeesToSkill(group, appUserId);
-		return group;
+		return accountGroupDAO.save(group);
 	}
 
 	public Group update(Group group, String id, int accountId, int appUserId) {
@@ -75,8 +77,6 @@ public class GroupService {
 
 		group.setUpdatedBy(appUserId);
 		group.setUpdatedDate(new Date());
-
-		accountSkillEmployeeService.linkEmployeesToSkill(group, appUserId);
 
 		return accountGroupDAO.save(groupToUpdate);
 	}
@@ -101,15 +101,9 @@ public class GroupService {
 				AccountSkillGroup.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-        groupInDatabase.getSkills().clear();
+		groupInDatabase.getSkills().clear();
 		groupInDatabase.getSkills().addAll(accountSkillGroups);
-		groupInDatabase = accountGroupDAO.save(groupInDatabase);
-
-		for (GroupEmployee groupEmployee : groupInDatabase.getEmployees()) {
-			accountSkillEmployeeService.linkEmployeeToSkills(groupEmployee.getEmployee(), appUserId, timestamp);
-		}
-
-		return groupInDatabase;
+		return accountGroupDAO.save(groupInDatabase);
 	}
 
 	public Group update(GroupEmployeesForm groupEmployeesForm, String id, int accountId, int appUserId) {
@@ -133,11 +127,10 @@ public class GroupService {
 		updatedGroup.setEmployees(groupEmployees);
 		updatedGroup.setSkills(groupInDatabase.getSkills());
 
-		accountSkillEmployeeService.linkEmployeesToSkill(updatedGroup, appUserId);
-
 		return accountGroupDAO.save(updatedGroup);
 	}
 
+	// TODO: Move to RoleEntityService
 	public Role update(final RoleProjectsForm roleProjectsForm, Role role, final int accountId, final int appUserId) {
 		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
 		List<Project> projects = projectService.getProjects(projectIds, accountId);
@@ -158,17 +151,8 @@ public class GroupService {
 				ProjectRole.COMPARATOR,
 				new BaseEntityCallback<ProjectRole>(appUserId, now));
 
-		List<Employee> affectedEmployees = projectRoleEmployeeDAO.getEmployeesByRole(role);
-
 		role.setProjects(newProjectRoles);
-		role = roleDAO.save(role);
-
-		accountSkillEmployeeService.linkEmployeesToSkill(role, appUserId);
-		for (Employee employee : affectedEmployees) {
-			accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
-		}
-
-		return role;
+		return roleDAO.save(role);
 	}
 
 	private void updateGroup(Group groupInDatabase, Group updatedGroup, int appUserId) {

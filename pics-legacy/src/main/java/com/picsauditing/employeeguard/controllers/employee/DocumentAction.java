@@ -13,12 +13,14 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.employee.ProfileDocumentInfo;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
+import com.picsauditing.util.Strings;
 import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -33,6 +35,8 @@ import java.util.Map;
 public class DocumentAction extends PicsRestActionSupport implements AjaxValidator {
 
 	private static final long serialVersionUID = -6816560877429952204L;
+	public static final String EMPLOYEE_SKILL_ID = "employee_skill_id";
+	public static final String EMPLOYEE_SKILL_REFERER_URL = "employee/skill/";
 
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;

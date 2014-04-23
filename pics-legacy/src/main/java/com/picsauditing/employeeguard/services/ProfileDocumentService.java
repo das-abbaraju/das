@@ -13,7 +13,6 @@ import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -102,7 +101,21 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
 
+		updateAccountSkillEmployees(profileDocumentFromDatabase);
+
 		return profileDocumentFromDatabase;
+	}
+
+	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findByProfile(profileDocument.getProfile());
+
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			accountSkillEmployee.setStartDate(profileDocument.getStartDate());
+			accountSkillEmployee.setEndDate(profileDocument.getEndDate());
+		}
+
+		accountSkillEmployeeDAO.save(accountSkillEmployees);
 	}
 
 	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,

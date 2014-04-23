@@ -30,12 +30,13 @@ import static org.mockito.Mockito.when;
 public class DocumentActionTest extends PicsActionTest {
 
 	private static final String TEST = "Test";
-	public static final String ID = "ID";
-	public static final int DOCUMENT_ID = 102;
+	public static final int ID = 345;
 
 	private DocumentAction documentAction;
 
+	@Mock
 	private ProfileEntityService profileEntityService;
+	@Mock
 	private ProfileDocumentService profileDocumentService;
 
 	@Mock
@@ -56,7 +57,7 @@ public class DocumentActionTest extends PicsActionTest {
 		Whitebox.setInternalState(documentAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(documentAction, "profileDocumentService", profileDocumentService);
 
-		when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
+        when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
 	}
 
 	@Ignore
@@ -84,10 +85,10 @@ public class DocumentActionTest extends PicsActionTest {
 	@Ignore
 	@Test
 	public void testShow() throws Exception {
-		documentAction.setId(ID);
+		documentAction.setId(String.valueOf(ID));
 		assertEquals(PicsRestActionSupport.SHOW, documentAction.show());
 		assertNotNull(documentAction.getDocument());
-		verify(profileDocumentService).getDocument(DOCUMENT_ID);
+		verify(profileDocumentService).getDocument(ID);
 	}
 
 	@Ignore
@@ -109,19 +110,19 @@ public class DocumentActionTest extends PicsActionTest {
 	@Ignore
 	@Test
 	public void testEditFileSection_DocumentFormIsNull() throws Exception {
-		documentAction.setId(ID);
+		documentAction.setId(String.valueOf(ID));
 		assertEquals("edit-form", documentAction.editFileSection());
 		assertNotNull(documentAction.getDocument());
 		assertNotNull(documentAction.getDocumentForm());
-		verify(profileDocumentService).getDocument(DOCUMENT_ID);
+		verify(profileDocumentService).getDocument(ID);
 	}
 
 	@Ignore
 	@Test
 	public void testDownload() throws Exception {
-		documentAction.setId(ID);
+		documentAction.setId(String.valueOf(ID));
 		assertEquals(PicsActionSupport.FILE_DOWNLOAD, documentAction.download());
-		verify(profileDocumentService).getDocument(DOCUMENT_ID);
+		verify(profileDocumentService).getDocument(ID);
 		verify(profileDocumentService).getDocumentFile(any(ProfileDocument.class), anyString());
 	}
 
@@ -137,10 +138,10 @@ public class DocumentActionTest extends PicsActionTest {
 	@Ignore
 	@Test
 	public void testDelete() throws Exception {
-		documentAction.setId(ID);
+		documentAction.setId(String.valueOf(ID));
 		assertEquals(PicsActionSupport.REDIRECT, documentAction.delete());
 		assertEquals("/employee-guard/employee/file", documentAction.getUrl());
 //		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(profileDocumentService).delete(DOCUMENT_ID, Identifiable.SYSTEM);
+		verify(profileDocumentService).delete(ID, Identifiable.SYSTEM);
 	}
 }

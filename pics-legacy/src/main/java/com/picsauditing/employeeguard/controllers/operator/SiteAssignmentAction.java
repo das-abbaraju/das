@@ -17,6 +17,7 @@ import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -111,10 +112,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 		Map<Integer, AccountModel> contractors = accountService.getContractorMapForSite(siteId);
 
-		List<Employee> employeesAssignedToRole = employeeService.getEmployeesAssignedToSiteRole(
-				contractors.keySet(),
-				siteId,
-				role);
+		List<Employee> employeesAssignedToRole = getEmployeesAssignedToSiteRole(role, contractors);
 
 		List<AccountSkill> skills = skillService.getSkillsForRole(role);
 		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
@@ -139,6 +137,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				skillInfos);
 
 		return "role";
+	}
+
+	private List<Employee> getEmployeesAssignedToSiteRole(Role role, Map<Integer, AccountModel> contractors) {
+		if (MapUtils.isEmpty(contractors)) {
+			return Collections.emptyList();
+		}
+
+		return employeeService.getEmployeesAssignedToSiteRole(contractors.keySet(), siteId, role);
 	}
 
 	public int getSiteId() {

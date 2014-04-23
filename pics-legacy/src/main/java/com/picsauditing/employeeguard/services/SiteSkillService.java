@@ -34,13 +34,21 @@ public class SiteSkillService {
 			List<Integer> siteAndCorporate = accountService.getTopmostCorporateAccountIds(operator.getId());
 			siteAndCorporate.add(operator.getId());
 
-			List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(siteAndCorporate);
+			List<SiteSkill> siteSkills = getSiteRequiredSkills(siteAndCorporate);
 			List<AccountSkill> accountSkills = ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR);
 
 			requiredSkills.put(operator, new HashSet<>(accountSkills));
 		}
 
 		return requiredSkills;
+	}
+
+	private List<SiteSkill> getSiteRequiredSkills(final List<Integer> siteAndCorporate) {
+		if (CollectionUtils.isEmpty(siteAndCorporate)) {
+			return Collections.emptyList();
+		}
+
+		return siteSkillDAO.findByAccountIds(siteAndCorporate);
 	}
 
 	private List<AccountModel> getOperatorAccountModels(List<ProjectCompany> projectCompanies) {

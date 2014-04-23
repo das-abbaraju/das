@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.models.factories;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.models.SkillModel;
+import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import org.apache.commons.collections.CollectionUtils;
@@ -13,8 +13,27 @@ import java.util.*;
 
 public class SkillStatusModelFactory extends SkillModelFactory {
 
+//	public Map<Integer, RequiredSkills> createRequiredSkillsForProjects(final Collection<Project> projects,
+//																		final Map<Project, Set<AccountSkill>> projectRequiredSkills,
+//																		final Map<AccountSkill, SkillStatus> skillStatuses) {
+//		if (CollectionUtils.isEmpty(projects)) {
+//			return Collections.emptyMap();
+//		}
+//
+//		RequiredSkills requiredSkills = new RequiredSkills();
+////		requiredSkills.setSkills(create(accountSkills, skillStatuses));
+//		return requiredSkills;
+//	}
+
+	public RequiredSkills createRequiredSkills(final Collection<AccountSkill> accountSkills,
+											   final Map<AccountSkill, SkillStatus> skillStatuses) {
+		RequiredSkills requiredSkills = new RequiredSkills();
+		requiredSkills.setSkills(create(accountSkills, skillStatuses));
+		return requiredSkills;
+	}
+
 	public Map<Integer, List<SkillStatusModel>> createProjectIdToSkillStatusModelMap(
-			final Map<Project, ? extends Collection<AccountSkill>> projectSkillsMap,
+			final Map<Project, Set<AccountSkill>> projectSkillsMap,
 			final Map<AccountSkill, SkillStatus> skillStatuses) {
 
 		if (MapUtils.isEmpty(projectSkillsMap)) {
@@ -33,7 +52,7 @@ public class SkillStatusModelFactory extends SkillModelFactory {
 	}
 
 	public Map<Integer, List<SkillStatusModel>> createRoleIdToSkillStatusModelMap(
-			final Map<Role, ? extends Collection<AccountSkill>> roleSkillsMap,
+			final Map<Role, Set<AccountSkill>> roleSkillsMap,
 			final Map<AccountSkill, SkillStatus> skillStatuses) {
 
 		if (MapUtils.isEmpty(roleSkillsMap)) {
@@ -52,7 +71,7 @@ public class SkillStatusModelFactory extends SkillModelFactory {
 	}
 
 	public List<SkillStatusModel> create(final Collection<AccountSkill> accountSkills,
-	                                     final Map<AccountSkill, SkillStatus> skillStatusMap) {
+										 final Map<AccountSkill, SkillStatus> skillStatusMap) {
 		if (CollectionUtils.isEmpty(accountSkills)) {
 			return Collections.emptyList();
 		}

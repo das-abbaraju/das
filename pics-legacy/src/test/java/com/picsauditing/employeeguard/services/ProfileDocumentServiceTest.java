@@ -23,70 +23,70 @@ import static org.mockito.Mockito.when;
 
 public class ProfileDocumentServiceTest {
 
-	public static final int DOCUMENT_ID = 1;
-	public static final int PROFILE_ID = 2;
-	public static final int APP_USER_ID = 3;
+    public static final int DOCUMENT_ID = 1;
+    public static final int PROFILE_ID = 2;
+    public static final int APP_USER_ID = 3;
 
-	private ProfileDocumentService profileDocumentService;
+    private ProfileDocumentService profileDocumentService;
 
-	@Mock
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-	@Mock
-	private ProfileDocumentDAO profileDocumentDAO;
+    @Mock
+    private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+    @Mock
+    private ProfileDocumentDAO profileDocumentDAO;
 
-	@Before
-	public void setup() {
-		profileDocumentService = new ProfileDocumentService();
+    @Before
+    public void setup() {
+        profileDocumentService = new ProfileDocumentService();
 
-		MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(profileDocumentService, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
-		Whitebox.setInternalState(profileDocumentService, "profileDocumentDAO", profileDocumentDAO);
-	}
+        Whitebox.setInternalState(profileDocumentService, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
+        Whitebox.setInternalState(profileDocumentService, "profileDocumentDAO", profileDocumentDAO);
+    }
 
-	@Test
-	public void testDelete_DocumentNotLinkedToAccountSkillEmployee() {
-		ProfileDocument profileDocument = new ProfileDocument();
-		when(profileDocumentDAO.findByDocumentIdAndProfileId(1, 2)).thenReturn(profileDocument);
+    @Test
+    public void testDelete_DocumentNotLinkedToAccountSkillEmployee() {
+        ProfileDocument profileDocument = new ProfileDocument();
+        when(profileDocumentDAO.findByDocumentIdAndProfileId(1, 2)).thenReturn(profileDocument);
 
-		profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
+        profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
 
-		verify(profileDocumentDAO).delete(profileDocument);
-	}
+        verify(profileDocumentDAO).delete(profileDocument);
+    }
 
-	@Test
-	public void testDelete() {
-		ProfileDocument profileDocument = buildProfileDocumentWithAccountSkillEmployees();
-		when(profileDocumentDAO.findByDocumentIdAndProfileId(DOCUMENT_ID, PROFILE_ID)).thenReturn(profileDocument);
+    @Test
+    public void testDelete() {
+        ProfileDocument profileDocument = buildProfileDocumentWithAccountSkillEmployees();
+        when(profileDocumentDAO.findByDocumentIdAndProfileId(DOCUMENT_ID, PROFILE_ID)).thenReturn(profileDocument);
 
-		profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
+        profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
 
-		verifyDeletedProfileDocumentAndAccountSkillEmployees(profileDocument);
-	}
+        verifyDeletedProfileDocumentAndAccountSkillEmployees(profileDocument);
+    }
 
-	private ProfileDocument buildProfileDocumentWithAccountSkillEmployees() {
-		return new ProfileDocumentBuilder().employeeSkills(buildAccountSkillEmployees()).build();
-	}
+    private ProfileDocument buildProfileDocumentWithAccountSkillEmployees() {
+        return new ProfileDocumentBuilder().employeeSkills(buildAccountSkillEmployees()).build();
+    }
 
-	private List<AccountSkillEmployee> buildAccountSkillEmployees() {
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-		for (int index = 0; index < 3; index++) {
-			accountSkillEmployees.add(new AccountSkillEmployeeBuilder().profileDocument(new ProfileDocument())
-					.startDate(new Date()).endDate(new Date()).build());
-		}
+    private List<AccountSkillEmployee> buildAccountSkillEmployees() {
+        List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
+        for (int index = 0; index < 3; index++) {
+            accountSkillEmployees.add(new AccountSkillEmployeeBuilder().profileDocument(new ProfileDocument())
+                    .startDate(new Date()).endDate(new Date()).build());
+        }
 
-		return accountSkillEmployees;
-	}
+        return accountSkillEmployees;
+    }
 
-	private void verifyDeletedProfileDocumentAndAccountSkillEmployees(ProfileDocument profileDocument) {
-		verify(profileDocumentDAO).delete(profileDocument);
+    private void verifyDeletedProfileDocumentAndAccountSkillEmployees(ProfileDocument profileDocument) {
+        verify(profileDocumentDAO).delete(profileDocument);
 
-		for (AccountSkillEmployee accountSkillEmployee : profileDocument.getEmployeeSkills()) {
-			assertNull(accountSkillEmployee.getProfileDocument());
-			assertNotNull(accountSkillEmployee.getStartDate());
-			assertNull(accountSkillEmployee.getEndDate());
-		}
+        for (AccountSkillEmployee accountSkillEmployee : profileDocument.getEmployeeSkills()) {
+            assertNull(accountSkillEmployee.getProfileDocument());
+            assertNotNull(accountSkillEmployee.getStartDate());
+            assertNull(accountSkillEmployee.getEndDate());
+        }
 
-		verify(accountSkillEmployeeDAO).save(profileDocument.getEmployeeSkills());
-	}
+        verify(accountSkillEmployeeDAO).save(profileDocument.getEmployeeSkills());
+    }
 }

@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +37,16 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		}
 
 		return projectDAO.find(id);
+	}
+
+	public Set<Project> getProjectsForEmployeeBySiteId(final Employee employee, final int siteId) {
+		Map<Employee, Set<Project>> employeeProjects = getProjectsForEmployeesBySiteId(Arrays.asList(employee), siteId);
+
+		if (MapUtils.isEmpty(employeeProjects)) {
+			return Collections.emptySet();
+		}
+
+		return employeeProjects.get(employee);
 	}
 
 	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteId(final Collection<Employee> employees, final int siteId) {

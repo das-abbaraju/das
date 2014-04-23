@@ -49,7 +49,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String assignments() {
 		assignmentId = NumberUtils.toInt(id);
-		project = projectService.getProject(String.valueOf(projectId), NumberUtils.toInt(id));
+		project = projectService.getProject(projectId, getNumericId());
 
 		operatorProjectAssignment = ViewModelFactory.getOperatorProjectAssignmentFactory()
 				.create(RoleFactory.createFromProjectRoles(project.getRoles()),
@@ -78,7 +78,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 	}
 
 	public String role() {
-		project = projectService.getProject(String.valueOf(projectId), assignmentId);
+		project = projectService.getProject(projectId, assignmentId);
 		Role role = roleService.getRole(id);
 		List<AccountSkill> jobRoleSkills = getJobRoleSkills(role.getSkills());
 
