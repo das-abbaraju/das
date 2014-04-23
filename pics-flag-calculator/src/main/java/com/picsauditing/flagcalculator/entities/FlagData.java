@@ -5,7 +5,8 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
-public class FlagData extends BaseTable /*implements Comparable<FlagData>, UpdatableListItem */ {
+// public class FlagData extends BaseTable /*implements Comparable<FlagData>, UpdatableListItem */ {
+public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData {
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
@@ -55,6 +56,36 @@ public class FlagData extends BaseTable /*implements Comparable<FlagData>, Updat
 
     public void setCriteria(FlagCriteria criteria) {
         this.criteria = criteria;
+    }
+
+    @Override
+    @Transient
+    public boolean isInsurance() {
+        return criteria.isInsurance();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaCategory() {
+        return criteria.getCategory().toString();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaLabel() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public String getFlagColor() {
+        return flag.toString();
+    }
+
+    @Override
+    @Transient
+    public int getCriteriaID() {
+        return criteria.getId();
     }
 
     @Enumerated(EnumType.STRING)

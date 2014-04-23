@@ -71,21 +71,21 @@ public enum FlagColor {
 //        return valueOf(flagColor).getSmallIcon(columnName);
 //    }
 //
-//    public static FlagColor getWorseColor(FlagColor color1, FlagColor color2) {
-//        if (color2 == null) {
-//            return color1;
-//        }
-//
-//        if (color1 == null) {
-//            return color2;
-//        }
-//
-//        if (color2.ordinal() > color1.ordinal()) {
-//            color1 = color2;
-//        }
-//        return color1;
-//    }
-//
+    public static FlagColor getWorseColor(FlagColor color1, FlagColor color2) {
+        if (color2 == null) {
+            return color1;
+        }
+
+        if (color1 == null) {
+            return color2;
+        }
+
+        if (color2.ordinal() > color1.ordinal()) {
+            color1 = color2;
+        }
+        return color1;
+    }
+
 //    public boolean isRedAmber() {
 //        return this.equals(Red) || this.equals(Amber);
 //    }

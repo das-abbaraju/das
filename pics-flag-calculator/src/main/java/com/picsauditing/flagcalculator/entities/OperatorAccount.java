@@ -28,16 +28,16 @@ public class OperatorAccount extends Account {
 //
     private OperatorAccount parent;
 
-//    private OperatorAccount inheritFlagCriteria;
+    private OperatorAccount inheritFlagCriteria;
 //    private OperatorAccount inheritInsuranceCriteria;
 //
 //    private String doContractorsPay = "Yes";
-//    private YesNo canSeeInsurance = YesNo.No;
+    private String canSeeInsurance = "No";
 //    private User insuranceAuditor;
 //    private YesNo isUserManualUploaded = YesNo.No;
 //    private YesNo approvesRelationships = YesNo.No;
 //    private boolean verifiedByPics = true;
-//    private OshaType oshaType = OshaType.OSHA;
+    private OshaType oshaType = OshaType.OSHA;
     private boolean primaryCorporate = false;
 //    private boolean autoApproveInsurance = false;
 //    private String requiredTags;
@@ -56,7 +56,7 @@ public class OperatorAccount extends Account {
 //    private List<OperatorAccount> parentOperators = new ArrayList<OperatorAccount>();
 //    private List<OperatorTag> tags = new ArrayList<OperatorTag>();
 //    private List<OperatorForm> operatorForms = new ArrayList<OperatorForm>();
-//    private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
+    private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
 //    private List<JobSite> jobSites = new ArrayList<JobSite>();
 //    private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 //    private Set<Integer> visibleAuditTypes = null;
@@ -102,25 +102,22 @@ public class OperatorAccount extends Account {
 //        this.doContractorsPay = doContractorsPay;
 //    }
 //
-//    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
-//    @Column(name = "canSeeInsurance", nullable = false)
-//    @Enumerated(EnumType.STRING)
-//    @ReportField()
-//    public YesNo getCanSeeInsurance() {
-//        checkCanSeeInsurance();
-//        return this.canSeeInsurance;
-//    }
-//
-//    private void checkCanSeeInsurance() {
-//        if (this.canSeeInsurance == null) {
-//            this.canSeeInsurance = YesNo.No;
-//        }
-//    }
-//
-//    public void setCanSeeInsurance(YesNo canSeeInsurance) {
-//        this.canSeeInsurance = canSeeInsurance;
-//    }
-//
+    @Column(name = "canSeeInsurance", nullable = false)
+    public String getCanSeeInsurance() {
+        checkCanSeeInsurance();
+        return this.canSeeInsurance;
+    }
+
+    private void checkCanSeeInsurance() {
+        if (this.canSeeInsurance == null) {
+            this.canSeeInsurance = "No";
+        }
+    }
+
+    public void setCanSeeInsurance(String canSeeInsurance) {
+        this.canSeeInsurance = canSeeInsurance;
+    }
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "insuranceAuditor_id")
 //    public User getInsuranceAuditor() {
@@ -153,15 +150,15 @@ public class OperatorAccount extends Account {
 //        this.verifiedByPics = verifiedByPics;
 //    }
 //
-//    @Enumerated(EnumType.STRING)
-//    public OshaType getOshaType() {
-//        return oshaType;
-//    }
-//
-//    public void setOshaType(OshaType oshaType) {
-//        this.oshaType = oshaType;
-//    }
-//
+    @Enumerated(EnumType.STRING)
+    public OshaType getOshaType() {
+        return oshaType;
+    }
+
+    public void setOshaType(OshaType oshaType) {
+        this.oshaType = oshaType;
+    }
+
     public boolean isPrimaryCorporate() {
         return primaryCorporate;
     }
@@ -264,16 +261,16 @@ public class OperatorAccount extends Account {
 //                || this.isOrIsDescendantOf(OperatorAccount.CEDA_USA);
 //    }
 //
-//    @ManyToOne
-//    @JoinColumn(name = "inheritFlagCriteria")
-//    public OperatorAccount getInheritFlagCriteria() {
-//        return inheritFlagCriteria;
-//    }
-//
-//    public void setInheritFlagCriteria(OperatorAccount inheritFlagCriteria) {
-//        this.inheritFlagCriteria = inheritFlagCriteria;
-//    }
-//
+    @ManyToOne
+    @JoinColumn(name = "inheritFlagCriteria")
+    public OperatorAccount getInheritFlagCriteria() {
+        return inheritFlagCriteria;
+    }
+
+    public void setInheritFlagCriteria(OperatorAccount inheritFlagCriteria) {
+        this.inheritFlagCriteria = inheritFlagCriteria;
+    }
+
 //    @ManyToOne
 //    @JoinColumn(name = "inheritInsuranceCriteria")
 //    public OperatorAccount getInheritInsuranceCriteria() {
@@ -295,59 +292,59 @@ public class OperatorAccount extends Account {
 //                return inheritFlagCriteria.getFlagCriteria();
 //        }
 //    }
-//
-//    @Transient
-//    public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
-//        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-//
-//        criteriaList.addAll(getFlagAuditCriteriaInherited());
-//        criteriaList.addAll(getFlagQuestionCriteriaInherited());
-//
-//        return criteriaList;
-//    }
-//
-//    @Transient
-//    public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
-//        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-//
-//        if (inheritFlagCriteria != null) {
-//            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-//                if (c.getCriteria().getAuditType() != null) {
-//                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || canSeeInsurance.equals(YesNo.Yes)) {
-//                        criteriaList.add(c);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return criteriaList;
-//    }
-//
-//    @Transient
-//    public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
-//        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-//
-//        if (inheritFlagCriteria != null) {
-//            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-//                if (c.getCriteria().getQuestion() != null) {
-//                    if (c.getCriteria().getQuestion().isCurrent()) {
-//                        if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-//                                || canSeeInsurance.equals(YesNo.Yes)) {
-//                            criteriaList.add(c);
-//                        }
-//                    }
-//                }
-//                if (c.getCriteria().getOshaType() != null) {
-//                    if (c.getCriteria().getOshaType().equals(oshaType)) {
-//                        criteriaList.add(c);
-//                    }
-//                }
-//            }
-//        }
-//
-//        return criteriaList;
-//    }
-//
+
+    @Transient
+    public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
+        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
+
+        criteriaList.addAll(getFlagAuditCriteriaInherited());
+        criteriaList.addAll(getFlagQuestionCriteriaInherited());
+
+        return criteriaList;
+    }
+
+    @Transient
+    public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
+        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
+
+        if (inheritFlagCriteria != null) {
+            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
+                if (c.getCriteria().getAuditType() != null) {
+                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || "Yes".equals(canSeeInsurance)) {
+                        criteriaList.add(c);
+                    }
+                }
+            }
+        }
+
+        return criteriaList;
+    }
+
+    @Transient
+    public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
+        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
+
+        if (inheritFlagCriteria != null) {
+            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
+                if (c.getCriteria().getQuestion() != null) {
+                    if (c.getCriteria().getQuestion().isCurrent()) {
+                        if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
+                                || "Yes".equals(canSeeInsurance)) {
+                            criteriaList.add(c);
+                        }
+                    }
+                }
+                if (c.getCriteria().getOshaType() != null) {
+                    if (c.getCriteria().getOshaType().equals(oshaType)) {
+                        criteriaList.add(c);
+                    }
+                }
+            }
+        }
+
+        return criteriaList;
+    }
+
 //    @OneToMany(mappedBy = "account")
 //    public List<OperatorForm> getOperatorForms() {
 //        return operatorForms;
@@ -459,15 +456,15 @@ public class OperatorAccount extends Account {
 //        this.tags = value;
 //    }
 //
-//    @OneToMany(mappedBy = "operator", cascade = {CascadeType.ALL})
-//    public List<FlagCriteriaOperator> getFlagCriteria() {
-//        return flagCriteria;
-//    }
-//
-//    public void setFlagCriteria(List<FlagCriteriaOperator> flagCriteria) {
-//        this.flagCriteria = flagCriteria;
-//    }
-//
+    @OneToMany(mappedBy = "operator", cascade = {CascadeType.ALL})
+    public List<FlagCriteriaOperator> getFlagCriteria() {
+        return flagCriteria;
+    }
+
+    public void setFlagCriteria(List<FlagCriteriaOperator> flagCriteria) {
+        this.flagCriteria = flagCriteria;
+    }
+
 //    @OneToMany(mappedBy = "operator", cascade = {CascadeType.REMOVE})
 //    public List<JobSite> getJobSites() {
 //        return jobSites;

@@ -4,11 +4,29 @@ import com.picsauditing.flagcalculator.entities.FlagCriteria;
 import com.picsauditing.flagcalculator.entities.Naics;
 import org.apache.commons.lang.StringUtils;
 
+import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class FlagCalculatorDAO extends PicsDAO {
+    private static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
+            "FROM flag_criteria fc1 " +
+            "left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' " +
+            "left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' " +
+            "WHERE (fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly')";
+    private static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
+            "FROM flag_criteria fc1 " +
+            "left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' " +
+            "left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' " +
+            "WHERE (fc1.questionID is not null and fc1.multiYearScope = 'LastYearOnly')";
+
+    public FlagCalculatorDAO() {}
+
+    public FlagCalculatorDAO(EntityManager em) {
+        this.em = em;
+    }
+
 //	public FlagCriteria find(int id) {
 //		return em.find(FlagCriteria.class, id);
 //	}
@@ -64,5 +82,50 @@ public class FlagCalculatorDAO extends PicsDAO {
         return null;
     }
 
+    public Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
+        Query q = em.createNativeQuery(CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1);
+        List results = q.getResultList();
+        Map<Integer, List<Integer>> resultMap = new HashMap<>();
+        return resultMap;
+    }
 
+    /*
+    private Map<Integer, List<Integer>> extractMultiyearCriteriaIdQueryResults() {
+        try {
+            List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
+            for (BasicDynaBean row : resultBDB) {
+                Integer year1 = (Integer) row.get("year1_id");
+                Integer year2 = (Integer) row.get("year2_id");
+                Integer year3 = (Integer) row.get("year3_id");
+
+                ArrayList<Integer> list = new ArrayList<Integer>();
+                if (year1 != null) {
+                    list.add(year1);
+                }
+
+                if (year2 != null) {
+                    list.add(year2);
+                }
+
+                if (year3 != null) {
+                    list.add(year3);
+                }
+
+                if (year1 != null) {
+                    resultMap.put(year1, list);
+                }
+
+                if (year2 != null) {
+                    resultMap.put(year2, list);
+                }
+
+                if (year3 != null) {
+                    resultMap.put(year3, list);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error while extracting multi-year criteria.", e);
+        }
+    }
+    */
 }

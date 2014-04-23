@@ -7,6 +7,7 @@ import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
+import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
@@ -69,7 +70,7 @@ public class ContractorCron extends PicsActionSupport {
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
-	private FlagDataCalculator flagDataCalculator;
+    private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
@@ -156,8 +157,7 @@ public class ContractorCron extends PicsActionSupport {
             runRulesBasedInsuranceCriteria(contractor);
             runEmployeeGuardRules(contractor);
 
-
-			flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
+            flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
 			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
@@ -709,12 +709,10 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
-		flagDataCalculator.setOperator(co.getOperatorAccount());
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
 
-		Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<FlagCriteria, List<FlagDataOverride>>();
+		Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<>();
 
-		Set<OperatorAccount> corporates = new HashSet<OperatorAccount>();
+		Set<OperatorAccount> corporates = new HashSet<>();
 		for (Facility f : co.getOperatorAccount().getCorporateFacilities()) {
 			corporates.add(f.getCorporate());
 		}
@@ -734,19 +732,20 @@ public class ContractorCron extends PicsActionSupport {
 				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addLast(override);
 			}
 		}
-		flagDataCalculator.setOverrides(overridesMap);
-		List<FlagData> changes = flagDataCalculator.calculate();
+
+        FlagCalculator flagCalculator = FlagCalculatorFactory.flagCalculator(co, overridesMap);
+		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
 
 		// Save the FlagDetail to the ContractorOperator as a JSON string
 		JSONObject flagJson = new JSONObject();
-		for (FlagData data : changes) {
-            if (!data.getCriteria().isInsurance()) {
+		for (com.picsauditing.flagcalculator.FlagData data : changes) {
+            if (!data.isInsurance()) {
                 JSONObject flag = new JSONObject();
-                flag.put("category", data.getCriteria().getCategory().toString());
-                flag.put("label", data.getCriteria().getLabel().toString());
-                flag.put("flag", data.getFlag().toString());
+                flag.put("category", data.getCriteriaCategory());
+                flag.put("label", data.getCriteriaLabel());
+                flag.put("flag", data.getFlagColor());
 
-                flagJson.put(data.getCriteria().getId(), flag);
+                flagJson.put(data.getCriteriaID(), flag);
             }
 		}
 		co.setFlagDetail(flagJson.toString());
@@ -763,9 +762,10 @@ public class ContractorCron extends PicsActionSupport {
 			reason = "Contractor no longer tracked by flags.";
 		}
 
-		for (FlagData change : changes) {
-			if (!change.getCriteria().isInsurance()) {
-				FlagColor worst = FlagColor.getWorseColor(overallColor, change.getFlag());
+		for (com.picsauditing.flagcalculator.FlagData change : changes) {
+            FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
+			if (!change.isInsurance()) {
+				FlagColor worst = FlagColor.getWorseColor(overallColor, changeFlag);
 				if (worst != overallColor) {
 					reason = getFlagDataDescription(change, co.getOperatorAccount());
 				}
@@ -1302,7 +1302,7 @@ public class ContractorCron extends PicsActionSupport {
 		}
 	}
 
-	private String getFlagDataDescription(FlagData data, OperatorAccount operator) {
+	private String getFlagDataDescription(com.picsauditing.flagcalculator.FlagData data, OperatorAccount operator) {
 		String description = "";
 
 		FlagCriteria fc = data.getCriteria();

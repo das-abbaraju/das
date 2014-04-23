@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(locations = { "FlagDataCalculatorTest-context.xml" })
-public class FlagCalculatorTest {
+public class FlagDataCalculatorTest {
 
     private static final int ALBERTA_WCB_AUDIT_TYPE_ID = 145;
     private static final int OPERATOR_ID_FOR_CAOP = 11111;
     private static final int FAKE_CRITERIA_ID = 123;
 
-    private FlagCalculator calculator;
+    private FlagDataCalculator calculator;
     private FlagCriteriaContractor fcCon;
     private FlagCriteriaOperator fcOp;
     private FlagCriteria fc;
@@ -40,6 +40,7 @@ public class FlagCalculatorTest {
     private ContractorAudit ca;
     private OperatorAccount operator;
     private ContractorAuditOperator cao;
+    private ContractorOperator co;
     private FlagCriteria lastYearCriteria;
     private FlagCriteria twoYearCriteria;
     private FlagCriteria threeYearCriteria;
@@ -60,6 +61,7 @@ public class FlagCalculatorTest {
         ca = EntityFactory.makeContractorAudit(1, contractor);
         operator = EntityFactory.makeOperator();
         cao = EntityFactory.makeContractorAuditOperator(ca);
+        co = EntityFactory.addContractorOperator(contractor, operator);
 
         fc = new FlagCriteria();
         fc.setId(1);
@@ -90,7 +92,8 @@ public class FlagCalculatorTest {
         opCrits.add(fcOp);
 
 		/* Initialize the calculator */
-        calculator = new FlagCalculator(conCrits, flagCalculatorDao);
+        // calculator = new FlagDataCalculator(conCrits, flagCalculatorDao);
+        calculator = new FlagDataCalculator(co.getId());
 //        caoMap = null;
 
         lastYearCriteria = createFlagCriteria(1, MultiYearScope.LastYearOnly);
@@ -772,7 +775,7 @@ public class FlagCalculatorTest {
         fcOp.setHurdle("Hurdle");
         fcOp.setFlag(FlagColor.Amber);
         fcCon.setAnswer(fc.getDefaultValue());
-		assertEquals(FlagColor.Amber, getSingle().getFlag());
+		assertEquals(FlagColor.Amber, getSingle().getFlagColor());
 	}
 
     @Test
@@ -781,7 +784,7 @@ public class FlagCalculatorTest {
 		fc.setAllowCustomValue(true);
         fcCon.setAnswer("Hurdle");
 		fcOp.setHurdle("Hurdle");
-		assertEquals(FlagColor.Red, getSingle().getFlag());
+		assertEquals(FlagColor.Red, getSingle().getFlagColor());
 	}
 
 //	public void testComparison() {
@@ -812,7 +815,7 @@ public class FlagCalculatorTest {
         fc.setOshaRateType(OshaRateType.LwcrNaics);
         fcCon.setAnswer("5.0");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -836,7 +839,7 @@ public class FlagCalculatorTest {
         fc.setOshaRateType(OshaRateType.TrirNaics);
         fcCon.setAnswer("5.0");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -845,7 +848,7 @@ public class FlagCalculatorTest {
         fc.setOshaRateType(OshaRateType.DartNaics);
         fcCon.setAnswer("5.0");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     private void setupOshaTest() {
@@ -863,7 +866,7 @@ public class FlagCalculatorTest {
         setupBooleanTest();
 		fcCon.setAnswer("true");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
 	}
 
     @Test
@@ -871,7 +874,7 @@ public class FlagCalculatorTest {
         setupBooleanTest();
         fcCon.setAnswer("false");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Green, getSingle().getFlag());
+        assertEquals(FlagColor.Green, getSingle().getFlagColor());
     }
 
     private void setupBooleanTest() {
@@ -888,7 +891,7 @@ public class FlagCalculatorTest {
 		fc.setComparison(">");
 		fcCon.setAnswer("6.78");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
 	}
 
     @Test
@@ -897,11 +900,11 @@ public class FlagCalculatorTest {
         fc.setComparison(">=");
         fcCon.setAnswer("6.78");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
 
         fcCon.setAnswer("5.55");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -910,7 +913,7 @@ public class FlagCalculatorTest {
         fc.setComparison("<");
         fcCon.setAnswer("4.56");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -919,11 +922,11 @@ public class FlagCalculatorTest {
         fc.setComparison("<=");
         fcCon.setAnswer("4.56");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
 
         fcCon.setAnswer("5.55");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -932,7 +935,7 @@ public class FlagCalculatorTest {
         fc.setComparison("=");
         fcCon.setAnswer("5.55");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -941,7 +944,7 @@ public class FlagCalculatorTest {
         fc.setComparison("!=");
         fcCon.setAnswer("4.55");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     private void setupNumberTest() {
@@ -957,7 +960,7 @@ public class FlagCalculatorTest {
         setupStringTest();
         fcCon.setAnswer("New String");
 		assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
 	}
 
     @Test
@@ -966,7 +969,7 @@ public class FlagCalculatorTest {
         fc.setComparison("contains");
         fcCon.setAnswer("blah New String blah");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -975,7 +978,7 @@ public class FlagCalculatorTest {
         fc.setComparison("NOT EMPTY");
         fcCon.setAnswer("New String");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Green, getSingle().getFlag()); // TODO The comparison looks wrong in flag data calculator
+        assertEquals(FlagColor.Green, getSingle().getFlagColor()); // TODO The comparison looks wrong in flag data calculator
     }
 
     private void setupStringTest() {
@@ -999,7 +1002,7 @@ public class FlagCalculatorTest {
         fc.setComparison(">");
 		fcCon.setAnswer("2011-02-02");
 		assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     @Test
@@ -1009,7 +1012,7 @@ public class FlagCalculatorTest {
         fc.setComparison("<");
         fcCon.setAnswer("2009-12-12");
         assertNotNull(getSingle());
-        assertEquals(FlagColor.Red, getSingle().getFlag());
+        assertEquals(FlagColor.Red, getSingle().getFlagColor());
     }
 
     private void setupDatesTest() {
@@ -1036,7 +1039,7 @@ public class FlagCalculatorTest {
 //		caoList.add(cao);
 //		caoMap.put(at, caoList);
 //
-//		assertEquals(FlagColor.Red, getSingle().getFlag());
+//		assertEquals(FlagColor.Red, getSingle().getFlagColor());
 //
 //		caoMap = new HashMap<AuditType, List<ContractorAuditOperator>>();
 //		cao = new ContractorAuditOperator();

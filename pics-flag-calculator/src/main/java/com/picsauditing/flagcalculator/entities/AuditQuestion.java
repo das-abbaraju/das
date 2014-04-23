@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "audit_question")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
-public class AuditQuestion extends BaseTable /*implements Comparable<AuditQuestion>*/ {
+public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQuestion>*/ {
 
 //    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 //    static public final int EMR = 2034;
@@ -25,26 +25,26 @@ public class AuditQuestion extends BaseTable /*implements Comparable<AuditQuesti
 //    static public final int PRODUCT_CRITICAL_ASSESSMENT = 7678;
 //    static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
 //    static public final int IMPORT_PQF = 7727;
-//    static public final int OSHA_KEPT_ID = 2064;
-//    static public final int COHS_KEPT_ID = 2066;
-//    static public final int UK_HSE_KEPT_ID = 9106;
-//    static public final int EMR_KEPT_ID = 2033;
-//    static public final int MEXICO_KEPT_ID = 15337;
-//    static public final int AUSTRALIA_KEPT_ID = 15214;
-//    static public final int IRELAND_KEPT_ID = 15660;
-//    static public final int SOUTH_AFRICA_KEPT_ID = 16282;
-//    static public final int SINGAPORE_MOM_KEPT_ID = 16590;
-//    static public final int TURKEY_KEPT_ID = 17168;
-//    static public final int SWITZERLAND_KEPT_ID = 16894;
-//    static public final int SPAIN_KEPT_ID = 17097;
-//    static public final int POLAND_KEPT_ID = 17141;
-//    static public final int AUSTRIA_KEPT_ID = 17126;
-//    static public final int ITALY_KEPT_ID = 17111;
-//    static public final int PORTUGAL_KEPT_ID = 17129;
-//    static public final int DENMARK_KEPT_ID = 17172;
-//    static public final int CZECH_KEPT_ID = 17183;
-//    static public final int HUNGARY_KEPT_ID = 17170;
-//    static public final int GREECE_KEPT_ID = 17203;
+    static public final int OSHA_KEPT_ID = 2064;
+    static public final int COHS_KEPT_ID = 2066;
+    static public final int UK_HSE_KEPT_ID = 9106;
+    static public final int EMR_KEPT_ID = 2033;
+    static public final int MEXICO_KEPT_ID = 15337;
+    static public final int AUSTRALIA_KEPT_ID = 15214;
+    static public final int IRELAND_KEPT_ID = 15660;
+    static public final int SOUTH_AFRICA_KEPT_ID = 16282;
+    static public final int SINGAPORE_MOM_KEPT_ID = 16590;
+    static public final int TURKEY_KEPT_ID = 17168;
+    static public final int SWITZERLAND_KEPT_ID = 16894;
+    static public final int SPAIN_KEPT_ID = 17097;
+    static public final int POLAND_KEPT_ID = 17141;
+    static public final int AUSTRIA_KEPT_ID = 17126;
+    static public final int ITALY_KEPT_ID = 17111;
+    static public final int PORTUGAL_KEPT_ID = 17129;
+    static public final int DENMARK_KEPT_ID = 17172;
+    static public final int CZECH_KEPT_ID = 17183;
+    static public final int HUNGARY_KEPT_ID = 17170;
+    static public final int GREECE_KEPT_ID = 17203;
 //
 //    public static final String TYPE_NUMBER = "Number";
 //    public static final String TYPE_DATE = "Date";
@@ -567,7 +567,12 @@ public class AuditQuestion extends BaseTable /*implements Comparable<AuditQuesti
 //        }
 //        return siblings;
 //    }
-//
+
+    @Transient
+    public AuditType getAuditType() {
+        return category.getParentAuditType();
+    }
+
 //    @Transient
 //    public String getExpandedNumber() {
 //        return category.getFullNumber() + "." + number;

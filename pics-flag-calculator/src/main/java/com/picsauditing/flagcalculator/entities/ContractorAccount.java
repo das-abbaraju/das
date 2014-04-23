@@ -7,10 +7,7 @@ import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -67,7 +64,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private List<Payment> payments = new ArrayList<Payment>();
 //    private List<Refund> refunds = new ArrayList<Refund>();
 //    private List<InvoiceCreditMemo> creditMemos = new ArrayList<>();
-//    private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
+    private Set<FlagCriteriaContractor> flagCriteria = new HashSet<>();
 //    private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 //
 //    private int needsRecalculation;
@@ -1153,14 +1150,14 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        this.refunds = refunds;
 //    }
 //
-//    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
-//    public Set<FlagCriteriaContractor> getFlagCriteria() {
-//        return flagCriteria;
-//    }
-//
-//    public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
-//        this.flagCriteria = flagCriteria;
-//    }
+    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
+    public Set<FlagCriteriaContractor> getFlagCriteria() {
+        return flagCriteria;
+    }
+
+    public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
+        this.flagCriteria = flagCriteria;
+    }
 //
 //    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
 //    public Set<FlagDataOverride> getFlagDataOverrides() {

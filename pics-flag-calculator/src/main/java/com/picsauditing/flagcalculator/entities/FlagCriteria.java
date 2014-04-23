@@ -1,9 +1,12 @@
 package com.picsauditing.flagcalculator.entities;
 
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
@@ -16,7 +19,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     private int displayOrder = 999;
     private AuditQuestion question;
     private AuditType auditType;
-//    private OshaType oshaType;
+    private OshaType oshaType;
     private OshaRateType oshaRateType;
 //    private String label;
 //    private String description;
@@ -28,7 +31,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     private boolean allowCustomValue = false;
     private String dataType = "string";
     private boolean flaggableWhenMissing = false;
-//    private boolean insurance = false;
+    private boolean insurance = false;
 //    private FlagCriteriaOptionCode optionCode;
 //
     public static final String BOOLEAN = "boolean";
@@ -41,13 +44,13 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 //
 //    public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 //
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
 //    @ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, importance = FieldImportance.Required)
-//    @Column(name = "category")
-//    public FlagCriteriaCategory getCategory() {
-//        return category;
-//    }
-//
+    @Column(name = "category")
+    public FlagCriteriaCategory getCategory() {
+        return category;
+    }
+
     public void setCategory(FlagCriteriaCategory category) {
         this.category = category;
     }
@@ -72,17 +75,16 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
-//    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(type = FieldType.OshaType, importance = FieldImportance.Average)
-//    public OshaType getOshaType() {
-//        return oshaType;
-//    }
-//
-//    public void setOshaType(OshaType oshaType) {
-//        this.oshaType = oshaType;
-//    }
-//
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
+    @Enumerated(EnumType.STRING)
+    public OshaType getOshaType() {
+        return oshaType;
+    }
+
+    public void setOshaType(OshaType oshaType) {
+        this.oshaType = oshaType;
+    }
+
     @Enumerated(EnumType.STRING)
     public OshaRateType getOshaRateType() {
         return oshaRateType;
@@ -208,14 +210,14 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     }
 
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
-//    public boolean isInsurance() {
-//        return insurance;
-//    }
-//
-//    public void setInsurance(boolean insurance) {
-//        this.insurance = insurance;
-//    }
-//
+    public boolean isInsurance() {
+        return insurance;
+    }
+
+    public void setInsurance(boolean insurance) {
+        this.insurance = insurance;
+    }
+
     public int getDisplayOrder() {
         return displayOrder;
     }

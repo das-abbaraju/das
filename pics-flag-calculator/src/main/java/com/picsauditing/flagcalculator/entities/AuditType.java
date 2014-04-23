@@ -53,7 +53,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //
 //    protected String name;
 //    private String slug;
-//    protected AuditTypeClass classType = AuditTypeClass.Audit;
+    protected AuditTypeClass classType = AuditTypeClass.Audit;
 //    protected int displayOrder = 100;
 //    protected String description;
     protected boolean hasMultiple;
@@ -132,16 +132,15 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //        this.slug = slug;
 //    }
 //
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(type = FieldType.AuditTypeClass, i18nKeyPrefix = "AuditTypeClass", importance = FieldImportance.Required)
-//    public AuditTypeClass getClassType() {
-//        return classType;
-//    }
-//
-//    public void setClassType(AuditTypeClass classType) {
-//        this.classType = classType;
-//    }
-//
+    @Enumerated(EnumType.STRING)
+    public AuditTypeClass getClassType() {
+        return classType;
+    }
+
+    public void setClassType(AuditTypeClass classType) {
+        this.classType = classType;
+    }
+
 //    public int getDisplayOrder() {
 //        return displayOrder;
 //    }
