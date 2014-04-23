@@ -5,14 +5,14 @@
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/employee/dashboard">EmployeeGUARD</a></li>
+                        <li><a href="/employee-guard/employee/dashboard">Dashboard</a></li>
                         <li class="active">Skills</li>
                     </ol>
                 </div>
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" ng-show="skillList">
             <div class="col-md-3">
                 <div class="bs-sidebar">
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
@@ -56,6 +56,17 @@
                         </span>
                     </div>
                </div>
+            </div>
+        </div>
+        <div class="row" ng-show="!skillList">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="alert alert-info">
+                    <h4>No Required Skills</h4>
+
+                    <p>Right now, no one is requiring any specific skills for you.</p>
+
+                    <p>You can get a head start on your skills by adding certificates or other skill proof ahead of time. Just go to My Files and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+                </div>
             </div>
         </div>
     </div>
