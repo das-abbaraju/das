@@ -195,6 +195,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		}
 	}
 
+	@Deprecated
 	@Transactional(propagation = Propagation.NESTED)
 	public void delete(final Project project, final int roleId, final int employeeId) {
 		Query query = em.createQuery("DELETE FROM ProjectRoleEmployee pre " +

@@ -49,12 +49,12 @@ public class SkillUsageLocator {
 	}
 
 	private List<SkillUsage> buildSkillUsages(final Set<Employee> employees,
-	                                          final Map<Employee, Map<AccountSkill, Set<Project>>> employeesProjectRequiredSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Group>>> employeeContractorGroupSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Role>>> employeeProjectJobRoleSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeCorporateSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeesSiteSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeSiteAssignmentSkills) {
+											  final Map<Employee, Map<AccountSkill, Set<Project>>> employeesProjectRequiredSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Group>>> employeeContractorGroupSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Role>>> employeeProjectJobRoleSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeCorporateSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeesSiteSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeSiteAssignmentSkills) {
 
 		List<SkillUsage> skillUsageList = new ArrayList<>();
 		for (Employee employee : employees) {

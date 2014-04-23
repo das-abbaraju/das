@@ -33,6 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ProjectServiceTest extends PicsTranslationTest {
+
 	private ProjectService projectService;
 
 	@Mock
@@ -45,7 +46,6 @@ public class ProjectServiceTest extends PicsTranslationTest {
 	private RoleDAO roleDAO;
 
 	private AccountService accountService;
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,11 +53,9 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 		projectService = new ProjectService();
 		accountService = AccountServiceFactory.getAccountService();
-		accountSkillEmployeeService = AccountSkillEmployeeServiceFactory.getAccountSkillEmployeeService();
 
 		Whitebox.setInternalState(projectService, "accountService", accountService);
 		Whitebox.setInternalState(projectService, "accountSkillDAO", accountSkillDAO);
-		Whitebox.setInternalState(projectService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(projectService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
 		Whitebox.setInternalState(projectService, "roleDAO", roleDAO);
