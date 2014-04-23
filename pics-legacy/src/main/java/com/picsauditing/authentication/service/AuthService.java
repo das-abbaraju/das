@@ -78,7 +78,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			json.put("id", newAppUser.getId());
 		}
 
-		LOG.error("Auth Service result = {}", json.toJSONString());
+		System.out.println("Auth Service result = {}" + json.toJSONString());
 
 		return JSON;
 	}
