@@ -1,15 +1,19 @@
 package com.picsauditing.flagcalculator.entities;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 public enum MultiYearScope {
 	LastYearOnly/*("Last Year Only")*/,
 	TwoYearsAgo/*("Two Years Ago")*/,
 	ThreeYearsAgo/*("Three Years Ago")*/,
 	ThreeYearAverage/*("Three Year Average")*/,
 	ThreeYearSum/*("Three Year Sum")*/;
-//
-//	private static final List<MultiYearScope> LIST_INDIVIDUAL_YEAR_SCOPES = Collections.unmodifiableList(
-//			Arrays.asList(LastYearOnly, TwoYearsAgo, ThreeYearsAgo));
-//
+
+	private static final List<MultiYearScope> LIST_INDIVIDUAL_YEAR_SCOPES = Collections.unmodifiableList(
+            Arrays.asList(LastYearOnly, TwoYearsAgo, ThreeYearsAgo));
+
 //	@Deprecated
 //	private String description;
 //
@@ -51,14 +55,14 @@ public enum MultiYearScope {
 //		return null;
 //	}
 //
-//	public boolean isIndividualYearScope() {
-//		return (this == LastYearOnly || this == TwoYearsAgo || this == ThreeYearsAgo);
-//	}
-//
-//	public static List<MultiYearScope> getListOfIndividualYearScopes() {
-//		return LIST_INDIVIDUAL_YEAR_SCOPES;
-//	}
-//
+	public boolean isIndividualYearScope() {
+		return (this == LastYearOnly || this == TwoYearsAgo || this == ThreeYearsAgo);
+	}
+
+	public static List<MultiYearScope> getListOfIndividualYearScopes() {
+		return LIST_INDIVIDUAL_YEAR_SCOPES;
+	}
+
 //	static public Map<Integer, MultiYearScope> getMap() {
 //		Map<Integer, MultiYearScope> map = new HashMap<Integer, MultiYearScope>();
 //		for (MultiYearScope value : MultiYearScope.values()) {

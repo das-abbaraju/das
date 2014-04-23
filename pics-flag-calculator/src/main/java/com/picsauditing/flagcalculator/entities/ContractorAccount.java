@@ -1,12 +1,15 @@
 package com.picsauditing.flagcalculator.entities;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.*;
+<<<<<<< HEAD
+=======
+import javax.persistence.Table;
+>>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -64,7 +67,11 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private List<Payment> payments = new ArrayList<Payment>();
 //    private List<Refund> refunds = new ArrayList<Refund>();
 //    private List<InvoiceCreditMemo> creditMemos = new ArrayList<>();
+<<<<<<< HEAD
     private Set<FlagCriteriaContractor> flagCriteria = new HashSet<>();
+=======
+    private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
+>>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 //    private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 //
 //    private int needsRecalculation;
@@ -80,7 +87,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private boolean autoAddClientSite = true;
 //
     private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-//    protected List<OshaAudit> oshaAudits = new ArrayList<OshaAudit>();
 //    private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
     private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 //    private List<Certificate> certificates = new ArrayList<Certificate>();
@@ -92,7 +98,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private Date lastContactedByAutomatedEmailDate;
 //    private User lastContactedByInsideSales;
 //    // Transient helper methods
-//    private OshaOrganizer oshaOrganizer = null;
 //    // Registration Requests
 //    private Date lastContactedByInsideSalesDate;
 //    private Date followUpDate;
@@ -923,38 +928,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        return false;
 //    }
 //
-//    /**
-//     * Uses the OshaVisitor to gather all the data
-//     *
-//     * @return
-//     */
-//    @Transient
-//    public OshaOrganizer getOshaOrganizer() {
-//        if (oshaOrganizer == null) {
-//            oshaOrganizer = new OshaOrganizer();
-//            for (OshaAudit audit : this.getOshaAudits()) {
-//                if (audit.isVerified()) {
-//                    audit.accept(oshaOrganizer);
-//                }
-//            }
-//        }
-//
-//        return oshaOrganizer;
-//    }
-//
-//    @Transient
-//    public List<OshaAudit> getOshaAudits() {
-//        if (oshaAudits == null || oshaAudits.size() == 0) {
-//            oshaAudits = new ArrayList<OshaAudit>();
-//            for (ContractorAudit audit : getAudits()) {
-//                if (audit.getAuditType().isAnnualAddendum()) {
-//                    oshaAudits.add(new OshaAudit(audit));
-//                }
-//            }
-//        }
-//        return this.oshaAudits;
-//    }
-//
 //    @Transient
 //    public List<ContractorAudit> getCurrentAnnualUpdates() {
 //        List<ContractorAudit> currentAnnualUpdates = getSortedAnnualUpdates();
@@ -977,29 +950,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        }
 //
 //        return currentAnnualUpdates;
-//    }
-//
-//    @Transient
-//    public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
-//        Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
-//        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-//        YearList years = getYearList();
-//
-//        for (ContractorAudit annualUpdate : getSortedAnnualUpdates()) {
-//            if (annualUpdate.hasCaoStatus(AuditStatus.Complete)) {
-//                years.add(annualUpdate.getAuditFor());
-//                annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
-//            }
-//        }
-//
-//        completeAnnualUpdates.put(MultiYearScope.LastYearOnly,
-//                annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
-//        completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo,
-//                annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
-//        completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo,
-//                annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
-//
-//        return completeAnnualUpdates;
 //    }
 //
 //    @Transient
@@ -1158,7 +1108,11 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
     public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
         this.flagCriteria = flagCriteria;
     }
+<<<<<<< HEAD
 //
+=======
+
+>>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 //    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
 //    public Set<FlagDataOverride> getFlagDataOverrides() {
 //        return flagDataOverrides;
@@ -1554,12 +1508,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        }
 //
 //        return false;
-//    }
-//
-//    // TODO: Remove this if it is not being used.
-//    @SuppressWarnings("unused")
-//    private void setOshaAudits(List<OshaAudit> oshaAudits) {
-//        this.oshaAudits = oshaAudits;
 //    }
 //
 //    @Transient

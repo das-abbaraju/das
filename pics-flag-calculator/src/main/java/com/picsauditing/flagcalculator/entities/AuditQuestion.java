@@ -12,15 +12,15 @@ import javax.persistence.*;
 public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQuestion>*/ {
 
 //    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-//    static public final int EMR = 2034;
+    static public final int EMR = 2034;
 //    static public final int MANUAL_PQF = 1331;
 //    static public final int MANUAL_PQF_SIGNATURE = 10217;
 //    static public final int OQ_EMPLOYEES = 894;
 //    static public final int COR = 2954;
 //    static public final int IEC = 10330;
-//    static public final int CITATIONS = 3546;
-//    static public final int EXCESS_EACH = 2161;
-//    static public final int EXCESS_AGGREGATE = 2165;
+    static public final int CITATIONS = 3546;
+    static public final int EXCESS_EACH = 2161;
+    static public final int EXCESS_AGGREGATE = 2165;
 //    static public final int RISK_LEVEL_ASSESSMENT = 2444;
 //    static public final int PRODUCT_CRITICAL_ASSESSMENT = 7678;
 //    static public final int PRODUCT_SAFETY_CRITICAL_ASSESSMENT = 7679;
@@ -61,13 +61,13 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //    private boolean groupedWithPrevious;
 //    private boolean showComment;
 //    private String requiredAnswer;
-//    private String visibleAnswer;
-//
+    private String visibleAnswer;
+
 //    private String name;
 //    private String slug;
 //
-//    private String questionType;
-//    private AuditOptionGroup option;
+    private String questionType;
+    private AuditOptionGroup option;
 //    private String okAnswer;
 //    private String columnHeader;
 //    private String uniqueCode;
@@ -79,7 +79,7 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //    private String criteria;
 //    private String criteriaAnswer;
 //    private AuditQuestion requiredQuestion;
-//    private AuditQuestion visibleQuestion;
+    private AuditQuestion visibleQuestion;
     private AuditCategory category;
 //    private LowMedHigh riskLevel = null;
 //    private boolean hasTitleText;
@@ -178,26 +178,25 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //        }
 //    }
 //
-//    @Column(nullable = false)
-//    @ReportField(type = FieldType.String, importance = FieldImportance.Average)
-//    public String getQuestionType() {
-//        return this.questionType;
-//    }
-//
-//    public void setQuestionType(String questionType) {
-//        this.questionType = questionType;
-//    }
-//
-//    @ManyToOne
-//    @JoinColumn(name = "optionID")
-//    public AuditOptionGroup getOption() {
-//        return option;
-//    }
-//
-//    public void setOption(AuditOptionGroup option) {
-//        this.option = option;
-//    }
-//
+    @Column(nullable = false)
+    public String getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(String questionType) {
+        this.questionType = questionType;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "optionID")
+    public AuditOptionGroup getOption() {
+        return option;
+    }
+
+    public void setOption(AuditOptionGroup option) {
+        this.option = option;
+    }
+
 //    @Column(nullable = false)
 //    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
 //    public boolean isHasRequirement() {
@@ -244,24 +243,24 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //        this.requiredAnswer = requiredAnswer;
 //    }
 //
-//    @ManyToOne
-//    @JoinColumn(name = "visibleQuestion")
-//    public AuditQuestion getVisibleQuestion() {
-//        return visibleQuestion;
-//    }
-//
-//    public void setVisibleQuestion(AuditQuestion visibleQuestion) {
-//        this.visibleQuestion = visibleQuestion;
-//    }
-//
-//    public String getVisibleAnswer() {
-//        return visibleAnswer;
-//    }
-//
-//    public void setVisibleAnswer(String visibleAnswer) {
-//        this.visibleAnswer = visibleAnswer;
-//    }
-//
+    @ManyToOne
+    @JoinColumn(name = "visibleQuestion")
+    public AuditQuestion getVisibleQuestion() {
+        return visibleQuestion;
+    }
+
+    public void setVisibleQuestion(AuditQuestion visibleQuestion) {
+        this.visibleQuestion = visibleQuestion;
+    }
+
+    public String getVisibleAnswer() {
+        return visibleAnswer;
+    }
+
+    public void setVisibleAnswer(String visibleAnswer) {
+        this.visibleAnswer = visibleAnswer;
+    }
+
 //    @Transient
 //    public String getColumnHeader() {
 //        if (columnHeader != null) {
@@ -752,17 +751,6 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //        if (comparisonAnswer.equals(answer)) {
 //            return true;
 //        }
-//        return false;
-//    }
-//
-//    @Transient
-//    public boolean isVisibleInAudit(ContractorAudit audit) {
-//        for (AuditCatData category : audit.getCategories()) {
-//            if (category.getCategory().getId() == this.getCategory().getId()) {
-//                return category.isApplies();
-//            }
-//        }
-//
 //        return false;
 //    }
 //
