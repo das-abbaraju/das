@@ -91,12 +91,12 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	public String login() throws Exception {
 		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword(), loginForm.getHashCode());
 
-		LOG.info("loginResult = " + loginResult.toJSONString());
+		LOG.error("loginResult = " + loginResult.toJSONString());
 
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new PageNotFoundException();
 		} else {
-			LOG.info("Passed login result");
+			LOG.error("Passed login result");
 
 			String cookieContent = loginResult.get("cookie").toString();
 

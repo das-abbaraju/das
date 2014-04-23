@@ -174,17 +174,17 @@
 
     <logger name="com.picsauditing.employeeguard.controllers.LoginAction">
         <appender-ref ref="EmployeeGUARDAppender"/>
-        <level value="debug" />
+        <level value="DEBUG" />
     </logger>
 
     <logger name="com.picsauditing.employeeguard.controllers.AccountAction">
         <appender-ref ref="EmployeeGUARDAppender"/>
-        <level value="debug" />
+        <level value="DEBUG" />
     </logger>
 
     <logger name="com.picsauditing.authentication.service.AuthService">
         <appender-ref ref="EmployeeGUARDAppender"/>
-        <level value="debug" />
+        <level value="DEBUG" />
     </logger>
 
 </configuration>

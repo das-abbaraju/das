@@ -54,6 +54,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	@Anonymous
 	public String index() throws Exception {
 		if (!emailHashService.hashIsValid(hashCode)) {
+			LOG.error(hashCode);
 			throw new PageNotFoundException();
 		}
 
@@ -65,6 +66,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 			profile.setLastName(emailHash.getEmployee().getLastName());
 			profile.setEmail(emailHash.getEmailAddress());
 		}
+
+		LOG.error("Success - Alex");
 
 		return LIST;
 	}
@@ -81,6 +84,9 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	@Anonymous
 	public String insert() throws Exception {
 		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
+
+		LOG.error(createAppUserResult.toJSONString());
+
 		if (!"SUCCESS".equals(createAppUserResult.get("status").toString())) {
 			return ERROR;
 		}
@@ -95,9 +101,11 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), profileForm.getPassword());
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
+			LOG.error("FAILURE - " + loginResult.toJSONString());
 			throw new FailedLoginException();
 		} else {
 			doSetCookie(loginResult.get("cookie").toString(), 10);
+			LOG.error("SUCCESS - " + loginResult.toJSONString());
 			return setUrlForRedirect("/employee-guard/employee/dashboard");
 		}
 	}
