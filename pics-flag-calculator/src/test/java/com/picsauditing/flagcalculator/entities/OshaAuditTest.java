@@ -159,6 +159,8 @@ public class OshaAuditTest {
 
 		oshaParentCat.setId(OshaAudit.CAT_ID_OSHA_PARENT);
 		oshaDataCat.setId(OshaAudit.CAT_ID_OSHA);
+        oshaParentCat.setAuditType(auditType);
+        oshaDataCat.setAuditType(auditType);
 
 		List<AuditCatData> auditCategories = new ArrayList<AuditCatData>();
 		AuditCatData mockAuditCategoryData = Mockito.mock(AuditCatData.class);
@@ -236,6 +238,7 @@ public class OshaAuditTest {
 	private AuditCatData setupMockAuditCatData(ContractorAudit contractorAudit, int categoryId) {
 		AuditCategory mockAuditCategory = Mockito.mock(AuditCategory.class);
 		when(mockAuditCategory.getId()).thenReturn(categoryId);
+        when(mockAuditCategory.getAuditType()).thenReturn(contractorAudit.getAuditType());
 
 		AuditCatData mockAuditCategoryData = Mockito.mock(AuditCatData.class);
 		when(mockAuditCategoryData.getCategory()).thenReturn(mockAuditCategory);

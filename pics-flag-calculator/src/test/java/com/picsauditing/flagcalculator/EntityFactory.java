@@ -166,7 +166,7 @@ public class EntityFactory {
         ContractorAudit conAudit = new ContractorAudit();
         conAudit.setAuditType(makeAuditType(auditTypeID));
         conAudit.setContractorAccount(contractor);
-//        conAudit.setAuditFor(auditFor);
+        conAudit.setAuditFor(auditFor);
 //        conAudit.setCreationDate(new Date());
         return conAudit;
     }
@@ -182,6 +182,7 @@ public class EntityFactory {
 //        auditCatData.setAudit(conAudit);
         auditCatData.setCategory(new AuditCategory());
         auditCatData.getCategory().setId(categoryID);
+        auditCatData.getCategory().setAuditType(conAudit.getAuditType());
 //        auditCatData.setNumRequired(4);
         return auditCatData;
     }

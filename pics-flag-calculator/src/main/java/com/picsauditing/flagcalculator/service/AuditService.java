@@ -34,6 +34,10 @@ public class AuditService {
     }
 
     public static AuditType getParentAuditType(AuditCategory category) {
+        if (category == null) {
+            return null;
+        }
+
         if (category.getAuditType() == null) {
             return getParentAuditType(category.getParent());
         }
@@ -97,10 +101,9 @@ public class AuditService {
     }
 
 
-    public static Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates(ContractorAccount contractorAccount) {
-        Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
-        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-        YearList years = new YearList();
+    public static Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates(YearList years, ContractorAccount contractorAccount) {
+        Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<>();
+        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<>();
 
         for (ContractorAudit annualUpdate : getSortedAnnualUpdates(contractorAccount)) {
             if (hasCaoStatusAfter(annualUpdate, AuditStatus.Pending)) {
@@ -155,7 +158,7 @@ public class AuditService {
     }
 
     public static Set<AuditCategory> getVisibleCategories(ContractorAudit contractorAudit) {
-        Set<AuditCategory> visibleCategories = new HashSet<AuditCategory>();
+        Set<AuditCategory> visibleCategories = new HashSet<>();
         for (AuditCatData categoryData : contractorAudit.getCategories()) {
             // Find all applicable categories
             if (categoryData.isApplies()) {
@@ -170,7 +173,7 @@ public class AuditService {
             AuditCategory parent = category.getParent();
 
             // Breadcrumbs in case we have a cyclical relationship somewhere
-            Set<Integer> alreadyProcessed = new HashSet<Integer>();
+            Set<Integer> alreadyProcessed = new HashSet<>();
             alreadyProcessed.add(category.getId());
 
             while (parent != null) {
@@ -220,5 +223,4 @@ public class AuditService {
 
         return false;
     }
-
 }

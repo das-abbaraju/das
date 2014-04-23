@@ -159,41 +159,41 @@ public class OshaAudit /*implements OshaVisitable*/ {
             } else if (oshaType == OshaType.COHS) {
                 safetyStatistics = new CohsStatistics(year, contractorAudit.getData(), category.isApplies());
             } else if (oshaType == OshaType.UK_HSE) {
-//                safetyStatistics = new UkStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.EMR) {
-//                safetyStatistics = new EmrStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.MEXICO) {
-//                safetyStatistics = new MexicoStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.AUSTRALIA) {
-//                safetyStatistics = new AustraliaStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.IRELAND) {
-//	            safetyStatistics = new IrelandStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.SOUTH_AFRICA) {
-//		        safetyStatistics = new SouthAfricaStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.SINGAPORE_MOM) {
-//	            safetyStatistics = new SingaporeStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.SWITZERLAND) {
-//	            safetyStatistics = new SwitzerlandStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.TURKEY) {
-//	            safetyStatistics = new TurkeyStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.SPAIN) {
-//	            safetyStatistics = new SpainStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.POLAND) {
-//	            safetyStatistics = new PolandStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.AUSTRIA) {
-//	            safetyStatistics = new AustriaStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.ITALY) {
-//	            safetyStatistics = new ItalyStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.PORTUGAL) {
-//	            safetyStatistics = new PortugalStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.DENMARK) {
-//	            safetyStatistics = new DenmarkStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.CZECH) {
-//	            safetyStatistics = new CzechStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.HUNGARY) {
-//	            safetyStatistics = new HungaryStatistics(year, contractorAudit.getData(), category.isApplies());
-//            } else if (oshaType == OshaType.GREECE) {
-//	            safetyStatistics = new GreeceStatistics(year, contractorAudit.getData(), category.isApplies());
+                safetyStatistics = new UkStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.EMR) {
+                safetyStatistics = new EmrStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.MEXICO) {
+                safetyStatistics = new MexicoStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.AUSTRALIA) {
+                safetyStatistics = new AustraliaStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.IRELAND) {
+	            safetyStatistics = new IrelandStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.SOUTH_AFRICA) {
+		        safetyStatistics = new SouthAfricaStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.SINGAPORE_MOM) {
+	            safetyStatistics = new SingaporeStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.SWITZERLAND) {
+	            safetyStatistics = new SwitzerlandStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.TURKEY) {
+	            safetyStatistics = new TurkeyStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.SPAIN) {
+	            safetyStatistics = new SpainStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.POLAND) {
+	            safetyStatistics = new PolandStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.AUSTRIA) {
+	            safetyStatistics = new AustriaStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.ITALY) {
+	            safetyStatistics = new ItalyStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.PORTUGAL) {
+	            safetyStatistics = new PortugalStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.DENMARK) {
+	            safetyStatistics = new DenmarkStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.CZECH) {
+	            safetyStatistics = new CzechStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.HUNGARY) {
+	            safetyStatistics = new HungaryStatistics(year, contractorAudit.getData(), category.isApplies());
+            } else if (oshaType == OshaType.GREECE) {
+	            safetyStatistics = new GreeceStatistics(year, contractorAudit.getData(), category.isApplies());
 	        }
 
             if (safetyStatistics != null) {

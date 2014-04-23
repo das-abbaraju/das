@@ -8,10 +8,12 @@ import com.picsauditing.flagcalculator.util.FlagAnswerParser;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class ContractorFlagETL {
+    @Autowired
 	private FlagEtlDAO flagEtlDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(ContractorFlagETL.class);
@@ -38,7 +40,7 @@ public class ContractorFlagETL {
 
 	private Set<FlagCriteriaContractor> executeFlagCriteriaCalculation(FlagCriteria flagCriteria,
 			ContractorAccount contractor, Map<Integer, AuditData> answerMap) {
-		Set<FlagCriteriaContractor> changes = new HashSet<FlagCriteriaContractor>();
+		Set<FlagCriteriaContractor> changes = new HashSet<>();
 
 		if (flagCriteria.getAuditType() != null) {
 			changes.add(new FlagCriteriaContractor(contractor, flagCriteria, "true"));
@@ -77,7 +79,7 @@ public class ContractorFlagETL {
 			return Collections.emptySet();
 		}
 
-		Set<AuditCategory> applicableCategories = new TreeSet<>();
+		Set<AuditCategory> applicableCategories = new HashSet<>();
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == AuditService.getAuditType(question).getId()) {
 				applicableCategories.addAll(AuditService.getVisibleCategories(audit));
