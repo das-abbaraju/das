@@ -225,9 +225,9 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Pending);
 
-        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
-        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
-        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.ThreeYearsAgo));
     }
 
     @Test
@@ -238,9 +238,9 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Pending);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
 
-        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
-        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
-        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(null, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.ThreeYearsAgo));
     }
 
 
@@ -248,13 +248,13 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
     public void testGetAfterPendingAnnualUpdates_RecentPending() {
         ContractorAccount contractor = EntityFactory.makeContractor();
 
-        YearList yearList = createTestYearList();
+        YearList years = createTestYearList();
 
-        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        createAnnualUpdate(-1, contractor, AuditStatus.Pending);
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
 
-        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(contractor);
+        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(years, contractor);
 
         assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
         assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
@@ -265,14 +265,14 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
     public void testGetAfterPendingAnnualUpdates_RecentPendingFourYears() {
         ContractorAccount contractor = EntityFactory.makeContractor();
 
-        YearList yearList = createTestYearList();
+        YearList years = createTestYearList();
 
-        ContractorAudit lastYear = createAnnualUpdate(-1, contractor, AuditStatus.Pending);
+        createAnnualUpdate(-1, contractor, AuditStatus.Pending);
         ContractorAudit twoYears = createAnnualUpdate(-2, contractor, AuditStatus.Complete);
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
         ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
 
-        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(contractor);
+        Map<MultiYearScope, ContractorAudit> annualUpdates = AuditService.getAfterPendingAnnualUpdates(years, contractor);
 
         assertEquals(twoYears, annualUpdates.get(MultiYearScope.LastYearOnly));
         assertEquals(threeYears, annualUpdates.get(MultiYearScope.TwoYearsAgo));
@@ -297,9 +297,9 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         ContractorAudit threeYears = createAnnualUpdate(-3, contractor, AuditStatus.Complete);
         ContractorAudit fourYears = createAnnualUpdate(-4, contractor, AuditStatus.Complete);
 
-        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.LastYearOnly));
-        assertEquals(twoYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.TwoYearsAgo));
-        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(contractor).get(MultiYearScope.ThreeYearsAgo));
+        assertEquals(lastYear, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.LastYearOnly));
+        assertEquals(twoYears, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.TwoYearsAgo));
+        assertEquals(threeYears, AuditService.getAfterPendingAnnualUpdates(new YearList(), contractor).get(MultiYearScope.ThreeYearsAgo));
     }
 
     private ContractorAudit createAnnualUpdate(int yearsAgo, ContractorAccount contractor, AuditStatus status) {
@@ -322,7 +322,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
     private void addCao(ContractorAudit audit, OperatorAccount operator, AuditStatus status) {
         ContractorAuditOperator cao = new ContractorAuditOperator();
         cao.setAudit(audit);
-//        cao.changeStatus(status, null);
+        cao.setStatus(status);
         cao.setOperator(operator);
         audit.getOperators().add(cao);
 
