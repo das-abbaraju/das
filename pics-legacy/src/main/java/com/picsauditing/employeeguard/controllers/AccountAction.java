@@ -83,6 +83,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String insert() throws Exception {
+		LOG.error(profileForm.getEmail(), profileForm.getPassword());
+
 		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
 
 		LOG.error(createAppUserResult.toJSONString());
@@ -98,6 +100,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
 		employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
 		emailHashService.expire(emailHash);
+
+		LOG.error(profileForm.getEmail(), profileForm.getPassword());
 
 		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), profileForm.getPassword());
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {

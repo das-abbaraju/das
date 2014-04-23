@@ -43,6 +43,7 @@ public class LoginService {
 			String jsonString = callRESTService("/AuthService!authenticateByCredentials.action", query);
 			json = (JSONObject) JSONValue.parse(jsonString);
 		}
+
 		return json;
 	}
 

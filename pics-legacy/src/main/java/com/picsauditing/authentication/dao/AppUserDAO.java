@@ -56,8 +56,11 @@ public class AppUserDAO {
 	}
 
 	public AppUser findByUserName(String username) {
-		TypedQuery<AppUser> q = em.createQuery("select a from AppUser a where a.username=:username", AppUser.class);
+		TypedQuery<AppUser> q = em.createQuery("SELECT a FROM AppUser a " +
+				"WHERE a.username = :username", AppUser.class);
+
 		q.setParameter("username", username);
+
 		try {
 			return q.getSingleResult();
 		} catch (Exception e) {
@@ -71,7 +74,9 @@ public class AppUserDAO {
 	}
 
 	public AppUser findByUserNameAndPassword(String username, String password) {
-		TypedQuery<AppUser> q = em.createQuery("select a from AppUser a where a.username=:username and a.password=:password", AppUser.class);
+		TypedQuery<AppUser> q = em.createQuery("SELECT a FROM AppUser a WHERE a.username = :username " +
+				"AND a.password = :password", AppUser.class);
+
 		q.setParameter("username", username);
 		q.setParameter("password", password);
 
