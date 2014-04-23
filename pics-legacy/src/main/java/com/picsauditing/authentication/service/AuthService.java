@@ -25,8 +25,6 @@ import java.util.Date;
 
 public class AuthService extends PicsApiSupport implements ParameterAware {
 
-	private static final Logger LOG = LoggerFactory.getLogger(AuthService.class);
-
 	private String ssoToken;
 	private String username;
 	private String password;
@@ -78,8 +76,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			json.put("id", newAppUser.getId());
 		}
 
-		LOG.error("Auth Service result = {}" + json.toJSONString());
-
 		return JSON;
 	}
 
@@ -106,7 +102,6 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			json.put("status", "FAIL");
-			LOG.error("error in authenticateByCredentials", e);
 		}
 
 		return JSON;

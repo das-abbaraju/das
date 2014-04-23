@@ -31,8 +31,6 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	private static final long serialVersionUID = 3274071143261978073L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
-
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -91,13 +89,9 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	public String login() throws Exception {
 		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword(), loginForm.getHashCode());
 
-		LOG.error("loginResult = " + loginResult.toJSONString());
-
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new PageNotFoundException();
 		} else {
-			LOG.error("Passed login result");
-
 			String cookieContent = loginResult.get("cookie").toString();
 
 			doSetCookie(cookieContent, 10);
