@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Deprecated
 public class AccountSkillEmployeeService {
 
 	@Autowired
@@ -232,7 +233,7 @@ public class AccountSkillEmployeeService {
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
-			ProfileDocument document = profileDocumentService.getDocument(Integer.toString(skillDocumentForm.getDocumentId()));
+			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
 			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
 		} else if (skillType.isTraining()) {
 			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {

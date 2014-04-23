@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.SiteAssignmentBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -77,7 +78,7 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
-	                                                         final Collection<Integer> siteIds) {
+															 final Collection<Integer> siteIds) {
 
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
@@ -100,13 +101,13 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final int siteId) {
+																final int siteId) {
 
 		return getProjectRolesForEmployees(employees, Arrays.asList(siteId));
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final Collection<Integer> siteIds) {
+																final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
@@ -239,4 +240,31 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		delete(role);
 	}
 
+	public void addEmployeeSiteAssignment(final int siteId, final int roleId, final int employeeId,
+										  final EntityAuditInfo entityAuditInfo) {
+		SiteAssignment siteAssignment = siteAssignmentDAO.find(siteId, roleId, employeeId);
+		if (siteAssignment == null) {
+			siteAssignment = buildSiteAssignment(siteId, roleId, employeeId, entityAuditInfo);
+			siteAssignmentDAO.save(siteAssignment);
+		}
+	}
+
+	private SiteAssignment buildSiteAssignment(final int siteId, final int roleId, final int employeeId,
+											   final EntityAuditInfo entityAuditInfo) {
+		return new SiteAssignmentBuilder()
+				.employee(new Employee(employeeId))
+				.role(new Role(roleId))
+				.siteId(siteId)
+				.createdBy(entityAuditInfo.getAppUserId())
+				.createdDate(entityAuditInfo.getTimestamp())
+				.build();
+	}
+
+	public void deleteEmployeeSiteAssignment(final int siteId, final int roleId, final int employeeId) {
+		siteAssignmentDAO.delete(employeeId, roleId, siteId);
+	}
+
+	public void deleteAllEmployeeSiteAssignmentsForSite(final int siteId, final int employeeId) {
+		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(employeeId, siteId);
+	}
 }

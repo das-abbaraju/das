@@ -33,6 +33,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AssignmentService assignmentService;
+	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private EmployeeService employeeService;
@@ -56,13 +58,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String status() {
 		site = accountService.getAccountById(NumberUtils.toInt(id));
-		siteAssignmentModel = buildSiteAssignmentModel();
+		siteAssignmentModel = buildSiteAssignmentModel(site);
 
 		return "status";
 	}
 
-	private SiteAssignmentModel buildSiteAssignmentModel() {
-		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+	private SiteAssignmentModel buildSiteAssignmentModel(final AccountModel site) {
+		List<Employee> employees = employeeEntityService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+//		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
@@ -88,15 +91,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String assign() {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.assignEmployeeToRole(
-					siteId,
-					roleId,
-					employee,
-					new EntityAuditInfo.Builder()
-							.appUserId(permissions.getAppUserID())
-							.timestamp(DateBean.today())
-							.build());
+			assignmentService.assignEmployeeToSiteRole(siteId, roleId, NumberUtils.toInt(id),
+					new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today()).build());
 
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
@@ -109,8 +105,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassign() {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.unassignEmployeeFromRole(employee, roleId, siteId);
+			assignmentService.unassignEmployeeFromSiteRole(siteId, roleId, NumberUtils.toInt(id));
+
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
@@ -122,8 +118,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassignAll() throws Exception {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.unassignEmployeeFromSite(employee, siteId);
+			assignmentService.unassignEmployeeFromSite(siteId, NumberUtils.toInt(id));
+
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
@@ -162,9 +158,9 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(final int contractorId,
-	                                                                                      final List<Employee> employees,
-	                                                                                      final Role corporateRole,
-	                                                                                      final AccountModel site) {
+																						  final List<Employee> employees,
+																						  final Role corporateRole,
+																						  final AccountModel site) {
 		Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
 		List<AccountSkill> allSkillsForRole = skillService.getSkillsForRole(corporateRole);
 		allSkillsForRole.addAll(skillService.getRequiredSkillsForSiteAndCorporates(site.getId()));

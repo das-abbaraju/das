@@ -23,8 +23,10 @@ public class Project implements BaseEntity, Comparable<Project> {
 
     @Column(name = "accountID")
     private int accountId;
+
     private String name;
     private String location;
+
     private Date startDate;
     private Date endDate;
 

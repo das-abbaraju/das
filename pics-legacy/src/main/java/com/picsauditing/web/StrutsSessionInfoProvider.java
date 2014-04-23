@@ -80,4 +80,9 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	public String getURI() {
 		return ServletActionContext.getRequest().getRequestURI();
 	}
+
+	@Override
+	public String getReferer() {
+		return ServletActionContext.getRequest().getHeader("Referer");
+	}
 }

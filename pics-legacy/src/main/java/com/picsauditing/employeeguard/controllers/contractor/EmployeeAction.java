@@ -180,7 +180,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		emailService.sendEGWelcomeEmail(hash, accountModel.getName());
 
 		if (addAnother(employeeForm)) {
-			return setUrlForRedirect("/employee-guard/contractor/employee/create");
+			return setUrlForRedirect("/employee-guard/contractor/employee/create"); // EmployeeCreateAction,
 		}
 
 		return redirectToList();

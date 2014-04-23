@@ -1,11 +1,11 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.ProjectDAO;
+import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.ProjectCompany;
-import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.ProjectRoleEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -22,6 +22,10 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	private ProjectDAO projectDAO;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
+	@Autowired
+	private ProjectRoleDAO projectRoleDAO;
+	@Autowired
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -39,7 +43,7 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	}
 
 	public Map<Employee, Set<Project>> getProjectsForEmployeesBySiteIds(final Collection<Employee> employees,
-	                                                                    final Collection<Integer> siteIds) {
+																		final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
@@ -161,5 +165,43 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		}
 
 		return new HashSet<>(projectDAO.findByAccounts(siteIds));
+	}
+
+	public void assignEmployeeToProjectRole(final Project project, final int roleId, final int employeeId,
+											final EntityAuditInfo entityAuditInfo) {
+		ProjectRole projectRole = projectRoleDAO.findByProjectAndRoleId(project.getId(), roleId);
+		if (projectRole == null) {
+			return; // We shouldn't be able to assign a user to a project role that doesn't exist
+		}
+
+		ProjectRoleEmployee projectRoleEmployee = projectRoleEmployeeDAO.findByProjectRoleAndEmployeeId(projectRole, employeeId);
+		if (projectRoleEmployee == null) {
+			projectRoleEmployee = buildProjectRoleEmployee(projectRole, employeeId, entityAuditInfo);
+			projectRoleEmployeeDAO.save(projectRoleEmployee);
+		}
+	}
+
+	private ProjectRoleEmployee buildProjectRoleEmployee(final ProjectRole projectRole, final int employeeId,
+														 final EntityAuditInfo entityAuditInfo) {
+		return new ProjectRoleEmployeeBuilder()
+				.employee(new Employee(employeeId))
+				.projectRole(projectRole)
+				.createdBy(entityAuditInfo.getAppUserId())
+				.createdDate(entityAuditInfo.getTimestamp())
+				.build();
+	}
+
+	public void removeEmployeeFromProjectRole(final Project project, final int roleId, final int employeeId) {
+		projectRoleEmployeeDAO.delete(project, roleId, employeeId);
+	}
+
+	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, final int employeeId) {
+		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(siteId, employeeId);
+	}
+
+	public void deleteEmployeeFromProjectRole(final int siteId, final int roleId, final int employeeId) {
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findBySiteIdRoleIdEmployeeId(siteId, roleId, employeeId);
+
+		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 }

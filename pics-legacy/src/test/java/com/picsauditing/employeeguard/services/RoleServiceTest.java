@@ -18,6 +18,7 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -48,8 +49,6 @@ public class RoleServiceTest {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Mock
 	private RoleDAO roleDAO;
-	@Mock
-	private RoleAssignmentHelper roleAssignmentHelper;
 	@Mock
 	private SiteAssignmentDAO siteAssignmentDAO;
 	@Mock
@@ -88,7 +87,6 @@ public class RoleServiceTest {
 		Whitebox.setInternalState(roleService, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
 		Whitebox.setInternalState(roleService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(roleService, "roleDAO", roleDAO);
-		Whitebox.setInternalState(roleService, "roleAssignmentHelper", roleAssignmentHelper);
 		Whitebox.setInternalState(roleService, "siteAssignmentDAO", siteAssignmentDAO);
 		Whitebox.setInternalState(roleService, "skillEngine", skillEngine);
 		Whitebox.setInternalState(roleService, "skillUsageLocator", skillUsageLocator);
@@ -115,18 +113,14 @@ public class RoleServiceTest {
 		when(accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(anyInt(), anyList())).thenReturn(accountSkillEmployees);
 		when(employee.getId()).thenReturn(EMPLOYEE_ID);
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID);
-
-		verifyUnassign();
+		fail("needs to be fixed.");
 	}
 
 	@Test
 	public void testUnassignEmployeeFromSite_WithCorporateAndOtherSites() {
 		setUpUnassignEmployeeFromSite();
 
-		roleService.unassignEmployeeFromSite(employee, SITE_ID);
-
-		verifyUnassign();
+		fail("needs to be fixed.");
 	}
 
 	@Test
@@ -149,21 +143,13 @@ public class RoleServiceTest {
 		when(skillUsage.allSkills()).thenReturn(accountSkills);
 		when(skillUsageLocator.getSkillUsagesForEmployee(employee)).thenReturn(skillUsage);
 
-		roleService.unassignEmployeeFromRole(employee, CORPORATE_ROLE_ID, SITE_ID);
 
 		verify(accountSkillEmployeeDAO).deleteByIds(anyListOf(Integer.class));
-		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(employee, role);
-		verify(roleAssignmentHelper).deleteSiteRoleFromEmployee(employee, role, SITE_ID);
 	}
 
 	private void setUpUnassignEmployeeFromSite() {
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(employee.getId()).thenReturn(EMPLOYEE_ID);
-	}
-
-	private void verifyUnassign() {
-		verify(roleAssignmentHelper).deleteProjectRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
-		verify(roleAssignmentHelper).deleteSiteRolesFromEmployee(EMPLOYEE_ID, SITE_ID);
 	}
 
 	private void verifyTest() {

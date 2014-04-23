@@ -122,6 +122,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		);
 	}
 
+	public List<Employee> getEmployeesAssignedToSite(final int contractorId, final int siteId) {
+		return getEmployeesAssignedToSites(Arrays.asList(contractorId), Arrays.asList(siteId));
+	}
+
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
 		return getEmployeesAssignedToSites(contractorIds, Arrays.asList(siteId));
 	}
@@ -305,7 +309,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
