@@ -1,383 +1,232 @@
-describe('An Operator Employee', function() {
+describe("A Employee Skill List", function() {
     var scope, $httpBackend, routeParams;
 
-    var result = {
-        "required": {
-            "skills": [
+    var skill_list_dev_url = '/angular/json/employee/skills/skill_list.json';
+
+    var skillListData = {
+        "status": "Expired",
+        "sites": [
+        {
+            "id": 2,
+            "name": "BASF Houston Texas",
+            "status": "Expired",
+            "projects": [
                 {
-                 "id":6,
-                 "name":"Site Required Skill 1",
-                 "status": "Expired"
+                    "id": 3,
+                    "name": "Dynamic Reporting",
+                    "status": "Expired",
+                    "skills": [
+                        {
+                             "id":210,
+                             "name":"Dynamic Reporting Skill",
+                             "status": "Expiring"
+                        }
+                    ]
                 },
                 {
-                 "id":5,
-                 "name":"Corp Required Skill 1",
-                 "status": "Completed"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 2",
-                 "status": "Expiring"
+                    "id": 3,
+                    "name": "Ninja Dojo",
+                    "status": "Expiring",
+                    "skills": [
+                        {
+                             "id":4,
+                             "name":"Ninja Dojo Skill 4",
+                             "status": "Expiring"
+                        }
+                    ]
                 }
-            ]
+            ],
+            "required": {
+                "skills": [
+                    {
+                     "id":45,
+                     "name":"BASF Site Skill 1",
+                     "status": "Expired"
+                    }
+                ]
+            }
         },
-        projects:[
-          {
-            id:1,
-            name:"Blue Buffalo",
-            slug:"BlueBuffalo",
-            status:"Expired",
+        {
+            "id": 8,
+            "name": "Spectre",
+            "status": "Completed",
+            "projects": [
+                {
+                    "id": 32,
+                    "name": "Volcano Base",
+                    "status": "Completed",
+                    "skills": [
+                        {
+                         "id":4,
+                         "name":"Volcano Base Skill",
+                         "status": "Expired"
+                        }
+                    ]
+                }
+            ],
             "required": {
                 "skills": [
                     {
-                     "id":4,
-                     "name":"ABC Project Required Learning the alphabet",
-                     "status": "Expired"
-                    },
-                    {
-                     "id":25,
-                     "name":"ABC Project Required Skill 2",
-                     "status": "Completed"
+                         "id":6,
+                         "name":"Spectre Site Required Skill 1",
+                         "status": "Expired"
                     }
                 ]
-            },
-            roles:[
-                {
-                    skills:[
-                      {
-                         id:21,
-                         projects:[
-
-                         ],
-                         status:"Complete",
-                         roles:[
-                            1
-                         ],
-                         name:"Defensing Driving"
-                      }
-                    ],
-                    id:1,
-                    status:"Expired",
-                    name:"Soccer Mom"
-                }
-            ]
-          },
-          {
-            id:41,
-            name:"Red Rocket",
-            slug:"RedRocket",
-            status:"Expiring",
-            "required": {
-                "skills": [
-                    {
-                     "id":3,
-                     "name":"Red Rocket Required 1",
-                     "status": "Expired"
-                    },
-                    {
-                     "id":215,
-                     "name":"Red Rocket Required 2",
-                     "status": "Completed"
-                    }
-                ]
-            },
-            roles:[
-                {
-                    skills:[
-                      {
-                         id:21,
-                         projects:[
-
-                         ],
-                         status:"Complete",
-                         roles:[
-                            1
-                         ],
-                         name:"Defensing Driving"
-                      }
-                    ],
-                    id:1,
-                    status:"Expired",
-                    name:"Soccer Mom"
-                }
-            ]
-          }
-        ],
-        roles:[
-          {
-             skills:[
-                {
-                   id:13,
-                   projects:[
-                      7
-                   ],
-                   status:"Complete",
-                   roles:[
-                      1
-                   ],
-                   name:"General Safety Training"
-                }
-             ],
-             id:24,
-             status:"Expiring",
-             name:"Destructor The Great",
-             slug:"DestructorTheGreat"
-          },
-          {
-             skills:[
-                {
-                   id:13,
-                   projects:[
-                      7
-                   ],
-                   status:"Complete",
-                   roles:[
-                      1
-                   ],
-                   name:"General Safety Training"
-                }
-             ],
-             id:24,
-             status:"Completed",
-             name:"Redemption",
-             slug:"Redemption"
-          }
+            }
+        }
         ]
-    };
-
-    var employee_info = {
-       "id":29,
-       "image":"",
-       "status":"Expired",
-       "firstName":"Murphy",
-       "lastName":"Hibbert",
-       "companies":[
-          {
-             "id":54578,
-             "title":"Demo Op",
-             "name":"ACME Co."
-          }
-       ]
     };
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, EmployeeCompanyInfo, SkillModel, SkillList) {
-        $routeParams.id = Math.floor((Math.random()*1000)+1);
-
+    beforeEach(inject(function($rootScope, $controller, $httpBackend, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
         routeParams = $routeParams;
 
-        //This needs to come first!!
-        $httpBackend.when('GET', /\/employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
-
-        $httpBackend.when('GET', '/angular/json/operator/employee_skills/employee_info.json').respond(employee_info);
-        $httpBackend.when('GET', '/angular/json/operator/employee_skills/skill_list.json').respond(result);
-
-
+        $httpBackend.when('GET', /\angular\/json\/employee\/skills\/skill_list.json/).respond(skillListData);
 
         scope = $rootScope.$new();
-        $controller("operatorEmployeeCtrl", {
+        $controller("employeeSkillListCtrl", {
             $scope: scope
         });
 
-        //This needs to come after controller is loaded
         $httpBackend.flush();
-
-        scope.employeeStatusIcon = result.status;
     }));
 
-    it("should set the view type to role", function() {
-        routeParams.roleSlug = 'Destructor';
+    describe("An Employee View Model", function() {
+        it("should set the view type to site", function() {
+            routeParams.siteSlug = 'sitename';
 
-        expect(scope.getSelectedView()).toEqual('role');
-    });
-
-    it("should set the view type to project", function() {
-        routeParams.projectSlug = 'CompleteannihilationoftheplanetKrypton';
-
-        expect(scope.getSelectedView()).toEqual('project');
-    });
-
-    it("should set the view type to all", function() {
-        expect(scope.getSelectedView()).toEqual('all');
-    });
-
-    it("should load the menu items with projects and roles", function() {
-        scope.loadMenuItems();
-
-        expect(scope.projects).toEqual(result.projects);
-        expect(scope.roles).toEqual(result.roles);
-    });
-
-    describe("Role model", function() {
-        it('should have site and corp required skills', function() {
-            routeParams.roleSlug = 'Redemption';
-            scope.selectViewModel();
-
-            var requiredSkills = [
-                {
-                 "id":6,
-                 "name":"Site Required Skill 1",
-                 "status": "Expired"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 1",
-                 "status": "Completed"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 2",
-                 "status": "Expiring"
-                }
-            ];
-
-            expect(scope.requiredSkills).toEqual(requiredSkills);
+            expect(scope.getSelectedView()).toEqual('site');
         });
 
-        it('should have the skill list for a selected role', function() {
-            routeParams.roleSlug = 'Redemption';
-            scope.selectViewModel();
+        it("should set the view type to project", function() {
+            routeParams.siteSlug = 'sitename';
+            routeParams.projectSlug = 'projectname';
 
-            expect(scope.skillList).toEqual(result.roles[1]);
+            expect(scope.getSelectedView()).toEqual('project');
         });
 
-        it('should set the selected menu item to role name', function() {
-            routeParams.roleSlug = 'Redemption';
-            scope.selectViewModel();
-
-            expect(scope.selectedMenuItem).toEqual('Redemption');
+        it("should set the view type to all", function() {
+            expect(scope.getSelectedView()).toEqual('all');
         });
 
-        it('should set the employee status icon to the role status', function() {
-            routeParams.roleSlug = 'Redemption';
-            scope.selectViewModel();
+        it("should load the menu items with sites and projects", function() {
+            scope.loadMenuItems();
 
-            expect(scope.employeeStatusIcon).toEqual('Completed');
-        });
-
-        it('should set the view title to the role name', function() {
-            routeParams.roleSlug = 'DestructorTheGreat';
-            scope.selectViewModel();
-
-            expect(scope.viewTitle).toEqual('Destructor The Great');
+            expect(scope.sites[0].id).toEqual(2);
+            expect(scope.sites[0].name).toEqual('BASF Houston Texas');
+            expect(scope.sites[0].projects[0].id).toEqual(3);
+            expect(scope.sites[0].projects[0].name).toEqual('Dynamic Reporting');
         });
     });
 
-    describe("Project model", function() {
-        it('should have project, site and corp required skills', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
+    describe("Site Model", function() {
+        beforeEach(function() {
+            routeParams.siteSlug = 'spectre';
             scope.selectViewModel();
+        });
 
-            var requiredSkills = [
+        it("should populate the skill list with the selected site", function() {
+            expect(scope.skillList).toBeDefined();
+            expect(scope.skillList.name).toEqual('Spectre');
+            expect(scope.skillList.status).toEqual('Completed');
+        });
+
+        it("should have all site and project skills for the selected site", function() {
+            var expected_result = [
                 {
-                 "id":6,
-                 "name":"Site Required Skill 1",
-                 "status": "Expired"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 1",
-                 "status": "Completed"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 2",
-                 "status": "Expiring"
+                     "id":6,
+                     "name":"Spectre Site Required Skill 1",
+                     "status": "Expired"
                 },
                 {
                  "id":4,
-                 "name":"ABC Project Required Learning the alphabet",
+                 "name":"Volcano Base Skill",
                  "status": "Expired"
-                },
-                {
-                 "id":25,
-                 "name":"ABC Project Required Skill 2",
-                 "status": "Completed"
                 }
             ];
 
-            expect(scope.requiredSkills).toEqual(requiredSkills);
+            expect(scope.skillList.skills).toEqual(expected_result);
         });
 
-        it('should have the skill list for a selected project', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
-            scope.selectViewModel();
-
-            expect(scope.skillList).toEqual(result.projects[0]);
+        it("should have the correct title", function() {
+            expect(scope.viewTitle).toEqual('Spectre');
         });
 
-        it('should have the selected menu item to project name', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
-            scope.selectViewModel();
-
-            expect(scope.selectedMenuItem).toEqual('BlueBuffalo');
-        });
-
-
-        it('should set the employee status icon to the project status', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
-            scope.selectViewModel();
-
-            expect(scope.employeeStatusIcon).toEqual('Expired');
-        });
-
-        it('should set the view title to the project name', function() {
-            routeParams.projectSlug = 'BlueBuffalo';
-            scope.selectViewModel();
-
-            expect(scope.viewTitle).toEqual('Blue Buffalo');
+        it("should have the correct menu item selected", function() {
+            expect(scope.selectedMenuItem).toEqual('spectre');
         });
     });
 
-    describe("Default model", function() {
-        it('should have all project, site and corp required skills', function() {
+    describe("Project Model", function() {
+        beforeEach(function() {
+            routeParams.siteSlug = 'basf-houston-texas';
+            routeParams.projectSlug = 'ninja-dojo';
             scope.selectViewModel();
+        });
 
-            var requiredSkills = [
+        it("should populate the skill list with the selected project", function() {
+            expect(scope.skillList).toBeDefined();
+            expect(scope.skillList.name).toEqual('Ninja Dojo');
+            expect(scope.skillList.status).toEqual('Expiring');
+        });
+
+        it("should have site required and project skills for the selected site", function() {
+            var expected_result = [
                 {
-                 "id":6,
-                 "name":"Site Required Skill 1",
-                 "status": "Expired"
+                     "id":45,
+                     "name":"BASF Site Skill 1",
+                     "status": "Expired"
                 },
                 {
-                 "id":5,
-                 "name":"Corp Required Skill 1",
-                 "status": "Completed"
-                },
-                {
-                 "id":5,
-                 "name":"Corp Required Skill 2",
-                 "status": "Expiring"
-                },
-                {
-                 "id":4,
-                 "name":"ABC Project Required Learning the alphabet",
-                 "status": "Expired"
-                },
-                {
-                 "id":25,
-                 "name":"ABC Project Required Skill 2",
-                 "status": "Completed"
-                },
-                {
-                 "id":3,
-                 "name":"Red Rocket Required 1",
-                 "status": "Expired"
-                },
-                {
-                 "id":215,
-                 "name":"Red Rocket Required 2",
-                 "status": "Completed"
+                     "id":4,
+                     "name":"Ninja Dojo Skill 4",
+                     "status": "Expiring"
                 }
             ];
 
-            expect(scope.requiredSkills).toEqual(requiredSkills);
+            expect(scope.skillList.skills).toEqual(expected_result);
         });
 
-        it('should set the default selected menu item', function() {
+        it("should have the correct title", function() {
+            expect(scope.viewTitle).toEqual('BASF Houston Texas: Ninja Dojo');
+        });
+
+        it("should have the correct menu item selected", function() {
+            expect(scope.selectedMenuItem).toEqual('ninja-dojo');
+        });
+    });
+
+    describe("Default Model", function() {
+        beforeEach(function() {
+            scope.selectViewModel();
+        });
+
+        it("should populate the skill list with all site and project skills", function() {
+            var expected_result = [
+                {
+                     "id":6,
+                     "name":"Spectre Site Required Skill 1",
+                     "status": "Expired"
+                },
+                {
+                 "id":4,
+                 "name":"Volcano Base Skill",
+                 "status": "Expired"
+                }
+            ];
+
+            expect(scope.skillList).toBeDefined();
+
+            expect(scope.skillList[0].status).toEqual('Expired');
+            expect(scope.skillList[0].required.skills[0].name).toEqual('BASF Site Skill 1');
+            expect(scope.skillList[1].name).toEqual('Spectre');
+            expect(scope.skillList[1].projects[0].id).toEqual(32);
+            expect(scope.skillList[1].skills).toEqual(expected_result);
+        });
+
+        it("should have the correct menu item selected", function() {
             expect(scope.selectedMenuItem).toEqual('all');
         });
     });
-
 });

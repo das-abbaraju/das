@@ -1,4 +1,4 @@
-<div ng-controller="employeeSkillListCtrl" class="operator-employee-page">
+<div ng-controller="employeeSkillListCtrl" class="employee-skills-page">
     <div class="container">
         <pagetitle title="Skills"></pagetitle>
         <div class="page-subheader">
@@ -31,7 +31,7 @@
                                 </a>
                                 <ul class="nav" role="submenu">
                                     <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == project.slug}">
-                                        <a href="/employee-guard/employee/skillz/projects/{{ project.slug }}">
+                                        <a href="/employee-guard/employee/skillz/sites/{{ site.slug }}/projects/{{ project.slug }}">
                                             {{ project.name }}
                                             <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
                                         </a>
@@ -46,9 +46,6 @@
                 <div ng-switch on="getSelectedView()">
                     <div ng-switch-when="site">
                         <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
-                        <span ng-repeat="project in skillList.projects">
-                            <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
-                        </span>
                     </div>
                     <div ng-switch-when="project">
                         <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
@@ -56,9 +53,6 @@
                     <div ng-switch-default>
                         <span ng-repeat="site in sites">
                             <employeeskillsection title="{{ site.name }}" skills="site.skills"></employeeskillsection>
-                            <span ng-repeat="project in site.projects">
-                                <employeeskillsection title="{{ project.name }}" skills="project.skills"></employeeskillsection>
-                            </span>
                         </span>
                     </div>
                </div>

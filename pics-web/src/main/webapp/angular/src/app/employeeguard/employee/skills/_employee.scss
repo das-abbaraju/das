@@ -1,10 +1,20 @@
-.operator-employee-page {
+.employee-skills-page {
     #side-navigation .nav > li > a {
         padding-right: 15px;
     }
 
     #side-navigation .nav .nav {
         display: block;
+
+        li.active {
+            a {
+                color: $primary_light;
+            }
+        }
+
+        a {
+            color: $default_nickel;
+        }
     }
 
     #side-navigation {

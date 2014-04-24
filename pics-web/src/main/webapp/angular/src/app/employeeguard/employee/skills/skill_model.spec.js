@@ -1,84 +1,84 @@
-describe('An Operator Skill Data Model', function() {
+describe('An Employee Skill Data Model', function() {
     var skillModel;
 
     var skillListData = {
-           "required": {
-                "skills": [
-                    {
-                     "id":6,
-                     "name":"Site Required Skill 1",
-                     "status": "Expired"
-                    },
-                    {
-                     "id":5,
-                     "name":"Corp Required Skill 1",
-                     "status": "Completed"
-                    }
-                ]
-            },
-           "projects": [
-            {
-              "id":4,
-              "name":"Bob Super Fun Time",
-              "status": "Expiring",
-              "roles":[
-                 {
-                    "id":3,
-                    "name":"Becoming Bob",
-                    "skills":[
-                       {
-                          "id":13,
-                          "name":"Learn Bob's Mannerisms",
-                          "status": "Completed"
-                       }
-                    ]
-                 }
-              ],
-              "required": {
-                "skills": [
-                    {
-                     "id":4,
-                     "name":"Bob Super Fun Time Required Skill 1",
-                     "status": "Expired"
-                    }
-                ]
-              }
-            }
-           ],
-           "roles":[
+        "status": "Expired",
+        "sites": [
+        {
+            "id": 2,
+            "name": "BASF Houston Texas",
+            "status": "Expired",
+            "projects": [
                 {
-                "id":24,
-                "skills":[
+                    "id": 3,
+                    "name": "Dynamic Reporting",
+                    "status": "Expired",
+                    "skills": [
+                        {
+                             "id":210,
+                             "name":"Dynamic Reporting Skill",
+                             "status": "Expiring"
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "name": "Ninja Dojo",
+                    "status": "Expiring",
+                    "skills": [
+                        {
+                             "id":4,
+                             "name":"Ninja Dojo Skill 4",
+                             "status": "Expiring"
+                        }
+                    ]
+                }
+            ],
+            "required": {
+                "skills": [
                     {
-                       "id":13,
-                       "name":"General Safety Training",
-                       "status":"Completed"
+                     "id":45,
+                     "name":"BASF Site Skill 1",
+                     "status": "Expired"
                     }
-                 ],
-                 "status":"Completed",
-                 "name":"Dead by Dawn",
-                 "slug":"DeadbyDawn"
-               },
-              {
-                 "id":6,
-                 "name":"Demolition Operative",
-                 "skills":[
+                ]
+            }
+        },
+        {
+            "id": 8,
+            "name": "Spectre",
+            "status": "Completed",
+            "projects": [
+                {
+                    "id": 32,
+                    "name": "Volcano Base",
+                    "status": "Completed",
+                    "skills": [
+                        {
+                         "id":4,
+                         "name":"Volcano Base Skill",
+                         "status": "Expired"
+                        }
+                    ]
+                }
+            ],
+            "required": {
+                "skills": [
                     {
-                       "id":12,
-                       "name":"Fire Prevention Training",
-                       "status": "Completed"
-
+                         "id":6,
+                         "name":"Spectre Site Required Skill 1",
+                         "status": "Expired"
                     }
-                 ],
-                 "status": "Completed"
-              }
-           ]
+                ]
+            }
+        }
+        ]
     };
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function(SkillModel) {
-        skillModel = new SkillModel(skillListData);
+    beforeEach(inject(function(EmployeeSkillModel) {
+        skillModel = new EmployeeSkillModel(skillListData);
     }));
 
     describe('contains data that', function() {
@@ -87,157 +87,90 @@ describe('An Operator Skill Data Model', function() {
         });
 
         it('should have all role data', function() {
-            expect(skillModel.getRoles()).toEqual(skillListData.roles);
+            expect(skillModel.getSites()).toEqual(skillListData.sites);
         });
 
         it('should have all project data', function() {
             expect(skillModel.getProjects()).toEqual(skillListData.projects);
         });
-    });
 
-    describe('required skills', function() {
-        it('should get all project, corp, and site requiredskills', function() {
-            var result = [
-                        {
-                         "id":6,
-                         "name":"Site Required Skill 1",
-                         "status": "Expired"
-                        },
-                        {
-                         "id":5,
-                         "name":"Corp Required Skill 1",
-                         "status": "Completed"
-                        },
-                         {
-                         "id":4,
-                         "name":"Bob Super Fun Time Required Skill 1",
-                         "status": "Expired"
-                        }
-            ];
-            expect(skillModel.getAllRequiredSkills()).toEqual(result);
+        it('should append a slug name to sites', function() {
+            expect(skillModel.getSites()[0].slug).toBeDefined();
+            expect(skillModel.getSites()[0].slug).toEqual('basf-houston-texas');
         });
 
-        it('should get all project required skills', function() {
-            var projectSkills = [
+        it('should append a slug name to site projects', function() {
+            expect(skillModel.getSites()[0].projects[0].slug).toBeDefined();
+            expect(skillModel.getSites()[0].projects[0].slug).toEqual('dynamic-reporting');
+        });
+    });
+
+    describe('can get data via slugs', function() {
+        it('should get a site object', function() {
+            expect(skillModel.getSiteBySlug('basf-houston-texas')).toEqual(skillListData.sites[0]);
+        });
+
+        it('should get a site name', function() {
+            expect(skillModel.getSiteNameBySlug('basf-houston-texas')).toEqual('BASF Houston Texas');
+        });
+
+        it('should get all site and project skills', function() {
+            var expected_result = [
                 {
-                 "id":4,
-                 "name":"Bob Super Fun Time Required Skill 1",
+                 "id":45,
+                 "name":"BASF Site Skill 1",
                  "status": "Expired"
+                },
+                {
+                     "id":210,
+                     "name":"Dynamic Reporting Skill",
+                     "status": "Expiring"
+                },
+                {
+                     "id":4,
+                     "name":"Ninja Dojo Skill 4",
+                     "status": "Expiring"
                 }
             ];
 
-            expect(skillModel.getAllProjectRequiredSkills()).toEqual(projectSkills);
+            expect(skillModel.getAllSiteAndProjectSkillsBySlug('basf-houston-texas').skills).toEqual(expected_result);
         });
 
-        it('should get all project required skills by slug', function() {
-            var projectSkills = [
-                    {
-                     "id":4,
-                     "name":"Bob Super Fun Time Required Skill 1",
-                     "status": "Expired"
-                    }
-            ];
-
-            expect(skillModel.getProjectRequiredSkillsBySlug('BobSuperFunTime')).toEqual(projectSkills);
+        it('should get a project object', function() {
+            expect(skillModel.getProjectBySlug('ninja-dojo')).toEqual(skillListData.sites[0].projects[1]);
         });
 
-        it('should get project required skills AND site required by slug', function() {
-            var projectSkills = [
-                    {
-                     "id":6,
-                     "name":"Site Required Skill 1",
-                     "status": "Expired"
-                    },
-                    {
-                     "id":5,
-                     "name":"Corp Required Skill 1",
-                     "status": "Completed"
-                    },
-                    {
-                     "id":4,
-                     "name":"Bob Super Fun Time Required Skill 1",
-                     "status": "Expired"
-                    }
-            ];
-
-            expect(skillModel.getProjectAndSiteRequiredSkillsBySlug('BobSuperFunTime')).toEqual(projectSkills);
+        it('should get a project name', function() {
+            expect(skillModel.getProjectNameBySlug('volcano-base')).toEqual(skillListData.sites[1].projects[0].name);
         });
 
-        it('should get all site and corp required skills', function() {
-            var requiredSkills = [
-                {
-                     "id":6,
-                     "name":"Site Required Skill 1",
-                     "status": "Expired"
-                    },
-                    {
-                     "id":5,
-                     "name":"Corp Required Skill 1",
-                     "status": "Completed"
-                    }
-            ];
-
-            expect(skillModel.getSiteAndCorpRequiredSkills()).toEqual(requiredSkills);
+        it('should get a site name from a project slug', function() {
+            expect(skillModel.getSiteNameByProjectSlug('volcano-base')).toEqual('Spectre');
         });
     });
 
-    describe('getting individual roles/projects', function() {
-        it('should return only the selected role by slug', function() {
-            var selected_role = {
-                    "id":24,
-                    "skills":[
-                        {
-                           "id":13,
-                           "name":"General Safety Training",
-                           "status":"Completed"
-                        }
-                     ],
-                     "status":"Completed",
-                     "name":"Dead by Dawn",
-                     "slug":"DeadbyDawn"
-                   };
-            expect(skillModel.getRoleBySlug('DeadbyDawn')).toEqual(selected_role);
-        });
+    describe("All skills", function() {
+        it("should show a list of all project and site skills", function() {
+            var expected_result = [
+                {
+                 "id":45,
+                 "name":"BASF Site Skill 1",
+                 "status": "Expired"
+                },
+                {
+                 "id":210,
+                 "name":"Dynamic Reporting Skill",
+                 "status": "Expiring"
+                },
+                {
+                 "id":4,
+                 "name":"Ninja Dojo Skill 4",
+                 "status": "Expiring"
+                }
+            ];
 
-        it('should return the selected role name by slug', function() {
-            expect(skillModel.getRoleNameBySlug('DeadbyDawn')).toEqual('Dead by Dawn');
-        });
-
-        it('should return only the selected project by slug', function() {
-            var selected_project = {
-              "id":4,
-              "name":"Bob Super Fun Time",
-              "slug":"BobSuperFunTime",
-              "status": "Expiring",
-              "roles":[
-                 {
-                    "id":3,
-                    "name":"Becoming Bob",
-                    "skills":[
-                       {
-                          "id":13,
-                          "name":"Learn Bob's Mannerisms",
-                          "status": "Completed"
-                       }
-                    ]
-                 }
-              ],
-              "required": {
-                "skills": [
-                    {
-                     "id":4,
-                     "name":"Bob Super Fun Time Required Skill 1",
-                     "status": "Expired"
-                    }
-                ]
-              }
-            };
-
-            expect(skillModel.getProjectBySlug('BobSuperFunTime')).toEqual(selected_project);
-        });
-
-        it('should return only the selected project name by slug', function() {
-            expect(skillModel.getProjectNameBySlug('BobSuperFunTime')).toEqual('Bob Super Fun Time');
+            expect(skillModel.getAllSiteAndProjectSkills()[0].skills).toBeDefined();
+            expect(skillModel.getAllSiteAndProjectSkills()[0].skills).toEqual(expected_result);
         });
     });
 });

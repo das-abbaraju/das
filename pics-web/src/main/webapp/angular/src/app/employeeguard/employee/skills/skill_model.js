@@ -6,16 +6,13 @@ angular.module('PICS.employeeguard')
     };
 
     Model.generateURLSlug = function (data) {
-        var sites = data.sites;
-
-        for (var i in sites) {
-            var site = sites[i];
+        angular.forEach(data.sites, function(site) {
             site.slug = $filter('removeInvalidCharactersFromUrl')(site.name);
 
-            for (var j in site.projects) {
-                site.projects[j].slug = $filter('removeInvalidCharactersFromUrl')(site.projects[j].name);
-            }
-        }
+            angular.forEach(site.projects, function(project) {
+                project.slug = $filter('removeInvalidCharactersFromUrl')(project.name);
+            });
+        });
 
         return data;
     };
@@ -32,111 +29,111 @@ angular.module('PICS.employeeguard')
         return this.getData().projects;
     };
 
-    Model.prototype.getAllRequiredSkills = function () {
-        var siteAndCorpSkills,
-            projectSkills,
-            Model = this;
-
-        siteAndCorpSkills = Model.getSiteAndCorpRequiredSkills();
-        projectSkills = Model.getAllProjectRequiredSkills();
-
-        return siteAndCorpSkills.concat(projectSkills);
-    };
-
-    Model.prototype.getAllProjectRequiredSkills = function () {
+    Model.prototype.getSiteBySlug = function (site_slug) {
         var data = this.getData(),
-            requiredSkills = [];
+        sites = $filter('filter')(data.sites, { slug: site_slug})[0];
 
-        for (var j in data.projects) {
-            requiredSkills = requiredSkills.concat(data.projects[j].required.skills);
+        if (sites) {
+            return sites;
         }
-
-        return requiredSkills;
     };
 
-    Model.prototype.getProjectRequiredSkillsBySlug = function (slug) {
+    Model.prototype.getSiteNameBySlug = function (site_slug) {
         var data = this.getData(),
-            Model = this,
-            projectSkills,
-            siteAndCorpSkills;
+        sites = $filter('filter')(data.sites, { slug: site_slug})[0];
 
-        for (var j in data.projects) {
-            var project = data.projects[j];
+        if (sites) {
+            return sites.name;
+        }
+    };
 
-            if (project.slug === slug) {
-                projectSkills = project.required.skills;
+    Model.prototype.getAllSiteAndProjectSkills = function () {
+        var sites = this.getSites(),
+            skills = [];
+
+        angular.forEach(sites, function(site) {
+            if (site.required) {
+                site.skills = site.required.skills;
+            } else {
+                site.skills = [];
             }
+            angular.forEach(site.projects, function(project) {
+                site.skills = site.skills.concat(project.skills);
+                site.skills = $filter('removeDuplicateItemsFromArray')(site.skills);
+            });
+        });
+
+
+        return sites;
+    };
+
+    Model.prototype.getAllSiteAndProjectSkillsBySlug = function (site_slug) {
+        var site = this.getSiteBySlug(site_slug),
+            projectSkills = [];
+
+        angular.forEach(site.projects, function(project) {
+            projectSkills = projectSkills.concat(project.skills);
+        });
+
+        if (site.required) {
+            site.skills = site.required.skills.concat(projectSkills);
+        } else {
+            site.skills = projectSkills;
         }
-        return projectSkills;
+
+        site.skills = $filter('removeDuplicateItemsFromArray')(site.skills);
+
+        return site;
     };
 
-    Model.prototype.getProjectAndSiteRequiredSkillsBySlug = function (slug) {
+    Model.prototype.getProjectBySlug = function (project_slug) {
         var data = this.getData(),
-            Model = this,
-            projectSkills,
-            siteAndCorpSkills;
+            selected_project;
 
-        //Add site and corp to list
-        siteAndCorpSkills = Model.getSiteAndCorpRequiredSkills();
-        projectSkills = Model.getProjectRequiredSkillsBySlug(slug);
-
-        return siteAndCorpSkills.concat(projectSkills);
-    };
-
-    Model.prototype.getSiteAndCorpRequiredSkills = function () {
-        var data = this.getData();
-
-        return data.required.skills;
-    };
-
-    Model.prototype.getSiteBySlug = function (slug) {
-        var data = this.getData(),
-            sites = data.sites;
-
-        for (var i = 0; i < sites.length; i++) {
-            if (sites[i].slug == slug) {
-                return sites[i];
-            }
-        }
-    };
-
-    Model.prototype.getSiteNameBySlug = function (slug) {
-        var data = this.getData(),
-            sites = data.sites;
-
-        for (var i = 0; i < sites.length; i++) {
-            if (sites[i].slug == slug) {
-                return sites[i].name;
-            }
-        }
-    };
-
-    Model.prototype.getProjectBySlug = function (slug) {
-        var data = this.getData(),
-            sites = data.sites;
-
-        for (var i in data.sites) {
-            var site = data.sites[i];
-
-            for (var j in site.projects) {
-                if (site.projects[j].slug == slug) {
-                    return site.projects[j];
+        angular.forEach(data.sites, function(site) {
+            angular.forEach(site.projects, function(project) {
+                if (project.slug === project_slug) {
+                    selected_project = project;
+                    if (site.required) {
+                        selected_project.skills = site.required.skills.concat(project.skills);
+                    }
                 }
-            }
-        }
+            });
+        });
+
+        selected_project.skills = $filter('removeDuplicateItemsFromArray')(selected_project.skills);
+
+        return selected_project;
     };
 
-    Model.prototype.getProjectNameBySlug = function (slug) {
-        var data = this.getData();
+    Model.prototype.getSiteNameByProjectSlug = function (project_slug) {
+        var data = this.getData(),
+            site_name;
 
-        for (var i in data.sites) {
-            var site = data.sites[i];
-
-            for (var j in site.projects) {
-                if (site.projects[j].slug == slug) {
-                    return site.projects[j].name;
+        angular.forEach(data.sites, function(site) {
+            angular.forEach(site.projects, function(project) {
+                if (project.slug === project_slug) {
+                    site_name = site.name;
                 }
-            }
+            });
+        });
+
+        return site_name;
+    };
+
+    Model.prototype.getProjectNameBySlug = function (project_slug) {
+        var data = this.getData(),
+            projectArray = [],
+            site_name;
+
+        angular.forEach(data.sites, function(site) {
+            projectArray = projectArray.concat(site.projects);
+        });
+
+        projects = $filter('filter')(projectArray, { slug: project_slug})[0];
+
+        if (projects) {
+            return projects.name;
         }
     };
 

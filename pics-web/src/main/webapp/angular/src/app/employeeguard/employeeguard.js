@@ -37,7 +37,7 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/employee/skillz/sites/:siteSlug', {
             templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
         })
-        .when('/employee-guard/employee/skillz/projects/:projectSlug', {
+        .when('/employee-guard/employee/skillz/sites/:siteSlug/projects/:projectSlug', {
             templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
         });
 });

@@ -12,7 +12,7 @@
                 "status": "Expired",
                 "skills": [
                     {
-                         "id":6,
+                         "id":210,
                          "name":"Dynamic Reporting Skill",
                          "status": "Expiring"
                     },
@@ -24,52 +24,56 @@
                 ]
             },
             {
-                "id": 5,
+                "id": 3,
                 "name": "Ninja Dojo",
                 "status": "Expiring",
                 "skills": [
                     {
-                         "id":6,
-                         "name":"Ninja Dojo Skill",
-                         "status": "Expiring"
+                         "id":4,
+                         "name":"Ninja Dojo Skill 4",
+                         "status": "Expired"
+                    },
+                    {
+                         "id":5,
+                         "name":"Ninja Dojo Skill 5",
+                         "status": "Completed"
                     }
                 ]
             }
         ],
-        "skills": [
-            {
-             "id":4,
-             "name":"BASF Site Skill 1",
-             "status": "Expired"
-            },
-            {
-             "id":4,
-             "name":"BASF Corp Skill 1",
-             "status": "Expiring"
-            },
-            {
-             "id":25,
-             "name":"BASF Site Skill 2",
-             "status": "Completed"
-            }
-        ]
+        "required" : {
+            "skills": [
+                {
+                 "id":45,
+                 "name":"BASF Site Skill 1",
+                 "status": "Expired"
+                },
+                {
+                 "id":10,
+                 "name":"BASF Corp Skill 1",
+                 "status": "Expiring"
+                }
+            ]
+        }
     },
     {
         "id": 6,
         "name": "PICS",
         "status": "Expiring",
-        "skills": [
-            {
-             "id":4,
-             "name":"PICS Site skill",
-             "status": "Expired"
-            },
-            {
-             "id":25,
-             "name":"PICS Site skill 2",
-             "status": "Expiring"
-            }
-        ]
+        "required": {
+            "skills": [
+                {
+                 "id":4,
+                 "name":"PICS Site skill",
+                 "status": "Expired"
+                },
+                {
+                 "id":25,
+                 "name":"PICS Site skill 2",
+                 "status": "Expiring"
+                }
+            ]
+        }
     },
     {
         "id": 8,
@@ -87,18 +91,6 @@
                      "status": "Expired"
                     }
                 ]
-            }
-        ],
-        "skills": [
-            {
-                 "id":6,
-                 "name":"Spectre Site Required Skill 1",
-                 "status": "Expired"
-            },
-            {
-                 "id":5,
-                 "name":"Spectre Site Required Skill2",
-                 "status": "Completed"
             }
         ]
     }

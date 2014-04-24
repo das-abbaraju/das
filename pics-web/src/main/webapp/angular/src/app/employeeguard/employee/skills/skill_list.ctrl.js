@@ -1,74 +1,77 @@
 angular.module('PICS.employeeguard')
 
-.controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams) {
+.controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
     var skillModel;
 
-    console.log($routeParams);
-
-    $scope.skillList = EmployeeSkillList.get();
-
-    $scope.skillList.$promise.then(function (result) {
+    $scope.skillList = EmployeeSkillList.get(function(result) {
+        $scope.overallStatus = result.status;
         skillModel = new EmployeeSkillModel(result);
-        $scope.overallStatus = skillModel.status;
-
         loadMenuItems();
         selectViewModel();
     });
-
-    function selectViewModel() {
-        if ($routeParams.siteSlug) {
-            loadSiteModel();
-        } else if ($routeParams.projectSlug) {
-            loadProjectModel();
-        } else {
-            loadDefaultModel();
-        }
-    }
 
     function loadMenuItems() {
         $scope.sites = skillModel.getSites();
     }
 
-    function loadSiteModel() {
+    function selectViewModel() {
+        var model;
+
+        if ($routeParams.projectSlug && $routeParams.siteSlug) {
+            model = getProjectModel();
+            setScopeModel(model);
+        } else if ($routeParams.siteSlug) {
+            model = getSiteModel();
+            setScopeModel(model);
+        } else {
+            model = getDefaultModel();
+            setScopeModel(model);
+        }
+    }
+
+    function getSiteModel() {
         var slugname = $routeParams.siteSlug;
 
-        // $scope.requiredSkills = skillModel.getSiteAndCorpRequiredSkills();
-        $scope.skillList = skillModel.getSiteBySlug(slugname);
-        setSelectedMenuItem(slugname);
-        setViewTitle(skillModel.getSiteNameBySlug(slugname));
-
-        // $scope.currentSiteProjects = skillModel.getSiteBySlug(slugname);
+        return {
+            skillList: skillModel.getAllSiteAndProjectSkillsBySlug(slugname),
+            selectedMenuItem: slugname,
+            viewTitle: skillModel.getSiteNameBySlug(slugname)
+        };
     }
 
-    function loadProjectModel() {
-        var slugname = $routeParams.projectSlug;
+    function getProjectModel() {
+        var slugname = $routeParams.projectSlug,
+            site_name = skillModel.getSiteNameByProjectSlug(slugname),
+            skillList = skillModel.getProjectBySlug(slugname),
+            viewTitle = site_name + ': ' + skillList.name;
 
-        // $scope.requiredSkills = skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname);
-        $scope.skillList = skillModel.getProjectBySlug(slugname);
-        setSelectedMenuItem(slugname);
-        setViewTitle(skillModel.getProjectNameBySlug(slugname));
+        return {
+            skillList: skillList,
+            selectedMenuItem: slugname,
+            viewTitle: viewTitle
+        };
     }
 
-    function loadDefaultModel() {
-        // $scope.requiredSkills = skillModel.getAllRequiredSkills();
-        setSelectedMenuItem('all');
+    function getDefaultModel() {
+        return {
+            selectedMenuItem: 'all',
+            skillList: skillModel.getAllSiteAndProjectSkills()
+        };
     }
 
-    function setSelectedMenuItem(item) {
-        $scope.selectedMenuItem = item;
-    }
-
-    function setViewTitle(name) {
-        $scope.viewTitle = name;
+    function setScopeModel(model) {
+        $scope.skillList = model.skillList;
+        $scope.selectedMenuItem = model.selectedMenuItem;
+        $scope.viewTitle = model.viewTitle;
     }
 
     $scope.getSelectedView = function() {
         var view;
 
-        if ($routeParams.siteSlug) {
-            view = 'site';
-        } else if ($routeParams.projectSlug) {
+        if ($routeParams.projectSlug && $routeParams.siteSlug) {
             view = 'project';
+        } else if ($routeParams.siteSlug) {
+            view = 'site';
         } else {
             view = 'all';
         }
@@ -76,4 +79,12 @@ angular.module('PICS.employeeguard')
         return view;
     };
 
+    angular.extend($scope, {
+        loadMenuItems: loadMenuItems,
+        selectViewModel: selectViewModel,
+        getSiteModel: getSiteModel,
+        getProjectModel: getProjectModel,
+        getDefaultModel: getDefaultModel,
+        setScopeModel: setScopeModel
+    });
 });
