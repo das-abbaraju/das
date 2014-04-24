@@ -1,5 +1,7 @@
 <section class="employee-guard-section">
-    <h1>{{ title }}</h1>
+    <h1>
+        <i ng-show="icon" class="icon-{{ icon }} icon-large"></i>{{ title }}
+    </h1>
     <div class="content">
         <div class="row">
             <div class="col-md-4">
@@ -19,7 +21,7 @@
             <div class="col-md-4">
                 <div class="list-group skill-list">
                     <span ng-repeat="skill in skills">
-                        <a ng-if="skill.status=='Complete' || skill.status=='Pending'" href="#" class="list-group-item success">
+                        <a ng-if="skill.status=='Completed' || skill.status=='Pending'" href="#" class="list-group-item success">
                             {{ skill.name }}
                         </a>
                     </span>
