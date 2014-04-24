@@ -15,7 +15,7 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;

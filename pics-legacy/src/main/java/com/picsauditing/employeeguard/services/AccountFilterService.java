@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 
 import java.util.List;
 

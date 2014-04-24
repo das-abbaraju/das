@@ -19,7 +19,7 @@ import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProjectServiceFactory;
 import com.picsauditing.employeeguard.services.factory.RoleServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.jpa.entities.Account;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;

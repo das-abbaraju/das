@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.LoginServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.Before;
 import org.junit.Test;

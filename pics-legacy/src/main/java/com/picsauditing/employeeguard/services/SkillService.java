@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -98,11 +98,11 @@ public class SkillService {
 
 	private Map<Integer, List<SiteSkill>> extractSiteIdToSiteSkills(List<SiteSkill> requiredByAccounts) {
 		return PicsCollectionUtil.convertToMapOfLists(requiredByAccounts, new PicsCollectionUtil.MapConvertable<Integer, SiteSkill>() {
-			@Override
-			public Integer getKey(SiteSkill entity) {
-				return entity.getSiteId();
-			}
-		});
+      @Override
+      public Integer getKey(SiteSkill entity) {
+        return entity.getSiteId();
+      }
+    });
 	}
 
 	public List<AccountSkill> getOptionalSkillsForAccount(int accountId) {

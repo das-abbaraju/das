@@ -71,4 +71,5 @@ public class RoleStatusModelFactory extends RoleModelFactory {
 		return roleStatusModel;
 	}
 
+
 }

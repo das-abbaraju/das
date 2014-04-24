@@ -4,7 +4,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.IdNameTitleModel;
 import org.junit.Before;
 import org.junit.Test;

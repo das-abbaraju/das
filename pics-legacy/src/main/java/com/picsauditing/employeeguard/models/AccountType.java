@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.models;
+package com.picsauditing.employeeguard.models;
 
 public enum AccountType {
 

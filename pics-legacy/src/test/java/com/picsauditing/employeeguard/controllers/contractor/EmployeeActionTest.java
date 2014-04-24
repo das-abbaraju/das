@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
 import com.picsauditing.jpa.entities.Account;

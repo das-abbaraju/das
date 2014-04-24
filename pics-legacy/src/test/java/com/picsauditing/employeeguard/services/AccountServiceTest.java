@@ -3,8 +3,8 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -77,7 +77,7 @@ public class AccountServiceTest {
 
 		when(operatorAccountDAO.findOperators(Arrays.asList(4))).thenReturn(Arrays.asList(site1));
 
-		List<AccountModel> topDogs = accountService.getTopmostCorporateAccounts(4);
+		List<AccountModel> topDogs = accountService.extractParentAccounts(4);
 		assertEquals("Corporate 1", topDogs.get(0).getName());
 		assertEquals("Corporate 2", topDogs.get(1).getName());
 	}
@@ -100,7 +100,7 @@ public class AccountServiceTest {
 		});
 		when(operatorAccountDAO.find(3)).thenReturn(hub);
 
-		List<AccountModel> topDogs = accountService.getTopmostCorporateAccounts(3);
+		List<AccountModel> topDogs = accountService.extractParentAccounts(3);
 		assertTrue(topDogs.isEmpty());
 	}
 

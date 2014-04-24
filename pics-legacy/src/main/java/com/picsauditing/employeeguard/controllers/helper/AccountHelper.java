@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.controllers.helper;
 
 
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.apache.commons.collections.MapUtils;
 
 import java.util.Collections;

@@ -6,8 +6,8 @@ import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -45,7 +45,19 @@ public class AccountService {
 		return mapAccountsToAccountModels(accounts);
 	}
 
-	public List<AccountModel> getTopmostCorporateAccounts(final int accountId) {
+  public Collection<Integer> extractParentAccountIds(final int accountId) {
+    List<AccountModel> accountModels = this.extractParentAccounts(accountId);
+    Collection<Integer> parentSiteIds=PicsCollectionUtil.getIdsFromCollection(accountModels, new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+      @Override
+      public Integer getId(AccountModel accountModel) {
+        return accountModel.getId();
+      }
+    });
+
+    return parentSiteIds;
+  }
+
+	public List<AccountModel> extractParentAccounts(final int accountId) {
 		if (accountId <= 0) {
 			throw new IllegalArgumentException("Invalid account ID: " + accountId);
 		}

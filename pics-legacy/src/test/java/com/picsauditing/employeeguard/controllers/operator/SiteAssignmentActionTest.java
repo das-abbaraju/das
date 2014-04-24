@@ -13,7 +13,7 @@ import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
 import org.junit.Test;

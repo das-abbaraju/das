@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.forms.operator.OperatorProjectForm;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.*;

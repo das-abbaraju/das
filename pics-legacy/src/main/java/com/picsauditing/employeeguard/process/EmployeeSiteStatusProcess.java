@@ -78,7 +78,7 @@ public class EmployeeSiteStatusProcess {
 		Set<Role> roles = PicsCollectionUtil.mergeCollectionOfCollections(employeeSiteStatusResult.getProjectRoles().values());
 		roles.addAll(roleEntityService.getSiteRolesForEmployee(employee, siteId));
 
-		employeeSiteStatusResult.setRoleSkills(skillEntityService.getSkillsForRoles(roles));
+		employeeSiteStatusResult.setAllRoleSkills(skillEntityService.getSkillsForRoles(roles));
 
 		return employeeSiteStatusResult;
 	}
@@ -88,7 +88,7 @@ public class EmployeeSiteStatusProcess {
 		Set<AccountSkill> allSkills = new HashSet<>();
 		allSkills.addAll(employeeSiteStatusResult.getSiteAndCorporateRequiredSkills());
 		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(employeeSiteStatusResult.getProjectRequiredSkills().values()));
-		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(employeeSiteStatusResult.getRoleSkills().values()));
+		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(employeeSiteStatusResult.getAllRoleSkills().values()));
 
 		employeeSiteStatusResult.setSkillStatus(statusCalculatorService.getSkillStatuses(employee, allSkills));
 
@@ -106,7 +106,7 @@ public class EmployeeSiteStatusProcess {
 	}
 
 	private Map<Role, Set<AccountSkill>> aggregateRoleSkills(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-		Map<Role, Set<AccountSkill>> roleSkills = new HashMap<>(employeeSiteStatusResult.getRoleSkills());
+		Map<Role, Set<AccountSkill>> roleSkills = new HashMap<>(employeeSiteStatusResult.getAllRoleSkills());
 		roleSkills = appendSiteAndCorporateRequiredSkills(roleSkills, employeeSiteStatusResult.getSiteAndCorporateRequiredSkills());
 		return roleSkills;
 	}

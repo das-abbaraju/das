@@ -12,12 +12,13 @@ public class EmployeeSiteStatusResult {
 
 	private Set<Project> projects;
 	private Map<AccountSkill, SkillStatus> skillStatus;
-	private Map<Role, Set<AccountSkill>> roleSkills;
+	private Map<Role, Set<AccountSkill>> allRoleSkills;
 	private Map<Project, Set<AccountSkill>> projectRequiredSkills;
 	private Map<Project, Set<Role>> projectRoles;
 	private Set<AccountSkill> siteAndCorporateRequiredSkills;
 	private Map<Project, SkillStatus> projectStatuses;
 	private Map<Role, SkillStatus> roleStatuses;
+  private Set<Role> siteAssignmentRoles;
 
 	public Set<Project> getProjects() {
 		return projects;
@@ -35,12 +36,12 @@ public class EmployeeSiteStatusResult {
 		this.skillStatus = skillStatus;
 	}
 
-	public Map<Role, Set<AccountSkill>> getRoleSkills() {
-		return roleSkills;
+	public Map<Role, Set<AccountSkill>> getAllRoleSkills() {
+		return allRoleSkills;
 	}
 
-	public void setRoleSkills(Map<Role, Set<AccountSkill>> roleSkills) {
-		this.roleSkills = roleSkills;
+	public void setAllRoleSkills(Map<Role, Set<AccountSkill>> allRoleSkills) {
+		this.allRoleSkills = allRoleSkills;
 	}
 
 	public Map<Project, Set<AccountSkill>> getProjectRequiredSkills() {
@@ -82,4 +83,12 @@ public class EmployeeSiteStatusResult {
 	public void setRoleStatuses(Map<Role, SkillStatus> roleStatuses) {
 		this.roleStatuses = roleStatuses;
 	}
+
+  public Set<Role> getSiteAssignmentRoles() {
+    return siteAssignmentRoles;
+  }
+
+  public void setSiteAssignmentRoles(Set<Role> siteAssignmentRoles) {
+    this.siteAssignmentRoles = siteAssignmentRoles;
+  }
 }

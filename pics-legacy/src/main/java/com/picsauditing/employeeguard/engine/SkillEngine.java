@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.entity.*;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;

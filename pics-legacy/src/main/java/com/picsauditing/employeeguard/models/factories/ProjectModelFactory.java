@@ -4,7 +4,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.ProjectModel;
 import com.picsauditing.employeeguard.models.RoleModel;
 import com.picsauditing.employeeguard.models.SkillModel;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;

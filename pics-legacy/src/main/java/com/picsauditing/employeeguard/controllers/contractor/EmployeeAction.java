@@ -19,7 +19,7 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
