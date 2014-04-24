@@ -46,9 +46,7 @@ angular.module('PICS.employeeguard')
             requiredSkills = [];
 
         angular.forEach(data.projects, function(project) {
-            if (project.required) {
-                requiredSkills = requiredSkills.concat(project.required.skills);
-            }
+            requiredSkills = project.required ? requiredSkills.concat(project.required.skills) : [];
         });
 
         return requiredSkills;
@@ -56,12 +54,10 @@ angular.module('PICS.employeeguard')
 
     Model.prototype.getProjectRequiredSkillsBySlug = function (project_slug) {
         var data = this.getData(),
-            projectRequiredSkills = [];
+            projectRequiredSkills,
             projects = $filter('filter')(data.projects, { slug: project_slug})[0];
 
-        if (projects.required) {
-            projectRequiredSkills = projects.required.skills;
-        }
+        projectRequiredSkills = projects.required ? projects.required.skills : [];
 
         return projectRequiredSkills;
     };
@@ -81,11 +77,9 @@ angular.module('PICS.employeeguard')
 
     Model.prototype.getSiteAndCorpRequiredSkills = function () {
         var data = this.getData(),
-            siteAndCorpRequiredSkills = [];
+            siteAndCorpRequiredSkills;
 
-        if (data.required) {
-            siteAndCorpRequiredSkills = data.required.skills;
-        }
+        siteAndCorpRequiredSkills = data.required ? data.required.skills : [];
 
         return siteAndCorpRequiredSkills;
     };
@@ -94,12 +88,20 @@ angular.module('PICS.employeeguard')
         var data = this.getData(),
             roles = $filter('filter')(data.roles, { slug: role_slug})[0];
 
+        if (!roles) {
+            throw "Role with slug '" + role_slug + "' not found";
+        }
+
         return roles;
     };
 
     Model.prototype.getRoleNameBySlug = function (role_slug) {
         var data = this.getData(),
             roles = $filter('filter')(data.roles, { slug: role_slug})[0];
+
+        if (!roles) {
+            throw "Role with slug '" + role_slug + "' not found";
+        }
 
         return roles.name;
     };
@@ -108,12 +110,20 @@ angular.module('PICS.employeeguard')
         var data = this.getData(),
             projects = $filter('filter')(data.projects, { slug: project_slug})[0];
 
+        if (!projects) {
+            throw "Project with slug '" + project_slug + "' not found";
+        }
+
         return projects;
     };
 
     Model.prototype.getProjectNameBySlug = function (project_slug) {
         var data = this.getData(),
             projects = $filter('filter')(data.projects, { slug: project_slug})[0];
+
+        if (!projects) {
+            throw "Project with slug '" + project_slug + "' not found";
+        }
 
         return projects.name;
     };

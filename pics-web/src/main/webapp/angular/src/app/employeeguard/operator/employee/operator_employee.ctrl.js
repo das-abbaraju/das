@@ -80,24 +80,26 @@ angular.module('PICS.employeeguard')
     }
 
     function getRoleModel() {
-        var slugname = $routeParams.roleSlug;
+        var slugname = $routeParams.roleSlug,
+            skillList = skillModel.getRoleBySlug(slugname);
 
         return {
             requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
-            skillList: skillModel.getRoleBySlug(slugname),
-            employeeStatusIcon: skillModel.getRoleBySlug(slugname).status,
+            skillList: skillList,
+            employeeStatusIcon: skillList.status,
             selectedMenuItem: slugname,
             viewTitle: skillModel.getRoleNameBySlug(slugname)
         };
     }
 
     function getProjectModel() {
-        var slugname = $routeParams.projectSlug;
+        var slugname = $routeParams.projectSlug,
+            skillList = skillModel.getProjectBySlug(slugname);
 
         return {
             requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
-            skillList: skillModel.getProjectBySlug(slugname),
-            employeeStatusIcon: skillModel.getProjectBySlug(slugname).status,
+            skillList: skillList,
+            employeeStatusIcon: skillList.status,
             selectedMenuItem: slugname,
             viewTitle: skillModel.getProjectNameBySlug(slugname)
         };
