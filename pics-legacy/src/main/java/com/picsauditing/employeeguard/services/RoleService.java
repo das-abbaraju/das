@@ -172,10 +172,6 @@ public class RoleService {
 				});
 	}
 
-	public Set<Role> getEmployeeRolesForSite(final int siteId, final Employee employee) {
-		return new HashSet<>(roleDAO.findSiteRolesForEmployee(siteId, employee));
-	}
-
 	public Map<Role, Set<Employee>> getRoleAssignments(final int contractorId, final int siteId) {
 		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findBySiteIdAndContractorId(siteId, contractorId),
 				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Role, Employee>() {

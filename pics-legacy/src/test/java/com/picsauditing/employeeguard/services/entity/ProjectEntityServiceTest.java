@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.*;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
@@ -86,12 +87,19 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testGetProjectsForEmployee() {
-		List<Project> projects = Arrays.asList(buildFakeProject(null));
-		when(projectDAO.findByEmployee(any(Employee.class))).thenReturn(projects);
+		Project fakeProject = setupTestGetProjectsForEmployee();
 
 		Set<Project> result = projectEntityService.getProjectsForEmployee(new Employee());
 
-		assertEquals(projects, result);
+		assertTrue(result.contains(fakeProject));
+	}
+
+	private Project setupTestGetProjectsForEmployee() {
+		Project fakeProject = buildFakeProject(null);
+		List<Project> projects = Arrays.asList(fakeProject);
+		when(projectDAO.findByEmployee(any(Employee.class))).thenReturn(projects);
+
+		return fakeProject;
 	}
 
 	@Test
