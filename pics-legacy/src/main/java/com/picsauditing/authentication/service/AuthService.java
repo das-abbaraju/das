@@ -152,7 +152,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		if (profile == null) {
 			EmailHash emailHash = emailHashService.findByHash(hashCode);
 
-			Employee employee = employeeService.findEmployee("" + emailHash.getEmployee().getId(), emailHash.getEmployee().getAccountId());
+			Employee employee = employeeService.findEmployee(emailHash.getEmployee().getId(), emailHash.getEmployee().getAccountId());
 
 			profile = new Profile();
 			profile.setEmail(employee.getEmail());

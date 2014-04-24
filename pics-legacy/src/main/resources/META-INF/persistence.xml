@@ -101,7 +101,7 @@
         <properties>
             <property name="hibernate.hbm2ddl.auto" value=""/>
             <property name="hibernate.max_fetch_depth" value="1"/>
-            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.default_batch_fetch_size" value="16"/>
 
             <property name="hibernate.format_sql" value="false"/>

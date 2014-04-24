@@ -107,9 +107,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String index() {
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			employees = employeeService.search(searchTerm, permissions.getAccountId());
+			employees = employeeEntityService.search(searchTerm, permissions.getAccountId());
 		} else {
-			employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+			employees = employeeEntityService.getEmployeesForAccount(permissions.getAccountId());
 		}
 
 		Collections.sort(employees);
@@ -165,7 +165,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@SkipValidation
 	public String photo() throws FileNotFoundException {
 		if (NumberUtils.toInt(id) > 0) {
-			employee = employeeService.findEmployee(id, permissions.getAccountId());
+			employee = employeeEntityService.find(getNumericId(), permissions.getAccountId());
 			inputStream = photoUtil.getPhotoStreamForEmployee(employee, permissions.getAccountId(), getFtpDir());
 
 			if (inputStream == null) {
@@ -201,11 +201,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public String update() throws Exception {
 		if (employeePersonalForm != null) {
-			employee = employeeService.updatePersonal(employeePersonalForm, id, permissions.getAccountId(), permissions.getAppUserID());
+			employee = employeeService.updatePersonal(employeePersonalForm, getNumericId(), permissions.getAccountId(), permissions.getAppUserID());
 		} else if (employeeEmploymentForm != null) {
-			employee = employeeService.updateEmployment(employeeEmploymentForm, id, permissions.getAccountId(), permissions.getAppUserID());
+			employee = employeeService.updateEmployment(employeeEmploymentForm, getNumericId(), permissions.getAccountId(), permissions.getAppUserID());
 		} else if (employeePhotoForm != null) {
-			employee = employeeService.updatePhoto(employeePhotoForm, getFtpDir(), id, permissions.getAccountId());
+			employee = employeeEntityService.updatePhoto(employeePhotoForm, getFtpDir(), getNumericId(), permissions.getAccountId());
 		} else {
 			// Since there is another form that needs to be implemented for assignments, we will just redirect back for now.
 			return setUrlForRedirect("/employee-guard/contractor/employee/" + id);
@@ -215,7 +215,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String delete() throws Exception {
-		employeeService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
+		employeeEntityService.delete(getNumericId(), permissions.getAccountId());
 
 		return redirectToList();
 	}

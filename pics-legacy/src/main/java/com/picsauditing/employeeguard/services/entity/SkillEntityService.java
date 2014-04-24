@@ -277,6 +277,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		return new HashSet<>(accountSkillDAO.findGroupSkillsForEmployee(employee));
 	}
 
+	public Set<AccountSkill> getSkillsForRole(final Role role) {
+		return new HashSet<>(accountSkillDAO.findByRoles(Arrays.asList(role)));
+	}
+
 	/* All search related methods */
 
 	@Override

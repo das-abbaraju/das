@@ -33,7 +33,7 @@ public class PhotoAction extends PicsRestActionSupport {
 		String ftpDir = getFtpDir();
 
 		try {
-			Employee employee = employeeService.findEmployee(id, contractorId);
+			Employee employee = employeeService.findEmployee(getNumericId(), contractorId);
 			inputStream = getPhotoStreamForEmployee(employee, ftpDir);
 		} catch (Exception e) {
 			LOG.error("Exception finding employee {} under contractor {}", new Object[]{id, contractorId, e});

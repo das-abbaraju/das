@@ -11,11 +11,13 @@ import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.process.EmployeeSkillData;
+import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
-import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.services.models.AccountModel;
@@ -23,6 +25,7 @@ import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.util.web.UrlBuilder;
+import org.apache.commons.lang.math.NumberUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,6 +33,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -39,12 +43,11 @@ import static org.mockito.Mockito.when;
 
 public class EmployeeActionTest extends PicsActionTest {
 
-	public static final String ID = "ID";
+	public static final int ID = 6780;
 
 	private EmployeeAction employeeAction;
 
 	private EmailHashService emailHashService;
-	private EmployeeService employeeService;
 	private GroupService groupService;
 	private FormBuilderFactory formBuilderFactory;
 	private PhotoUtil photoUtil;
@@ -54,10 +57,16 @@ public class EmployeeActionTest extends PicsActionTest {
 	private EmailService emailService;
 	@Mock
 	private UrlBuilder urlBuilder;
-    @Mock
-    private ProjectRoleService projectRoleService;
-    @Mock
-    private AccountService accountService;
+	@Mock
+	private ProjectRoleService projectRoleService;
+	@Mock
+	private AccountService accountService;
+	@Mock
+	private EmployeeEntityService employeeEntityService;
+	@Mock
+	private EmployeeService employeeService;
+	@Mock
+	private EmployeeSkillDataProcess employeeSkillDataProcess;
 
 	@Before
 	public void setUp() throws Exception {
@@ -66,7 +75,6 @@ public class EmployeeActionTest extends PicsActionTest {
 		employeeAction = new EmployeeAction();
 
 		emailHashService = EmailHashServiceFactory.getEmailHashService();
-		employeeService = EmployeeServiceFactory.getEmployeeService();
 		groupService = GroupServiceFactory.getGroupService();
 		formBuilderFactory = new FormBuilderFactory();
 		photoUtil = PhotoUtilFactory.getPhotoUtil();
@@ -76,29 +84,34 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
-        when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
-        when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
+		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
+		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 		when(accountService.getAccountById(anyInt())).thenReturn(new AccountModel.Builder().name("Test Account").build());
+		when(employeeSkillDataProcess.buildEmployeeSkillData(any(Employee.class), anyCollectionOf(Integer.class))).thenReturn(new EmployeeSkillData());
 
-        Whitebox.setInternalState(employeeAction, "accountService", accountService);
+		Whitebox.setInternalState(employeeAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeAction, "emailService", emailService);
 		Whitebox.setInternalState(employeeAction, "emailHashService", emailHashService);
+		Whitebox.setInternalState(employeeAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(employeeAction, "employeeService", employeeService);
 		Whitebox.setInternalState(employeeAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(employeeAction, "groupService", groupService);
 		Whitebox.setInternalState(employeeAction, "photoUtil", photoUtil);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
-        Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
+		Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
 		Whitebox.setInternalState(employeeAction, "urlBuilder", urlBuilder);
+		Whitebox.setInternalState(employeeAction, "employeeSkillDataProcess", employeeSkillDataProcess);
 	}
 
 	@Test
 	public void testIndex() throws Exception {
+		when(employeeEntityService.getEmployeesForAccount(anyInt())).thenReturn(Arrays.asList(new Employee()));
+
 		assertEquals(PicsRestActionSupport.LIST, employeeAction.index());
 		assertFalse(employeeAction.getEmployees().isEmpty());
 		assertNotNull(employeeAction.getEmployeeSkillStatuses());
 
-		verify(employeeService).getEmployeesForAccount(Account.PicsID);
+		verify(employeeEntityService).getEmployeesForAccount(Account.PicsID);
 	}
 
 	@Test
@@ -106,23 +119,25 @@ public class EmployeeActionTest extends PicsActionTest {
 		SearchForm searchForm = new SearchForm();
 		searchForm.setSearchTerm("Test");
 		employeeAction.setSearchForm(searchForm);
+		when(employeeEntityService.search(anyString(), anyInt())).thenReturn(Arrays.asList(new Employee()));
 
 		assertEquals(PicsRestActionSupport.LIST, employeeAction.index());
 		assertFalse(employeeAction.getEmployees().isEmpty());
 		assertNotNull(employeeAction.getEmployeeSkillStatuses());
 
-		verify(employeeService).search("Test", Account.PicsID);
+		verify(employeeEntityService).search("Test", Account.PicsID);
 	}
 
 	@Test
 	public void testShow() throws Exception {
-		employeeAction.setId(ID);
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
+		employeeAction.setId(String.valueOf(ID));
 
 		assertEquals(PicsRestActionSupport.SHOW, employeeAction.show());
 		assertNotNull(employeeAction.getEmployee());
 		assertNotNull(employeeAction.getSkillInfoList());
 
-		verify(employeeService).findEmployee(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PicsID);
 	}
 
 	@Test
@@ -135,28 +150,32 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testEditPersonalSection() throws Exception {
-		employeeAction.setId(ID);
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
+		when(groupService.getGroupsForAccount(anyInt())).thenReturn(Arrays.asList(new Group()));
+		employeeAction.setId(String.valueOf(ID));
 		assertEquals("personal-form", employeeAction.editPersonalSection());
 		assertNotNull(employeeAction.getEmployee());
-		verify(employeeService).findEmployee(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PicsID);
 	}
 
 	@Test
 	public void testEditEmploymentSection() throws Exception {
-		employeeAction.setId(ID);
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
+		employeeAction.setId(String.valueOf(ID));
 		assertEquals("employment-form", employeeAction.editEmploymentSection());
 		assertNotNull(employeeAction.getEmployee());
 		assertFalse(employeeAction.getEmployeeGroups().isEmpty());
-		verify(employeeService).findEmployee(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PicsID);
 		verify(groupService).getGroupsForAccount(Account.PicsID);
 	}
 
 	@Test
 	public void testEditAssignmentSection() throws Exception {
-		employeeAction.setId(ID);
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
+		employeeAction.setId(String.valueOf(ID));
 		assertEquals("assignment-form", employeeAction.editAssignmentSection());
 		assertNotNull(employeeAction.getEmployee());
-		verify(employeeService).findEmployee(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PicsID);
 	}
 
 	@Test
@@ -175,6 +194,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testInsert_AddAnother() throws Exception {
+		when(employeeService.save(any(EmployeeForm.class), anyString(), anyInt(), anyInt())).thenReturn(new Employee());
 		EmployeeForm employeeForm = new EmployeeForm();
 		employeeForm.setAddAnother(true);
 		employeeAction.setEmployeeForm(employeeForm);
@@ -189,16 +209,16 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		employeeAction.setId(ID);
+		employeeAction.setId(String.valueOf(ID));
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
-		assertEquals("/employee-guard/contractor/employee/ID", employeeAction.getUrl());
+		assertEquals("/employee-guard/contractor/employee/" + ID, employeeAction.getUrl());
 	}
-
 
 	@Test
 	public void testUpdate_Personal() throws Exception {
+		when(employeeService.updatePersonal(any(EmployeePersonalForm.class), anyInt(), anyInt(), anyInt())).thenReturn(new Employee());
 		EmployeePersonalForm employeePersonalForm = new EmployeePersonalForm();
-		employeeAction.setId(ID);
+		employeeAction.setId(String.valueOf(ID));
 		employeeAction.setEmployeePersonalForm(employeePersonalForm);
 
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
@@ -209,8 +229,9 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testUpdate_Employment() throws Exception {
+		when(employeeService.updateEmployment(any(EmployeeEmploymentForm.class), anyInt(), anyInt(), anyInt())).thenReturn(new Employee());
 		EmployeeEmploymentForm employeeEmploymentForm = new EmployeeEmploymentForm();
-		employeeAction.setId(ID);
+		employeeAction.setId(String.valueOf(ID));
 		employeeAction.setEmployeeEmploymentForm(employeeEmploymentForm);
 
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
@@ -221,14 +242,15 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testUpdate_Photo() throws Exception {
+		when(employeeEntityService.updatePhoto(any(EmployeePhotoForm.class), anyString(), anyInt(), anyInt())).thenReturn(new Employee());
 		EmployeePhotoForm employeePhotoForm = new EmployeePhotoForm();
-		employeeAction.setId(ID);
+		employeeAction.setId(String.valueOf(ID));
 		employeeAction.setEmployeePhotoForm(employeePhotoForm);
 
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
 		assertTrue(employeeAction.getUrl().startsWith("/employee-guard/contractor/employee/"));
 
-		verify(employeeService).updatePhoto(eq(employeePhotoForm), anyString(), eq(ID), eq(Account.PicsID));
+		verify(employeeEntityService).updatePhoto(eq(employeePhotoForm), anyString(), eq(ID), eq(Account.PicsID));
 	}
 
 	@Test
@@ -239,37 +261,8 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.delete());
 		verify(permissions).getAccountId();
-		verify(permissions).getAppUserID();
-		verify(employeeService).delete(anyString(), anyInt(), anyInt());
+		verify(employeeEntityService).delete(anyInt(), anyInt());
 		assertEquals(url, employeeAction.getUrl());
-	}
-
-	@Test
-	public void testPhoto() throws Exception {
-		/*
-		if (NumberUtils.toInt(id) > 0) {
-			employee = employeeService.findEmployee(id, permissions.getAccountId());
-			File employeePhoto = photoUtil.getPhotoForEmployee(employee, permissions.getAccountId(), getFtpDir());
-
-			if (employeePhoto != null && employeePhoto.exists()) {
-				inputStream = new FileInputStream(employeePhoto);
-			} else if (employee.getProfile() != null) {
-				File profilePhoto = photoUtil.getPhotoForProfile(profileDocumentService.getPhotoDocumentFromProfile(employee.getProfile()), getFtpDir());
-				if (profilePhoto != null && profilePhoto.exists()) {
-					inputStream = new FileInputStream(profilePhoto);
-				}
-			}
-		}
-
-		if (inputStream == null) {
-			inputStream = new FileInputStream(photoUtil.getDefaultPhoto(getFtpDir()));
-		}
-
-		return "photo";
-		 */
-		assertEquals("photo", employeeAction.photo());
-		assertNotNull(employeeAction.getInputStream());
-		verify(photoUtil).getDefaultPhotoStream(anyString());
 	}
 
 	@Test
@@ -279,7 +272,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		assertEquals("photo", employeeAction.photo());
 		assertNotNull(employeeAction.getInputStream());
-		verify(employeeService).findEmployee(id, Account.PicsID);
+		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PicsID);
 		verify(photoUtil).getPhotoStreamForEmployee(any(Employee.class), eq(Account.PicsID), anyString());
 	}
 
@@ -291,12 +284,12 @@ public class EmployeeActionTest extends PicsActionTest {
 		Employee employee = new Employee();
 		employee.setProfile(new Profile());
 
-		when(employeeService.findEmployee(id, Account.PicsID)).thenReturn(employee);
+		when(employeeEntityService.find(NumberUtils.toInt(id), Account.PicsID)).thenReturn(employee);
 		when(photoUtil.getPhotoStreamForEmployee(eq(employee), eq(Account.PicsID), anyString())).thenReturn(null);
 
 		assertEquals("photo", employeeAction.photo());
 		assertNotNull(employeeAction.getInputStream());
-		verify(employeeService).findEmployee(id, Account.PicsID);
+		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PicsID);
 		verify(profileDocumentService).getPhotoDocumentFromProfile(any(Profile.class));
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());
 	}

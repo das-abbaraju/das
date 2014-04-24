@@ -56,8 +56,8 @@ public class EmployeeService {
 	}
 
 	@Deprecated
-	public Employee findEmployee(final String id, final int accountId) {
-		return employeeEntityService.find(NumberUtils.toInt(id), accountId);
+	public Employee findEmployee(final int id, final int accountId) {
+		return employeeEntityService.find(id, accountId);
 	}
 
 	@Deprecated
@@ -265,7 +265,7 @@ public class EmployeeService {
 		}
 	}
 
-	public Employee updatePersonal(PersonalInformationForm personalInformationForm, String employeeId, int accountId, int appUserId) {
+	public Employee updatePersonal(PersonalInformationForm personalInformationForm, int employeeId, int accountId, int appUserId) {
 		Employee employeeToUpdate = findEmployee(employeeId, accountId);
 
 		employeeToUpdate.setFirstName(personalInformationForm.getFirstName());
@@ -278,7 +278,7 @@ public class EmployeeService {
 		return employeeDAO.save(employeeToUpdate);
 	}
 
-	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final String employeeId, final int accountId, final int appUserId) {
+	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final int employeeId, final int accountId, final int appUserId) {
 		Employee employeeInDatabase = findEmployee(employeeId, accountId);
 		Date timestamp = new Date();
 		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeInDatabase, accountId);
