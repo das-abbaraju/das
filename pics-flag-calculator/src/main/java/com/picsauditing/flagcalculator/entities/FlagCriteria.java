@@ -2,6 +2,8 @@ package com.picsauditing.flagcalculator.entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -71,6 +73,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
     @Enumerated(EnumType.STRING)
     public OshaType getOshaType() {
         return oshaType;
@@ -80,6 +83,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.oshaType = oshaType;
     }
 
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
     @Enumerated(EnumType.STRING)
     public OshaRateType getOshaRateType() {
         return oshaRateType;
@@ -146,6 +150,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.comparison = comparison;
     }
 
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
     @Enumerated(EnumType.STRING)
     public MultiYearScope getMultiYearScope() {
         return multiYearScope;
