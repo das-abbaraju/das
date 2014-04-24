@@ -13,7 +13,6 @@ import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -31,11 +30,11 @@ public class ProfileDocumentService {
 	@Autowired
 	private PhotoUtil photoUtil;
 
-	public ProfileDocument getDocument(String id) {
-		return profileDocumentDAO.find(NumberUtils.toInt(id));
+	public ProfileDocument getDocument(final int id) {
+		return profileDocumentDAO.find(id);
 	}
 
-	public List<ProfileDocument> getDocumentsForProfile(int profileId) {
+	public List<ProfileDocument> getDocumentsForProfile(final int profileId) {
 		return profileDocumentDAO.findByProfileId(profileId);
 	}
 
@@ -45,6 +44,15 @@ public class ProfileDocumentService {
 
 	public ProfileDocument create(final Profile profile, final DocumentForm documentForm, final String directory,
 								  final int appUserId, final int skillId) throws Exception {
+		ProfileDocument newProfileDocument = create(profile, documentForm, directory, appUserId);
+
+		insertEmployeeSkillsForDocument(profile, skillId, newProfileDocument);
+
+		return newProfileDocument;
+	}
+
+	public ProfileDocument create(final Profile profile, final DocumentForm documentForm, final String directory,
+								  final int appUserId) throws Exception {
 		ProfileDocument newProfileDocument = documentForm.buildProfileDocument();
 		newProfileDocument.setProfile(profile);
 		newProfileDocument.setStartDate(new Date());
@@ -64,16 +72,13 @@ public class ProfileDocumentService {
 		newProfileDocument.setFileName(filename + "." + extension);
 		newProfileDocument = profileDocumentDAO.save(newProfileDocument);
 
-		insertEmployeeSkillsForDocument(profile, skillId, newProfileDocument);
-
 		return newProfileDocument;
 	}
 
-	public ProfileDocument update(final String documentId, final Profile profile, final ProfileDocument updatedProfileDocument,
-								  final int appUserId, final int skillId, final File file,
-								  final String filename, final String directory) throws Exception {
+	public ProfileDocument update(final int documentId, final Profile profile, final ProfileDocument updatedProfileDocument,
+								  final int appUserId, final File file, final String filename, final String directory) throws Exception {
 		ProfileDocument profileDocumentFromDatabase =
-				profileDocumentDAO.findByDocumentIdAndProfileId(NumberUtils.toInt(documentId), profile.getId());
+				profileDocumentDAO.findByDocumentIdAndProfileId(documentId, profile.getId());
 		profileDocumentFromDatabase.setEndDate(updatedProfileDocument.getEndDate());
 		profileDocumentFromDatabase.setName(updatedProfileDocument.getName());
 		profileDocumentFromDatabase.setDocumentType(updatedProfileDocument.getDocumentType());
@@ -96,9 +101,21 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
 
-		insertEmployeeSkillsForDocument(profile, skillId, profileDocumentFromDatabase);
+		updateAccountSkillEmployees(profileDocumentFromDatabase);
 
 		return profileDocumentFromDatabase;
+	}
+
+	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findByProfile(profileDocument.getProfile());
+
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			accountSkillEmployee.setStartDate(profileDocument.getStartDate());
+			accountSkillEmployee.setEndDate(profileDocument.getEndDate());
+		}
+
+		accountSkillEmployeeDAO.save(accountSkillEmployees);
 	}
 
 	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,

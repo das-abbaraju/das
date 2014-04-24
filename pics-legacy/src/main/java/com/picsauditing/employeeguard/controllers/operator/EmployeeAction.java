@@ -2,13 +2,14 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.models.factories.LiveIDEmployeeModelFactory;
-import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -28,21 +29,21 @@ public class EmployeeAction extends PicsRestActionSupport {
 	private StatusCalculatorService statusCalculatorService;
 	@Autowired
 	private SkillService skillService;
-  @Autowired
-  private LiveIDEmployeeService liveIDEmployeeService;
+	@Autowired
+	private LiveIDEmployeeService liveIDEmployeeService;
 
 	public String show() {
 		//CompanyEmployeeStatusModel companyEmployeeStatusModel = buildCompanyEmployeeStatusModel();
-    LiveIDEmployeeModelFactory.LiveIDEmployeeModel liveIDEmployeeModel=buildLiveIDEmployeeModel();
+		LiveIDEmployeeModelFactory.LiveIDEmployeeModel liveIDEmployeeModel = buildLiveIDEmployeeModel();
 		jsonString = new Gson().toJson(liveIDEmployeeModel);
 
 		return JSON_STRING;
 	}
 
-  private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel(){
-    int siteId = permissions.getAccountId();
-    return liveIDEmployeeService.buildLiveIDEmployee(id, siteId);
-  }
+	private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel() {
+		int siteId = permissions.getAccountId();
+		return liveIDEmployeeService.buildLiveIDEmployee(id, siteId);
+	}
 
 	private CompanyEmployeeStatusModel buildCompanyEmployeeStatusModel() {
 		Employee employee = employeeService.findEmployee(id);

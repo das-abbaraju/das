@@ -143,6 +143,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		Set<Integer> siteAndParentAccountIds = new HashSet<>(corporateAccountIds);
 		siteAndParentAccountIds.add(siteId);
 
+		if (CollectionUtils.isEmpty(siteAndParentAccountIds)) {
+			return Collections.emptySet();
+		}
+
 		return new HashSet<>(accountSkillDAO.findSiteAndCorporateRequiredSkills(siteAndParentAccountIds));
 	}
 
@@ -223,7 +227,9 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 		return PicsCollectionUtil.convertToMapOfSets(
 				accountSkillGroupDAO.findByGroups(groups),
+
 				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+
 					@Override
 					public Group getKey(AccountSkillGroup entity) {
 						return entity.getGroup();
@@ -239,9 +245,16 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
 																		   final Collection<Employee> employees) {
 		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByAccount(contractorId);
+
+		if (CollectionUtils.isEmpty(requiredSkills) || CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
 		return PicsCollectionUtil.convertToMapOfSets(
 				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
+
 				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+
 					@Override
 					public Employee getKey(AccountSkillEmployee entity) {
 						return entity.getEmployee();
@@ -253,6 +266,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 					}
 				}
 		);
+	}
+
+	public Set<AccountSkill> getSkillsForRole(final Role role) {
+		return new HashSet<>(accountSkillDAO.findByRoles(Arrays.asList(role)));
 	}
 
 	/* All search related methods */

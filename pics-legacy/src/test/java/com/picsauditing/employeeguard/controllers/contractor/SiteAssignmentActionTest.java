@@ -2,8 +2,10 @@ package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -12,101 +14,122 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import javax.persistence.NoResultException;
-
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 public class SiteAssignmentActionTest extends PicsActionTest {
 
-    public static final int SITE_ID = 123;
-    private SiteAssignmentAction siteAssignmentAction;
+	public static final int SITE_ID = 123;
 
-    @Mock
-    private EmployeeService employeeService;
-    @Mock
-    private RoleService roleService;
+	// Class under test
+	private SiteAssignmentAction siteAssignmentAction;
 
-    @Before
-    public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+	@Mock
+	private AccountService accountService;
+	@Mock
+	private AssignmentService assignmentService;
+	@Mock
+	private EmployeeEntityService employeeEntityService;
+	@Mock
+	private RoleService roleService;
+	@Mock
+	private StatusCalculatorService statusCalculatorService;
+	@Mock
+	private SkillEntityService skillEntityService;
+	@Mock
+	private SkillUsageLocator skillUsageLocator;
 
-        siteAssignmentAction = new SiteAssignmentAction();
-        this.setUp(siteAssignmentAction);
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
 
-        Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
-        Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
+		siteAssignmentAction = new SiteAssignmentAction();
+		this.setUp(siteAssignmentAction);
 
-	    when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
-    }
+		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
+		Whitebox.setInternalState(siteAssignmentAction, "assignmentService", assignmentService);
+		Whitebox.setInternalState(siteAssignmentAction, "employeeEntityService", employeeEntityService);
+		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
+		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
+		Whitebox.setInternalState(siteAssignmentAction, "skillEntityService", skillEntityService);
+		Whitebox.setInternalState(siteAssignmentAction, "skillUsageLocator", skillUsageLocator);
 
-    @Test
-    public void testAssign_AssignmentFailed() throws Exception {
-        when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(new NoResultException());
+		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
+	}
 
-        siteAssignmentAction.assign();
+	@Test
+	public void testAssign_AssignmentFailed() throws Exception {
+		doThrow(new RuntimeException()).when(assignmentService)
+				.assignEmployeeToSiteRole(anyInt(), anyInt(), anyInt(), any(EntityAuditInfo.class));
 
-        verifyAssignmentFailure(siteAssignmentAction.getJson());
-    }
+		siteAssignmentAction.assign();
 
-    @Test
-    public void testAssign_AssignmentSuccessful() throws Exception {
-        when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(new Employee());
+		verifyAssignmentFailure(siteAssignmentAction.getJson());
+	}
 
-        siteAssignmentAction.assign();
+	@Test
+	public void testAssign_AssignmentSuccessful() throws Exception {
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
 
-        verifyAssignmentSuccess(siteAssignmentAction.getJson());
-    }
+		siteAssignmentAction.assign();
 
-    @Test
-    public void testUnassign_AssignmentFailed() throws Exception {
-        when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(new NoResultException());
+		verifyAssignmentSuccess(siteAssignmentAction.getJson());
+	}
 
-        siteAssignmentAction.unassign();
+	@Test
+	public void testUnassign_AssignmentFailed() throws Exception {
+		doThrow(new RuntimeException()).when(assignmentService)
+				.unassignEmployeeFromSiteRole(anyInt(), anyInt(), anyInt());
 
-        verifyAssignmentFailure(siteAssignmentAction.getJson());
-    }
+		siteAssignmentAction.unassign();
 
-    @Test
-    public void testUnassign_AssignmentSuccessful() throws Exception {
-        when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(new Employee());
+		verifyAssignmentFailure(siteAssignmentAction.getJson());
+	}
 
-        siteAssignmentAction.unassign();
+	@Test
+	public void testUnassign_AssignmentSuccessful() throws Exception {
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
 
-        verifyAssignmentSuccess(siteAssignmentAction.getJson());
-    }
+		siteAssignmentAction.unassign();
 
-    @Test
-    public void testUnassignAll_AssignmentSuccessful() throws Exception {
-        setupUnassignAllTest();
+		verifyAssignmentSuccess(siteAssignmentAction.getJson());
+	}
 
-        String result = siteAssignmentAction.unassignAll();
+	@Test
+	public void testUnassignAll_AssignmentSuccessful() throws Exception {
+		setupUnassignAllTest();
 
-        verifyAssignmentSuccess(siteAssignmentAction.getJson());
-    }
+		String result = siteAssignmentAction.unassignAll();
 
-    private void setupUnassignAllTest() {
-        Employee employee = new Employee();
-        when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(employee);
-        siteAssignmentAction.setSiteId(SITE_ID);
-    }
+		verifyAssignmentSuccess(siteAssignmentAction.getJson());
+	}
 
-    @Test
-    public void testUnassignAll_AssignmentFailed() throws Exception {
-        when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(new NoResultException());
+	private void setupUnassignAllTest() {
+		Employee employee = new Employee();
 
-        String result = siteAssignmentAction.unassignAll();
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(employee);
 
-        verifyAssignmentFailure(siteAssignmentAction.getJson());
-    }
+		siteAssignmentAction.setSiteId(SITE_ID);
+	}
 
-    private void verifyAssignmentFailure(final JSONObject json) {
-        assertEquals("{\"status\":\"FAILURE\"}", json.toJSONString());
-    }
+	@Test
+	public void testUnassignAll_AssignmentFailed() throws Exception {
+		doThrow(new RuntimeException()).when(assignmentService)
+				.unassignEmployeeFromSite(anyInt(), anyInt());
 
-    private void verifyAssignmentSuccess(final JSONObject json) {
-        assertEquals("{\"status\":\"SUCCESS\"}", json.toJSONString());
-    }
+		String result = siteAssignmentAction.unassignAll();
+
+		verifyAssignmentFailure(siteAssignmentAction.getJson());
+	}
+
+	private void verifyAssignmentFailure(final JSONObject json) {
+		assertEquals("{\"status\":\"FAILURE\"}", json.toJSONString());
+	}
+
+	private void verifyAssignmentSuccess(final JSONObject json) {
+		assertEquals("{\"status\":\"SUCCESS\"}", json.toJSONString());
+	}
 }

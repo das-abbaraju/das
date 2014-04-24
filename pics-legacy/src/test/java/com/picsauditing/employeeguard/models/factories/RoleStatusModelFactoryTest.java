@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.ProjectBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.RoleStatusModel;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
@@ -80,11 +81,11 @@ public class RoleStatusModelFactoryTest {
 
 		Map<Integer, List<RoleStatusModel>> projectIdToRoleModelMap = factory.createProjectIdToRoleModelMap(
 				Arrays.asList(project),
-				new HashMap<Project, List<Role>>() {{
-					put(project, Arrays.asList(role));
+				new HashMap<Project, Set<Role>>() {{
+					put(project, new HashSet<>(Arrays.asList(role)));
 				}},
 				new HashMap<Integer, List<SkillStatusModel>>() {{
-					put(role.getId(), new ArrayList<SkillStatusModel>());
+					put(role.getId(), Arrays.asList(new SkillStatusModel()));
 				}},
 				new HashMap<Role, SkillStatus>() {{
 					put(role, SkillStatus.Expired);
