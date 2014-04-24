@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.util;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
 
@@ -315,6 +316,25 @@ public class PicsCollectionUtil {
 		}
 
 		return uniqueCollection;
+	}
+
+	public static <K, V> Map<K, List<V>> mergeMapOfLists(final Map<K, List<V>>... maps) {
+		if (ArrayUtils.isEmpty(maps)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, List<V>> mergedValues = new HashMap<>();
+		for (Map<K, List<V>> map : maps) {
+			for (K key : map.keySet()) {
+				if (!mergedValues.containsKey(key)) {
+					mergedValues.put(key, new ArrayList<V>());
+				}
+
+				mergedValues.get(key).addAll(map.get(key));
+			}
+		}
+
+		return mergedValues;
 	}
 
 	public static <E, V> Map<E, Set<V>> mergeMapOfSets(final Map<E, Set<V>> map1, final Map<E, Set<V>> map2) {

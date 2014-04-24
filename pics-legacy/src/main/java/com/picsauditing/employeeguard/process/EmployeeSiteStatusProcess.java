@@ -112,7 +112,15 @@ public class EmployeeSiteStatusProcess {
 	}
 
 	private EmployeeSiteStatusResult addProjectStatuses(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-		return null;  //To change body of created methods use File | Settings | File Templates.
+//		Map<Project, List<SkillStatus>> projectStatuses = convertToSkillStatusMap(employeeSiteStatusResult.getProjectRoles(),
+//				employeeSiteStatusResult.getRoleStatuses());
+//
+////		Map<Project, Set<AccountSkill>> allProjectSkills = employeeSiteStatusResult.getProjectRequiredSkills();
+//
+//		PicsCollectionUtil.mergeMapOfLists(projectStatuses);
+//		employeeSiteStatusResult.setProjectStatuses(statusCalculatorService.getOverallStatusPerEntity(projectStatuses));
+
+		return employeeSiteStatusResult;
 	}
 
 	private <K> Map<K, Set<AccountSkill>> appendSiteAndCorporateRequiredSkills(final Map<K, Set<AccountSkill>> skillMap,
@@ -129,8 +137,8 @@ public class EmployeeSiteStatusProcess {
 		return skillMap;
 	}
 
-	private <K> Map<K, List<SkillStatus>> convertToSkillStatusMap(final Map<K, Set<AccountSkill>> skillMap,
-																  final Map<AccountSkill, SkillStatus> statusMap) {
+	private <K, V> Map<K, List<SkillStatus>> convertToSkillStatusMap(final Map<K, Set<V>> skillMap,
+																	 final Map<V, SkillStatus> statusMap) {
 		if (MapUtils.isEmpty(skillMap) || MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -139,8 +147,8 @@ public class EmployeeSiteStatusProcess {
 		for (K key : skillMap.keySet()) {
 
 			ArrayList<SkillStatus> statuses = new ArrayList<>();
-			for (AccountSkill accountSkill : skillMap.get(key)) {
-				statuses.add(statusMap.get(accountSkill));
+			for (V value : skillMap.get(key)) {
+				statuses.add(statusMap.get(value));
 			}
 
 			skillStatuses.put(key, statuses);

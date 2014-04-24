@@ -90,6 +90,7 @@
         <class>com.picsauditing.employeeguard.entities.Project</class>
         <class>com.picsauditing.employeeguard.entities.ProjectCompany</class>
         <class>com.picsauditing.employeeguard.entities.ProjectRole</class>
+        <class>com.picsauditing.employeeguard.entities.ProjectRoleEmployee</class>
         <class>com.picsauditing.employeeguard.entities.ProjectSkill</class>
         <class>com.picsauditing.employeeguard.entities.ProjectSkillRole</class>
         <class>com.picsauditing.employeeguard.entities.Role</class>
