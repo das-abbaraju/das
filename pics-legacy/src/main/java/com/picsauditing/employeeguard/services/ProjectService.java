@@ -78,6 +78,10 @@ public class ProjectService {
 				childIds.add(child.getId());
 			}
 
+			if (CollectionUtils.isEmpty(childIds)) {
+				return Collections.emptyList();
+			}
+
 			return projectDAO.findByAccounts(childIds); // a list of site ids
 		} else {
 			return projectDAO.findByAccount(accountId);

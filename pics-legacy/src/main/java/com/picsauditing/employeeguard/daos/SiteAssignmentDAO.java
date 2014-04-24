@@ -59,7 +59,7 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 		Query query = em.createQuery("DELETE FROM SiteAssignment sa " +
 				"WHERE sa.siteId = :siteId " +
 				"AND sa.employee.id = :employeeId " +
-				"AND sa.role = :roleId");
+				"AND sa.role.id = :roleId");
 
 		query.setParameter("siteId", siteId);
 		query.setParameter("employeeId", employeeId);
