@@ -325,12 +325,18 @@ public class PicsCollectionUtil {
 
 		Map<K, List<V>> mergedValues = new HashMap<>();
 		for (Map<K, List<V>> map : maps) {
+			if (MapUtils.isEmpty(map)) {
+				continue;
+			}
+
 			for (K key : map.keySet()) {
 				if (!mergedValues.containsKey(key)) {
 					mergedValues.put(key, new ArrayList<V>());
 				}
 
-				mergedValues.get(key).addAll(map.get(key));
+				if (CollectionUtils.isNotEmpty(map.get(key))) {
+					mergedValues.get(key).addAll(map.get(key));
+				}
 			}
 		}
 

@@ -1,5 +1,7 @@
 package com.picsauditing.access.user;
 
+import com.picsauditing.access.Permissions;
+
 import java.util.Set;
 
 public interface UserModeProvider {
@@ -18,6 +20,6 @@ public interface UserModeProvider {
 	 *
 	 * @return
 	 */
-	UserMode getCurrentUserMode();
+	UserMode getCurrentUserMode(Permissions permissions);
 
 }

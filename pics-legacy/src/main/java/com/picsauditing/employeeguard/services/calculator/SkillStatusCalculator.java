@@ -87,6 +87,8 @@ public class SkillStatusCalculator {
 
 		SkillStatus worstStatus = SkillStatus.Completed;
 		for (SkillStatus skillStatus : skillStatuses) {
+			System.out.println(skillStatus);
+
 			// exit early if any status is "Expired", because we have already hit the lowest status
 			if (skillStatus.isExpired()) {
 				return SkillStatus.Expired;
