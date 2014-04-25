@@ -17,9 +17,15 @@ angular.module('PICS.employeeguard')
 
                 if (!$routeParams.siteId) {
                     $scope.initialState = true;
-                    loadSkillList(sites[0].id);
+
+                    employee_info.$promise.then(function(employee) {
+                        loadSiteSkillList(sites[0].id, employee.id);
+                    });
+
                 } else {
-                    loadSkillList($routeParams.siteId);
+                    employee_info.$promise.then(function(employee) {
+                        loadSiteSkillList($routeParams.siteId, employee.id);
+                    });
                 }
             });
         } else {
@@ -28,11 +34,19 @@ angular.module('PICS.employeeguard')
             });
         }
     });
+    function loadSiteSkillList(site_id, employee_id) {
+        $scope.selected_site = site_id;
 
-    function loadSkillList(id) {
-        $scope.selected_site = id;
+        $scope.skillList = SkillList.get({siteId: site_id, id: employee_id}, function(result) {
+            skillModel = new SkillModel(result);
+            loadMenuItems();
+            selectViewModel();
+        });
+    }
 
-        $scope.skillList = SkillList.get({id: id}, function(result) {
+
+    function loadSkillList(employee_id) {
+        $scope.skillList = SkillList.get({id: employee_id}, function(result) {
             skillModel = new SkillModel(result);
             loadMenuItems();
             selectViewModel();
