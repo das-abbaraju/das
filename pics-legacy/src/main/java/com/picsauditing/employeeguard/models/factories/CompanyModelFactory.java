@@ -58,6 +58,14 @@ public class CompanyModelFactory {
 		return companyModels;
 	}
 
+	public CompanyModel create(final AccountModel accountModel, final String title) {
+		CompanyModel companyModel = new CompanyModel();
+		companyModel.setId(accountModel.getId());
+		companyModel.setName(accountModel.getName());
+		companyModel.setTitle(title);
+		return companyModel;
+	}
+
 	public CompanyModel create(final AccountModel accountModel) {
 		CompanyModel companyModel = new CompanyModel();
 		companyModel.setId(accountModel.getId());
