@@ -235,6 +235,19 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		}
 	}
 
+
+	public List<Integer> findContractorsForEmployeeBySite(final int siteId, final int employeeId) {
+		TypedQuery<Integer> query = em.createQuery("SELECT DISTINCT e.accountId FROM SiteAssignment sa " +
+				"JOIN sa.employee e " +
+				"WHERE e.id = :employeeId " +
+				"AND sa.siteId = :siteId", Integer.class);
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
+	}
+
 	public List<Employee> findByProfile(final Profile profile) {
 		TypedQuery<Employee> query = em.createQuery("SELECT e FROM Employee e " +
 				"JOIN e.profile p " +

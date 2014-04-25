@@ -71,6 +71,7 @@
     <!-- Skill Engine and related classes -->
     <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine" />
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess" />
+    <bean id="OperatorEmployeeService" class="com.picsauditing.employeeguard.services.OperatorEmployeeService" />
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>

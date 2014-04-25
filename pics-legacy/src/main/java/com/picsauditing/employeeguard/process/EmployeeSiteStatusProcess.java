@@ -122,7 +122,8 @@ public class EmployeeSiteStatusProcess {
 		return employeeSiteStatusResult;
 	}
 
-	private Map<Project, List<SkillStatus>> addProjectRequiredSkillStatuses(Map<Project, List<SkillStatus>> projectStatuses, EmployeeSiteStatusResult employeeSiteStatusResult) {
+	private Map<Project, List<SkillStatus>> addProjectRequiredSkillStatuses(final Map<Project, List<SkillStatus>> projectStatuses,
+																			final EmployeeSiteStatusResult employeeSiteStatusResult) {
 		Map<Project, List<SkillStatus>> projectRequiredSkillStatuses = convertToSkillStatusMap(employeeSiteStatusResult.getProjectRequiredSkills(), employeeSiteStatusResult.getSkillStatus());
 
 		return PicsCollectionUtil.mergeMapOfLists(projectStatuses, projectRequiredSkillStatuses);
