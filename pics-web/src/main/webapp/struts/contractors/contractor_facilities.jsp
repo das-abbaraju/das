@@ -47,7 +47,7 @@
 						<s:if test="contractor.hasAuditWithOnlyInvisibleCaos()">
 							<div class="alert">
 								This contractor has some audits with no visible
-								caos on them. When you disassociate a contractor with an operator some
+								caos on them. When you disassociate a contractor with a client site, some
 								data is kept in our system, but is not visible to external users. Audits
 								that fall under this case are marked as such in the audit.
 							</div>
