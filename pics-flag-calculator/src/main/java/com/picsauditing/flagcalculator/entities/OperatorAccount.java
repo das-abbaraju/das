@@ -1,8 +1,11 @@
 package com.picsauditing.flagcalculator.entities;
 
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class OperatorAccount extends Account {
 //    private OperatorAccount inheritInsuranceCriteria;
 //
 //    private String doContractorsPay = "Yes";
-    private String canSeeInsurance = "No";
+    private YesNo canSeeInsurance = YesNo.No;
 //    private User insuranceAuditor;
 //    private YesNo isUserManualUploaded = YesNo.No;
 //    private YesNo approvesRelationships = YesNo.No;
@@ -102,23 +105,21 @@ public class OperatorAccount extends Account {
 //        this.doContractorsPay = doContractorsPay;
 //    }
 //
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
     @Column(name = "canSeeInsurance", nullable = false)
-    public String getCanSeeInsurance() {
-        checkCanSeeInsurance();
+    @Enumerated(EnumType.STRING)
+    public YesNo getCanSeeInsurance() {
+        if (this.canSeeInsurance == null) {
+            this.canSeeInsurance = YesNo.No;
+        }
         return this.canSeeInsurance;
     }
 
-    private void checkCanSeeInsurance() {
-        if (this.canSeeInsurance == null) {
-            this.canSeeInsurance = "No";
-        }
-    }
-
-    public void setCanSeeInsurance(String canSeeInsurance) {
+    public void setCanSeeInsurance(YesNo canSeeInsurance) {
         this.canSeeInsurance = canSeeInsurance;
     }
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "insuranceAuditor_id")
 //    public User getInsuranceAuditor() {
 //        return this.insuranceAuditor;

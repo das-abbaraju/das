@@ -3,6 +3,7 @@ package com.picsauditing.flagcalculator.service;
 import com.picsauditing.flagcalculator.entities.FlagCriteriaOperator;
 import com.picsauditing.flagcalculator.entities.FlagDataOverride;
 import com.picsauditing.flagcalculator.entities.OperatorAccount;
+import com.picsauditing.flagcalculator.entities.YesNo;
 import com.picsauditing.flagcalculator.util.DateBean;
 
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class FlagService {
         if (operatorAccount.getInheritFlagCriteria() != null) {
             for (FlagCriteriaOperator c : operatorAccount.getInheritFlagCriteria().getFlagCriteria()) {
                 if (c.getCriteria().getAuditType() != null) {
-                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || "Yes".equals(operatorAccount.getCanSeeInsurance())) {
+                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || YesNo.Yes.equals(operatorAccount.getCanSeeInsurance())) {
                         criteriaList.add(c);
                     }
                 }
@@ -49,7 +50,7 @@ public class FlagService {
                 if (c.getCriteria().getQuestion() != null) {
                     if (DateBean.isCurrent(c.getCriteria().getQuestion())) {
                         if (!AuditService.getAuditType(c.getCriteria().getQuestion()).getClassType().isPolicy()
-                                || "Yes".equals(operatorAccount.getCanSeeInsurance())) {
+                                || YesNo.Yes.equals(operatorAccount.getCanSeeInsurance())) {
                             criteriaList.add(c);
                         }
                     }

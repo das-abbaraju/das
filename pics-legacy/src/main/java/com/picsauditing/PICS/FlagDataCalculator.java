@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.SlickEnhancedContractorOperatorDAO;
-import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;
@@ -14,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class FlagDataCalculator implements FlagCalculator {
+public class FlagDataCalculator /*implements FlagCalculator*/ {
 	private FlagCriteriaDAO flagCriteriaDao;
     private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 	protected BasicDAO dao;
@@ -77,7 +76,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		flagCriteriaDao = flagCriteriaDao();
 		dao = basicDAO();
 
-		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
+		Map<FlagCriteria, FlagData> dataSet = new HashMap<>();
 
 		boolean flaggable = isFlaggableContractor();
 		for (FlagCriteria key : operatorCriteria.keySet()) {
@@ -131,7 +130,7 @@ public class FlagDataCalculator implements FlagCalculator {
 			}
 		}
 
-		return new ArrayList<FlagData>(dataSet.values());
+		return new ArrayList<>(dataSet.values());
 	}
 
 	private boolean isFlaggableContractor() {
