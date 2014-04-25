@@ -22,7 +22,7 @@ public class OperatorEmployeeModelFactory {
 
 		operatorEmployeeModel.setId(employee.getId());
 		operatorEmployeeModel.setImage(buildImageFileUrl(image));
-		operatorEmployeeModel.setSkillStatus(employeeStatus);
+		operatorEmployeeModel.setStatus(employeeStatus);
 		operatorEmployeeModel.setFirstName(employee.getFirstName());
 		operatorEmployeeModel.setLastName(employee.getLastName());
 		operatorEmployeeModel.setCompanies(companyModels);
@@ -42,7 +42,7 @@ public class OperatorEmployeeModelFactory {
 
 		private int id;
 		private String image;
-		private SkillStatus skillStatus;
+		private SkillStatus status;
 		private String firstName;
 		private String lastName;
 		private List<CompanyModel> companies;
@@ -63,15 +63,15 @@ public class OperatorEmployeeModelFactory {
 			this.image = image;
 		}
 
-		public SkillStatus getSkillStatus() {
-			return skillStatus;
-		}
+        public SkillStatus getStatus() {
+            return status;
+        }
 
-		public void setSkillStatus(SkillStatus skillStatus) {
-			this.skillStatus = skillStatus;
-		}
+        public void setStatus(SkillStatus status) {
+            this.status = status;
+        }
 
-		public String getFirstName() {
+        public String getFirstName() {
 			return firstName;
 		}
 

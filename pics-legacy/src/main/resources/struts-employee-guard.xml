@@ -104,7 +104,7 @@
         <action name="skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
         </action>
 
-        <action name="employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction"
+        <action name="contractors/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction"
                 method="employeeData">
         </action>
 
