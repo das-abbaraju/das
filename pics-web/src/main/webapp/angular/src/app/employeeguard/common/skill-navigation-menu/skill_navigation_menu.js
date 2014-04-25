@@ -1,4 +1,4 @@
-angular.module('PICS.directives')
+angular.module('PICS.employeeguard')
 
 .directive('skillnavigationmenu', function () {
     return {
@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             employee: '=',
             onmenuitemclick: '='
         },
-        templateUrl: '/angular/src/common/directives/skill-navigation-menu/_skill-navigation-menu.tpl.html'
+        templateUrl: '/angular/src/app/employeeguard/common/skill-navigation-menu/_skill-navigation-menu.tpl.html'
     };
 });

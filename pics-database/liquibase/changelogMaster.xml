@@ -210,4 +210,5 @@
 	<include file="./liquibase/2014/Q2/cjones1_PICS-13537_Drop_Webcam.sql"/>
 	<include file="./liquibase/2014/Q2/aphatarphekar1_US790_DDL_add_deletedDate_AccountEmployeeGuard_Table.sql"/>
 	<include file="./liquibase/2014/Q2/aphatarphekar2_US790_DML_add_EmployeeGUARD_For_Accounts.sql"/>
+	<include file="./liquibase/2014/Q2/lkam10_US820_Add_EULA_Tables.sql"/>
 </databaseChangeLog>

@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS eula(
   updateDate DATETIME NOT NULL,
   updatedBy INT NOT NULL,
   versionNumber INT NOT NULL,
-  isoCode VARCHAR(11) NOT NULL,
+  isoCode VARCHAR(10) CHARACTER SET latin1 NOT NULL,
   eulaBody TEXT NOT NULL,
   PRIMARY KEY (id)
 );
