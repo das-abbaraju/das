@@ -59,8 +59,7 @@
                                     <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
-
-                            <li class="nav-divider" ng-show="projects"></li>
+                            <li class="nav-divider" ng-show="roles"></li>
                             <li ng-show="projects">
                                 <span class="nav-title">Projects</span>
                             </li>
@@ -88,8 +87,7 @@
                                     <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
-
-                            <li class="nav-divider" ng-show="projects"></li>
+                            <li class="nav-divider" ng-show="roles"></li>
                             <li ng-show="projects">
                                 <span class="nav-title">Projects</span>
                             </li>
@@ -109,15 +107,15 @@
                     <employeeskillsection ng-show="requiredSkills" title="Required by Site or Project" skills="requiredSkills" icon="map-marker"></employeeskillsection>
 
                     <div ng-switch-when="role">
-                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" icon="group"></employeeskillsection>
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillGroup.skills" icon="group"></employeeskillsection>
                     </div>
                     <div ng-switch-when="project">
-                        <span ng-repeat="role in skillList.roles">
+                        <span ng-repeat="role in skillGroup.roles">
                             <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group"></employeeskillsection>
                         </span>
                     </div>
                     <div ng-switch-default>
-                        <span ng-repeat="project in skillList.skills">
+                        <span ng-repeat="project in skillGroup.skills">
                             <employeeskillsection title="{{ project.name }}" skills="project.skills" icon="group"></employeeskillsection>
                         </span>
 

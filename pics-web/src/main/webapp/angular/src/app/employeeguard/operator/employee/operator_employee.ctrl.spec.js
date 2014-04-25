@@ -189,15 +189,16 @@ describe('An Operator Employee', function() {
         $routeParams.id = Math.floor((Math.random()*1000)+1);
 
         routeParams = $routeParams;
-
-        $httpBackend.when('GET', /\/employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
-
-        $httpBackend.when('GET', employe_info_dev_url).respond(employee_info);
-        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list[0-9]+.json/).respond(result);
-        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list.json/).respond(result);
         $httpBackend.when('GET', whoami_url).respond(corporate_user);
+
         $httpBackend.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);
         $httpBackend.when('GET', corp_sites_dev_url).respond(site_list);
+
+        $httpBackend.when('GET', employe_info_dev_url).respond(employee_info);
+
+        $httpBackend.when('GET', /\employee-guard\/operators\/skills\/employees\/[0-9]+/).respond(result);
+        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list[0-9]+.json/).respond(result);
+        $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list.json/).respond(result);
 
 
         scope = $rootScope.$new();
@@ -286,7 +287,7 @@ describe('An Operator Employee', function() {
             routeParams.roleSlug = 'redemption';
             scope.selectViewModel();
 
-            expect(scope.skillList).toEqual(result.roles[1]);
+            expect(scope.skillGroup).toEqual(result.roles[1]);
         });
 
         it('should set the selected menu item to role name', function() {
@@ -351,7 +352,7 @@ describe('An Operator Employee', function() {
             routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
-            expect(scope.skillList).toEqual(result.projects[0]);
+            expect(scope.skillGroup).toEqual(result.projects[0]);
         });
 
         it('should have the selected menu item to project name', function() {

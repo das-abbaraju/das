@@ -3,7 +3,7 @@ angular.module('PICS.employeeguard')
 .controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI) {
     var skillModel;
 
-    EmployeeCompanyInfo.get(function(employee) {
+    var employee_info = EmployeeCompanyInfo.get(function(employee) {
         $scope.employee = employee;
         $scope.employeeStatusIcon = employee.status;
     });
@@ -23,7 +23,9 @@ angular.module('PICS.employeeguard')
                 }
             });
         } else {
-            loadSkillList();
+            employee_info.$promise.then(function(employee) {
+                loadSkillList(employee.id);
+            });
         }
     });
 
@@ -38,6 +40,7 @@ angular.module('PICS.employeeguard')
     }
 
     $scope.loadSelectedSiteData = function(site_id) {
+        //TODO: Remove initial state asap
         if ($scope.initialState) {
             $scope.initialState = false;
             return;
@@ -70,7 +73,7 @@ angular.module('PICS.employeeguard')
 
     function setScopeModel(model) {
         $scope.requiredSkills = model.requiredSkills;
-        $scope.skillList = model.skillList;
+        $scope.skillGroup = model.skillGroup;
         $scope.selectedMenuItem = model.selectedMenuItem;
         $scope.viewTitle = model.viewTitle;
 
@@ -81,12 +84,12 @@ angular.module('PICS.employeeguard')
 
     function getRoleModel() {
         var slugname = $routeParams.roleSlug,
-            skillList = skillModel.getRoleBySlug(slugname);
+            role = skillModel.getRoleBySlug(slugname);
 
         return {
             requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
-            skillList: skillList,
-            employeeStatusIcon: skillList.status,
+            skillGroup: role,
+            employeeStatusIcon: role.status,
             selectedMenuItem: slugname,
             viewTitle: skillModel.getRoleNameBySlug(slugname)
         };
@@ -94,12 +97,12 @@ angular.module('PICS.employeeguard')
 
     function getProjectModel() {
         var slugname = $routeParams.projectSlug,
-            skillList = skillModel.getProjectBySlug(slugname);
+            project = skillModel.getProjectBySlug(slugname);
 
         return {
             requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
-            skillList: skillList,
-            employeeStatusIcon: skillList.status,
+            skillGroup: project,
+            employeeStatusIcon: project.status,
             selectedMenuItem: slugname,
             viewTitle: skillModel.getProjectNameBySlug(slugname)
         };
