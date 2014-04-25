@@ -5,6 +5,7 @@ import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.flagcalculator.service.*;
 import com.picsauditing.flagcalculator.util.DateBean;
 import com.picsauditing.flagcalculator.util.Strings;
+import com.picsauditing.flagcalculator.util.YearList;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -289,7 +290,7 @@ public class FlagCalculator {
                             }
 
                             if (AuditService.getAuditType(criteria.getQuestion()).getId() == AuditType.ANNUALADDENDUM) {
-                                ContractorAudit annualUpdate = AuditService.getAfterPendingAnnualUpdates(con).get(criteria.getMultiYearScope());
+                                ContractorAudit annualUpdate = AuditService.getAfterPendingAnnualUpdates(new YearList(), con).get(criteria.getMultiYearScope());
                                 if (annualUpdate == null || !ca.getAuditFor().equals(annualUpdate.getAuditFor())) {
                                     continue;
                                 }
