@@ -1,6 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.factory('EmployeeCompanyInfo', function($resource, $routeParams) {
-    // return $resource('/employee-guard/operators/skills/employees/' + $routeParams.id);
-    return $resource('/angular/json/operator/employee_skills/employee_info.json');
+.factory('EmployeeCompanyInfo', function($resource) {
+    return $resource('/employee-guard/operators/contractors/employees/:id');
+    // return $resource('/angular/json/operator/employee_skills/employee_info.json');
 });
