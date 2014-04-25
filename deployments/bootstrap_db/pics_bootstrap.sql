@@ -11901,6 +11901,7 @@ INSERT INTO `databasechangelog` VALUES ('1','sshacter','./liquibase/2013/sshacte
 INSERT INTO `databasechangelog` VALUES ('1','uaung','./liquibase/2013/uaung1_PICS-13398_AlterEmployeeGUARDTables.sql','2013-11-15 18:21:25',40,'EXECUTED','3:56649f7bf17a02a1113f5ef39d11dcc6','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','dalvarado','./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql','2014-03-18 16:38:13',205,'EXECUTED','3:917acc9285b3f1a9a9d91418f1485382','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','kchase','./liquibase/2013/kchase10_PICS-13610_SSForAuditRules.sql','2013-11-26 13:57:30',48,'EXECUTED','3:ca7e437ee89709c4f7d3682795990bae','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('10','lkam','./liquibase/2014/Q2/lkam10_US820_Add_EULA_Tables.sql','2014-04-24 09:01:54',227,'EXECUTED','3:32c11ea07fcd174b801a5687e7df8c89','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','mdo','./liquibase/2013/mdo10_PICS-13606_SS_populate.sql','2013-11-26 13:57:36',50,'EXECUTED','3:30d890e68a5bea6987d1270521fe5298','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','pschlesinger','./liquibase/2014/Q1/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql','2014-01-08 14:13:48',144,'EXECUTED','3:e742b2e49d2ae49b526a617303c55dfc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','sshacter','./liquibase/2013/sshacter10_PICS-12562_AccountsNAICtoNULL.sql','2013-11-22 14:09:08',46,'EXECUTED','3:c7405d0752b1c25287cf6e1d391a7d03','Custom SQL','',NULL,'2.0.1');
@@ -12803,6 +12804,70 @@ CREATE TABLE `employee_site_task` (
 LOCK TABLES `employee_site_task` WRITE;
 /*!40000 ALTER TABLE `employee_site_task` DISABLE KEYS */;
 /*!40000 ALTER TABLE `employee_site_task` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eula`
+--
+
+DROP TABLE IF EXISTS `eula`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eula` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(200) COLLATE utf8_bin NOT NULL,
+  `creationDate` datetime NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `versionNumber` int(11) NOT NULL,
+  `isoCode` varchar(10) CHARACTER SET latin1 NOT NULL,
+  `eulaBody` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_EULA_REF_COUNTRY` (`isoCode`),
+  CONSTRAINT `FK_EULA_REF_COUNTRY` FOREIGN KEY (`isoCode`) REFERENCES `ref_country` (`isoCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eula`
+--
+
+LOCK TABLES `eula` WRITE;
+/*!40000 ALTER TABLE `eula` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eula` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eula_agreement`
+--
+
+DROP TABLE IF EXISTS `eula_agreement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eula_agreement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creationDate` datetime NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `eulaId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_EULA_AGREEMENT_EULA` (`eulaId`),
+  KEY `FK_EULA_AGREEMENT_USERS` (`userId`),
+  CONSTRAINT `FK_EULA_AGREEMENT_USERS` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
+  CONSTRAINT `FK_EULA_AGREEMENT_EULA` FOREIGN KEY (`eulaId`) REFERENCES `eula` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eula_agreement`
+--
+
+LOCK TABLES `eula_agreement` WRITE;
+/*!40000 ALTER TABLE `eula_agreement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eula_agreement` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
