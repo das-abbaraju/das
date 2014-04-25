@@ -406,8 +406,7 @@ public class ContractorFlagETLTest {
 //		doReturn(completeAnnualUpdates).when(contractor).getCompleteAnnualUpdates();
 		when(flagCriteria.getMultiYearScope()).thenReturn(MultiYearScope.LastYearOnly);
 
-		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "generateFlaggableData", flagCriteria,
-				contractor, false);
+		FlagCriteriaContractor result = Whitebox.invokeMethod(contractorFlagETL, "generateFlaggableData", flagCriteria,contractor);
 		assertNull(result);
 	}
 
