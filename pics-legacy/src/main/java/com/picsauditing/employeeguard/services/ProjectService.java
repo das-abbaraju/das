@@ -225,7 +225,10 @@ public class ProjectService {
 				new BaseEntityCallback<ProjectRole>(appUserId, now)
 		);
 
-		originalProject.setRoles(updatedRoles);
+//		originalProject.setRoles(updatedRoles);
+
+		originalProject.getRoles().clear();
+		originalProject.getRoles().addAll(updatedRoles);
 
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getRoles(), appUserId, now);

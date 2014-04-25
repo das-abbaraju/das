@@ -42,12 +42,12 @@ public class ProjectRole implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectRoleEmployee> employees;
 
-	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectSkillRole> skills;
