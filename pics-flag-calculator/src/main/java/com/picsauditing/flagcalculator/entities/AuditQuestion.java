@@ -567,12 +567,6 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //        }
 //        return siblings;
 //    }
-
-    @Transient
-    public AuditType getAuditType() {
-        return category.getParentAuditType();
-    }
-
 //    @Transient
 //    public String getExpandedNumber() {
 //        return category.getFullNumber() + "." + number;

@@ -4,7 +4,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.SlickEnhancedContractorOperatorDAO;
-import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;

@@ -17,7 +17,7 @@ public class FlagCalculatorFactory {
             FlagCalculator flagCalculator = new com.picsauditing.flagcalculator.FlagDataCalculator(co.getId());
             return flagCalculator;
         } else {
-            FlagDataCalculator flagDataCalculator=  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria());
+            FlagDataCalculator flagDataCalculator =  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria());
             flagDataCalculator.setOperator(co.getOperatorAccount());
             flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
             return flagDataCalculator;

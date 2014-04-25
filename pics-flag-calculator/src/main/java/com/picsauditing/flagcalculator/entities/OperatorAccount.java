@@ -292,59 +292,6 @@ public class OperatorAccount extends Account {
 //                return inheritFlagCriteria.getFlagCriteria();
 //        }
 //    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
-
-        criteriaList.addAll(getFlagAuditCriteriaInherited());
-        criteriaList.addAll(getFlagQuestionCriteriaInherited());
-
-        return criteriaList;
-    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
-
-        if (inheritFlagCriteria != null) {
-            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-                if (c.getCriteria().getAuditType() != null) {
-                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || "Yes".equals(canSeeInsurance)) {
-                        criteriaList.add(c);
-                    }
-                }
-            }
-        }
-
-        return criteriaList;
-    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-
-        if (inheritFlagCriteria != null) {
-            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-                if (c.getCriteria().getQuestion() != null) {
-                    if (c.getCriteria().getQuestion().isCurrent()) {
-                        if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-                                || "Yes".equals(canSeeInsurance)) {
-                            criteriaList.add(c);
-                        }
-                    }
-                }
-                if (c.getCriteria().getOshaType() != null) {
-                    if (c.getCriteria().getOshaType().equals(oshaType)) {
-                        criteriaList.add(c);
-                    }
-                }
-            }
-        }
-
-        return criteriaList;
-    }
-
 //    @OneToMany(mappedBy = "account")
 //    public List<OperatorForm> getOperatorForms() {
 //        return operatorForms;
