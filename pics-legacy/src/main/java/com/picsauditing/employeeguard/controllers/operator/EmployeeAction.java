@@ -10,31 +10,44 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
-	@Autowired
-	private OperatorEmployeeService operatorEmployeeModelService;
-	@Autowired
-	private LiveIDEmployeeService liveIDEmployeeService;
+    @Autowired
+    private OperatorEmployeeService operatorEmployeeModelService;
+    @Autowired
+    private LiveIDEmployeeService liveIDEmployeeService;
 
-	public String show() {
-		LiveIDEmployeeModelFactory.LiveIDEmployeeModel liveIDEmployeeModel = buildLiveIDEmployeeModel();
+    private int siteId;
 
-		jsonString = new Gson().toJson(liveIDEmployeeModel);
+    public String show() {
+        return convertToJson(buildLiveIDEmployeeModel(permissions.getAccountId()));
+    }
 
-		return JSON_STRING;
-	}
+    public String corporateEmployeeLiveId() {
+        return convertToJson(buildLiveIDEmployeeModel(siteId));
+    }
 
-	private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel() {
-		int siteId = permissions.getAccountId();
-		return liveIDEmployeeService.buildLiveIDEmployee(id, siteId);
-	}
+    private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel(final int siteId) {
+        return liveIDEmployeeService.buildLiveIDEmployee(id, siteId);
+    }
 
-	public String employeeData() {
-		OperatorEmployeeModelFactory.OperatorEmployeeModel operatorEmployeeModel = operatorEmployeeModelService
-				.buildModel(permissions.getAccountId(), getIdAsInt());
+    public String employeeData() {
+        return convertToJson(buildOperatorEmployeeModel(permissions.getAccountId()));
+    }
 
-		jsonString = new Gson().toJson(operatorEmployeeModel);
+    public String corporateEmployeeData() {
+        return convertToJson(buildOperatorEmployeeModel(siteId));
+    }
 
-		return JSON_STRING;
-	}
+    private OperatorEmployeeModelFactory.OperatorEmployeeModel buildOperatorEmployeeModel(final int siteId) {
+        return operatorEmployeeModelService.buildModel(permissions.getAccountId(), getIdAsInt());
+    }
 
+    private String convertToJson(final Object model) {
+        jsonString = new Gson().toJson(model);
+
+        return JSON_STRING;
+    }
+
+    public void setSiteId(int siteId) {
+        this.siteId = siteId;
+    }
 }
