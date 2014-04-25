@@ -710,30 +710,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
 
-		Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<>();
-
-		Set<OperatorAccount> corporates = new HashSet<>();
-		for (Facility f : co.getOperatorAccount().getCorporateFacilities()) {
-			corporates.add(f.getCorporate());
-		}
-
-		Iterator<FlagDataOverride> itr = co.getContractorAccount().getFlagDataOverrides().iterator();
-		while (itr.hasNext()) {
-			FlagDataOverride override = itr.next();
-			if (override.getOperator().equals(co.getOperatorAccount())) {
-				if (!overridesMap.containsKey(override.getCriteria())) {
-					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
-				}
-				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addFirst(override);
-			} else if (corporates.contains(override.getOperator())) {
-				if (!overridesMap.containsKey(override.getCriteria())) {
-					overridesMap.put(override.getCriteria(), new LinkedList<FlagDataOverride>());
-				}
-				((LinkedList<FlagDataOverride>) overridesMap.get(override.getCriteria())).addLast(override);
-			}
-		}
-
-        FlagCalculator flagCalculator = FlagCalculatorFactory.flagCalculator(co, overridesMap);
+        FlagCalculator flagCalculator = FlagCalculatorFactory.flagCalculator(co);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
 
 		// Save the FlagDetail to the ContractorOperator as a JSON string
@@ -827,7 +804,7 @@ public class ContractorCron extends PicsActionSupport {
 		co.setAuditColumns(new User(User.SYSTEM));
 	}
 
-	private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {
+    private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {
 		for (FlagCriteriaOperator fco:operator.getFlagCriteriaInherited()) {
 			if (override.getCriteria().equals(fco.getCriteria())) {
 				// need to check if audit is not expired

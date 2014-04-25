@@ -1,6 +1,5 @@
 package com.picsauditing.flagcalculator;
 
-import com.picsauditing.flagcalculator.dao.ContractorOperatorDAO;
 import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.flagcalculator.service.*;
@@ -17,7 +16,6 @@ public class FlagDataCalculator implements FlagCalculator {
     private static EntityManager em;
 
     private FlagCalculatorDAO flagCalculatorDAO;
-    private ContractorOperatorDAO contractorOperatorDAO;
 
     private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
     private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
@@ -30,12 +28,21 @@ public class FlagDataCalculator implements FlagCalculator {
 
     public FlagDataCalculator(Integer contractorOperatorID) {
         this.flagCalculatorDAO = new FlagCalculatorDAO(em);
-        this.contractorOperatorDAO = new ContractorOperatorDAO(em);
-        ContractorOperator co = contractorOperatorDAO.find(contractorOperatorID);
+        ContractorOperator co = flagCalculatorDAO.find(ContractorOperator.class, contractorOperatorID);
         setContractorCriteria(co.getContractorAccount().getFlagCriteria());
         setCorrespondingMultiYearCriteria(flagCalculatorDAO.getCorrespondingMultiscopeCriteriaIds());
         setOperator(co.getOperatorAccount());
-        setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
+        setOperatorCriteria(FlagService.getFlagCriteriaInherited(co.getOperatorAccount()));
+    }
+
+    public FlagDataCalculator(Integer contractorOperatorID, Map<Integer, List<Integer>> overrides) {
+        this.flagCalculatorDAO = new FlagCalculatorDAO(em);
+        ContractorOperator co = flagCalculatorDAO.find(ContractorOperator.class, contractorOperatorID);
+        setContractorCriteria(co.getContractorAccount().getFlagCriteria());
+        setCorrespondingMultiYearCriteria(flagCalculatorDAO.getCorrespondingMultiscopeCriteriaIds());
+        setOperator(co.getOperatorAccount());
+        setOperatorCriteria(FlagService.getFlagCriteriaInherited(co.getOperatorAccount()));
+        setOverrides(overrides);
     }
 
 //    public FlagDataCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
@@ -578,7 +585,7 @@ public class FlagDataCalculator implements FlagCalculator {
     }
 
     public void setOperatorCriteria(Collection<FlagCriteriaOperator> list) {
-        operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
+        operatorCriteria = new HashMap<>();
         for (FlagCriteriaOperator value : list) {
             if (operatorCriteria.get(value.getCriteria()) == null) {
                 operatorCriteria.put(value.getCriteria(), new ArrayList<FlagCriteriaOperator>());
@@ -594,6 +601,16 @@ public class FlagDataCalculator implements FlagCalculator {
 
     public void setOverrides(Map<Integer, List<Integer>> overrides) {
         Map<FlagCriteria, List<FlagDataOverride>> overridesMap = new HashMap<>();
+
+        for (Integer flagCriteriaID : overrides.keySet()) {
+            List<Integer> flagDataOverrideIds = overrides.get(flagCriteriaID);
+            List<FlagDataOverride> flagDataOverrides = new ArrayList<>();
+            for (Integer flagDataOverrideID : flagDataOverrideIds) {
+
+                flagDataOverrides.add(flagCalculatorDAO.find(FlagDataOverride.class, flagDataOverrideID));
+            }
+            overridesMap.put(flagCalculatorDAO.find(FlagCriteria.class, flagCriteriaID), flagDataOverrides);
+        }
 
         this.overrides = overridesMap;
     }

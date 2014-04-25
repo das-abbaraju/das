@@ -80,10 +80,10 @@ abstract public class PicsDAO {
 //		}
 //	}
 //
-//	public <T extends BaseTable> T find(Class<T> clazz, int id) {
-//		return em.find(clazz, id);
-//	}
-//
+	public <T extends BaseTable> T find(Class<T> clazz, int id) {
+		return em.find(clazz, id);
+	}
+
 //	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
 //		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 //		return q.getResultList();

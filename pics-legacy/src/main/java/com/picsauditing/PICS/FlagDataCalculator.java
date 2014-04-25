@@ -4,6 +4,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.SlickEnhancedContractorOperatorDAO;
+import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class FlagDataCalculator { // implements FlagCalculator {
+public class FlagDataCalculator implements FlagCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;
     private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 	protected BasicDAO dao;
@@ -28,14 +29,19 @@ public class FlagDataCalculator { // implements FlagCalculator {
 	private boolean worksForOperator = true;
 	private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
 
-	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
+    public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
+        setContractorCriteria(contractorCriteria);
+    }
+
+    public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria, Map<FlagCriteria, List<FlagDataOverride>> overrides) {
 		setContractorCriteria(contractorCriteria);
+        this.overrides = overrides;
 	}
 
 	public FlagDataCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
-		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
+		contractorCriteria = new HashMap<>();
 		contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
-		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
+		operatorCriteria = new HashMap<>();
 		if (operatorCriteria.get(opCriteria.getCriteria()) == null) {
 			operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
 		}
