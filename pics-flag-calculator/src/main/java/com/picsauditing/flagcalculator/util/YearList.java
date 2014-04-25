@@ -13,15 +13,15 @@ public class YearList {
 	List<Integer> yearList = new ArrayList<>();
 	Date referenceDate = new Date();
 
-//	public void setToday(Date referenceDate) {
-//		this.referenceDate = referenceDate;
-//	}
-//
-//	/**
-//	 *
-//	 */
-//	private static final long serialVersionUID = 1L;
-//
+	public void setToday(Date referenceDate) {
+		this.referenceDate = referenceDate;
+	}
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public void add(Integer year) {
 		yearList.add(year);
 		reduceToThreeHighest();
@@ -80,8 +80,8 @@ public class YearList {
 		return referenceYear;
 	}
 
-//	public int size() {
-//		return yearList.size();
-//	}
-//
+	public int size() {
+		return yearList.size();
+	}
+
 }

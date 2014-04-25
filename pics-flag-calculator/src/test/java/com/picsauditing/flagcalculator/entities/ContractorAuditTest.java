@@ -5,9 +5,13 @@ import com.picsauditing.flagcalculator.service.AuditService;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class ContractorAuditTest {
@@ -201,122 +205,122 @@ public class ContractorAuditTest {
         assertTrue(AuditService.hasCaoStatusAfter(contractorAudit, AuditStatus.Submitted, false));
     }
 
-//    @Test
-//    public void testGetVisibleCategories_ParentNotApplicable() throws Exception {
-//        AuditCategory parent = EntityFactory.makeAuditCategory();
-//        parent.setId(1);
-//        AuditCatData parentData = new AuditCatData();
-//        parentData.setApplies(false);
-//        parentData.setCategory(parent);
-//
-//        AuditCategory child = EntityFactory.makeAuditCategory();
-//        child.setId(2);
-//        child.setParent(parent);
-//        AuditCatData childData = new AuditCatData();
-//        childData.setApplies(true);
-//        childData.setCategory(child);
-//
-//        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-//        categoryData.add(parentData);
-//        categoryData.add(childData);
-//
-//        contractorAudit.setCategories(categoryData);
-//
-//        Set<AuditCategory> visibleCategories = contractorAudit.getVisibleCategories();
-//
-//        assertNotNull(visibleCategories);
-//        assertTrue(visibleCategories.isEmpty());
-//    }
-//
-//    @Test
-//    public void testGetVisibleCategories_ParentApplicable() throws Exception {
-//        AuditCategory parent = EntityFactory.makeAuditCategory();
-//        parent.setId(1);
-//        AuditCatData parentData = new AuditCatData();
-//        parentData.setApplies(true);
-//        parentData.setCategory(parent);
-//
-//        AuditCategory child = EntityFactory.makeAuditCategory();
-//        child.setId(2);
-//        child.setParent(parent);
-//        AuditCatData childData = new AuditCatData();
-//        childData.setApplies(true);
-//        childData.setCategory(child);
-//
-//        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-//        categoryData.add(parentData);
-//        categoryData.add(childData);
-//
-//        contractorAudit.setCategories(categoryData);
-//
-//        Set<AuditCategory> visibleCategories = contractorAudit.getVisibleCategories();
-//
-//        assertNotNull(visibleCategories);
-//        assertFalse(visibleCategories.isEmpty());
-//        assertTrue(visibleCategories.contains(parent));
-//        assertTrue(visibleCategories.contains(child));
-//    }
-//
-//    @Test
-//    public void testGetVisibleCategories_ChildNotApplicable() throws Exception {
-//        AuditCategory parent = EntityFactory.makeAuditCategory();
-//        parent.setId(1);
-//        AuditCatData parentData = new AuditCatData();
-//        parentData.setApplies(true);
-//        parentData.setCategory(parent);
-//
-//        AuditCategory child = EntityFactory.makeAuditCategory();
-//        child.setId(2);
-//        child.setParent(parent);
-//        AuditCatData childData = new AuditCatData();
-//        childData.setApplies(false);
-//        childData.setCategory(child);
-//
-//        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-//        categoryData.add(parentData);
-//        categoryData.add(childData);
-//
-//        contractorAudit.setCategories(categoryData);
-//
-//        Set<AuditCategory> visibleCategories = contractorAudit.getVisibleCategories();
-//
-//        assertNotNull(visibleCategories);
-//        assertFalse(visibleCategories.isEmpty());
-//        assertTrue(visibleCategories.contains(parent));
-//        assertFalse(visibleCategories.contains(child));
-//    }
-//
-//    @Test
-//    public void testGetVisibleCategories_Cyclical() throws Exception {
-//        AuditCategory parent = EntityFactory.makeAuditCategory();
-//        parent.setId(1);
-//        AuditCatData parentData = new AuditCatData();
-//        parentData.setApplies(true);
-//        parentData.setCategory(parent);
-//
-//        AuditCategory child = EntityFactory.makeAuditCategory();
-//        child.setId(2);
-//        child.setParent(parent);
-//        AuditCatData childData = new AuditCatData();
-//        childData.setApplies(true);
-//        childData.setCategory(child);
-//
-//        parent.setParent(child);
-//
-//        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
-//        categoryData.add(parentData);
-//        categoryData.add(childData);
-//
-//        contractorAudit.setCategories(categoryData);
-//
-//        Set<AuditCategory> visibleCategories = contractorAudit.getVisibleCategories();
-//
-//        assertNotNull(visibleCategories);
-//        assertFalse(visibleCategories.isEmpty());
-//        assertTrue(visibleCategories.contains(parent));
-//        assertTrue(visibleCategories.contains(child));
-//    }
-//
+    @Test
+    public void testGetVisibleCategories_ParentNotApplicable() throws Exception {
+        AuditCategory parent = EntityFactory.makeAuditCategory();
+        parent.setId(1);
+        AuditCatData parentData = new AuditCatData();
+        parentData.setApplies(false);
+        parentData.setCategory(parent);
+
+        AuditCategory child = EntityFactory.makeAuditCategory();
+        child.setId(2);
+        child.setParent(parent);
+        AuditCatData childData = new AuditCatData();
+        childData.setApplies(true);
+        childData.setCategory(child);
+
+        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+        categoryData.add(parentData);
+        categoryData.add(childData);
+
+        contractorAudit.setCategories(categoryData);
+
+        Set<AuditCategory> visibleCategories = AuditService.getVisibleCategories(contractorAudit);
+
+        assertNotNull(visibleCategories);
+        assertTrue(visibleCategories.isEmpty());
+    }
+
+    @Test
+    public void testGetVisibleCategories_ParentApplicable() throws Exception {
+        AuditCategory parent = EntityFactory.makeAuditCategory();
+        parent.setId(1);
+        AuditCatData parentData = new AuditCatData();
+        parentData.setApplies(true);
+        parentData.setCategory(parent);
+
+        AuditCategory child = EntityFactory.makeAuditCategory();
+        child.setId(2);
+        child.setParent(parent);
+        AuditCatData childData = new AuditCatData();
+        childData.setApplies(true);
+        childData.setCategory(child);
+
+        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+        categoryData.add(parentData);
+        categoryData.add(childData);
+
+        contractorAudit.setCategories(categoryData);
+
+        Set<AuditCategory> visibleCategories = AuditService.getVisibleCategories(contractorAudit);
+
+        assertNotNull(visibleCategories);
+        assertFalse(visibleCategories.isEmpty());
+        assertTrue(visibleCategories.contains(parent));
+        assertTrue(visibleCategories.contains(child));
+    }
+
+    @Test
+    public void testGetVisibleCategories_ChildNotApplicable() throws Exception {
+        AuditCategory parent = EntityFactory.makeAuditCategory();
+        parent.setId(1);
+        AuditCatData parentData = new AuditCatData();
+        parentData.setApplies(true);
+        parentData.setCategory(parent);
+
+        AuditCategory child = EntityFactory.makeAuditCategory();
+        child.setId(2);
+        child.setParent(parent);
+        AuditCatData childData = new AuditCatData();
+        childData.setApplies(false);
+        childData.setCategory(child);
+
+        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+        categoryData.add(parentData);
+        categoryData.add(childData);
+
+        contractorAudit.setCategories(categoryData);
+
+        Set<AuditCategory> visibleCategories = AuditService.getVisibleCategories(contractorAudit);
+
+        assertNotNull(visibleCategories);
+        assertFalse(visibleCategories.isEmpty());
+        assertTrue(visibleCategories.contains(parent));
+        assertFalse(visibleCategories.contains(child));
+    }
+
+    @Test
+    public void testGetVisibleCategories_Cyclical() throws Exception {
+        AuditCategory parent = EntityFactory.makeAuditCategory();
+        parent.setId(1);
+        AuditCatData parentData = new AuditCatData();
+        parentData.setApplies(true);
+        parentData.setCategory(parent);
+
+        AuditCategory child = EntityFactory.makeAuditCategory();
+        child.setId(2);
+        child.setParent(parent);
+        AuditCatData childData = new AuditCatData();
+        childData.setApplies(true);
+        childData.setCategory(child);
+
+        parent.setParent(child);
+
+        List<AuditCatData> categoryData = new ArrayList<AuditCatData>();
+        categoryData.add(parentData);
+        categoryData.add(childData);
+
+        contractorAudit.setCategories(categoryData);
+
+        Set<AuditCategory> visibleCategories = AuditService.getVisibleCategories(contractorAudit);
+
+        assertNotNull(visibleCategories);
+        assertFalse(visibleCategories.isEmpty());
+        assertTrue(visibleCategories.contains(parent));
+        assertTrue(visibleCategories.contains(child));
+    }
+
 //    @Test
 //    public void testIsOkayToChangeCaoStatus() {
 //        AuditType auditType = EntityFactory.makeAuditType(AuditType.PQF);
