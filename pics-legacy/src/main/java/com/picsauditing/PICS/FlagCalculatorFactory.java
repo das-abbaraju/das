@@ -2,7 +2,6 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.FlagCalculator;
-import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
 
@@ -44,7 +43,6 @@ public class FlagCalculatorFactory {
 //
     private static Map<Integer, List<Integer>> convertOverridesToIDMap(Map<FlagCriteria, List<FlagDataOverride>> overrides) {
         Map<Integer, List<Integer>> overrideIDMap = new HashMap<>();
-        // TODO: Convert the list into an integer map
         for (FlagCriteria flagCriteria : overrides.keySet()) {
             List<FlagDataOverride> flagDataOverrides = overrides.get(flagCriteria);
             List<Integer> flagDataOverrideIds = new ArrayList<>();
@@ -89,10 +87,6 @@ public class FlagCalculatorFactory {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private static FlagCalculatorDAO flagCalculatorDAO() {
-        return SpringUtils.getBean("AppPropertyDAO");
     }
 
     private static EntityManager entityManager() {
