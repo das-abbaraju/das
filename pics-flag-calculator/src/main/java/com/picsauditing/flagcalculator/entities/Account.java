@@ -1,5 +1,8 @@
 package com.picsauditing.flagcalculator.entities;
 
+import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
@@ -360,6 +363,7 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //        this.naicsValid = naicsValid;
 //    }
 //
+@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     public AccountStatus getStatus() {

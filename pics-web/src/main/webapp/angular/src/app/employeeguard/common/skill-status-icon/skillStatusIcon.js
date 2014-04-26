@@ -1,4 +1,4 @@
-angular.module('PICS.directives')
+angular.module('PICS.employeeguard')
 
 .directive('skillstatusicon', function () {
     return {
@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             status: '@status'
         },
         replace: true,
-        templateUrl: '/angular/src/common/directives/skill-status-icon/_skill-status-icon.tpl.html'
+        templateUrl: '/angular/src/app/employeeguard/common/skill-status-icon/_skill-status-icon.tpl.html'
     };
 });

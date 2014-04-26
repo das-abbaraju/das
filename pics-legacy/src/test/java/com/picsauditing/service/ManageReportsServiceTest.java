@@ -1,34 +1,33 @@
 package com.picsauditing.service;
 
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotSame;
-import static junit.framework.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.access.ReportPermissionException;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportPermissionUserDAO;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.pagination.Pagination;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.pagination.Pagination;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static junit.framework.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.util.reflection.Whitebox.setInternalState;
 
 public class ManageReportsServiceTest {
 
@@ -91,7 +90,7 @@ public class ManageReportsServiceTest {
         set.add(1294);
 
         assertNotNull(reports);
-        verify(reportInfoProvider).findTenMostFavoritedReports(permissions, 0);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
     }
 
     @Test
@@ -101,7 +100,7 @@ public class ManageReportsServiceTest {
         set.add(1294);
 
         assertNotNull(reports);
-        verify(reportInfoProvider).findTenMostFavoritedReports(permissions, 0);
+        verify(reportInfoProvider).findTenMostFavoritedReports(permissions);
     }
 
     @Test

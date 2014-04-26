@@ -166,7 +166,7 @@ public class EntityFactory {
         ContractorAudit conAudit = new ContractorAudit();
         conAudit.setAuditType(makeAuditType(auditTypeID));
         conAudit.setContractorAccount(contractor);
-//        conAudit.setAuditFor(auditFor);
+        conAudit.setAuditFor(auditFor);
 //        conAudit.setCreationDate(new Date());
         return conAudit;
     }
@@ -177,15 +177,16 @@ public class EntityFactory {
 //        return oshaAudit;
 //    }
 //
-//    public static AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
-//        AuditCatData auditCatData = new AuditCatData();
+    public static AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
+        AuditCatData auditCatData = new AuditCatData();
 //        auditCatData.setAudit(conAudit);
-//        auditCatData.setCategory(new AuditCategory());
-//        auditCatData.getCategory().setId(categoryID);
+        auditCatData.setCategory(new AuditCategory());
+        auditCatData.getCategory().setId(categoryID);
+        auditCatData.getCategory().setAuditType(conAudit.getAuditType());
 //        auditCatData.setNumRequired(4);
-//        return auditCatData;
-//    }
-//
+        return auditCatData;
+    }
+
 //    public static AuditCategory addCategories(AuditType auditType, int categoryID, String name) {
 //        AuditCategory auditCategory = new AuditCategory();
 //        auditCategory.setId(categoryID);
@@ -259,21 +260,21 @@ public class EntityFactory {
         return workFlow;
     }
 
-//    /**
-//     * Add an Approved CAO to the passed in ConAudit
-//     *
-//     * @param conAudit
-//     */
-//    public static ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
-//        ContractorAuditOperator cao = new ContractorAuditOperator();
-//        cao.setAudit(conAudit);
-//        cao.setOperator(operator);
+    /**
+     * Add an Approved CAO to the passed in ConAudit
+     *
+     * @param conAudit
+     */
+    public static ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setAudit(conAudit);
+        cao.setOperator(operator);
 //        cao.changeStatus(AuditStatus.Approved, null);
 //        cao.setFlag(FlagColor.Green);
-//        conAudit.getOperators().add(cao);
-//        return cao;
-//    }
-//
+        conAudit.getOperators().add(cao);
+        return cao;
+    }
+
     public static AuditQuestion makeAuditQuestion() {
         AuditQuestion question = new AuditQuestion();
         question.setId(counter++);
@@ -306,20 +307,20 @@ public class EntityFactory {
 //        return makeAuditData(answer, makeAuditQuestion());
 //    }
 //
-//    public static AuditData makeAuditData(String answer, AuditQuestion question) {
-//        AuditData data = new AuditData();
-//        data.setQuestion(question);
-//        data.setAnswer(answer);
-//        data.setId(counter++);
-//        return data;
-//    }
-//
-//    public static AuditData makeAuditData(String answer, int id) {
-//        AuditQuestion question = makeAuditQuestion();
-//        question.setId(id);
-//        return makeAuditData(answer, question);
-//    }
-//
+    public static AuditData makeAuditData(String answer, AuditQuestion question) {
+        AuditData data = new AuditData();
+        data.setQuestion(question);
+        data.setAnswer(answer);
+        data.setId(counter++);
+        return data;
+    }
+
+    public static AuditData makeAuditData(String answer, int id) {
+        AuditQuestion question = makeAuditQuestion();
+        question.setId(id);
+        return makeAuditData(answer, question);
+    }
+
 //    public static Permissions makePermission() {
 //        User user = makeUser();
 //        return makePermission(user);

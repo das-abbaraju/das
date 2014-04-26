@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_contractor")
-public class FlagCriteriaContractor extends BaseTable /*implements Comparable<FlagCriteriaContractor>, UpdatableListItem*/ {
+public class FlagCriteriaContractor extends BaseTable /*implements Comparable<FlagCriteriaContractor>*/ {
 
     private ContractorAccount contractor;
     private FlagCriteria criteria;
@@ -86,25 +86,6 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
 //    @Override
 //    public String toString() {
 //        return criteria.toString() + " (" + answer + ") for " + contractor.toString();
-//    }
-//
-//    @Override
-//    public void update(UpdatableListItem change) {
-//        FlagCriteriaContractor fcc = (FlagCriteriaContractor) change;
-//
-//        if (!Strings.isEqualNullSafe(fcc.getAnswer(), answer)) {
-//            answer = fcc.getAnswer();
-//            setAuditColumns(new User(User.SYSTEM));
-//        }
-//
-//        if (!Strings.isEmpty(fcc.getAnswer2()) && !fcc.getAnswer2().equals(answer2)) {
-//            answer2 = fcc.getAnswer2();
-//            setAuditColumns(new User(User.SYSTEM));
-//        }
-//        if (verified != fcc.isVerified()) {
-//            verified = fcc.isVerified();
-//            setAuditColumns(new User(User.SYSTEM));
-//        }
 //    }
 //
 //    @Override

@@ -1,4 +1,4 @@
-angular.module('PICS.directives')
+angular.module('PICS.employeeguard')
 
 .directive('employeeskillsection', function () {
     return {
@@ -7,6 +7,6 @@ angular.module('PICS.directives')
             title: '@',
             skills: '='
         },
-        templateUrl: '/angular/src/common/directives/employee-skill-section/_employee-skill-section.tpl.html'
+        templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };
 });
