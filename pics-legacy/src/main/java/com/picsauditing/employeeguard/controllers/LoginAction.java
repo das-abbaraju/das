@@ -11,7 +11,11 @@ import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.LoginService;
+import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
@@ -19,6 +23,8 @@ import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.validator.Validator;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LoginAction extends PicsRestActionSupport implements AjaxValidator {
@@ -82,6 +88,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	@Anonymous
 	public String login() throws Exception {
 		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword(), loginForm.getHashCode());
+
 		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
 			throw new PageNotFoundException();
 		} else {

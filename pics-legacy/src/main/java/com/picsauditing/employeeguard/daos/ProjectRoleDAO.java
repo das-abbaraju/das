@@ -9,71 +9,74 @@ import java.util.Collections;
 import java.util.List;
 
 public class ProjectRoleDAO extends AbstractBaseEntityDAO<ProjectRole> {
-    public ProjectRoleDAO() {
-        this.type = ProjectRole.class;
-    }
 
-    public ProjectRole findByProjectAndRoleId(final int projectId, final int roleId) {
-        TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr WHERE pr.project.id = :projectId AND pr.role.id = :roleId", ProjectRole.class);
-        query.setParameter("projectId", projectId);
-        query.setParameter("roleId", roleId);
+	public ProjectRoleDAO() {
+		this.type = ProjectRole.class;
+	}
 
-        try {
-            return query.getSingleResult();
-        } catch (Exception exception) {
-            return null;
-        }
-    }
+	public ProjectRole findByProjectAndRoleId(final int projectId, final int roleId) {
+		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr WHERE pr.project.id = :projectId AND pr.role.id = :roleId", ProjectRole.class);
+		query.setParameter("projectId", projectId);
+		query.setParameter("roleId", roleId);
 
-    public List<ProjectRole> findByEmployee(Employee employee) {
-        TypedQuery<ProjectRole> query = em.createQuery("SELECT pre.projectRole FROM ProjectRoleEmployee pre WHERE pre.employee = :employee", ProjectRole.class);
-        query.setParameter("employee", employee);
+		try {
+			return query.getSingleResult();
+		} catch (Exception exception) {
+			return null;
+		}
+	}
 
-        try {
-            return query.getResultList();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+	public List<ProjectRole> findByEmployee(Employee employee) {
+		TypedQuery<ProjectRole> query = em.createQuery("SELECT pre.projectRole FROM ProjectRoleEmployee pre WHERE pre.employee = :employee", ProjectRole.class);
+		query.setParameter("employee", employee);
 
-    public List<ProjectRole> findByProfile(Profile profile) {
-        TypedQuery<ProjectRole> query = em.createQuery("SELECT pre.projectRole FROM ProjectRoleEmployee pre " +
+		try {
+			return query.getResultList();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public List<ProjectRole> findByProfile(Profile profile) {
+		TypedQuery<ProjectRole> query = em.createQuery("SELECT pre.projectRole FROM ProjectRoleEmployee pre " +
 				"WHERE pre.employee.profile = :profile", ProjectRole.class);
-        query.setParameter("profile", profile);
+		query.setParameter("profile", profile);
 
-        try {
-            return query.getResultList();
-        } catch (Exception e) {
-            return null;
-        }
-    }
+		try {
+			return query.getResultList();
+		} catch (Exception e) {
+			return null;
+		}
+	}
 
-    public List<ProjectRole> findByProjectsAndRole(final List<Integer> projectIds, final Group role) {
-        if (CollectionUtils.isEmpty(projectIds) || role == null) {
-            return Collections.emptyList();
-        }
+	public List<ProjectRole> findByProjectsAndRole(final List<Integer> projectIds, final Role role) {
+		if (CollectionUtils.isEmpty(projectIds) || role == null) {
+			return Collections.emptyList();
+		}
 
-        TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
-                "WHERE pr.project.id IN (:projectIds) AND pr.role = :role", ProjectRole.class);
-        query.setParameter("projectIds", projectIds);
-        query.setParameter("role", role);
-        return query.getResultList();
-    }
+		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
+				"WHERE pr.project.id IN (:projectIds) AND pr.role = :role", ProjectRole.class);
 
-    public List<ProjectRoleEmployee> findByProjectAndContractor(Project project, int accountId) {
-        TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
-                "WHERE pre.projectRole.project = :project AND pre.employee.accountId = :accountId", ProjectRoleEmployee.class);
-        query.setParameter("project", project);
-        query.setParameter("accountId", accountId);
-        return query.getResultList();
-    }
+		query.setParameter("projectIds", projectIds);
+		query.setParameter("role", role);
 
-    public List<ProjectRole> findByProject(final Project project) {
-        TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
-                "WHERE pr.project = :project", ProjectRole.class);
-        query.setParameter("project", project);
-        return query.getResultList();
-    }
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByProjectAndContractor(Project project, int accountId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.project = :project AND pre.employee.accountId = :accountId", ProjectRoleEmployee.class);
+		query.setParameter("project", project);
+		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
+	public List<ProjectRole> findByProject(final Project project) {
+		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
+				"WHERE pr.project = :project", ProjectRole.class);
+		query.setParameter("project", project);
+		return query.getResultList();
+	}
 
 	public List<ProjectRole> findByProjects(final Collection<Project> projects) {
 		TypedQuery<ProjectRole> query = em.createQuery("FROM ProjectRole pr " +
@@ -91,6 +94,21 @@ public class ProjectRoleDAO extends AbstractBaseEntityDAO<ProjectRole> {
 
 		query.setParameter("siteId", siteId);
 		query.setParameter("employee", employee);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRole> findByProjectsAndEmployees(final Collection<Project> projects,
+															  final Collection<Employee> employees) {
+
+		TypedQuery<ProjectRole> query = em.createQuery("SELECT pr FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE p IN (:projects) " +
+				"AND pre.employee IN (:employees)", ProjectRole.class);
+
+		query.setParameter("projects", projects);
+		query.setParameter("employees", employees);
 
 		return query.getResultList();
 	}

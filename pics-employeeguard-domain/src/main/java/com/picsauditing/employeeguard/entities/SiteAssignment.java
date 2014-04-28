@@ -26,7 +26,6 @@ public class SiteAssignment implements BaseEntity {
 
 	@ManyToOne
 	@JoinColumn(name = "employeeID", nullable = false)
-//	@Where(clause = "deletedDate IS NULL")
 	private Employee employee;
 
 	private int createdBy;

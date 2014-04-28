@@ -2,13 +2,17 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.employeeguard.daos.*;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectDAO;
+import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
 import com.picsauditing.employeeguard.services.factory.AccountSkillEmployeeServiceFactory;
 import com.picsauditing.jpa.entities.Account;
@@ -29,21 +33,19 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ProjectServiceTest extends PicsTranslationTest {
+
 	private ProjectService projectService;
 
-	@Mock
-	private AccountGroupDAO accountGroupDAO;
 	@Mock
 	private AccountSkillDAO accountSkillDAO;
 	@Mock
 	private EmployeeDAO employeeDAO;
 	@Mock
 	private ProjectDAO projectDAO;
-    @Mock
-    private RoleDAO roleDAO;
+	@Mock
+	private RoleDAO roleDAO;
 
 	private AccountService accountService;
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -51,12 +53,9 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 		projectService = new ProjectService();
 		accountService = AccountServiceFactory.getAccountService();
-		accountSkillEmployeeService = AccountSkillEmployeeServiceFactory.getAccountSkillEmployeeService();
 
-		Whitebox.setInternalState(projectService, "accountGroupDAO", accountGroupDAO);
 		Whitebox.setInternalState(projectService, "accountService", accountService);
 		Whitebox.setInternalState(projectService, "accountSkillDAO", accountSkillDAO);
-		Whitebox.setInternalState(projectService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(projectService, "employeeDAO", employeeDAO);
 		Whitebox.setInternalState(projectService, "projectDAO", projectDAO);
 		Whitebox.setInternalState(projectService, "roleDAO", roleDAO);
@@ -64,7 +63,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void testGetProject() throws Exception {
-		projectService.getProject("1", Account.PicsID);
+		projectService.getProject(1, Account.PicsID);
 		verify(projectDAO).findProjectByAccount(1, Account.PicsID);
 	}
 
@@ -114,8 +113,8 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		String roleName = "The Role";
 
 		List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setName(roleName);
+		Role role = new Role();
+		role.setName(roleName);
 		roles.add(role);
 
 		when(roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(roleName))).thenReturn(roles);
@@ -138,7 +137,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		Project project = new Project();
 		when(projectDAO.findProjectByAccount(1, Account.PicsID)).thenReturn(project);
 
-		projectService.delete("1", Account.PicsID, Identifiable.SYSTEM);
+		projectService.delete(1, Account.PicsID);
 
 		verify(projectDAO).delete(project);
 	}

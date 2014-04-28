@@ -49,15 +49,15 @@ public class GroupForm extends GroupNameSkillsForm implements AddAnotherForm {
 		return new GroupBuilder().name(name).description(description).skills(skills).employees(employees).build();
 	}
 
-	public Group buildAccountGroup(int id, int accountId) {
-		AccountSkillDAO accountSkillDAO = SpringUtils.getBean("AccountSkillDAO");
-		EmployeeDAO employeeDAO = SpringUtils.getBean("EmployeeDAO");
-
-		List<AccountSkill> accountSkills = accountSkillDAO.findByIds(Utilities.primitiveArrayToList(skills));
-		List<Employee> accountEmployees = employeeDAO.findByIds(Utilities.primitiveArrayToList(employees));
-
-		return new GroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
-	}
+//	public Group buildAccountGroup(int id, int accountId) {
+//		AccountSkillDAO accountSkillDAO = SpringUtils.getBean("AccountSkillDAO");
+//		EmployeeDAO employeeDAO = SpringUtils.getBean("EmployeeDAO");
+//
+//		List<AccountSkill> accountSkills = accountSkillDAO.findByIds(Utilities.primitiveArrayToList(skills));
+//		List<Employee> accountEmployees = employeeDAO.findByIds(Utilities.primitiveArrayToList(employees));
+//
+//		return new GroupBuilder(id, accountId).name(name).description(description).skills(accountSkills).employees(accountEmployees).build();
+//	}
 
 	public static class Builder {
 

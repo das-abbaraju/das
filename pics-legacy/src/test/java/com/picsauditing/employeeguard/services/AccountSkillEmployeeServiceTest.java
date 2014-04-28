@@ -15,6 +15,7 @@ import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 
@@ -47,7 +48,7 @@ public class AccountSkillEmployeeServiceTest {
 
 		accountSkillEmployeeService.update(accountSkillEmployee, skillDocumentForm);
 
-		verify(profileDocumentService).getDocument(anyString());
+		verify(profileDocumentService).getDocument(anyInt());
 		assertNotNull(accountSkillEmployee.getEndDate());
 	}
 

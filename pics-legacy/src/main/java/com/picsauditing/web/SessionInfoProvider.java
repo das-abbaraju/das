@@ -29,4 +29,6 @@ public interface SessionInfoProvider {
 
 	String getURI();
 
+	String getReferer();
+
 }

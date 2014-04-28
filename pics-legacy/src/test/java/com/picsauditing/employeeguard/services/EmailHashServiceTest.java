@@ -1,14 +1,17 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.authentication.dao.EmailHashDAO;
-import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
+import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
+import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import static junit.framework.Assert.*;
@@ -18,90 +21,78 @@ import static org.mockito.Mockito.when;
 
 public class EmailHashServiceTest {
 
-    public static final String INVALID_HASH = "MY_HASH";
-    public static final String VALID_HASH = "VALID_HASH";
-    private EmailHashService emailHashService;
+	public static final String INVALID_HASH = "MY_HASH";
+	public static final String VALID_HASH = "VALID_HASH";
 
-    @Mock
-    private EmailHashDAO emailHashDAO;
+	private EmailHashService emailHashService;
+
 	@Mock
-	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
+	private EmailHashDAO emailHashDAO;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+	@Before
+	public void setup() {
+		MockitoAnnotations.initMocks(this);
 
-        emailHashService = new EmailHashService();
+		emailHashService = new EmailHashService();
 
-        Whitebox.setInternalState(emailHashService, "emailHashDAO", emailHashDAO);
-        Whitebox.setInternalState(emailHashService, "softDeletedEmployeeDAO", softDeletedEmployeeDAO);
-    }
+		Whitebox.setInternalState(emailHashService, "emailHashDAO", emailHashDAO);
+	}
 
-    @Test
-    public void testHashIsValid() {
-        when(emailHashDAO.hashExists(VALID_HASH)).thenReturn(true);
-        when(emailHashDAO.hashIsExpired(VALID_HASH)).thenReturn(false);
+	@Test
+	public void testHashIsValid() {
+		when(emailHashDAO.findByHash(VALID_HASH))
+				.thenReturn(new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), 5)).build());
 
-        Boolean result = emailHashService.hashIsValid(VALID_HASH);
+		Boolean result = emailHashService.hashIsValid(VALID_HASH);
 
-        assertTrue(result);
-    }
+		assertTrue(result);
+	}
 
-    @Test
-    public void testHashIsNotValid_EmptyHash() {
-        Boolean result = emailHashService.hashIsValid(null);
+	@Test
+	public void testHashIsNotValid_EmptyHash() {
+		Boolean result = emailHashService.hashIsValid(null);
 
-        assertFalse(result);
-    }
+		assertFalse(result);
+	}
 
-    @Test
-    public void testHashIsNotValid_ExistingHash() {
-        when(emailHashDAO.hashExists(INVALID_HASH)).thenReturn(false);
+	@Test
+	public void testHashIsNotValid_ExpiredHash() {
+		when(emailHashDAO.findByHash(INVALID_HASH))
+				.thenReturn(new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), -8)).build());
 
-        Boolean result = emailHashService.hashIsValid(INVALID_HASH);
+		Boolean result = emailHashService.hashIsValid(INVALID_HASH);
 
-        assertFalse(result);
-    }
+		assertFalse(result);
+	}
 
-    @Test
-    public void testHashIsNotValid_ExpiredHash() {
-        when(emailHashDAO.hashIsExpired(INVALID_HASH)).thenReturn(true);
+	@Test
+	public void testCreateNewHash() throws Exception {
+		Employee fakeEmployee = setupTestCreateNewHash();
 
-        Boolean result = emailHashService.hashIsValid(INVALID_HASH);
+		EmailHash result = emailHashService.createNewHash(fakeEmployee);
 
-        assertFalse(result);
-    }
+		verifyTestCreateNewHash(fakeEmployee, result);
+	}
 
-    @Test
-    public void testCreateNewHash() throws Exception {
-        Employee employee = buildEmployee();
-	    SoftDeletedEmployee softDeletedEmployee = buildSoftDeletedEmployee();
+	private Employee setupTestCreateNewHash() {
+		Employee fakeEmployee = new EmployeeBuilder().id(45).email("test@test.com").build();
 
-	    when(softDeletedEmployeeDAO.find(any())).thenReturn(softDeletedEmployee);
+		when(emailHashDAO.save(any(EmailHash.class))).thenAnswer(new Answer<EmailHash>() {
 
-        EmailHash result = emailHashService.createNewHash(employee);
+			@Override
+			public EmailHash answer(InvocationOnMock invocation) throws Throwable {
+				return (EmailHash) invocation.getArguments()[0];
+			}
+		});
 
-        verifyCreateNewHash(softDeletedEmployee, result);
-    }
+		return fakeEmployee;
+	}
 
-    private void verifyCreateNewHash(SoftDeletedEmployee employee, EmailHash result) {
-        assertEquals(employee, result.getEmployee());
-        assertEquals(employee.getEmail(), result.getEmailAddress());
-        assertNotNull(result.getHash());
-        assertNotNull(result.getExpirationDate());
-        assertNotNull(result.getCreationDate());
-        verify(emailHashDAO).save(any(EmailHash.class));
-    }
+	private void verifyTestCreateNewHash(Employee fakeEmployee, EmailHash result) {
+		verify(emailHashDAO).save(any(EmailHash.class));
 
-    private Employee buildEmployee() {
-        Employee employee = new Employee();
-        employee.setEmail("employee_email@test.com");
-        return employee;
-    }
-
-	private SoftDeletedEmployee buildSoftDeletedEmployee() {
-		SoftDeletedEmployee employee = new SoftDeletedEmployee();
-		employee.setEmail("employee_email@test.com");
-		return employee;
+		assertEquals(fakeEmployee.getId(), result.getEmployee().getId());
+		assertEquals(fakeEmployee.getEmail(), result.getEmailAddress());
+		assertNotNull(result.getExpirationDate());
 	}
 }

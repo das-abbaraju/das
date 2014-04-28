@@ -4,7 +4,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
        default-autowire="autodetect">
 
-    <!-- EmployeeGUARD -->
+    <!-- EmployeeGUARD DAOs -->
     <bean id="AccountEmployeeGuardDAO" class="com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO"/>
     <bean id="AppUserDAO" class="com.picsauditing.authentication.dao.AppUserDAO"/>
     <bean id="EmailHashDAO" class="com.picsauditing.authentication.dao.EmailHashDAO"/>
@@ -31,18 +31,13 @@
     <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
 
     <!-- Services -->
-    <bean id="AccountFilterService" class="com.picsauditing.employeeguard.services.AccountFilterService"/>
     <bean id="AccountGroupEmployeeService" class="com.picsauditing.employeeguard.services.AccountGroupEmployeeService"/>
-    <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
     <bean id="AccountSkillEmployeeService" class="com.picsauditing.employeeguard.services.AccountSkillEmployeeService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
-    <bean id="EGBillingService" class="com.picsauditing.employeeguard.services.external.BillingService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
-    <bean id="EmailService" class="com.picsauditing.employeeguard.services.EmailService"/>
-    <bean id="EmployeeGuardServiceEnabler"
-          class="com.picsauditing.employeeguard.services.EmployeeGuardServiceDisabler"/>
+    <bean id="EmailService" class="com.picsauditing.employeeguard.services.external.EmailService"/>
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
@@ -54,6 +49,10 @@
     <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
     <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
+
+    <!-- External Services -->
+    <bean id="AccountService" class="com.picsauditing.employeeguard.services.external.AccountService"/>
+    <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.external.AccountFilter"/>
 
     <!-- Entity Services -->
     <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
@@ -67,12 +66,15 @@
     <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
     <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
 
+    <!-- Processes -->
+    <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
+    <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
+
     <!-- Skill Engine and related classes -->
     <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine" />
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
-    <bean id="RoleAssignmentHelper" class="com.picsauditing.employeeguard.services.RoleAssignmentHelper"/>
 
     <!-- Factories -->
     <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder"/>

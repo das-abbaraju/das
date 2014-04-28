@@ -20,7 +20,7 @@ public class ProjectServiceFactory {
 		Project project = new ProjectBuilder().name("Project").location("Location").build();
 		List<Project> projects = Arrays.asList(project, new ProjectBuilder().name("Project 2").location("Location 2").build());
 
-		when(projectService.getProject(anyString(), anyInt())).thenReturn(project);
+		when(projectService.getProject(anyInt(), anyInt())).thenReturn(project);
 		when(projectService.getProjectsForAccount(anyInt())).thenReturn(projects);
 		when(projectService.search(anyString(), anyInt())).thenReturn(projects);
 

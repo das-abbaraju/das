@@ -17,7 +17,7 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProjectModel;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
@@ -169,7 +169,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private Project loadProject() throws PageNotFoundException {
-		Project project = projectService.getProject(id, permissions.getAccountId());
+		Project project = projectService.getProject(getNumericId(), permissions.getAccountId());
 		if (project == null) {
 			LOG.error("Error finding project {} for account {}", id, permissions.getAccountId());
 			throw new PageNotFoundException();
@@ -211,7 +211,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	public String delete() throws Exception {
-		projectService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
+		projectService.delete(getNumericId(), permissions.getAccountId());
 
 		return redirectToList();
 	}

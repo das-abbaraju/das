@@ -49,7 +49,7 @@ public class ProjectRoleService {
         return projectRoleDAO.findByProfile(profile);
     }
 
-    public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Group role) {
+    public List<ProjectRole> getProjectRolesByProjectsAndRole(List<Integer> projectIds, Role role) {
         return projectRoleDAO.findByProjectsAndRole(projectIds, role);
     }
 

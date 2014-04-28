@@ -1,8 +1,7 @@
-package com.picsauditing.employeeguard.services;
+package com.picsauditing.employeeguard.services.external;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.employeeguard.services.external.BillingService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
@@ -33,7 +32,7 @@ public class AccountServiceTest {
 	@Mock
 	private AccountDAO accountDAO;
 	@Mock
-	private BillingService billingService;
+	private AccountFilter accountFilter;
 	@Mock
 	private OperatorAccountDAO operatorAccountDAO;
 
@@ -44,7 +43,7 @@ public class AccountServiceTest {
 		accountService = new AccountService();
 
 		Whitebox.setInternalState(accountService, "accountDAO", accountDAO);
-		Whitebox.setInternalState(accountService, "billingService", billingService);
+		Whitebox.setInternalState(accountService, "accountFilter", accountFilter);
 		Whitebox.setInternalState(accountService, "operatorDAO", operatorAccountDAO);
 	}
 
@@ -68,7 +67,7 @@ public class AccountServiceTest {
 		linkChildToParent(site1, corporate2);
 		linkChildToParent(hub, corporate1);
 
-		when(billingService.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
+		when(accountFilter.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
 			@Override
 			public List<OperatorAccount> answer(InvocationOnMock invocationOnMock) throws Throwable {
 				return (List<OperatorAccount>) invocationOnMock.getArguments()[0];
@@ -92,7 +91,7 @@ public class AccountServiceTest {
 		linkChildToParent(corporate1, corporate2);
 		linkChildToParent(corporate2, hub);
 
-		when(billingService.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
+		when(accountFilter.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
 			@Override
 			public List<OperatorAccount> answer(InvocationOnMock invocationOnMock) throws Throwable {
 				return (List<OperatorAccount>) invocationOnMock.getArguments()[0];
@@ -159,7 +158,7 @@ public class AccountServiceTest {
 
 	private void setupTestGetContractors() {
 		when(operatorAccountDAO.find(312)).thenReturn(createCorporate(312, "Test Operator"));
-		when(billingService.filterEmployeeGUARDAccounts(anyListOf(ContractorAccount.class)))
+		when(accountFilter.filterEmployeeGUARDAccounts(anyListOf(ContractorAccount.class)))
 				.thenReturn(getFakeContractors());
 	}
 

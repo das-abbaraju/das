@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.RoleDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.SiteAssignmentBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -44,14 +45,14 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.findRoleByAccount(id, accountId);
 	}
 
-  public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
-    if (CollectionUtils.isEmpty(accountIds)) {
-      return Collections.EMPTY_LIST;
+	public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.EMPTY_LIST;
 
-    }
+		}
 
-    return roleDAO.findByAccounts(accountIds);
-  }
+		return roleDAO.findByAccounts(accountIds);
+	}
 
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
@@ -72,12 +73,36 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Project, Set<Role>> getRolesForProjectsAndEmployees(final Collection<Project> projects,
+																   final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(projects) || CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findByProjectsAndEmployees(projects, employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+					@Override
+					public Project getKey(ProjectRole projectRole) {
+						return projectRole.getProject();
+					}
+
+					@Override
+					public Role getValue(ProjectRole projectRole) {
+						return projectRole.getRole();
+					}
+				});
+	}
+
+	public Set<Role> getSiteRolesForEmployee(final Employee employee, final int siteId) {
+		return new HashSet<>(roleDAO.findSiteRolesForEmployee(siteId, employee));
+	}
+
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees, final int siteId) {
 		return getSiteRolesForEmployees(employees, Arrays.asList(siteId));
 	}
 
 	public Map<Employee, Set<Role>> getSiteRolesForEmployees(final Collection<Employee> employees,
-	                                                         final Collection<Integer> siteIds) {
+															 final Collection<Integer> siteIds) {
 
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
@@ -100,13 +125,13 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final int siteId) {
+																final int siteId) {
 
 		return getProjectRolesForEmployees(employees, Arrays.asList(siteId));
 	}
 
 	public Map<Employee, Set<Role>> getProjectRolesForEmployees(final Collection<Employee> employees,
-	                                                            final Collection<Integer> siteIds) {
+																final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();
 		}
@@ -177,6 +202,10 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Set<Role> getAllSiteRolesForEmployee(final Employee employee) {
+		return new HashSet<>(roleDAO.findRolesForEmployee(employee));
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -239,4 +268,31 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		delete(role);
 	}
 
+	public void addEmployeeSiteAssignment(final int siteId, final int roleId, final int employeeId,
+										  final EntityAuditInfo entityAuditInfo) {
+		SiteAssignment siteAssignment = siteAssignmentDAO.find(siteId, roleId, employeeId);
+		if (siteAssignment == null) {
+			siteAssignment = buildSiteAssignment(siteId, roleId, employeeId, entityAuditInfo);
+			siteAssignmentDAO.save(siteAssignment);
+		}
+	}
+
+	private SiteAssignment buildSiteAssignment(final int siteId, final int roleId, final int employeeId,
+											   final EntityAuditInfo entityAuditInfo) {
+		return new SiteAssignmentBuilder()
+				.employee(new Employee(employeeId))
+				.role(new Role(roleId))
+				.siteId(siteId)
+				.createdBy(entityAuditInfo.getAppUserId())
+				.createdDate(entityAuditInfo.getTimestamp())
+				.build();
+	}
+
+	public void deleteEmployeeSiteAssignment(final int siteId, final int roleId, final int employeeId) {
+		siteAssignmentDAO.delete(employeeId, roleId, siteId);
+	}
+
+	public void deleteAllEmployeeSiteAssignmentsForSite(final int siteId, final int employeeId) {
+		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(employeeId, siteId);
+	}
 }

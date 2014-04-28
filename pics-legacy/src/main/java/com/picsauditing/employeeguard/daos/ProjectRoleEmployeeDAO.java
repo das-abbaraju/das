@@ -2,7 +2,10 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmployee> {
+
 	public ProjectRoleEmployeeDAO() {
 		this.type = ProjectRoleEmployee.class;
 	}
@@ -132,7 +136,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndProjects(final Collection<Employee> employees,
-	                                                            final Collection<Project> projects) {
+																final Collection<Project> projects) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -146,12 +150,12 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
-	                                                          final int siteId) {
+															  final int siteId) {
 		return findByEmployeesAndSiteIds(employees, Arrays.asList(siteId));
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
-	                                                           final Collection<Integer> siteIds) {
+															   final Collection<Integer> siteIds) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -171,6 +175,69 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 				"WHERE p IN (:projects)", ProjectRoleEmployee.class);
 
 		query.setParameter("projects", projects);
+
+		return query.getResultList();
+	}
+
+	public ProjectRoleEmployee findByProjectRoleAndEmployeeId(final ProjectRole projectRole, final int employeeId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"WHERE pr = :projectRole " +
+				"AND pre.employee.id = :employeeId", ProjectRoleEmployee.class);
+
+		query.setParameter("projectRole", projectRole);
+		query.setParameter("employeeId", employeeId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Deprecated
+	@Transactional(propagation = Propagation.NESTED)
+	public void delete(final Project project, final int roleId, final int employeeId) {
+		Query query = em.createQuery("DELETE FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.role.id = :roleId " +
+				"AND pre.projectRole.project = :project " +
+				"AND pre.employee.id = :employeeId");
+
+		query.setParameter("project", project);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		query.executeUpdate();
+	}
+
+	public List<ProjectRoleEmployee> findBySiteIdRoleIdEmployeeId(final int siteId, final int roleId, final int employeeId) {
+		Query query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.role.id = :roleId " +
+				"AND pre.projectRole.project.accountId = :siteId " +
+				"AND pre.employee.id = :employeeId");
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findProjectRoleEmployees(final int projectId,
+															 final int roleId,
+															 final int employeeId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"JOIN pr.role r " +
+				"JOIN pre.employee e " +
+				"WHERE p.id = :projectId " +
+				"AND r.id = :roleId " +
+				"AND e.id = :employeeId", ProjectRoleEmployee.class);
+
+		query.setParameter("projectId", projectId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
 
 		return query.getResultList();
 	}

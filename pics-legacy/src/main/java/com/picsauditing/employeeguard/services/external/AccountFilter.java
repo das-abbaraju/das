@@ -1,15 +1,21 @@
 package com.picsauditing.employeeguard.services.external;
 
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.provisioning.ProductSubscriptionService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Iterator;
 import java.util.List;
 
 /**
- *      Stand in for billing logic
+ * Stand in for billing logic
  */
-public class BillingService {
-	public <E extends Account> List<E> filterEmployeeGUARDAccounts(List<E> accounts) {
+class AccountFilter {
+
+	@Autowired
+	private ProductSubscriptionService productSubscriptionService;
+
+	public <E extends Account> List<E> filterEmployeeGUARDAccounts(final List<E> accounts) {
 		Iterator<E> iterator = accounts.iterator();
 
 		while (iterator.hasNext()) {
@@ -27,8 +33,8 @@ public class BillingService {
 		return accounts;
 	}
 
-	private <E extends Account> boolean operatorHasEmployeeGUARD(E account) {
-		return account.isRequiresCompetencyReview() || account.isRequiresOQ();
+	private <E extends Account> boolean operatorHasEmployeeGUARD(final E account) {
+		return productSubscriptionService.hasEmployeeGUARD(account.getId());
 	}
 
 	/**
@@ -38,7 +44,7 @@ public class BillingService {
 	 * @param <E>
 	 * @return
 	 */
-	private <E extends Account> boolean contractorHasEmployeeGUARD(E account) {
-		return true;
+	private <E extends Account> boolean contractorHasEmployeeGUARD(final E account) {
+		return productSubscriptionService.hasEmployeeGUARD(account.getId());
 	}
 }
