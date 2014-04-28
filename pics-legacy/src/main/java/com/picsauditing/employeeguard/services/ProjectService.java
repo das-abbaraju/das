@@ -225,8 +225,6 @@ public class ProjectService {
 				new BaseEntityCallback<ProjectRole>(appUserId, now)
 		);
 
-//		originalProject.setRoles(updatedRoles);
-
 		originalProject.getRoles().clear();
 		originalProject.getRoles().addAll(updatedRoles);
 

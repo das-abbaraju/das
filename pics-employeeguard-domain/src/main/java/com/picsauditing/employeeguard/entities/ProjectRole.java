@@ -47,7 +47,7 @@ public class ProjectRole implements BaseEntity {
 	@BatchSize(size = 5)
 	private List<ProjectRoleEmployee> employees;
 
-	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectSkillRole> skills;

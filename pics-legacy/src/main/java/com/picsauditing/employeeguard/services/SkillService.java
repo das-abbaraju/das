@@ -183,7 +183,6 @@ public class SkillService {
 			updateAccountSkillRoles(accountSkillInDatabase, updatedAccountSkill, appUserId);
 		}
 
-
 		EntityHelper.setUpdateAuditFields(accountSkillInDatabase, updated);
 
 		return accountSkillDAO.save(accountSkillInDatabase);
