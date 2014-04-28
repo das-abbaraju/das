@@ -66,6 +66,7 @@
     <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
     <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
     <bean id="LiveIDEmployeeService" class="com.picsauditing.employeeguard.services.LiveIDEmployeeService"/>
+    <bean id="OperatorEmployeeService" class="com.picsauditing.employeeguard.services.OperatorEmployeeService"/>
 
     <!-- Processes -->
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
