@@ -6,13 +6,37 @@ import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
+import org.apache.commons.collections.MapUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class SkillInfoBuilder {
+
+	public List<SkillInfo> build(final Map<AccountSkill, SkillStatus> allEmployeeSkills) {
+		if (MapUtils.isEmpty(allEmployeeSkills)) {
+			return Collections.emptyList();
+		}
+
+		List<SkillInfo> skillInfos = new ArrayList<>();
+		for (AccountSkill accountSkill : allEmployeeSkills.keySet()) {
+			skillInfos.add(build(accountSkill, allEmployeeSkills.get(accountSkill)));
+		}
+
+		return skillInfos;
+	}
+
+	public SkillInfo build(final AccountSkill accountSkill, final SkillStatus skillStatus) {
+		SkillInfo skillInfo = new SkillInfo();
+
+		skillInfo.setId(accountSkill.getId());
+		skillInfo.setAccountId(accountSkill.getAccountId());
+		skillInfo.setName(accountSkill.getName());
+		skillInfo.setDescription(accountSkill.getDescription());
+		skillInfo.setSkillType(accountSkill.getSkillType());
+		skillInfo.setSkillStatus(skillStatus);
+
+		return skillInfo;
+	}
 
 	public SkillInfo build(AccountSkill accountSkill, SkillStatus skillStatus, Date endDate) {
 		SkillInfo skillInfo = new SkillInfo();

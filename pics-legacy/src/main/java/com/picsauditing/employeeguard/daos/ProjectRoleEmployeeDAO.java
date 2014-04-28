@@ -194,6 +194,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		}
 	}
 
+	@Deprecated
 	@Transactional(propagation = Propagation.NESTED)
 	public void delete(final Project project, final int roleId, final int employeeId) {
 		Query query = em.createQuery("DELETE FROM ProjectRoleEmployee pre " +
@@ -206,5 +207,37 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		query.setParameter("employeeId", employeeId);
 
 		query.executeUpdate();
+	}
+
+	public List<ProjectRoleEmployee> findBySiteIdRoleIdEmployeeId(final int siteId, final int roleId, final int employeeId) {
+		Query query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"WHERE pre.projectRole.role.id = :roleId " +
+				"AND pre.projectRole.project.accountId = :siteId " +
+				"AND pre.employee.id = :employeeId");
+
+		query.setParameter("siteId", siteId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findProjectRoleEmployees(final int projectId,
+															 final int roleId,
+															 final int employeeId) {
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"JOIN pr.role r " +
+				"JOIN pre.employee e " +
+				"WHERE p.id = :projectId " +
+				"AND r.id = :roleId " +
+				"AND e.id = :employeeId", ProjectRoleEmployee.class);
+
+		query.setParameter("projectId", projectId);
+		query.setParameter("roleId", roleId);
+		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
 	}
 }

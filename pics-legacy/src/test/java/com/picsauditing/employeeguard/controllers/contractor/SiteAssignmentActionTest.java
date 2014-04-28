@@ -3,9 +3,13 @@ package com.picsauditing.employeeguard.controllers.contractor;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.AssignmentService;
+import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.employeeguard.services.SkillUsageLocator;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -13,6 +17,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+
+import javax.persistence.NoResultException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -26,6 +32,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 
 	// Class under test
 	private SiteAssignmentAction siteAssignmentAction;
+
 
 	@Mock
 	private AccountService accountService;

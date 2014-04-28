@@ -92,8 +92,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 				});
 	}
 
-	public List<Project> getProjectsForEmployee(final Employee employee) {
-		return projectDAO.findByEmployee(employee);
+	public Set<Project> getProjectsForEmployee(final Employee employee) {
+		return new HashSet<>(projectDAO.findByEmployee(employee));
 	}
 
 	public Project getProjectByRoleAndAccount(final String roleId, final int accountId) {
@@ -203,10 +203,19 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	}
 
 	public void removeEmployeeFromProjectRole(final Project project, final int roleId, final int employeeId) {
-		projectRoleEmployeeDAO.delete(project, roleId, employeeId);
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO
+				.findProjectRoleEmployees(project.getId(), roleId, employeeId);
+
+		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 
 	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, final int employeeId) {
 		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(siteId, employeeId);
+	}
+
+	public void deleteEmployeeFromProjectRole(final int siteId, final int roleId, final int employeeId) {
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findBySiteIdRoleIdEmployeeId(siteId, roleId, employeeId);
+
+		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 }

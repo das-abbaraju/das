@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.processor.ProjectAssignmentDataSet;
 import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProcess;
 import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
@@ -112,7 +113,7 @@ public class AssignmentService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-																	   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
+	                                                                   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}
@@ -187,11 +188,17 @@ public class AssignmentService {
 
 	public void unassignEmployeeFromSiteRole(final int siteId, final int roleId, final int employeeId) {
 		roleEntityService.deleteEmployeeSiteAssignment(siteId, roleId, employeeId);
+
+		projectEntityService.deleteEmployeeFromProjectRole(siteId, roleId, employeeId);
 	}
 
 	public void unassignEmployeeFromSite(final int siteId, final int employeeId) {
 		roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
 
 		projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
+	}
+
+	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
+		return employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
 	}
 }

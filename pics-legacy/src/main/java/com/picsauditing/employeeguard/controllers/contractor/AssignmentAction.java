@@ -38,7 +38,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String project() {
 		assignmentId = NumberUtils.toInt(id);
-		project = projectService.getProject(String.valueOf(projectId), assignmentId);
+		project = projectService.getProject(projectId, assignmentId);
 		contractorProjectAssignmentMatrix = contractorProjectService.buildAssignmentMatrix(project, permissions.getAccountId());
 
 		return "project";
@@ -46,7 +46,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String role() {
 		roleId = NumberUtils.toInt(id);
-		project = projectService.getProject(String.valueOf(projectId), assignmentId);
+		project = projectService.getProject(projectId, assignmentId);
 		contractorProjectAssignmentMatrix = contractorProjectService.buildAssignmentMatrix(project, roleId, permissions.getAccountId());
 
 		return "role";

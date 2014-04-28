@@ -21,7 +21,8 @@ public class AppProperty implements java.io.Serializable {
 	public static final String VERSION_MAJOR = "VERSION.major";
 	public static final String VERSION_MINOR = "VERSION.minor";
 	public static final String SSIP_CLIENT_SITE_ID_LIST_KEY = "Ssip.ClientSite.Ids";
-
+	public static final String AUTH_SERVICE_HOST = "AuthServiceHost";
+	public static final String AUTH_SERVICE_HOST_PORT = "AuthServiceHostPort";
 
 	private String property;
 	private String value;

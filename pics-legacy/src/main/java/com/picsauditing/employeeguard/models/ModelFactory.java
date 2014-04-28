@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.models.factories.*;
+import com.picsauditing.employeeguard.models.factories.ProjectAssignmentBreakdownFactory;
 
 public class ModelFactory {
 

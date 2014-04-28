@@ -83,6 +83,7 @@ public class StatusCalculatorService {
 	 */
 	public Map<Employee, List<SkillStatus>> getEmployeeStatusRollUpForSkills(final Collection<Employee> employees,
 																			 final List<AccountSkill> orderedSkills) {
+
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(orderedSkills)) {
 			return Collections.emptyMap();
 		}
@@ -196,7 +197,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
+	                                                            final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -224,23 +225,22 @@ public class StatusCalculatorService {
 				.findByEmployeeAndSkills(employee, skills);
 
 		Map<AccountSkill, SkillStatus> skillStatuses = getAccountSkillStatusMap(accountSkillEmployees);
-		return addExpiredStatusToSkillsEmployeeIsMissing(skills, skillStatuses);
+		addExpiredStatusToSkillsEmployeeIsMissing(skills, skillStatuses);
+
+		return skillStatuses;
 	}
 
-	private Map<AccountSkill, SkillStatus> addExpiredStatusToSkillsEmployeeIsMissing(final Collection<AccountSkill> skills,
-																					 final Map<AccountSkill, SkillStatus> skillStatuses) {
-		Map<AccountSkill, SkillStatus> allSkillStatuses = new HashMap<>();
-		if (MapUtils.isNotEmpty(skillStatuses)) {
-			allSkillStatuses.putAll(skillStatuses);
+	private void addExpiredStatusToSkillsEmployeeIsMissing(final Collection<AccountSkill> skills,
+														   Map<AccountSkill, SkillStatus> skillStatuses) {
+		if (MapUtils.isEmpty(skillStatuses)) {
+			skillStatuses = new HashMap<>();
 		}
 
 		for (AccountSkill accountSkill : skills) {
 			if (!skillStatuses.containsKey(accountSkill)) {
-				allSkillStatuses.put(accountSkill, SkillStatus.Expired);
+				skillStatuses.put(accountSkill, SkillStatus.Expired);
 			}
 		}
-
-		return allSkillStatuses;
 	}
 
 	private Map<AccountSkill, SkillStatus> getAccountSkillStatusMap(List<AccountSkillEmployee> accountSkillEmployees) {

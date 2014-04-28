@@ -2,7 +2,9 @@ package com.picsauditing.employeeguard.controllers.importexport;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
@@ -16,15 +18,20 @@ import org.powermock.reflect.Whitebox;
 import java.io.File;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class EmployeeImportExportActionTest extends PicsActionTest {
+
+	public static final String TEST_ACCOUNT_NAME = "Test Account";
 	private EmployeeImportExportAction employeeImportExportAction;
 
 	private EmployeeService employeeService;
 
+	@Mock
+	private AccountService accountService;
 	@Mock
 	private File file;
 	@Mock
@@ -39,6 +46,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 		super.setUp(employeeImportExportAction);
 
+		Whitebox.setInternalState(employeeImportExportAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeImportExportAction, "employeeService", employeeService);
 		Whitebox.setInternalState(employeeImportExportAction, "urlBuilder", urlBuilder);
 
@@ -47,6 +55,9 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
 
 		when(urlBuilder.action(anyString())).thenReturn(urlBuilder);
+
+		when(accountService.getAccountById(anyInt()))
+				.thenReturn(new AccountModel.Builder().name(TEST_ACCOUNT_NAME).build());
 	}
 
 	@Test
@@ -55,7 +66,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(employeeImportExportAction, "processUpload");
 
-		verify(employeeService).importEmployees(file, Account.PicsID, User.SYSTEM);
+		verify(employeeService).importEmployees(file, Account.PicsID, TEST_ACCOUNT_NAME, User.SYSTEM);
 	}
 
 	@Test

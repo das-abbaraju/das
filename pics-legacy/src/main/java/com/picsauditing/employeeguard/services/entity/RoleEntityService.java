@@ -45,14 +45,14 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.findRoleByAccount(id, accountId);
 	}
 
-  public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
-    if (CollectionUtils.isEmpty(accountIds)) {
-      return Collections.EMPTY_LIST;
+	public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.EMPTY_LIST;
 
-    }
+		}
 
-    return roleDAO.findByAccounts(accountIds);
-  }
+		return roleDAO.findByAccounts(accountIds);
+	}
 
 	public Map<Project, Set<Role>> getRolesForProjects(final Collection<Project> projects) {
 		if (CollectionUtils.isEmpty(projects)) {
@@ -200,6 +200,10 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 						return entity.getRole();
 					}
 				});
+	}
+
+	public Set<Role> getAllSiteRolesForEmployee(final Employee employee) {
+		return new HashSet<>(roleDAO.findRolesForEmployee(employee));
 	}
 
 	/* All Search Methods */

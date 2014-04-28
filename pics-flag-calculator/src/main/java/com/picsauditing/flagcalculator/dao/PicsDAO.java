@@ -73,13 +73,13 @@ abstract public class PicsDAO {
 //		}
 //	}
 //
-//	@Transactional(propagation = Propagation.NESTED)
-//	public void remove(BaseTable row) {
-//		if (row != null) {
-//			em.remove(row);
-//		}
-//	}
-//
+	@Transactional(propagation = Propagation.NESTED)
+	public void remove(BaseTable row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
 //	public <T extends BaseTable> T find(Class<T> clazz, int id) {
 //		return em.find(clazz, id);
 //	}

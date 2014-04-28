@@ -49,12 +49,12 @@ public class SkillUsageLocator {
 	}
 
 	private List<SkillUsage> buildSkillUsages(final Set<Employee> employees,
-	                                          final Map<Employee, Map<AccountSkill, Set<Project>>> employeesProjectRequiredSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Group>>> employeeContractorGroupSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Role>>> employeeProjectJobRoleSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeCorporateSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeesSiteSkills,
-	                                          final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeSiteAssignmentSkills) {
+											  final Map<Employee, Map<AccountSkill, Set<Project>>> employeesProjectRequiredSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Group>>> employeeContractorGroupSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Role>>> employeeProjectJobRoleSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeCorporateSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeesSiteSkills,
+											  final Map<Employee, Map<AccountSkill, Set<Integer>>> employeeSiteAssignmentSkills) {
 
 		List<SkillUsage> skillUsageList = new ArrayList<>();
 		for (Employee employee : employees) {
@@ -145,7 +145,7 @@ public class SkillUsageLocator {
 	}
 
 	public SkillUsage getSkillUsagesForEmployee(final Employee employee) {
-		List<Project> projects = projectService.getProjectsForEmployee(employee);
+		Set<Project> projects = projectService.getProjectsForEmployee(employee);
 		return new SkillUsage.Builder()
 				.employee(employee)
 				.projectRequiredSkills(getEmployeeProjectRequiredSkills(projects))
@@ -157,7 +157,7 @@ public class SkillUsageLocator {
 				.build();
 	}
 
-	private Map<AccountSkill, Set<Project>> getEmployeeProjectRequiredSkills(final List<Project> projects) {
+	private Map<AccountSkill, Set<Project>> getEmployeeProjectRequiredSkills(final Collection<Project> projects) {
 		return skillService.getProjectRequiredSkillsMap(projects);
 	}
 
@@ -170,11 +170,11 @@ public class SkillUsageLocator {
 		return skillService.getProjectRoleSkillsMap(employee);
 	}
 
-	private Map<AccountSkill, Set<Integer>> getEmployeeCorporateSkills(final List<Project> projects) {
+	private Map<AccountSkill, Set<Integer>> getEmployeeCorporateSkills(final Collection<Project> projects) {
 		return skillService.getCorporateSkillsForProjects(projects);
 	}
 
-	private Map<AccountSkill, Set<Integer>> getEmployeeSiteSkills(final List<Project> projects) {
+	private Map<AccountSkill, Set<Integer>> getEmployeeSiteSkills(final Collection<Project> projects) {
 		return skillService.getSiteSkillsForProjects(projects);
 	}
 

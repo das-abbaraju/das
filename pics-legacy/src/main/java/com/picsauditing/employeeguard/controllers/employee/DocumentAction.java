@@ -153,7 +153,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 
 	public String delete() throws IOException {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
-		profileDocumentService.delete(getIdAsInt(), profile.getId());
+		profileDocumentService.delete(NumberUtils.toInt(id), profile.getId());
 
 		return setUrlForRedirect("/employee-guard/employee/file");
 	}

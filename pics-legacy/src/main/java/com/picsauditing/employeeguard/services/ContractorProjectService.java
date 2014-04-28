@@ -2,11 +2,11 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.ContractorEmployeeProjectAssignment;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -24,14 +24,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 public class ContractorProjectService {
+
 	private static final Logger LOG = LoggerFactory.getLogger(ContractorProjectService.class);
 
 	@Autowired
 	private AccountService accountService;
 	@Autowired
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
@@ -59,26 +58,6 @@ public class ContractorProjectService {
 		return projectCompanyDAO.search(searchTerm, accountId);
 	}
 
-	public void assignEmployeeToProjectRole(final Employee employee, final ProjectRole projectRole, final int appUserId) {
-		Date now = new Date();
-
-		ProjectRoleEmployee projectRoleEmployee = new ProjectRoleEmployee(projectRole, employee);
-		EntityHelper.setCreateAuditFields(projectRoleEmployee, appUserId, now);
-		projectRoleEmployeeDAO.save(projectRoleEmployee);
-
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
-	}
-
-	public void unassignEmployeeFromProjectRole(Employee employee, ProjectRole projectRole, int appUserId) {
-		Date now = new Date();
-
-		ProjectRoleEmployee projectRoleEmployee = projectRoleEmployeeDAO.findByEmployeeAndProjectRole(employee, projectRole);
-		EntityHelper.softDelete(projectRoleEmployee, appUserId);
-		projectRoleEmployeeDAO.delete(projectRoleEmployee);
-
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
-	}
-
 	public ContractorProjectAssignmentMatrix buildAssignmentMatrix(final Project project, final int accountId) {
 		List<AccountSkill> requiredSkills = getRequiredSkills(project);
 
@@ -99,7 +78,7 @@ public class ContractorProjectService {
 		List<Employee> employees = getAssignedEmployees(project, accountId);
 
 		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
-		if (!CollectionUtils.isEmpty(employees)) {
+		if (CollectionUtils.isNotEmpty(employees) && CollectionUtils.isNotEmpty(requiredSkills)) {
 			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
 		}
 
@@ -136,11 +115,19 @@ public class ContractorProjectService {
 		accountIds.add(accountId);
 
 		List<AccountSkill> requiredSkills = new ArrayList<>();
-		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(accountIds);
+		List<SiteSkill> siteSkills = getSiteRequiredSkills(accountIds);
 		requiredSkills.addAll(ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR));
 		requiredSkills.addAll(ExtractorUtil.extractList(project.getSkills(), ProjectSkill.SKILL_EXTRACTOR));
 
 		return ListUtil.removeDuplicatesAndSort(requiredSkills);
+	}
+
+	private List<SiteSkill> getSiteRequiredSkills(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return siteSkillDAO.findByAccountIds(accountIds);
 	}
 
 	public ContractorProjectAssignmentMatrix buildAssignmentMatrix(final Project project, final int roleId, final int accountId) {
@@ -172,7 +159,7 @@ public class ContractorProjectService {
 		Collections.sort(employees);
 
 		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
-		if (CollectionUtils.isNotEmpty(requiredSkills)) {
+		if (CollectionUtils.isNotEmpty(requiredSkills) && CollectionUtils.isNotEmpty(employees)) {
 			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
 		}
 

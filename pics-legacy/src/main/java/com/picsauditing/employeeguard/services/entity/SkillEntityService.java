@@ -87,9 +87,14 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		return getEmployeeSkillsByGroups(employeesToGroups, groupSkills);
 	}
 
-	private Map<Group, Set<AccountSkill>> getGroupSkills(Map<Employee, Set<Group>> employeesToGroups) {
+	private Map<Group, Set<AccountSkill>> getGroupSkills(final Map<Employee, Set<Group>> employeesToGroups) {
+		if (MapUtils.isEmpty(employeesToGroups)) {
+			return Collections.emptyMap();
+		}
+
 		return PicsCollectionUtil.convertToMapOfSets(
 				accountSkillGroupDAO.findByGroups(PicsCollectionUtil.flattenCollectionOfCollection(employeesToGroups.values())),
+
 				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
 					@Override
 					public Group getKey(AccountSkillGroup entity) {
@@ -205,7 +210,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-																		   final Map<Integer, Set<Integer>> siteToCorporates) {
+	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -266,6 +271,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 					}
 				}
 		);
+	}
+
+	public Set<AccountSkill> getGroupSkillsForEmployee(final Employee employee) {
+		return new HashSet<>(accountSkillDAO.findGroupSkillsForEmployee(employee));
 	}
 
 	public Set<AccountSkill> getSkillsForRole(final Role role) {

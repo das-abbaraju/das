@@ -29,6 +29,7 @@ public class EmployeeSiteStatusProcess {
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
+
 	public EmployeeSiteStatusResult getEmployeeSiteStatusResult(final int employeeId, final int siteId,
 																final Collection<Integer> parentSites) {
 		EmployeeSiteStatusResult employeeSiteStatusResult = new EmployeeSiteStatusResult();

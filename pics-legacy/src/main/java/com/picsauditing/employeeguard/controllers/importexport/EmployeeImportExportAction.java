@@ -1,6 +1,8 @@
 package com.picsauditing.employeeguard.controllers.importexport;
 
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.EmployeeService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.web.UrlBuilder;
 import org.slf4j.Logger;
@@ -12,10 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EmployeeImportExportAction extends ImportExportActionSupport {
+
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeImportExportAction.class);
 
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private AccountService accountService;
 
 	private Map<String, Object> contractor_employee_import = new HashMap<>();
 	private Map<String, Object> contractor_employee_export = new HashMap<>();
@@ -24,7 +29,10 @@ public class EmployeeImportExportAction extends ImportExportActionSupport {
 
 	@Override
 	protected void processUpload() throws Exception {
-		employeeService.importEmployees(upload, permissions.getAccountId(), permissions.getAppUserID());
+		int accountId = permissions.getAccountId();
+		AccountModel accountModel = accountService.getAccountById(accountId);
+
+		employeeService.importEmployees(upload, accountId, accountModel.getName(), permissions.getAppUserID());
 	}
 
 	@Override

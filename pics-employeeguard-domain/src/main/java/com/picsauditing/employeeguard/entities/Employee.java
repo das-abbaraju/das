@@ -11,7 +11,8 @@ import java.util.*;
 @Entity
 @Table(name = "account_employee")
 @Where(clause = "deletedDate IS NULL")
-@SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+@SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+		"ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_employee SET deletedDate = NOW() WHERE id = ?")
 public class Employee implements BaseEntity, Comparable<Employee> {
 
@@ -260,91 +261,91 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		return getFirstName() + " " + getLastName();
 	}
 
-    public final static class EmployeeAccountEmailUniqueKey implements UniqueIndexable {
+	public final static class EmployeeAccountEmailUniqueKey implements UniqueIndexable {
 
-        private final int id;
-        private final int accountId;
-        private final String email;
+		private final int id;
+		private final int accountId;
+		private final String email;
 
-        public EmployeeAccountEmailUniqueKey(final int id, final int accountId, final String email) {
-            this.id = id;
-            this.accountId = accountId;
-            this.email = email;
-        }
+		public EmployeeAccountEmailUniqueKey(final int id, final int accountId, final String email) {
+			this.id = id;
+			this.accountId = accountId;
+			this.email = email;
+		}
 
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-	            {
-		            put("accountId", accountId);
-		            put("email", email);
-	            }
-            });
-        }
+		@Override
+		public Map<String, Object> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+					put("email", email);
+				}
+			});
+		}
 
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
+		@Override
+		public int getId() {
+			return id;
+		}
+	}
 
-    public final static class EmployeeAccountSlugUniqueKey implements UniqueIndexable {
+	public final static class EmployeeAccountSlugUniqueKey implements UniqueIndexable {
 
-        private final int id;
-        private final int accountId;
-        private final String slug;
+		private final int id;
+		private final int accountId;
+		private final String slug;
 
-        public EmployeeAccountSlugUniqueKey(final int id, final int accountId, final String slug) {
-            this.id = id;
-            this.accountId = accountId;
-            this.slug = slug;
-        }
+		public EmployeeAccountSlugUniqueKey(final int id, final int accountId, final String slug) {
+			this.id = id;
+			this.accountId = accountId;
+			this.slug = slug;
+		}
 
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("slug", slug);
-                }
-            });
-        }
+		@Override
+		public Map<String, Object> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+					put("slug", slug);
+				}
+			});
+		}
 
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
+		@Override
+		public int getId() {
+			return id;
+		}
+	}
 
-    public final static class EmployeeAccountEmailAndSlugUniqueKey implements UniqueIndexable {
+	public final static class EmployeeAccountEmailAndSlugUniqueKey implements UniqueIndexable {
 
-        private final int id;
-        private final int accountId;
-        private final String email;
-        private final String slug;
+		private final int id;
+		private final int accountId;
+		private final String email;
+		private final String slug;
 
-        public EmployeeAccountEmailAndSlugUniqueKey(final int id, final int accountId, final String email, final String slug) {
-            this.id = id;
-            this.accountId = accountId;
-            this.email = email;
-            this.slug = slug;
-        }
+		public EmployeeAccountEmailAndSlugUniqueKey(final int id, final int accountId, final String email, final String slug) {
+			this.id = id;
+			this.accountId = accountId;
+			this.email = email;
+			this.slug = slug;
+		}
 
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("email", email);
-                    put("slug", slug);
-                }
-            });
-        }
+		@Override
+		public Map<String, Object> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+				{
+					put("accountId", accountId);
+					put("email", email);
+					put("slug", slug);
+				}
+			});
+		}
 
-        @Override
-        public int getId() {
-            return id;
-        }
+		@Override
+		public int getId() {
+			return id;
+		}
 	}
 
 	@Override

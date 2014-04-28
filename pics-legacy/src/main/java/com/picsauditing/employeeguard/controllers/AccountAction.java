@@ -20,11 +20,14 @@ import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.FailedLoginException;
 
 public class AccountAction extends PicsRestActionSupport implements AjaxValidator {
+
 	private static final long serialVersionUID = -3897271223264803860L;
 
 	@Autowired
@@ -76,6 +79,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	@Anonymous
 	public String insert() throws Exception {
 		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
+
 		if (!"SUCCESS".equals(createAppUserResult.get("status").toString())) {
 			return ERROR;
 		}

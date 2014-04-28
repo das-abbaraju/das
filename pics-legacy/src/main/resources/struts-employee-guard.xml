@@ -328,6 +328,8 @@
         </action>
 
         <!-- Skills -->
+        <action name="skillz" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
         <action name="skills" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
             <result name="list">/struts/employee-guard/employee/manage-skill/list.jsp</result>
         </action>

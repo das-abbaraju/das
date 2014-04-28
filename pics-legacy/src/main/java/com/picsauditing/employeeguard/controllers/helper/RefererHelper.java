@@ -8,7 +8,7 @@ import com.picsauditing.web.SessionInfoProviderFactory;
  */
 public class RefererHelper {
 
-	public static final String EMPLOYEE_SKILL_ID = "employee_skill_id";
+	public static final String EMPLOYEE_SKILL_REFERER_SKILL_ID = "employee_skill_id";
 	public static final String EMPLOYEE_SKILL_REFERER_URL = "employee/skill/";
 
 	public static void saveSkillRefererIdToSession() {
@@ -17,16 +17,16 @@ public class RefererHelper {
 		if (Strings.isNotEmpty(referer) && referer.contains(EMPLOYEE_SKILL_REFERER_URL)) {
 			int idIndex = referer.indexOf(EMPLOYEE_SKILL_REFERER_URL) + EMPLOYEE_SKILL_REFERER_URL.length();
 
-			SessionInfoProviderFactory.getSessionInfoProvider().putInSession(EMPLOYEE_SKILL_ID, referer.substring(idIndex));
+			SessionInfoProviderFactory.getSessionInfoProvider().putInSession(EMPLOYEE_SKILL_REFERER_SKILL_ID, referer.substring(idIndex));
 		}
 	}
 
 	public static boolean sessionHasSkillId() {
-		return SessionInfoProviderFactory.getSessionInfoProvider().getSession().containsKey(EMPLOYEE_SKILL_ID);
+		return SessionInfoProviderFactory.getSessionInfoProvider().getSession().containsKey(EMPLOYEE_SKILL_REFERER_SKILL_ID);
 	}
 
 	public static int getSkillIdFromSession() {
-		return (int) SessionInfoProviderFactory.getSessionInfoProvider().getSession().get(EMPLOYEE_SKILL_ID);
+		return (int) SessionInfoProviderFactory.getSessionInfoProvider().getSession().get(EMPLOYEE_SKILL_REFERER_SKILL_ID);
 	}
 
 }

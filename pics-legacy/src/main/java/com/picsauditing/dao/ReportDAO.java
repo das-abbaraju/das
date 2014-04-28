@@ -1,31 +1,28 @@
 package com.picsauditing.dao;
 
-import java.sql.SQLException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.picsauditing.report.models.ModelType;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.mapper.ReportInfoMapper;
 import com.picsauditing.dao.mapper.UserMapper;
 import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.ReportInfo;
 import com.picsauditing.service.ReportSearch;
 import com.picsauditing.service.ReportSearchResults;
-import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.sql.SQLException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @SuppressWarnings("unchecked")
 public class ReportDAO extends PicsDAO {
@@ -191,7 +188,7 @@ public class ReportDAO extends PicsDAO {
         sql.addJoin("JOIN report r ON r.id = rgs.reportID AND r.deleted = 0");
         sql.addJoin("LEFT JOIN report_user ru ON rgs.reportID = ru.reportID AND ru.userID = c.userID");
         sql.addJoin("LEFT JOIN (SELECT reportID, SUM(favorite) total, SUM(viewCount) viewCount FROM report_user GROUP BY reportID) AS f ON r.id = f.reportID");
-        sql.addJoin("LEFT JOIN users u ON ru.userID = u.id");
+        sql.addJoin("LEFT JOIN users u ON r.ownerID = u.id");
 
         sql.addWhere("c.userID = " + permissions.getUserId());
         sql.addWhere("ru.favorite IS NULL OR (ru.favorite = 0)");

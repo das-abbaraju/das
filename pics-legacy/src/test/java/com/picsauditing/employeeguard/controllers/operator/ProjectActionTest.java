@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.forms.operator.ProjectForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectInfo;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 @UseReporter(DiffReporter.class)
 public class ProjectActionTest extends PicsActionTest {
 
-	public static final String ID = "id";
+	public static final int ID = 123;
 	public static final String PROJECT_URL_PREFIX = "/employee-guard/operators/project/";
 
 	// Class under test
@@ -103,7 +103,7 @@ public class ProjectActionTest extends PicsActionTest {
 		when(accountService.getAccountsByIds(any(List.class))).thenReturn(Collections.<AccountModel>emptyList());
 		when(projectInfoFactory.build(any(Project.class))).thenReturn(projectInfo);
 
-		projectAction.setId(ID);
+		projectAction.setId(String.valueOf(ID));
 
 		assertEquals(PicsRestActionSupport.SHOW, projectAction.show());
 
@@ -120,7 +120,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 	@Test
 	public void testEditProjectNameSkillsSection() throws Exception {
-		projectAction.setId(ID);
+		projectAction.setId(String.valueOf(ID));
 
 		assertEquals("name-skills-form", projectAction.editProjectNameSkillsSection());
 		verify(projectService).getProject(ID, Account.PicsID);
@@ -130,7 +130,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 	@Test
 	public void testEditProjectJobRolesSection() throws Exception {
-		projectAction.setId(ID);
+		projectAction.setId(String.valueOf(ID));
 
 		assertEquals("job-roles-form", projectAction.editProjectJobRolesSection());
 		verify(projectService).getProject(ID, Account.PicsID);
@@ -178,7 +178,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 	@Test
 	public void testDelete() throws Exception {
-		projectAction.setId(ID);
+		projectAction.setId(String.valueOf(ID));
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.delete());
 		assertEquals(OPERATOR_PROJECTS, projectAction.getUrl());

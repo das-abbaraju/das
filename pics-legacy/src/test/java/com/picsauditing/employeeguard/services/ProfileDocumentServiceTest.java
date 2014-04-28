@@ -34,7 +34,7 @@ public class ProfileDocumentServiceTest {
 	}
 
 	@Test
-	public void testDelete() {
+	public void testDelete_DocumentNotLinkedToAccountSkillEmployee() {
 		profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
 
 		verify(profileDocumentDAO).delete(DOCUMENT_ID, PROFILE_ID);

@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.services.engine;
 import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.SkillAssignmentHelper;
 import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.models.AccountModel;

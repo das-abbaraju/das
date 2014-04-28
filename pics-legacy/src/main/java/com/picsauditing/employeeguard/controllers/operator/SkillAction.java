@@ -13,7 +13,7 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
 import com.picsauditing.employeeguard.forms.operator.RequiredSiteSkillForm;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;

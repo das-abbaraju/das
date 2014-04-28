@@ -4,13 +4,16 @@ import java.util.List;
 
 public class RequiredSkills {
 
-  private List<SkillStatusModel> skills;
+	private List<SkillStatusModel> skills;
 
-  public RequiredSkills(List<SkillStatusModel> skills) {
-    this.skills = skills;
-  }
+	public RequiredSkills() {
+	}
 
-  public List<SkillStatusModel> getSkills() {
+	public RequiredSkills(List<SkillStatusModel> requiredSkills) {
+		this.skills = requiredSkills;
+	}
+
+	public List<SkillStatusModel> getSkills() {
 		return skills;
 	}
 
