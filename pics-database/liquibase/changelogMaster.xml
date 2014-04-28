@@ -211,4 +211,7 @@
 	<include file="./liquibase/2014/Q2/aphatarphekar1_US790_DDL_add_deletedDate_AccountEmployeeGuard_Table.sql"/>
 	<include file="./liquibase/2014/Q2/aphatarphekar2_US790_DML_add_EmployeeGUARD_For_Accounts.sql"/>
 	<include file="./liquibase/2014/Q2/lkam10_US820_Add_EULA_Tables.sql"/>
+
+	<!-- 7.2.8 -->
+	<include file="./liquibase/2014/Q2/aananighian4_DE545_DDL_Create_New_Email_Hash_Table.sql"/>
 </databaseChangeLog>
