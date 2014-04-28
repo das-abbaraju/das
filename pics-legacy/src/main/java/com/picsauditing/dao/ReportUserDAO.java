@@ -33,10 +33,10 @@ public class ReportUserDAO extends PicsDAO {
 		return findOne(ReportUser.class, query);
 	}
 
-	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions, int size) {
+	public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
 		try {
 			SelectSQL sql = setupSqlForSearchFilterQuery(permissions);
-			sql.setLimit(10-size);
+			sql.setLimit(10);
 			return new Database().select(sql.toString(), new ReportInfoMapper());
 		} catch (Exception e) {
 			logger.error("Unexpected exception in findTopTenFavoriteReports()");

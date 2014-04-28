@@ -42,7 +42,7 @@
     </div>
 </s:if>
 
-<s:form id="save" method="POST" enctype="multipart/form-data">
+<s:form id="save" method="POST">
 <br clear="all"/>
 
 <s:hidden name="id"/>
@@ -196,7 +196,7 @@
             <s:include value="/struts/contractors/_country_subdivision_select.jsp">
                 <s:param name="country_iso_code">${iso_code}</s:param>
                 <s:param name="subdivision_id">contractor_billing_countrySubdivision</s:param>
-                <s:param name="select_name">countrySubdivision</s:param>
+                <s:param name="select_name">contractor.billingCountrySubdivision</s:param>
                 <s:param name="selected_subdivision_iso_code">${billing_country_subdivision}</s:param>
                 <s:param name="select_theme">pics</s:param>
                 <s:param name="select_css">select2</s:param>
