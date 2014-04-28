@@ -1,5 +1,8 @@
 package com.picsauditing.authentication.service;
 
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.service.AppPropertyService;
 import com.sun.jersey.api.client.Client;
@@ -15,6 +18,9 @@ import javax.ws.rs.core.UriBuilder;
 public class AppUserService {
 
 	@Autowired
+    private AppPropertyDAO appPropertyDAO;
+	@Autowired
+	private AppUserDAO appUserDAO;
 	private AppPropertyService appPropertyService;
 
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
@@ -54,4 +60,12 @@ public class AppUserService {
 	private int getRequestHostPort() {
 		return appPropertyService.getPropertyInt(AppProperty.AUTH_SERVICE_HOST_PORT, 8080);
 	}
+
+    public AppUser findByAppUserID(int appUserID) {
+        return appUserDAO.findByAppUserID(appUserID);
+    }
+
+    public AppUser findAppUser(String userName) {
+        return appUserDAO.findByUserName(userName);
+    }
 }

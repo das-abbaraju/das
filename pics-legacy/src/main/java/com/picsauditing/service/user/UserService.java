@@ -88,4 +88,18 @@ public class UserService {
 	public User findById(final int userId) {
 		return userDAO.find(userId);
 	}
+
+    public void saveUser(User user) {
+        userDAO.save(user);
+    }
+
+    public void updateUserForSuccessfulLogin(User user) {
+        user.unlockLogin();
+        user.setLastLogin(new Date());
+        saveUser(user);
+    }
+
+    public User findByName(String username) {
+        return userDAO.findName(username);
+    }
 }
