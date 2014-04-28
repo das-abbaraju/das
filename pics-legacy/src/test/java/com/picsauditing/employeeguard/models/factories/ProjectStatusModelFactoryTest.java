@@ -47,7 +47,7 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 		assertEquals(PROJECT_ID, projectStatusModel.getId());
 		assertEquals(PROJECT_NAME, projectStatusModel.getName());
 		assertEquals(fakeRoleModels, projectStatusModel.getRoles());
-		assertEquals(fakeSkillModels, projectStatusModel.getSkills().getSkills());
+		assertEquals(fakeSkillModels, projectStatusModel.getRequired().getSkills());
 	}
 
 	@Override

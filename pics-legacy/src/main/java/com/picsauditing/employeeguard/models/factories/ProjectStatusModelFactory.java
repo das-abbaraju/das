@@ -42,7 +42,7 @@ public class ProjectStatusModelFactory extends ProjectModelFactory {
 		projectStatusModel.setId(project.getId());
 		projectStatusModel.setName(project.getName());
 		projectStatusModel.setRoles(roles);
-		projectStatusModel.setSkills(requiredSkills);
+		projectStatusModel.setRequired(requiredSkills);
 		projectStatusModel.setStatus(status);
 		return projectStatusModel;
 	}

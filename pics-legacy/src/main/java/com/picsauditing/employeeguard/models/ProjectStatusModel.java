@@ -10,7 +10,7 @@ public class ProjectStatusModel implements IdNameComposite, SkillStatusInfo {
 	private String name;
 	private SkillStatus status;
 	private List<RoleStatusModel> roles;
-	private RequiredSkills skills;
+	private RequiredSkills required;
 
 	public int getId() {
 		return id;
@@ -44,12 +44,12 @@ public class ProjectStatusModel implements IdNameComposite, SkillStatusInfo {
 		this.roles = roles;
 	}
 
-	public RequiredSkills getSkills() {
-		return skills;
+	public RequiredSkills getRequired() {
+		return required;
 	}
 
-	public void setSkills(RequiredSkills skills) {
-		this.skills = skills;
+	public void setRequired(RequiredSkills required) {
+		this.required = required;
 	}
 
 	@Override
