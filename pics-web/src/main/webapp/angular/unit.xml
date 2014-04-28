@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<testsuites>
+  <testsuite name="PhantomJS 1.9.7 (Mac OS X)" package="unit" timestamp="2014-04-28T17:08:00" id="0" hostname="localhost" tests="108" errors="0" failures="0" time="0.357">
+    <properties>
+      <property name="browser.fullName" value="Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/534.34 (KHTML, like Gecko) PhantomJS/1.9.7 Safari/534.34"/>
+    </properties>
+    <testcase name="should throw an error if we have no model defined" time="0.02" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element compiling this directive"/>
+    <testcase name="should create proper DOM structure" time="0.009" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element compiling this directive"/>
+    <testcase name="should not modify the model if there is no initial value" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element compiling this directive"/>
+    <testcase name="should set select2 to the value" time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element when model is changed programmatically for single select"/>
+    <testcase name="should handle falsey values" time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element when model is changed programmatically for single select"/>
+    <testcase name="should set select2 to multiple value" time="0.019" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element when model is changed programmatically for multiple select"/>
+    <testcase name="should handle falsey values" time="0.017" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element when model is changed programmatically for multiple select"/>
+    <testcase name="should observe the disabled attribute" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element"/>
+    <testcase name="should observe the multiple attribute" time="0.006" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element"/>
+    <testcase name="should observe an option with ng-repeat for changes" time="0.007" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with a &lt;select&gt; element"/>
+    <testcase name="should throw an error if we have no model defined" time="0.006" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element compiling this directive"/>
+    <testcase name="should create proper DOM structure" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element compiling this directive"/>
+    <testcase name="should not modify the model if there is no initial value" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element compiling this directive"/>
+    <testcase name="should call select2(data, ...) for objects" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element when model is changed programmatically for single-select"/>
+    <testcase name="should call select2(val, ...) for strings" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element when model is changed programmatically for single-select"/>
+    <testcase name="should call select2(data, ...) for arrays" time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element when model is changed programmatically for multi-select"/>
+    <testcase name="should call select2(data, []) for falsey values" time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element when model is changed programmatically for multi-select"/>
+    <testcase name="should use any formatters if present (select - single select)" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should use any formatters if present (input multi select - falsey value)" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should use any formatters if present (input multi select)" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should use any formatters if present (input - single select - object)" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should use any formatters if present (input - single select - non object)" time="0.01" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should not set the default value using scope.$eval" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should expect a default value to be set with a call to the render method" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element consumers of ngModel should correctly use $viewValue"/>
+    <testcase name="should set the model when the user selects an item" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element"/>
+    <testcase name="updated the view when model changes with complex object" time="0.006" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element"/>
+    <testcase name="Initialize the select2 view based on list of strings." time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element simple_tags"/>
+    <testcase name="When list is empty select2 view model is also initialized as empty" time="0.004" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element simple_tags"/>
+    <testcase name="Updating the model with a string will update the select2 view model." time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element simple_tags"/>
+    <testcase name="Updating the select2 model will update AngularJS model with a string." time="0.007" classname="unit PhantomJS 1.9.7 (Mac OS X).uiSelect2 with an &lt;input&gt; element simple_tags"/>
+    <testcase name="should be an array" time="0.005" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List a corporate project list"/>
+    <testcase name="should be an array" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List a operator project list"/>
+    <testcase name="should contain an array of roles" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role list"/>
+    <testcase name="should contain an array of skills" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role"/>
+    <testcase name="should contain an id" time="0.009" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role"/>
+    <testcase name="should contain a name" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role"/>
+    <testcase name="should contain an id" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role skill"/>
+    <testcase name="should contain a name" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Role List a operator role skill"/>
+    <testcase name="should return the correct css class based on a skill status" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).Skill Status"/>
+    <testcase name="should not set class if the status does not match" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Skill Status"/>
+    <testcase name="should contain a user id" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Who Am I service"/>
+    <testcase name="should contain an account id" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).Who Am I service"/>
+    <testcase name="should contain a name" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Who Am I service"/>
+    <testcase name="should contain a type" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Who Am I service"/>
+    <testcase name="should set status" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Employee"/>
+    <testcase name="should be an array" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).Employee Assignments"/>
+    <testcase name="should have a name" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Employee Assignments"/>
+    <testcase name="should have a status" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Employee Assignments"/>
+    <testcase name="should use the email as a slug if no one defined" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Employee"/>
+    <testcase name="should have an id" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Employee"/>
+    <testcase name="should have a slug" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Employee"/>
+    <testcase name="should return a list of sites" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Assignment Page request for corporate site information"/>
+    <testcase name="should return individual site info if a corporate user" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Assignment Page request for corporate site information"/>
+    <testcase name="should return the name of selected_site" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Assignment Page request for corporate site information"/>
+    <testcase name="should return operator summary if site operator user" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Assignment Page request for operator site information"/>
+    <testcase name="should return a list of sites" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Dashboard request for corporate site information"/>
+    <testcase name="should return individual site info if a corporate user" time="0.012" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Dashboard request for corporate site information"/>
+    <testcase name="should return operator summary if site operator user" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Dashboard request for operator site information"/>
+    <testcase name="should calculate a percentage" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Dashboard call to calculateStatusPercentage"/>
+    <testcase name="should return a progress bar object" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).The Operator Dashboard call to getProjectStatus"/>
+    <testcase name="should have an id" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List Employee Info"/>
+    <testcase name="should have a status" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List Employee Info"/>
+    <testcase name="should have a first name" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List Employee Info"/>
+    <testcase name="should have a last name" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List Employee Info"/>
+    <testcase name="should have a list of companies" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List Employee Info"/>
+    <testcase name="should have an id" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List An Employee Company list"/>
+    <testcase name="should have a title" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List An Employee Company list"/>
+    <testcase name="should have a name" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).A Project List An Employee Company list"/>
+    <testcase name="should set the view type to role" time="0.006" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee"/>
+    <testcase name="should set the view type to project" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee"/>
+    <testcase name="should set the view type to all" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee"/>
+    <testcase name="should load the menu items with projects and roles" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee"/>
+    <testcase name="should have a list of sites" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Corporate user"/>
+    <testcase name="should select the first site in the list if no id provided" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Corporate user"/>
+    <testcase name="should select the site provided in route params" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Corporate user"/>
+    <testcase name="should not redirect on the base page when no site id is provided" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Corporate user"/>
+    <testcase name="should have site and corp required skills" time="0.018" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Role model"/>
+    <testcase name="should have the skill list for a selected role" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Role model"/>
+    <testcase name="should set the selected menu item to role name" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Role model"/>
+    <testcase name="should set the employee status icon to the role status" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Role model"/>
+    <testcase name="should set the view title to the role name" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Role model"/>
+    <testcase name="should have project, site and corp required skills" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Project model"/>
+    <testcase name="should have the skill list for a selected project" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Project model"/>
+    <testcase name="should have the selected menu item to project name" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Project model"/>
+    <testcase name="should set the employee status icon to the project status" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Project model"/>
+    <testcase name="should set the view title to the project name" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Project model"/>
+    <testcase name="should have all project, site and corp required skills" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Default model"/>
+    <testcase name="should set the default selected menu item" time="0.003" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Employee Default model"/>
+    <testcase name="should have the skill data" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model contains data that"/>
+    <testcase name="should have all role data" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model contains data that"/>
+    <testcase name="should have all project data" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model contains data that"/>
+    <testcase name="should get all project, corp, and site requiredskills" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model required skills"/>
+    <testcase name="should get all project required skills" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model required skills"/>
+    <testcase name="should get all project required skills by slug" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model required skills"/>
+    <testcase name="should get project required skills AND site required by slug" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model required skills"/>
+    <testcase name="should get all site and corp required skills" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model required skills"/>
+    <testcase name="should return only the selected role by slug" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model getting individual roles/projects"/>
+    <testcase name="should return the selected role name by slug" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model getting individual roles/projects"/>
+    <testcase name="should return only the selected project by slug" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model getting individual roles/projects"/>
+    <testcase name="should return only the selected project name by slug" time="0" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Skill Data Model getting individual roles/projects"/>
+    <testcase name="should set orderByField to &apos;site&apos;" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Project List for a corporate user"/>
+    <testcase name="should have the default orderByField" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Project List for a operator user"/>
+    <testcase name="should have roles" time="0.013" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Role List"/>
+    <testcase name="should have a user object" time="0.002" classname="unit PhantomJS 1.9.7 (Mac OS X).An Operator Role List"/>
+    <testcase name="should initialize with &quot;All&quot; selected by defaut" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Menu Filter Controller"/>
+    <testcase name="should set selected item" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Menu Filter Controller"/>
+    <testcase name="should be true when the current selection is the same as selected" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Menu Filter Controller isSelected"/>
+    <testcase name="should be false when current selection is NOT the same as selected" time="0.001" classname="unit PhantomJS 1.9.7 (Mac OS X).Menu Filter Controller isSelected"/>
+    <system-out><![CDATA[
+]]></system-out>
+    <system-err/>
+  </testsuite>
+</testsuites>
