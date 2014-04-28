@@ -80,7 +80,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private boolean autoAddClientSite = true;
 //
     private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
-//    private List<ContractorOperator> operators = new ArrayList<ContractorOperator>();
+    private List<ContractorOperator> operators = new ArrayList<>();
     private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
 //    private List<Certificate> certificates = new ArrayList<Certificate>();
 //    private List<JobContractor> jobSites = new ArrayList<JobContractor>();
@@ -131,15 +131,15 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
         this.audits = audits;
     }
 
-//    @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
-//    public List<ContractorOperator> getOperators() {
-//        return this.operators;
-//    }
-//
-//    public void setOperators(List<ContractorOperator> operators) {
-//        this.operators = operators;
-//    }
-//
+    @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.REMOVE, CascadeType.REFRESH})
+    public List<ContractorOperator> getOperators() {
+        return this.operators;
+    }
+
+    public void setOperators(List<ContractorOperator> operators) {
+        this.operators = operators;
+    }
+
 //    @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 //    public List<InsuranceCriteriaContractorOperator> getInsuranceCriteriaContractorOperators() {
 //        return insuranceCriteriaContractorOperators;

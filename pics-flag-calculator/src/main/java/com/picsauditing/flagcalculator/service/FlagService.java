@@ -15,6 +15,17 @@ public class FlagService {
         return flagDataOverride.getForceEnd().after(new Date());
     }
 
+    public static List<FlagCriteriaOperator> getFlagCriteriaInherited(OperatorAccount operatorAccount, boolean insurance) {
+        if (insurance) {
+            return operatorAccount.getInheritFlagCriteria().getFlagCriteria();
+        } else {
+            if (operatorAccount.getInheritFlagCriteria() == null)
+                return new ArrayList<>();
+            else
+                return operatorAccount.getInheritFlagCriteria().getFlagCriteria();
+        }
+    }
+
     public static List<FlagCriteriaOperator> getFlagCriteriaInherited(OperatorAccount operatorAccount) {
         List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
 
@@ -97,6 +108,17 @@ public class FlagService {
         }
     }
 
+    public static void updateFlagData(FlagData toUpdate, FlagData fromUpdate) {
+        if (!toUpdate.equals(fromUpdate))
+            // Don't update flag data for the wrong contractor/operator/criteria
+            return;
+
+        if (!toUpdate.getFlag().equals(fromUpdate.getFlag())) {
+            toUpdate.setFlag(fromUpdate.getFlag());
+            toUpdate.setAuditColumns(new User(User.SYSTEM));
+        }
+    }
+
     /**
      * Uses the OshaVisitor to gather all the data
      *
@@ -123,5 +145,31 @@ public class FlagService {
         }
 
         return oshaAudits;
+    }
+
+    public static ContractorOperator getForceOverallFlag(ContractorOperator contractorOperator) {
+        if (isForcedFlag(contractorOperator))
+            return contractorOperator;
+        if (contractorOperator.getOperatorAccount().getCorporateFacilities().size() > 0) {
+            for (Facility facility : contractorOperator.getOperatorAccount().getCorporateFacilities()) {
+                for (ContractorOperator conOper : contractorOperator.getContractorAccount().getOperators()) {
+                    if (facility.getCorporate().equals(conOper.getOperatorAccount()) && isForcedFlag(conOper))
+                        return conOper;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static boolean isForcedFlag(ContractorOperator contractorOperator) {
+        if (contractorOperator.getForceFlag() == null || contractorOperator.getForceEnd() == null) {
+            return false;
+        }
+
+        // We have a forced flag, but make sure it's still in effect
+        if (contractorOperator.getForceEnd().before(new Date())) {
+            return false;
+        }
+        return true;
     }
 }

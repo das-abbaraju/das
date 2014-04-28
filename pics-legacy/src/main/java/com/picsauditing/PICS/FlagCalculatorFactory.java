@@ -3,6 +3,7 @@ package com.picsauditing.PICS;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.util.SpringUtils;
 
 import javax.persistence.EntityManager;
@@ -10,7 +11,9 @@ import java.util.*;
 
 public class FlagCalculatorFactory {
 
-    public static FlagCalculator flagCalculator(ContractorOperator co) {
+    private static EntityManager entityManager;
+
+    public static FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
 
         if (newFlagCalculatorIsEnabled()) {
@@ -21,6 +24,8 @@ public class FlagCalculatorFactory {
             FlagDataCalculator flagDataCalculator =  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), overrides);
             flagDataCalculator.setOperator(co.getOperatorAccount());
             flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
+            flagDataCalculator.setContractorOperator(co);
+            flagDataCalculator.setMessagePublisherService(messagePublisherService);
             return flagDataCalculator;
         }
     }
@@ -90,7 +95,13 @@ public class FlagCalculatorFactory {
     }
 
     private static EntityManager entityManager() {
-        return SpringUtils.getBean("entityManagerFactory");
+        if (entityManager == null)
+            return SpringUtils.getBean("entityManagerFactory");
+        else
+            return entityManager;
     }
 
+    public static void setEntityManager(EntityManager entityManager) {
+        FlagCalculatorFactory.entityManager = entityManager;
+    }
 }

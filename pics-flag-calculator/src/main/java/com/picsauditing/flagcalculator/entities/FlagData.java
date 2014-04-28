@@ -38,12 +38,12 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
         this.contractor = contractor;
     }
 
-//    @ManyToOne
-//    @JoinColumn(name = "opID", nullable = false)
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
+    @ManyToOne
+    @JoinColumn(name = "opID", nullable = false)
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
     public void setOperator(OperatorAccount operator) {
         this.operator = operator;
     }
@@ -116,22 +116,22 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
         this.criteriaContractor = criteriaContractor;
     }
 
-//    @Override
-//    public boolean equals(Object other) {
-//        FlagData fd = (FlagData) other;
-//
-//        if (id > 0 && fd.getId() > 0)
-//            return super.equals(other);
-//
-//        if (!contractor.equals(fd.getContractor()))
-//            return false;
-//        if (!operator.equals(fd.getOperator()))
-//            return false;
-//        if (!criteria.equals(fd.getCriteria()))
-//            return false;
-//        return true;
-//    }
-//
+    @Override
+    public boolean equals(Object other) {
+        FlagData fd = (FlagData) other;
+
+        if (id > 0 && fd.getId() > 0)
+            return super.equals(other);
+
+        if (!contractor.equals(fd.getContractor()))
+            return false;
+        if (!operator.equals(fd.getOperator()))
+            return false;
+        if (!criteria.equals(fd.getCriteria()))
+            return false;
+        return true;
+    }
+
 //    @Override
 //    public void update(UpdatableListItem change) {
 //        FlagData fd = (FlagData) change;

@@ -1,7 +1,9 @@
 package com.picsauditing.flagcalculator.dao;
 
 import com.picsauditing.flagcalculator.entities.FlagCriteria;
+import com.picsauditing.flagcalculator.entities.FlagData;
 import com.picsauditing.flagcalculator.entities.Naics;
+import com.picsauditing.flagcalculator.service.FlagService;
 import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -129,4 +131,35 @@ public class FlagCalculatorDAO extends PicsDAO {
 
         return resultMap;
     }
+
+    public Collection<FlagData> insertUpdateDeleteManaged(Collection<FlagData> dbLinkedList,
+                                                                        Collection<FlagData> changes) {
+        // update/delete
+        Iterator<FlagData> dbIterator = dbLinkedList.iterator();
+        Collection<FlagData> removalList = new ArrayList<>();
+
+        while (dbIterator.hasNext()) {
+            FlagData fromDB = dbIterator.next();
+            FlagData found = null;
+
+            for (FlagData change : changes) {
+                if (fromDB.equals(change)) {
+                    FlagService.updateFlagData(fromDB, change);
+                    found = change;
+                }
+            }
+
+            if (found != null) {
+                changes.remove(found); // update was performed
+            } else {
+                removalList.add(fromDB);
+            }
+        }
+
+        // merging remaining changes (updates/inserts)
+        dbLinkedList.addAll(changes);
+
+        return removalList;
+    }
+
 }

@@ -51,8 +51,8 @@ public class OperatorAccount extends Account {
 //    private String salesForceID;
 //    private boolean requiresEmployeeGuard;
 //
-//    private List<Facility> corporateFacilities = new ArrayList<Facility>();
-    private List<Facility> operatorFacilities = new ArrayList<Facility>();
+    private List<Facility> corporateFacilities = new ArrayList<>();
+    private List<Facility> operatorFacilities = new ArrayList<>();
 //    private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 //    private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 //    private List<OperatorAccount> childOperators = new ArrayList<OperatorAccount>();
@@ -282,17 +282,6 @@ public class OperatorAccount extends Account {
 //        this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 //    }
 //
-//    @Transient
-//    public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
-//        if (insurance) {
-//            return inheritInsuranceCriteria.getFlagCriteria();
-//        } else {
-//            if (inheritFlagCriteria == null)
-//                return new ArrayList<FlagCriteriaOperator>();
-//            else
-//                return inheritFlagCriteria.getFlagCriteria();
-//        }
-//    }
 //    @OneToMany(mappedBy = "account")
 //    public List<OperatorForm> getOperatorForms() {
 //        return operatorForms;
@@ -315,17 +304,17 @@ public class OperatorAccount extends Account {
 //        return forms;
 //    }
 //
-//    @OneToMany(mappedBy = "operator", orphanRemoval = true)
-//    @Where(clause = "type IS NULL")
-//    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-//    public List<Facility> getCorporateFacilities() {
-//        return corporateFacilities;
-//    }
-//
-//    public void setCorporateFacilities(List<Facility> corporateFacilities) {
-//        this.corporateFacilities = corporateFacilities;
-//    }
-//
+    @OneToMany(mappedBy = "operator", orphanRemoval = true)
+    @Where(clause = "type IS NULL")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    public List<Facility> getCorporateFacilities() {
+        return corporateFacilities;
+    }
+
+    public void setCorporateFacilities(List<Facility> corporateFacilities) {
+        this.corporateFacilities = corporateFacilities;
+    }
+
 //    /**
 //     * @return a list of all "associated" operator accounts associated via the
 //     *         facilities intersection table for example, BASF would contain

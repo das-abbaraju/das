@@ -28,7 +28,7 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //    // Assessment Centers
 //    static public int ASSESSMENT_NCCER = 11069;
 //
-//    protected String name;
+    protected String name;
 //    protected String nameIndex;
 //    // private char active;
     protected AccountStatus status = AccountStatus.Pending;
@@ -102,17 +102,15 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //        return Luhn.addCheckDigit(value.toString());
 //    }
 //
-//    @Column(name = "name", nullable = false, length = 50)
-//    @IndexableField(type = IndexValueType.MULTISTRINGTYPE, weight = 7)
-//    @ReportField(importance = FieldImportance.Required, width = 250)
-//    public String getName() {
-//        return this.name;
-//    }
-//
-//    public void setName(String name) {
-//        this.name = name;
-//    }
-//
+    @Column(name = "name", nullable = false, length = 50)
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 //    @Column(name = "nameIndex", length = 50)
 //    public String getNameIndex() {
 //        return this.nameIndex;

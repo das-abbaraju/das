@@ -23,22 +23,22 @@ public enum AccountStatus {
 //        return this == Active;
 //    }
 //
-//    public boolean isPending() {
-//        return this == Pending;
-//    }
-//
+    public boolean isPending() {
+        return this == Pending;
+    }
+
 //    public boolean isDemo() {
 //        return this == Demo;
 //    }
 //
-//    public boolean isDeleted() {
-//        return this == Deleted;
-//    }
-//
-//    public boolean isDeactivated() {
-//        return this == Deactivated;
-//    }
-//
+    public boolean isDeleted() {
+        return this == Deleted;
+    }
+
+    public boolean isDeactivated() {
+        return this == Deactivated;
+    }
+
 //    public boolean isDeclinedDeletedDeactivated() {
 //        return this == Deleted || this == Deactivated || this == Declined;
 //    }
@@ -75,11 +75,10 @@ public enum AccountStatus {
 //        return this == Active || this == Demo;
 //    }
 //
-//
-//    public boolean isDeclined() {
-//        return this == Declined;
-//    }
-//
+    public boolean isDeclined() {
+        return this == Declined;
+    }
+
 //    @Transient
 //    @Override
 //    public String getI18nKey() {
