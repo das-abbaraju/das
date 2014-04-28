@@ -73,19 +73,6 @@ abstract public class PicsDAO {
 //		}
 //	}
 //
-<<<<<<< HEAD
-//	@Transactional(propagation = Propagation.NESTED)
-//	public void remove(BaseTable row) {
-//		if (row != null) {
-//			em.remove(row);
-//		}
-//	}
-//
-	public <T extends BaseTable> T find(Class<T> clazz, int id) {
-		return em.find(clazz, id);
-	}
-
-=======
 	@Transactional(propagation = Propagation.NESTED)
 	public void remove(BaseTable row) {
 		if (row != null) {
@@ -93,12 +80,11 @@ abstract public class PicsDAO {
 		}
 	}
 
-//	public <T extends BaseTable> T find(Class<T> clazz, int id) {
-//		return em.find(clazz, id);
-//	}
-//
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
-//	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
+    public <T extends BaseTable> T find(Class<T> clazz, int id) {
+        return em.find(clazz, id);
+    }
+
+    //	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
 //		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 //		return q.getResultList();
 //	}

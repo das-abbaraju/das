@@ -6,10 +6,7 @@ import org.hibernate.annotations.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.*;
-<<<<<<< HEAD
-=======
 import javax.persistence.Table;
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -67,11 +64,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //    private List<Payment> payments = new ArrayList<Payment>();
 //    private List<Refund> refunds = new ArrayList<Refund>();
 //    private List<InvoiceCreditMemo> creditMemos = new ArrayList<>();
-<<<<<<< HEAD
     private Set<FlagCriteriaContractor> flagCriteria = new HashSet<>();
-=======
-    private Set<FlagCriteriaContractor> flagCriteria = new HashSet<FlagCriteriaContractor>();
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 //    private Set<FlagDataOverride> flagDataOverrides = new HashSet<FlagDataOverride>();
 //
 //    private int needsRecalculation;
@@ -1108,11 +1101,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
     public void setFlagCriteria(Set<FlagCriteriaContractor> flagCriteria) {
         this.flagCriteria = flagCriteria;
     }
-<<<<<<< HEAD
-//
-=======
 
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 //    @OneToMany(mappedBy = "contractor", cascade = {CascadeType.ALL})
 //    public Set<FlagDataOverride> getFlagDataOverrides() {
 //        return flagDataOverrides;

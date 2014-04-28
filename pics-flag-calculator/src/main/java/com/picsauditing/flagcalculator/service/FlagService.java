@@ -1,15 +1,8 @@
 package com.picsauditing.flagcalculator.service;
 
-<<<<<<< HEAD
-import com.picsauditing.flagcalculator.entities.FlagCriteriaOperator;
-import com.picsauditing.flagcalculator.entities.FlagDataOverride;
-import com.picsauditing.flagcalculator.entities.OperatorAccount;
-import com.picsauditing.flagcalculator.entities.YesNo;
-import com.picsauditing.flagcalculator.util.DateBean;
-=======
 import com.picsauditing.flagcalculator.entities.*;
+import com.picsauditing.flagcalculator.util.DateBean;
 import org.apache.commons.lang.StringUtils;
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +15,6 @@ public class FlagService {
         return flagDataOverride.getForceEnd().after(new Date());
     }
 
-<<<<<<< HEAD
     public static List<FlagCriteriaOperator> getFlagCriteriaInherited(OperatorAccount operatorAccount) {
         List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
 
@@ -70,7 +62,8 @@ public class FlagService {
         }
 
         return criteriaList;
-=======
+    }
+
     public static Integer includeExcess(FlagCriteria flagCriteria) {
         if (!flagCriteria.isInsurance() || flagCriteria.getOptionCode() == null) {
             return null;
@@ -130,7 +123,5 @@ public class FlagService {
         }
 
         return oshaAudits;
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
     }
-
 }

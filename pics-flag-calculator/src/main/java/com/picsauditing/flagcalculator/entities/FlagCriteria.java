@@ -32,13 +32,8 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     private String dataType = "string";
     private boolean flaggableWhenMissing = false;
     private boolean insurance = false;
-<<<<<<< HEAD
-//    private FlagCriteriaOptionCode optionCode;
-//
-=======
     private FlagCriteriaOptionCode optionCode;
 
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
     public static final String BOOLEAN = "boolean";
     public static final String NUMBER = "number";
     public static final String DATE = "date";
@@ -50,10 +45,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
 //    public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
 //
     @Enumerated(EnumType.STRING)
-<<<<<<< HEAD
-//    @ReportField(i18nKeyPrefix = "FlagCriteria.Category", type = FieldType.String, importance = FieldImportance.Required)
-=======
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
     @Column(name = "category")
     public FlagCriteriaCategory getCategory() {
         return category;
@@ -83,10 +74,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
-<<<<<<< HEAD
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
-=======
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
     @Enumerated(EnumType.STRING)
     public OshaType getOshaType() {
         return oshaType;
@@ -220,10 +207,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.flaggableWhenMissing = flaggableWhenMissing;
     }
 
-<<<<<<< HEAD
-//    @ReportField(type = FieldType.Boolean, importance = FieldImportance.Low)
-=======
->>>>>>> f1a00f0... TA1397 added a majority of the C-ETL code, still working through the different Statistics
     public boolean isInsurance() {
         return insurance;
     }
