@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.models.factories.RoleStatusModelFactory;
 import com.picsauditing.employeeguard.models.factories.SkillStatusModelFactory;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +26,10 @@ public class LiveIDEmployeeService {
 	@Autowired
 	private EmployeeSiteStatusProcess employeeSiteStatusProcess;
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeService;
 
-	public LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployee(String id, int siteId) {
-		Employee employee = employeeService.findEmployee(id);
+	public LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployee(final int id, final int siteId) {
+		Employee employee = employeeService.find(id);
 		Collection<Integer> parentAccountIds = accountService.extractParentAccountIds(siteId);
 
 		//-- Rollup collections but they are still tied to entities
@@ -42,7 +43,6 @@ public class LiveIDEmployeeService {
 				essr.getSiteAndCorporateRequiredSkills(),
 				essr.getSkillStatus());
 		RequiredSkills corpSiteReqdSkills = new RequiredSkills(reqdSkills);
-
 
 		//-- Status of project skills
 		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusMap = skillStatusModelFactory.
@@ -76,7 +76,6 @@ public class LiveIDEmployeeService {
 				essr.getProjectStatuses()
 		);
 
-
 		List<RoleStatusModel> roleStatusModelList = roleStatusModelFactory.create(
 				essr.getSiteAssignmentRoles(),
 				roleIdToSkillStatusMap,
@@ -84,13 +83,12 @@ public class LiveIDEmployeeService {
 
 		LiveIDEmployeeModelFactory.LiveIDEmployeeModel liveIDEmployeeModel = ModelFactory.getLiveIDEmployeeModelFactory().prepareLiveIDEmployeeModel(corpSiteReqdSkills, projectStatusModelList, roleStatusModelList);
 
-
 		return liveIDEmployeeModel;
-
 	}
 
 
-	private Map<Integer, RequiredSkills> createProjectReqdSkillsMapByProjectId(Map<Project, Set<AccountSkill>> map, EmployeeSiteStatusResult essr) {
+	private Map<Integer, RequiredSkills> createProjectReqdSkillsMapByProjectId(final Map<Project, Set<AccountSkill>> map,
+																			   final EmployeeSiteStatusResult essr) {
 		Map<Integer, RequiredSkills> newMap = new HashMap<>();
 
 		SkillStatusModelFactory skillStatusModelFactory = ModelFactory.getSkillStatusModelFactory();
