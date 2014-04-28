@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.AccountFilter;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;

@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;

@@ -11,7 +11,6 @@ import com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.external.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;

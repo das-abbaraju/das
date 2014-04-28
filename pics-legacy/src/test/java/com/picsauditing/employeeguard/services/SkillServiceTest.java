@@ -6,7 +6,6 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.util.Strings;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
@@ -21,7 +20,6 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 public class SkillServiceTest {
 

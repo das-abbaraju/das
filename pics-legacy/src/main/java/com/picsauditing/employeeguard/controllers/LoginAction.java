@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.LoginService;
 import com.picsauditing.employeeguard.services.ProfileService;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.security.SessionCookie;

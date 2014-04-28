@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
 import com.picsauditing.employeeguard.models.ProfileModel;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;

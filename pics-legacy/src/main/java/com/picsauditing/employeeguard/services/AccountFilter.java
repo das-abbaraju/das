@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.provisioning.ProductSubscriptionService;

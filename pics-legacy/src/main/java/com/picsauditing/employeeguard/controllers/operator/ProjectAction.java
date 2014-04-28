@@ -21,7 +21,7 @@ import com.picsauditing.employeeguard.models.ProjectModel;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.validators.project.ProjectFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;

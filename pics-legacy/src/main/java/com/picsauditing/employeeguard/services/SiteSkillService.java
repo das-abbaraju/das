@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.SiteSkill;
 import com.picsauditing.employeeguard.models.AccountModel;
-import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import org.apache.commons.collections.CollectionUtils;

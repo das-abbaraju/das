@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.models.AccountModel;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.viewmodel.IdNameModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;

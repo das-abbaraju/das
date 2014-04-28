@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.forms.operator.ProjectForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectInfo;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;

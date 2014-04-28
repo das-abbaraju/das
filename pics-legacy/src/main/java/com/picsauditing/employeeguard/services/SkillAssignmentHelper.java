@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.daos.AccountSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.util.generic.GenericPredicate;

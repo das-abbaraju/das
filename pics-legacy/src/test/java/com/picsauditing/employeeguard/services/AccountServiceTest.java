@@ -1,9 +1,11 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.AccountFilter;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
