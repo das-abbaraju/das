@@ -34,6 +34,7 @@ angular.module('PICS.employeeguard')
             });
         }
     });
+
     function loadSiteSkillList(site_id, employee_id) {
         $scope.selected_site = site_id;
 
@@ -146,6 +147,7 @@ angular.module('PICS.employeeguard')
     angular.extend($scope, {
         loadMenuItems: loadMenuItems,
         loadSkillList: loadSkillList,
+        loadSiteSkillList: loadSiteSkillList,
         selectViewModel: selectViewModel,
         getRoleModel: getRoleModel,
         getProjectModel: getProjectModel,
