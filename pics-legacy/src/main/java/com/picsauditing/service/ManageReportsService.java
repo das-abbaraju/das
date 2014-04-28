@@ -52,7 +52,19 @@ public class ManageReportsService {
 		if (Strings.isEmpty(searchTerm)) {
 			List<ReportInfo> reports = reportInfoProvider.findReportSuggestions(permissions);
 
-			reports.addAll(reportInfoProvider.findTenMostFavoritedReports(permissions, reports.size()));
+            List<ReportInfo> tenMostFavoritedReports = reportInfoProvider.findTenMostFavoritedReports(permissions);
+            for (ReportInfo favReport : tenMostFavoritedReports) {
+                boolean alreadyExists = false;
+                for (ReportInfo reportSuggestion : reports) {
+                    if (favReport.getId() == reportSuggestion.getId()) {
+                        alreadyExists = true;
+                    }
+                }
+
+                if (!alreadyExists && reports.size() <= 10) {
+                    reports.add(favReport);
+                }
+            }
 
 			return reports;
 		}

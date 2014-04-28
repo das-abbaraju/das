@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-
 <Context>
 	<Resource name="FeatureManager" auth="Container"
 		type="com.picsauditing.featuretoggle.FeatureManager"
 		factory="org.apache.naming.factory.BeanFactory"/> 
-		<!-- Read / Write Data Source -->
+	<!-- Read / Write Data Source -->
 	<Resource name="jdbc/pics" auth="Container"
-		type="javax.sql.DataSource" maxActive="20" maxIdle="10"
+		type="javax.sql.DataSource" maxActive="40" maxIdle="10"
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
-		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
-		username="pics" password="6boNepOx" 
 		validationQuery="SELECT 1"
 		testOnBorrow="true"
 		testOnReturn="false"
+		logAbandoned="true"
+		username="pics"
+		password="6boNepOx" 
+		driverClassName="com.mysql.jdbc.Driver" 
 		url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
 	<!-- Read Only Data Source -->
 	<Resource name="jdbc/picsro" auth="Container"
-		type="javax.sql.DataSource" maxActive="20" maxIdle="10"        
+		type="javax.sql.DataSource" maxActive="80" maxIdle="10"        
 		maxWait="10000" removeAbandoned="true" removeAbandonedTimeout="20"
 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
 		username="picsro" password="Ned0KwAn" 
@@ -29,18 +29,21 @@
 	<!-- Translations Data Source --> 
 	<Resource name="jdbc/translations" auth="Container"
 		driverClassName="com.mysql.jdbc.Driver" logAbandoned="true"
-		maxActive="20" maxIdle="10" maxWait="10000" minIdle="5"
+		maxActive="80" maxIdle="10" maxWait="10000" minIdle="5"
 		removeAbandoned="true" removeAbandonedTimeout="200"
 		type="javax.sql.DataSource"
 		url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_translations"
 		username="pics_translation" password="hAp2viNy"
 		validationInterval="30000" validationQuery="SELECT 1"/>
 	<!-- End Translations Data Source -->
+	<!-- Rabbit MQ Settings -->
 	<Resource auth="Container" name="amqp/pics" type="org.springframework.amqp.rabbit.connection.CachingConnectionFactory"
 		factory="com.picsauditing.jndi.RabbitMqInitialContextFactory" 
 		host="wolfram.picsauditing.com" 
 		port="5672"
 		username="pics" password="vEndLEn3"/> 
+	<!-- End Rabbit MQ Settings -->
+	<!-- Application User Session Manager Settings -->
 	<Manager className="org.apache.catalina.session.PersistentManager" 
 		saveOnRestart="false" minIdleSwap="-1" maxIdleSwap="600" maxIdleBackup="0">
 		<Store className="org.apache.catalina.session.JDBCStore" driverName="com.mysql.jdbc.Driver"
