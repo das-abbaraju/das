@@ -11,6 +11,8 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -32,17 +34,17 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AssignmentService assignmentService;
+	@Autowired
 	private EmployeeEntityService employeeEntityService;
-	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private SkillService skillService;
-	@Autowired
-	private SkillUsageLocator skillUsageLocator;
 	@Autowired
 	private RoleService roleService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
+	@Autowired
+	private SkillEntityService skillEntityService;
+	@Autowired
+	private SkillUsageLocator skillUsageLocator;
 
 	private int siteId;
 	private int roleId;
@@ -54,14 +56,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
 
 	public String status() {
-		site = accountService.getAccountById(NumberUtils.toInt(id));
-		siteAssignmentModel = buildSiteAssignmentModel();
+		site = accountService.getAccountById(getNumericId());
+		siteAssignmentModel = buildSiteAssignmentModel(site);
 
 		return "status";
 	}
 
-	private SiteAssignmentModel buildSiteAssignmentModel() {
-		List<Employee> employees = employeeService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
+	private SiteAssignmentModel buildSiteAssignmentModel(final AccountModel site) {
+		List<Employee> employees = employeeEntityService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
 		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
 
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
@@ -87,15 +89,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String assign() {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.assignEmployeeToRole(
-					siteId,
-					roleId,
-					employee,
-					new EntityAuditInfo.Builder()
-							.appUserId(permissions.getAppUserID())
-							.timestamp(DateBean.today())
-							.build());
+			assignmentService.assignEmployeeToSiteRole(siteId, roleId, getNumericId(),
+					new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today()).build());
 
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
@@ -108,8 +103,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassign() {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.unassignEmployeeFromRole(employee, roleId, siteId);
+			assignmentService.unassignEmployeeFromSiteRole(siteId, roleId, getNumericId());
+
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
@@ -121,8 +116,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassignAll() throws Exception {
 		try {
-			Employee employee = employeeService.findEmployee(id, permissions.getAccountId());
-			roleService.unassignEmployeeFromSite(employee, siteId);
+			assignmentService.unassignEmployeeFromSite(siteId, getNumericId());
+
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
 			LOG.error("Error unassigning employee id = " + id + " from site id = " + siteId, e);
@@ -143,17 +138,19 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private ContractorEmployeeRoleAssignmentMatrix buildRoleAssignmentMatrix(final Role corporateRole, final AccountModel site) {
 		int contractorId = permissions.getAccountId();
 
-		List<Employee> employees = employeeService.getEmployeesForAccount(contractorId);
+		List<Employee> employees = employeeEntityService.getEmployeesForAccount(contractorId);
 		List<ContractorEmployeeRoleAssignment> assignments = buildContractorEmployeeRoleAssignments(contractorId,
 				employees, corporateRole, site);
 		Collections.sort(assignments);
 
-		List<Employee> employeesAssignedToSite = employeeService.getEmployeesAssignedToSite(contractorId, site.getId());
+		List<Employee> employeesAssignedToSite = employeeEntityService.getEmployeesAssignedToSite(contractorId, site.getId());
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
 		List<AccountSkill> roleSkills = ExtractorUtil.extractList(corporateRole.getSkills(),
 				AccountSkillRole.SKILL_EXTRACTOR);
-		roleSkills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(site.getId()));
+
+		List<Integer> corporateAccountIds = accountService.getTopmostCorporateAccountIds(site.getId());
+		roleSkills.addAll(skillEntityService.getSiteAndCorporateRequiredSkills(site.getId(), corporateAccountIds));
 		roleSkills = ListUtil.removeDuplicatesAndSort(roleSkills);
 
 		return ViewModelFactory.getContractorEmployeeRoleAssignmentMatrixFactory()
@@ -161,16 +158,20 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	}
 
 	private List<ContractorEmployeeRoleAssignment> buildContractorEmployeeRoleAssignments(final int contractorId,
-	                                                                                      final List<Employee> employees,
-	                                                                                      final Role corporateRole,
-	                                                                                      final AccountModel site) {
+																						  final List<Employee> employees,
+																						  final Role corporateRole,
+																						  final AccountModel site) {
 		Map<Role, Set<Employee>> employeesAssignedToRole = roleService.getRoleAssignments(contractorId, site.getId());
-		List<AccountSkill> allSkillsForRole = skillService.getSkillsForRole(corporateRole);
-		allSkillsForRole.addAll(skillService.getRequiredSkillsForSiteAndCorporates(site.getId()));
-		allSkillsForRole = ListUtil.removeDuplicatesAndSort(allSkillsForRole);
+		Set<AccountSkill> allSkillsForRole = skillEntityService.getSkillsForRole(corporateRole);
+
+		List<Integer> corporateAccountIds = accountService.getTopmostCorporateAccountIds(site.getId());
+		allSkillsForRole.addAll(skillEntityService.getSiteAndCorporateRequiredSkills(site.getId(), corporateAccountIds));
+
+		List<AccountSkill> orderedSkills = new ArrayList<>(allSkillsForRole);
+		Collections.sort(orderedSkills);
 
 		Map<Employee, List<SkillStatus>> employeeSkillStatusMap = statusCalculatorService
-				.getEmployeeStatusRollUpForSkills(employees, allSkillsForRole);
+				.getEmployeeStatusRollUpForSkills(employees, orderedSkills);
 
 		return ViewModelFactory.getContractorEmployeeRoleAssignmentFactory()
 				.build(employees, employeesAssignedToRole.get(corporateRole), employeeSkillStatusMap);

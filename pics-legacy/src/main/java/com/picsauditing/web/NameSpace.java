@@ -4,6 +4,6 @@ public enum NameSpace {
 
 	PICSORG,
 	EMPLOYEEGUARD,
-	NONE
+	UNKNOWN
 
 }

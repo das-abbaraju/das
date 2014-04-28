@@ -66,7 +66,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyString(), anyInt());
+		verify(employeeService).findEmployee(anyInt(), anyInt());
 		verify(photoUtil).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).getPhotoStreamForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil, never()).getDefaultPhotoStream(anyString());
@@ -85,7 +85,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyString(), anyInt());
+		verify(employeeService).findEmployee(anyInt(), anyInt());
 		verify(photoUtil).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());
@@ -97,7 +97,7 @@ public class PhotoActionTest extends PicsActionTest {
 		photoAction.setContractorId(CONTRACTOR_ID);
 		photoAction.setId(ID);
 
-		when(employeeService.findEmployee(anyString(), anyInt())).thenThrow(NoResultException.class);
+		when(employeeService.findEmployee(anyInt(), anyInt())).thenThrow(NoResultException.class);
 		when(photoUtil.photoExistsForEmployee(any(Employee.class), anyInt(), anyString())).thenReturn(false);
 		when(photoUtil.photoExistsForProfile(any(Profile.class), anyString())).thenReturn(true);
 
@@ -106,7 +106,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyString(), anyInt());
+		verify(employeeService).findEmployee(anyInt(), anyInt());
 		verify(photoUtil, never()).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil, never()).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getDefaultPhotoStream(anyString());
@@ -123,7 +123,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService, never()).findEmployee(anyString(), anyInt());
+		verify(employeeService, never()).findEmployee(anyInt(), anyInt());
 		verify(photoUtil, never()).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());

@@ -16,19 +16,7 @@ public class AccountSkillRoleDAO extends AbstractBaseEntityDAO<AccountSkillRole>
         this.type = AccountSkillRole.class;
     }
 
-    public List<AccountSkillRole> findSkillsByRole(final Role role) {
-        TypedQuery query = em.createQuery("SELECT asr FROM AccountSkillRole asr " +
-                "JOIN asr.role AS r " +
-                "WHERE r = :role", AccountSkillRole.class);
-        query.setParameter("role", role);
-        return query.getResultList();
-    }
-
 	public List<AccountSkillRole> findSkillsByRoles(final Collection<Role> roles) {
-		if (CollectionUtils.isEmpty(roles)) {
-			return Collections.emptyList();
-		}
-
 		TypedQuery query = em.createQuery("SELECT asr FROM AccountSkillRole asr " +
 				"JOIN asr.role AS r " +
 				"WHERE r IN (:roles)", AccountSkillRole.class);

@@ -16,9 +16,14 @@ import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.process.EmployeeSkillData;
+import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.external.EmailService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -37,10 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @AuthenticationAware
 public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
@@ -52,6 +54,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private AccountService accountService;
 	@Autowired
 	private EmployeeService employeeService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private EmailService emailService;
 	@Autowired
@@ -70,6 +74,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
 	private ProjectRoleService projectRoleService;
+	@Autowired
+	private EmployeeSkillDataProcess employeeSkillDataProcess;
+	@Autowired
+	private AssignmentService assignmentService;
 
 	/* Forms */
 	@FormBinding("contractor_employee_create")
@@ -99,9 +107,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String index() {
 		if (isSearch(searchForm)) {
 			String searchTerm = searchForm.getSearchTerm();
-			employees = employeeService.search(searchTerm, permissions.getAccountId());
+			employees = employeeEntityService.search(searchTerm, permissions.getAccountId());
 		} else {
-			employees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+			employees = employeeEntityService.getEmployeesForAccount(permissions.getAccountId());
 		}
 
 		Collections.sort(employees);
@@ -113,7 +121,14 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public String show() throws PageNotFoundException {
 		loadEmployee();
-		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employee.getSkills());
+
+		Set<Integer> corporateAndSiteIds = employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
+		List<Integer> allSiteAndCorporateIds = accountService.getTopmostCorporateAccountIds(corporateAndSiteIds);
+		EmployeeSkillData employeeSkillData = employeeSkillDataProcess.buildEmployeeSkillData(employee, allSiteAndCorporateIds);
+		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employeeSkillData.getSkillStatuses());
+
+		Collections.sort(skillInfoList);
+
 		loadEmployeeAssignments(employee);
 
 		return SHOW;
@@ -150,7 +165,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@SkipValidation
 	public String photo() throws FileNotFoundException {
 		if (NumberUtils.toInt(id) > 0) {
-			employee = employeeService.findEmployee(id, permissions.getAccountId());
+			employee = employeeEntityService.find(getNumericId(), permissions.getAccountId());
 			inputStream = photoUtil.getPhotoStreamForEmployee(employee, permissions.getAccountId(), getFtpDir());
 
 			if (inputStream == null) {
@@ -173,11 +188,12 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		int accountId = permissions.getAccountId();
 		employee = employeeService.save(employeeForm, getFtpDir(), accountId, permissions.getAppUserID());
 
+		AccountModel accountModel = accountService.getAccountById(accountId);
 		EmailHash hash = emailHashService.createNewHash(employee);
-		emailService.sendEGWelcomeEmail(hash);
+		emailService.sendEGWelcomeEmail(hash, accountModel.getName());
 
 		if (addAnother(employeeForm)) {
-			return setUrlForRedirect("/employee-guard/contractor/employee/create");
+			return setUrlForRedirect("/employee-guard/contractor/employee/create"); // EmployeeCreateAction,
 		}
 
 		return redirectToList();
@@ -185,11 +201,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public String update() throws Exception {
 		if (employeePersonalForm != null) {
-			employee = employeeService.updatePersonal(employeePersonalForm, id, permissions.getAccountId(), permissions.getAppUserID());
+			employee = employeeService.updatePersonal(employeePersonalForm, getNumericId(), permissions.getAccountId(), permissions.getAppUserID());
 		} else if (employeeEmploymentForm != null) {
-			employee = employeeService.updateEmployment(employeeEmploymentForm, id, permissions.getAccountId(), permissions.getAppUserID());
+			employee = employeeService.updateEmployment(employeeEmploymentForm, getNumericId(), permissions.getAccountId(), permissions.getAppUserID());
 		} else if (employeePhotoForm != null) {
-			employee = employeeService.updatePhoto(employeePhotoForm, getFtpDir(), id, permissions.getAccountId());
+			employee = employeeEntityService.updatePhoto(employeePhotoForm, getFtpDir(), getNumericId(), permissions.getAccountId());
 		} else {
 			// Since there is another form that needs to be implemented for assignments, we will just redirect back for now.
 			return setUrlForRedirect("/employee-guard/contractor/employee/" + id);
@@ -199,7 +215,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String delete() throws Exception {
-		employeeService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
+		employeeEntityService.delete(getNumericId(), permissions.getAccountId());
 
 		return redirectToList();
 	}
@@ -210,7 +226,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private void loadEmployee() {
-		employee = employeeService.findEmployee(id, permissions.getAccountId());
+		employee = employeeEntityService.find(getNumericId(), permissions.getAccountId());
 	}
 
 	private void loadEmployeeAssignments(Employee employee) {

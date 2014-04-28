@@ -12,8 +12,9 @@ public class ProfileDAO extends AbstractBaseEntityDAO<Profile> {
         this.type = Profile.class;
     }
 
-	public Profile findByAppUserId(int appUserId) {
-		Query query = em.createNativeQuery("SELECT p.* FROM profile p WHERE p.appUserID = :appUserId", Profile.class);
+	public Profile findByAppUserId(final int appUserId) {
+		Query query = em.createNativeQuery("SELECT p.* FROM profile p " +
+				"WHERE p.appUserID = :appUserId", Profile.class);
 		query.setParameter("appUserId", appUserId);
 
 		try {

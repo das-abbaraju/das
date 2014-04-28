@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "account_employee")
 public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEmployee> {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -50,6 +51,13 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
 	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> skills = new ArrayList<>();
+
+	public SoftDeletedEmployee() {
+	}
+
+	public SoftDeletedEmployee(int id) {
+		this.id = id;
+	}
 
 	public int getId() {
 		return id;

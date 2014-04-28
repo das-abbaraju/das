@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.BaseEntity;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +55,11 @@ public abstract class AbstractBaseEntityDAO<E extends BaseEntity> {
 	}
 
 	@Transactional(propagation = Propagation.NESTED)
-	public void save(Collection<E> entities) {
+	public void save(final Collection<E> entities) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return;
+		}
+
 		for (E entity : entities) {
 			persistOrMerge(entity);
 		}
@@ -63,7 +68,11 @@ public abstract class AbstractBaseEntityDAO<E extends BaseEntity> {
 	}
 
     @Transactional(propagation = Propagation.NESTED)
-    public void delete(Collection<E> entities) {
+    public void delete(final Collection<E> entities) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return;
+		}
+
         for (E entity : entities) {
             em.remove(entity);
         }

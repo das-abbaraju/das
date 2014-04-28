@@ -20,7 +20,7 @@ public class Role extends AccountGroup implements Comparable<Role> {
 
 	private static final long serialVersionUID = 7074027976165804080L;
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
@@ -54,6 +54,10 @@ public class Role extends AccountGroup implements Comparable<Role> {
 		super.updatedDate = group.updatedDate;
 		super.deletedBy = group.deletedBy;
 		super.deletedDate = group.deletedDate;
+	}
+
+	public Role(int id) {
+		this.id = id;
 	}
 
 	public List<ProjectRole> getProjects() {

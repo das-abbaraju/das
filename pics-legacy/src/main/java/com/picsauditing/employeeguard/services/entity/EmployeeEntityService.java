@@ -53,10 +53,18 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
 		return employeeDAO.findByAccounts(accountIds);
 	}
 
 	public List<Employee> getEmployeesForProjects(final Collection<Project> projects) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyList();
+		}
+
 		return employeeDAO.findByProjects(projects);
 	}
 
@@ -120,6 +128,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 					}
 				}
 		);
+	}
+
+	public List<Employee> getEmployeesAssignedToSite(final int contractorId, final int siteId) {
+		return getEmployeesAssignedToSites(Arrays.asList(contractorId), Arrays.asList(siteId));
 	}
 
 	public List<Employee> getEmployeesAssignedToSite(final Collection<Integer> contractorIds, final int siteId) {
@@ -215,15 +227,30 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
+
+	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Employee employee) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployee(employee);
+		if (CollectionUtils.isEmpty(siteAssignments)) {
+			return Collections.emptySet();
+		}
+
+		Set<Integer> siteIds = new HashSet<>();
+		for (SiteAssignment siteAssignment : siteAssignments) {
+			siteIds.add(siteAssignment.getSiteId());
+		}
+
+		return siteIds;
+	}
+
 	/* All Search Methods */
 
 	@Override
 	public List<Employee> search(final String searchTerm, final int accountId) {
-		if (Strings.isNotEmpty(searchTerm)) {
-			return employeeDAO.search(searchTerm, accountId);
+		if (Strings.isEmpty(searchTerm)) {
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		return employeeDAO.search(searchTerm, accountId);
 	}
 
 	/* All Save Methods */
@@ -305,7 +332,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
