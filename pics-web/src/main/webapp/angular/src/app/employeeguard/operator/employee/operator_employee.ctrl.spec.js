@@ -251,7 +251,7 @@ describe('An Operator Employee', function() {
         });
 
         it("should select the site provided in route params", function() {
-            scope.loadSiteSkillList(2);
+            scope.loadEmployeeSkills(2);
             expect(scope.selected_site).toEqual(2);
         });
 

@@ -36,7 +36,6 @@
                     </div>
                     <div class="panel-body">
                         <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadSelectedSiteData(selected_site)">
-                            <option value="null">Select a site...</option>
                             <option ng-repeat="site in siteList | orderBy:'name'" ng-selected="{{ site.id === selected_site }}" value="{{ site.id }}">{{ site.name }}</option>
                         </select>
                     </div>
