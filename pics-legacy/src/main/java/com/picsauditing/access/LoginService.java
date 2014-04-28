@@ -1,5 +1,6 @@
 package com.picsauditing.access;
 
+import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
