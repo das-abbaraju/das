@@ -1,8 +1,11 @@
 package com.picsauditing.flagcalculator.entities;
 
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class OperatorAccount extends Account {
 //    private OperatorAccount inheritInsuranceCriteria;
 //
 //    private String doContractorsPay = "Yes";
-    private String canSeeInsurance = "No";
+    private YesNo canSeeInsurance = YesNo.No;
 //    private User insuranceAuditor;
 //    private YesNo isUserManualUploaded = YesNo.No;
 //    private YesNo approvesRelationships = YesNo.No;
@@ -48,8 +51,8 @@ public class OperatorAccount extends Account {
 //    private String salesForceID;
 //    private boolean requiresEmployeeGuard;
 //
-//    private List<Facility> corporateFacilities = new ArrayList<Facility>();
-    private List<Facility> operatorFacilities = new ArrayList<Facility>();
+    private List<Facility> corporateFacilities = new ArrayList<>();
+    private List<Facility> operatorFacilities = new ArrayList<>();
 //    private List<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
 //    private List<OperatorAccount> operatorChildren = new ArrayList<OperatorAccount>();
 //    private List<OperatorAccount> childOperators = new ArrayList<OperatorAccount>();
@@ -102,23 +105,21 @@ public class OperatorAccount extends Account {
 //        this.doContractorsPay = doContractorsPay;
 //    }
 //
+    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
     @Column(name = "canSeeInsurance", nullable = false)
-    public String getCanSeeInsurance() {
-        checkCanSeeInsurance();
+    @Enumerated(EnumType.STRING)
+    public YesNo getCanSeeInsurance() {
+        if (this.canSeeInsurance == null) {
+            this.canSeeInsurance = YesNo.No;
+        }
         return this.canSeeInsurance;
     }
 
-    private void checkCanSeeInsurance() {
-        if (this.canSeeInsurance == null) {
-            this.canSeeInsurance = "No";
-        }
-    }
-
-    public void setCanSeeInsurance(String canSeeInsurance) {
+    public void setCanSeeInsurance(YesNo canSeeInsurance) {
         this.canSeeInsurance = canSeeInsurance;
     }
 
-//    @ManyToOne(fetch = FetchType.LAZY)
+    //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "insuranceAuditor_id")
 //    public User getInsuranceAuditor() {
 //        return this.insuranceAuditor;
@@ -281,70 +282,6 @@ public class OperatorAccount extends Account {
 //        this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 //    }
 //
-//    @Transient
-//    public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
-//        if (insurance) {
-//            return inheritInsuranceCriteria.getFlagCriteria();
-//        } else {
-//            if (inheritFlagCriteria == null)
-//                return new ArrayList<FlagCriteriaOperator>();
-//            else
-//                return inheritFlagCriteria.getFlagCriteria();
-//        }
-//    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
-
-        criteriaList.addAll(getFlagAuditCriteriaInherited());
-        criteriaList.addAll(getFlagQuestionCriteriaInherited());
-
-        return criteriaList;
-    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagAuditCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
-
-        if (inheritFlagCriteria != null) {
-            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-                if (c.getCriteria().getAuditType() != null) {
-                    if (!c.getCriteria().getAuditType().getClassType().isPolicy() || "Yes".equals(canSeeInsurance)) {
-                        criteriaList.add(c);
-                    }
-                }
-            }
-        }
-
-        return criteriaList;
-    }
-
-    @Transient
-    public List<FlagCriteriaOperator> getFlagQuestionCriteriaInherited() {
-        List<FlagCriteriaOperator> criteriaList = new ArrayList<FlagCriteriaOperator>();
-
-        if (inheritFlagCriteria != null) {
-            for (FlagCriteriaOperator c : inheritFlagCriteria.getFlagCriteria()) {
-                if (c.getCriteria().getQuestion() != null) {
-                    if (c.getCriteria().getQuestion().isCurrent()) {
-                        if (!c.getCriteria().getQuestion().getAuditType().getClassType().isPolicy()
-                                || "Yes".equals(canSeeInsurance)) {
-                            criteriaList.add(c);
-                        }
-                    }
-                }
-                if (c.getCriteria().getOshaType() != null) {
-                    if (c.getCriteria().getOshaType().equals(oshaType)) {
-                        criteriaList.add(c);
-                    }
-                }
-            }
-        }
-
-        return criteriaList;
-    }
-
 //    @OneToMany(mappedBy = "account")
 //    public List<OperatorForm> getOperatorForms() {
 //        return operatorForms;
@@ -367,17 +304,17 @@ public class OperatorAccount extends Account {
 //        return forms;
 //    }
 //
-//    @OneToMany(mappedBy = "operator", orphanRemoval = true)
-//    @Where(clause = "type IS NULL")
-//    @Cascade(org.hibernate.annotations.CascadeType.ALL)
-//    public List<Facility> getCorporateFacilities() {
-//        return corporateFacilities;
-//    }
-//
-//    public void setCorporateFacilities(List<Facility> corporateFacilities) {
-//        this.corporateFacilities = corporateFacilities;
-//    }
-//
+    @OneToMany(mappedBy = "operator", orphanRemoval = true)
+    @Where(clause = "type IS NULL")
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    public List<Facility> getCorporateFacilities() {
+        return corporateFacilities;
+    }
+
+    public void setCorporateFacilities(List<Facility> corporateFacilities) {
+        this.corporateFacilities = corporateFacilities;
+    }
+
 //    /**
 //     * @return a list of all "associated" operator accounts associated via the
 //     *         facilities intersection table for example, BASF would contain

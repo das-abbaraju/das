@@ -34,6 +34,10 @@ public class AuditService {
     }
 
     public static AuditType getParentAuditType(AuditCategory category) {
+        if (category == null) {
+            return null;
+        }
+
         if (category.getAuditType() == null) {
             return getParentAuditType(category.getParent());
         }
@@ -97,10 +101,9 @@ public class AuditService {
     }
 
 
-    public static Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates(ContractorAccount contractorAccount) {
-        Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
-        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
-        YearList years = new YearList();
+    public static Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates(YearList years, ContractorAccount contractorAccount) {
+        Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<>();
+        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<>();
 
         for (ContractorAudit annualUpdate : getSortedAnnualUpdates(contractorAccount)) {
             if (hasCaoStatusAfter(annualUpdate, AuditStatus.Pending)) {
@@ -120,6 +123,28 @@ public class AuditService {
 
     }
 
+    public static Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates(ContractorAccount contractorAccount) {
+        Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
+        Map<Integer, ContractorAudit> annuals = new LinkedHashMap<Integer, ContractorAudit>();
+        YearList years = new YearList();
+
+        for (ContractorAudit annualUpdate : getSortedAnnualUpdates(contractorAccount)) {
+            if (AuditService.hasCaoStatus(annualUpdate, AuditStatus.Complete)) {
+                years.add(annualUpdate.getAuditFor());
+                annuals.put(Integer.parseInt(annualUpdate.getAuditFor()), annualUpdate);
+            }
+        }
+
+        completeAnnualUpdates.put(MultiYearScope.LastYearOnly,
+                annuals.get(years.getYearForScope(MultiYearScope.LastYearOnly)));
+        completeAnnualUpdates.put(MultiYearScope.TwoYearsAgo,
+                annuals.get(years.getYearForScope(MultiYearScope.TwoYearsAgo)));
+        completeAnnualUpdates.put(MultiYearScope.ThreeYearsAgo,
+                annuals.get(years.getYearForScope(MultiYearScope.ThreeYearsAgo)));
+
+        return completeAnnualUpdates;
+    }
+
     public static List<ContractorAudit> getAuditByAuditType(ContractorAccount contractorAccount, AuditType auditType) {
         List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();
 
@@ -130,5 +155,72 @@ public class AuditService {
         }
 
         return auditList;
+    }
+
+    public static Set<AuditCategory> getVisibleCategories(ContractorAudit contractorAudit) {
+        Set<AuditCategory> visibleCategories = new HashSet<>();
+        for (AuditCatData categoryData : contractorAudit.getCategories()) {
+            // Find all applicable categories
+            if (categoryData.isApplies()) {
+                visibleCategories.add(categoryData.getCategory());
+            }
+        }
+
+        // If the ancestors aren't applicable, then remove category
+        Iterator<AuditCategory> iterator = visibleCategories.iterator();
+        while (iterator.hasNext()) {
+            AuditCategory category = iterator.next();
+            AuditCategory parent = category.getParent();
+
+            // Breadcrumbs in case we have a cyclical relationship somewhere
+            Set<Integer> alreadyProcessed = new HashSet<>();
+            alreadyProcessed.add(category.getId());
+
+            while (parent != null) {
+                if (alreadyProcessed.contains(parent.getId())) {
+                    break;
+                }
+
+                if (!visibleCategories.contains(parent)) {
+                    iterator.remove();
+                    break;
+                }
+
+                alreadyProcessed.add(parent.getId());
+                parent = parent.getParent();
+            }
+        }
+
+        return visibleCategories;
+    }
+
+	public static boolean isMultipleChoice(AuditData auditData) {
+		return auditData.getQuestion() != null && auditData.getQuestion().getQuestionType().equals("MultipleChoice") && auditData.getQuestion().getOption() != null;
+	}
+
+    public static boolean isCategoryApplicable(ContractorAudit contractorAudit, int catID) {
+        for (AuditCatData acd : contractorAudit.getCategories()) {
+            if (acd.getCategory().getId() == catID && acd.isApplies())
+                return true;
+        }
+        return false;
+    }
+
+	public static boolean isVerified(AuditData auditData) {
+		return auditData.getDateVerified() != null;
+	}
+
+	public static void setVerified(AuditData auditData, boolean inValue) {
+        auditData.setDateVerified(inValue ? new Date() : null);
+	}
+
+    public static boolean isVisibleInAudit(AuditQuestion question, ContractorAudit audit) {
+        for (AuditCatData category : audit.getCategories()) {
+            if (category.getCategory().getId() == question.getCategory().getId()) {
+                return category.isApplies();
+            }
+        }
+
+        return false;
     }
 }

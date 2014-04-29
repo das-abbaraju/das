@@ -1,7 +1,9 @@
 package com.picsauditing.flagcalculator.dao;
 
 import com.picsauditing.flagcalculator.entities.FlagCriteria;
+import com.picsauditing.flagcalculator.entities.FlagData;
 import com.picsauditing.flagcalculator.entities.Naics;
+import com.picsauditing.flagcalculator.service.FlagService;
 import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.EntityManager;
@@ -10,12 +12,12 @@ import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class FlagCalculatorDAO extends PicsDAO {
-    private static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
+    public static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
             "FROM flag_criteria fc1 " +
             "left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' " +
             "left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' " +
             "WHERE (fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly')";
-    private static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
+    public static final String CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2 = "SELECT fc1.id as year1_id, fc2.id as year2_id, fc3.id as year3_id " +
             "FROM flag_criteria fc1 " +
             "left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' " +
             "left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' " +
@@ -84,21 +86,22 @@ public class FlagCalculatorDAO extends PicsDAO {
 
     public Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
         Query q = em.createNativeQuery(CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1);
-        List results = q.getResultList();
-        Map<Integer, List<Integer>> resultMap = new HashMap<>();
+        Map<Integer, List<Integer>> resultMap = extractMultiyearCriteriaIdQueryResults(q.getResultList());
+
+        q = em.createNativeQuery(CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2);
+        resultMap.putAll(extractMultiyearCriteriaIdQueryResults(q.getResultList()));
         return resultMap;
     }
 
-    /*
-    private Map<Integer, List<Integer>> extractMultiyearCriteriaIdQueryResults() {
+    private Map<Integer, List<Integer>> extractMultiyearCriteriaIdQueryResults(List<Object[]> results) {
+        Map<Integer, List<Integer>> resultMap = new HashMap<>();
         try {
-            List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
-            for (BasicDynaBean row : resultBDB) {
-                Integer year1 = (Integer) row.get("year1_id");
-                Integer year2 = (Integer) row.get("year2_id");
-                Integer year3 = (Integer) row.get("year3_id");
+            for (Object[] row : results) {
+                Integer year1 = (Integer) row[0];
+                Integer year2 = (Integer) row[1];
+                Integer year3 = (Integer) row[2];
 
-                ArrayList<Integer> list = new ArrayList<Integer>();
+                ArrayList<Integer> list = new ArrayList<>();
                 if (year1 != null) {
                     list.add(year1);
                 }
@@ -124,8 +127,39 @@ public class FlagCalculatorDAO extends PicsDAO {
                 }
             }
         } catch (Exception e) {
-            logger.error("Error while extracting multi-year criteria.", e);
         }
+
+        return resultMap;
     }
-    */
+
+    public Collection<FlagData> insertUpdateDeleteManaged(Collection<FlagData> dbLinkedList,
+                                                                        Collection<FlagData> changes) {
+        // update/delete
+        Iterator<FlagData> dbIterator = dbLinkedList.iterator();
+        Collection<FlagData> removalList = new ArrayList<>();
+
+        while (dbIterator.hasNext()) {
+            FlagData fromDB = dbIterator.next();
+            FlagData found = null;
+
+            for (FlagData change : changes) {
+                if (fromDB.equals(change)) {
+                    FlagService.updateFlagData(fromDB, change);
+                    found = change;
+                }
+            }
+
+            if (found != null) {
+                changes.remove(found); // update was performed
+            } else {
+                removalList.add(fromDB);
+            }
+        }
+
+        // merging remaining changes (updates/inserts)
+        dbLinkedList.addAll(changes);
+
+        return removalList;
+    }
+
 }

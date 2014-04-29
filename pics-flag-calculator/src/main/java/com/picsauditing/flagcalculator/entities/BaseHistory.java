@@ -51,22 +51,6 @@ public abstract class BaseHistory extends BaseTable {
 //		cal.set(Calendar.MILLISECOND, 0);
 //		return cal.getTime();
 //	}
-
-	@Transient
-	public boolean isCurrent() {
-		Date now = new Date();
-		return isCurrent(now);
-	}
-
-	@Transient
-	public boolean isCurrent(Date now) {
-		if (effectiveDate != null && effectiveDate.after(now))
-			return false;
-		if (expirationDate != null && expirationDate.before(now))
-			return false;
-		return true;
-	}
-
 //	@Override
 //	@SuppressWarnings("unchecked")
 //	public JSONObject toJSON(boolean full) {

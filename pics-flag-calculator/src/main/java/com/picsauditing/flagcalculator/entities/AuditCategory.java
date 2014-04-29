@@ -112,16 +112,6 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //
 //        return this;
 //    }
-
-    @Transient
-    public AuditType getParentAuditType() {
-        if (auditType == null) {
-            return parent.getParentAuditType();
-        }
-
-        return auditType;
-    }
-
 //    @Transient
 //    public String getName() {
 //        if (name != null) {

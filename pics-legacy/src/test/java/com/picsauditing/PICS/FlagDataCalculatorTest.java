@@ -1,20 +1,9 @@
 package com.picsauditing.PICS;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.FlagCriteriaDAO;
+import com.picsauditing.dao.FlagDataOverrideDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -28,13 +17,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.EntityFactory;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.FlagCriteriaDAO;
-import com.picsauditing.dao.FlagDataOverrideDAO;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "FlagDataCalculatorTest-context.xml" })
@@ -278,7 +268,7 @@ public class FlagDataCalculatorTest {
 		calculator.setOperatorCriteria(opCrits);
 
 		contractor.setStatus(AccountStatus.Pending);
-		List<FlagData> list = calculator.calculate();
+		List<com.picsauditing.flagcalculator.FlagData> list = calculator.calculate();
 		assertTrue(list.size() == 0);
 
 		contractor.setStatus(AccountStatus.Requested);
@@ -621,10 +611,11 @@ public class FlagDataCalculatorTest {
 		Whitebox.setInternalState(calculator, "flagCriteriaDao", flagCriteriaDao);
 		Whitebox.setInternalState(calculator, "dao", dao);
 
-		List<FlagData> list = calculator.calculate();
+		List<com.picsauditing.flagcalculator.FlagData> list = calculator.calculate();
 
 		assertTrue(list.size() == 1);
-		assertTrue(list.get(0).getFlag().equals(FlagColor.Red));
+        FlagData flagData = (FlagData)list.get(0);
+        assertTrue(flagData.getFlag().equals(FlagColor.Red));
 	}
 
     @Test
@@ -635,10 +626,11 @@ public class FlagDataCalculatorTest {
 
         when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA)).thenReturn(true);
 
-		List<FlagData> list = calculator.calculate();
+		List<com.picsauditing.flagcalculator.FlagData> list = calculator.calculate();
 
 		assertTrue(list.size() == 1);
-		assertTrue(list.get(0).getFlag().equals(FlagColor.Red));
+        FlagData flagData = (FlagData)list.get(0);
+		assertTrue(flagData.getFlag().equals(FlagColor.Red));
 	}
 
     @Test
@@ -649,10 +641,11 @@ public class FlagDataCalculatorTest {
 
         when(featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_RULES_BASED_INSURANCE_CRITERIA)).thenReturn(true);
 
-		List<FlagData> list = calculator.calculate();
+		List<com.picsauditing.flagcalculator.FlagData> list = calculator.calculate();
 
 		assertTrue(list.size() == 1);
-		assertTrue(list.get(0).getFlag().equals(FlagColor.Green));
+        FlagData flagData = (FlagData)list.get(0);
+        assertTrue(flagData.getFlag().equals(FlagColor.Green));
 	}
 
     private FlagDataCalculator setupRulesBasedInsuranceCriteria(String criteriaLimit, String rbicLimit) {
@@ -960,7 +953,7 @@ public class FlagDataCalculatorTest {
 	}
 	*/
 
-	private FlagData getSingle() {
+	private com.picsauditing.flagcalculator.FlagData getSingle() {
 		conCrits.set(0, fcCon);
 		opCrits.set(0, fcOp);
 		// FIXME: it is a badly designed test if you need to create a new item under test
@@ -974,7 +967,7 @@ public class FlagDataCalculatorTest {
 		calculator.setOperator(fcOp.getOperator());
 		calculator.setOperatorCriteria(opCrits);
 
-		List<FlagData> data = calculator.calculate();
+		List<com.picsauditing.flagcalculator.FlagData> data = calculator.calculate();
 
 		if (data.size() > 0)
 			return data.get(0);

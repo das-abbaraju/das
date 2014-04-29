@@ -73,18 +73,18 @@ abstract public class PicsDAO {
 //		}
 //	}
 //
-//	@Transactional(propagation = Propagation.NESTED)
-//	public void remove(BaseTable row) {
-//		if (row != null) {
-//			em.remove(row);
-//		}
-//	}
-//
-//	public <T extends BaseTable> T find(Class<T> clazz, int id) {
-//		return em.find(clazz, id);
-//	}
-//
-//	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
+	@Transactional(propagation = Propagation.NESTED)
+	public void remove(BaseTable row) {
+		if (row != null) {
+			em.remove(row);
+		}
+	}
+
+    public <T extends BaseTable> T find(Class<T> clazz, int id) {
+        return em.find(clazz, id);
+    }
+
+    //	public <T extends BaseTable> List<T> findAll(Class<T> clazz) {
 //		Query q = em.createQuery("FROM " + clazz.getName() + " t ORDER BY t.id");
 //		return q.getResultList();
 //	}
