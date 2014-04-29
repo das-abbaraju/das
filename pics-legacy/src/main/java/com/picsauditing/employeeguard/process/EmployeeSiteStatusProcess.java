@@ -80,13 +80,17 @@ public class EmployeeSiteStatusProcess {
 		roles.addAll(roleEntityService.getSiteRolesForEmployee(employee, siteId));
 
 		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(roles);
+
+		Map<Role, Set<AccountSkill>> allRoleSkills = new HashMap<>();
 		for (Role role : roles) {
 			if (!roleSkills.containsKey(role)) {
-				roleSkills.put(role, new HashSet<AccountSkill>());
+				allRoleSkills.put(role, new HashSet<AccountSkill>());
+			} else {
+				allRoleSkills.put(role, roleSkills.get(role));
 			}
 		}
 
-		employeeSiteStatusResult.setAllRoleSkills(roleSkills);
+		employeeSiteStatusResult.setAllRoleSkills(allRoleSkills);
 
 		return employeeSiteStatusResult;
 	}
