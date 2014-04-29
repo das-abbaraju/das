@@ -24,6 +24,24 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
+        .when('/employee-guard/operators/employees/:id/roles/:roleSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId/roles/:roleSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })

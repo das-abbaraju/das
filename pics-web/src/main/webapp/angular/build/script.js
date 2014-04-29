@@ -68274,6 +68274,9 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
         .when('/employee-guard/operators/employees/:id/sites/:siteId/projects/:projectSlug', {
             templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
+        .when('/employee-guard/operators/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })
@@ -68305,15 +68308,7 @@ angular.module('admin-projects', [])
     };
 });;angular.module('PICS.employeeguard')
 
-.controller('betaFeedbackCtrl', function ($scope, Feedback, $httpBackend) {
-    var success = {
-        "status": "request for feedback received"
-    };
-
-    $httpBackend.when('POST', '/employee-guard/beta/feedback').respond(function(method, url, data, headers) {
-        return [200, success];
-    });
-
+.controller('betaFeedbackCtrl', function ($scope, Feedback) {
     $scope.submitFeedback = function () {
         Feedback.save({
             feedbackComment: $scope.feedback
@@ -68435,13 +68430,24 @@ angular.module('admin-projects', [])
     };
 });;angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments) {
+.controller('changeLogCtrl', function ($scope, WhoAmI) {
+    WhoAmI.get(function(user) {
+        console.log('user');
+        $scope.user = user.type.toLowerCase();
+    });
+});;angular.module('PICS.employeeguard')
+
+.controller('operatorDashboardCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments, WhoAmI) {
     $scope.siteList = SiteList.query(function(sites) {
         if ($scope.hasSites(sites)) {
             $scope.loadSelectedSiteData(sites[0].id);
         } else {
             $scope.loadSelectedSiteData();
         }
+    });
+
+    WhoAmI.get(function(user) {
+        $scope.user = user.type.toLowerCase();
     });
 
     $scope.hasSites = function(sites) {

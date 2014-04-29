@@ -38,6 +38,9 @@
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="changelog" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
         <!-- Project -->
         <action name="projects/summary" class="com.picsauditing.employeeguard.controllers.operator.ProjectSummaryAction"
                 method="summary">

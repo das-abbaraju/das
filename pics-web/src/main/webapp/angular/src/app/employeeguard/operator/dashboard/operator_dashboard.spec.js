@@ -1,4 +1,8 @@
 describe('The Operator Dashboard', function() {
+
+    var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
+    var whoami_url = '/employee-guard/operators/who-am-i';
+
     var scope, $http, httpMock, result;
     var site_assignments = {
         "id": 1,
@@ -57,6 +61,13 @@ describe('The Operator Dashboard', function() {
         name: "Barneys Warehouse"
     }];
 
+    var corporate_user = {
+       "userId":116679,
+       "accountId":55653,
+       "name":"Lydia Rodarte-Quayle",
+       "type":"CORPORATE"
+    };
+
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
     beforeEach(inject(function($injector, $rootScope, $controller, $http, $httpBackend, $routeParams) {
@@ -70,7 +81,9 @@ describe('The Operator Dashboard', function() {
 
     describe('request for corporate site information', function() {
         beforeEach(function() {
+            httpMock.when('GET', whoami_url).respond(corporate_user);
             httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);
+            httpMock.when('GET', corp_sites_dev_url).respond(site_list);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary\/[0-9]+/).respond(site_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(site_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_assignments);
@@ -116,7 +129,9 @@ describe('The Operator Dashboard', function() {
                 "expired": 0
             }];
 
+            httpMock.when('GET', whoami_url).respond(corporate_user);
             httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond('');
+            httpMock.when('GET', corp_sites_dev_url).respond('');
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(operator_summary);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_summary);
             httpMock.flush();
