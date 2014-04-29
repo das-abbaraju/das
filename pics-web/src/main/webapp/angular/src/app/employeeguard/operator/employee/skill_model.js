@@ -31,14 +31,19 @@ angular.module('PICS.employeeguard')
 
     Model.prototype.getAllRequiredSkills = function () {
         var siteAndCorpSkills,
-            projectSkills;
+            projectSkills,
+            allRequiredSkills;
 
         siteAndCorpSkills = this.getSiteAndCorpRequiredSkills();
         projectSkills = this.getAllProjectRequiredSkills();
 
         if (siteAndCorpSkills && projectSkills) {
-            return siteAndCorpSkills.concat(projectSkills);
+            allRequiredSkills = siteAndCorpSkills.concat(projectSkills);
         }
+
+        allRequiredSkills = $filter('removeDuplicateItemsFromArray')(allRequiredSkills);
+
+        return allRequiredSkills;
     };
 
     Model.prototype.getAllProjectRequiredSkills = function () {
