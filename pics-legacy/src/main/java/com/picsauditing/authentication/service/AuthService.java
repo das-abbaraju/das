@@ -86,7 +86,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		json = new JSONObject();
 
 		try {
-			//user = loginService.loginNormally(username, password);
+			//user = log inService.loginNormally(username, password);
 			verifyAppUserExists(username);
 			verifyPasswordIsCorrect(username, password);
 			verifyEmployeeGuardStatus();

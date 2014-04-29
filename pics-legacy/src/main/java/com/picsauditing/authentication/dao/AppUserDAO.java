@@ -1,9 +1,6 @@
 package com.picsauditing.authentication.dao;
 
 import com.picsauditing.authentication.entities.AppUser;
-import com.picsauditing.dao.QueryMetaData;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -16,7 +13,6 @@ public class AppUserDAO {
 	@PersistenceContext
 	private EntityManager em;
 
-	@Transactional(propagation = Propagation.NESTED)
 	public AppUser save(AppUser o) {
 		if (o.getId() == 0) {
 			em.persist(o);
@@ -73,7 +69,11 @@ public class AppUserDAO {
 		q.setParameter("username", username);
 		q.setParameter("password", password);
 
-		return q.getSingleResult();
+		try {
+			return q.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public boolean duplicateUsername(String username, int appUserID) {

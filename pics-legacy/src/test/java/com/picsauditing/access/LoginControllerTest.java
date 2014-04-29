@@ -57,8 +57,6 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private ProfileEntityService profileEntityService;
 	@Mock
-	private com.picsauditing.employeeguard.services.LoginService egLoginService;
-	@Mock
 	private AppUser appUser;
 	@Mock
 	private User user;
@@ -110,7 +108,6 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "appUserDAO", appUserDAO);
 		Whitebox.setInternalState(loginController, "profileEntityService", profileEntityService);
-		Whitebox.setInternalState(loginController, "egLoginService", egLoginService);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
@@ -138,7 +135,6 @@ public class LoginControllerTest extends PicsActionTest {
 		JSONObject result = new JSONObject();
 		result.put("status", "SUCCESS");
 		result.put("cookie", "whatevz");
-		when(egLoginService.loginViaRest(anyString(), anyString())).thenReturn(result);
 	}
 
 	private void setupSpringUtils() {

@@ -183,6 +183,7 @@
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
+    <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>

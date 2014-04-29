@@ -12,35 +12,38 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
 import com.picsauditing.employeeguard.services.EmailHashService;
-import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.LoginService;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.external.AccountService;
 import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.validator.Validator;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
 
 public class LoginAction extends PicsRestActionSupport implements AjaxValidator {
 
 	private static final long serialVersionUID = 3274071143261978073L;
 
+	private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
+
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AuthenticationService authenticationService;
+	@Autowired
 	private EmailHashService emailHashService;
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
-	private LoginService loginService;
-	@Autowired
-	private ProfileService profileService;
+	private ProfileEntityService profileEntityService;
 	@Autowired
 	private LoginFormValidator loginFormValidator;
 
@@ -56,12 +59,14 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	@Anonymous
 	public String index() throws Exception {
 		if (!emailHashService.hashIsValid(hashCode)) {
+			LOG.warn("Invalid hashCode = " + hashCode);
 			throw new PageNotFoundException();
 		}
 
-		EmailHash hash = emailHashService.findByHash(hashCode);
-		SoftDeletedEmployee employee = hash.getEmployee();
+		EmailHash emailHash = emailHashService.findByHash(hashCode);
+		SoftDeletedEmployee employee = emailHash.getEmployee();
 		if (employee == null) {
+			LOG.warn("Could not find employee for hashCode = " + hashCode);
 			throw new PageNotFoundException();
 		}
 
@@ -87,22 +92,23 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	@Anonymous
 	public String login() throws Exception {
-		JSONObject loginResult = loginService.loginViaRest(loginForm.getUsername(), loginForm.getPassword(), loginForm.getHashCode());
-
-		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
-			throw new PageNotFoundException();
-		} else {
-			String cookieContent = loginResult.get("cookie").toString();
+		try {
+			String cookieContent = authenticationService.authenticateEmployeeGUARDUser(loginForm.getUsername(),
+					loginForm.getPassword(), true);
 
 			doSetCookie(cookieContent, 10);
 			SessionCookie cookie = SessionSecurity.parseSessionCookie(cookieContent);
 
-			Profile profile = profileService.findByAppUserId(cookie.getAppUserID());
+			Profile profile = profileEntityService.findByAppUserId(cookie.getAppUserID());
 			EmailHash emailHash = emailHashService.findByHash(loginForm.getHashCode());
-			employeeService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
+			employeeEntityService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
 			emailHashService.expire(emailHash);
 
-			return setUrlForRedirect("/employee-guard/employee/dashboard");
+			return setUrlForRedirect(EMPLOYEE_SUMMARY);
+
+		} catch (Exception e) {
+			LOG.error("Login failed ", e);
+			throw new PageNotFoundException();
 		}
 	}
 

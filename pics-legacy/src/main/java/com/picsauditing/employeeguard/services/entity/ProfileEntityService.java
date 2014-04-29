@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.daos.ProfileDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ProfileEntityService implements EntityService<Profile, Integer> {
@@ -31,6 +32,12 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 	@Override
 	public Profile save(Profile profile, final EntityAuditInfo entityAuditInfo) {
 		profile = EntityHelper.setCreateAuditFields(profile, entityAuditInfo);
+
+		if (Strings.isEmpty(profile.getSlug())) {
+			String hash = Strings.hashUrlSafe(profile.getId() + profile.getEmail());
+			profile.setSlug("PID-" + hash.substring(0, 8).toUpperCase());
+		}
+
 		return profileDAO.save(profile);
 	}
 

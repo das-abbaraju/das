@@ -15,6 +15,7 @@ import com.picsauditing.menu.builder.MenuBuilder;
 import com.picsauditing.menu.builder.PicsMenu;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -57,9 +58,9 @@ public class LoginController extends PicsActionSupport {
 	protected static ReportUserDAO reportUserDAO;
 
 	@Autowired
-	private LoginService loginService;
+	private AuthenticationService authenticationService;
 	@Autowired
-	private com.picsauditing.employeeguard.services.LoginService egLoginService;
+	private LoginService loginService;
 	@Autowired
 	private AppUserDAO appUserDAO;
 	@Autowired
@@ -360,15 +361,14 @@ public class LoginController extends PicsActionSupport {
 					logAndMessageError(getText("Login.PasswordIncorrect"));
 					return ERROR;
 				} else {
-					JSONObject result = egLoginService.loginViaRest(username, password);
-					permissions = permissionBuilder.employeeUserLogin(appUser, profile);
-
-					if ("SUCCESS".equals(result.get("status").toString())) {
-						doSetCookie(result.get("cookie").toString(), 10);
+					try {
+						String cookieContent = authenticationService.authenticateEmployeeGUARDUser(username, password, true);
+						permissions = permissionBuilder.employeeUserLogin(appUser, profile);
+						doSetCookie(cookieContent, 10);
 						SessionInfoProviderFactory.getSessionInfoProvider()
 								.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 						return setUrlForRedirect("/employee-guard/employee/dashboard");
-					} else {
+					} catch (Exception e) {
 						setActionErrorHeader(getText("Login.Failed"));
 						logAndMessageError(getText("Login.PasswordIncorrect"));
 						return ERROR;
