@@ -29,5 +29,8 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/employee/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/employee/beta-changelog/changelog.tpl.html'
         });
 });

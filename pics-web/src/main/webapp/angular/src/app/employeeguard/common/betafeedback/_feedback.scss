@@ -1,0 +1,55 @@
+.beta-section {
+    li {
+        margin-bottom: 10px;
+    }
+
+    .issue-fixed span {
+        color: $success_light;
+        font-weight: bold;
+    }
+
+    .issue-known span  {
+        color: $warning_med;
+        font-weight: bold;
+    }
+
+    .issue-change span  {
+        color: $default_aluminum;
+        font-weight: bold;
+    }
+
+    .issue-more {
+        color: #226396;
+    }
+
+    textarea {
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        margin-top: 10px;
+        margin-right: 0px;
+    }
+
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        color: $default_aluminum;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: $default_aluminum;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: $default_aluminum;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+        color: $default_aluminum;
+    }
+
+    .alert-success {
+        h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+    }
+}
