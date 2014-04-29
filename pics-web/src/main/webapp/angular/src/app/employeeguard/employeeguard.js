@@ -12,6 +12,9 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/operators/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
         })
+        .when('/employee-guard/operators/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/operators/assignments', {
             templateUrl: '/angular/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
@@ -38,9 +41,6 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/operators/employees/:id/sites/:siteId/projects/:projectSlug', {
             templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/changelog', {
-            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
         })
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
