@@ -18,7 +18,7 @@ public class EmployeeSiteStatusResult {
 	private Set<AccountSkill> siteAndCorporateRequiredSkills;
 	private Map<Project, SkillStatus> projectStatuses;
 	private Map<Role, SkillStatus> roleStatuses;
-	private Set<Role> siteAssignedRoles;
+	private Set<Role> siteAssignmentRoles;
 
 	public Set<Project> getProjects() {
 		return projects;
@@ -84,11 +84,11 @@ public class EmployeeSiteStatusResult {
 		this.roleStatuses = roleStatuses;
 	}
 
-	public Set<Role> getSiteAssignedRoles() {
-		return siteAssignedRoles;
+	public Set<Role> getSiteAssignmentRoles() {
+		return siteAssignmentRoles;
 	}
 
-	public void setSiteAssignedRoles(Set<Role> siteAssignedRoles) {
-		this.siteAssignedRoles = siteAssignedRoles;
+	public void setSiteAssignmentRoles(Set<Role> siteAssignmentRoles) {
+		this.siteAssignmentRoles = siteAssignmentRoles;
 	}
 }

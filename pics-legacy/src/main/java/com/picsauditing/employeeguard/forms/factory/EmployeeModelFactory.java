@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.employee.EmployeeModel;
 import org.apache.commons.collections.MapUtils;
 

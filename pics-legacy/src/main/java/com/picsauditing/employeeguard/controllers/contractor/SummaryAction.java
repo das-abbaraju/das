@@ -6,12 +6,12 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.ContractorSummary;
 import com.picsauditing.employeeguard.models.ModelFactory;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

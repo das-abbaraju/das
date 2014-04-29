@@ -6,6 +6,13 @@ public class RequiredSkills {
 
 	private List<SkillStatusModel> skills;
 
+	public RequiredSkills() {
+	}
+
+	public RequiredSkills(List<SkillStatusModel> requiredSkills) {
+		this.skills = requiredSkills;
+	}
+
 	public List<SkillStatusModel> getSkills() {
 		return skills;
 	}

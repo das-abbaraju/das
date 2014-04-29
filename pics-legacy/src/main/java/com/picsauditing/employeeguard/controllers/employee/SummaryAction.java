@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
 import com.picsauditing.employeeguard.models.ProfileModel;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
@@ -15,7 +15,7 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.GroupEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 

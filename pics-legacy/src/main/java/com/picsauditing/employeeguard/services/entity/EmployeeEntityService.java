@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
+import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
@@ -27,6 +28,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private PhotoUtil photoUtil;
+	@Autowired
+	private ProjectCompanyDAO projectCompanyDAO;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
@@ -247,6 +250,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return siteIds;
 	}
 
+	public Set<Integer> getEmployeeContractorsForSite(final int siteId, final int employeeId) {
+		return new HashSet<>(employeeDAO.findContractorsForEmployeeBySite(siteId, employeeId));
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -337,7 +344,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-								final int accountId) throws Exception {
+	                            final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 

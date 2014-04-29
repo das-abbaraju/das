@@ -2,8 +2,8 @@ package com.picsauditing.employeeguard.controllers.helper;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import org.junit.Test;
 
 import java.util.HashMap;

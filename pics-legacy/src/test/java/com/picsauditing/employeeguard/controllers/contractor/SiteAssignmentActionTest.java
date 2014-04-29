@@ -9,7 +9,7 @@ import com.picsauditing.employeeguard.services.SkillUsageLocator;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -17,8 +17,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-
-import javax.persistence.NoResultException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;

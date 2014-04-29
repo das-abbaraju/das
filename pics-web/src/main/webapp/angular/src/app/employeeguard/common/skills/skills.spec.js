@@ -13,4 +13,8 @@ describe('Skill Status', function() {
         expect(skillConvert.getClassNameFromStatus('pending')).toEqual('success');
         expect(skillConvert.getClassNameFromStatus('completed')).toEqual('success');
     });
+
+    it('should not set class if the status does not match', function() {
+        expect(skillConvert.getClassNameFromStatus('blue')).toEqual('');
+    });
 });

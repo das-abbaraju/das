@@ -65,6 +65,36 @@ module.exports = function(grunt) {
                     ],
                     singleRun: true
                 }
+            },
+            coverage: {
+                options: {
+                    files: dependencies.concat([
+                        'vendor/angular/jasmine/*.js',
+                        'vendor/angular/**/*.js',
+                        'src/**/*.js'
+                    ]),
+                    plugins:[
+                        'karma-junit-reporter',
+                        "karma-jasmine",
+                        "karma-phantomjs-launcher",
+                        'karma-coverage'
+                    ],
+                    junitReporter: {
+                        outputFile: 'unit.xml',
+                        suite: 'unit'
+                    },
+                    frameworks:[
+                        "jasmine"
+                    ],
+                    browsers:[
+                        "PhantomJS"
+                    ],
+                    preprocessors: {
+                        'src/**/!(*.spec)+(.js)': ['coverage']
+                    },
+                    singleRun: true,
+                    reporters: ['progress', 'junit', 'coverage']
+                }
             }
         },
 
@@ -154,6 +184,13 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', [
         'jshint',
         'karma:unit',
+        'concat',
+        'compass:dist'
+    ]);
+
+    grunt.registerTask('coverage', [
+        'jshint',
+        'karma:coverage',
         'concat',
         'compass:dist'
     ]);

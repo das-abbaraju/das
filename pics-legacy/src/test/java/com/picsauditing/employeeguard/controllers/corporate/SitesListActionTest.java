@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.controllers.corporate;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;

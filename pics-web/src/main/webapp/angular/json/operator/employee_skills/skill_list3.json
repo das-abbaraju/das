@@ -1,0 +1,29 @@
+{
+   "roles":[
+      {
+         "id":6,
+         "name":"Janitor",
+         "skills":[
+            {
+               "id":12,
+               "name":"Sweep Floor",
+               "status": "Expired"
+
+            }
+         ],
+         "status": "Expired"
+      },
+      {
+         "id":3,
+         "name":"Delivery Boy",
+         "skills":[
+            {
+               "id":13,
+               "name":"Drink 100 cups of coffee",
+               "status": "Completed"
+            }
+         ],
+         "status": "Completed"
+      }
+   ]
+}

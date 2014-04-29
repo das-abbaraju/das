@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.ProjectStatusModel;
+import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.RoleStatusModel;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
@@ -12,9 +13,9 @@ import java.util.*;
 public class ProjectStatusModelFactory extends ProjectModelFactory {
 
 	public List<ProjectStatusModel> create(final Collection<Project> projects,
-	                                       final Map<Integer, List<RoleStatusModel>> projectRoles,
-	                                       final Map<Integer, List<SkillStatusModel>> projectSkills,
-	                                       final Map<Project, SkillStatus> projectStatuses) {
+										   final Map<Integer, List<RoleStatusModel>> projectRoles,
+										   final Map<Integer, RequiredSkills> requiredSkillsMap,
+										   final Map<Project, SkillStatus> projectStatuses) {
 		if (CollectionUtils.isEmpty(projects)) {
 			return Collections.emptyList();
 		}
@@ -25,7 +26,7 @@ public class ProjectStatusModelFactory extends ProjectModelFactory {
 			projectStatusModels.add(create(
 					project,
 					projectRoles.get(projectId),
-					projectSkills.get(projectId),
+					requiredSkillsMap.get(projectId),
 					projectStatuses.get(project)
 			));
 		}
@@ -34,14 +35,14 @@ public class ProjectStatusModelFactory extends ProjectModelFactory {
 	}
 
 	public ProjectStatusModel create(final Project project,
-	                                 final List<RoleStatusModel> roles,
-	                                 final List<SkillStatusModel> skills,
-	                                 final SkillStatus status) {
+									 final List<RoleStatusModel> roles,
+									 final RequiredSkills requiredSkills,
+									 final SkillStatus status) {
 		ProjectStatusModel projectStatusModel = new ProjectStatusModel();
 		projectStatusModel.setId(project.getId());
 		projectStatusModel.setName(project.getName());
 		projectStatusModel.setRoles(roles);
-		projectStatusModel.setSkills(skills);
+		projectStatusModel.setRequired(requiredSkills);
 		projectStatusModel.setStatus(status);
 		return projectStatusModel;
 	}

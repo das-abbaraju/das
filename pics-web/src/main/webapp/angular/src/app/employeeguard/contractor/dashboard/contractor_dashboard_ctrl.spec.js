@@ -26,6 +26,10 @@ describe('An Employee', function() {
         httpMock = $httpBackend;
     }));
 
+    it("should set status", function() {
+        expect(scope.status).toBeDefined();
+    });
+
     afterEach(function() {
         httpMock.verifyNoOutstandingExpectation();
         httpMock.verifyNoOutstandingRequest();

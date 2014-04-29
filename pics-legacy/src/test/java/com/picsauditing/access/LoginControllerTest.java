@@ -8,9 +8,9 @@ import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
@@ -47,8 +47,6 @@ public class LoginControllerTest extends PicsActionTest {
 	private int SWITCH_USER_ID = 2;
 
 	@Mock
-	private UserDAO userDAO;
-	@Mock
 	protected AppPropertyDAO propertyDAO;
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
@@ -78,8 +76,11 @@ public class LoginControllerTest extends PicsActionTest {
 	private ReportUserDAO reportUserDAO;
 	@Mock
 	private UserModeProvider userModeProvider;
+    @Mock
+    private AppUserService appUserService;
 
-	private LoginService loginService = new LoginService();
+	private LoginService loginService;
+
 
 	@Spy
 	private PermissionBuilder permissionBuilder;
@@ -92,6 +93,8 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
+		loginService = new LoginService();
+
 		System.setProperty("sk",
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
 
@@ -104,16 +107,16 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(permissionBuilder, "userService", userService);
 		Whitebox.setInternalState(permissionBuilder, "userModeProvider", userModeProvider);
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
-		Whitebox.setInternalState(loginController, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
-		Whitebox.setInternalState(loginController, "appUserDAO", appUserDAO);
 		Whitebox.setInternalState(loginController, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(loginService, "userService", userService);
+		Whitebox.setInternalState(loginController, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
 		Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
+		Whitebox.setInternalState(loginController, "appUserService", appUserService);
 
 		setupSpringUtils();
 
@@ -121,10 +124,10 @@ public class LoginControllerTest extends PicsActionTest {
 		when(user.getAccount()).thenReturn(account);
 		when(switchUser.getAccount()).thenReturn(switchAccount);
 		when(request.getServerName()).thenReturn("www.picsorganizer.com");
-		when(userDAO.findName(anyString())).thenReturn(user);
-		when(userDAO.find(941)).thenReturn(user);
+		when(userService.findByName(anyString())).thenReturn(user);
+		when(userService.findById(941)).thenReturn(user);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
-		when(appUserDAO.findByUserName(anyString())).thenReturn(appUser);
+		when(appUserService.findAppUser(anyString())).thenReturn(appUser);
 
 		List<AppUser> appUserList = new ArrayList<>();
 		appUserList.add(new AppUser());
@@ -268,7 +271,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testExecute_logoutUserWhoHasSwitchedToAnotherUser() throws Exception {
 		loginController.setButton("logout");
 		when(permissions.getAdminID()).thenReturn(NOT_ZERO);
-		when(userDAO.find(NOT_ZERO)).thenReturn(user);
+		when(userService.findById(NOT_ZERO)).thenReturn(user);
 
 		String actionResult = loginController.execute();
 
@@ -289,7 +292,7 @@ public class LoginControllerTest extends PicsActionTest {
 		String testMessage = "You are confirmed";
 		loginController.setButton("confirm");
 		loginController.setUsername("test");
-		when(userDAO.findName("test")).thenReturn(user);
+		when(userService.findByName("test")).thenReturn(user);
 
 		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(eq("Login.ConfirmedEmailAddress"), eq(Locale.ENGLISH), any())).thenReturn(
@@ -300,7 +303,7 @@ public class LoginControllerTest extends PicsActionTest {
 		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
 		verify(user).setEmailConfirmedDate((Date) any());
 		assertThat(loginController.getActionMessages(), hasItem(testMessage));
-		verify(userDAO).save(user);
+		verify(userService).saveUser(user);
 	}
 
 	// As a user responding to the confirmation email
@@ -316,7 +319,7 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.setButton("confirm");
 		loginController.setUsername("test");
 
-		when(userDAO.findName("test")).thenReturn(null);
+		when(userService.findByName("test")).thenReturn(null);
 		when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
 		when(translationService.getText(eq("Login.AccountConfirmationFailed"), eq(Locale.ENGLISH), any())).thenReturn(
 				testMessage);
@@ -326,7 +329,7 @@ public class LoginControllerTest extends PicsActionTest {
 		assertThat(actionResult, is(equalTo(Action.SUCCESS)));
 		verify(user, never()).setEmailConfirmedDate((Date) any());
 		assertThat(loginController.getActionErrors(), hasItem(testMessage));
-		verify(userDAO, never()).save(user);
+		verify(userService, never()).saveUser(user);
 	}
 
 	// As a logged in user
@@ -336,7 +339,6 @@ public class LoginControllerTest extends PicsActionTest {
 		normalLoginSetup();
 		when(permissions.hasPermission(OpPerms.SwitchUser)).thenReturn(true);
 		loginController.setSwitchToUser(SWITCH_USER_ID);
-		when(userDAO.find(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(userService.findById(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getAppUser()).thenReturn(appUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
@@ -377,8 +379,7 @@ public class LoginControllerTest extends PicsActionTest {
 		when(user.getAccount()).thenReturn(account);
 		String actionResult = loginController.execute();
 		verify(permissionBuilder).login(user);
-		verify(user).setLastLogin((Date) any());
-		verify(userDAO).save(user);
+		verify(userService).updateUserForSuccessfulLogin(user);
 		assertThat(actionResult, is(equalTo(PicsActionSupport.REDIRECT)));
 		assertThat(session.keySet(), hasItem("permissions"));
 	}
@@ -517,8 +518,8 @@ public class LoginControllerTest extends PicsActionTest {
 		loginController.setButton("login");
 		loginController.setUsername("test");
 		loginController.setPassword("test password");
-		when(userDAO.findName("test")).thenReturn(user);
-		when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
+		when(userService.findByName("test")).thenReturn(user);
+		when(userService.findByAppUserId(anyInt())).thenReturn(user);
 		when(user.getAppUser()).thenReturn(appUser);
 		when(user.getIsActive()).thenReturn(YesNo.Yes);
 		when(user.getUsername()).thenReturn("joesixpack");

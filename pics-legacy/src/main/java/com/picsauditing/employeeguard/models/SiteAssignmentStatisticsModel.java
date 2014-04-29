@@ -1,7 +1,5 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.models.AccountModel;
-
 public class SiteAssignmentStatisticsModel implements Comparable<SiteAssignmentStatisticsModel> {
 
 	private final AccountModel site;

@@ -52,21 +52,6 @@ public class SkillStatusCalculator {
         return lowestStatus;
     }
 
-	public static <E> Map<E, SkillStatus> calculateStatusRollUp(final Map<E, ? extends Collection<SkillStatus>> statusList) {
-		if (MapUtils.isEmpty(statusList)) {
-			return Collections.emptyMap();
-		}
-
-		SkillStatus lowestStatus = SkillStatus.Completed;
-
-		Map<E, SkillStatus> result = new HashMap<>();
-		for (E entity : statusList.keySet()) {
-
-		}
-
-		return result;
-	}
-
 	public static <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, ? extends Collection<SkillStatus>> entitySkillStatusMap) {
 		if (MapUtils.isEmpty(entitySkillStatusMap)) {
 			return Collections.emptyMap();
@@ -87,6 +72,7 @@ public class SkillStatusCalculator {
 
 		SkillStatus worstStatus = SkillStatus.Completed;
 		for (SkillStatus skillStatus : skillStatuses) {
+
 			// exit early if any status is "Expired", because we have already hit the lowest status
 			if (skillStatus.isExpired()) {
 				return SkillStatus.Expired;

@@ -26,7 +26,8 @@
     "grunt-contrib-compass": "~0.7.2",
     "grunt-contrib-watch": "~0.5.3",
     "load-grunt-tasks": "~0.3.0",
-    "karma-junit-reporter": "~0.2.1"
+    "karma-junit-reporter": "~0.2.1",
+    "karma-coverage": "~0.2.1"
   },
   "author": "",
   "license": "ISC"
