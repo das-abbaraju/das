@@ -1,7 +1,5 @@
 package com.picsauditing.access.user;
 
-import com.picsauditing.access.Permissions;
-
 public interface ModeSwitcher {
 
 	/**

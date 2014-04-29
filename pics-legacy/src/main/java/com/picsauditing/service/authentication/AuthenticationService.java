@@ -69,6 +69,8 @@ public class AuthenticationService {
 	public String authenticateEmployeeGUARDUser(final String username, final String password, final boolean rememberMe) throws Exception {
 		AppUser appUser = appUserDAO.findByUserName(username);
 		appUser = appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
+
+		//
 		if (appUser == null) {
 			throw new RuntimeException("Could not authenticate username = " + username);
 		}
