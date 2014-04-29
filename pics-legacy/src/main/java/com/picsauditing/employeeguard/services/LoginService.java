@@ -1,8 +1,11 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.access.model.LoginContext;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
-import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.authentication.service.AppUserService;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.service.AppPropertyService;
@@ -17,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.security.auth.login.AccountException;
+import javax.security.auth.login.AccountNotFoundException;
 import javax.ws.rs.core.UriBuilder;
 
 public class LoginService {
@@ -29,8 +34,12 @@ public class LoginService {
 	private AppPropertyService appPropertyService;
 
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
+    @Autowired
+    private AppUserService appUserService;
+    @Autowired
+    private ProfileEntityService profileEntityService;
 
-	public JSONObject loginViaRest(String username, String password) {
+    public JSONObject loginViaRest(String username, String password) {
 		return loginViaRest(username, password, null);
 	}
 
@@ -93,4 +102,27 @@ public class LoginService {
 	private int getRequestHostPort() {
 		return appPropertyService.getPropertyInt(AppProperty.AUTH_SERVICE_HOST_PORT, 8080);
 	}
+
+    public LoginContext doPreLoginVerificationEG(String username, String password) throws AccountException {
+        AppUser appUser = appUserService.findAppUser(username);
+        Profile profile = profileEntityService.findByAppUserId(appUser.getId());
+        LoginContext response = new LoginContext();
+        if (profile == null) {
+            throw new AccountNotFoundException("No user with username: " + username + " found.");
+        }
+        else {
+            JSONObject result = loginViaRest(username, password);
+
+            response.setAppUser(appUser);
+            response.setProfile(profile);
+
+            if ("SUCCESS".equals(result.get("status").toString())) {
+                response.setCookie(result.get("cookie").toString());
+                return response;
+            } else {
+                throw new AccountNotFoundException("No user with username: " + username + " found.");   // todo: make SURE its not a failed login, etc.
+            }
+        }
+    }
+
 }

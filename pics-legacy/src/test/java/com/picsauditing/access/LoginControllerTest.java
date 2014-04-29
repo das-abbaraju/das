@@ -11,6 +11,7 @@ import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserLoginLogDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
@@ -80,6 +81,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserModeProvider userModeProvider;
     @Mock
     private AppUserService appUserService;
+    @Mock
+    private UserDAO userDAO;
 
 	private LoginService loginService;
 
@@ -87,7 +90,8 @@ public class LoginControllerTest extends PicsActionTest {
 	@Spy
 	private PermissionBuilder permissionBuilder;
 
-	@AfterClass
+
+    @AfterClass
 	public static void tearDown() throws Exception {
 		PicsActionTest.classTearDown();
 		PicsTestUtil.resetSpringUtilsBeans();
@@ -116,6 +120,8 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(loginService, "userService", userService);
+        Whitebox.setInternalState(loginService, "appUserDAO", appUserDAO);
+        Whitebox.setInternalState(loginService, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
 		Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
@@ -131,6 +137,8 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userService.findById(941)).thenReturn(user);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
 		when(appUserService.findAppUser(anyString())).thenReturn(appUser);
+        when(appUserDAO.findByUserName(anyString())).thenReturn(appUser);
+        when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
 
 		List<AppUser> appUserList = new ArrayList<>();
 		appUserList.add(new AppUser());
