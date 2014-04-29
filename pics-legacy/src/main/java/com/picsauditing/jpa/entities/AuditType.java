@@ -61,6 +61,8 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
 	public static final int ANNUAL_ADDENDUM_RETENSION_PERIOD_IN_YEARS = 3;
 
+    public static final int ANNUAL_DOCUMENTATION_REVIEW = 635;
+
 	protected String name;
     private String slug;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
