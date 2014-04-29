@@ -153,7 +153,8 @@ public class ProjectService {
 				callback
 		);
 
-		originalProject.setSkills(updatedSkills);
+    originalProject.getSkills().clear();
+    originalProject.getSkills().addAll(updatedSkills);
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getSkills(), appUserId, now);
 
@@ -246,7 +247,8 @@ public class ProjectService {
 				ProjectCompany.COMPARATOR,
 				projectCompanyCallback);
 
-		originalProject.setCompanies(updatedCompanies);
+    originalProject.getCompanies().clear();
+    originalProject.getCompanies().addAll(updatedCompanies);
 
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getCompanies(), appUserId, now);

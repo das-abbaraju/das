@@ -83,7 +83,7 @@ public class EmployeeBuilder {
 		}
 
 		employee.getSkills().clear();
-		employee.setSkills(accountSkillEmployees);
+    employee.getSkills().addAll(accountSkillEmployees);
 		return this;
 	}
 

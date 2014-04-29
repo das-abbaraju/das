@@ -49,19 +49,19 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT g.id FROM account_group g WHERE g.type = 'Group')")
 	private List<GroupEmployee> groups = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<SiteAssignment> siteAssignments = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> skills = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<ProjectRoleEmployee> projectRoles = new ArrayList<>();
 

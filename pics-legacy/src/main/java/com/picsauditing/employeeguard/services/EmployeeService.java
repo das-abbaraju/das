@@ -287,7 +287,8 @@ public class EmployeeService {
 				employeeInDatabase.getGroups(),
 				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
-		employeeInDatabase.setGroups(groupEmployees);
+    employeeInDatabase.getGroups().clear();
+    employeeInDatabase.getGroups().addAll(groupEmployees);
 
 		if (Strings.isEmpty(updatedEmployee.getSlug())) {
 			String hash = Strings.hashUrlSafe(employeeInDatabase.getAccountId() + employeeInDatabase.getEmail());

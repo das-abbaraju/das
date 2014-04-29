@@ -65,7 +65,7 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<AccountSkillEmployee> employeeSkills;
 
