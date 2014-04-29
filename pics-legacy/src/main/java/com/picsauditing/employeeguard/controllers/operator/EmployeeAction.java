@@ -26,7 +26,7 @@ public class EmployeeAction extends PicsRestActionSupport {
     }
 
     private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel(final int siteId) {
-        return liveIDEmployeeService.buildLiveIDEmployee(id, siteId);
+        return liveIDEmployeeService.buildLiveIDEmployee(getIdAsInt(), siteId);
     }
 
     public String employeeData() {
