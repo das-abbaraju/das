@@ -1,17 +1,16 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "app_properties")
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "app_properties")
 public class AppProperty implements java.io.Serializable {
 
 	public static final String SYSTEM_MESSAGE = "PICS.showSystemMessage";
@@ -21,12 +20,15 @@ public class AppProperty implements java.io.Serializable {
 	public static final String VERSION_MAJOR = "VERSION.major";
 	public static final String VERSION_MINOR = "VERSION.minor";
 	public static final String SSIP_CLIENT_SITE_ID_LIST_KEY = "Ssip.ClientSite.Ids";
-
+	public static final String EG_WELCOME_EMAIL_TEMPLATE_ID = "EG_WELCOME_EMAIL_TEMPLATE";
+	public static final String EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID = "EG_BETA_FEEDBACK_EMAIL_TEMPLATE";
+	public static final String EMAIL_FROM_INFO_AT_PICSAUDITING = "EMAIL_FROM_INFO_AT_PICSAUDITING";
+	public static final String EMAIL_TO_EG_FEEDBACK = "EMAIL_TO_EG_FEEDBACK";
 
 	private String property;
 	private String value;
 
-    private String description;
+	private String description;
 	private Date ticklerDate;
 
 	public AppProperty() {
@@ -56,15 +58,15 @@ public class AppProperty implements java.io.Serializable {
 		this.value = value;
 	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    @Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.DATE)
 	public Date getTicklerDate() {
 		return ticklerDate;
 	}

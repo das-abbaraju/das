@@ -2,31 +2,33 @@ package com.picsauditing.employeeguard.controllers;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.services.EmailService;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BetaFeedbackAction extends PicsRestActionSupport
-{
+public class BetaFeedbackAction extends PicsRestActionSupport {
 
-  private static final Logger logger = LoggerFactory.getLogger(BetaFeedbackAction.class);
-  @Autowired
-  private EmailService emailService;
+	private static final Logger logger = LoggerFactory.getLogger(BetaFeedbackAction.class);
 
-  public String feedbackComment() {
+	@Autowired
+	private EmailService emailService;
 
-    String feedbackComment=this.getRequest().getParameter("feedbackComment");
+	public String feedbackComment() {
 
-    boolean status=emailService.sendEGFeedBackEmail(feedbackComment.toString());
+		String feedbackComment = this.getRequest().getParameter("feedbackComment");
 
-    if(status)
-      json.put("status", "SUCCESS");
-    else
-      json.put("status", "FAILURE");
+		boolean status = emailService.sendEGFeedBackEmail(feedbackComment.toString(),
+				SessionInfoProviderFactory.getSessionInfoProvider().getPermissions());
+
+		if (status)
+			json.put("status", "SUCCESS");
+		else
+			json.put("status", "FAILURE");
 
 
-    return JSON;
-  }
+		return JSON;
+	}
 
 
 }//--  BetaFeedbackAction
