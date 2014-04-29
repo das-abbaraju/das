@@ -12010,6 +12010,7 @@ INSERT INTO `databasechangelog` VALUES ('39','kchase','./liquibase/2014/Q2/kchas
 INSERT INTO `databasechangelog` VALUES ('39','mdo','./liquibase/2014/Q1/mdo39_PICS-11896_changeAURecords.sql','2014-02-05 17:56:38',168,'EXECUTED','3:4f6382db0b1134f98cc035945e8d04a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('3a','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',142,'EXECUTED','3:e9a021f476071ba0282cf8bb12ad0b9d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('3b','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',143,'EXECUTED','3:bacccd9d8c44983b3ac1d7c391c55949','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('4','aananighian','./liquibase/2014/Q2/aananighian4_DE545_DDL_Create_New_Email_Hash_Table.sql','2014-04-28 13:54:57',228,'EXECUTED','3:456993cd905115e497a6471e259ffa50','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','dalvarado','./liquibase/2013/dalvarado4_PICS-12464_Add_audit_type_rule.yearToCheck.sql','2013-11-13 15:10:01',19,'EXECUTED','3:1e51a4dac1b76cf0810c36da80fd951d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','gmeurer','./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql','2014-03-18 12:01:26',198,'EXECUTED','3:b0cd6ade15ebc614d2049799e7236651','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','kchase','./liquibase/2013/kchase4_PICS-13049_CSRShiftHours.sql','2013-10-23 15:22:24',14,'EXECUTED','3:d467b39e162b43b8eb255e1b6470d6e0','Custom SQL','',NULL,'2.0.1');
@@ -12678,6 +12679,36 @@ CREATE TABLE `employee_competency` (
 LOCK TABLES `employee_competency` WRITE;
 /*!40000 ALTER TABLE `employee_competency` DISABLE KEYS */;
 /*!40000 ALTER TABLE `employee_competency` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `employee_email_hash`
+--
+
+DROP TABLE IF EXISTS `employee_email_hash`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `employee_email_hash` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Email Hash ID',
+  `hashCode` varchar(256) NOT NULL COMMENT 'Hash Code for the email',
+  `employeeID` int(11) NOT NULL COMMENT 'Employee ID',
+  `email` varchar(128) NOT NULL COMMENT 'Email address the sign-up email was sent to',
+  `createdDate` datetime NOT NULL COMMENT 'Date the hashCode was created',
+  `expirationDate` datetime NOT NULL COMMENT 'Date the hashCode expires',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ak2Employee_Email_Hash` (`employeeID`,`email`),
+  KEY `akEmployee_Email_Hash` (`hashCode`(255)),
+  CONSTRAINT `fk1_employee_email_hash` FOREIGN KEY (`employeeID`) REFERENCES `account_employee` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_email_hash`
+--
+
+LOCK TABLES `employee_email_hash` WRITE;
+/*!40000 ALTER TABLE `employee_email_hash` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_email_hash` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
