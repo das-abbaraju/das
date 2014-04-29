@@ -1,8 +1,10 @@
 package com.picsauditing.service.authentication;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.model.LoginContext;
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
@@ -15,14 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.security.auth.login.AccountNotFoundException;
+
 public class AuthenticationService {
 
+	// TODO: Replace with AppUserService
 	@Autowired
 	private AppUserDAO appUserDAO;
 	@Autowired
 	private ProfileEntityService profileEntityService;
+	// TODO: Replace with user service
 	@Autowired
 	private UserDAO userDAO;
+	@Autowired
+	private AppUserService appUserService;
 
 	@Transactional(propagation = Propagation.NESTED)
 	public AppUser createNewAppUser(final String username, final String password) {
@@ -100,28 +108,6 @@ public class AuthenticationService {
 
 	private Profile verifyEmployeeGuardStatus(final int appUserId) throws Exception {
 		return profileEntityService.findByAppUserId(appUserId);
-//
-//		Profile profile = profileEntityService.findByAppUserId(appUserId);
-//
-//		// TODO: Remove this crap if it is not needed
-//		if (profile == null) {
-//			EmailHash emailHash = emailHashService.findByHash(hashCode);
-//
-//			Employee employee = employeeEntityService.find(employeeId);
-//
-//			profile = new Profile();
-//			profile.setEmail(employee.getEmail());
-//			profile.setUserId(appUserId);
-//			profile.setFirstName(employee.getFirstName());
-//			profile.setLastName(employee.getLastName());
-//
-//			profile = profileEntityService.save(profile, new EntityAuditInfo.Builder().appUserId(appUserId)
-//					.timestamp(DateBean.today()).build());
-//
-//			employee.setProfile(profile);
-//			employeeEntityService.save(employee, new EntityAuditInfo.Builder().appUserId(appUserId)
-//					.timestamp(DateBean.today()).build());
-//		}
 	}
 
 	private String sessionCookieContent(final int appUserId, final int picsUserId,
@@ -146,4 +132,22 @@ public class AuthenticationService {
 		return sessionCookie;
 	}
 
+	public LoginContext doPreLoginVerificationEG(final String username, final String password) throws AccountNotFoundException {
+		AppUser appUser = appUserService.findAppUser(username);
+		Profile profile = profileEntityService.findByAppUserId(appUser.getId());
+
+		if (profile == null) {
+			throw new AccountNotFoundException("No user with username: " + username + " found.");
+		}
+
+		LoginContext response = new LoginContext();
+		try {
+			String cookieContent = authenticateEmployeeGUARDUser(username, password, true);
+			response.setCookie(cookieContent);
+			return response;
+		} catch (Exception e) {
+			// todo: make SURE its not a failed login, etc.
+			throw new AccountNotFoundException("No user with username: " + username + " found.");
+		}
+	}
 }

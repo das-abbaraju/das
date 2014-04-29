@@ -1,6 +1,7 @@
 package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.model.LoginContext;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
@@ -157,8 +158,8 @@ public class LoginController extends PicsActionSupport {
 		try {
 			user = userService.findByName(username);
 			user.setEmailConfirmedDate(new Date());
-			userService.saveUser(user);
-			addActionMessage(getText("Login.ConfirmedEmailAddress"));
+            userService.saveUser(user);
+            addActionMessage(getText("Login.ConfirmedEmailAddress"));
 		} catch (Exception e) {
 			addActionError(getText("Login.AccountConfirmationFailed"));
 		}
@@ -303,8 +304,10 @@ public class LoginController extends PicsActionSupport {
 			return ERROR;
 		}
 
+        LoginContext loginContext;
+
 		try {
-			user = loginService.loginForResetPassword(username, key);
+			loginContext = loginService.loginForResetPassword(username, key);
 
 		} catch (InvalidResetKeyException e) {
 			setActionErrorHeader(getText("Login.Failed"));
@@ -328,7 +331,7 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		// todo: Continue to move the rest of this method to services as needed.
-		return doLogin();
+		return doLogin(loginContext);
 	}
 
 	private String getResendEmailAction(String server, String userName) {
@@ -357,28 +360,12 @@ public class LoginController extends PicsActionSupport {
 				user = userService.findByAppUserId(appUser.getId());
 			}
 
-			if (user != null) {
-				user = loginService.loginNormally(user, username, password);
+            if (user != null) {
+                LoginContext loginContext = loginService.doPreLoginVerification(user, username, password);
+                return doLogin(loginContext);
 			} else {
-				Profile profile = profileEntityService.findByAppUserId(appUser.getId());
-				if (profile == null) {
-					setActionErrorHeader(getText("Login.Failed"));
-					logAndMessageError(getText("Login.PasswordIncorrect"));
-					return ERROR;
-				} else {
-					try {
-						String cookieContent = authenticationService.authenticateEmployeeGUARDUser(username, password, true);
-						permissions = permissionBuilder.employeeUserLogin(appUser, profile);
-						doSetCookie(cookieContent, 10);
-						SessionInfoProviderFactory.getSessionInfoProvider()
-								.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
-						return setUrlForRedirect(EMPLOYEE_SUMMARY);
-					} catch (Exception e) {
-						setActionErrorHeader(getText("Login.Failed"));
-						logAndMessageError(getText("Login.PasswordIncorrect"));
-						return ERROR;
-					}
-				}
+                LoginContext loginContext = authenticationService.doPreLoginVerificationEG(username, password);
+                return doLoginEG(loginContext);
 			}
 		} catch (AccountNotFoundException e) {
 			setActionErrorHeader(getText("Login.Failed"));
@@ -404,12 +391,18 @@ public class LoginController extends PicsActionSupport {
 			setUrlForRedirect(ACCOUNT_RECOVERY_ACTION + e.getUsername());
 			return REDIRECT;
 		}
-
-		// todo: Continue to move the rest of this method to services as needed.
-		return doLogin();
 	}
 
-	private String doLogin() throws Exception {
+    private String doLoginEG(LoginContext loginContext) throws IOException {
+        doSetCookie(loginContext.getCookie(), 10);
+        permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
+        SessionInfoProviderFactory.getSessionInfoProvider()
+                .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+        return setUrlForRedirect(EMPLOYEE_SUMMARY);
+    }
+
+    private String doLogin(LoginContext loginContext) throws Exception {
+        User user = loginContext.getUser();
 		permissions = permissionBuilder.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
@@ -447,7 +440,7 @@ public class LoginController extends PicsActionSupport {
 	}
 
 
-	private String setRedirectUrlPostLogin() throws Exception {
+    private String setRedirectUrlPostLogin() throws Exception {
 		String preLoginUrl = getPreLoginUrl();
 		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(preLoginUrl, user);
 		String redirectURL = determineRedirectUrlFromHomePageType(preLoginUrl, homePageType);
