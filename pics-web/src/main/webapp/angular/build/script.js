@@ -68280,6 +68280,9 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })
+        .when('/employee-guard/contractor/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/employee/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
         })
@@ -68432,7 +68435,6 @@ angular.module('admin-projects', [])
 
 .controller('changeLogCtrl', function ($scope, WhoAmI) {
     WhoAmI.get(function(user) {
-        console.log('user');
         $scope.user = user.type.toLowerCase();
     });
 });;angular.module('PICS.employeeguard')

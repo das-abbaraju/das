@@ -146,6 +146,9 @@
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="changelog" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
         <action name="summary" class="com.picsauditing.employeeguard.controllers.contractor.SummaryAction">
         </action>
 

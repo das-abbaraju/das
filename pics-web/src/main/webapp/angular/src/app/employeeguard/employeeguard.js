@@ -45,6 +45,9 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })
+        .when('/employee-guard/contractor/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/employee/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
         })
