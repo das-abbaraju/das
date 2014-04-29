@@ -20,7 +20,7 @@ public class BetaFeedbackAction extends PicsRestActionSupport {
 		String feedbackComment = this.getRequest().getParameter("feedbackComment");
 
 		Permissions permissions = SessionInfoProviderFactory.getSessionInfoProvider().getPermissions();
-		boolean status = emailService.sendEGFeedBackEmail(feedbackComment.toString(), permissions.getAccountName(),
+		boolean status = emailService.sendEGFeedBackEmail(feedbackComment, permissions.getAccountName(),
 				permissions.getAppUserID(), permissions.getEmail());
 
 		if (status)
