@@ -38,15 +38,15 @@ public class EmailService {
 	public boolean sendEGFeedBackEmail(final String feedback, final String accountName, final int appUserId,
 									   final String userEmailAddress) {
 		try {
-			//TODO:Send Feedback text from here.
 			EmailBuilder emailBuilder = new EmailBuilder();
 
 			emailBuilder.setToAddresses(loadEmailAddress(AppProperty.EMAIL_TO_EG_FEEDBACK, "mdesio@picsauditing.com"));
 			emailBuilder.setFromAddress(getFromAddressIfUserIsMissingEmail(userEmailAddress));
-			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID, 0));
+			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID, 385));
 			emailBuilder.addToken("feedback", feedback);
 			emailBuilder.addToken("accountName", accountName);
 			emailBuilder.addToken("appUserId", appUserId);
+			emailBuilder.addToken("userEmailAddress", userEmailAddress);
 
 			emailSender.sendNow(emailBuilder.build());
 

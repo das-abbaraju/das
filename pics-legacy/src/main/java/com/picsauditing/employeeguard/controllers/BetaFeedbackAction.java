@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.controllers;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.services.EmailService;
 import com.picsauditing.web.SessionInfoProviderFactory;
@@ -18,8 +19,9 @@ public class BetaFeedbackAction extends PicsRestActionSupport {
 
 		String feedbackComment = this.getRequest().getParameter("feedbackComment");
 
-		boolean status = emailService.sendEGFeedBackEmail(feedbackComment.toString(),
-				SessionInfoProviderFactory.getSessionInfoProvider().getPermissions());
+		Permissions permissions = SessionInfoProviderFactory.getSessionInfoProvider().getPermissions();
+		boolean status = emailService.sendEGFeedBackEmail(feedbackComment.toString(), permissions.getAccountName(),
+				permissions.getAppUserID(), permissions.getEmail());
 
 		if (status)
 			json.put("status", "SUCCESS");
