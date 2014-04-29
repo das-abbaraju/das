@@ -1,0 +1,58 @@
+{
+   "required": {
+        "skills": [
+            {
+             "id":5,
+             "name":"Barney Corp Required Skill",
+             "status": "Expiring"
+            }
+        ]
+    },
+   "projects": [
+    {
+      "id":4,
+      "name":"Barneys Project",
+      "status": "Expiring",
+      "roles":[
+         {
+            "id":3,
+            "name":"Barney Test",
+            "skills":[
+               {
+                  "id":13,
+                  "name":"Flip Deadman Switch",
+                  "status": "Completed"
+               }
+            ]
+         }
+      ]
+    }
+   ],
+   "roles":[
+      {
+         "id":6,
+         "name":"Barney Operative",
+         "skills":[
+            {
+               "id":12,
+               "name":"Operative of Barney",
+               "status": "Expired"
+
+            }
+         ],
+         "status": "Expired"
+      },
+      {
+         "id":3,
+         "name":"Handyman",
+         "skills":[
+            {
+               "id":13,
+               "name":"Build stuff",
+               "status": "Expired"
+            }
+         ],
+         "status": "Expiring"
+      }
+   ]
+}

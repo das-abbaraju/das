@@ -1,12 +1,13 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.AccountFilter;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -44,7 +45,19 @@ public class AccountService {
 		return mapAccountsToAccountModels(accounts);
 	}
 
-	public List<AccountModel> getTopmostCorporateAccounts(final int accountId) {
+	public Collection<Integer> extractParentAccountIds(final int accountId) {
+		List<AccountModel> accountModels = this.extractParentAccounts(accountId);
+		Collection<Integer> parentSiteIds = PicsCollectionUtil.getIdsFromCollection(accountModels, new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+			@Override
+			public Integer getId(AccountModel accountModel) {
+				return accountModel.getId();
+			}
+		});
+
+		return parentSiteIds;
+	}
+
+	public List<AccountModel> extractParentAccounts(final int accountId) {
 		if (accountId <= 0) {
 			throw new IllegalArgumentException("Invalid account ID: " + accountId);
 		}
@@ -81,7 +94,7 @@ public class AccountService {
 		return extractIdFromAccountModel(getEmployeeGUARDCorporates(Arrays.asList(accountId)));
 	}
 
-	private List<OperatorAccount> getEmployeeGUARDCorporates(final Collection<Integer> accountIds) {
+	private List<OperatorAccount> getEmployeeGUARDCorporates(Collection<Integer> accountIds) {
 		List<OperatorAccount> operators = operatorDAO.findOperators(new ArrayList<>(accountIds));
 
 		ArrayList<Integer> visited = new ArrayList<>();
@@ -117,7 +130,7 @@ public class AccountService {
 		return siteToCorporates;
 	}
 
-	private List<OperatorAccount> getTopmostCorporates(final OperatorAccount operator, final List<Integer> visited) {
+	private List<OperatorAccount> getTopmostCorporates(OperatorAccount operator, List<Integer> visited) {
 		List<OperatorAccount> corporates = new ArrayList<>();
 		if (onlyHasPicsConsortiumOrNoParents(operator)) {
 			visited.add(operator.getId());
@@ -134,7 +147,7 @@ public class AccountService {
 		return corporates;
 	}
 
-	private boolean onlyHasPicsConsortiumOrNoParents(final OperatorAccount operator) {
+	private boolean onlyHasPicsConsortiumOrNoParents(OperatorAccount operator) {
 		if (operator.getParentOperators().size() == 0) {
 			return true;
 		}
@@ -173,6 +186,10 @@ public class AccountService {
 
 	public List<Integer> getChildOperatorIds(final List<Integer> accountIds) {
 		return extractIdFromAccountModel(getChildOperators(accountIds).toArray(new AccountModel[0]));
+	}
+
+	public AccountModel getAccountByUserID(int userID) {
+		return getAccountById(accountDAO.findByUserID(userID));
 	}
 
 	public Map<Integer, AccountModel> getContractorMapForSite(final int siteId) {

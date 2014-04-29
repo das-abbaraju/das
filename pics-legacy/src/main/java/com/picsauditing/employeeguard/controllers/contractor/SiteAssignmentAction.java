@@ -7,20 +7,19 @@ import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.external.AccountService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +55,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private ContractorEmployeeRoleAssignmentMatrix assignmentMatrix;
 
 	public String status() {
-		site = accountService.getAccountById(getNumericId());
+		site = accountService.getAccountById(getIdAsInt());
 		siteAssignmentModel = buildSiteAssignmentModel(site);
 
 		return "status";
@@ -89,7 +88,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String assign() {
 		try {
-			assignmentService.assignEmployeeToSiteRole(siteId, roleId, getNumericId(),
+			assignmentService.assignEmployeeToSiteRole(siteId, roleId, getIdAsInt(),
 					new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today()).build());
 
 			json.put("status", "SUCCESS");
@@ -103,7 +102,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassign() {
 		try {
-			assignmentService.unassignEmployeeFromSiteRole(siteId, roleId, getNumericId());
+			assignmentService.unassignEmployeeFromSiteRole(siteId, roleId, getIdAsInt());
 
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {
@@ -116,7 +115,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	public String unassignAll() throws Exception {
 		try {
-			assignmentService.unassignEmployeeFromSite(siteId, getNumericId());
+			assignmentService.unassignEmployeeFromSite(siteId, getIdAsInt());
 
 			json.put("status", "SUCCESS");
 		} catch (Exception e) {

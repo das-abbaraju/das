@@ -13,7 +13,7 @@ import java.util.*;
 public class RoleStatusModelFactory extends RoleModelFactory {
 
 	public Map<Integer, List<RoleStatusModel>> createProjectIdToRoleModelMap(final Collection<Project> projects,
-	                                                                         final Map<Project, ? extends Collection<Role>> projectRoles,
+	                                                                         final Map<Project, Set<Role>> projectRoles,
 	                                                                         final Map<Integer, List<SkillStatusModel>> roleIdToSkillModelMap,
 	                                                                         final Map<Role, SkillStatus> roleStatuses) {
 		if (CollectionUtils.isEmpty(projects)) {
@@ -70,5 +70,6 @@ public class RoleStatusModelFactory extends RoleModelFactory {
 		roleStatusModel.setStatus(status);
 		return roleStatusModel;
 	}
+
 
 }

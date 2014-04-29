@@ -210,7 +210,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-																		   final Map<Integer, Set<Integer>> siteToCorporates) {
+	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -338,4 +338,5 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
 	}
+
 }

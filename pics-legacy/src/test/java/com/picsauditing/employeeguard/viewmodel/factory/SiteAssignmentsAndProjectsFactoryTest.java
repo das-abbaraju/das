@@ -4,7 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.models.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.models.factories.SiteAssignmentsAndProjectsFactory;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;

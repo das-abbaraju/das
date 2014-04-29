@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.ProjectBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.RoleStatusModel;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
@@ -73,34 +74,34 @@ public class RoleStatusModelFactoryTest {
 		assertTrue(projectIdToRoleModelMap.isEmpty());
 	}
 
-//	@Test
-//	public void testCreateProjectIdToRoleModelMap_WithData() throws Exception {
-//		final Role role = getFakeRole();
-//		final Project project = getFakeProject();
-//
-//		Map<Integer, List<RoleStatusModel>> projectIdToRoleModelMap = factory.createProjectIdToRoleModelMap(
-//				Arrays.asList(project),
-//				new HashMap<Project, List<Role>>() {{
-//					put(project, Arrays.asList(role));
-//				}},
-//				new HashMap<Integer, List<SkillStatusModel>>() {{
-//					put(role.getId(), new ArrayList<SkillStatusModel>());
-//				}},
-//				new HashMap<Role, SkillStatus>() {{
-//					put(role, SkillStatus.Expired);
-//				}}
-//		);
-//
-//		assertNotNull(projectIdToRoleModelMap);
-//		assertFalse(projectIdToRoleModelMap.isEmpty());
-//		assertNotNull(projectIdToRoleModelMap.get(project.getId()));
-//
-//		List<RoleStatusModel> roleStatusModels = projectIdToRoleModelMap.get(project.getId());
-//
-//		assertNotNull(roleStatusModels.get(0));
-//		assertEquals(role.getId(), roleStatusModels.get(0).getId());
-//		assertEquals(SkillStatus.Expired, roleStatusModels.get(0).getStatus());
-//	}
+	@Test
+	public void testCreateProjectIdToRoleModelMap_WithData() throws Exception {
+		final Role role = getFakeRole();
+		final Project project = getFakeProject();
+
+		Map<Integer, List<RoleStatusModel>> projectIdToRoleModelMap = factory.createProjectIdToRoleModelMap(
+				Arrays.asList(project),
+				new HashMap<Project, Set<Role>>() {{
+					put(project, new HashSet<>(Arrays.asList(role)));
+				}},
+				new HashMap<Integer, List<SkillStatusModel>>() {{
+					put(role.getId(), Arrays.asList(new SkillStatusModel()));
+				}},
+				new HashMap<Role, SkillStatus>() {{
+					put(role, SkillStatus.Expired);
+				}}
+		);
+
+		assertNotNull(projectIdToRoleModelMap);
+		assertFalse(projectIdToRoleModelMap.isEmpty());
+		assertNotNull(projectIdToRoleModelMap.get(project.getId()));
+
+		List<RoleStatusModel> roleStatusModels = projectIdToRoleModelMap.get(project.getId());
+
+		assertNotNull(roleStatusModels.get(0));
+		assertEquals(role.getId(), roleStatusModels.get(0).getId());
+		assertEquals(SkillStatus.Expired, roleStatusModels.get(0).getStatus());
+	}
 
 	private Role getFakeRole() {
 		return new RoleBuilder()

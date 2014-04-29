@@ -20,7 +20,9 @@ public class AccountSkillRoleDAO extends AbstractBaseEntityDAO<AccountSkillRole>
 		TypedQuery query = em.createQuery("SELECT asr FROM AccountSkillRole asr " +
 				"JOIN asr.role AS r " +
 				"WHERE r IN (:roles)", AccountSkillRole.class);
+
 		query.setParameter("roles", roles);
+
 		return query.getResultList();
 	}
 

@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +30,6 @@ public class EmployeeSiteStatusProcess {
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
-
 	public EmployeeSiteStatusResult getEmployeeSiteStatusResult(final int employeeId, final int siteId,
 																final Collection<Integer> parentSites) {
 		EmployeeSiteStatusResult employeeSiteStatusResult = new EmployeeSiteStatusResult();
@@ -46,6 +46,7 @@ public class EmployeeSiteStatusProcess {
 		employeeSiteStatusResult = addSkillStatuses(employeeSiteStatusResult, employee);
 		employeeSiteStatusResult = addRoleStatuses(employeeSiteStatusResult);
 		employeeSiteStatusResult = addProjectStatuses(employeeSiteStatusResult);
+		employeeSiteStatusResult = addSiteAssignmentRoles(employeeSiteStatusResult, siteId, employee);
 
 		return employeeSiteStatusResult;
 	}
@@ -78,7 +79,18 @@ public class EmployeeSiteStatusProcess {
 		Set<Role> roles = PicsCollectionUtil.mergeCollectionOfCollections(employeeSiteStatusResult.getProjectRoles().values());
 		roles.addAll(roleEntityService.getSiteRolesForEmployee(employee, siteId));
 
-		employeeSiteStatusResult.setAllRoleSkills(skillEntityService.getSkillsForRoles(roles));
+		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(roles);
+
+		Map<Role, Set<AccountSkill>> allRoleSkills = new HashMap<>();
+		for (Role role : roles) {
+			if (!roleSkills.containsKey(role)) {
+				allRoleSkills.put(role, new HashSet<AccountSkill>());
+			} else {
+				allRoleSkills.put(role, roleSkills.get(role));
+			}
+		}
+
+		employeeSiteStatusResult.setAllRoleSkills(allRoleSkills);
 
 		return employeeSiteStatusResult;
 	}
@@ -106,13 +118,104 @@ public class EmployeeSiteStatusProcess {
 	}
 
 	private Map<Role, Set<AccountSkill>> aggregateRoleSkills(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-		Map<Role, Set<AccountSkill>> roleSkills = new HashMap<>(employeeSiteStatusResult.getAllRoleSkills());
-		roleSkills = appendSiteAndCorporateRequiredSkills(roleSkills, employeeSiteStatusResult.getSiteAndCorporateRequiredSkills());
-		return roleSkills;
+		Map<Role, Set<AccountSkill>> aggregatedRoleSkills = new HashMap<>();
+		for (Map.Entry<Role, Set<AccountSkill>> roleSkillEntry : employeeSiteStatusResult.getAllRoleSkills().entrySet()) {
+			aggregatedRoleSkills.put(roleSkillEntry.getKey(), new HashSet<>(roleSkillEntry.getValue()));
+		}
+
+//		for (Role role : employeeSiteStatusResult.get)
+
+		aggregatedRoleSkills = appendSiteAndCorporateRequiredSkills(aggregatedRoleSkills,
+				employeeSiteStatusResult.getSiteAndCorporateRequiredSkills());
+
+		return aggregatedRoleSkills;
 	}
 
 	private EmployeeSiteStatusResult addProjectStatuses(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-		return null;  //To change body of created methods use File | Settings | File Templates.
+		Map<Project, List<SkillStatus>> projectStatuses = new HashMap<>();
+
+		projectStatuses = addProjectStatuses(projectStatuses, employeeSiteStatusResult.getProjectRoles(),
+				employeeSiteStatusResult.getRoleStatuses());
+		projectStatuses = addProjectRequiredSkillStatuses(projectStatuses, employeeSiteStatusResult);
+
+		projectStatuses = filterOutEmptyProjectStatuses(projectStatuses);
+
+		employeeSiteStatusResult.setProjectStatuses(appendProjectsNoSkillsAndNoRoles(
+				statusCalculatorService.getOverallStatusPerEntity(projectStatuses), employeeSiteStatusResult));
+
+		return employeeSiteStatusResult;
+	}
+
+	// It is possible that a project can exist without roles and without any required skills
+	private Map<Project, List<SkillStatus>> filterOutEmptyProjectStatuses(final Map<Project, List<SkillStatus>> projectStatuses) {
+		if (MapUtils.isEmpty(projectStatuses)) {
+			return projectStatuses;
+		}
+
+		Map<Project, List<SkillStatus>> filteredProjectStatusMap = new HashMap<>();
+		for (Project project : projectStatuses.keySet()) {
+			if (CollectionUtils.isNotEmpty(projectStatuses.get(project))) {
+				filteredProjectStatusMap.put(project, projectStatuses.get(project));
+			}
+		}
+
+		return filteredProjectStatusMap;
+	}
+
+	private Map<Project, SkillStatus> appendProjectsNoSkillsAndNoRoles(final Map<Project, SkillStatus> projectSkillStatusMap,
+																	   final EmployeeSiteStatusResult employeeSiteStatusResult) {
+		Set<Project> projects = employeeSiteStatusResult.getProjects();
+		if (CollectionUtils.isEmpty(projects)) {
+			return projectSkillStatusMap;
+		}
+
+		SkillStatus siteAndCorporateRequiredSkillStatus = statusCalculatorService
+				.calculateOverallStatus(getSiteAndCorporateRequiredSkillsList(employeeSiteStatusResult));
+		for (Project project : projects) {
+			if (!projectSkillStatusMap.containsKey(project)) {
+				projectSkillStatusMap.put(project, siteAndCorporateRequiredSkillStatus);
+			}
+		}
+
+		return projectSkillStatusMap;
+	}
+
+	private List<SkillStatus> getSiteAndCorporateRequiredSkillsList(final EmployeeSiteStatusResult employeeSiteStatusResult) {
+		Set<AccountSkill> siteAndCorporateRequiredSkills = employeeSiteStatusResult.getSiteAndCorporateRequiredSkills();
+		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
+			return Collections.emptyList();
+		}
+
+		Map<AccountSkill, SkillStatus> skillStatus = employeeSiteStatusResult.getSkillStatus();
+
+		List<SkillStatus> siteAndCorporateSkillStatuses = new ArrayList<>();
+		for (AccountSkill accountSkill : siteAndCorporateRequiredSkills) {
+			siteAndCorporateSkillStatuses.add(skillStatus.get(accountSkill));
+		}
+
+		return siteAndCorporateSkillStatuses;
+	}
+
+	private Map<Project, List<SkillStatus>> addProjectRequiredSkillStatuses(final Map<Project, List<SkillStatus>> projectStatuses,
+																			final EmployeeSiteStatusResult employeeSiteStatusResult) {
+		Map<Project, List<SkillStatus>> projectRequiredSkillStatuses = convertToSkillStatusMap(employeeSiteStatusResult.getProjectRequiredSkills(),
+				employeeSiteStatusResult.getSkillStatus());
+
+		return PicsCollectionUtil.mergeMapOfLists(projectStatuses, projectRequiredSkillStatuses);
+	}
+
+	private Map<Project, List<SkillStatus>> addProjectStatuses(final Map<Project, List<SkillStatus>> projectStatuses,
+															   final Map<Project, Set<Role>> projectRoles,
+															   final Map<Role, SkillStatus> roleSkillStatuses) {
+		return PicsCollectionUtil.mergeMapOfLists(projectStatuses, convertToSkillStatusMap(projectRoles, roleSkillStatuses));
+	}
+
+
+	private EmployeeSiteStatusResult addSiteAssignmentRoles(final EmployeeSiteStatusResult employeeSiteStatusResult,
+															final int siteId, final Employee employee) {
+		employeeSiteStatusResult.setSiteAssignmentRoles(roleEntityService.getSiteRolesForEmployee(employee, siteId));
+
+		return employeeSiteStatusResult;
 	}
 
 	private <K> Map<K, Set<AccountSkill>> appendSiteAndCorporateRequiredSkills(final Map<K, Set<AccountSkill>> skillMap,
@@ -129,9 +232,9 @@ public class EmployeeSiteStatusProcess {
 		return skillMap;
 	}
 
-	private <K> Map<K, List<SkillStatus>> convertToSkillStatusMap(final Map<K, Set<AccountSkill>> skillMap,
-																  final Map<AccountSkill, SkillStatus> statusMap) {
-		if (MapUtils.isEmpty(skillMap) || MapUtils.isEmpty(skillMap)) {
+	private <K, V> Map<K, List<SkillStatus>> convertToSkillStatusMap(final Map<K, Set<V>> skillMap,
+																	 final Map<V, SkillStatus> statusMap) {
+		if (MapUtils.isEmpty(skillMap) || MapUtils.isEmpty(statusMap)) {
 			return Collections.emptyMap();
 		}
 
@@ -139,8 +242,10 @@ public class EmployeeSiteStatusProcess {
 		for (K key : skillMap.keySet()) {
 
 			ArrayList<SkillStatus> statuses = new ArrayList<>();
-			for (AccountSkill accountSkill : skillMap.get(key)) {
-				statuses.add(statusMap.get(accountSkill));
+			for (V value : skillMap.get(key)) {
+				if (statusMap.containsKey(value)) {
+					statuses.add(statusMap.get(value));
+				}
 			}
 
 			skillStatuses.put(key, statuses);

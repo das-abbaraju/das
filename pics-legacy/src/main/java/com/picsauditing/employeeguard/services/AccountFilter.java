@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.external;
+package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.provisioning.ProductSubscriptionService;
@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Stand in for billing logic
- */
 class AccountFilter {
 
 	@Autowired

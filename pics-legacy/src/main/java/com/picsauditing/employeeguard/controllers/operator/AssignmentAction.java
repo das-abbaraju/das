@@ -2,9 +2,9 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.external.AccountService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.viewmodel.factory.RoleFactory;
 import com.picsauditing.employeeguard.viewmodel.factory.SkillFactory;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -49,7 +49,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String assignments() {
 		assignmentId = NumberUtils.toInt(id);
-		project = projectService.getProject(projectId, getNumericId());
+		project = projectService.getProject(projectId, getIdAsInt());
 
 		operatorProjectAssignment = ViewModelFactory.getOperatorProjectAssignmentFactory()
 				.create(RoleFactory.createFromProjectRoles(project.getRoles()),
@@ -105,8 +105,8 @@ public class AssignmentAction extends PicsRestActionSupport {
 	}
 
 	private List<EmployeeProjectRoleAssignment> getEmployeeProjectRoleAssignmentList(final Project project,
-	                                                                                 final Role role,
-	                                                                                 final List<AccountSkill> jobRoleSkills) {
+																					 final Role role,
+																					 final List<AccountSkill> jobRoleSkills) {
 		Map<Integer, AccountModel> contractors = accountService
 				.getIdToAccountModelMap(projectService.getContractorIdsForProject(project));
 		Map<AccountModel, Set<Employee>> contractorEmployeeMap = projectRoleService

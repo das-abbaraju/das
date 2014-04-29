@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.controllers.importexport;
 
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.EmployeeService;
-import com.picsauditing.employeeguard.services.external.AccountService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.web.UrlBuilder;
 import org.slf4j.Logger;

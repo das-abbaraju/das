@@ -1,5 +1,6 @@
 describe('The Operator Assignment Page', function() {
     var scope, $http, httpMock, result;
+    var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
 
     var site_assignments = {
         "id": 1,
@@ -71,6 +72,7 @@ describe('The Operator Assignment Page', function() {
     describe('request for corporate site information', function() {
         beforeEach(function() {
             httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);
+            httpMock.when('GET', corp_sites_dev_url).respond(site_list);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary\/[0-9]+/).respond(site_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(site_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_assignments);
@@ -122,6 +124,7 @@ describe('The Operator Assignment Page', function() {
             }];
 
             httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond('');
+            httpMock.when('GET', corp_sites_dev_url).respond('');
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(operator_summary);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_summary);
             httpMock.flush();

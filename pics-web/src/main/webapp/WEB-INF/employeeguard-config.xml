@@ -37,7 +37,7 @@
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
-    <bean id="EmailService" class="com.picsauditing.employeeguard.services.external.EmailService"/>
+    <bean id="EmailService" class="com.picsauditing.employeeguard.services.EmailService"/>
     <bean id="EmployeeLoginService" class="com.picsauditing.employeeguard.services.LoginService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
@@ -51,8 +51,8 @@
     <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
 
     <!-- External Services -->
-    <bean id="AccountService" class="com.picsauditing.employeeguard.services.external.AccountService"/>
-    <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.external.AccountFilter"/>
+    <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
+    <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.AccountFilter"/>
 
     <!-- Entity Services -->
     <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
@@ -65,6 +65,8 @@
     <!-- Business Services -->
     <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
     <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
+    <bean id="LiveIDEmployeeService" class="com.picsauditing.employeeguard.services.LiveIDEmployeeService"/>
+    <bean id="OperatorEmployeeService" class="com.picsauditing.employeeguard.services.OperatorEmployeeService"/>
 
     <!-- Processes -->
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>

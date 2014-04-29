@@ -5,7 +5,8 @@ angular.module('PICS.employeeguard')
         restrict: 'E',
         scope: {
             title: '@',
-            skills: '='
+            skills: '=',
+            icon: '@'
         },
         templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };

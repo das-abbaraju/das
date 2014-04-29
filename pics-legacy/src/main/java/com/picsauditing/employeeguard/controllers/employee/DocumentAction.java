@@ -13,14 +13,12 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.employee.ProfileDocumentInfo;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.validators.document.ProfileDocumentFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
-import com.picsauditing.util.Strings;
 import com.picsauditing.validator.Validator;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
@@ -35,6 +33,7 @@ import java.util.Map;
 public class DocumentAction extends PicsRestActionSupport implements AjaxValidator {
 
 	private static final long serialVersionUID = -6816560877429952204L;
+
 	public static final String EMPLOYEE_SKILL_ID = "employee_skill_id";
 	public static final String EMPLOYEE_SKILL_REFERER_URL = "employee/skill/";
 
@@ -73,7 +72,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String show() {
-		document = profileDocumentService.getDocument(getNumericId());
+		document = profileDocumentService.getDocument(getIdAsInt());
 
 		return SHOW;
 	}
@@ -87,7 +86,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	@SkipValidation
 	public String editFileSection() {
 		if (documentForm == null) {
-			document = profileDocumentService.getDocument(getNumericId());
+			document = profileDocumentService.getDocument(getIdAsInt());
 			documentForm = new DocumentForm.Builder().profileDocument(document).build();
 		} else {
 			document = documentForm.buildProfileDocument();
@@ -99,7 +98,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 	// TODO: Use different strategies within a FileService to retrieve the file based on DocumentType
 	@SkipValidation
 	public String download() {
-		ProfileDocument document = profileDocumentService.getDocument(getNumericId());
+		ProfileDocument document = profileDocumentService.getDocument(getIdAsInt());
 
 		byte[] output = null;
 		try {
@@ -146,7 +145,7 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 		document = documentForm.buildProfileDocument();
 		document.setDocumentType(DocumentType.Certificate);
 
-		ProfileDocument profileDocument = profileDocumentService.update(getNumericId(), profile, document,
+		ProfileDocument profileDocument = profileDocumentService.update(getIdAsInt(), profile, document,
 				permissions.getAppUserID(), documentForm.getFile(), documentForm.getFileFileName(), getFtpDir());
 
 		return setUrlForRedirect("/employee-guard/employee/file/" + profileDocument.getId());

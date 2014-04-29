@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.IdNameTitleModel;
 
 import java.util.List;

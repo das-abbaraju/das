@@ -2,125 +2,52 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.gson.Gson;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.models.*;
-import com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess;
-import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
-import com.picsauditing.employeeguard.services.external.AccountService;
+import com.picsauditing.employeeguard.models.factories.LiveIDEmployeeModelFactory;
+import com.picsauditing.employeeguard.models.factories.OperatorEmployeeModelFactory;
+import com.picsauditing.employeeguard.services.LiveIDEmployeeService;
+import com.picsauditing.employeeguard.services.OperatorEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.Map;
 
 public class EmployeeAction extends PicsRestActionSupport {
 
-	@Autowired
-	private AccountService accountService;
-	@Autowired
-	private EmployeeSiteStatusProcess employeeSiteStatusProcess;
+    @Autowired
+    private OperatorEmployeeService operatorEmployeeModelService;
+    @Autowired
+    private LiveIDEmployeeService liveIDEmployeeService;
 
-	public String show() {
-		OperatorEmployeeModel operatorEmployeeModel = buildOperatorEmployeeStatusModel();
+    private int siteId;
 
-		jsonString = new Gson().toJson(operatorEmployeeModel);
+    public String show() {
+        return convertToJson(buildLiveIDEmployeeModel(permissions.getAccountId()));
+    }
 
-		return JSON_STRING;
-	}
+    public String corporateEmployeeLiveId() {
+        return convertToJson(buildLiveIDEmployeeModel(siteId));
+    }
 
-	private OperatorEmployeeModel buildOperatorEmployeeStatusModel() {
-		int siteId = permissions.getAccountId();
-		List<Integer> parentAccounts = accountService.getTopmostCorporateAccountIds(siteId);
+    private LiveIDEmployeeModelFactory.LiveIDEmployeeModel buildLiveIDEmployeeModel(final int siteId) {
+        return liveIDEmployeeService.buildLiveIDEmployee(getIdAsInt(), siteId);
+    }
 
-		EmployeeSiteStatusResult employeeSiteStatusResult = employeeSiteStatusProcess
-				.getEmployeeSiteStatusResult(getNumericId(), siteId, parentAccounts);
+    public String employeeData() {
+        return convertToJson(buildOperatorEmployeeModel(permissions.getAccountId()));
+    }
 
-		return ModelFactory.getOperatorEmployeeModelFactory().create(
-				getRequiredSkills(employeeSiteStatusResult),
-				getProjectStatusModels(employeeSiteStatusResult),
-				getRoleStatusModels(employeeSiteStatusResult));
-	}
+    public String corporateEmployeeData() {
+        return convertToJson(buildOperatorEmployeeModel(siteId));
+    }
 
-	private RequiredSkills getRequiredSkills(EmployeeSiteStatusResult employeeSiteStatusResult) {
-		return ModelFactory.getSkillStatusModelFactory().createRequiredSkills(employeeSiteStatusResult.getSiteAndCorporateRequiredSkills(),
-				employeeSiteStatusResult.getSkillStatus());
-	}
+    private OperatorEmployeeModelFactory.OperatorEmployeeModel buildOperatorEmployeeModel(final int siteId) {
+        return operatorEmployeeModelService.buildModel(permissions.getAccountId(), getIdAsInt());
+    }
 
-	private List<RoleStatusModel> getRoleStatusModels(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-//		return ModelFactory.getRoleStatusModelFactory().c
-		return null;
-	}
+    private String convertToJson(final Object model) {
+        jsonString = new Gson().toJson(model);
 
-	private List<ProjectStatusModel> getProjectStatusModels(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-//		List<ProjectStatusModel> projectStatusModels = ModelFactory.getProjectStatusModelFactory().create();
-//
-//		return projectStatusModels;
+        return JSON_STRING;
+    }
 
-		return null;
-	}
-
-	private Map<Integer, List<SkillStatusModel>> getSkillStatusModelsForProjects(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-//		List<SkillStatusModel> skillStatusModels = ModelFactory.getSkillStatusModelFactory()
-//				.create();
-
-		return null;
-	}
-
-	private Map<Integer, List<SkillStatusModel>> getSkillStatusModelsForRoles(final EmployeeSiteStatusResult employeeSiteStatusResult) {
-//		List<SkillStatusModel> skillStatusModels = ModelFactory.getSkillStatusModelFactory()
-//				.
-
-		return null;
-	}
-
-//	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap, Map<Project, Set<AccountSkill>> projectSkillMap, Map<Role, SkillStatus> roleStatusMap, Map<Project, SkillStatus> projectStatusMap, Map<AccountSkill, SkillStatus> skillStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
-//		Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap = getProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
-//		Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap = getProjectIdToRoleStatusModelMap(projectRoleMap, roleStatusMap, roleIdToSkillStatusModelMap);
-//		return getProjectStatusModels(projectRoleMap, projectStatusMap, projectIdToSkillStatusModelMap, projectIdToRoleStatusModelMap);
-//	}
-//
-//	private Map<Integer, List<SkillStatusModel>> getRoleIdToSkillStatusModelMap(Map<Role, Set<AccountSkill>> roleSkillMap, Map<AccountSkill, SkillStatus> skillStatusMap) {
-//		return ModelFactory.getSkillStatusModelFactory().createRoleIdToSkillStatusModelMap(roleSkillMap, skillStatusMap);
-//	}
-//
-//	private Map<Integer, List<SkillStatusModel>> getProjectIdToSkillStatusModelMap(Map<Project, Set<AccountSkill>> projectSkillMap, Map<AccountSkill, SkillStatus> skillStatusMap) {
-//		return ModelFactory.getSkillStatusModelFactory().createProjectIdToSkillStatusModelMap(projectSkillMap, skillStatusMap);
-//	}
-//
-//	private Map<Integer, List<RoleStatusModel>> getProjectIdToRoleStatusModelMap(Map<Project, Set<Role>> projectRoleMap, Map<Role, SkillStatus> roleStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
-//		return ModelFactory.getRoleStatusModelFactory().createProjectIdToRoleModelMap(
-//				projectRoleMap.keySet(),
-//				projectRoleMap,
-//				roleIdToSkillStatusModelMap,
-//				roleStatusMap);
-//	}
-//
-//	private List<ProjectStatusModel> getProjectStatusModels(Map<Project, Set<Role>> projectRoleMap,
-//															Map<Project, SkillStatus> projectStatusMap,
-//															Map<Integer, List<SkillStatusModel>> projectIdToSkillStatusModelMap,
-//															Map<Integer, List<RoleStatusModel>> projectIdToRoleStatusModelMap) {
-////		return ModelFactory.getProjectStatusModelFactory().create(
-////				projectRoleMap.keySet(),
-////				projectIdToRoleStatusModelMap,
-////				projectIdToSkillStatusModelMap,
-////				projectStatusMap);
-//
-//		return null;
-//	}
-//
-//	private List<RoleStatusModel> getRoleStatusModels(Map<Role, Set<AccountSkill>> roleSkillMap, Map<Role, SkillStatus> roleStatusMap, Map<Integer, List<SkillStatusModel>> roleIdToSkillStatusModelMap) {
-//		return ModelFactory.getRoleStatusModelFactory().create(
-//				roleSkillMap.keySet(),
-//				roleIdToSkillStatusModelMap,
-//				roleStatusMap);
-//	}
-//
-//	private Map<Role, Set<AccountSkill>> getRoleSkillMap(int siteId, Employee employeeEntity, Map<Project, Set<Role>> projectRoleMap) {
-//		Set<Role> employeeRoles = roleService.getEmployeeRolesForSite(siteId, employeeEntity);
-//		employeeRoles.addAll(PicsCollectionUtil.flattenCollectionOfCollection(projectRoleMap.values()));
-//		return skillService.getSkillsForRoles(siteId, employeeRoles);
-//	}
-//
-//	private Map<Project, Set<AccountSkill>> getProjectSkillMap(int siteId, Map<Project, Set<Role>> projectRoleMap) {
-//		return skillService.getAllProjectSkillsForEmployeeProjectRoles(siteId,
-//				projectRoleMap);
-//	}
+    public void setSiteId(int siteId) {
+        this.siteId = siteId;
+    }
 }

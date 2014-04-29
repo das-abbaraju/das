@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.models;
+package com.picsauditing.employeeguard.models;
 
 public final class AccountModel implements Comparable<AccountModel> {
 
