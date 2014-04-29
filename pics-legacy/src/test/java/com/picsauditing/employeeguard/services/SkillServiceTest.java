@@ -112,27 +112,31 @@ public class SkillServiceTest {
   private AccountSkill buildAccountSkillWithARole() {
     AccountSkill accountSkill = new AccountSkill();
     accountSkill.setId(CORPORATE_SKILL_ID);
-    accountSkill.setRoles(Arrays.asList(buildAccountSkillRole()));
+    accountSkill.getRoles().clear();
+    accountSkill.getRoles().addAll(Arrays.asList(buildAccountSkillRole()));
     return accountSkill;
   }
 
   private AccountSkill buildAccountSkillWithoutRole() {
     AccountSkill accountSkill = new AccountSkill();
     accountSkill.setId(CORPORATE_SKILL_ID);
-    accountSkill.setRoles(new ArrayList<AccountSkillRole>());
+    accountSkill.getRoles().clear();
+    accountSkill.getRoles().addAll(new ArrayList<AccountSkillRole>());
     return accountSkill;
   }
 
 	private AccountSkill buildAccountSkillWithAGroup() {
 		AccountSkill accountSkill = new AccountSkill();
     accountSkill.setId(CONTRACTOR_SKILL_ID);
-		accountSkill.setGroups(Arrays.asList(buildAccountSkillGroup()));
+    accountSkill.getGroups().clear();
+    accountSkill.getGroups().addAll(Arrays.asList(buildAccountSkillGroup()));
 		return accountSkill;
 	}
   private AccountSkill buildAccountSkillWithoutGroup() {
     AccountSkill accountSkill = new AccountSkill();
     accountSkill.setId(CONTRACTOR_SKILL_ID);
-    accountSkill.setGroups(new ArrayList<AccountSkillGroup>());
+    accountSkill.getGroups().clear();
+    accountSkill.getGroups().addAll(new ArrayList<AccountSkillGroup>());
     return accountSkill;
   }
 

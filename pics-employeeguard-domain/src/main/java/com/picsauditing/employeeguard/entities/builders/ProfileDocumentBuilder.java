@@ -57,7 +57,8 @@ public class ProfileDocumentBuilder extends AbstractBaseEntityBuilder<ProfileDoc
     }
 
     public ProfileDocumentBuilder employeeSkills(List<AccountSkillEmployee> employeeSkills) {
-        entity.setEmployeeSkills(employeeSkills);
+        entity.getEmployeeSkills().clear();
+        entity.getEmployeeSkills().addAll(employeeSkills);
         return this;
     }
 

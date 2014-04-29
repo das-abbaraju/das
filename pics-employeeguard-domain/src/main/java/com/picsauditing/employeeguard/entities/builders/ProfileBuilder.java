@@ -19,12 +19,14 @@ public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBu
 	}
 
 	public ProfileBuilder employees(List<Employee> employees) {
-		entity.setEmployees(employees);
+    entity.getEmployees().clear();
+    entity.getEmployees().addAll(employees);
 		return this;
 	}
 
 	public ProfileBuilder documents(final List<ProfileDocument> documents) {
-		entity.setDocuments(documents);
+    entity.getDocuments().clear();
+    entity.getDocuments().addAll(documents);
 		return this;
 	}
 
