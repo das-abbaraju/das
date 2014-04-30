@@ -18,11 +18,9 @@ public class EmailService {
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
-	private AccountDAO accountDAO;
-	@Autowired
 	private AppPropertyService appPropertyService;
 
-	public void sendEGWelcomeEmail(final EmailHash hash) throws Exception {
+	public void sendEGWelcomeEmail(final EmailHash hash, final String accountName) throws Exception {
 		EmailBuilder emailBuilder = new EmailBuilder();
 
 		emailBuilder.setToAddresses(hash.getEmailAddress());
@@ -30,7 +28,7 @@ public class EmailService {
 				"PICS <info@picsauditing.com>"));
 		emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_WELCOME_EMAIL_TEMPLATE_ID, 357));
 		emailBuilder.addToken("hash", hash);
-		emailBuilder.addToken("CompanyName", accountDAO.find(hash.getEmployee().getAccountId()).getName());
+		emailBuilder.addToken("CompanyName", accountName);
 
 		emailSender.sendNow(emailBuilder.build());
 	}

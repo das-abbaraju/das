@@ -174,7 +174,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		employee = employeeService.save(employeeForm, getFtpDir(), accountId, permissions.getAppUserID());
 
 		EmailHash hash = emailHashService.createNewHash(employee);
-		emailService.sendEGWelcomeEmail(hash);
+		emailService.sendEGWelcomeEmail(hash, permissions.getAccountName());
 
 		if (addAnother(employeeForm)) {
 			return setUrlForRedirect("/employee-guard/contractor/employee/create");
