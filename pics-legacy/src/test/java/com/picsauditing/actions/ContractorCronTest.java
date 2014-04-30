@@ -83,6 +83,8 @@ public class ContractorCronTest extends PicsActionTest {
     private EmployeeGuardRulesService employeeGuardRulesService;
     @Mock
     private Query query;
+    @Mock
+    private FlagCalculatorFactory flagCalculatorFactory;
 
     @Rule
     public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
@@ -102,6 +104,7 @@ public class ContractorCronTest extends PicsActionTest {
         Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
         Whitebox.setInternalState(contractorCron, "messageService", messageService);
         Whitebox.setInternalState(contractorCron, "employeeGuardRulesService", employeeGuardRulesService);
+        Whitebox.setInternalState(contractorCron, "flagCalculatorFactory", flagCalculatorFactory);
 
         when(messageService.getFlagChangePublisher()).thenReturn(flagChangePublisher);
 	}
@@ -212,13 +215,13 @@ public class ContractorCronTest extends PicsActionTest {
         changes.add(flagData);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
-        when(newContractor.getAccountLevel()).thenReturn(com.picsauditing.flagcalculator.entities.AccountLevel.Full);
-        when(newContractor.getStatus()).thenReturn(com.picsauditing.flagcalculator.entities.AccountStatus.Active);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        verify(newContractorOperator).setFlagDetail("{}");
+        verify(flagDataCalculator).saveFlagData(anyList());
     }
 
     @Test
@@ -239,14 +242,13 @@ public class ContractorCronTest extends PicsActionTest {
         changes.add(flagData);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
-        when(newContractor.getAccountLevel()).thenReturn(com.picsauditing.flagcalculator.entities.AccountLevel.Full);
-        when(newContractor.getStatus()).thenReturn(com.picsauditing.flagcalculator.entities.AccountStatus.Declined);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        verify(newContractorOperator).setFlagDetail("{}");
-        verify(newContractorOperator).setFlagColor(com.picsauditing.flagcalculator.entities.FlagColor.Clear);
+        verify(flagDataCalculator).saveFlagData(anyList());
     }
 
     @Test

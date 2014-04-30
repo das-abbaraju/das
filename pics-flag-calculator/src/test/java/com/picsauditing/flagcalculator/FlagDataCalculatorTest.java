@@ -101,7 +101,9 @@ public class FlagDataCalculatorTest {
         // calculator = new FlagDataCalculator(conCrits, flagCalculatorDao);
         // FlagDataCalculator.setEntityManager(entityManager);
         setupEntityManager();
-        calculator = new FlagDataCalculator(contractorOperator.getId());
+        calculator = new FlagDataCalculator();
+        Whitebox.setInternalState(calculator, "flagCalculatorDAO", flagCalculatorDao);
+        calculator.initialize(contractorOperator.getId(), new HashMap<Integer, List<Integer>>());
 //        caoMap = null;
 
         lastYearCriteria = createFlagCriteria(1, MultiYearScope.LastYearOnly);
@@ -111,7 +113,7 @@ public class FlagDataCalculatorTest {
     }
 
     private void setupEntityManager() {
-        when(entityManager.find(ContractorOperator.class, contractorOperator.getId())).thenReturn(contractorOperator);
+        when(flagCalculatorDao.find(ContractorOperator.class, contractorOperator.getId())).thenReturn(contractorOperator);
         when(entityManager.find(Naics.class, 1)).thenReturn(new Naics());
         when(entityManager.createNativeQuery(FlagCalculatorDAO.CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1)).thenReturn(query);
         when(entityManager.createNativeQuery(FlagCalculatorDAO.CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2)).thenReturn(query);
