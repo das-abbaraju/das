@@ -6,7 +6,7 @@ import org.hibernate.annotations.Cache;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.AuditType")
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ java.io.Serializable {

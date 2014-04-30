@@ -99,7 +99,7 @@ public class FlagDataCalculatorTest {
 
 		/* Initialize the calculator */
         // calculator = new FlagDataCalculator(conCrits, flagCalculatorDao);
-        FlagDataCalculator.setEntityManager(entityManager);
+        // FlagDataCalculator.setEntityManager(entityManager);
         setupEntityManager();
         calculator = new FlagDataCalculator(contractorOperator.getId());
 //        caoMap = null;

@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.User")
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class User extends BaseTable implements java.io.Serializable/*, Comparable<User>, JSONable, Identifiable*/ {
@@ -93,8 +93,8 @@ public class User extends BaseTable implements java.io.Serializable/*, Comparabl
 //        return (id == GROUP_SU);
 //    }
 //
-//    public User() {
-//    }
+    public User() {
+    }
 //
 //    public User(String name) {
 //        this.name = name;

@@ -92,7 +92,6 @@ public class ContractorCronTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 
 		contractorCron = new ContractorCron();
-        FlagCalculatorFactory.setEntityManager(entityManager);
         setupEntityManager();
 
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);

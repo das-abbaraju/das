@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagCriteriaContractor")
 @Table(name = "flag_criteria_contractor")
 public class FlagCriteriaContractor extends BaseTable /*implements Comparable<FlagCriteriaContractor>*/ {
 

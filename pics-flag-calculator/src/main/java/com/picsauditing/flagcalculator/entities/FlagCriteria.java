@@ -9,7 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagCriteria")
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
@@ -74,7 +74,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.OshaType") })
     @Enumerated(EnumType.STRING)
     public OshaType getOshaType() {
         return oshaType;
@@ -84,7 +84,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.oshaType = oshaType;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.OshaRateType") })
     @Enumerated(EnumType.STRING)
     public OshaRateType getOshaRateType() {
         return oshaRateType;
@@ -151,7 +151,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.comparison = comparison;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.MultiYearScope") })
     @Enumerated(EnumType.STRING)
     public MultiYearScope getMultiYearScope() {
         return multiYearScope;

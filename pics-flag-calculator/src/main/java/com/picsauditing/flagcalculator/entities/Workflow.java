@@ -7,7 +7,7 @@ import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.Workflow")
 @Table(name = "workflow")
 @SuppressWarnings("serial")
 public class Workflow extends BaseTable {

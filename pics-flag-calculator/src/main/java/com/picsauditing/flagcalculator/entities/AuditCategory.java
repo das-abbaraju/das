@@ -6,7 +6,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.AuditCategory")
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public class AuditCategory extends BaseTable /*implements Comparable<AuditCategory>*/ {

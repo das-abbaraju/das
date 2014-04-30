@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.Facility")
 @Table(name = "facilities")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Facility extends BaseTable {

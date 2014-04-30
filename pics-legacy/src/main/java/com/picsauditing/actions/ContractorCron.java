@@ -68,6 +68,8 @@ public class ContractorCron extends PicsActionSupport {
     private EmployeeGuardRulesService employeeGuardRulesService;
     @Autowired
     private MessagePublisherService messageService;
+    @Autowired
+    private FlagCalculatorFactory flagCalculatorFactory;
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
@@ -158,8 +160,10 @@ public class ContractorCron extends PicsActionSupport {
             runRulesBasedInsuranceCriteria(contractor);
             runEmployeeGuardRules(contractor);
 
+            Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds = getCorrespondingMultiscopeCriteriaIds();
             flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
-			flagDataCalculator.setCorrespondingMultiYearCriteria(getCorrespondingMultiscopeCriteriaIds());
+			flagDataCalculator.setCorrespondingMultiYearCriteria(correspondingMultiscopeCriteriaIds);
+            flagCalculatorFactory.setCorrespondingMultiscopeCriteriaIds(correspondingMultiscopeCriteriaIds);
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -704,18 +708,16 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void runFlag(ContractorOperator co) {
+	private void runFlag(ContractorOperator co) throws Exception {
 		if (!runStep(ContractorCronStep.Flag)) {
 			return;
 		}
 
 		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
 
-        FlagCalculator flagCalculator = FlagCalculatorFactory.flagCalculator(co, messageService);
+        FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(co, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
         flagCalculator.saveFlagData(changes);
-
-
     }
 
     private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {

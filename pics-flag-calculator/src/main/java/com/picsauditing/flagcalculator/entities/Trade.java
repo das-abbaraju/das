@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.Trade")
 @Table(name = "ref_trade")
-@SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
+//@SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = com.picsauditing.flagcalculator.entities.Trade.class), columns = @ColumnResult(name = "matching"))
 public class Trade extends BaseTable {
 
 	static public final int TOP_ID = 5;
@@ -640,6 +640,7 @@ public class Trade extends BaseTable {
 		this.naicsTRIR = naicsTRIR;
 	}
 
+    @Transient
     public Float getNaicsTRIRI() {
         if (naicsTRIR != null && naicsTRIR != 0.0) {
             return naicsTRIR;
@@ -659,7 +660,7 @@ public class Trade extends BaseTable {
 		this.naicsLWCR = naicsLWCR;
 	}
 
-//	@Transient
+	@Transient
 	public Float getNaicsLWCRI() {
 		if (naicsLWCR != null && naicsLWCR != 0.0) {
 			return naicsLWCR;

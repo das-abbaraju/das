@@ -6,7 +6,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.Account")
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends BaseTable /*implements Comparable<Account>, JSONable*/ {
@@ -361,7 +361,7 @@ public class Account extends BaseTable /*implements Comparable<Account>, JSONabl
 //        this.naicsValid = naicsValid;
 //    }
 //
-@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.AccountStatus") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.AccountStatus") })
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     public AccountStatus getStatus() {

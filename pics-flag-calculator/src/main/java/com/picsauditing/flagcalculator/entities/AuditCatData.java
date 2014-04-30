@@ -3,11 +3,11 @@ package com.picsauditing.flagcalculator.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.AuditCatData")
 @Table(name = "audit_cat_data")
 public class AuditCatData extends BaseTable implements java.io.Serializable/*, Comparable<AuditCatData>*/ {
 //
-//	private ContractorAudit audit;
+	private ContractorAudit audit;
 	private AuditCategory category;
 //	private int requiredCompleted = 0;
 //	private int numRequired = 0;
@@ -29,16 +29,16 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 		this.category = category;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "auditID", nullable = false)
-//	public ContractorAudit getAudit() {
-//		return audit;
-//	}
-//
-//	public void setAudit(ContractorAudit audit) {
-//		this.audit = audit;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "auditID", nullable = false)
+	public ContractorAudit getAudit() {
+		return audit;
+	}
+
+	public void setAudit(ContractorAudit audit) {
+		this.audit = audit;
+	}
+
 //	/**
 //	 * If true, then allow for manually setting the isApplies field
 //	 */

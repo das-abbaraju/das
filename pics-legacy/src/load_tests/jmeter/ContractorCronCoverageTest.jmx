@@ -459,7 +459,7 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
             </BeanShellPreProcessor>
             <hashTree/>
           </hashTree>
-          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Toggle on new FlagCalculator" enabled="true">
+          <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Toggle on new FlagCalculator" enabled="false">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Update Statement</stringProp>
             <stringProp name="query">replace into togglz (feature_name, feature_enabled) values (&apos;USE_NEW_FLAGCALCULATOR&apos;, 1)</stringProp>
@@ -470,6 +470,13 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
             <stringProp name="queryTimeout"></stringProp>
           </JDBCSampler>
           <hashTree/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sleep" enabled="true"/>
+          <hashTree>
+            <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+              <stringProp name="ConstantTimer.delay">300000</stringProp>
+            </ConstantTimer>
+            <hashTree/>
+          </hashTree>
           <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="Run New Flags on Smoketest Contractors" enabled="true">
             <stringProp name="ForeachController.inputVal">SMOKETEST_CONTRACTOR_ID</stringProp>
             <stringProp name="ForeachController.returnVal">CONTRACTOR_ID</stringProp>

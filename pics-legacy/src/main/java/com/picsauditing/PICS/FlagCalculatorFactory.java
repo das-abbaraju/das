@@ -4,28 +4,30 @@ import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.MessagePublisherService;
-import com.picsauditing.util.SpringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 
 public class FlagCalculatorFactory {
 
-    private static EntityManager entityManager;
+    private Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds;
 
-    public static FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) {
+    @Autowired
+    private com.picsauditing.flagcalculator.FlagDataCalculator newFlagDataCalculator;
+
+    public FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) throws Exception {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
 
         if (newFlagCalculatorIsEnabled()) {
-            com.picsauditing.flagcalculator.FlagDataCalculator.setEntityManager(entityManager());
-            FlagCalculator flagCalculator = new com.picsauditing.flagcalculator.FlagDataCalculator(co.getId(), convertOverridesToIDMap(overrides));
-            return flagCalculator;
+            newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
+            return newFlagDataCalculator;
         } else {
             FlagDataCalculator flagDataCalculator =  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), overrides);
             flagDataCalculator.setOperator(co.getOperatorAccount());
             flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
             flagDataCalculator.setContractorOperator(co);
             flagDataCalculator.setMessagePublisherService(messagePublisherService);
+            flagDataCalculator.setCorrespondingMultiYearCriteria(correspondingMultiscopeCriteriaIds);
             return flagDataCalculator;
         }
     }
@@ -94,14 +96,7 @@ public class FlagCalculatorFactory {
         }
     }
 
-    private static EntityManager entityManager() {
-        if (entityManager == null)
-            return SpringUtils.getBean("entityManagerFactory");
-        else
-            return entityManager;
-    }
-
-    public static void setEntityManager(EntityManager entityManager) {
-        FlagCalculatorFactory.entityManager = entityManager;
+    public void setCorrespondingMultiscopeCriteriaIds(Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds) {
+        this.correspondingMultiscopeCriteriaIds = correspondingMultiscopeCriteriaIds;
     }
 }

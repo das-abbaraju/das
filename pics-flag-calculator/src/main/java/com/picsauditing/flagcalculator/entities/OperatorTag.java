@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.OperatorTag")
 @Table(name = "operator_tag")
 public class OperatorTag extends BaseTable {
 //    public static final int SHELL_COMPETENCY_REVIEW = 142;

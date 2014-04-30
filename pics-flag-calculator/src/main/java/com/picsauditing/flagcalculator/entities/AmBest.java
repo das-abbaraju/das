@@ -1,9 +1,9 @@
 package com.picsauditing.flagcalculator.entities;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.AmBest")
 public class AmBest {
 //
 //	public static Map<Integer, String> financialMap = new TreeMap<Integer, String>() {
@@ -48,7 +48,7 @@ public class AmBest {
 //		}
 //	};
 //
-//	private int amBestId;
+	private int amBestId;
 //	private String naic;
 	private int ratingCode;
 	private int financialCode;
@@ -58,16 +58,16 @@ public class AmBest {
 //	private String country;
 //	private Date effectiveDate;
 //
-//	@Id
-//	@Column(nullable = false)
-//	public int getAmBestId() {
-//		return amBestId;
-//	}
-//
-//	public void setAmBestId(int amBestId) {
-//		this.amBestId = amBestId;
-//	}
-//
+	@Id
+	@Column(nullable = false)
+	public int getAmBestId() {
+		return amBestId;
+	}
+
+	public void setAmBestId(int amBestId) {
+		this.amBestId = amBestId;
+	}
+
 //	/**
 //	 * National Association of Insurance Commissioners number use to uniquely
 //	 * identify an insurance carrier http://www.naic.org/

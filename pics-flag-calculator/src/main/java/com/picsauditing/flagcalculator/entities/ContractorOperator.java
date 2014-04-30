@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.ContractorOperator")
 @Table(name = "contractor_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {

@@ -1,6 +1,7 @@
 package com.picsauditing.flagcalculator.dao;
 
 import com.picsauditing.flagcalculator.entities.BaseTable;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +19,7 @@ abstract public class PicsDAO {
 //
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
-		this.em = em;
+        this.em = em;
 	}
 
 //	public QueryMetaData getQueryMetaData() {

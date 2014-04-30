@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.OperatorAccount")
 @Table(name = "operators")
 public class OperatorAccount extends Account {
 
@@ -105,7 +105,7 @@ public class OperatorAccount extends Account {
 //        this.doContractorsPay = doContractorsPay;
 //    }
 //
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.YesNo")})
     @Column(name = "canSeeInsurance", nullable = false)
     @Enumerated(EnumType.STRING)
     public YesNo getCanSeeInsurance() {

@@ -6,7 +6,7 @@ import org.hibernate.annotations.Cache;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagCriteriaOperator")
 @Table(name = "flag_criteria_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaOperator extends BaseTable {
@@ -34,9 +34,10 @@ public class FlagCriteriaOperator extends BaseTable {
 //                return f1.getDisplayOrder() - f2.getDisplayOrder();
 //        }
 //    };
-//
-//    @ManyToOne
-//    @JoinColumn(name = "opID", nullable = false)
+
+
+    @ManyToOne
+    @JoinColumn(name = "opID", nullable = false)
     public OperatorAccount getOperator() {
         return operator;
     }

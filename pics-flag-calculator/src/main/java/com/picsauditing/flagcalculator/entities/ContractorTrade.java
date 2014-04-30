@@ -1,30 +1,27 @@
 package com.picsauditing.flagcalculator.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.ContractorTrade")
 @Table(name = "contractor_trade")
 public class ContractorTrade extends BaseTable {
-//	private ContractorAccount contractor;
+	private ContractorAccount contractor;
 	private Trade trade;
 	private boolean selfPerformed = true;
 //	private boolean manufacture = true;
 	private int activityPercent = 5;
-//
-//	@ManyToOne
-//	@JoinColumn(name = "conID")
-//	public ContractorAccount getContractor() {
-//		return contractor;
-//	}
-//
-//	public void setContractor(ContractorAccount contractor) {
-//		this.contractor = contractor;
-//	}
-//
+
+	@ManyToOne
+	@JoinColumn(name = "conID")
+	public ContractorAccount getContractor() {
+		return contractor;
+	}
+
+	public void setContractor(ContractorAccount contractor) {
+		this.contractor = contractor;
+	}
+
 	@OneToOne
 	@JoinColumn(name = "tradeID")
 	public Trade getTrade() {

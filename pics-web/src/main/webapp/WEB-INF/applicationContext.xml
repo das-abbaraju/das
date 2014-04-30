@@ -12,6 +12,7 @@
     <context:property-placeholder location="classpath:amqp_connection.properties"/>
     <import resource="rabbit-config.xml"/>
     <import resource="employeeguard-config.xml"/>
+    <import resource="classpath*:META-INF/flag-calculator-context.xml"/>
 
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
@@ -389,6 +390,8 @@
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.i18n.service.TranslateRestClient"/>
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.SpringConfiguredTranslationUsageDAO" scope="prototype"/>
+
+    <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"

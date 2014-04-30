@@ -3,31 +3,31 @@ package com.picsauditing.flagcalculator.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagData")
 @Table(name = "flag_data")
 // public class FlagData extends BaseTable /*implements Comparable<FlagData>, UpdatableListItem */ {
 public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData {
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
-//    private ContractorOperator contractorOperator;
+    private ContractorOperator contractorOperator;
     private FlagCriteria criteria;
     private FlagColor flag;
 //    private FlagColor baselineFlag;
     private FlagCriteriaContractor criteriaContractor;
-//
-//    @ManyToOne
-//    @JoinColumns(
-//            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
-//                    @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
-//    public ContractorOperator getContractorOperator() {
-//        return contractorOperator;
-//    }
-//
-//    public void setContractorOperator(ContractorOperator contractorOperator) {
-//        this.contractorOperator = contractorOperator;
-//    }
-//
+
+    @ManyToOne
+    @JoinColumns(
+            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
+                    @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
+    public ContractorOperator getContractorOperator() {
+        return contractorOperator;
+    }
+
+    public void setContractorOperator(ContractorOperator contractorOperator) {
+        this.contractorOperator = contractorOperator;
+    }
+
     @ManyToOne
     @JoinColumn(name = "conID", nullable = false)
     public ContractorAccount getContractor() {

@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import java.util.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.ContractorAccount")
 @Table(name = "contractor_info")
 // Cache is only on the operator account now, if this works.
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
@@ -721,7 +721,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        return list;
 //    }
 //
-//    @Transient
+    @Transient
     public ContractorTrade getTopTrade() {
         ContractorTrade topTrade = null;
         List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
@@ -1226,10 +1226,10 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
         return soleProprietor;
     }
 
-//    public void setSoleProprietor(boolean soleProprietor) {
-//        this.soleProprietor = soleProprietor;
-//    }
-//
+    public void setSoleProprietor(boolean soleProprietor) {
+        this.soleProprietor = soleProprietor;
+    }
+
 //    public void setCompetitorMembership(Boolean competitorMembership) {
 //        this.competitorMembership = competitorMembership;
 //    }

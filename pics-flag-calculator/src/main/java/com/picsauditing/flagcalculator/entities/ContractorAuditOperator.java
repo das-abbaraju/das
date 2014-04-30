@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.ContractorAuditOperator")
 @Table(name = "contractor_audit_operator")
 public class ContractorAuditOperator extends BaseTable /*implements Comparable<ContractorAuditOperator>*/ {
 
@@ -20,13 +20,13 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
     private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
 //    private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
 //    private AuditSubStatus auditSubStatus;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "auditID", nullable = false, updatable = false)
-//    public ContractorAudit getAudit() {
-//        return audit;
-//    }
-//
+
+    @ManyToOne
+    @JoinColumn(name = "auditID", nullable = false, updatable = false)
+    public ContractorAudit getAudit() {
+        return audit;
+    }
+
     public void setAudit(ContractorAudit audit) {
         this.audit = audit;
     }

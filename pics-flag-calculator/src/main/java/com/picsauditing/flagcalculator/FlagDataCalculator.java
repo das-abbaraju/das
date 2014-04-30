@@ -10,13 +10,13 @@ import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.*;
 
 public class FlagDataCalculator implements FlagCalculator {
-    private static EntityManager em;
-
+    @Autowired
     private FlagCalculatorDAO flagCalculatorDAO;
 
     private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
@@ -29,17 +29,17 @@ public class FlagDataCalculator implements FlagCalculator {
     private boolean worksForOperator = true;
     private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
 
+    public FlagDataCalculator() {}
+
     public FlagDataCalculator(Integer contractorOperatorID) {
-        this.flagCalculatorDAO = new FlagCalculatorDAO(em);
-        contractorOperator = flagCalculatorDAO.find(ContractorOperator.class, contractorOperatorID);
-        setContractorCriteria(contractorOperator.getContractorAccount().getFlagCriteria());
-        setCorrespondingMultiYearCriteria(flagCalculatorDAO.getCorrespondingMultiscopeCriteriaIds());
-        setOperator(contractorOperator.getOperatorAccount());
-        setOperatorCriteria(FlagService.getFlagCriteriaInherited(contractorOperator.getOperatorAccount()));
+        initialize(contractorOperatorID, new HashMap<Integer, List<Integer>>());
     }
 
     public FlagDataCalculator(Integer contractorOperatorID, Map<Integer, List<Integer>> overrides) {
-        this.flagCalculatorDAO = new FlagCalculatorDAO(em);
+        initialize(contractorOperatorID, overrides);
+    }
+
+    public void initialize(Integer contractorOperatorID, Map<Integer, List<Integer>> overrides) {
         contractorOperator = flagCalculatorDAO.find(ContractorOperator.class, contractorOperatorID);
         setContractorCriteria(contractorOperator.getContractorAccount().getFlagCriteria());
         setCorrespondingMultiYearCriteria(flagCalculatorDAO.getCorrespondingMultiscopeCriteriaIds());
@@ -63,9 +63,9 @@ public class FlagDataCalculator implements FlagCalculator {
 //        this.flagCalculatorDAO = new FlagCalculatorDAO(em);
 //    }
 
-    public static void setEntityManager(EntityManager em) {
-        FlagDataCalculator.em = em;
-    }
+//    public static void setEntityManager(EntityManager em) {
+//        FlagDataCalculator.em = em;
+//    }
 
     public List<FlagData> calculate() {
         Map<FlagCriteria, com.picsauditing.flagcalculator.entities.FlagData> dataSet = new HashMap<>();
@@ -967,4 +967,7 @@ public class FlagDataCalculator implements FlagCalculator {
         flagCalculatorDAO.save(contractorOperator);
     }
 
+    public void setFlagCalculatorDAO(FlagCalculatorDAO flagCalculatorDAO) {
+        this.flagCalculatorDAO = flagCalculatorDAO;
+    }
 }

@@ -25,9 +25,9 @@ public class FlagCalculatorDAO extends PicsDAO {
 
     public FlagCalculatorDAO() {}
 
-    public FlagCalculatorDAO(EntityManager em) {
-        this.em = em;
-    }
+//    public FlagCalculatorDAO(EntityManager em) {
+//        this.em = em;
+//    }
 
 //	public FlagCriteria find(int id) {
 //		return em.find(FlagCriteria.class, id);

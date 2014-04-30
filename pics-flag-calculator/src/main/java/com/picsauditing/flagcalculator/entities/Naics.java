@@ -1,10 +1,9 @@
 package com.picsauditing.flagcalculator.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.Naics")
 @Table(name = "naics")
 public class Naics implements java.io.Serializable {
 	private String code;
@@ -12,8 +11,8 @@ public class Naics implements java.io.Serializable {
 //	private float lwcr;
 	private float dart;
 //
-//	@Id
-//	@Column(nullable = false, length = 6)
+	@Id
+	@Column(nullable = false, length = 6)
 //	@ReportField(importance = FieldImportance.Required)
 	public String getCode() {
 		return code;

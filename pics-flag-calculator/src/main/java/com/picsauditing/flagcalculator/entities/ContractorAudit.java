@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.ContractorAudit")
 @Table(name = "contractor_audit")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorAudit extends BaseTable {
