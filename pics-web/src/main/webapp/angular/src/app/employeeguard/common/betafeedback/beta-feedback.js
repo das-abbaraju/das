@@ -4,9 +4,10 @@ angular.module('PICS.employeeguard')
     $scope.submitFeedback = function () {
         Feedback.save({
             feedbackComment: $scope.feedback
+        }, function() {
+            $scope.feedbackSent = true;
         });
 
-        $scope.feedbackSent = true;
     };
 })
 
