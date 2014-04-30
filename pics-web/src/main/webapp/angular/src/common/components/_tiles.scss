@@ -37,7 +37,8 @@
             &:hover {
                 color: $success_light;
 
-                i {
+                i,
+                a {
                 color: $success_light;
                 }
             }
@@ -53,7 +54,8 @@
             &:hover {
                 color: $warning_light;
 
-                i {
+                i,
+                a {
                     color: $warning_light;
                 }
             }
@@ -69,8 +71,9 @@
             &:hover {
                 color: $danger_light;
 
-                i {
-                color: $danger_light;
+                i,
+                a {
+                    color: $danger_light;
                 }
             }
         }
