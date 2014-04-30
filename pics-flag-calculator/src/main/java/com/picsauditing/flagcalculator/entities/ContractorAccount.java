@@ -21,7 +21,7 @@ public class ContractorAccount extends Account {
     private List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
     private List<ContractorOperator> operators = new ArrayList<>();
     private List<ContractorTag> operatorTags = new ArrayList<ContractorTag>();
-    private Set<ContractorTrade> trades = new TreeSet<ContractorTrade>();
+    private Set<ContractorTrade> trades = new HashSet<>();
 
     @OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @Where(clause = "expiresDate > NOW() OR expiresDate IS NULL")

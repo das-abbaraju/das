@@ -61,7 +61,7 @@ public class TradeService {
         }
     }
 
-    public static ContractorTrade getTopTrade(ContractorAccount contractorAccount) {
+    public static ContractorTrade getRandomTopTrade(ContractorAccount contractorAccount) {
         ContractorTrade topTrade = null;
         List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
 
