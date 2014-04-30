@@ -1,12 +1,16 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorDashboardCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments) {
+.controller('operatorDashboardCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments, WhoAmI) {
     $scope.siteList = SiteList.query(function(sites) {
         if ($scope.hasSites(sites)) {
             $scope.loadSelectedSiteData(sites[0].id);
         } else {
             $scope.loadSelectedSiteData();
         }
+    });
+
+    WhoAmI.get(function(user) {
+        $scope.user = user.type.toLowerCase();
     });
 
     $scope.hasSites = function(sites) {
