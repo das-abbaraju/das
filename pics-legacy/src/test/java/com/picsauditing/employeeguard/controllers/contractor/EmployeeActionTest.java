@@ -165,7 +165,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
-		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class));
+		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
 
 	@Test
@@ -179,7 +179,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
-		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class));
+		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
 
 	@Test
