@@ -13,6 +13,8 @@ import javax.persistence.Table;
 public class User extends BaseTable implements java.io.Serializable {
     public static int SYSTEM = 1;
 
+    public User() {}
+
     public User(int id) {
         this.id = id;
     }
