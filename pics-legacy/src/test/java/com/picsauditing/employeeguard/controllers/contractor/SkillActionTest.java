@@ -32,6 +32,7 @@ import static org.mockito.Mockito.when;
 public class SkillActionTest extends PicsActionTest {
 	public static final String EDIT_FORM = "edit-form";
 	public static final String ID = "ID";
+
 	public static final String TEST = "Test";
 	private SkillAction skillAction;
 
@@ -61,7 +62,7 @@ public class SkillActionTest extends PicsActionTest {
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 		when(employeeService.getNumberOfEmployeesForAccount(anyInt())).thenReturn(5l);
-		when(skillEntityService.search(anyString(), anyInt())).thenReturn(Arrays.asList(new AccountSkillBuilder().build()));
+		when(skillEntityService.search(anyString(), anyInt())).thenReturn(Arrays.asList(new AccountSkillBuilder(Account.PicsID).build()));
 	}
 
 	@Test

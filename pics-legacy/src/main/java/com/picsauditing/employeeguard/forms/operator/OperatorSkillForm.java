@@ -20,7 +20,7 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 	boolean addAnother;
 
 	/* Collections */
-	private String[] roles;
+	private int[] roles;
 
 	public String getName() {
 		return name;
@@ -78,11 +78,11 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 		this.doesNotExpire = doesNotExpire;
 	}
 
-	public String[] getRoles() {
+	public int[] getRoles() {
 		return roles;
 	}
 
-	public void setRoles(String[] roles) {
+	public void setRoles(int[] roles) {
 		this.roles = roles;
 	}
 
@@ -96,8 +96,8 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 		this.addAnother = addAnother;
 	}
 
-	public AccountSkill buildAccountSkill() {
-		return new AccountSkillBuilder().name(name).description(description).skillType(skillType).required(required)
+	public AccountSkill buildAccountSkill(int accountId) {
+		return new AccountSkillBuilder(accountId).name(name).description(description).skillType(skillType).required(required)
 				.intervalType(intervalType).intervalPeriod(intervalPeriod).roles(roles).doesNotExpire(doesNotExpire).build();
 	}
 
@@ -136,10 +136,10 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 			form.setIntervalPeriod(accountSkill.getIntervalPeriod());
 			form.setDoesNotExpire(!accountSkill.getIntervalType().isApplicableExpiration() && accountSkill.getIntervalPeriod() == 0);
 
-			String[] roles = new String[accountSkill.getRoles().size()];
+			int[] roles = new int[accountSkill.getRoles().size()];
 			int counter = 0;
 			for (AccountSkillRole accountSkillRole: accountSkill.getRoles()) {
-				roles[counter++] = accountSkillRole.getRole().getName();
+				roles[counter++] = accountSkillRole.getRole().getId();
 			}
 
 			form.setRoles(roles);

@@ -23,6 +23,7 @@ public class AccountSkillEmployeeServiceTest {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 
 	private ProfileDocumentService profileDocumentService;
+  private static final int ACCOUNT_ID = 1100;
 
 	@Mock
 	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
@@ -41,7 +42,7 @@ public class AccountSkillEmployeeServiceTest {
 	@Test
 	public void testUpdate_Certification() throws Exception {
 		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee();
-		accountSkillEmployee.setSkill(new AccountSkillBuilder().skillType(SkillType.Certification).build());
+		accountSkillEmployee.setSkill(new AccountSkillBuilder(ACCOUNT_ID).skillType(SkillType.Certification).build());
 
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 		skillDocumentForm.setDocumentId(1);
@@ -55,7 +56,7 @@ public class AccountSkillEmployeeServiceTest {
 	@Test
 	public void testUpdate_Training_Unverified() throws Exception {
 		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee();
-		accountSkillEmployee.setSkill(new AccountSkillBuilder().skillType(SkillType.Training).intervalPeriod(3).intervalType(IntervalType.DAY).build());
+		accountSkillEmployee.setSkill(new AccountSkillBuilder(ACCOUNT_ID).skillType(SkillType.Training).intervalPeriod(3).intervalType(IntervalType.DAY).build());
 
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 
@@ -68,7 +69,7 @@ public class AccountSkillEmployeeServiceTest {
 	@Test
 	public void testUpdate_Training_Verified() throws Exception {
 		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee();
-		accountSkillEmployee.setSkill(new AccountSkillBuilder().skillType(SkillType.Training).intervalPeriod(3).intervalType(IntervalType.DAY).build());
+		accountSkillEmployee.setSkill(new AccountSkillBuilder(ACCOUNT_ID).skillType(SkillType.Training).intervalPeriod(3).intervalType(IntervalType.DAY).build());
 
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 		skillDocumentForm.setVerified(true);

@@ -21,6 +21,7 @@ public class SkillEngineTest {
 
 	public static final int CONTRACTOR_ID = 123;
 	public static final int SITE_ID = 234;
+  private static final int ACCOUNT_ID = 1100;
 
 	private SkillEngine skillEngine;
 
@@ -125,7 +126,7 @@ public class SkillEngineTest {
 	}
 
 	private AccountSkill buildFakeSkill() {
-		return new AccountSkillBuilder()
+		return new AccountSkillBuilder(ACCOUNT_ID)
 				.build();
 	}
 

@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 public class AssignmentServiceTest {
 	public static final int SITE_ID = 123;
+  private static final int ACCOUNT_ID = 1100;
 	public static final List<Integer> CONTRACTOR_IDS = Arrays.asList(12, 34);
 	public static final List<Integer> CORPORATE_IDS = Arrays.asList(56, 78);
 
@@ -274,17 +275,17 @@ public class AssignmentServiceTest {
 
 	private List<AccountSkill> buildFakeSkills() {
 		return Arrays.asList(
-				new AccountSkillBuilder()
+				new AccountSkillBuilder(ACCOUNT_ID)
 						.accountId(CORPORATE_IDS.get(0))
 						.skillType(SkillType.Certification)
 						.name("Skill 1")
 						.build(),
-				new AccountSkillBuilder()
+				new AccountSkillBuilder(ACCOUNT_ID)
 						.accountId(CORPORATE_IDS.get(1))
 						.skillType(SkillType.Certification)
 						.name("Skill 2")
 						.build(),
-				new AccountSkillBuilder()
+				new AccountSkillBuilder(ACCOUNT_ID)
 						.accountId(CORPORATE_IDS.get(0))
 						.skillType(SkillType.Certification)
 						.name("Skill 3")

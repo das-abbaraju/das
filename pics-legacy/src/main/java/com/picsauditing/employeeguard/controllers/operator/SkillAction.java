@@ -125,7 +125,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			loadSkill();
 			operatorSkillForm = new OperatorSkillForm.Builder().accountSkill(skill).build();
 		} else {
-			skill = operatorSkillForm.buildAccountSkill();
+			skill = operatorSkillForm.buildAccountSkill(permissions.getAccountId());
 		}
 
 		loadRoles();
@@ -134,7 +134,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	}
 
 	public String insert() throws Exception {
-		skill = operatorSkillForm.buildAccountSkill();
+		skill = operatorSkillForm.buildAccountSkill(permissions.getAccountId());
 		skillService.save(skill, permissions.getAccountId(), permissions.getUserId());
 
 		if (addAnother(operatorSkillForm)) {
