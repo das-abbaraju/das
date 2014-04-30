@@ -53,21 +53,6 @@ public class Trade extends BaseTable {
 		this.naicsTRIR = naicsTRIR;
 	}
 
-<<<<<<< HEAD
-    @Transient
-    public Float getNaicsTRIRI() {
-        if (naicsTRIR != null && naicsTRIR != 0.0) {
-            return naicsTRIR;
-        } else if (parent != null) {
-            return parent.getNaicsTRIRI();
-        } else {
-            return Float.valueOf(4);
-        }
-    }
-
-    //	@ReportField(importance = FieldImportance.Average, type = FieldType.Float)
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 	public Float getNaicsLWCR() {
 		return naicsLWCR;
 	}
@@ -75,23 +60,4 @@ public class Trade extends BaseTable {
 	public void setNaicsLWCR(Float naicsLWCR) {
 		this.naicsLWCR = naicsLWCR;
 	}
-<<<<<<< HEAD
-
-	@Transient
-	public Float getNaicsLWCRI() {
-		if (naicsLWCR != null && naicsLWCR != 0.0) {
-			return naicsLWCR;
-		} else if (parent != null) {
-			return parent.getNaicsLWCRI();
-		} else {
-			return Float.valueOf(4);
-		}
-	}
-//
-//	@Transient
-//	public boolean isRemoved() {
-//		return false;
-//	}
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 }

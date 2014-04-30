@@ -9,13 +9,11 @@ import java.io.Serializable;
 @Entity(name = "com.picsauditing.flagcalculator.entities.ContractorAuditOperatorPermission")
 @Table(name = "contractor_audit_operator_permission")
 public class ContractorAuditOperatorPermission implements Serializable {
-<<<<<<< HEAD
 
     private int id;
     private ContractorAuditOperator cao;
     private OperatorAccount operator;
-//    private ContractorAuditOperator previousCao;
-//
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(nullable = false)
@@ -36,9 +34,6 @@ public class ContractorAuditOperatorPermission implements Serializable {
     public void setCao(ContractorAuditOperator cao) {
         this.cao = cao;
     }
-=======
-    private OperatorAccount operator;
->>>>>>> 7ae760b... US831 Deprecated old FDC
 
     @ManyToOne
     @JoinColumn(name = "opID")

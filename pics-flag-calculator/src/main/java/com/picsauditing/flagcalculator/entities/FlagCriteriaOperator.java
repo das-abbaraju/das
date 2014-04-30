@@ -15,27 +15,6 @@ public class FlagCriteriaOperator extends BaseTable {
     private FlagColor flag = FlagColor.Red;
     private String hurdle;
     private OperatorTag tag;
-<<<<<<< HEAD
-//
-//    public static final Comparator<FlagCriteriaOperator> COMPARATOR = new Comparator<FlagCriteriaOperator>() {
-//        public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
-//            FlagCriteria f1 = o1.getCriteria();
-//            FlagCriteria f2 = o2.getCriteria();
-//
-//            // Display order matches, sort by category
-//            if (f1.getDisplayOrder() == f2.getDisplayOrder()) {
-//                // If category matches, sort by label
-//                if (f1.getCategory().equals(f2.getCategory())) {
-//                    return f1.getLabel().compareTo(f2.getLabel());
-//                } else
-//                    return f1.getCategory().compareTo(f2.getCategory());
-//            } else
-//                return f1.getDisplayOrder() - f2.getDisplayOrder();
-//        }
-//    };
-
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 
     @ManyToOne
     @JoinColumn(name = "opID", nullable = false)

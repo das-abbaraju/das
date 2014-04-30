@@ -22,57 +22,8 @@ public class OperatorAccount extends Account {
     private List<Facility> corporateFacilities = new ArrayList<>();
     private List<Facility> operatorFacilities = new ArrayList<>();
     private List<FlagCriteriaOperator> flagCriteria = new ArrayList<FlagCriteriaOperator>();
-<<<<<<< HEAD
-//    private List<JobSite> jobSites = new ArrayList<JobSite>();
-//    private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
-//    private Set<Integer> visibleAuditTypes = null;
-//    private List<Facility> linkedClients = new ArrayList<Facility>();
-//    private List<Facility> linkedGeneralContractors = new ArrayList<Facility>();
-//
-//    public OperatorAccount() {
-//        this.type = Account.OPERATOR_ACCOUNT_TYPE;
-//        this.onsiteServices = true;
-//        this.offsiteServices = true;
-//        this.materialSupplier = true;
-//        this.transportationServices = true;
-//    }
-//
-//    public OperatorAccount(String name) {
-//        this.name = name;
-//        this.type = Account.OPERATOR_ACCOUNT_TYPE;
-//        this.onsiteServices = true;
-//        this.offsiteServices = true;
-//        this.materialSupplier = true;
-//        this.transportationServices = true;
-//    }
-//
-//    @Transient
-//    public String getFullName() {
-//        if (Strings.isNullOrEmpty(dbaName)) {
-//            return name;
-//        }
-//
-//        return dbaName;
-//    }
-//
-//    /**
-//     * Yes, No, Multiple
-//     */
-//    @Column(nullable = false, length = 8)
-//    @ReportField()
-//    public String getDoContractorsPay() {
-//        return this.doContractorsPay;
-//    }
-//
-//    public void setDoContractorsPay(String doContractorsPay) {
-//        this.doContractorsPay = doContractorsPay;
-//    }
-//
-    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.YesNo")})
-=======
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.YesNo")})
->>>>>>> 7ae760b... US831 Deprecated old FDC
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = {@org.hibernate.annotations.Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.YesNo")})
     @Column(name = "canSeeInsurance", nullable = false)
     @Enumerated(EnumType.STRING)
     public YesNo getCanSeeInsurance() {

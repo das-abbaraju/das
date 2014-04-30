@@ -6,14 +6,8 @@ import javax.persistence.*;
 @Table(name = "workflow_step")
 @SuppressWarnings("serial")
 public class WorkflowStep extends BaseTable {
-<<<<<<< HEAD
 	private Workflow workflow;
-//	private AuditStatus oldStatus;
 	private AuditStatus newStatus;
-//	private EmailTemplate emailTemplate;
-//	private boolean noteRequired = false;
-//	private String name;
-//	private String helpText;
 
 	@ManyToOne
 	@JoinColumn(name = "workflowID", nullable = false)
@@ -25,19 +19,6 @@ public class WorkflowStep extends BaseTable {
 		this.workflow = workflow;
 	}
 
-//	@Enumerated(EnumType.STRING)
-//	public AuditStatus getOldStatus() {
-//		return oldStatus;
-//	}
-//
-//	public void setOldStatus(AuditStatus oldStatus) {
-//		this.oldStatus = oldStatus;
-//	}
-//
-=======
-	private AuditStatus newStatus;
-
->>>>>>> 7ae760b... US831 Deprecated old FDC
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public AuditStatus getNewStatus() {

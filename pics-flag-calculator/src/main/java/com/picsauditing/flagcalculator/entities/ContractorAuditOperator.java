@@ -14,11 +14,6 @@ public class ContractorAuditOperator extends BaseTable {
     private AuditStatus status = AuditStatus.Pending;
     private boolean visible = true;
     private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<ContractorAuditOperatorPermission>();
-<<<<<<< HEAD
-//    private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
-//    private AuditSubStatus auditSubStatus;
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 
     @ManyToOne
     @JoinColumn(name = "auditID", nullable = false, updatable = false)

@@ -9,15 +9,11 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
-<<<<<<< HEAD
     private ContractorOperator contractorOperator;
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
     private FlagCriteria criteria;
     private FlagColor flag;
     private FlagCriteriaContractor criteriaContractor;
 
-<<<<<<< HEAD
     @ManyToOne
     @JoinColumns(
             { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
@@ -30,8 +26,6 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
         this.contractorOperator = contractorOperator;
     }
 
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
     @ManyToOne
     @JoinColumn(name = "conID", nullable = false)
     public ContractorAccount getContractor() {

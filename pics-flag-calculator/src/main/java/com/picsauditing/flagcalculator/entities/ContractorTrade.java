@@ -6,15 +6,11 @@ import javax.persistence.*;
 @Entity(name = "com.picsauditing.flagcalculator.entities.ContractorTrade")
 @Table(name = "contractor_trade")
 public class ContractorTrade extends BaseTable {
-<<<<<<< HEAD
 	private ContractorAccount contractor;
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 	private Trade trade;
 	private boolean selfPerformed = true;
 	private int activityPercent = 5;
 
-<<<<<<< HEAD
 	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
@@ -25,8 +21,6 @@ public class ContractorTrade extends BaseTable {
 		this.contractor = contractor;
 	}
 
-=======
->>>>>>> 7ae760b... US831 Deprecated old FDC
 	@OneToOne
 	@JoinColumn(name = "tradeID")
 	public Trade getTrade() {

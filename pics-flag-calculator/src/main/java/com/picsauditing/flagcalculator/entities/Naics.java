@@ -8,14 +8,9 @@ import javax.persistence.*;
 public class Naics implements java.io.Serializable {
 	private String code;
 	private float dart;
-<<<<<<< HEAD
-//
+
 	@Id
 	@Column(nullable = false, length = 6)
-//	@ReportField(importance = FieldImportance.Required)
-=======
-
->>>>>>> 7ae760b... US831 Deprecated old FDC
 	public String getCode() {
 		return code;
 	}
