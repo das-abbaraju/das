@@ -68,7 +68,6 @@ describe('The Operator Dashboard', function() {
        "type":"CORPORATE"
     };
 
-
     beforeEach(angular.mock.module('PICS.employeeguard'));
     beforeEach(inject(function($injector, $rootScope, $controller, $http, $httpBackend, $routeParams) {
             scope = $rootScope.$new();

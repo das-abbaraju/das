@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.models.CompanyEmployeeModel;
 import com.picsauditing.employeeguard.models.CompanyModel;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
@@ -56,6 +56,14 @@ public class CompanyModelFactory {
 		}
 
 		return companyModels;
+	}
+
+	public CompanyModel create(final AccountModel accountModel, final String title) {
+		CompanyModel companyModel = new CompanyModel();
+		companyModel.setId(accountModel.getId());
+		companyModel.setName(accountModel.getName());
+		companyModel.setTitle(title);
+		return companyModel;
 	}
 
 	public CompanyModel create(final AccountModel accountModel) {

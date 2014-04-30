@@ -20,7 +20,6 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 public class SkillServiceTest {
 

@@ -23,3 +23,5 @@ rebel-remote.xml
 /struts
 /v7
 junitExcelBuilderTest.xls
+
+/pics-web/src/main/webapp/angular/coverage

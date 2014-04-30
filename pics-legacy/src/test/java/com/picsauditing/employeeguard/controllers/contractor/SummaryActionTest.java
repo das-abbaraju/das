@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;

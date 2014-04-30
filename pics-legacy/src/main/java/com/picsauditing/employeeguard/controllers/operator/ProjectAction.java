@@ -15,13 +15,13 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.operator.*;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProjectModel;
-import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.validators.project.ProjectFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.validator.Validator;
@@ -169,7 +169,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	private Project loadProject() throws PageNotFoundException {
-		Project project = projectService.getProject(id, permissions.getAccountId());
+		Project project = projectService.getProject(getIdAsInt(), permissions.getAccountId());
 		if (project == null) {
 			LOG.error("Error finding project {} for account {}", id, permissions.getAccountId());
 			throw new PageNotFoundException();
@@ -211,7 +211,7 @@ public class ProjectAction extends PicsRestActionSupport implements AjaxValidato
 	}
 
 	public String delete() throws Exception {
-		projectService.delete(id, permissions.getAccountId(), permissions.getAppUserID());
+		projectService.delete(getIdAsInt(), permissions.getAccountId());
 
 		return redirectToList();
 	}

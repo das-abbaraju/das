@@ -1,0 +1,50 @@
+{
+   "projects": [
+    {
+      "id":4,
+      "name":"Ancon Project",
+      "status": "Completed",
+      "roles":[
+         {
+            "id":3,
+            "name":"Ancon Test",
+            "skills":[
+               {
+                  "id":13,
+                  "name":"Testing Ancon",
+                  "status": "Completed"
+               }
+            ]
+         }
+      ]
+    }
+   ],
+   "roles":[
+      {
+         "id":6,
+         "name":"Ancon Secret Agent",
+         "slug": "ancon-secret-agent",
+         "skills":[
+            {
+               "id":12,
+               "name":"Don Couch",
+               "status": "Expired"
+
+            }
+         ],
+         "status": "Expired"
+      },
+      {
+         "id":3,
+         "name":"Bomberman",
+         "skills":[
+            {
+               "id":13,
+               "name":"Blow up stuff",
+               "status": "Expiring"
+            }
+         ],
+         "status": "Expiring"
+      }
+   ]
+}

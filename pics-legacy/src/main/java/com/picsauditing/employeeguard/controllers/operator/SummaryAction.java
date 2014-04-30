@@ -14,7 +14,7 @@ import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.ProjectAssignmentService;
 import com.picsauditing.employeeguard.services.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;

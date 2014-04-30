@@ -6,14 +6,17 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name="app_user")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AppUser {
+public class AppUser implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
 	private String username;
 	private String password = "";
 	private String hashSalt;

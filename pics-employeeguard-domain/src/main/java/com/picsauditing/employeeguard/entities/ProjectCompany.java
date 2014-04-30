@@ -14,6 +14,7 @@ import java.util.Date;
 @SQLInsert(sql = "INSERT INTO project_account (accountID, createdBy, createdDate, deletedBy, deletedDate, projectID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE project_account SET deletedDate = NOW() WHERE id = ?")
 public class ProjectCompany implements BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;

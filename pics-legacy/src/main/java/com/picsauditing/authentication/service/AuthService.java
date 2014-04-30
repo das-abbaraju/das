@@ -17,13 +17,13 @@ import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.util.Strings;
 import org.apache.struts2.interceptor.ParameterAware;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
 public class AuthService extends PicsApiSupport implements ParameterAware {
-
-	//TODO - logging
 
 	private String ssoToken;
 	private String username;
@@ -152,7 +152,7 @@ public class AuthService extends PicsApiSupport implements ParameterAware {
 		if (profile == null) {
 			EmailHash emailHash = emailHashService.findByHash(hashCode);
 
-			Employee employee = employeeService.findEmployee("" + emailHash.getEmployee().getId(), emailHash.getEmployee().getAccountId());
+			Employee employee = employeeService.findEmployee(emailHash.getEmployee().getId(), emailHash.getEmployee().getAccountId());
 
 			profile = new Profile();
 			profile.setEmail(employee.getEmail());

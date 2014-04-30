@@ -157,7 +157,7 @@ Ext.define('PICS.view.report.filter.Filter', {
                 height: 22,
                 text: '<i class="icon-remove-sign"></i>',
                 tooltip: PICS.text('Report.execute.filter.tooltipRemove'),
-                width: 20
+                width: 18
             }],
             layout: {
                 pack: 'end'

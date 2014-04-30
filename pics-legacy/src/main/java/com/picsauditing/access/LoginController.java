@@ -1,9 +1,10 @@
 package com.picsauditing.access;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.model.LoginContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
@@ -15,6 +16,7 @@ import com.picsauditing.menu.builder.MenuBuilder;
 import com.picsauditing.menu.builder.PicsMenu;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
@@ -61,11 +63,13 @@ public class LoginController extends PicsActionSupport {
 	@Autowired
 	private com.picsauditing.employeeguard.services.LoginService egLoginService;
 	@Autowired
-	private AppUserDAO appUserDAO;
-	@Autowired
 	protected PermissionBuilder permissionBuilder;
 	@Autowired
 	private ProfileEntityService profileEntityService;
+	@Autowired
+	private AppUserService appUserService;
+	@Autowired
+	private UserService userService;
 
 	private User user;
 	private String email;
@@ -149,10 +153,10 @@ public class LoginController extends PicsActionSupport {
 
 	public String confirm() {
 		try {
-			user = userDAO.findName(username);
+			user = userService.findByName(username);
 			user.setEmailConfirmedDate(new Date());
-			userDAO.save(user);
-			addActionMessage(getText("Login.ConfirmedEmailAddress"));
+            userService.saveUser(user);
+            addActionMessage(getText("Login.ConfirmedEmailAddress"));
 		} catch (Exception e) {
 			addActionError(getText("Login.AccountConfirmationFailed"));
 		}
@@ -195,7 +199,7 @@ public class LoginController extends PicsActionSupport {
 
 		int originalUser = getClientSessionOriginalUserID();
 		if (originalUser > 0) {
-			user = userDAO.find(originalUser);
+			user = userService.findById(originalUser);
 			permissions = permissionBuilder.login(user);
 			addClientSessionCookieToResponse(isRememberMeSetInCookie(), 0);
 			permissions.setAdminID(0);
@@ -214,7 +218,7 @@ public class LoginController extends PicsActionSupport {
 			// Switch back to myself
 			user = getUser();
 		} else {
-			user = userDAO.find(switchToUser);
+			user = userService.findById(switchToUser);
 			if (user.getAccount().isAdmin() && !user.isGroup()) {
 				// We're trying to login as another PICS user
 				// Double check they also have the Dev permission too
@@ -243,7 +247,7 @@ public class LoginController extends PicsActionSupport {
 			int maxAge = permissions.getRememberMeTimeInSeconds();
 			boolean adminIsTranslator = permissions.hasPermission(OpPerms.Translator);
 
-			user = userDAO.find(userID);
+			user = userService.findById(userID);;
 			permissions = permissionBuilder.login(user);
 			permissions.setAdminID(adminID);
 			permissions.setRememberMeTimeInSeconds(maxAge);
@@ -261,7 +265,7 @@ public class LoginController extends PicsActionSupport {
 				permissions.setAccountPerms(user);
 				password = "switchAccount";
 			} else {
-				AppUser appUser = appUserDAO.findByAppUserID(permissions.getAppUserID());
+				AppUser appUser = appUserService.findByAppUserID(permissions.getAppUserID());
 				if (appUser != null) {
 					Profile profile = profileEntityService.findByAppUserId(appUser.getId());
 					permissions.login(appUser, profile);
@@ -297,8 +301,10 @@ public class LoginController extends PicsActionSupport {
 			return ERROR;
 		}
 
+        LoginContext loginContext;
+
 		try {
-			user = loginService.loginForResetPassword(username, key);
+			loginContext = loginService.loginForResetPassword(username, key);
 
 		} catch (InvalidResetKeyException e) {
 			setActionErrorHeader(getText("Login.Failed"));
@@ -322,7 +328,7 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		// todo: Continue to move the rest of this method to services as needed.
-		return doLogin();
+		return doLogin(loginContext);
 	}
 
 	private String getResendEmailAction(String server, String userName) {
@@ -342,38 +348,21 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		try {
-			AppUser appUser = appUserDAO.findByUserName(username);
+			AppUser appUser = appUserService.findAppUser(username);
 			if (appUser == null) {
 				setActionErrorHeader(getText("Login.Failed"));
 				logAndMessageError(getText("Login.PasswordIncorrect"));
 				return ERROR;
 			} else {
-				user = userDAO.findUserByAppUserID(appUser.getId());
+				user = userService.findByAppUserId(appUser.getId());
 			}
 
-			if (user != null) {
-				user = loginService.loginNormally(user, username, password);
+            if (user != null) {
+                LoginContext loginContext = loginService.doPreLoginVerification(user, username, password);
+                return doLogin(loginContext);
 			} else {
-				Profile profile = profileEntityService.findByAppUserId(appUser.getId());
-				if (profile == null) {
-					setActionErrorHeader(getText("Login.Failed"));
-					logAndMessageError(getText("Login.PasswordIncorrect"));
-					return ERROR;
-				} else {
-					JSONObject result = egLoginService.loginViaRest(username, password);
-					permissions = permissionBuilder.employeeUserLogin(appUser, profile);
-
-					if ("SUCCESS".equals(result.get("status").toString())) {
-						doSetCookie(result.get("cookie").toString(), 10);
-						SessionInfoProviderFactory.getSessionInfoProvider()
-								.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
-						return setUrlForRedirect("/employee-guard/employee/dashboard");
-					} else {
-						setActionErrorHeader(getText("Login.Failed"));
-						logAndMessageError(getText("Login.PasswordIncorrect"));
-						return ERROR;
-					}
-				}
+                LoginContext loginContext = egLoginService.doPreLoginVerificationEG(username, password);
+                return doLoginEG(loginContext);
 			}
 		} catch (AccountNotFoundException e) {
 			setActionErrorHeader(getText("Login.Failed"));
@@ -399,18 +388,24 @@ public class LoginController extends PicsActionSupport {
 			setUrlForRedirect(ACCOUNT_RECOVERY_ACTION + e.getUsername());
 			return REDIRECT;
 		}
-
-		// todo: Continue to move the rest of this method to services as needed.
-		return doLogin();
 	}
 
-	private String doLogin() throws Exception {
+    private String doLoginEG(LoginContext loginContext) throws IOException {
+        doSetCookie(loginContext.getCookie(), 10);
+        permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
+        SessionInfoProviderFactory.getSessionInfoProvider()
+                .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+        return setUrlForRedirect("/employee-guard/employee/dashboard");
+    }
+
+    private String doLogin(LoginContext loginContext) throws Exception {
+        User user = loginContext.getUser();
 		permissions = permissionBuilder.login(user);
 		ActionContext.getContext().getSession().put("permissions", permissions);
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
-		updateUserForSuccessfulLogin();
+		userService.updateUserForSuccessfulLogin(user);
 
 		setBetaTestingCookie();
 		logCredentialLoginAttempt(user);
@@ -441,13 +436,8 @@ public class LoginController extends PicsActionSupport {
 		return true;
 	}
 
-	private void updateUserForSuccessfulLogin() {
-		user.unlockLogin();
-		user.setLastLogin(new Date());
-		userDAO.save(user);
-	}
 
-	private String setRedirectUrlPostLogin() throws Exception {
+    private String setRedirectUrlPostLogin() throws Exception {
 		String preLoginUrl = getPreLoginUrl();
 		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(preLoginUrl, user);
 		String redirectURL = determineRedirectUrlFromHomePageType(preLoginUrl, homePageType);

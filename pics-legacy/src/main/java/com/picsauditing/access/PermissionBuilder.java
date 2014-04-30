@@ -41,15 +41,15 @@ public class PermissionBuilder {
 
 		int appUserId = appUser.getId();
 
-		permissions.setCurrentMode(UserMode.EMPLOYEE);
 		addAvailableModes(permissions, appUserId);
+		permissions.setCurrentMode(UserMode.EMPLOYEE);
 
 		return permissions;
 	}
 
 	private void addUserModeInfo(final Permissions permissions, final int appUserId) {
-		permissions.setCurrentMode(userModeProvider.getCurrentUserMode());
 		addAvailableModes(permissions, appUserId);
+		permissions.setCurrentMode(userModeProvider.getCurrentUserMode(permissions));
 	}
 
 	private void addAvailableModes(final Permissions permissions, final int appUserId) {

@@ -41,10 +41,10 @@ public class EmployeeServiceFactory {
 						.build());
 
 		when(employeeService.getEmployeesForAccount(anyInt())).thenReturn(employees);
-		when(employeeService.findEmployee(anyString(), anyInt())).thenReturn(employee);
+		when(employeeService.findEmployee(anyInt(), anyInt())).thenReturn(employee);
 		when(employeeService.search(anyString(), anyInt())).thenReturn(employees);
-		when(employeeService.updateEmployment(any(EmployeeEmploymentForm.class), anyString(), anyInt(), anyInt())).thenReturn(employee);
-		when(employeeService.updatePersonal(any(EmployeePersonalForm.class), anyString(), anyInt(), anyInt())).thenReturn(employee);
+		when(employeeService.updateEmployment(any(EmployeeEmploymentForm.class), anyInt(), anyInt(), anyInt())).thenReturn(employee);
+		when(employeeService.updatePersonal(any(EmployeePersonalForm.class), anyInt(), anyInt(), anyInt())).thenReturn(employee);
 		when(employeeService.updatePhoto(any(EmployeePhotoForm.class), anyString(), anyString(), anyInt())).thenReturn(employee);
 		when(employeeService.exportEmployees(Account.PicsID)).thenReturn(new byte[0]);
 		when(employeeService.exportEmployees(BAD_ACCOUNT_ID)).thenThrow(new Exception("Testing"));

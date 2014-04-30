@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.controllers;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.services.EmailService;
+import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.web.SessionInfoProviderFactory;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,0 +1,119 @@
+{
+   "required": {
+        "skills": [
+            {
+             "id":6,
+             "name":"Site Required Skill 1",
+             "status": "Expired"
+            },
+            {
+             "id":5,
+             "name":"Corp Required Skill 1",
+             "status": "Completed"
+            },
+            {
+             "id":5,
+             "name":"Corp Required Skill 2",
+             "status": "Expiring"
+            }
+        ]
+    },
+   "projects": [
+    {
+      "id":4,
+      "name":"ABC Project",
+      "status": "Completed",
+      "roles":[
+         {
+            "id":3,
+            "name":"Deadman",
+            "skills":[
+               {
+                  "id":13,
+                  "name":"Use Deadman Switch",
+                  "status": "Expired"
+               }
+            ]
+         }
+      ],
+      "required": {
+        "skills": [
+            {
+             "id":4,
+             "name":"ABC Project Required Learning the alphabet",
+             "status": "Expired"
+            },
+            {
+             "id":25,
+             "name":"ABC Project Required Skill 2",
+             "status": "Completed"
+            }
+        ]
+      }
+    },
+    {
+      "id":4,
+      "name":"Bob Super Fun Time",
+      "status": "Expiring",
+      "roles":[
+         {
+            "id":3,
+            "name":"Becoming Bob",
+            "skills":[
+               {
+                  "id":13,
+                  "name":"Learn Bob's Mannerisms",
+                  "status": "Completed"
+               }
+            ]
+         }
+      ],
+      "required": {
+        "skills": [
+            {
+             "id":4,
+             "name":"Bob Super Fun Time Required Skill 1",
+             "status": "Expired"
+            },
+            {
+             "id":25,
+             "name":"Bob Super Fun Time Required Skill 2",
+             "status": "Completed"
+            }
+        ]
+      }
+    }
+   ],
+   "roles":[
+      {
+         "id":6,
+         "name":"Demolition Operative",
+         "skills":[
+            {
+               "id":12,
+               "name":"Fire Prevention Training",
+               "status": "Completed"
+
+            },
+            {
+               "id":51,
+               "name":"Defensive Driving",
+               "status": "Expired"
+            }
+         ],
+         "status": "Completed"
+      },
+      {
+         "id":3,
+         "name":"Electrician",
+         "skills":[
+            {
+               "id":13,
+               "name":"Is Wire hot or not?",
+               "status": "Expired"
+            }
+         ],
+         "status": "Expiring"
+      }
+   ]
+}

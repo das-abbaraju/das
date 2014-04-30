@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class AbstractFileImportService<E> {
+
 	protected List<E> entities = new ArrayList<>();
 	protected List<String> errors = new ArrayList<>();
 

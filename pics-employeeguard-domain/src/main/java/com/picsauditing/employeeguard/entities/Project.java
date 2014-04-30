@@ -23,8 +23,10 @@ public class Project implements BaseEntity, Comparable<Project> {
 
     @Column(name = "accountID")
     private int accountId;
+
     private String name;
     private String location;
+
     private Date startDate;
     private Date endDate;
 
@@ -33,7 +35,7 @@ public class Project implements BaseEntity, Comparable<Project> {
     @BatchSize(size = 5)
     private List<ProjectSkill> skills = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Where(clause = "deletedDate IS NULL")
     @BatchSize(size = 5)
     private List<ProjectRole> roles = new ArrayList<>();

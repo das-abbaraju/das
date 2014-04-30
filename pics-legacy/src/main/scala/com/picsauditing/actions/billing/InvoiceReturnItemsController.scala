@@ -64,21 +64,23 @@ class InvoiceReturnItemsController extends ContractorActionSupport with Preparab
 
   private def returnFor(invoice: Invoice) = {
     val returnForInvoice = CreditMemoAppliedToInvoice.from(invoice)
-    returnItemsPickedFrom(invoice) foreach {
-      case Some(returnItem) => {
-        returnForInvoice.getCreditMemo.setAuditColumns(permissions)
-        returnForInvoice.getCreditMemo.getItems.add(returnItem)
-        returnItem.setCreditMemo(returnForInvoice.getCreditMemo)
-      }
-      case None => {} // Do nothing.
+    val creditMemo = returnForInvoice.getCreditMemo
+    val creditMemoItems = creditMemo.getItems
+
+    returnItemsPickedFrom(invoice) foreach { returnItem =>
+      creditMemoItems.add(returnItem)
+      returnItem.setCreditMemo(creditMemo)
     }
 
-    taxService.applyTax(returnForInvoice.getCreditMemo)
+    creditMemo.setAuditColumns(permissions)
+    creditMemo.setCurrency(invoice.getCurrency)
+    taxService.applyTax(creditMemo)
+
     returnForInvoice
   }
 
-  private def returnItemsPickedFrom(invoice: Invoice): List[Option[ReturnItem]] = {
-    returns map { proposedReturnId => generatedReturnItem { foundInvoiceItemFor(proposedReturnId) }}}.toList
+  private def returnItemsPickedFrom(invoice: Invoice) = {
+    returns map { proposedReturnId => generatedReturnItem { foundInvoiceItemFor(proposedReturnId) }}}.flatten
 
   private def foundInvoiceItemFor(proposedReturnItemId: int) = {
     val matchingItem: InvoiceItem => Boolean = existingUnreturnedInvoiceItem(_)(proposedReturnItemId)

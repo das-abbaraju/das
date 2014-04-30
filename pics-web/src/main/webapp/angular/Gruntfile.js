@@ -23,6 +23,7 @@ module.exports = function(grunt) {
     var modules = [
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
+        'src/common/filters/filters.js',
         'src/app/employeeguard/common/skills/skills.js',
         'src/app/employeeguard/employeeguard.js'
     ];
@@ -63,6 +64,36 @@ module.exports = function(grunt) {
                         "PhantomJS"
                     ],
                     singleRun: true
+                }
+            },
+            coverage: {
+                options: {
+                    files: dependencies.concat([
+                        'vendor/angular/jasmine/*.js',
+                        'vendor/angular/**/*.js',
+                        'src/**/*.js'
+                    ]),
+                    plugins:[
+                        'karma-junit-reporter',
+                        "karma-jasmine",
+                        "karma-phantomjs-launcher",
+                        'karma-coverage'
+                    ],
+                    junitReporter: {
+                        outputFile: 'unit.xml',
+                        suite: 'unit'
+                    },
+                    frameworks:[
+                        "jasmine"
+                    ],
+                    browsers:[
+                        "PhantomJS"
+                    ],
+                    preprocessors: {
+                        'src/**/!(*.spec)+(.js)': ['coverage']
+                    },
+                    singleRun: true,
+                    reporters: ['progress', 'junit', 'coverage']
                 }
             }
         },
@@ -153,6 +184,13 @@ module.exports = function(grunt) {
     grunt.registerTask('dev', [
         'jshint',
         'karma:unit',
+        'concat',
+        'compass:dist'
+    ]);
+
+    grunt.registerTask('coverage', [
+        'jshint',
+        'karma:coverage',
         'concat',
         'compass:dist'
     ]);

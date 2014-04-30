@@ -2,9 +2,10 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
-import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.AccountFilter;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
@@ -12,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import java.util.Arrays;
@@ -22,7 +21,6 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +31,7 @@ public class AccountServiceTest {
 	@Mock
 	private AccountDAO accountDAO;
 	@Mock
-	private BillingService billingService;
+	private AccountFilter accountFilter;
 	@Mock
 	private OperatorAccountDAO operatorAccountDAO;
 
@@ -44,7 +42,7 @@ public class AccountServiceTest {
 		accountService = new AccountService();
 
 		Whitebox.setInternalState(accountService, "accountDAO", accountDAO);
-		Whitebox.setInternalState(accountService, "billingService", billingService);
+		Whitebox.setInternalState(accountService, "accountFilter", accountFilter);
 		Whitebox.setInternalState(accountService, "operatorDAO", operatorAccountDAO);
 	}
 
@@ -57,63 +55,8 @@ public class AccountServiceTest {
 		assertEquals(45, result.getId());
 	}
 
-	@Test
-	public void testTopCorporateAccounts() {
-		OperatorAccount corporate1 = createCorporate(1, "Corporate 1");
-		OperatorAccount corporate2 = createCorporate(2, "Corporate 2");
-		OperatorAccount hub = createCorporate(3, "Hub");
-		OperatorAccount site1 = createSite(4, "Site 1");
-
-		linkChildToParent(site1, hub);
-		linkChildToParent(site1, corporate2);
-		linkChildToParent(hub, corporate1);
-
-		when(billingService.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
-			@Override
-			public List<OperatorAccount> answer(InvocationOnMock invocationOnMock) throws Throwable {
-				return (List<OperatorAccount>) invocationOnMock.getArguments()[0];
-			}
-		});
-
-		when(operatorAccountDAO.findOperators(Arrays.asList(4))).thenReturn(Arrays.asList(site1));
-
-		List<AccountModel> topDogs = accountService.getTopmostCorporateAccounts(4);
-		assertEquals("Corporate 1", topDogs.get(0).getName());
-		assertEquals("Corporate 2", topDogs.get(1).getName());
-	}
-
-	@Test
-	public void testTopCorporateAccounts_Cyclic() {
-		OperatorAccount corporate1 = createCorporate(1, "Corporate 1");
-		OperatorAccount corporate2 = createCorporate(2, "Corporate 2");
-		OperatorAccount hub = createCorporate(3, "Hub");
-
-		linkChildToParent(hub, corporate1);
-		linkChildToParent(corporate1, corporate2);
-		linkChildToParent(corporate2, hub);
-
-		when(billingService.filterEmployeeGUARDAccounts(anyList())).thenAnswer(new Answer<List<OperatorAccount>>() {
-			@Override
-			public List<OperatorAccount> answer(InvocationOnMock invocationOnMock) throws Throwable {
-				return (List<OperatorAccount>) invocationOnMock.getArguments()[0];
-			}
-		});
-		when(operatorAccountDAO.find(3)).thenReturn(hub);
-
-		List<AccountModel> topDogs = accountService.getTopmostCorporateAccounts(3);
-		assertTrue(topDogs.isEmpty());
-	}
-
 	private OperatorAccount createCorporate(int id, String name) {
 		return buildOperator(id, name, "Corporate");
-	}
-
-	private OperatorAccount createSite(int id, String name) {
-		return buildOperator(id, name, "Operator");
-	}
-
-	private void linkChildToParent(OperatorAccount child, OperatorAccount parent) {
-		child.getParentOperators().add(parent);
 	}
 
 	private Account buildAccount(int id, String name, String type) {
@@ -159,7 +102,7 @@ public class AccountServiceTest {
 
 	private void setupTestGetContractors() {
 		when(operatorAccountDAO.find(312)).thenReturn(createCorporate(312, "Test Operator"));
-		when(billingService.filterEmployeeGUARDAccounts(anyListOf(ContractorAccount.class)))
+		when(accountFilter.filterEmployeeGUARDAccounts(anyListOf(ContractorAccount.class)))
 				.thenReturn(getFakeContractors());
 	}
 

@@ -4,6 +4,7 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
 import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
 import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuilder;
+import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.EmailQueue;
 import com.picsauditing.jpa.entities.EmailTemplate;
@@ -73,8 +74,8 @@ public class EmailServiceTest {
 		when(emailTemplateDAO.find(anyInt())).thenReturn(buildFakeEGWelcomeEmailTemplate());
 
 		emailService.sendEGWelcomeEmail(new EmailHashBuilder()
-				.hash("THIS_IS_THE_HASH_CODE")
-				.employee(new SoftDeletedEmployeeBuilder().firstName("Bob The Employee").build())
+				.hashCode("THIS_IS_THE_HASH_CODE")
+				.softDeletedEmployee(new SoftDeletedEmployeeBuilder().firstName("Bob The Employee").build())
 				.build(),
 				"Contractor Account");
 
@@ -90,7 +91,6 @@ public class EmailServiceTest {
 		fakeEmailTemplate.setSubject("Welcome to PICS EmployeeGUARD");
 		fakeEmailTemplate.setBody(FileUtils.readFileToString(new File("src/test/java/com/picsauditing" +
 				"/employeeguard/services/EmployeeGUARDWelcomEmailTemplate.html")));
-
 		return fakeEmailTemplate;
 	}
 

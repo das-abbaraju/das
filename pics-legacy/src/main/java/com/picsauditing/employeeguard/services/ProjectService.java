@@ -7,8 +7,8 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.operator.ProjectCompaniesForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
@@ -17,21 +17,17 @@ import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 @Deprecated
 public class ProjectService {
-	@Autowired
-	private AccountGroupDAO accountGroupDAO;
+
 	@Autowired
 	private AccountService accountService;
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
@@ -47,13 +43,14 @@ public class ProjectService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
-	public Project getProject(final String id, final int accountId) {
+	public Project getProject(final int id, final int accountId) {
 		AccountModel account = accountService.getAccountById(accountId);
+
 		if (account.isCorporate()) {
 			List<Integer> childIds = accountService.getChildOperatorIds(accountId);
-			return projectDAO.findProjectByAccounts(NumberUtils.toInt(id), childIds);
+			return getProjectByAccounts(id, childIds);
 		} else {
-			return projectDAO.findProjectByAccount(NumberUtils.toInt(id), accountId);
+			return projectDAO.findProjectByAccount(id, accountId);
 		}
 	}
 
@@ -61,10 +58,30 @@ public class ProjectService {
 		AccountModel account = accountService.getAccountById(accountId);
 		if (account.isCorporate()) {
 			List<Integer> childIds = accountService.getChildOperatorIds(accountId);
-			return projectDAO.findProjectsByAccounts(projectIds, childIds);
+			return getProjectsByAccounts(projectIds, childIds);
 		} else {
-			return projectDAO.findProjectsByAccount(projectIds, accountId);
+			return getProjectsByAccount(projectIds, accountId);
 		}
+	}
+
+	private Project getProjectByAccounts(final int projectId, final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return null;
+		}
+
+		return projectDAO.findProjectByAccounts(projectId, accountIds);
+	}
+
+	private List<Project> getProjectsByAccount(final List<Integer> projectIds, final int accountId) {
+		return getProjectsByAccounts(projectIds, Arrays.asList(accountId));
+	}
+
+	private List<Project> getProjectsByAccounts(final List<Integer> projectIds, final Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(projectIds) || CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return projectDAO.findProjectsByAccounts(projectIds, accountIds);
 	}
 
 	public List<Project> getProjectsForAccount(int accountId) {
@@ -78,18 +95,14 @@ public class ProjectService {
 				childIds.add(child.getId());
 			}
 
+			if (CollectionUtils.isEmpty(childIds)) {
+				return Collections.emptyList();
+			}
+
 			return projectDAO.findByAccounts(childIds); // a list of site ids
 		} else {
 			return projectDAO.findByAccount(accountId);
 		}
-	}
-
-	public List<Project> getProjectsForContractor(int accountId) {
-		return projectDAO.findByContractorAccount(accountId);
-	}
-
-	public ProjectRole getProjectGroupByProjectAndRoleId(final String projectId, final int roleId) {
-		return projectRoleDAO.findByProjectAndRoleId(NumberUtils.toInt(projectId), roleId);
 	}
 
 	public Project save(Project project, final int accountId, final int appUserId) {
@@ -144,9 +157,7 @@ public class ProjectService {
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getSkills(), appUserId, now);
 
-		originalProject = projectDAO.save(originalProject);
-		updateEmployeeSkills(originalProject, appUserId);
-		return originalProject;
+		return projectDAO.save(originalProject);
 	}
 
 	private void copyUpdatedProjectFieldsToOriginal(Project originalProject, Project updatedProject) {
@@ -156,20 +167,15 @@ public class ProjectService {
 		originalProject.setEndDate(updatedProject.getEndDate());
 	}
 
-	private void updateEmployeeSkills(Project project, int appUserId) {
-		List<Employee> employees = employeeDAO.findByProject(project);
-
-		Date timestamp = new Date();
-		for (Employee employee : employees) {
-			accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, timestamp);
-		}
-	}
-
-	private void linkSkillsToProject(final int accountId, Project project) {
+	private void linkSkillsToProject(final int accountId, final Project project) {
 		List<Integer> skillIds = extractSkillIds(project.getSkills());
 		project.getSkills().clear();
 
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(accountId);
+		if (CollectionUtils.isEmpty(corporateIds) || CollectionUtils.isEmpty(skillIds)) {
+			return;
+		}
+
 		List<AccountSkill> skillsInDatabase = accountSkillDAO.findSkillsByAccountsAndIds(corporateIds, skillIds);
 		for (AccountSkill skill : skillsInDatabase) {
 			project.getSkills().add(new ProjectSkill(project, skill));
@@ -218,7 +224,8 @@ public class ProjectService {
 				new BaseEntityCallback<ProjectRole>(appUserId, now)
 		);
 
-		originalProject.setRoles(updatedRoles);
+		originalProject.getRoles().clear();
+		originalProject.getRoles().addAll(updatedRoles);
 
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getRoles(), appUserId, now);
@@ -280,18 +287,17 @@ public class ProjectService {
 		});
 	}
 
-	public void delete(final String id, final int accountId, final int appUserId) {
-		Date now = new Date();
+	public void delete(final int id, final int accountId) {
 		Project project = getProject(id, accountId);
 		projectDAO.delete(project);
 	}
 
 	public List<Project> search(String searchTerm, int accountId) {
-		if (Strings.isNotEmpty(searchTerm)) {
-			return projectDAO.search(searchTerm, accountId);
+		if (Strings.isEmpty(searchTerm)) {
+			return Collections.emptyList();
 		}
 
-		return Collections.emptyList();
+		return projectDAO.search(searchTerm, accountId);
 	}
 
 	public List<AccountSkill> getRequiredSkills(final Project project) {
@@ -311,14 +317,22 @@ public class ProjectService {
 		List<Integer> accounts = accountService.getTopmostCorporateAccountIds(accountId);
 		accounts.add(accountId);
 
-		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(accounts);
+		List<SiteSkill> siteSkills = getSiteRequiredSkills(accounts);
 		requiredSkills.addAll(ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR));
 
 		return ListUtil.removeDuplicatesAndSort(requiredSkills);
 	}
 
+	private List<SiteSkill> getSiteRequiredSkills(final List<Integer> accounts) {
+		if (CollectionUtils.isEmpty(accounts)) {
+			return Collections.emptyList();
+		}
+
+		return siteSkillDAO.findByAccountIds(accounts);
+	}
+
 	@Deprecated
-	public List<Project> getProjectsForEmployee(final Employee employee) {
+	public Set<Project> getProjectsForEmployee(final Employee employee) {
 		return projectEntityService.getProjectsForEmployee(employee);
 	}
 
@@ -334,7 +348,9 @@ public class ProjectService {
 
 	public Map<Project, Set<Role>> getProjectRolesForEmployee(final int siteId, final Employee employee) {
 		return PicsCollectionUtil.convertToMapOfSets(projectRoleDAO.findBySiteAndEmployee(siteId, employee),
+
 				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRole, Project, Role>() {
+
 					@Override
 					public Project getKey(ProjectRole projectRole) {
 						return projectRole.getProject();

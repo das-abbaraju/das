@@ -4,6 +4,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.math.NumberUtils;
 
 public class PicsRestActionSupport extends PicsActionSupport {
 
@@ -31,5 +32,9 @@ public class PicsRestActionSupport extends PicsActionSupport {
 
 	protected boolean addAnother(AddAnotherForm form) {
 		return form != null && form.isAddAnother();
+	}
+
+	protected int getIdAsInt() {
+		return NumberUtils.toInt(id);
 	}
 }

@@ -70,6 +70,7 @@ public class FlagCalculatorTest {
 
         fc.setQuestion(question);
         fc.setAuditType(EntityFactory.makeAuditType(1));
+        fc.getAuditType().setScoreType(ScoreType.Actual);
         fc.setComparison("=");
 //        fc.setDataType(FlagCriteria.STRING);
         fc.setDefaultValue("Default");
@@ -567,29 +568,30 @@ public class FlagCalculatorTest {
         assertNull(getSingle()); // Green flags are ignored
     }
 
-//    public void testDataTypes() {
-//        fc.setDataType(FlagCriteria.NUMBER);
-//        fc.setDefaultValue("3.5");
-//        fcCon.setAnswer("3.5");
-//        assertNull(getSingle()); // Green
-//
-//        fc.setDataType(FlagCriteria.BOOLEAN);
-//        fc.setDefaultValue("true");
-//        fcCon.setAnswer("true");
-//        assertNull(getSingle()); // Green
-//
-//        fc.setDataType(FlagCriteria.STRING);
-//        fc.setDefaultValue("String");
-//        fcCon.setAnswer("String");
-//        assertNull(getSingle()); // Green
-//
-//        fc.setDataType(FlagCriteria.DATE);
-//        fc.setDefaultValue("2010-01-01");
-//        fc.setComparison(">");
-//        fcCon.setAnswer("2010-01-02");
-//        assertNull(getSingle()); // Green
-//    }
-//
+    @Test
+    public void testDataTypes() {
+        fc.setDataType(FlagCriteria.NUMBER);
+        fc.setDefaultValue("3.5");
+        fcCon.setAnswer("3.5");
+        assertNull(getSingle()); // Green
+
+        fc.setDataType(FlagCriteria.BOOLEAN);
+        fc.setDefaultValue("true");
+        fcCon.setAnswer("true");
+        assertNull(getSingle()); // Green
+
+        fc.setDataType(FlagCriteria.STRING);
+        fc.setDefaultValue("String");
+        fcCon.setAnswer("String");
+        assertNull(getSingle()); // Green
+
+        fc.setDataType(FlagCriteria.DATE);
+        fc.setDefaultValue("2010-01-01");
+        fc.setComparison(">");
+        fcCon.setAnswer("2010-01-02");
+        assertNull(getSingle()); // Green
+    }
+
 //    public void testMatch() {
 //        // See if criteria IDs match
 //        boolean caughtException = false;
@@ -1369,7 +1371,8 @@ public class FlagCalculatorTest {
 
 
         lastYearCriteria.setQuestion(EntityFactory.makeAuditQuestion());
-//        lastYearCriteria.getQuestion().getCategory().setAuditType(EntityFactory.makeAuditType(11));
+        AuditType auditType = EntityFactory.makeAuditType(11);
+        lastYearCriteria.getQuestion().getCategory().setAuditType(auditType);
         lastYearCriteria.setRequiredStatus(AuditStatus.Submitted);
 //        lastYearCriteria.setMultiYearScope(MultiYearScope.LastYearOnly);
         lastYearCriteria.setDataType("string");
@@ -1380,6 +1383,45 @@ public class FlagCalculatorTest {
         calculator.setOperator(operator);
         Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
         assertTrue(result);
+    }
+
+    @Test
+    public void testIsFlagged_AnnualUpdateQuestionCriteriaAuditType() throws Exception {
+        ContractorAudit annualUpdate2012 = EntityFactory.makeAnnualUpdate(11, contractor, "2012");
+        mockContractorAuditOperator(annualUpdate2012, AuditStatus.Complete);
+        addCaoAndCaopToAudit(annualUpdate2012, operator);
+
+        ContractorAudit annualUpdate2011 = EntityFactory.makeAnnualUpdate(11, contractor, "2011");
+        mockContractorAuditOperator(annualUpdate2011, AuditStatus.Pending);
+        addCaoAndCaopToAudit(annualUpdate2011, operator);
+
+        ContractorAudit annualUpdate2010 = EntityFactory.makeAnnualUpdate(11, contractor, "2010");
+        mockContractorAuditOperator(annualUpdate2010, AuditStatus.Pending);
+        addCaoAndCaopToAudit(annualUpdate2010, operator);
+
+
+        List<ContractorAudit> annualUpdatesInSpecificOrder = new ArrayList<ContractorAudit>();
+        annualUpdatesInSpecificOrder.add(0, annualUpdate2010);
+        annualUpdatesInSpecificOrder.add(1, annualUpdate2011);
+        annualUpdatesInSpecificOrder.add(2, annualUpdate2012);
+
+        contractor.setAudits(annualUpdatesInSpecificOrder);
+
+
+        lastYearCriteria.setQuestion(EntityFactory.makeAuditQuestion());
+        AuditType auditType = EntityFactory.makeAuditType(11);
+        lastYearCriteria.getQuestion().getCategory().setAuditType(auditType);
+        lastYearCriteria.setAuditType(auditType);
+        lastYearCriteria.setRequiredStatus(AuditStatus.Submitted);
+//        lastYearCriteria.setMultiYearScope(MultiYearScope.LastYearOnly);
+        lastYearCriteria.setDataType("string");
+
+        FlagCriteriaOperator operatorFlagCriteria = buildFakeFlagCriteriaOperator(lastYearCriteria);
+        FlagCriteriaContractor contractorFlagCriteria = buildFakeFlagCriteriaContractor(lastYearCriteria, contractor);
+
+        calculator.setOperator(operator);
+        Boolean result = Whitebox.invokeMethod(calculator, "isFlagged", operatorFlagCriteria, contractorFlagCriteria);
+        assertFalse(result);
     }
 
     private void addCaoAndCaopToAudit(ContractorAudit audit, OperatorAccount operator) {

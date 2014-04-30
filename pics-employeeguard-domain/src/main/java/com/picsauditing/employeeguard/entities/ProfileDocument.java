@@ -17,6 +17,7 @@ import java.util.List;
 @SQLInsert(sql = "INSERT INTO profiledocument (createdBy, createdDate, deletedBy, deletedDate, documentType, finishDate, fileName, fileSize, fileType, name, profileID, startDate, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE profiledocument SET deletedDate = NOW() WHERE id = ?")
 public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> {
+
 	private static final long serialVersionUID = 7654576030939128656L;
 
 	public static final Date END_OF_TIME = new Date(64060588800000l); // 4000-01-01 00:00:00.000 UTC

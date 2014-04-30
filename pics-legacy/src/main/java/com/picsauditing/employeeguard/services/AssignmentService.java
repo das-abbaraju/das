@@ -1,9 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
@@ -171,4 +169,35 @@ public class AssignmentService {
 		return employeeEntityService.getEmployeesByProjects(projects);
 	}
 
+	public void assignEmployeeToProject(final Project project, final int roleId, final int employeeId,
+										final EntityAuditInfo entityAuditInfo) {
+		projectEntityService.assignEmployeeToProjectRole(project, roleId, employeeId, entityAuditInfo);
+
+		assignEmployeeToSiteRole(project.getAccountId(), roleId, employeeId, entityAuditInfo);
+	}
+
+	public void unassignEmployeeFromProject(final Project project, final int roleId, final int employeeId) {
+		projectEntityService.removeEmployeeFromProjectRole(project, roleId, employeeId);
+	}
+
+	public void assignEmployeeToSiteRole(final int siteId, final int roleId, final int employeeId,
+										 final EntityAuditInfo entityAuditInfo) {
+		roleEntityService.addEmployeeSiteAssignment(siteId, roleId, employeeId, entityAuditInfo);
+	}
+
+	public void unassignEmployeeFromSiteRole(final int siteId, final int roleId, final int employeeId) {
+		roleEntityService.deleteEmployeeSiteAssignment(siteId, roleId, employeeId);
+
+		projectEntityService.deleteEmployeeFromProjectRole(siteId, roleId, employeeId);
+	}
+
+	public void unassignEmployeeFromSite(final int siteId, final int employeeId) {
+		roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
+
+		projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
+	}
+
+	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
+		return employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
+	}
 }

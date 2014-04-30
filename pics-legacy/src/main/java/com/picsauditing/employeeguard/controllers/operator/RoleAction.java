@@ -12,9 +12,10 @@ import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
 import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.validators.group.RoleFormValidator;
@@ -38,8 +39,8 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	private EmployeeService employeeService;
 	@Autowired
 	private GroupService groupService;
-    @Autowired
-    private RoleService roleService;
+	@Autowired
+	private RoleService roleService;
 	@Autowired
 	private SkillService skillService;
 	@Autowired

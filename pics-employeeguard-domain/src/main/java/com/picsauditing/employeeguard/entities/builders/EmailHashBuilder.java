@@ -18,23 +18,18 @@ public class EmailHashBuilder {
 		return this;
 	}
 
-	public EmailHashBuilder hash(String hash) {
-		emailHash.setHash(hash);
+	public EmailHashBuilder hashCode(String hashCode) {
+		emailHash.setHashCode(hashCode);
 		return this;
 	}
 
-	public EmailHashBuilder employee(SoftDeletedEmployee softDeletedEmployee) {
+	public EmailHashBuilder softDeletedEmployee(SoftDeletedEmployee softDeletedEmployee) {
 		emailHash.setEmployee(softDeletedEmployee);
 		return this;
 	}
 
-	public EmailHashBuilder emailAddress(String emailAddress) {
-		emailHash.setEmailAddress(emailAddress);
-		return this;
-	}
-
-	public EmailHashBuilder creationDate(Date creationDate) {
-		emailHash.setCreationDate(creationDate);
+	public EmailHashBuilder createdDate(Date createdDate) {
+		emailHash.setCreatedDate(createdDate);
 		return this;
 	}
 

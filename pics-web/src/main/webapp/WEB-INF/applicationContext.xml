@@ -248,6 +248,7 @@
     <bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype"/>
 
     <!-- Beans for service layers -->
+    <bean id="AuditService" class="com.picsauditing.service.AuditService"/>
     <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
     <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
     <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>
@@ -319,7 +320,6 @@
     <bean id="MessageService" class="com.picsauditing.messaging.MessagePublisherService">
         <property name="csrAssignmentSinglePublisher" ref="CsrAssignmentSinglePublisher"/>
         <property name="flagChangePublisher" ref="FlagChangePublisher"/>
-        <property name="employeeGuardPublisher" ref="EmployeeGuardPublisher"/>
         <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
     </bean>
 

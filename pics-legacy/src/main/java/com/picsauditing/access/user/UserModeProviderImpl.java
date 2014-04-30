@@ -1,5 +1,6 @@
 package com.picsauditing.access.user;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.user.UserService;
@@ -41,16 +42,21 @@ final class UserModeProviderImpl implements UserModeProvider {
 	}
 
 	@Override
-	public UserMode getCurrentUserMode() {
+	public UserMode getCurrentUserMode(final Permissions permissions) {
 		NameSpace nameSpace = SessionInfoProviderFactory.getSessionInfoProvider().getNamespace();
 
 		String uri = SessionInfoProviderFactory.getSessionInfoProvider().getURI();
 
-		if (nameSpace == NameSpace.EMPLOYEEGUARD
-				|| (uri != null && uri.contains(SessionInfoProvider.EMPLOYEEGUARD_NAMESPACE))) {
+		if (checkUserIsInEmployeeMode(permissions, nameSpace, uri)) {
 			return UserMode.EMPLOYEE;
 		}
 
 		return UserMode.ADMIN;
+	}
+
+	private boolean checkUserIsInEmployeeMode(Permissions permissions, NameSpace nameSpace, String uri) {
+		return (nameSpace == NameSpace.EMPLOYEEGUARD
+				|| (uri != null && uri.contains(SessionInfoProvider.EMPLOYEEGUARD_NAMESPACE)))
+				&& (permissions.getAvailableUserModes().contains(UserMode.EMPLOYEE));
 	}
 }

@@ -17,6 +17,7 @@ import java.util.List;
 @SQLInsert(sql = "INSERT INTO project_account_group (createdBy, createdDate, deletedBy, deletedDate, projectID, groupID, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE project_account_group SET deletedDate = NOW() WHERE id = ?")
 public class ProjectRole implements BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -42,7 +43,7 @@ public class ProjectRole implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "projectRole", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<ProjectRoleEmployee> employees;

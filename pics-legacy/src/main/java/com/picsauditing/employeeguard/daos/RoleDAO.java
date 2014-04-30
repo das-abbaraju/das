@@ -11,6 +11,7 @@ import javax.persistence.TypedQuery;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 	private static final Logger LOG = LoggerFactory.getLogger(RoleDAO.class);
@@ -82,6 +83,16 @@ public class RoleDAO extends AbstractBaseEntityDAO<Role> {
 				"WHERE sa.siteId = :siteId AND sa.employee = :employee", Role.class);
 
 		query.setParameter("siteId", siteId);
+		query.setParameter("employee", employee);
+
+		return query.getResultList();
+	}
+
+	public List<Role> findRolesForEmployee(final Employee employee) {
+		TypedQuery<Role> query = em.createQuery("SELECT DISTINCT r FROM SiteAssignment sa " +
+				"JOIN sa.role r " +
+				"WHERE sa.employee = :employee", Role.class);
+
 		query.setParameter("employee", employee);
 
 		return query.getResultList();

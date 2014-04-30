@@ -31,9 +31,10 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 		Project fakeProject = super.buildFakeProject();
 		List<RoleStatusModel> fakeRoleModels = new ArrayList<>();
 		List<SkillStatusModel> fakeSkillModels = new ArrayList<>();
+		RequiredSkills requiredSkills = new RequiredSkills(fakeSkillModels);
 
 		ProjectStatusModel projectStatusModel = projectStatusModelFactory.create(fakeProject, fakeRoleModels,
-				fakeSkillModels, SkillStatus.Expiring);
+				requiredSkills, SkillStatus.Expiring);
 
 		verifyTestCreate(fakeRoleModels, fakeSkillModels, projectStatusModel);
 		assertEquals(SkillStatus.Expiring, projectStatusModel.getStatus());
@@ -46,7 +47,7 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 		assertEquals(PROJECT_ID, projectStatusModel.getId());
 		assertEquals(PROJECT_NAME, projectStatusModel.getName());
 		assertEquals(fakeRoleModels, projectStatusModel.getRoles());
-		assertEquals(fakeSkillModels, projectStatusModel.getSkills());
+		assertEquals(fakeSkillModels, projectStatusModel.getRequired().getSkills());
 	}
 
 	@Override
@@ -67,8 +68,8 @@ public class ProjectStatusModelFactoryTest extends ProjectModelFactoryTest {
 				new HashMap<Integer, List<RoleStatusModel>>() {{
 					put(project.getId(), new ArrayList<RoleStatusModel>());
 				}},
-				new HashMap<Integer, List<SkillStatusModel>>() {{
-					put(project.getId(), new ArrayList<SkillStatusModel>());
+				new HashMap<Integer, RequiredSkills>() {{
+					put(project.getId(), new RequiredSkills(Arrays.asList(new SkillStatusModel())));
 				}},
 				new HashMap<Project, SkillStatus>() {{
 					put(project, SkillStatus.Completed);

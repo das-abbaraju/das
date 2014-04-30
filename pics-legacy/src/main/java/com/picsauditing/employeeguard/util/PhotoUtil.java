@@ -21,7 +21,7 @@ import java.util.Set;
 public class PhotoUtil {
 
 	public static final Set<String> VALID_PHOTO_EXTENSIONS =
-			Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif")));
+			Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif", "jpeg")));
 	public static final String DEFAULT_PHOTO_FILE = "/files/dummy.jpg";
 
 	@Autowired

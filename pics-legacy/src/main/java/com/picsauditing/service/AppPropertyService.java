@@ -3,6 +3,7 @@ package com.picsauditing.service;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.model.general.AppPropertyProvider;
+import org.apache.commons.lang.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,6 @@ public class AppPropertyService implements AppPropertyProvider {
     }
 
     public int getPropertyInt(String property, int defaultInteger) {
-        AppProperty appProperty = appPropertyDao.find(property);
-        try {
-            return Integer.valueOf(appProperty.getValue());
-        } catch (Exception e) {
-            return defaultInteger;
-        }
+		return NumberUtils.toInt(getPropertyString(property), defaultInteger);
     }
 }

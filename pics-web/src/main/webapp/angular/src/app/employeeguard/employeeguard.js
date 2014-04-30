@@ -2,7 +2,8 @@ angular.module('PICS.employeeguard', [
     'ngRoute',
     'ngResource',
     'PICS.charts',
-    'PICS.skills'
+    'PICS.skills',
+    'PICS.filters'
 ])
 
 .config(function ($routeProvider, $locationProvider) {
@@ -53,5 +54,14 @@ angular.module('PICS.employeeguard', [
         })
         .when('/employee-guard/employee/changelog', {
             templateUrl: '/angular/src/app/employeeguard/employee/beta-changelog/changelog.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz/sites/:siteSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skillz/sites/:siteSlug/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
         });
 });

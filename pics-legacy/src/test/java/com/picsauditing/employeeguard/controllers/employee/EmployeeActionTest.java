@@ -18,7 +18,7 @@ import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

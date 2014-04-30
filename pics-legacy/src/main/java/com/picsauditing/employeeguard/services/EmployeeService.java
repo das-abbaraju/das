@@ -13,6 +13,7 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
+import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -44,6 +45,10 @@ public class EmployeeService {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
+	@Autowired
+	private EmailHashService emailHashService;
+	@Autowired
+	private EmailService emailService;
 
 	@Deprecated
 	public Employee findEmployee(final String id) {
@@ -51,8 +56,8 @@ public class EmployeeService {
 	}
 
 	@Deprecated
-	public Employee findEmployee(final String id, final int accountId) {
-		return employeeEntityService.find(NumberUtils.toInt(id), accountId);
+	public Employee findEmployee(final int id, final int accountId) {
+		return employeeEntityService.find(id, accountId);
 	}
 
 	@Deprecated
@@ -102,13 +107,13 @@ public class EmployeeService {
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteByEmployeeProfile(final Collection<Integer> contractorIds,
-	                                                                  final int siteId,
-	                                                                  final Employee employee) {
+																	  final int siteId,
+																	  final Employee employee) {
 		if (employee.getProfile() == null) {
 			return Arrays.asList(employee);
 		}
 
-		return employeeDAO.findEmployeesAssignedToSiteByProfile(contractorIds, siteId, employee.getProfile().getId());
+		return employeeDAO.findEmployeesAssignedToSiteByProfile(contractorIds, siteId, employee.getProfile());
 	}
 
 	public List<Employee> getEmployeesAssignedToSiteRole(final Collection<Integer> contractorIds, final int siteId,
@@ -120,13 +125,10 @@ public class EmployeeService {
 		Date now = new Date();
 
 		setEmployeeAuditingFields(employee, accountId, appUserId);
-		setPersistedEntitiesOnJoinTables(employee, accountId);
+		setEmployeeGroups(employee, accountId);
 		EntityHelper.setCreateAuditFields(employee.getGroups(), appUserId, now);
 
-		employee = employeeDAO.save(employee);
-		accountSkillEmployeeService.linkEmployeeToSkills(employee, appUserId, now);
-
-		return employee;
+		return employeeDAO.save(employee);
 	}
 
 	public Employee save(final EmployeeForm employeeForm, final String directory, final int accountId, final int appUserId) throws Exception {
@@ -139,10 +141,14 @@ public class EmployeeService {
 		return employee;
 	}
 
-	private void setPersistedEntitiesOnJoinTables(Employee employee, int accountId) {
+	private void setEmployeeGroups(Employee employee, int accountId) {
 		List<String> groupNames = new ArrayList<>();
 		for (GroupEmployee groupEmployee : employee.getGroups()) {
 			groupNames.add(groupEmployee.getGroup().getName());
+		}
+
+		if (CollectionUtils.isEmpty(groupNames)) {
+			return;
 		}
 
 		List<Group> persistedGroups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, groupNames);
@@ -170,7 +176,8 @@ public class EmployeeService {
 		}
 	}
 
-	public void importEmployees(final File file, final int accountId, final int appUserId) throws Exception {
+	public void importEmployees(final File file, final int accountId, final String accountName,
+								final int appUserId) throws Exception {
 		EmployeeFileImportService fileImportService = new EmployeeFileImportService();
 		fileImportService.importFile(file);
 
@@ -180,6 +187,23 @@ public class EmployeeService {
 		}
 
 		employeeDAO.save(processedEmployees);
+
+		sendEmployeeEmails(processedEmployees, accountName);
+	}
+
+	private void sendEmployeeEmails(final List<Employee> processedEmployees, final String accountName) {
+		if (CollectionUtils.isEmpty(processedEmployees)) {
+			return;
+		}
+
+		try {
+			for (Employee employee : processedEmployees) {
+				EmailHash hash = emailHashService.createNewHash(employee);
+				emailService.sendEGWelcomeEmail(hash, accountName);
+			}
+		} catch (Exception e) {
+			LOG.error("Error while sending emails to uploaded employees", e);
+		}
 	}
 
 	public byte[] exportEmployees(final int accountId) throws Exception {
@@ -241,7 +265,7 @@ public class EmployeeService {
 		}
 	}
 
-	public Employee updatePersonal(PersonalInformationForm personalInformationForm, String employeeId, int accountId, int appUserId) {
+	public Employee updatePersonal(PersonalInformationForm personalInformationForm, int employeeId, int accountId, int appUserId) {
 		Employee employeeToUpdate = findEmployee(employeeId, accountId);
 
 		employeeToUpdate.setFirstName(personalInformationForm.getFirstName());
@@ -254,7 +278,7 @@ public class EmployeeService {
 		return employeeDAO.save(employeeToUpdate);
 	}
 
-	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final String employeeId, final int accountId, final int appUserId) {
+	public Employee updateEmployment(EmployeeEmploymentForm employeeEmploymentForm, final int employeeId, final int accountId, final int appUserId) {
 		Employee employeeInDatabase = findEmployee(employeeId, accountId);
 		Date timestamp = new Date();
 		Employee updatedEmployee = buildEmployeeFromForm(employeeEmploymentForm, employeeInDatabase, accountId);
@@ -276,11 +300,7 @@ public class EmployeeService {
 		employeeInDatabase.setPositionName(updatedEmployee.getPositionName());
 
 		EntityHelper.setUpdateAuditFields(employeeInDatabase, appUserId, timestamp);
-		employeeInDatabase = employeeDAO.save(employeeInDatabase);
-
-		accountSkillEmployeeService.linkEmployeeToSkills(employeeInDatabase, appUserId, timestamp);
-
-		return employeeInDatabase;
+		return employeeDAO.save(employeeInDatabase);
 	}
 
 	@Deprecated
@@ -294,9 +314,12 @@ public class EmployeeService {
 		employee.setPositionName(employeeEmploymentForm.getTitle());
 
 		if (ArrayUtils.isNotEmpty(employeeEmploymentForm.getGroups())) {
-			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, Arrays.asList(employeeEmploymentForm.getGroups()));
-			for (Group group : groups) {
-				employee.getGroups().add(new GroupEmployee(employeeFromDatabase, group));
+			List<String> names = Arrays.asList(employeeEmploymentForm.getGroups());
+			if (CollectionUtils.isNotEmpty(names)) {
+				List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(accountId, names);
+				for (Group group : groups) {
+					employee.getGroups().add(new GroupEmployee(employeeFromDatabase, group));
+				}
 			}
 		}
 

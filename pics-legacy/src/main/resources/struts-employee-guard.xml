@@ -110,6 +110,18 @@
         <action name="skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction">
         </action>
 
+        <action name="{siteId}/skills/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction"
+                method="corporateEmployeeLiveId">
+        </action>
+
+        <action name="contractors/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction"
+                method="employeeData">
+        </action>
+
+        <action name="{siteId}/contractors/employees/{id}" class="com.picsauditing.employeeguard.controllers.operator.EmployeeAction"
+                method="corporateEmployeeData">
+        </action>
+
         <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
@@ -328,6 +340,8 @@
         </action>
 
         <!-- Skills -->
+        <action name="skillz" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
         <action name="skills" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
             <result name="list">/struts/employee-guard/employee/manage-skill/list.jsp</result>
         </action>

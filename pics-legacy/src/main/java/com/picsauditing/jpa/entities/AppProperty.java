@@ -25,10 +25,13 @@ public class AppProperty implements java.io.Serializable {
 	public static final String EMAIL_FROM_INFO_AT_PICSAUDITING = "EMAIL_FROM_INFO_AT_PICSAUDITING";
 	public static final String EMAIL_TO_EG_FEEDBACK = "EMAIL_TO_EG_FEEDBACK";
 
+	public static final String AUTH_SERVICE_HOST = "AuthServiceHost";
+	public static final String AUTH_SERVICE_HOST_PORT = "AuthServiceHostPort";
+
 	private String property;
 	private String value;
 
-	private String description;
+    private String description;
 	private Date ticklerDate;
 
 	public AppProperty() {
@@ -58,15 +61,15 @@ public class AppProperty implements java.io.Serializable {
 		this.value = value;
 	}
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	@Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.DATE)
 	public Date getTicklerDate() {
 		return ticklerDate;
 	}
