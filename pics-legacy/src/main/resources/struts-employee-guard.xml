@@ -21,6 +21,9 @@
             <result name="list">/struts/employee-guard/account/create.jsp</result>
             <result name="create">/struts/employee-guard/account/create.jsp</result>
         </action>
+
+        <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
+        </action>
     </package>
 
     <!-- Operator -->
@@ -33,6 +36,9 @@
         </action>
 
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="changelog" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <!-- Project -->
@@ -150,6 +156,9 @@
 
         <!-- Dashboard -->
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="changelog" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <action name="summary" class="com.picsauditing.employeeguard.controllers.contractor.SummaryAction">
@@ -285,6 +294,9 @@
 
         <!-- Dashboard -->
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="changelog" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <action name="summary/assignments" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="assignments">

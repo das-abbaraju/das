@@ -13,6 +13,9 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/operators/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
         })
+        .when('/employee-guard/operators/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/operators/assignments', {
             templateUrl: '/angular/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
@@ -43,8 +46,14 @@ angular.module('PICS.employeeguard', [
         .when('/employee-guard/contractor/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
         })
+        .when('/employee-guard/contractor/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/beta-changelog/changelog.tpl.html'
+        })
         .when('/employee-guard/employee/dashboard', {
             templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/employee/beta-changelog/changelog.tpl.html'
         })
         .when('/employee-guard/employee/skillz', {
             templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'

@@ -240,13 +240,13 @@ public class EmailBuilder {
 	}
 
 	public void setTemplate(int id) {
-		EmailTemplateDAO dao = (EmailTemplateDAO) SpringUtils.getBean("EmailTemplateDAO");
+		EmailTemplateDAO dao = SpringUtils.getBean("EmailTemplateDAO");
 		setTemplate(dao.find(id));
 	}
 
 	private List<Token> getPicsTags() {
 		if (picsTags == null) {
-			TokenDAO dao = (TokenDAO) SpringUtils.getBean("TokenDAO");
+			TokenDAO dao = SpringUtils.getBean("TokenDAO");
 			picsTags = dao.findByType(template.getListType());
 		}
 		return picsTags;
