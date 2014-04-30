@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.CompanyModel;
 import com.picsauditing.employeeguard.models.ModelFactory;
@@ -25,8 +24,6 @@ public class OperatorEmployeeService {
 	@Autowired
 	private EmployeeSiteStatusProcess employeeSiteStatusProcess;
 	@Autowired
-	private ProfileDocumentService profileDocumentService;
-	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
 	public OperatorEmployeeModelFactory.OperatorEmployeeModel buildModel(final int siteId, final int employeeId) {
@@ -37,19 +34,13 @@ public class OperatorEmployeeService {
 
 		CompanyModel companyModel = ModelFactory.getCompanyModelFactory().create(contractor, employee.getPositionName());
 
-		ProfileDocument imageFile = getImage(employee);
-
 		EmployeeSiteStatusResult employeeSiteStatusResult = employeeSiteStatusProcess
 				.getEmployeeSiteStatusResult(employeeId, siteId, accountService.getTopmostCorporateAccountIds(siteId));
 
 		SkillStatus employeeStatus = getEmployeeStatus(employeeSiteStatusResult.getSkillStatus());
 
-		return ModelFactory.getOperatorEmployeeModelFactory().build(employee, employeeStatus, imageFile,
+		return ModelFactory.getOperatorEmployeeModelFactory().build(employee, employeeStatus,
 				Arrays.asList(companyModel));
-	}
-
-	public ProfileDocument getImage(final Employee employee) {
-		return profileDocumentService.getPhotoDocumentFromProfile(employee.getProfile());
 	}
 
 	public SkillStatus getEmployeeStatus(Map<AccountSkill, SkillStatus> skillStatuses) {
