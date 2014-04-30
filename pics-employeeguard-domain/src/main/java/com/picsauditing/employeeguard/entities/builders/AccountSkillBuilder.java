@@ -7,6 +7,10 @@ public class AccountSkillBuilder {
 
 	private AccountSkill accountSkill;
 
+	public AccountSkillBuilder() {
+		this.accountSkill = new AccountSkill();
+	}
+
 	public AccountSkillBuilder(int accountId) {
 		this.accountSkill = new AccountSkill(accountId);
 	}
@@ -78,21 +82,21 @@ public class AccountSkillBuilder {
 		return this;
 	}
 
-  public AccountSkillBuilder roles(int[] roles) {
-    if (!ArrayUtils.isEmpty(roles)) {
-      accountSkill.getRoles().clear();
+	public AccountSkillBuilder roles(int[] roles) {
+		if (!ArrayUtils.isEmpty(roles)) {
+			accountSkill.getRoles().clear();
 
-      for (int roleId : roles) {
+			for (int roleId : roles) {
 
-        Role accountRole = new Role(roleId, accountSkill.getAccountId());
-        AccountSkillRole accountSkillRole = new AccountSkillRole(accountRole, accountSkill);
+				Role accountRole = new Role(roleId, accountSkill.getAccountId());
+				AccountSkillRole accountSkillRole = new AccountSkillRole(accountRole, accountSkill);
 
-        accountSkill.getRoles().add(accountSkillRole);
-      }
-    }
+				accountSkill.getRoles().add(accountSkillRole);
+			}
+		}
 
-    return this;
-  }
+		return this;
+	}
 
 	public AccountSkill build() {
 		return accountSkill;
