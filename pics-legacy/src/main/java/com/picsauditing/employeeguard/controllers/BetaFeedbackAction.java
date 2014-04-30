@@ -4,20 +4,18 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.services.EmailService;
 import com.picsauditing.web.SessionInfoProviderFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class BetaFeedbackAction extends PicsRestActionSupport {
-
-	private static final Logger logger = LoggerFactory.getLogger(BetaFeedbackAction.class);
 
 	@Autowired
 	private EmailService emailService;
 
 	public String feedbackComment() {
+		JSONObject jsonObject = this.getJsonFromRequestPayload();
 
-		String feedbackComment = this.getRequest().getParameter("feedbackComment");
+		String feedbackComment = (String) jsonObject.get("feedbackComment");
 
 		Permissions permissions = SessionInfoProviderFactory.getSessionInfoProvider().getPermissions();
 		boolean status = emailService.sendEGFeedBackEmail(feedbackComment, permissions.getAccountName(),
