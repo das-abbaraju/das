@@ -144,6 +144,8 @@ public class AuthenticationService {
 		try {
 			String cookieContent = authenticateEmployeeGUARDUser(username, password, true);
 			response.setCookie(cookieContent);
+			response.setAppUser(appUser);
+			response.setProfile(profile);
 			return response;
 		} catch (Exception e) {
 			// todo: make SURE its not a failed login, etc.
