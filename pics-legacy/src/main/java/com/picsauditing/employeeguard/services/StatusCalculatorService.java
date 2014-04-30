@@ -225,22 +225,23 @@ public class StatusCalculatorService {
 				.findByEmployeeAndSkills(employee, skills);
 
 		Map<AccountSkill, SkillStatus> skillStatuses = getAccountSkillStatusMap(accountSkillEmployees);
-		addExpiredStatusToSkillsEmployeeIsMissing(skills, skillStatuses);
-
-		return skillStatuses;
+		return addExpiredStatusToSkillsEmployeeIsMissing(skills, skillStatuses);
 	}
 
-	private void addExpiredStatusToSkillsEmployeeIsMissing(final Collection<AccountSkill> skills,
-														   Map<AccountSkill, SkillStatus> skillStatuses) {
-		if (MapUtils.isEmpty(skillStatuses)) {
-			skillStatuses = new HashMap<>();
+	private Map<AccountSkill, SkillStatus> addExpiredStatusToSkillsEmployeeIsMissing(final Collection<AccountSkill> skills,
+																					 final Map<AccountSkill, SkillStatus> skillStatuses) {
+		Map<AccountSkill, SkillStatus> allSkillStatuses = new HashMap<>();
+		if (MapUtils.isNotEmpty(skillStatuses)) {
+			allSkillStatuses.putAll(skillStatuses);
 		}
 
 		for (AccountSkill accountSkill : skills) {
-			if (!skillStatuses.containsKey(accountSkill)) {
-				skillStatuses.put(accountSkill, SkillStatus.Expired);
+			if (!allSkillStatuses.containsKey(accountSkill)) {
+				allSkillStatuses.put(accountSkill, SkillStatus.Expired);
 			}
 		}
+
+		return allSkillStatuses;
 	}
 
 	private Map<AccountSkill, SkillStatus> getAccountSkillStatusMap(List<AccountSkillEmployee> accountSkillEmployees) {
