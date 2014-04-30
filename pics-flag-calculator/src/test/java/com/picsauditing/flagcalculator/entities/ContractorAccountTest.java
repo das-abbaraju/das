@@ -129,7 +129,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
     @Test
     public void testGetTopTrade_NoTrade() {
         ContractorAccount contractor = new ContractorAccount();
-        assertNull(contractor.getTopTrade());
+        assertNull(TradeService.getTopTrade(contractor));
     }
 
     @Test
@@ -145,7 +145,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         contractor.getTrades().add(subcontractorTrade);
         contractor.getTrades().add(selfTrade);
 
-        assertEquals(selfTrade, contractor.getTopTrade());
+        assertEquals(selfTrade, TradeService.getTopTrade(contractor));
     }
 
     @Test
@@ -160,7 +160,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         contractor.getTrades().add(lowTrade);
         contractor.getTrades().add(highTrade);
 
-        assertEquals(highTrade, contractor.getTopTrade());
+        assertEquals(highTrade, TradeService.getTopTrade(contractor));
     }
 
     @Test
@@ -176,7 +176,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         contractor.getTrades().add(lowTrade);
         contractor.getTrades().add(highTrade);
 
-        assertEquals(highTrade, contractor.getTopTrade());
+        assertEquals(highTrade, TradeService.getTopTrade(contractor));
     }
 
     @Test
@@ -193,7 +193,7 @@ public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         contractor.getTrades().add(lowTrade);
         contractor.getTrades().add(highTrade);
 
-        assertEquals(highTrade, contractor.getTopTrade());
+        assertEquals(highTrade, TradeService.getTopTrade(contractor));
     }
 
     private ContractorTrade makeContractorTrade(Trade trade, int activity, boolean selfPerformed) {

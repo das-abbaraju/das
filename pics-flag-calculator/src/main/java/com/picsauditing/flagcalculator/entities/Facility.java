@@ -16,7 +16,6 @@ public class Facility extends BaseTable {
 
     private OperatorAccount operator;
     private OperatorAccount corporate;
-    private String type;
 
     @ManyToOne
     @JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -37,16 +36,4 @@ public class Facility extends BaseTable {
     public void setCorporate(OperatorAccount corporate) {
         this.corporate = corporate;
     }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-//    public static FacilityBuilder builder() {
-//        return new FacilityBuilder();
-//    }
 }

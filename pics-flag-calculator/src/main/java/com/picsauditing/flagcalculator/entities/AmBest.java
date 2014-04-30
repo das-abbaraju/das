@@ -5,6 +5,7 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity(name = "com.picsauditing.flagcalculator.entities.AmBest")
 public class AmBest {
+<<<<<<< HEAD
 //
 //	public static Map<Integer, String> financialMap = new TreeMap<Integer, String>() {
 //		{
@@ -83,6 +84,11 @@ public class AmBest {
 //		this.naic = naic;
 //	}
 //
+=======
+	private int ratingCode;
+	private int financialCode;
+
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	public int getRatingCode() {
 		return ratingCode;
 	}
@@ -98,76 +104,4 @@ public class AmBest {
 	public void setFinancialCode(int financialCode) {
 		this.financialCode = financialCode;
 	}
-
-//	/**
-//	 *
-//	 * @return A.M. Best rating such as A+
-//	 */
-//	@Transient
-//	public String getRatingAlpha() {
-//		return ratingMap.get(ratingCode/10000);
-//	}
-//
-//	/**
-//	 *
-//	 * @return A.M. Best financial converted to a Roman numeral
-//	 */
-//	@Transient
-//	public String getFinancialAlpha() {
-//		return financialMap.get(financialCode);
-//	}
-//
-//	public String getCompanyName() {
-//		return companyName;
-//	}
-//
-//	public void setCompanyName(String companyName) {
-//		this.companyName = companyName;
-//	}
-//
-//	/**
-//	 * The index (soundex) version of the insurance company
-//	 *
-//	 * @return
-//	 */
-//	public String getCompanyNameIndex() {
-//		return companyNameIndex;
-//	}
-//
-//	public void setCompanyNameIndex(String companyNameIndex) {
-//		this.companyNameIndex = companyNameIndex;
-//	}
-//
-//	@Column(length = 2)
-//	public String getState() {
-//		return state;
-//	}
-//
-//	public void setState(String state) {
-//		this.state = state;
-//	}
-//
-//	@Column(length = 2)
-//	public String getCountry() {
-//		return country;
-//	}
-//
-//	public void setCountry(String country) {
-//		this.country = country;
-//	}
-//
-//	@Override
-//	public String toString() {
-//		return naic + " " + companyName + " R:" + ratingMap.get(ratingCode) + " F:" + financialMap.get(financialCode);
-//	}
-//
-//	@Temporal(TemporalType.TIMESTAMP)
-//	public Date getEffectiveDate() {
-//		return effectiveDate;
-//	}
-//
-//	public void setEffectiveDate(Date effectiveDate) {
-//		this.effectiveDate = effectiveDate;
-//	}
-//
 }

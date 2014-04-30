@@ -14,9 +14,8 @@ public class FlagCriteriaOperator extends BaseTable {
     private FlagCriteria criteria;
     private FlagColor flag = FlagColor.Red;
     private String hurdle;
-//    private int affected = 0;
-//    private Date lastCalculated;
     private OperatorTag tag;
+<<<<<<< HEAD
 //
 //    public static final Comparator<FlagCriteriaOperator> COMPARATOR = new Comparator<FlagCriteriaOperator>() {
 //        public int compare(FlagCriteriaOperator o1, FlagCriteriaOperator o2) {
@@ -35,6 +34,8 @@ public class FlagCriteriaOperator extends BaseTable {
 //        }
 //    };
 
+=======
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 
     @ManyToOne
     @JoinColumn(name = "opID", nullable = false)
@@ -74,22 +75,6 @@ public class FlagCriteriaOperator extends BaseTable {
         this.hurdle = hurdle;
     }
 
-//    public int getAffected() {
-//        return affected;
-//    }
-//
-//    public void setAffected(int affected) {
-//        this.affected = affected;
-//    }
-//
-//    public Date getLastCalculated() {
-//        return lastCalculated;
-//    }
-//
-//    public void setLastCalculated(Date lastCalculated) {
-//        this.lastCalculated = lastCalculated;
-//    }
-//
     @ManyToOne
     @JoinColumn(name = "tagID")
     public OperatorTag getTag() {
@@ -99,62 +84,4 @@ public class FlagCriteriaOperator extends BaseTable {
     public void setTag(OperatorTag tag) {
         this.tag = tag;
     }
-
-//    @Transient
-//    public boolean isNeedsRecalc() {
-//        if (lastCalculated != null) {
-//            Date now = new Date();
-//            Long diff = now.getTime() - lastCalculated.getTime();
-//
-//            // Difference is a day?
-//            if (diff > (long) 60 * 60 * 24 * 1000)
-//                return true;
-//            else
-//                return false;
-//        }
-//
-//        return true;
-//    }
-//
-//    @Transient
-//    public String getReplaceHurdle() {
-//        String value = criteriaValue();
-//        if (criteria.getDataType().equals(FlagCriteria.NUMBER))
-//            value = Strings.formatDecimalComma(value);
-//
-//        return criteria.getDescription().toString().replaceAll("\\{HURDLE\\}", value);
-//    }
-//
-//    @Transient
-//    public String criteriaValue() {
-//        if (criteria.isAllowCustomValue() && hurdle != null)
-//            return hurdle;
-//
-//        return criteria.getDefaultValue();
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return getReplaceHurdle() + " for " + operator.toString();
-//    }
-//
-//    @Transient
-//    public String getShortDescription() {
-//        String desc = criteria.getComparison() + " ";
-//
-//        String value = criteriaValue();
-//        if (OshaRateType.Fatalities.equals(criteria.getOshaRateType()))
-//            value = Strings.trimTrailingZeros(value);
-//
-//        if (criteria.getDataType().equals(FlagCriteria.NUMBER))
-//            desc += Strings.formatDecimalComma(value);
-//        else
-//            desc += value;
-//
-//        return desc;
-//    }
-//
-//    public static FlagCriteriaOperatorBuilder builder() {
-//        return new FlagCriteriaOperatorBuilder();
-//    }
 }

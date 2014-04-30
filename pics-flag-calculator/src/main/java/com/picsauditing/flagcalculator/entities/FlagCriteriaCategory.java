@@ -10,8 +10,4 @@ public enum FlagCriteriaCategory {
     Safety,
     Statistics,
     ClientReviews;
-
-    public boolean isAMBest() {
-        return this == InsuranceAMBClass || this == InsuranceAMBRating;
-    }
 }

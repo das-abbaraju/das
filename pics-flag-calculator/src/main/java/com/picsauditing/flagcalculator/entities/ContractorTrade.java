@@ -6,12 +6,15 @@ import javax.persistence.*;
 @Entity(name = "com.picsauditing.flagcalculator.entities.ContractorTrade")
 @Table(name = "contractor_trade")
 public class ContractorTrade extends BaseTable {
+<<<<<<< HEAD
 	private ContractorAccount contractor;
+=======
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	private Trade trade;
 	private boolean selfPerformed = true;
-//	private boolean manufacture = true;
 	private int activityPercent = 5;
 
+<<<<<<< HEAD
 	@ManyToOne
 	@JoinColumn(name = "conID")
 	public ContractorAccount getContractor() {
@@ -22,6 +25,8 @@ public class ContractorTrade extends BaseTable {
 		this.contractor = contractor;
 	}
 
+=======
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	@OneToOne
 	@JoinColumn(name = "tradeID")
 	public Trade getTrade() {
@@ -40,15 +45,6 @@ public class ContractorTrade extends BaseTable {
 		this.selfPerformed = selfPerformed;
 	}
 
-//	@ReportField(importance = FieldImportance.Average, type = FieldType.Boolean)
-//	public boolean isManufacture() {
-//		return manufacture;
-//	}
-//
-//	public void setManufacture(boolean manufacture) {
-//		this.manufacture = manufacture;
-//	}
-//
 	/**
 	 * Number 1-9 that represents the frequency of that trade for a given business
 	 * @return
@@ -60,22 +56,4 @@ public class ContractorTrade extends BaseTable {
 	public void setActivityPercent(int activityPercent) {
 		this.activityPercent = activityPercent;
 	}
-
-//	@Override
-//	public int compareTo(ContractorTrade o) {
-//		if (o == null)
-//			throw new NullPointerException();
-//		return getTrade().getName().toString().compareTo(o.getTrade().getName().toString());
-//	}
-//
-//	@Transient
-//	public int getPercentOfTotal() {
-//		Set<ContractorTrade> trades = contractor.getTrades();
-//		float total = 0;
-//		for (ContractorTrade c : trades) {
-//			total += c.getActivityPercent();
-//		}
-//		DecimalFormat formatter = new DecimalFormat("###");
-//		return Integer.parseInt(formatter.format(activityPercent / total * 100));
-//	}
 }

@@ -8,7 +8,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity(name = "com.picsauditing.flagcalculator.entities.FlagCriteriaContractor")
 @Table(name = "flag_criteria_contractor")
-public class FlagCriteriaContractor extends BaseTable /*implements Comparable<FlagCriteriaContractor>*/ {
+public class FlagCriteriaContractor extends BaseTable {
 
     private ContractorAccount contractor;
     private FlagCriteria criteria;
@@ -69,34 +69,4 @@ public class FlagCriteriaContractor extends BaseTable /*implements Comparable<Fl
     public void setVerified(boolean verified) {
         this.verified = verified;
     }
-
-//    @Override
-//    public boolean equals(Object other) {
-//        FlagCriteriaContractor fcc = (FlagCriteriaContractor) other;
-//
-//        if (fcc.getId() > 0 && id > 0)
-//            return super.equals(other);
-//        if (!contractor.equals(fcc.getContractor()))
-//            return false;
-//        if (!criteria.equals(fcc.getCriteria()))
-//            return false;
-//        return true;
-//    }
-//
-//    @Override
-//    public String toString() {
-//        return criteria.toString() + " (" + answer + ") for " + contractor.toString();
-//    }
-//
-//    @Override
-//    public int compareTo(FlagCriteriaContractor o) {
-//        int res = contractor.compareTo(o.contractor);
-//        if (res == 0)
-//            res = criteria.compareTo(o.criteria);
-//        return res;
-//    }
-//
-//    public static FlagCriteriaContractorBuilder builder() {
-//        return new FlagCriteriaContractorBuilder();
-//    }
 }

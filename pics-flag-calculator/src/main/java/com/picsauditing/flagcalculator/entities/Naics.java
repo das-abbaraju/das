@@ -7,13 +7,15 @@ import javax.persistence.*;
 @Table(name = "naics")
 public class Naics implements java.io.Serializable {
 	private String code;
-//	private float trir;
-//	private float lwcr;
 	private float dart;
+<<<<<<< HEAD
 //
 	@Id
 	@Column(nullable = false, length = 6)
 //	@ReportField(importance = FieldImportance.Required)
+=======
+
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	public String getCode() {
 		return code;
 	}
@@ -25,22 +27,6 @@ public class Naics implements java.io.Serializable {
 		this.code = code;
 	}
 
-//	public float getTrir() {
-//		return trir;
-//	}
-//
-//	public void setTrir(float trir) {
-//		this.trir = trir;
-//	}
-//
-//	public float getLwcr() {
-//		return lwcr;
-//	}
-//
-//	public void setLwcr(float lwcr) {
-//		this.lwcr = lwcr;
-//	}
-//
 	public float getDart() {
 		return dart;
 	}

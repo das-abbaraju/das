@@ -5,20 +5,16 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity(name = "com.picsauditing.flagcalculator.entities.AuditCatData")
 @Table(name = "audit_cat_data")
+<<<<<<< HEAD
 public class AuditCatData extends BaseTable implements java.io.Serializable/*, Comparable<AuditCatData>*/ {
 //
 	private ContractorAudit audit;
+=======
+public class AuditCatData extends BaseTable implements java.io.Serializable {
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	private AuditCategory category;
-//	private int requiredCompleted = 0;
-//	private int numRequired = 0;
-//	private int numAnswered = 0;
-//	private int numVerified = 0;
-//	private boolean override = false;
 	private boolean applies = true;
-//	private float score = 0f;
-//	private float scorePossible = 0f;
-//	private Integer ruleID;
-//
+
 	@ManyToOne
 	@JoinColumn(name = "categoryID", nullable = false)
 	public AuditCategory getCategory() {
@@ -29,6 +25,7 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 		this.category = category;
 	}
 
+<<<<<<< HEAD
 	@ManyToOne
 	@JoinColumn(name = "auditID", nullable = false)
 	public ContractorAudit getAudit() {
@@ -52,6 +49,8 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 //		this.override = override;
 //	}
 //
+=======
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	/**
 	 * This is dynamically set by AuditBuilder.fillAuditCategories() when one or
 	 * more CAOs require this category. If Override==true, then the value must
@@ -65,105 +64,4 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 	public void setApplies(boolean applies) {
 		this.applies = applies;
 	}
-
-//	public int getRequiredCompleted() {
-//		return requiredCompleted;
-//	}
-//
-//	public void setRequiredCompleted(int requiredCompleted) {
-//		this.requiredCompleted = requiredCompleted;
-//	}
-//
-//	public int getNumRequired() {
-//		return numRequired;
-//	}
-//
-//	public void setNumRequired(int numRequired) {
-//		this.numRequired = numRequired;
-//	}
-//
-//	public int getNumAnswered() {
-//		return numAnswered;
-//	}
-//
-//	public void setNumAnswered(int numAnswered) {
-//		this.numAnswered = numAnswered;
-//	}
-//
-//	public float getScore() {
-//		return score;
-//	}
-//
-//	public void setScore(float score) {
-//		this.score = score;
-//	}
-//
-//	public float getScorePossible() {
-//		return scorePossible;
-//	}
-//
-//	public void setScorePossible(float scoreCount) {
-//		this.scorePossible = scoreCount;
-//	}
-//
-//	public int getNumVerified() {
-//		return numVerified;
-//	}
-//
-//	public void setNumVerified(int numVerified) {
-//		this.numVerified = numVerified;
-//	}
-//
-//	public Integer getRuleID() {
-//		return ruleID;
-//	}
-//
-//	public void setRuleID(Integer ruleID) {
-//		this.ruleID = ruleID;
-//	}
-//
-//	@Transient
-//	public List<AuditQuestion> getEffectiveQuestions() {
-//		List<AuditQuestion> result = new ArrayList<AuditQuestion>();
-//		Date effectiveDate = audit.getEffectiveDate();
-//		if (effectiveDate == null)
-//			effectiveDate = new Date();
-//		for (AuditQuestion auditQuestion : category.getQuestions()) {
-//			if (auditQuestion.isCurrent(effectiveDate)) {
-//				result.add(auditQuestion);
-//			}
-//		}
-//
-//		return result;
-//	}
-//
-//	@Transient
-//	public String getPrintableScore() {
-//		if (getScorePossible() > 0) {
-//
-//			int tempScore = Math.round(score);
-//
-//			Map<Integer, String> map = new HashMap<Integer, String>() {
-//
-//				{
-//					put(0, "Red");
-//					put(1, "Yellow");
-//					put(2, "Green");
-//				}
-//			};
-//
-//			return map.get(tempScore);
-//		} else {
-//			return "-";
-//		}
-//	}
-//
-//	@Override
-//	public int compareTo(AuditCatData o) {
-//		return getCategory().compareTo(o.getCategory());
-//	}
-//
-//    public static AuditCatDataBuilder builder() {
-//        return new AuditCatDataBuilder();
-//    }
 }

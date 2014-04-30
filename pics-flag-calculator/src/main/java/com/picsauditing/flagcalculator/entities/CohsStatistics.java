@@ -62,11 +62,4 @@ public class CohsStatistics extends SafetyStatistics {
 			}
 		}
 	}
-
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<AuditData> getQuestionsToVerify() {
-//		// We don't verify COHS
-//		return Collections.emptyList();
-//	}
 }

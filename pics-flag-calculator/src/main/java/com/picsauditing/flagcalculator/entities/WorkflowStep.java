@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "workflow_step")
 @SuppressWarnings("serial")
 public class WorkflowStep extends BaseTable {
+<<<<<<< HEAD
 	private Workflow workflow;
 //	private AuditStatus oldStatus;
 	private AuditStatus newStatus;
@@ -33,6 +34,10 @@ public class WorkflowStep extends BaseTable {
 //		this.oldStatus = oldStatus;
 //	}
 //
+=======
+	private AuditStatus newStatus;
+
+>>>>>>> 7ae760b... US831 Deprecated old FDC
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public AuditStatus getNewStatus() {
@@ -42,62 +47,4 @@ public class WorkflowStep extends BaseTable {
 	public void setNewStatus(AuditStatus newStatus) {
 		this.newStatus = newStatus;
 	}
-
-//	@ManyToOne
-//	@JoinColumn(name = "emailTemplateID")
-//	public EmailTemplate getEmailTemplate() {
-//		return emailTemplate;
-//	}
-//
-//	public void setEmailTemplate(EmailTemplate emailTemplate) {
-//		this.emailTemplate = emailTemplate;
-//	}
-//
-//	public boolean isNoteRequired() {
-//		return noteRequired;
-//	}
-//
-//	public void setNoteRequired(boolean noteRequired) {
-//		this.noteRequired = noteRequired;
-//	}
-//
-//	@Transient
-//	public String getButtonName() {
-//		return getName();
-//	}
-//
-//	@Transient
-//	public String getButtonHelpText() {
-//		String text = helpText.toString();
-//		if (text == null || text.startsWith(getClass().getSimpleName())) {
-//			text = "";
-//		}
-//		return text;
-//	}
-//
-//	@Transient
-//	public String getName() {
-//		if (name != null) {
-//			return name;
-//		}
-//
-//		return new TranslatableString(getI18nKey("name")).toTranslatedString();
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
-//	}
-//
-//	@Transient
-//	public String getHelpText() {
-//		return helpText;
-//	}
-//
-//	public void setHelpText(String helpText) {
-//		this.helpText = helpText;
-//	}
-//
-//    public static WorkflowStepBuilder builder() {
-//        return new WorkflowStepBuilder();
-//    }
 }
