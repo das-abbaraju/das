@@ -20,7 +20,7 @@ public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 	boolean addAnother;
 
 	/* Collections */
-	private String[] groups;
+	private Integer[] groups;
 
 	public String getName() {
 		return name;
@@ -78,11 +78,11 @@ public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 		this.doesNotExpire = doesNotExpire;
 	}
 
-	public String[] getGroups() {
+	public Integer[] getGroups() {
 		return groups;
 	}
 
-	public void setGroups(String[] groups) {
+	public void setGroups(Integer[] groups) {
 		this.groups = groups;
 	}
 
@@ -96,13 +96,13 @@ public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 		this.addAnother = addAnother;
 	}
 
-	public AccountSkill buildAccountSkill() {
+	public AccountSkill buildAccountSkill(int accountId) {
 		if (doesNotExpire) {
 			intervalType = IntervalType.NO_EXPIRATION;
 			intervalPeriod = 0;
 		}
 
-		return new AccountSkillBuilder().name(name).description(description).skillType(skillType).required(required)
+		return new AccountSkillBuilder(accountId).name(name).description(description).skillType(skillType).required(required)
 				.intervalType(intervalType).intervalPeriod(intervalPeriod).groups(groups).build();
 	}
 
@@ -146,10 +146,10 @@ public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 			form.setIntervalPeriod(accountSkill.getIntervalPeriod());
 			form.setDoesNotExpire(!accountSkill.getIntervalType().isApplicableExpiration() && accountSkill.getIntervalPeriod() == 0);
 
-			String[] groups = new String[accountSkill.getGroups().size()];
+      Integer[] groups = new Integer[accountSkill.getGroups().size()];
 			int counter = 0;
 			for (AccountSkillGroup accountSkillGroup : accountSkill.getGroups()) {
-				groups[counter++] = accountSkillGroup.getGroup().getName();
+				groups[counter++] = accountSkillGroup.getGroup().getId();
 			}
 
 			form.setGroups(groups);

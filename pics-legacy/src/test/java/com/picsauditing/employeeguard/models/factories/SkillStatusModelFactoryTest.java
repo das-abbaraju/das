@@ -19,6 +19,7 @@ public class SkillStatusModelFactoryTest {
 	public static final int PROJECT_ID = 345;
 	public static final int SKILL_ID = 123;
 	public static final int ROLE_ID = 234;
+  private static final int ACCOUNT_ID = 1100;
 	private SkillStatusModelFactory factory;
 
 	@Before
@@ -28,7 +29,7 @@ public class SkillStatusModelFactoryTest {
 
 	@Test
 	public void testCreate_Single() throws Exception {
-		AccountSkill accountSkill = new AccountSkillBuilder()
+		AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID)
 				.id(SKILL_ID)
 				.name("Account Skill")
 				.build();
@@ -42,11 +43,11 @@ public class SkillStatusModelFactoryTest {
 
 	@Test
 	public void testCreate_List() throws Exception {
-		AccountSkill accountSkill = new AccountSkillBuilder()
+		AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID)
 				.id(SKILL_ID)
 				.name("Account Skill")
 				.build();
-		AccountSkill secondSkill = new AccountSkillBuilder()
+		AccountSkill secondSkill = new AccountSkillBuilder(ACCOUNT_ID)
 				.id(124)
 				.name("Second Skill")
 				.build();
@@ -138,7 +139,7 @@ public class SkillStatusModelFactoryTest {
 	}
 
 	private AccountSkill getFakeAccountSkill() {
-		return new AccountSkillBuilder()
+		return new AccountSkillBuilder(ACCOUNT_ID)
 				.id(SKILL_ID)
 				.build();
 	}

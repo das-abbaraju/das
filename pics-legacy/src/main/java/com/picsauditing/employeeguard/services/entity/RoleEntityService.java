@@ -45,6 +45,14 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.findRoleByAccount(id, accountId);
 	}
 
+  public Map<String,Role> retrieveRolesByAccounts(Collection<Integer> accountIds) {
+    if (CollectionUtils.isEmpty(accountIds)) {
+      return Collections.EMPTY_MAP;
+
+    }
+    return roleDAO.retrieveRolesByAccounts(accountIds);
+  }
+
 	public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.EMPTY_LIST;

@@ -45,16 +45,16 @@
         <div class="form-group">
             <tw:label labelName="groups" class="col-md-3 control-label">Job Roles</tw:label>
             <div class="col-md-4">
-                <tw:select selectName="groups" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
+                <tw:select selectName="roles" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
                     <s:iterator value="roles" var="operator_role">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_roles" var="selected_role">
-                            <s:if test="#selected_role == #operator_role.name">
+                            <s:if test="#selected_role == #operator_role.id">
                                 <s:set var="is_selected" value="true"/>
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="${operator_role.name}" selected="${is_selected}">${operator_role.name}</tw:option>
+                        <tw:option value="${operator_role.id}" selected="${is_selected}">${operator_role.name}</tw:option>
                     </s:iterator>
                 </tw:select>
 

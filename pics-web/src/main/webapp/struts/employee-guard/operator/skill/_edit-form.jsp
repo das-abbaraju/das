@@ -61,12 +61,12 @@
                     <s:iterator value="roles" var="operator_role">
                         <s:set var="is_selected" value="false"/>
                         <s:iterator value="#selected_roles" var="selected_role">
-                            <s:if test="#selected_role == #operator_role.name">
+                            <s:if test="#selected_role == #operator_role.id">
                                 <s:set var="is_selected" value="true"/>
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="${operator_role.name}" selected="${is_selected}">${operator_role.name}</tw:option>
+                        <tw:option value="${operator_role.id}" selected="${is_selected}">${operator_role.name}</tw:option>
                     </s:iterator>
                 </tw:select>
             </div>

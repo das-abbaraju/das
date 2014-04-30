@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 public class SummaryActionTest extends PicsActionTest {
 
 	public static final int SITE_ID = 123;
+  private static final int ACCOUNT_ID = 1100;
 	private SummaryAction summaryAction;
 
 	@Mock
@@ -73,7 +74,7 @@ public class SummaryActionTest extends PicsActionTest {
 		AccountModel accountModel = new AccountModel.Builder().id(SITE_ID).build();
 		final Employee employee = new EmployeeBuilder().build();
 		final List<Employee> employees = Arrays.asList(employee);
-		final AccountSkill accountSkill = new AccountSkillBuilder().build();
+		final AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID).build();
 		HashMap<Employee, Set<AccountSkill>> employeeSkills = new HashMap<Employee, Set<AccountSkill>>() {{
 			put(employee, new HashSet<AccountSkill>());
 			get(employee).add(accountSkill);

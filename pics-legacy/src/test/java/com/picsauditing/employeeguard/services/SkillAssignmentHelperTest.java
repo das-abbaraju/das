@@ -82,15 +82,15 @@ public class SkillAssignmentHelperTest {
 	private void setupTestGetRequiredSkillsFromProjectsAndSiteRoles_WithSiteRolesAndSkillsToRemove() {
 		when(accountService.getTopmostCorporateAccountIds(SITE_ID)).thenReturn(Arrays.asList(CORPORATE_ID, 45));
 		when(accountSkillDAO.findSiteAndCorporateRequiredSkills(anyCollectionOf(Integer.class)))
-				.thenReturn(Arrays.asList(new AccountSkillBuilder().accountId(SITE_ID).name("Site Skill").build(),
-						new AccountSkillBuilder().accountId(CORPORATE_ID).name("Corporate Skill").build()));
+				.thenReturn(Arrays.asList(new AccountSkillBuilder(CORPORATE_ID).accountId(SITE_ID).name("Site Skill").build(),
+						new AccountSkillBuilder(CORPORATE_ID).accountId(CORPORATE_ID).name("Corporate Skill").build()));
 		when(accountSkillDAO.findProjectRequiredSkills(anyCollectionOf(Project.class)))
-				.thenReturn(Arrays.asList(new AccountSkillBuilder().accountId(SITE_ID).name("Project Skill").build()));
+				.thenReturn(Arrays.asList(new AccountSkillBuilder(CORPORATE_ID).accountId(SITE_ID).name("Project Skill").build()));
 	}
 
 	@Test
 	public void testFilterNoLongerNeededEmployeeSkills() throws Exception {
-		AccountSkill keep = new AccountSkillBuilder()
+		AccountSkill keep = new AccountSkillBuilder(CORPORATE_ID)
 				.name("Skill to keep")
 				.build();
 		Set<AccountSkill> requiredSkills = new HashSet<>();
@@ -103,7 +103,7 @@ public class SkillAssignmentHelperTest {
 								.build(),
 						new AccountSkillEmployeeBuilder()
 								.accountSkill(
-										new AccountSkillBuilder()
+										new AccountSkillBuilder(CORPORATE_ID)
 												.name("Skill to remove")
 												.build())
 								.build()

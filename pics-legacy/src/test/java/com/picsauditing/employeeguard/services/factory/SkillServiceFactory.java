@@ -16,12 +16,13 @@ import static org.mockito.Mockito.when;
 public class SkillServiceFactory {
 	// These are not thread safe
 	private static SkillService skillService = Mockito.mock(SkillService.class);
+  private static final int ACCOUNT_ID = 1100;
 
 	public static SkillService getSkillService() {
 		Mockito.reset(skillService);
 
-		AccountSkill accountSkill = new AccountSkillBuilder().name("Skill 1").intervalType(IntervalType.NOT_APPLICABLE).skillType(SkillType.Certification).build();
-		AccountSkill accountSkill2 = new AccountSkillBuilder().name("Skill 2").skillType(SkillType.Training).build();
+		AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID).name("Skill 1").intervalType(IntervalType.NOT_APPLICABLE).skillType(SkillType.Certification).build();
+		AccountSkill accountSkill2 = new AccountSkillBuilder(ACCOUNT_ID).name("Skill 2").skillType(SkillType.Training).build();
 		List<AccountSkill> accountSkills = Arrays.asList(accountSkill, accountSkill2);
 		when(skillService.search(anyString(), anyInt())).thenReturn(accountSkills);
 		when(skillService.getSkillsForAccount(anyInt())).thenReturn(accountSkills);
