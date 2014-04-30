@@ -6,9 +6,11 @@
          <div class="row">
             <div class="col-md-2 col-md-offset-1 text-center tile-container">
                 <div class="tile primary">
-                    <i class="icon-user"></i>
-                    <p class="title">{{ site_assignments.employees }}</p>
-                    <p class="subtitle">Assignment to Site</p>
+                    <a href="/employee-guard/operators/project/site-assignment/{{ selected_site }}" target="_self">
+                        <i class="icon-user"></i>
+                        <p class="title">{{ site_assignments.employees }}</p>
+                        <p class="subtitle">Assigned to Site</p>
+                    </a>
                 </div>
             </div>
             <div class="col-md-2 text-center tile-container">

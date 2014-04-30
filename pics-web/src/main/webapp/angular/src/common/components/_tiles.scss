@@ -1,90 +1,95 @@
 .tile-container {
-  min-height: 140px;
+    min-height: 140px;
 
-  &:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-  }
-}
-
-.tile {
-  background: transparent;
-
-  .title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 0px;
-    margin-top: 10px;
-  }
-
-  i {
-    background: transparent;
-    font-size: 48px;
-  }
-
-  &.success {
-    color: $success_med;
-
-    i {
-      color: $success_med;
+    &:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        vertical-align: middle;
     }
 
-    &:hover {
-      color: $success_light;
+    .tile {
+        background: transparent;
 
-      i {
-        color: $success_light;
-      }
+        a {
+            display: block;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 0px;
+            margin-top: 10px;
+        }
+
+        i {
+            background: transparent;
+            font-size: 48px;
+        }
+
+        &.success {
+            color: $success_med;
+
+            i {
+                color: $success_med;
+            }
+
+            &:hover {
+                color: $success_light;
+
+                i {
+                color: $success_light;
+                }
+            }
+        }
+
+        &.warning {
+            color: $warning_med;
+
+            i {
+                color: $warning_med;
+            }
+
+            &:hover {
+                color: $warning_light;
+
+                i {
+                    color: $warning_light;
+                }
+            }
+        }
+
+        &.danger {
+            color: $danger_med;
+
+            i {
+                color: $danger_med;
+            }
+
+            &:hover {
+                color: $danger_light;
+
+                i {
+                color: $danger_light;
+                }
+            }
+        }
+
+        &.primary {
+            color: $primary_med;
+
+            i {
+                color: $primary_med;
+            }
+
+            &:hover {
+                color: $primary_light;
+
+                i,
+                a {
+                    color: $primary_light;
+                }
+            }
+        }
     }
-  }
-
-  &.warning {
-    color: $warning_med;
-
-    i {
-      color: $warning_med;
-    }
-
-    &:hover {
-      color: $warning_light;
-
-      i {
-        color: $warning_light;
-      }
-    }
-  }
-
-  &.danger {
-    color: $danger_med;
-
-    i {
-      color: $danger_med;
-    }
-
-    &:hover {
-      color: $danger_light;
-
-      i {
-        color: $danger_light;
-      }
-    }
-  }
-
-  &.primary {
-    color: $primary_med;
-
-    i {
-      color: $primary_med;
-    }
-
-    &:hover {
-      color: $primary_light;
-
-      i {
-        color: $primary_light;
-      }
-    }
-  }
 }
