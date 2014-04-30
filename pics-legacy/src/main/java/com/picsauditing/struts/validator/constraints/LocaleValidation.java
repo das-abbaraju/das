@@ -28,7 +28,8 @@ public class LocaleValidation implements ConstraintValidator<ValidateDialect, Re
         final String dialect = value.getDialect();
         final Locale locale = value.getLocale();
 
-        if (Strings.isEmpty(language) || Strings.isEmpty(dialect)) return false;
+        if (Strings.isEmpty(language)) return false;
+        if (languageModel.getCountriesBasedOn(language).size() > 0 && Strings.isEmpty(dialect)) return false;
 
         return availableLanguages.contains(locale);
 
