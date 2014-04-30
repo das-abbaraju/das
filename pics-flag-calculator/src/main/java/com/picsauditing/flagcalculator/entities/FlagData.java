@@ -5,7 +5,6 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity(name = "com.picsauditing.flagcalculator.entities.FlagData")
 @Table(name = "flag_data")
-// public class FlagData extends BaseTable /*implements Comparable<FlagData>, UpdatableListItem */ {
 public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData {
 
     private ContractorAccount contractor;
@@ -13,7 +12,6 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
     private ContractorOperator contractorOperator;
     private FlagCriteria criteria;
     private FlagColor flag;
-//    private FlagColor baselineFlag;
     private FlagCriteriaContractor criteriaContractor;
 
     @ManyToOne
@@ -97,16 +95,6 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
         this.flag = flag;
     }
 
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Low)
-//    public FlagColor getBaselineFlag() {
-//        return baselineFlag;
-//    }
-//
-//    public void setBaselineFlag(FlagColor baselineFlag) {
-//        this.baselineFlag = baselineFlag;
-//    }
-//
     @Transient
     public FlagCriteriaContractor getCriteriaContractor() {
         return criteriaContractor;
@@ -131,30 +119,4 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
             return false;
         return true;
     }
-
-//    @Override
-//    public void update(UpdatableListItem change) {
-//        FlagData fd = (FlagData) change;
-//        if (!equals(change))
-//            // Don't update flag data for the wrong contractor/operator/criteria
-//            return;
-//
-//        if (!flag.equals(fd.getFlag())) {
-//            this.setFlag(fd.getFlag());
-//            this.setAuditColumns(new User(User.SYSTEM));
-//        }
-//    }
-//
-//    @Override
-//    public int compareTo(FlagData o) {
-//        return criteria.compareTo(o.criteria);
-//    }
-//
-//    public void resetBaseline() {
-//        this.setBaselineFlag(this.getFlag());
-//    }
-//
-//    public static FlagDataBuilder builder() {
-//        return new FlagDataBuilder();
-//    }
 }

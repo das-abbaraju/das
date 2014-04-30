@@ -7,10 +7,6 @@ public enum AccountLevel {
         return this.equals(BidOnly);
     }
 
-    public boolean isListOnly() {
-        return this.equals(ListOnly);
-    }
-
     public boolean isFull() {
         return this.equals(Full);
     }

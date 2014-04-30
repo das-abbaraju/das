@@ -1,13 +1,12 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-
-import javax.persistence.Transient;
-
 import com.google.common.base.Strings;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
+
+import javax.persistence.Transient;
+import java.util.ArrayList;
 
 public enum FlagColor implements Translatable {
 
@@ -115,6 +114,7 @@ public enum FlagColor implements Translatable {
 		return this.equals(Clear);
 	}
 
+    @Deprecated
 	public boolean isWorseThan(FlagColor flagColor2) {
 		if (flagColor2 == null) {
 			return true;

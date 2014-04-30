@@ -123,10 +123,12 @@ public class OshaAudit implements OshaVisitable {
          }
     }
 
+    @Deprecated
     public String getAuditFor() {
         return contractorAudit.getAuditFor();
     }
 
+    @Deprecated
     public int getId() {
         return contractorAudit.getId();
     }
@@ -282,6 +284,7 @@ public class OshaAudit implements OshaVisitable {
     }
 
     // If one cao status is complete, it is safe to assume it's verified.
+    @Deprecated
     public boolean isVerified() {
         for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
             if (cao.isVisible() && cao.getStatus().isComplete())

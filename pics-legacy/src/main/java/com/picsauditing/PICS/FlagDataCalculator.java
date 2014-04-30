@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+@Deprecated
 public class FlagDataCalculator implements FlagCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;
     private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
@@ -57,6 +58,7 @@ public class FlagDataCalculator implements FlagCalculator {
 
     public FlagDataCalculator() {}
 
+    @Deprecated
     private FlagCriteriaDAO flagCriteriaDao() {
 		if (flagCriteriaDao == null) {
 			return SpringUtils.getBean(SpringUtils.FLAG_CRITERIA_DAO);
@@ -65,6 +67,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		}
 	}
 
+    @Deprecated
 	private BasicDAO basicDAO() {
 		if (dao == null) {
 			return SpringUtils.getBean(SpringUtils.BASIC_DAO);
@@ -80,6 +83,7 @@ public class FlagDataCalculator implements FlagCalculator {
         return contractorOperatorDAO ;
     }
 
+    @Deprecated
 	public List<FlagData> calculate() {
 		flagCriteriaDao = flagCriteriaDao();
 		dao = basicDAO();
@@ -141,6 +145,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		return new ArrayList<FlagData>(dataSet.values());
 	}
 
+    @Deprecated
 	private boolean isFlaggableContractor() {
 		if (contractorCriteria.size() == 0)
 			return false;
@@ -170,6 +175,7 @@ public class FlagDataCalculator implements FlagCalculator {
 	 *         False if a criteria is met (i.e. Green Flagged). NULL can be
 	 *         returned from this method when flagging does not apply.
 	 */
+    @Deprecated
 	private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
 			throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
@@ -854,6 +860,7 @@ public class FlagDataCalculator implements FlagCalculator {
         this.messagePublisherService = messagePublisherService;
     }
 
+    @Deprecated
     private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
 		String auditYear = null;
 

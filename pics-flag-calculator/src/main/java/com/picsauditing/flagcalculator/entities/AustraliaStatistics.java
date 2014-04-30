@@ -47,19 +47,4 @@ public class AustraliaStatistics extends SafetyStatistics {
             }
         }
     }
-
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public List<AuditData> getQuestionsToVerify() {
-//        List<AuditData> questionsToVerify = new ArrayList<AuditData>();
-//
-//        questionsToVerify.add(answerMap.get(OshaRateType.Hours));
-//        questionsToVerify.add(answerMap.get(OshaRateType.Fatalities));
-//        questionsToVerify.add(answerMap.get(OshaRateType.LTIFR));
-//        questionsToVerify.add(answerMap.get(OshaRateType.IR));
-//        questionsToVerify.add(answerMap.get(OshaRateType.FR));
-//        questionsToVerify.add(answerMap.get(OshaRateType.ATLR));
-//
-//        return questionsToVerify;
-//    }
 }

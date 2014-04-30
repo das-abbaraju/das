@@ -13,8 +13,7 @@ public class ContractorAuditOperatorPermission implements Serializable {
     private int id;
     private ContractorAuditOperator cao;
     private OperatorAccount operator;
-//    private ContractorAuditOperator previousCao;
-//
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(nullable = false)
@@ -45,18 +44,4 @@ public class ContractorAuditOperatorPermission implements Serializable {
     public void setOperator(OperatorAccount operator) {
         this.operator = operator;
     }
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "previousCaoID")
-//    public ContractorAuditOperator getPreviousCao() {
-//        return previousCao;
-//    }
-//
-//    public void setPreviousCao(ContractorAuditOperator previousCao) {
-//        this.previousCao = previousCao;
-//    }
-//
-//    public static ContractorAuditOperatorPermissionBuilder builder() {
-//        return new ContractorAuditOperatorPermissionBuilder();
-//    }
 }
