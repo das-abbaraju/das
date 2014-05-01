@@ -39,12 +39,12 @@ public class EmployeeSiteStatusProcessTest {
 	public static final Project PROJECT_NO_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills").build();
 
 	// Skill Mock Data
-	public static final AccountSkill SITE_REQUIRE_SKILL = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Site Skill 1").build();
-	public static final AccountSkill CORPORATE_REQUIRED_SKILL = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Corp Skill 1").build();
-	public static final AccountSkill SKILL_FOR_ROLE_WITH_SKILLS = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Skill for Role With Skills").build();
-	public static final AccountSkill SITE_ASSIGNMENT_ROLE_SKILL = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Site Assignment Role Skill").build();
-	public static final AccountSkill PROJECT_REQUIRED_SKILL_2 = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Project Skill 2").build();
-	public static final AccountSkill PROJECT_REQUIRED_SKILL_1 = new AccountSkillBuilder().accountId(CORPORATE_ID).name("Project Skill 1").build();
+	public static final AccountSkill SITE_REQUIRE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("Site Skill 1").build();
+	public static final AccountSkill CORPORATE_REQUIRED_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("Corp Skill 1").build();
+	public static final AccountSkill SKILL_FOR_ROLE_WITH_SKILLS = new AccountSkillBuilder(CORPORATE_ID).name("Skill for Role With Skills").build();
+	public static final AccountSkill SITE_ASSIGNMENT_ROLE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("Site Assignment Role Skill").build();
+	public static final AccountSkill PROJECT_REQUIRED_SKILL_2 = new AccountSkillBuilder(CORPORATE_ID).name("Project Skill 2").build();
+	public static final AccountSkill PROJECT_REQUIRED_SKILL_1 = new AccountSkillBuilder(CORPORATE_ID).name("Project Skill 1").build();
 
 	// Role Mock Data
 	public static final Role SITE_ASSIGNMENT_ROLE = new RoleBuilder().accountId(CORPORATE_ID).name("Site Assignment Role").build();
