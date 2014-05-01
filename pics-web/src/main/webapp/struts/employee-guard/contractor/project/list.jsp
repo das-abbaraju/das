@@ -47,7 +47,7 @@
                 <thead>
                     <tr>
                         <th class="success text-center">
-                            <i class="icon-ok-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring"></i>
+                            <i class="icon-ok-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Completed"></i>
                         </th>
                         <th class="warning text-center">
                             <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring"></i>
