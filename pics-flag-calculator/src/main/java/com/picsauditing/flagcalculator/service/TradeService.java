@@ -63,7 +63,7 @@ public class TradeService {
 
     public static ContractorTrade getRandomTopTrade(ContractorAccount contractorAccount) {
         ContractorTrade topTrade = null;
-        List<ContractorTrade> listOfSameTradeActivity = new ArrayList<ContractorTrade>();
+        List<ContractorTrade> listOfSameTradeActivity = new ArrayList<>();
 
         for (ContractorTrade trade : contractorAccount.getTrades()) {
             if (!trade.isSelfPerformed())
