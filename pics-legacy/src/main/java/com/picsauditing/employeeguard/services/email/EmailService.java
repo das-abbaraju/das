@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.email;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.service.AppPropertyService;
@@ -26,7 +27,8 @@ public class EmailService {
 		emailBuilder.setToAddresses(emailHash.getEmailAddress());
 		emailBuilder.setFromAddress(loadEmailAddress(AppProperty.EMAIL_FROM_INFO_AT_PICSAUDITING,
 				"PICS <info@picsauditing.com>"));
-		emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_WELCOME_EMAIL_TEMPLATE_ID, 357));
+		emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_WELCOME_EMAIL_TEMPLATE_ID,
+				EmailTemplate.EMPLOYEE_GUARD_WELCOME_TEMPLATE));
 		emailBuilder.addToken("hash", new EmailHashWrapper(emailHash));
 		emailBuilder.addToken("CompanyName", accountName);
 
@@ -40,7 +42,8 @@ public class EmailService {
 
 			emailBuilder.setToAddresses(loadEmailAddress(AppProperty.EMAIL_TO_EG_FEEDBACK, "mdesio@picsauditing.com"));
 			emailBuilder.setFromAddress(getFromAddressIfUserIsMissingEmail(userEmailAddress));
-			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID, 385));
+			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID,
+					EmailTemplate.EMPLOYEE_GUARD_FEED_BACK_EMAIL_TEMPLATE));
 			emailBuilder.addToken("feedback", feedback);
 			emailBuilder.addToken("accountName", accountName);
 			emailBuilder.addToken("appUserId", appUserId);
