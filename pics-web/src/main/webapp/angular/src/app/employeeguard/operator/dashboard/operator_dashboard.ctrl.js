@@ -11,25 +11,32 @@ angular.module('PICS.employeeguard')
 
                 $scope.siteList = sites;
 
-                $scope.loadSiteById(site_id);
+                $scope.loadAssignmentsBySiteId(site_id);
             });
         } else {
-            $scope.loadSiteById();
+            $scope.loadAssignments();
         }
     });
 
-    $scope.loadSiteById = function(site_id) {
+    $scope.loadAssignmentsBySiteId = function(site_id) {
         $scope.selected_site = site_id;
-        SiteAssignments.get({id: site_id}, function (site_details){
-            $scope.site_assignments = site_details;
-            $scope.chartData = [
-                site_details.completed + site_details.pending,
-                site_details.expiring,
-                site_details.expired
-            ];
-        });
+        SiteAssignments.get({id: site_id}, onLoadAssignmentsSuccess);
         $scope.project_assignments = ProjectAssignments.query({id: site_id});
     };
+
+    $scope.loadAssignments = function() {
+        SiteAssignments.get(onLoadAssignmentsSuccess);
+        $scope.project_assignments = ProjectAssignments.query();
+    };
+
+    function onLoadAssignmentsSuccess(site_details){
+        $scope.site_assignments = site_details;
+        $scope.chartData = [
+            site_details.completed + site_details.pending,
+            site_details.expiring,
+            site_details.expired
+        ];
+    }
 
     $scope.calculateStatusPercentage = function (amount, total) {
         return (amount / total) * 100;
