@@ -296,7 +296,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	@Override
 	public AccountSkill save(AccountSkill accountSkill, final EntityAuditInfo entityAuditInfo) {
-		accountSkill = EntityHelper.setCreateAuditFields(accountSkill, entityAuditInfo);
+		EntityHelper.setCreateAuditFields(accountSkill, entityAuditInfo);
+    EntityHelper.setCreateAuditFields(accountSkill.getRoles(), entityAuditInfo);
+    EntityHelper.setCreateAuditFields(accountSkill.getGroups(), entityAuditInfo);
+
 		return accountSkillDAO.save(accountSkill);
 	}
 

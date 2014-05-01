@@ -22,14 +22,14 @@ public class AccountSkillBuilderTest {
     private static final SkillType SKILL_TYPE = SkillType.Certification;
     private static final int INTERVAL_PERIOD = 45;
     private static final IntervalType INTERVAL_TYPE = IntervalType.DAY;
-    private static final List<String> GROUPS = Collections.unmodifiableList(Arrays.asList("Welders",
-            "Maintenance", "All Employees"));
+    private static final List<Integer> GROUPS = Collections.unmodifiableList(Arrays.asList(new Integer(25),
+            new Integer(56), new Integer(99)));
 
     @Test
     public void testBuild() {
         AccountSkill accountSkill = new AccountSkillBuilder(ID, ACCOUNT_ID).name(NAME).description(DESCRIPTION)
                 .skillType(SKILL_TYPE).intervalPeriod(INTERVAL_PERIOD).intervalType(INTERVAL_TYPE)
-                .groups(GROUPS.toArray(new String[0])).build();
+                .groups(GROUPS.toArray(new Integer[0])).build();
 
         verifyAccountSkill(accountSkill);
     }
@@ -49,7 +49,7 @@ public class AccountSkillBuilderTest {
     private void verifyGroups(AccountSkill accountSkill) {
         int index = 0;
         for (AccountSkillGroup accountSkillGroup : accountSkill.getGroups()) {
-            assertEquals(GROUPS.get(index), accountSkillGroup.getGroup().getName());
+            assertEquals(GROUPS.get(index), (Integer)accountSkillGroup.getGroup().getId());
             assertEquals(ACCOUNT_ID, accountSkillGroup.getGroup().getAccountId());
             assertEquals(accountSkill, accountSkillGroup.getSkill());
             index++;

@@ -58,6 +58,7 @@ public class ProjectModelFactory {
 		projectModel.setSkills(skills);
 		projectModel.setStartDate(project.getStartDate());
 		projectModel.setEndDate(project.getEndDate());
+    projectModel.setLocation(project.getLocation());
 
 		if (accountModel != null) {
 			projectModel.setSite(accountModel.getName());

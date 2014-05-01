@@ -101,7 +101,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			loadSkill();
 			skillForm = new SkillForm.Builder().accountSkill(skill).build();
 		} else {
-			skill = skillForm.buildAccountSkill();
+			skill = skillForm.buildAccountSkill(permissions.getAccountId());
 		}
 
 		loadGroups();
@@ -112,8 +112,9 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Other Methods */
 
 	public String insert() throws Exception {
-		skill = skillForm.buildAccountSkill();
-		skillService.save(skill, permissions.getAccountId(), permissions.getAppUserID());
+    int accountId = permissions.getAccountId();
+		skill = skillForm.buildAccountSkill(accountId);
+		skillService.save(skill, accountId, permissions.getAppUserID());
 
 		if (addAnother(skillForm)) {
 			return setUrlForRedirect("/employee-guard/contractor/skill/create");

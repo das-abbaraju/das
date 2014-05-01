@@ -124,8 +124,10 @@ public class GroupService {
 				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
 
-		updatedGroup.setEmployees(groupEmployees);
-		updatedGroup.setSkills(groupInDatabase.getSkills());
+    updatedGroup.getEmployees().clear();
+    updatedGroup.getEmployees().addAll(groupEmployees);
+    updatedGroup.getSkills().clear();
+    updatedGroup.getSkills().addAll(groupInDatabase.getSkills());
 
 		return accountGroupDAO.save(updatedGroup);
 	}
@@ -151,7 +153,9 @@ public class GroupService {
 				ProjectRole.COMPARATOR,
 				new BaseEntityCallback<ProjectRole>(appUserId, now));
 
-		role.setProjects(newProjectRoles);
+    role.getProjects().clear();
+    role.getProjects().addAll(newProjectRoles);
+
 		return roleDAO.save(role);
 	}
 

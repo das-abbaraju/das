@@ -13,6 +13,7 @@ import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
+import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -287,7 +288,8 @@ public class EmployeeService {
 				employeeInDatabase.getGroups(),
 				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
-		employeeInDatabase.setGroups(groupEmployees);
+    employeeInDatabase.getGroups().clear();
+    employeeInDatabase.getGroups().addAll(groupEmployees);
 
 		if (Strings.isEmpty(updatedEmployee.getSlug())) {
 			String hash = Strings.hashUrlSafe(employeeInDatabase.getAccountId() + employeeInDatabase.getEmail());

@@ -162,7 +162,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Test
 	public void testRole() throws Exception {
 		Role corporateRole = new RoleBuilder().accountId(CORPORATE_ID).name("Corporate Role").build();
-		AccountSkill skill = new AccountSkillBuilder().name("Corporate Skill").build();
+		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").build();
 		Employee employee = new EmployeeBuilder()
 				.firstName("First")
 				.lastName("Last")

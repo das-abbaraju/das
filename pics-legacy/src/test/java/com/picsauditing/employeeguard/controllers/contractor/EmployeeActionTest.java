@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmailService;
+import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;

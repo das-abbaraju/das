@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 
 public class SkillModelFactoryTest {
 	private SkillModelFactory factory;
+  private static final int ACCOUNT_ID = 1100;
 
 	@Before
 	public void setUp() throws Exception {
@@ -104,7 +105,7 @@ public class SkillModelFactoryTest {
 	}
 
 	private AccountSkill getFakeSkill() {
-		return new AccountSkillBuilder()
+		return new AccountSkillBuilder(ACCOUNT_ID)
 				.id(123)
 				.name("Skill")
 				.build();

@@ -54,12 +54,12 @@ public class Profile implements BaseEntity, Identifiable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 2)
 	private List<Employee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<ProfileDocument> documents = new ArrayList<>();
 

@@ -21,6 +21,7 @@ public class SkillEngineTest {
 
 	public static final int CONTRACTOR_ID = 123;
 	public static final int SITE_ID = 234;
+  private static final int ACCOUNT_ID = 1100;
 
 	private SkillEngine skillEngine;
 
@@ -67,7 +68,7 @@ public class SkillEngineTest {
 	}
 
 	private AccountModel setupForGetEmployeeSkillsMapForAccountContractor(final Employee employee,
-	                                                                      final List<Employee> employees) {
+																		  final List<Employee> employees) {
 		Group group = buildFakeGroup();
 		final Set<Group> groups = new HashSet<>(Arrays.asList(group));
 
@@ -86,10 +87,10 @@ public class SkillEngineTest {
 	}
 
 	private void prepareMocksForGetEmployeeSkillsMapForAccountContractor(final Employee employee,
-	                                                                     final List<Employee> employees,
-	                                                                     final Set<Group> groups,
-	                                                                     final Set<AccountSkill> skills,
-	                                                                     final AccountSkill requiredSkill) {
+																		 final List<Employee> employees,
+																		 final Set<Group> groups,
+																		 final Set<AccountSkill> skills,
+																		 final AccountSkill requiredSkill) {
 
 		Map<Employee, Set<Group>> employeeGroups = new HashMap<Employee, Set<Group>>() {{
 			put(employee, groups);
@@ -125,7 +126,7 @@ public class SkillEngineTest {
 	}
 
 	private AccountSkill buildFakeSkill() {
-		return new AccountSkillBuilder()
+		return new AccountSkillBuilder(ACCOUNT_ID)
 				.build();
 	}
 

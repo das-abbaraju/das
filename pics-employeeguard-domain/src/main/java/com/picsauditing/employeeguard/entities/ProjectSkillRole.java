@@ -13,6 +13,13 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "project_account_skill_group")
 @Where(clause = "deletedDate IS NULL")
 @SQLDelete(sql = "UPDATE project_account_skill_group SET deletedDate = NOW() WHERE id = ?")
+
+/**
+ * This entity was used to auto attach the skill to the project, if the skill existed in a role attached to a project.
+ * This is no longer used - remove entity and drop table in future.
+ * @deprecated
+ */
+@Deprecated
 public class ProjectSkillRole implements BaseEntity {
 
     private static final long serialVersionUID = -7630640628273395059L;

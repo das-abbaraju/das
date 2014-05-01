@@ -51,12 +51,12 @@
                     <s:iterator value="skillGroups" var="contractor_group">
                         <s:set var="is_selected" value="false" />
                         <s:iterator value="#selected_groups" var="selected_group">
-                            <s:if test="#selected_group == #contractor_group.name">
+                            <s:if test="#selected_group == #contractor_group.id">
                                 <s:set var="is_selected" value="true" />
                             </s:if>
                         </s:iterator>
 
-                        <tw:option value="${contractor_group.name}" selected="${is_selected}">${contractor_group.name}</tw:option>
+                        <tw:option value="${contractor_group.id}" selected="${is_selected}">${contractor_group.name}</tw:option>
                     </s:iterator>
                 </tw:select>
 
