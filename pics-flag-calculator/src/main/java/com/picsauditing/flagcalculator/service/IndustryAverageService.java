@@ -8,7 +8,7 @@ import com.picsauditing.flagcalculator.entities.Naics;
 public class IndustryAverageService {
     public static float getTrirIndustryAverage(ContractorAccount contractor) {
         float answer = 0f;
-        ContractorTrade trade = TradeService.getTopTrade(contractor);
+        ContractorTrade trade = TradeService.getRandomTopTrade(contractor);
 
         if (trade == null) {
             return answer;
@@ -21,7 +21,7 @@ public class IndustryAverageService {
 
     public static float getLwcrIndustryAverage(ContractorAccount contractor) {
         float answer = 0f;
-        ContractorTrade trade = TradeService.getTopTrade(contractor);
+        ContractorTrade trade = TradeService.getRandomTopTrade(contractor);
 
         if (trade == null) {
             return answer;
