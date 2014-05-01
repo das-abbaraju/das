@@ -82,6 +82,7 @@ public abstract class BaseTable implements Serializable {
         setAuditColumns();
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;
@@ -104,4 +105,14 @@ public abstract class BaseTable implements Serializable {
             return false;
         }
     }
+
+    @Override
+    public int hashCode() {
+        if (id == 0) {
+            return super.hashCode();
+        } else {
+            return ((getClass().getName().hashCode() % 1000) * 10000000) + id;
+        }
+    }
+
 }
