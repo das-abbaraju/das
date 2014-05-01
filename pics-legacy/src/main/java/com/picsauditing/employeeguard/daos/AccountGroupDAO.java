@@ -50,7 +50,18 @@ public class AccountGroupDAO extends AbstractBaseEntityDAO<Group> {
 		return query.getResultList();
 	}
 
-	public List<Group> search(final String searchTerm, final int accountId) {
+  public List<Group> findGroupByAccountIdAndIds(final int accountId, final List<Integer> ids) {
+    TypedQuery<Group> query = em.createQuery("FROM Group g " +
+            "WHERE g.accountId = :accountId " +
+            "AND g.id IN ( :ids )", Group.class);
+
+    query.setParameter("accountId", accountId);
+    query.setParameter("ids", ids);
+
+    return query.getResultList();
+  }
+
+  public List<Group> search(final String searchTerm, final int accountId) {
 		TypedQuery<Group> query = em.createQuery("FROM Group g WHERE g.accountId = :accountId " +
 				"AND (g.name LIKE :searchTerm " +
 				"OR g.description LIKE :searchTerm)", Group.class);

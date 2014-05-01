@@ -15,6 +15,7 @@ import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -133,14 +134,14 @@ public class SkillService {
 	public AccountSkill save(AccountSkill accountSkill, int accountId, int appUserId) {
 		accountSkill.setAccountId(accountId);
 
-		setPersistedEntitiesOnJoinTables(accountSkill, accountId);
+		//setPersistedEntitiesOnJoinTables(accountSkill, accountId);
 
-		EntityAuditInfo created = new EntityAuditInfo.Builder().appUserId(appUserId).timestamp(new Date()).build();
-		EntityHelper.setCreateAuditFields(accountSkill.getGroups(), created);
+    EntityAuditInfo created = new EntityAuditInfo.Builder().appUserId(appUserId).timestamp(new Date()).build();
 
 		return skillEntityService.save(accountSkill, created);
 	}
 
+/*
 	private void setPersistedEntitiesOnJoinTables(AccountSkill accountSkill, int accountId) {
 		List<String> groupNames = new ArrayList<>();
 		for (AccountSkillGroup accountSkillGroup : accountSkill.getGroups()) {
@@ -160,6 +161,7 @@ public class SkillService {
 			}
 		}
 	}
+*/
 
 	@Deprecated
 	public AccountSkill update(AccountSkill updatedAccountSkill, String id, int accountId, int appUserId) {
@@ -219,77 +221,62 @@ public class SkillService {
 	}
 
 	private List<AccountSkillGroup> getLinkedGroups(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+
+    List<AccountSkillGroup> accountSkillGroupsWithGroupEntitiesFromDB = new ArrayList<>();
+    List<Integer> groupIds = getGroupIds(updatedSkill.getGroups());
+    List<Group> groups = accountGroupDAO.findGroupByAccountIdAndIds(updatedSkill.getAccountId(), groupIds);
+    for (Group group : groups) {
+      accountSkillGroupsWithGroupEntitiesFromDB.add(new AccountSkillGroup(group, accountSkillInDatabase));
+    }
+
 		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
-		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(updatedSkill.getGroups(),
+		List<AccountSkillGroup> accountSkillGroups = IntersectionAndComplementProcess.intersection(accountSkillGroupsWithGroupEntitiesFromDB,
 				accountSkillInDatabase.getGroups(), AccountSkillGroup.COMPARATOR, callback);
-
-		List<String> groupNames = getGroupNames(accountSkillGroups);
-
-		if (CollectionUtils.isNotEmpty(groupNames)) {
-			List<Group> groups = accountGroupDAO.findGroupByAccountIdAndNames(updatedSkill.getAccountId(), groupNames);
-
-			for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-				Group group = accountSkillGroup.getGroup();
-				int index = groups.indexOf(group);
-				if (index >= 0) {
-					accountSkillGroup.setGroup(groups.get(index));
-				}
-			}
-		}
-
-		accountSkillGroups.addAll(callback.getRemovedEntities());
 
 		return accountSkillGroups;
 	}
 
 	private List<AccountSkillRole> getLinkedRoles(final AccountSkill accountSkillInDatabase, final AccountSkill updatedSkill, final int appUserId) {
+
+    List<AccountSkillRole> accountSkillRolesWithRoleEntitiesFromDB = new ArrayList<>();
+    List<Integer> roleIds = getRoleIds(updatedSkill.getRoles());
+    List<Role> roles = roleDAO.findRoleByAccountIdsAndIds(Arrays.asList(updatedSkill.getAccountId()), roleIds);
+    for (Role role : roles) {
+      accountSkillRolesWithRoleEntitiesFromDB.add(new AccountSkillRole(role, accountSkillInDatabase));
+    }
+
 		BaseEntityCallback callback = new BaseEntityCallback(appUserId, new Date());
-		List<AccountSkillRole> accountSkillRoles = IntersectionAndComplementProcess.intersection(updatedSkill.getRoles(),
+		List<AccountSkillRole> accountSkillRoles = IntersectionAndComplementProcess.intersection(accountSkillRolesWithRoleEntitiesFromDB,
 				accountSkillInDatabase.getRoles(), AccountSkillRole.COMPARATOR, callback);
 
-		List<String> roleNames = getRoleNames(accountSkillRoles);
-
-		if (CollectionUtils.isNotEmpty(roleNames)) {
-			List<Role> roles = roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(updatedSkill.getAccountId()), roleNames);
-
-			for (AccountSkillRole accountSkillRole : accountSkillRoles) {
-				Role role = accountSkillRole.getRole();
-				int index = roles.indexOf(role);
-				if (index >= 0) {
-					accountSkillRole.setRole(roles.get(index));
-				}
-			}
-		}
-
-		accountSkillRoles.addAll(callback.getRemovedEntities());
 
 		return accountSkillRoles;
 	}
 
-	private List<String> getGroupNames(List<AccountSkillGroup> AccountSkillGroups) {
+	private List<Integer> getGroupIds(List<AccountSkillGroup> AccountSkillGroups) {
 		if (CollectionUtils.isEmpty(AccountSkillGroups)) {
 			return Collections.emptyList();
 		}
 
-		List<String> groupNames = new ArrayList<>();
+		List<Integer> groupIds = new ArrayList<>();
 		for (AccountSkillGroup AccountSkillGroup : AccountSkillGroups) {
-			groupNames.add(AccountSkillGroup.getGroup().getName());
+			groupIds.add(AccountSkillGroup.getGroup().getId());
 		}
 
-		return groupNames;
+		return groupIds;
 	}
 
-	private List<String> getRoleNames(List<AccountSkillRole> accountSkillRoles) {
+	private List<Integer> getRoleIds(List<AccountSkillRole> accountSkillRoles) {
 		if (CollectionUtils.isEmpty(accountSkillRoles)) {
 			return Collections.emptyList();
 		}
 
-		List<String> roleNames = new ArrayList<>();
+		List<Integer> roleIds = new ArrayList<>();
 		for (AccountSkillRole accountSkillRole : accountSkillRoles) {
-			roleNames.add(accountSkillRole.getRole().getName());
+			roleIds.add(accountSkillRole.getRole().getId());
 		}
 
-		return roleNames;
+		return roleIds;
 	}
 
 	@Deprecated

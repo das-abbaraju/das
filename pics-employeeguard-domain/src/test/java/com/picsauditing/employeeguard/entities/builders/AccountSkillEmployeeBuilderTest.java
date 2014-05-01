@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 public class AccountSkillEmployeeBuilderTest {
 
     private static final int ID = 17828;
+  private static final int ACCOUNT_ID = 1100;
     private static final Date START_DATE = DateBean.buildDate(1, 1, 2013);
     private static final Date END_DATE = DateBean.buildDate(2, 1, 2013);
 
@@ -30,7 +31,7 @@ public class AccountSkillEmployeeBuilderTest {
     @Test
     public void testBuild() {
         AccountSkillEmployee result = new AccountSkillEmployeeBuilder().id(ID)
-                .accountSkill(new AccountSkillBuilder().name(SKILL_NAME).build())
+                .accountSkill(new AccountSkillBuilder(ACCOUNT_ID).name(SKILL_NAME).build())
                 .employee(new EmployeeBuilder().firstName(EMPLOYEE_FIRST_NAME).lastName(EMPLOYEE_LAST_NAME).build())
                 .profileDocument(new ProfileDocumentBuilder().name(PROFILE_DOCUMENT_NAME).build())
                 .startDate(START_DATE).endDate(END_DATE)
