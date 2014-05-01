@@ -2,7 +2,6 @@ package com.picsauditing.struts.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.picsauditing.account.RegistrationJsonException;
 import com.picsauditing.actions.PicsActionSupport;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.httpclient.HttpStatus;
@@ -33,7 +32,7 @@ public class TranslationJsonController extends PicsActionSupport {
         return JSON_STRING;
     }
 
-    public String getTranslationMessages() throws IOException, RegistrationJsonException {
+    public String getTranslationMessages() throws IOException {
         Translations requestTranslations = getModelFromJsonRequest();
 
         Map<String, String> translationsMap = new HashMap<>();
@@ -50,7 +49,7 @@ public class TranslationJsonController extends PicsActionSupport {
         return JSON_STRING;
     }
 
-    protected Translations getModelFromJsonRequest() throws RegistrationJsonException, IOException {
+    protected Translations getModelFromJsonRequest() throws IOException {
         String body = getBodyFromRequest();
 
         Translations translations = new Translations();
@@ -58,7 +57,7 @@ public class TranslationJsonController extends PicsActionSupport {
         try {
             translations = new Gson().fromJson(body, Translations.class);
         } catch (JsonSyntaxException e) {
-            throw new RegistrationJsonException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body, e);
+            throw new IOException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body, e);
         }
 
         return translations;
