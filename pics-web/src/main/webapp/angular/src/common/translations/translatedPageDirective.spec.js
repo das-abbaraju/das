@@ -10,10 +10,10 @@ describe('translatedPage directive', function () {
             translationsService = _translationsService_;
     }));
 
-    it('should cause a mapping of the route to associated translation keys to be logged to the console once $includedContentLoaded is fired', function () {
+    function setup(setLogKeysToConsole) {
         var linkingFn, nextMock;
 
-        translationsService.setLogKeysToConsole(true);
+        translationsService.setLogKeysToConsole(setLogKeysToConsole);
 
         translationsService.setTranslations({
             'my.first.translation.key': 'My {1} value for translation #{2}'
@@ -43,7 +43,15 @@ describe('translatedPage directive', function () {
         element = linkingFn($rootScope);
 
         $rootScope.$broadcast('$includeContentLoaded');
+    }
 
+    it('should cause a mapping of the route to associated translation keys to be logged to the console once $includedContentLoaded is fired', function () {
+        setup(true);
         expect($log.info).toHaveBeenCalledWith('"/fakeroute":["my.first.translation.key","my.second.translation.key"]');
+    });
+
+    it('should not cause anything to be logged if setLogKeysToConsole is passed the value of false', function () {
+        setup(false);
+        expect($log.info).not.toHaveBeenCalled();
     });
 });
