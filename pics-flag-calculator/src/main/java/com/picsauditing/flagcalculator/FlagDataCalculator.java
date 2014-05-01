@@ -870,7 +870,7 @@ public class FlagDataCalculator implements FlagCalculator {
         return year;
     }
 
-    public void saveFlagData(List<FlagData> changes) {
+    public boolean saveFlagData(List<FlagData> changes) {
         List<com.picsauditing.flagcalculator.entities.FlagData> changedFlagData = new ArrayList<>();
         // Save the FlagDetail to the ContractorOperator as a JSON string
         JSONObject flagJson = new JSONObject();
@@ -905,6 +905,8 @@ public class FlagDataCalculator implements FlagCalculator {
             }
         }
 
+        boolean needNote = false;
+
         ContractorOperator conOperator = FlagService.getForceOverallFlag(contractorOperator);
         if (conOperator != null) { // operator has a forced flag
             contractorOperator.setFlagColor(conOperator.getForceFlag());
@@ -933,6 +935,8 @@ public class FlagDataCalculator implements FlagCalculator {
             }
             contractorOperator.setFlagColor(overallColor);
             contractorOperator.setFlagLastUpdated(new Date());
+
+            needNote = true;
         }
 
         // set baselineFlag to clear and baselineFlagDetail for null baselines
@@ -949,6 +953,8 @@ public class FlagDataCalculator implements FlagCalculator {
         }
         contractorOperator.setAuditColumns(new User(User.SYSTEM));
         flagCalculatorDAO.save(contractorOperator);
+
+        return needNote;
     }
 
     public void setFlagCalculatorDAO(FlagCalculatorDAO flagCalculatorDAO) {
