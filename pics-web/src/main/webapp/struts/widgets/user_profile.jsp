@@ -44,13 +44,6 @@
 </p>
 
 <p>
-	<label><s:text name="ProfileEdit.u.timezone" />:</label>
-	<s:if test="u.timezone != null">
-		<s:text name="%{@com.picsauditing.util.TimeZoneUtil@timeZones().get(u.timezone.iD)}" />
-	</s:if>
-</p>
-
-<p>
 	<a href="ProfileEdit.action" class="edit"><s:text name="ProfileEdit.Profile.heading" /></a>
 </p>
 
