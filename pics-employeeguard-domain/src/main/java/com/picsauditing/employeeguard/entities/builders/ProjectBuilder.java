@@ -32,17 +32,20 @@ public class ProjectBuilder extends AbstractBaseEntityBuilder<Project, ProjectBu
 	}
 
 	public ProjectBuilder skills(List<ProjectSkill> projectSkills) {
-		entity.setSkills(projectSkills);
+    entity.getSkills().clear();
+    entity.getSkills().addAll(projectSkills);
 		return this;
 	}
 
 	public ProjectBuilder roles(List<ProjectRole> projectRoles) {
-		entity.setRoles(projectRoles);
+    entity.getRoles().clear();
+    entity.getRoles().addAll(projectRoles);
 		return this;
 	}
 
 	public ProjectBuilder companies(List<ProjectCompany> companies) {
-		entity.setCompanies(companies);
+    entity.getCompanies().clear();
+    entity.getCompanies().addAll(companies);
 		return this;
 	}
 

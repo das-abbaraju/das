@@ -66,27 +66,27 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, targetEntity = AccountSkillGroup.class)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Group')")
 	@BatchSize(size = 5)
 	private List<AccountSkillGroup> groups = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, targetEntity = AccountSkillRole.class)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL AND groupID IN (SELECT r.id FROM account_group r WHERE r.type = 'Role')")
 	@BatchSize(size = 5)
 	private List<AccountSkillRole> roles = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<AccountSkillEmployee> employees = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<ProjectSkill> projects = new ArrayList<>();
 
-	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<SiteSkill> sites = new ArrayList<>();

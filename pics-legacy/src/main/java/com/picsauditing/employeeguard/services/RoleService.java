@@ -69,7 +69,9 @@ public class RoleService {
 				AccountSkillRole.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-		roleInDatabase.setSkills(accountSkillGroups);
+    roleInDatabase.getSkills().clear();
+    roleInDatabase.getSkills().addAll(accountSkillGroups);
+
 		roleInDatabase = roleDAO.save(roleInDatabase);
 
 		return roleInDatabase;

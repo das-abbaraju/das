@@ -59,12 +59,14 @@ public class ProjectRoleBuilder {
     }
 
     public ProjectRoleBuilder employees(List<ProjectRoleEmployee> employees) {
-        projectRole.setEmployees(employees);
+        projectRole.getEmployees().clear();
+        projectRole.getEmployees().addAll(employees);
         return this;
     }
 
     public ProjectRoleBuilder skills(List<ProjectSkillRole> skills) {
-        projectRole.setSkills(skills);
+        projectRole.getSkills().clear();
+        projectRole.getSkills().addAll(skills);
         return this;
     }
 

@@ -25,12 +25,12 @@ public class Role extends AccountGroup implements Comparable<Role> {
 	@BatchSize(size = 5)
 	private List<ProjectRole> projects = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 5)
 	private List<AccountSkillRole> skills = new ArrayList<>();
 
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<SiteAssignment> siteAssignments = new ArrayList<>();
