@@ -2,28 +2,26 @@ angular.module('PICS.employeeguard')
 
 .controller('operatorDashboardCtrl', function ($scope, $routeParams, SiteList, SiteAssignments, ProjectAssignments, WhoAmI) {
 
-    WhoAmI.get(function(user) {
-        $scope.user = user.type.toLowerCase();
+    WhoAmI.get(function (user) {
+        $scope.userType = user.type.toLowerCase();
 
-        if ($scope.user === 'corporate') {
-            SiteList.query(function(sites) {
+        if ($scope.userType === 'corporate') {
+            SiteList.query(function (sites) {
+                var site_id = $routeParams.siteId || sites[0].id;
+
                 $scope.siteList = sites;
 
-                //load first site if none specified in url. Remove when no longer an issue
-                if (!$routeParams.siteId) {
-                    $scope.loadSelectedSiteData(sites[0].id);
-                } else {
-                    $scope.loadSelectedSiteData($routeParams.siteId);
-                }
+                $scope.loadSiteById(site_id);
             });
         } else {
-            $scope.loadSelectedSiteData();
+            $scope.loadSiteById();
         }
     });
 
-    $scope.loadSelectedSiteData = function(site_id) {
+    $scope.loadSiteById = function(site_id) {
         $scope.selected_site = site_id;
-        $scope.site_assignments = SiteAssignments.get({id: site_id}, function(site_details){
+        SiteAssignments.get({id: site_id}, function (site_details){
+            $scope.site_assignments = site_details;
             $scope.chartData = [
                 site_details.completed + site_details.pending,
                 site_details.expiring,
