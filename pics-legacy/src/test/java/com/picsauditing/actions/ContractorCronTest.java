@@ -206,11 +206,13 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setContractorAccount(contractor);
         conOp.setOperatorAccount(operator);
         conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
 
         FlagCriteria criteria = new FlagCriteria();
         criteria.setInsurance(true);
         FlagData flagData = new FlagData();
         flagData.setCriteria(criteria);
+        flagData.setFlag(FlagColor.Red);
         List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
@@ -218,6 +220,7 @@ public class ContractorCronTest extends PicsActionTest {
         when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
@@ -233,11 +236,13 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setContractorAccount(contractor);
         conOp.setOperatorAccount(operator);
         conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
 
         FlagCriteria criteria = new FlagCriteria();
         criteria.setInsurance(true);
         FlagData flagData = new FlagData();
         flagData.setCriteria(criteria);
+        flagData.setFlag(FlagColor.Red);
         List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
@@ -245,6 +250,7 @@ public class ContractorCronTest extends PicsActionTest {
         when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
