@@ -21,6 +21,7 @@ public class AppUserService {
     private AppPropertyDAO appPropertyDAO;
 	@Autowired
 	private AppUserDAO appUserDAO;
+    @Autowired
 	private AppPropertyService appPropertyService;
 
 	private static final String key = "1eyndgv4iddubsry9u9kheniab7r4cvb";
