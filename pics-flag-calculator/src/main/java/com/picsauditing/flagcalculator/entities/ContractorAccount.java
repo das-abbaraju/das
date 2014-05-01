@@ -52,7 +52,6 @@ public class ContractorAccount extends Account {
     }
 
     @OneToMany(mappedBy = "contractor")
-    @Sort(type = SortType.NATURAL)
     public Set<ContractorTrade> getTrades() {
         return trades;
     }
