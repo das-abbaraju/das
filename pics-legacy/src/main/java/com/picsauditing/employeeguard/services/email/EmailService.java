@@ -15,6 +15,9 @@ public class EmailService {
 
 	private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
+	private static final int DEFAULT_EG_FEEDBACK_TEMPLATE_ID = 441;
+	private static final int DEFAULT_EG_WELCOME_TEMPLATE_ID = 357;
+
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -26,7 +29,8 @@ public class EmailService {
 		emailBuilder.setToAddresses(emailHash.getEmailAddress());
 		emailBuilder.setFromAddress(loadEmailAddress(AppProperty.EMAIL_FROM_INFO_AT_PICSAUDITING,
 				"PICS <info@picsauditing.com>"));
-		emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_WELCOME_EMAIL_TEMPLATE_ID, 357));
+		emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_WELCOME_EMAIL_TEMPLATE_ID,
+				DEFAULT_EG_WELCOME_TEMPLATE_ID));
 		emailBuilder.addToken("hash", new EmailHashWrapper(emailHash));
 		emailBuilder.addToken("CompanyName", accountName);
 
@@ -40,7 +44,8 @@ public class EmailService {
 
 			emailBuilder.setToAddresses(loadEmailAddress(AppProperty.EMAIL_TO_EG_FEEDBACK, "mdesio@picsauditing.com"));
 			emailBuilder.setFromAddress(getFromAddressIfUserIsMissingEmail(userEmailAddress));
-			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID, 385));
+			emailBuilder.setTemplate(loadEmailTemplateId(AppProperty.EG_BETA_FEEDBACK_EMAIL_TEMPLATE_ID,
+					DEFAULT_EG_FEEDBACK_TEMPLATE_ID));
 			emailBuilder.addToken("feedback", feedback);
 			emailBuilder.addToken("accountName", accountName);
 			emailBuilder.addToken("appUserId", appUserId);
