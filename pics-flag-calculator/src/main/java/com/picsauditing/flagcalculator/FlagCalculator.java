@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface FlagCalculator {
     List<FlagData> calculate();
-    void saveFlagData(List<FlagData> flagDatas);
+    boolean saveFlagData(List<FlagData> flagDatas);
 }

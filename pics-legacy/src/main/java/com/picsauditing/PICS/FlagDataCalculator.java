@@ -1115,7 +1115,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		return caos;
 	}
 
-    public void saveFlagData(List<FlagData> changes) {
+    public boolean saveFlagData(List<FlagData> changes) {
         List<com.picsauditing.jpa.entities.FlagData> changedFlagData = new ArrayList<>();
         // Save the FlagDetail to the ContractorOperator as a JSON string
         JSONObject flagJson = new JSONObject();
@@ -1151,6 +1151,8 @@ public class FlagDataCalculator implements FlagCalculator {
             }
         }
 
+        boolean needNote = false;
+
         ContractorOperator conOperator = contractorOperator.getForceOverallFlag();
         if (conOperator != null) { // operator has a forced flag
             contractorOperator.setFlagColor(conOperator.getForceFlag());
@@ -1178,6 +1180,8 @@ public class FlagDataCalculator implements FlagCalculator {
             }
             contractorOperator.setFlagColor(overallColor);
             contractorOperator.setFlagLastUpdated(new Date());
+
+            needNote = true;
         }
 
         // set baselineFlag to clear and baselineFlagDetail for null baselines
@@ -1194,6 +1198,8 @@ public class FlagDataCalculator implements FlagCalculator {
         }
         contractorOperator.setAuditColumns(new User(User.SYSTEM));
         dao.save(contractorOperator);
+
+        return needNote;
     }
 
     private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {
