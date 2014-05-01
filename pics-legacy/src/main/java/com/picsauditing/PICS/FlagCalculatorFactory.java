@@ -4,6 +4,7 @@ import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.MessagePublisherService;
+import com.picsauditing.toggle.FeatureToggle;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -14,12 +15,19 @@ public class FlagCalculatorFactory {
 
     @Autowired
     private com.picsauditing.flagcalculator.FlagDataCalculator newFlagDataCalculator;
+    @Autowired
+    private FeatureToggle featureToggleChecker;
 
     public FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) throws Exception {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
 
         if (newFlagCalculatorIsEnabled()) {
             newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
+            if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PUBLISH_FLAG_CHANGES)) {
+                newFlagDataCalculator.setShouldPublishChanges(true);
+            } else {
+                newFlagDataCalculator.setShouldPublishChanges(false);
+            }
             return newFlagDataCalculator;
         } else {
             FlagDataCalculator flagDataCalculator =  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), overrides);

@@ -2,6 +2,7 @@ package com.picsauditing.flagcalculator;
 
 import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.*;
+import com.picsauditing.flagcalculator.messaging.FlagChangePublisher;
 import com.picsauditing.flagcalculator.service.AuditService;
 import com.picsauditing.flagcalculator.util.DateBean;
 import org.apache.commons.lang.math.NumberUtils;
@@ -56,6 +57,8 @@ public class FlagDataCalculatorTest {
     protected FlagCriteria multiCriteria;
     @Mock
     protected Query query;
+    @Mock
+    private FlagChangePublisher flagChangePublisher;
 
     @Before
     public void setUp() throws Exception {
@@ -103,6 +106,7 @@ public class FlagDataCalculatorTest {
         setupEntityManager();
         calculator = new FlagDataCalculator();
         Whitebox.setInternalState(calculator, "flagCalculatorDAO", flagCalculatorDao);
+        Whitebox.setInternalState(calculator, "flagChangePublisher", flagChangePublisher);
         calculator.initialize(contractorOperator.getId(), new HashMap<Integer, List<Integer>>());
 //        caoMap = null;
 

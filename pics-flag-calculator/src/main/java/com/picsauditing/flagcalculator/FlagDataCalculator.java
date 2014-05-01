@@ -2,6 +2,8 @@ package com.picsauditing.flagcalculator;
 
 import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.flagcalculator.entities.*;
+import com.picsauditing.flagcalculator.messaging.FlagChange;
+import com.picsauditing.flagcalculator.messaging.FlagChangePublisher;
 import com.picsauditing.flagcalculator.service.*;
 import com.picsauditing.flagcalculator.util.DateBean;
 import com.picsauditing.flagcalculator.util.Strings;
@@ -11,13 +13,14 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 public class FlagDataCalculator implements FlagCalculator {
     @Autowired
     private FlagCalculatorDAO flagCalculatorDAO;
+    @Autowired
+    private FlagChangePublisher flagChangePublisher;
 
     private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
     private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
@@ -27,6 +30,7 @@ public class FlagDataCalculator implements FlagCalculator {
     private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
 
     private boolean worksForOperator = true;
+    private boolean shouldPublishChanges = false;
     private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
 
     public FlagDataCalculator() {}
@@ -925,9 +929,10 @@ public class FlagDataCalculator implements FlagCalculator {
                 }
             }
         } else if (!overallColor.equals(contractorOperator.getFlagColor())) {
-// TODO: Description required for note, a translated value.
-//            FlagChange flagChange = getFlagChange(contractorOperator, overallColor);
-//            messageService.getFlagChangePublisher().publish(flagChange);
+            if (shouldPublishChanges) {
+                FlagChange flagChange = getFlagChange(contractorOperator, overallColor);
+                flagChangePublisher.publish(flagChange);
+            }
 
             if (contractorOperator.getFlagColor() == FlagColor.Clear) {
                 contractorOperator.setBaselineFlag(overallColor);
@@ -959,5 +964,21 @@ public class FlagDataCalculator implements FlagCalculator {
 
     public void setFlagCalculatorDAO(FlagCalculatorDAO flagCalculatorDAO) {
         this.flagCalculatorDAO = flagCalculatorDAO;
+    }
+
+    private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {
+        FlagChange flagChange = new FlagChange();
+        flagChange.setContractor(co.getContractorAccount());
+        flagChange.setOperator(co.getOperatorAccount());
+        flagChange.setFromColor(co.getFlagColor());
+        flagChange.setToColor(overallColor);
+        flagChange.setTimestamp(new Date());
+        flagChange.setDetails(co.getFlagDetail());
+        return flagChange;
+    }
+
+    @Override
+    public void setShouldPublishChanges(boolean shouldPublishChanges) {
+        this.shouldPublishChanges = shouldPublishChanges;
     }
 }

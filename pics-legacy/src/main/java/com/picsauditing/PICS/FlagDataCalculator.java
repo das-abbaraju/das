@@ -1212,4 +1212,10 @@ public class FlagDataCalculator implements FlagCalculator {
         flagChange.setDetails(co.getFlagDetail());
         return flagChange;
     }
+
+    @Override
+    public void setShouldPublishChanges(boolean shouldPublishChanges) {
+        // do nothing. This is for the extraction
+    }
+
 }
