@@ -1,39 +1,18 @@
 package com.picsauditing.actions;
 
 import com.picsauditing.PICS.*;
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.cron.AuditCategoryJobException;
 import com.picsauditing.auditBuilder.AuditBuilder;
 import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
-import com.picsauditing.flagcalculator.*;
+import com.picsauditing.flagcalculator.FlagCalculator;
+import com.picsauditing.flagcalculator.FlagData;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.ContractorTag;
-import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.Facility;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.*;
-import com.picsauditing.messaging.*;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
@@ -755,7 +734,7 @@ public class ContractorCron extends PicsActionSupport {
                 if (!change.isInsurance()) {
                     FlagColor worst = FlagColor.getWorseColor(contractorOperator.getFlagColor(), changeFlag);
                     if (worst != contractorOperator.getFlagColor()) {
-                        reason = getFlagDataDescription((com.picsauditing.jpa.entities.FlagData)change, contractorOperator.getOperatorAccount());
+                        reason = getFlagDataDescription(change, contractorOperator.getOperatorAccount());
                     }
                 }
             }
@@ -773,16 +752,15 @@ public class ContractorCron extends PicsActionSupport {
         }
     }
 
-    private String getFlagDataDescription(com.picsauditing.jpa.entities.FlagData data, OperatorAccount operator) {
+    private String getFlagDataDescription(FlagData data, OperatorAccount operator) {
         String description = "";
 
-        FlagCriteria fc = data.getCriteria();
         FlagCriteriaOperator matchingFco = null;
         ArrayList<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
         fcos.addAll(operator.getFlagCriteria());
         fcos.addAll(operator.getFlagCriteriaInherited());
         for (FlagCriteriaOperator fco : fcos) {
-            if (fco.getCriteria().getId() == fc.getId()) {
+            if (fco.getCriteria().getId() == data.getCriteriaID()) {
                 matchingFco = fco;
                 break;
             }
