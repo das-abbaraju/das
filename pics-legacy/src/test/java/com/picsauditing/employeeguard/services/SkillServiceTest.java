@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -18,10 +19,9 @@ import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
-import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
+import static org.hamcrest.core.Is.is;
 public class SkillServiceTest {
 
 	public static final String PROJECT_SKILL_NAME = "Project Skill";
@@ -36,12 +36,12 @@ public class SkillServiceTest {
 	private static final int DELETE_SKILL_ID = 2;
 	private static final int ACCOUNT_ID = 4567;
 	private static final int APP_USER_ID = 123;
-	private static final int ACCOUNT_SKILL_GROUP_ID = 5678;
-	private static final int ACCOUNT_SKILL_ROLE_ID = 5679;
-	private static final int ROLE_ID = 5680;
-	private static final int GROUP_ID = 5681;
-	public static final int CONTRACTOR_SKILL_ID = 5682;
-	public static final String TEST_GROUP_NAME = "Test Group";
+  private static final int ACCOUNT_SKILL_GROUP_ID = 5678;
+  private static final int ACCOUNT_SKILL_ROLE_ID = 5679;
+  private static final int ROLE_ID = 5680;
+  private static final int GROUP_ID = 5681;
+  public static final int CONTRACTOR_SKILL_ID = 5682;
+  public static final String TEST_GROUP_NAME = "Test Group";
 
 	private SkillService skillService;
 
@@ -55,20 +55,20 @@ public class SkillServiceTest {
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Mock
 	private ProjectSkillDAO projectSkillDAO;
-	@Mock
-	private SiteSkillDAO siteSkillDAO;
+  @Mock
+  private SiteSkillDAO siteSkillDAO;
 	@Mock
 	private SkillEntityService skillEntityService;
-	@Mock
-	private RoleDAO roleDAO;
-	@Mock
-	private AccountGroupDAO accountGroupDAO;
-	/*
-	  @Mock
-	  private Permissions permissions;
-	*/
-	@Mock
-	private SessionInfoProvider sessionInfoProvider;
+  @Mock
+  private RoleDAO roleDAO;
+  @Mock
+  private AccountGroupDAO accountGroupDAO;
+/*
+  @Mock
+  private Permissions permissions;
+*/
+  @Mock
+  private SessionInfoProvider sessionInfoProvider;
 
 	@Before
 	public void setup() {
@@ -81,113 +81,107 @@ public class SkillServiceTest {
 		Whitebox.setInternalState(skillService, "accountSkillEmployeeService", accountSkillEmployeeService);
 		Whitebox.setInternalState(skillService, "accountSkillRoleDAO", accountSkillRoleDAO);
 		Whitebox.setInternalState(skillService, "projectSkillDAO", projectSkillDAO);
-		Whitebox.setInternalState(skillService, "siteSkillDAO", siteSkillDAO);
+    Whitebox.setInternalState(skillService, "siteSkillDAO", siteSkillDAO);
 		Whitebox.setInternalState(skillService, "skillEntityService", skillEntityService);
-		Whitebox.setInternalState(skillService, "roleDAO", roleDAO);
-		Whitebox.setInternalState(skillService, "accountGroupDAO", accountGroupDAO);
-		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+    Whitebox.setInternalState(skillService, "roleDAO", roleDAO);
+    Whitebox.setInternalState(skillService, "accountGroupDAO", accountGroupDAO);
+    Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 
 	}
 
-	private Role buildRole() {
-		Role role = new Role();
-		role.setId(ROLE_ID);
-		role.setName(TEST_ROLE_NAME);
-		return role;
-	}
+  private Role buildRole(){
+    Role role = new Role();
+    role.setId(ROLE_ID);
+    role.setName(TEST_ROLE_NAME);
+    return role;
+  }
+  private List<Role> buildRoleList(){
+    return Arrays.asList(buildRole());
+  }
+  private Group buildGroup(){
+    Group group = new Group();
+    group.setId(GROUP_ID);
+    group.setName(TEST_GROUP_NAME);
+    return group;
+  }
+  private List<Group> buildGroupList(){
+    return Arrays.asList(buildGroup());
+  }
 
-	private List<Role> buildRoleList() {
-		return Arrays.asList(buildRole());
-	}
+  private AccountSkill buildAccountSkillWithARole() {
+    AccountSkill accountSkill = new AccountSkill(CORPORATE_ID);
+    accountSkill.setId(CORPORATE_SKILL_ID);
+    accountSkill.getRoles().clear();
+    accountSkill.getRoles().addAll(Arrays.asList(buildAccountSkillRole(accountSkill)));
+    return accountSkill;
+  }
 
-	private Group buildGroup() {
-		Group group = new Group();
-		group.setId(GROUP_ID);
-		group.setName(TEST_GROUP_NAME);
-		return group;
-	}
-
-	private List<Group> buildGroupList() {
-		return Arrays.asList(buildGroup());
-	}
-
-	private AccountSkill buildAccountSkillWithARole() {
-		AccountSkill accountSkill = new AccountSkill();
-		accountSkill.setId(CORPORATE_SKILL_ID);
-		accountSkill.getRoles().clear();
-		accountSkill.getRoles().addAll(Arrays.asList(buildAccountSkillRole()));
-		return accountSkill;
-	}
-
-	private AccountSkill buildAccountSkillWithoutRole() {
-		AccountSkill accountSkill = new AccountSkill();
-		accountSkill.setId(CORPORATE_SKILL_ID);
-		accountSkill.getRoles().clear();
-		accountSkill.getRoles().addAll(new ArrayList<AccountSkillRole>());
-		return accountSkill;
-	}
+  private AccountSkill buildAccountSkillWithoutRole() {
+    AccountSkill accountSkill = new AccountSkill(CORPORATE_ID);
+    accountSkill.setId(CORPORATE_SKILL_ID);
+    accountSkill.getRoles().clear();
+    accountSkill.getRoles().addAll(new ArrayList<AccountSkillRole>());
+    return accountSkill;
+  }
 
 	private AccountSkill buildAccountSkillWithAGroup() {
-		AccountSkill accountSkill = new AccountSkill();
-		accountSkill.setId(CONTRACTOR_SKILL_ID);
-		accountSkill.getGroups().clear();
-		accountSkill.getGroups().addAll(Arrays.asList(buildAccountSkillGroup()));
+		AccountSkill accountSkill = new AccountSkill(CORPORATE_ID);
+    accountSkill.setId(CONTRACTOR_SKILL_ID);
+    accountSkill.getGroups().clear();
+    accountSkill.getGroups().addAll(Arrays.asList(buildAccountSkillGroup(accountSkill)));
 		return accountSkill;
 	}
+  private AccountSkill buildAccountSkillWithoutGroup() {
+    AccountSkill accountSkill = new AccountSkill(CORPORATE_ID);
+    accountSkill.setId(CONTRACTOR_SKILL_ID);
+    accountSkill.getGroups().clear();
+    accountSkill.getGroups().addAll(new ArrayList<AccountSkillGroup>());
+    return accountSkill;
+  }
 
-	private AccountSkill buildAccountSkillWithoutGroup() {
-		AccountSkill accountSkill = new AccountSkill();
-		accountSkill.setId(CONTRACTOR_SKILL_ID);
-		accountSkill.getGroups().clear();
-		accountSkill.getGroups().addAll(new ArrayList<AccountSkillGroup>());
-		return accountSkill;
-	}
-
-	private AccountSkillGroup buildAccountSkillGroup() {
-		AccountSkillGroup accountSkillGroup = new AccountSkillGroup();
+	private AccountSkillGroup buildAccountSkillGroup(AccountSkill skill) {
+		AccountSkillGroup accountSkillGroup = new AccountSkillGroup(buildGroup(), skill);
 		accountSkillGroup.setId(ACCOUNT_SKILL_GROUP_ID);
-		accountSkillGroup.setGroup(buildGroup());
 		return accountSkillGroup;
 	}
 
-	private AccountSkillRole buildAccountSkillRole() {
-		AccountSkillRole accountSkillRole = new AccountSkillRole();
-		accountSkillRole.setId(ACCOUNT_SKILL_ROLE_ID);
-		accountSkillRole.setRole(buildRole());
-		return accountSkillRole;
-	}
+  private AccountSkillRole buildAccountSkillRole(AccountSkill skill) {
+    AccountSkillRole accountSkillRole = new AccountSkillRole(buildRole(), skill);
+    accountSkillRole.setId(ACCOUNT_SKILL_ROLE_ID);
+    return accountSkillRole;
+  }
 
-	@Test
-	public void testUpdate_verifyThatSkillisAttachedToARole() {
-		Permissions permissions = new Permissions();
-		permissions.setAccountType("Corporate");
+  @Test
+  public void testUpdate_verifyThatSkillisAttachedToARole(){
+    Permissions permissions=new Permissions();
+    permissions.setAccountType("Corporate");
 
-		List<Role> roles = buildRoleList();
-		AccountSkill accountskillInDbBeforeUpdate = buildAccountSkillWithoutRole();
-		AccountSkill accountSkillToUpdateInDB = buildAccountSkillWithARole();
-		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(skillEntityService.update(any(AccountSkill.class), any(EntityAuditInfo.class))).thenReturn(accountskillInDbBeforeUpdate);
-		when(roleDAO.findRoleByAccountIdsAndNames(any(List.class), any(List.class))).thenReturn(roles);
-		skillService.update(accountSkillToUpdateInDB, Integer.toString(CORPORATE_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
-		assertThat(accountskillInDbBeforeUpdate.getRoles(), is(accountSkillToUpdateInDB.getRoles()));
-	}
+    List<Role> roles=buildRoleList();
+    AccountSkill expectRolesToAttachToThisSkill=buildAccountSkillWithoutRole();
+    AccountSkill rolesToAdd=buildAccountSkillWithARole();
+    when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+    when(skillEntityService.update(any(AccountSkill.class), any(EntityAuditInfo.class))).thenReturn(expectRolesToAttachToThisSkill);
+    when(roleDAO.findRoleByAccountIdsAndIds(any(List.class), any(List.class))).thenReturn(roles);
+    skillService.update(rolesToAdd, Integer.toString(CORPORATE_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
+    assertThat(expectRolesToAttachToThisSkill.getRoles(), is(rolesToAdd.getRoles()));
+  }
 
-	@Test
-	public void testUpdate_verifyThatSkillisAttachedToAGroup() {
-		Permissions permissions = new Permissions();
-		permissions.setAccountType("Contractor");
+  @Test
+  public void testUpdate_verifyThatSkillisAttachedToAGroup(){
+    Permissions permissions=new Permissions();
+    permissions.setAccountType("Contractor");
 
-		List<Group> groups = buildGroupList();
-		AccountSkill accountskillInDbBeforeUpdate = buildAccountSkillWithoutGroup();
-		accountskillInDbBeforeUpdate.setRuleType(RuleType.OPTIONAL);
-		AccountSkill accountSkillToUpdateInDB = buildAccountSkillWithAGroup();
-		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(skillEntityService.update(any(AccountSkill.class), any(EntityAuditInfo.class))).thenReturn(accountskillInDbBeforeUpdate);
-		when(accountGroupDAO.findGroupByAccountIdAndNames(any(Integer.class), any(List.class))).thenReturn(groups);
-		skillService.update(accountSkillToUpdateInDB, Integer.toString(CONTRACTOR_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
-		assertThat(accountskillInDbBeforeUpdate.getGroups(), is(accountSkillToUpdateInDB.getGroups()));
+    List<Group> groups=buildGroupList();
+    AccountSkill expectGroupsToAttachToThisSkill=buildAccountSkillWithoutGroup();
+    expectGroupsToAttachToThisSkill.setRuleType(RuleType.OPTIONAL);
+    AccountSkill groupsToAdd=buildAccountSkillWithAGroup();
+    when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+    when(skillEntityService.update(any(AccountSkill.class), any(EntityAuditInfo.class))).thenReturn(expectGroupsToAttachToThisSkill);
+    when(accountGroupDAO.findGroupByAccountIdAndIds(any(Integer.class), any(List.class))).thenReturn(groups);
+    skillService.update(groupsToAdd, Integer.toString(CONTRACTOR_SKILL_ID), ACCOUNT_ID, APP_USER_ID);
+    assertThat(expectGroupsToAttachToThisSkill.getGroups(), is(groupsToAdd.getGroups()));
 
-	}
+  }
 
 	@Test
 	public void testDelete() {
