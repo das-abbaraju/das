@@ -11,6 +11,27 @@ import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.*;
 import com.picsauditing.flags.ContractorScore;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.ContractorTag;
+import com.picsauditing.jpa.entities.ContractorTrade;
+import com.picsauditing.jpa.entities.Facility;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagDataOverride;
+import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.jpa.entities.OshaAudit;
+import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.*;
 import com.picsauditing.messaging.*;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
@@ -24,7 +45,6 @@ import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
-import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -708,16 +728,71 @@ public class ContractorCron extends PicsActionSupport {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void runFlag(ContractorOperator co) throws Exception {
+	private void runFlag(ContractorOperator contractorOperator) throws Exception {
 		if (!runStep(ContractorCronStep.Flag)) {
 			return;
 		}
 
-		logger.trace("ContractorCron starting Flags for {}", co.getOperatorAccount().getName());
+		logger.trace("ContractorCron starting Flags for {}", contractorOperator.getOperatorAccount().getName());
 
-        FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(co, messageService);
+        FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(contractorOperator, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
         flagCalculator.saveFlagData(changes);
+        dao.refresh(contractorOperator);
+
+        String reason = "Contractor is no longer flagged on any criteria for this operator.";
+        if (contractorOperator.getContractorAccount().getAccountLevel().isBidOnly()
+                || contractorOperator.getContractorAccount().getStatus().isPending()
+                || contractorOperator.getContractorAccount().getStatus().isDeleted()
+                || contractorOperator.getContractorAccount().getStatus().isDeclined()
+                || contractorOperator.getContractorAccount().getStatus().isDeactivated()) {
+            reason = "Contractor no longer tracked by flags.";
+        }
+
+        for (com.picsauditing.flagcalculator.FlagData change : changes) {
+            FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
+            if (!change.isInsurance()) {
+                FlagColor worst = FlagColor.getWorseColor(contractorOperator.getFlagColor(), changeFlag);
+                if (worst != contractorOperator.getFlagColor()) {
+                    reason = getFlagDataDescription((com.picsauditing.jpa.entities.FlagData)change, contractorOperator.getOperatorAccount());
+                }
+            }
+        }
+
+        if (!contractorOperator.getFlagColor().equals(contractorOperator.getFlagColor())) {
+            Note note = new Note();
+            note.setAccount(contractorOperator.getContractorAccount());
+            note.setNoteCategory(NoteCategory.Flags);
+            note.setAuditColumns(new User(User.SYSTEM));
+            note.setSummary("Flag color changed from " + contractorOperator.getFlagColor() + " to " + contractorOperator.getFlagColor() + " for "
+                    + contractorOperator.getOperatorAccount().getName());
+            note.setBody(reason);
+            note.setCanContractorView(true);
+            note.setViewableBy(contractorOperator.getOperatorAccount());
+            dao.save(note);
+        }
+    }
+
+    private String getFlagDataDescription(com.picsauditing.jpa.entities.FlagData data, OperatorAccount operator) {
+        String description = "";
+
+        FlagCriteria fc = data.getCriteria();
+        FlagCriteriaOperator matchingFco = null;
+        ArrayList<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
+        fcos.addAll(operator.getFlagCriteria());
+        fcos.addAll(operator.getFlagCriteriaInherited());
+        for (FlagCriteriaOperator fco : fcos) {
+            if (fco.getCriteria().getId() == fc.getId()) {
+                matchingFco = fco;
+                break;
+            }
+        }
+
+        if (matchingFco != null) {
+            description = matchingFco.getReplaceHurdle();
+        }
+
+        return description;
     }
 
     private boolean isOverrideApplicableToOperator(FlagDataOverride override, OperatorAccount operator) {

@@ -1134,23 +1134,19 @@ public class FlagDataCalculator implements FlagCalculator {
 
         // Find overall flag color for this operator
         FlagColor overallColor = FlagColor.Green;
-        String reason = "Contractor is no longer flagged on any criteria for this operator.";
         if (contractorOperator.getContractorAccount().getAccountLevel().isBidOnly()
                 || contractorOperator.getContractorAccount().getStatus().isPending()
                 || contractorOperator.getContractorAccount().getStatus().isDeleted()
                 || contractorOperator.getContractorAccount().getStatus().isDeclined()
                 || contractorOperator.getContractorAccount().getStatus().isDeactivated()) {
             overallColor = FlagColor.Clear;
-            reason = "Contractor no longer tracked by flags.";
         }
 
         for (FlagData change : changes) {
             FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
             if (!change.isInsurance()) {
                 FlagColor worst = FlagColor.getWorseColor(overallColor, changeFlag);
-                if (worst != overallColor) {
-                    reason = getFlagDataDescription((com.picsauditing.jpa.entities.FlagData)change, contractorOperator.getOperatorAccount());
-                }
+
                 overallColor = worst;
             }
         }
@@ -1176,16 +1172,6 @@ public class FlagDataCalculator implements FlagCalculator {
             FlagChange flagChange = getFlagChange(contractorOperator, overallColor);
             messagePublisherService.getFlagChangePublisher().publish(flagChange);
 
-            Note note = new Note();
-            note.setAccount(contractorOperator.getContractorAccount());
-            note.setNoteCategory(NoteCategory.Flags);
-            note.setAuditColumns(new User(User.SYSTEM));
-            note.setSummary("Flag color changed from " + contractorOperator.getFlagColor() + " to " + overallColor + " for "
-                    + contractorOperator.getOperatorAccount().getName());
-            note.setBody(reason);
-            note.setCanContractorView(true);
-            note.setViewableById(contractorOperator.getOperatorAccount().getId());
-            dao.save(note);
             if (contractorOperator.getFlagColor() == FlagColor.Clear) {
                 contractorOperator.setBaselineFlag(overallColor);
                 contractorOperator.setBaselineFlagDetail(flagJson.toString());
@@ -1208,28 +1194,6 @@ public class FlagDataCalculator implements FlagCalculator {
         }
         contractorOperator.setAuditColumns(new User(User.SYSTEM));
         dao.save(contractorOperator);
-    }
-
-    private String getFlagDataDescription(com.picsauditing.jpa.entities.FlagData data, OperatorAccount operator) {
-        String description = "";
-
-        FlagCriteria fc = data.getCriteria();
-        FlagCriteriaOperator matchingFco = null;
-        ArrayList<FlagCriteriaOperator> fcos = new ArrayList<FlagCriteriaOperator>();
-        fcos.addAll(operator.getFlagCriteria());
-        fcos.addAll(operator.getFlagCriteriaInherited());
-        for (FlagCriteriaOperator fco : fcos) {
-            if (fco.getCriteria().getId() == fc.getId()) {
-                matchingFco = fco;
-                break;
-            }
-        }
-
-        if (matchingFco != null) {
-            description = matchingFco.getReplaceHurdle();
-        }
-
-        return description;
     }
 
     private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {

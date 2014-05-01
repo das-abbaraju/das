@@ -889,23 +889,18 @@ public class FlagDataCalculator implements FlagCalculator {
 
         // Find overall flag color for this operator
         FlagColor overallColor = FlagColor.Green;
-//        String reason = "Contractor is no longer flagged on any criteria for this operator.";
         if (contractorOperator.getContractorAccount().getAccountLevel().isBidOnly()
                 || contractorOperator.getContractorAccount().getStatus().isPending()
                 || contractorOperator.getContractorAccount().getStatus().isDeleted()
                 || contractorOperator.getContractorAccount().getStatus().isDeclined()
                 || contractorOperator.getContractorAccount().getStatus().isDeactivated()) {
             overallColor = FlagColor.Clear;
-//            reason = "Contractor no longer tracked by flags.";
         }
 
         for (FlagData change : changes) {
             FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
             if (!change.isInsurance()) {
                 FlagColor worst = FlagColor.getWorseColor(overallColor, changeFlag);
-                if (worst != overallColor) {
-//                    reason = getFlagDataDescription(change, contractorOperator.getOperatorAccount());
-                }
                 overallColor = worst;
             }
         }
@@ -931,17 +926,6 @@ public class FlagDataCalculator implements FlagCalculator {
 // TODO: Description required for note, a translated value.
 //            FlagChange flagChange = getFlagChange(contractorOperator, overallColor);
 //            messageService.getFlagChangePublisher().publish(flagChange);
-//
-//            Note note = new Note();
-//            note.setAccount(contractorOperator.getContractorAccount());
-//            note.setNoteCategory(NoteCategory.Flags);
-//            note.setAuditColumns(new User(User.SYSTEM));
-//            note.setSummary("Flag color changed from " + contractorOperator.getFlagColor() + " to " + overallColor + " for "
-//                    + contractorOperator.getOperatorAccount().getName());
-//            note.setBody(reason);
-//            note.setCanContractorView(true);
-//            note.setViewableBy(contractorOperator.getOperatorAccount());
-//            flagCalculatorDAO.save(note);
 
             if (contractorOperator.getFlagColor() == FlagColor.Clear) {
                 contractorOperator.setBaselineFlag(overallColor);
