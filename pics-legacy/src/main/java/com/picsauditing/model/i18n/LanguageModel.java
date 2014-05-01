@@ -242,7 +242,9 @@ public class LanguageModel {
 
 		for (Language dialectLanguage : dialects) {
 			Locale dialectLocale = dialectLanguage.getLocale();
-			countryDialects.put(dialectLanguage.getCountry(), dialectLocale.getDisplayCountry(dialectLocale));
+            if (dialectLanguage.getCountry() != null) {
+                countryDialects.put(dialectLanguage.getCountry(), dialectLocale.getDisplayCountry(dialectLocale));
+            }
 		}
 
 		return countryDialects;

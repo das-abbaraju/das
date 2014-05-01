@@ -249,6 +249,7 @@
     <bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype"/>
 
     <!-- Beans for service layers -->
+    <bean id="AuditService" class="com.picsauditing.service.AuditService"/>
     <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
     <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
     <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>

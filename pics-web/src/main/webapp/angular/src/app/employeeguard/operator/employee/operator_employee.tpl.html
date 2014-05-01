@@ -1,6 +1,16 @@
 <div ng-controller="operatorEmployeeCtrl" class="operator-employee-page">
     <div class="container">
         <pagetitle title="Live ID"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li class="active">{{ employee.firstName }} {{employee.lastName}}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
 
         <div class="row employee-info">
             <div class="col-md-3">
@@ -103,7 +113,7 @@
             </div>
             <div class="col-md-9">
                 <div ng-switch on="getSelectedView()">
-                    <employeeskillsection ng-show="requiredSkills" title="Required by Site or Project" skills="requiredSkills" icon="map-marker"></employeeskillsection>
+                    <employeeskillsection ng-show="requiredSkills" title="Required by Site or Projects" skills="requiredSkills" icon="map-marker"></employeeskillsection>
 
                     <div ng-switch-when="role">
                         <employeeskillsection title="{{ viewTitle }}" skills="skillGroup.skills" icon="group"></employeeskillsection>

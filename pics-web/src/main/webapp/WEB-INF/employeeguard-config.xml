@@ -37,7 +37,7 @@
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
-    <bean id="EmailService" class="com.picsauditing.employeeguard.services.EmailService"/>
+    <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
     <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>

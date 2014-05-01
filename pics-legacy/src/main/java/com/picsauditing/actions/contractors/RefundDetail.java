@@ -129,6 +129,7 @@ public class RefundDetail extends ContractorActionSupport implements Preparable 
         Refund refund = new Refund();
         refund.setTotalAmount(amount.abs());
         refund.setAmountApplied(amount.abs());
+        refund.setCurrency(creditMemo.getCurrency());
         refund.setAuditColumns(permissions);
         refund.setPaymentMethod(paymentMethod);
 		switch (paymentMethod) {

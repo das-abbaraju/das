@@ -68,7 +68,7 @@ public class SkillEngineTest {
 	}
 
 	private AccountModel setupForGetEmployeeSkillsMapForAccountContractor(final Employee employee,
-	                                                                      final List<Employee> employees) {
+																		  final List<Employee> employees) {
 		Group group = buildFakeGroup();
 		final Set<Group> groups = new HashSet<>(Arrays.asList(group));
 
@@ -87,10 +87,10 @@ public class SkillEngineTest {
 	}
 
 	private void prepareMocksForGetEmployeeSkillsMapForAccountContractor(final Employee employee,
-	                                                                     final List<Employee> employees,
-	                                                                     final Set<Group> groups,
-	                                                                     final Set<AccountSkill> skills,
-	                                                                     final AccountSkill requiredSkill) {
+																		 final List<Employee> employees,
+																		 final Set<Group> groups,
+																		 final Set<AccountSkill> skills,
+																		 final AccountSkill requiredSkill) {
 
 		Map<Employee, Set<Group>> employeeGroups = new HashMap<Employee, Set<Group>>() {{
 			put(employee, groups);
