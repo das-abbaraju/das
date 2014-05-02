@@ -7,6 +7,6 @@ angular.module('PICSApp', [
     'PICS.translations'
 ])
 
-.run(function (translationsService) {
+.run(['translationsService', function (translationsService) {
     translationsService.setLogKeysToConsole(false);
-});
+}]);

@@ -55,82 +55,88 @@
 
     angular.module('PICS.translations', [])
 
-    .config(function ($provide) {
-        $provide.factory('translationsService', function ($http, $rootScope, $q, routePathToTranslationKeys) {
-            var deferred = $q.defer();
+    .config(['$provide', function ($provide) {
+        $provide.factory('translationsService', ['$http', '$rootScope', '$q', 'routePathToTranslationKeys',
+            function ($http, $rootScope, $q, routePathToTranslationKeys) {
+                var deferred = $q.defer();
 
-            function setLogKeysToConsole(value) {
-                logKeysToConsole = !!value;
-            }
+                function setLogKeysToConsole(value) {
+                    logKeysToConsole = !!value;
+                }
 
-            function createRouteParamsFromKeys(keys) {
+                function createRouteParamsFromKeys(keys) {
+                    return {
+                        translationKeys: keys
+                    };
+                }
+
+                function getRoutePathToTranslationKeys() {
+                    return routePathToTranslationKeys;
+                }
+
+                function fetchTranslations(requestParams) {
+                    return $http.post('/translations.action', requestParams);
+                }
+
+                function setTranslations(value) {
+                    $rootScope.text = value;
+                    deferred.resolve(value);
+                }
+
+                function getTranslations() {
+                    return deferred.promise;
+                }
+
                 return {
-                    translationKeys: keys
+                    setLogKeysToConsole: setLogKeysToConsole,
+                    fetchTranslations: fetchTranslations,
+                    createRouteParamsFromKeys: createRouteParamsFromKeys,
+                    getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
+                    getTranslations: getTranslations,
+                    setTranslations: setTranslations
                 };
             }
+        ]);
+    }])
 
-            function getRoutePathToTranslationKeys() {
-                return routePathToTranslationKeys;
+    .run(['$rootScope', '$http', '$q', 'translationsService',
+        function ($rootScope, $http, $q, translationsService) {    
+            $rootScope.$on('$routeChangeStart', function (event, next) {
+                var routePathToTranslationKeys = translationsService.getRoutePathToTranslationKeys(),
+                    keys, requestParams;
+
+                routePath = next.$$route.originalPath;
+                translationKeys = [];
+
+                keys = routePathToTranslationKeys[routePath];
+                requestParams = translationsService.createRouteParamsFromKeys(keys);
+
+                translationsService.fetchTranslations(requestParams)
+                .then(function (response) {
+                    translationsService.setTranslations(response.data.translationsMap);
+                });
             }
+        );
+    }])
 
-            function fetchTranslations(requestParams) {
-                return $http.post('/translations.action', requestParams);
-            }
-
-            function setTranslations(value) {
-                $rootScope.text = value;
-                deferred.resolve(value);
-            }
-
-            function getTranslations() {
-                return deferred.promise;
+    .directive('translatedPage', ['$rootScope', '$http', '$log',
+        function ($rootScope, $http, $log) {
+            function getKeyValueJson(key, value) {
+                return '"' + routePath + '":' + JSON.stringify(translationKeys);
             }
 
             return {
-                setLogKeysToConsole: setLogKeysToConsole,
-                fetchTranslations: fetchTranslations,
-                createRouteParamsFromKeys: createRouteParamsFromKeys,
-                getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
-                getTranslations: getTranslations,
-                setTranslations: setTranslations
+                restrict: 'A',
+                link: function (scope) {
+                    scope.$on('$includeContentLoaded', function () {
+                        if (logKeysToConsole) {
+                            $log.info(getKeyValueJson(routePath, JSON.stringify(translationKeys)));
+                        }
+                    });
+                }
             };
-        });
-    })
-
-    .run(function ($rootScope, $http, $q, translationsService) {    
-        $rootScope.$on('$routeChangeStart', function (event, next) {
-            var routePathToTranslationKeys = translationsService.getRoutePathToTranslationKeys(),
-                keys, requestParams;
-
-            routePath = next.$$route.originalPath;
-            translationKeys = [];
-
-            keys = routePathToTranslationKeys[routePath];
-            requestParams = translationsService.createRouteParamsFromKeys(keys);
-
-            translationsService.fetchTranslations(requestParams)
-            .then(function (response) {
-                translationsService.setTranslations(response.data.translationsMap);
-            });
-        });
-    })
-
-    .directive('translatedPage', function ($rootScope, $http, $log) {
-        function getKeyValueJson(key, value) {
-            return '"' + routePath + '":' + JSON.stringify(translationKeys);
         }
-
-        return {
-            restrict: 'A',
-            link: function (scope) {
-                scope.$on('$includeContentLoaded', function () {
-                    if (logKeysToConsole) {
-                        $log.info(getKeyValueJson(routePath, JSON.stringify(translationKeys)));
-                    }
-                });
-            }
-        };
-    })
+    ])
 
     .directive('translate', function () {
         function getKeysFromText(text) {
