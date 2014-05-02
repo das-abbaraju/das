@@ -85,6 +85,8 @@ public class ContractorCronTest extends PicsActionTest {
     private Query query;
     @Mock
     private FlagCalculatorFactory flagCalculatorFactory;
+    @Mock
+    private FlagCriteriaOperator flagCriteriaOperator;
 
     @Rule
     public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
@@ -198,6 +200,21 @@ public class ContractorCronTest extends PicsActionTest {
     }
 
     @Test
+    public void testRunFlag_wrongStep() throws Exception {
+        ContractorCronStep[] steps = new ContractorCronStep[1];
+        steps[0] = ContractorCronStep.WaitingOn;
+
+        ContractorOperator conOp = new ContractorOperator();
+        conOp.setContractorAccount(contractor);
+        conOp.setOperatorAccount(operator);
+        conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
+
+        Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
+        verify(flagDataCalculator,never()).saveFlagData(anyList());
+    }
+
+    @Test
     public void testNoInsuranceCriteriaInFlagDifferences() throws Exception {
         ContractorCronStep[] steps = new ContractorCronStep[1];
         steps[0] = ContractorCronStep.Flag;
@@ -219,6 +236,7 @@ public class ContractorCronTest extends PicsActionTest {
         Whitebox.setInternalState(contractorCron, "steps", steps);
         when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
+        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
@@ -239,18 +257,24 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setFlagColor(FlagColor.Green);
 
         FlagCriteria criteria = new FlagCriteria();
-        criteria.setInsurance(true);
+        criteria.setInsurance(false);
         FlagData flagData = new FlagData();
         flagData.setCriteria(criteria);
         flagData.setFlag(FlagColor.Red);
         List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
+        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
+        criteriaList.add(flagCriteriaOperator);
+        when(operator.getFlagCriteriaInherited()).thenReturn(criteriaList);
+        when(flagCriteriaOperator.getCriteria()).thenReturn(criteria);
+
         Whitebox.setInternalState(contractorCron, "steps", steps);
         when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
+        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
-        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+        when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
