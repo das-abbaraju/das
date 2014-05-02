@@ -24,7 +24,7 @@
  *
  * 5) Use the following syntax in your template files:
  *
- *    For a translation with key 'my.first.translation.key' and value 'My {1} value for translation #{2}':
+ *    For a translation with key 'my.first.translation.key' and value 'My {0} value for translation #{1}':
  *    <p>{{ text['my.first.translation.key'] | translationValues:['translation', '1'] }}</p>
  *
  * Translation keys for each route must be added to the routePathToTranslationKeys value
@@ -171,7 +171,7 @@
     .filter('translationValues', function () {
         return function (translationExpression, replaceValues) {
             function replaceFn (replaceParam, replaceValueIndex) {
-                return replaceValues[replaceValueIndex-1];
+                return replaceValues[replaceValueIndex];
             }
 
             return translationExpression.replace(/{([0-9]+)}/g, replaceFn);
