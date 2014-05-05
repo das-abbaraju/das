@@ -11,7 +11,7 @@ case class UserData(
                      email: String,
                      phone: String,
                      fax: String,
-                     isActive: String,
+                     isActive: Boolean,
                      lastLogin: Option[java.util.Date],
                      appUserID: Option[Long]
                    )
@@ -55,7 +55,7 @@ trait UserAccess { this: Profile =>
     def email = column[String]("email")
     def phone = column[String]("phone")
     def fax = column[String]("fax")
-    def isActive = column[String]("isActive")
+    def isActive = column[Boolean]("isActive")(yesNoBooleanConversion)
     def lastLogin = column[java.util.Date]("lastLogin")(convertFromTimeStamp)
 
     def appUserID = column[Option[Long]]("appUserID")
@@ -68,6 +68,11 @@ trait UserAccess { this: Profile =>
     implicit val convertFromTimeStamp = MappedColumnType.base[java.util.Date, java.sql.Timestamp](
       { utilDate => new java.sql.Timestamp(utilDate.getTime) },
       { sqlDate => new java.util.Date(sqlDate.getTime) }
+    )
+
+    private val yesNoBooleanConversion = MappedColumnType.base[Boolean, String](
+    { if (_) "Yes" else "No" },
+    { _.equals("Yes") }
     )
   }
 
