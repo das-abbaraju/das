@@ -29,7 +29,7 @@
             <s:action name="Menu!mobileMenu" executeResult="true" />
         </header>
         <div ng-app="PICSApp">
-            <div ng-view></div>
+            <div ng-view translated-page></div>
         </div>
     </div>
 </body>
