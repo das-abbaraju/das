@@ -214,4 +214,5 @@
 
 	<!-- 7.2.8 -->
 	<include file="./liquibase/2014/Q2/aananighian4_DE545_DDL_Create_New_Email_Hash_Table.sql"/>
+	<include file="./liquibase/2014/Q2/aananighian5_US854_DML_Add_Email_Template.sql"/>
 </databaseChangeLog>
