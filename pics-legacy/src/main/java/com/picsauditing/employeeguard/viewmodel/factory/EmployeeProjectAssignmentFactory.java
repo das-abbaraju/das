@@ -102,7 +102,8 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-        SkillStatus lowestStatus = SkillStatus.Completed;
+      //-- Default to highest severity, since we are trying to find the lowest one.
+      SkillStatus lowestStatus = SkillStatus.Expired;
         for (AccountSkill skill : roleSkills) {
             if (employeeSkillsMap.containsKey(skill)) {
                 SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
