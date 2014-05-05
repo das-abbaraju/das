@@ -270,6 +270,11 @@ public class AccountService {
 	}
 
 	private AccountType getAccountTypeForAccount(final Account account) {
+		// From the EmployeeGUARD Perspective, PICS is a Contractor for now
+		if (account.getId() == Account.PicsID) {
+			return AccountType.CONTRACTOR;
+		}
+
 		switch (account.getType()) {
 			case "Admin":
 				return AccountType.ADMIN_ACCOUNT;
