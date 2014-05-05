@@ -189,6 +189,7 @@ public class FlagDataCalculator implements FlagCalculator {
 			hurdle = opCriteria.getHurdle();
 		}
         if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
+            // TODO: This is for a feature that is not currently active
             String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
             if (newHurdle != null) {
                 hurdle = newHurdle;
@@ -246,6 +247,7 @@ public class FlagDataCalculator implements FlagCalculator {
 								if (!cao.getStatus().before(criteria.getRequiredStatus())) {
 									auditIsGood = true;
 								} else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
+                                    // TODO: Because of the above check for when contractors don't work for the operator, this is never reached
 									/*
 									 * I don't think Bid-only contractors are
 									 * going to get AUs anymore So this may not
@@ -258,6 +260,7 @@ public class FlagDataCalculator implements FlagCalculator {
 							}
 						}
 						if (!worksForOperator) {
+                            // TODO: Because of the above check for when contractors don't work for the operator, this is never reached
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 								auditIsGood = true;
 							}
@@ -975,8 +978,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		return fdo2;
 	}
 
-	private FlagDataOverride searchOverridesByCriteria(
-			List<FlagDataOverride> fdos, FlagCriteria key) {
+	private FlagDataOverride searchOverridesByCriteria(List<FlagDataOverride> fdos, FlagCriteria key) {
 		for (FlagDataOverride fdo : fdos) {
 			if (fdo.getCriteria().equals(key)) {
 				return fdo;
@@ -1025,7 +1027,7 @@ public class FlagDataCalculator implements FlagCalculator {
 	}
 
 	private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
-		ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
+		ArrayList<FlagDataOverride> fdos = new ArrayList<>();
 		for (int id : criteriaIds) {
 			FlagCriteria criteriaKey = new FlagCriteria();
 			criteriaKey.setId(id);
