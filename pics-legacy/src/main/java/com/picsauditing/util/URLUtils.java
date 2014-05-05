@@ -131,7 +131,10 @@ public class URLUtils implements StreamContentProvider {
 	}
 
 	private HttpServletRequest getRequest() {
-		request = ServletActionContext.getRequest();
+		if (request == null) {
+			request = ServletActionContext.getRequest();
+		}
+
 		return request;
 	}
 

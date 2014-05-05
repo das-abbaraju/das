@@ -178,7 +178,7 @@
         <constructor-arg ref="RegistrationRequestService" />
     </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
-    <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" scope="prototype"/>
+    <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>

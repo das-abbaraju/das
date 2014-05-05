@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -98,9 +97,8 @@ public class URLUtilsTest extends PicsActionTest {
 		ServletActionContext.setContext(originalServletContext);
 	}
 
-	@Ignore
-    @Test
-    public void testGetActionUrl() throws Exception {
+	@Test
+	public void testGetActionUrl() throws Exception {
 		assertEquals("/Action.action", urlUtils.getActionUrl("Action"));
 		assertEquals("/Action!test.action", urlUtils.getActionUrl("Action", "test"));
 
