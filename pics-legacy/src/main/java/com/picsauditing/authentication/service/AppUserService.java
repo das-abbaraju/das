@@ -42,10 +42,6 @@ public class AppUserService {
 		return appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
 	}
 
-	public AppUser findByUsernameAndEncodedPassword(final String username, final String password) {
-		return appUserDAO.findByUserNameAndPassword(username, password);
-	}
-
 	private String encodePassword(String password, String hashSalt) {
 		return EncodedMessage.hash(password + hashSalt);
 	}

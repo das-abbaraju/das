@@ -101,10 +101,7 @@ public class AuthenticationServiceTest {
 
 	@Test(expected = FailedLoginException.class)
 	public void testAuthenticateEmployeeGUARDUser_No_Profile_Found() throws FailedLoginException {
-		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(TESTER_USERNAME).password(PASSWORD).build();
-		when(appUserService.findByUsernameAndUnencodedPassword(TESTER_USERNAME, PASSWORD)).thenReturn(fakeAppUser);
-
-//		Profile fakeProfile = new ProfileBuilder().id(PROFILE_ID).build();
+		setupAppUserService();
 		when(profileEntityService.findByAppUserId(APPUSER_ID)).thenReturn(null);
 
 		authenticationService.authenticateEmployeeGUARDUser(TESTER_USERNAME, PASSWORD, true);
@@ -116,17 +113,22 @@ public class AuthenticationServiceTest {
 
 		String result = authenticationService.authenticateEmployeeGUARDUser(TESTER_USERNAME, PASSWORD, true);
 
-		assertTrue(result.contains("810|"));1399354630115|{\"rememberMe\":true}|123|"));
+		assertTrue(result.startsWith("810|"));
+		assertTrue(result.contains("|{\"rememberMe\":true}|123|"));
 	}
 
 	private void setupTestAuthenticateEmployeeGUARDUser() {
-		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(TESTER_USERNAME).password(PASSWORD).build();
-		when(appUserService.findByUsernameAndUnencodedPassword(TESTER_USERNAME, PASSWORD)).thenReturn(fakeAppUser);
+		setupAppUserService();
 
 		Profile fakeProfile = new ProfileBuilder().id(PROFILE_ID).build();
 		when(profileEntityService.findByAppUserId(APPUSER_ID)).thenReturn(fakeProfile);
 
 		User fakeUser = new UserBuilder().id(USER_ID).build();
 		when(userService.findByAppUserId(APPUSER_ID)).thenReturn(fakeUser);
+	}
+
+	private void setupAppUserService() {
+		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(TESTER_USERNAME).password(PASSWORD).build();
+		when(appUserService.findByUsernameAndUnencodedPassword(TESTER_USERNAME, PASSWORD)).thenReturn(fakeAppUser);
 	}
 }

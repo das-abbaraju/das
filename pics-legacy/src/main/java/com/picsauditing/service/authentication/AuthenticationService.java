@@ -44,26 +44,70 @@ public class AuthenticationService {
 		}
 	}
 
-	public String authenticateEmployeeGUARDUser(final String username, final String password, final boolean rememberMe) throws FailedLoginException {
+	public String authenticateEmployeeGUARDUser(final String username, final String password, final boolean rememberMe)
+			throws FailedLoginException {
+
+		AppUser appUser = loadAppUser(username, password);
+
+		int appUserId = appUser.getId();
+		Profile profile = loadProfile(appUserId);
+		User user = userService.findByAppUserId(appUserId);
+
+		return getSessionCookieContent(appUserId, userId(user), profile.getId(), rememberMe);
+	}
+
+	public LoginContext doPreLoginVerificationEG(final String username, final String password)
+			throws AccountNotFoundException, FailedLoginException {
+
+		AppUser appUser = loadAppUser(username, password);
+
+		int appUserId = appUser.getId();
+		User user = userService.findByAppUserId(appUserId);
+		Profile profile = loadProfile(appUserId);
+
+		return buildLoginContext(username, appUser, appUserId, user, profile);
+	}
+
+	private AppUser loadAppUser(String username, String password) throws FailedLoginException {
 		AppUser appUser = appUserService.findByUsernameAndUnencodedPassword(username, password);
 		if (appUser == null) {
 			throw new FailedLoginException("Could not authenticate username = " + username);
 		}
 
-		int appUserId = appUser.getId();
+		return appUser;
+	}
 
+	private Profile loadProfile(int appUserId) throws FailedLoginException {
 		Profile profile = profileEntityService.findByAppUserId(appUserId);
 		if (profile == null) {
 			throw new FailedLoginException("Profile was not found for appUserId = " + appUserId);
 		}
 
-		User user = userService.findByAppUserId(appUserId);
-
-		return sessionCookieContent(appUserId, userId(user), profile.getId(), rememberMe);
+		return profile;
 	}
 
-	private String sessionCookieContent(final int appUserId, final int picsUserId,
-										final int profileId, final boolean rememberMe) {
+	private LoginContext buildLoginContext(final String username, final AppUser appUser, final int appUserId,
+										   final User user, final Profile profile)
+			throws AccountNotFoundException {
+
+		LoginContext response = new LoginContext();
+		try {
+			String cookieContent = getSessionCookieContent(appUserId, userId(user), profile.getId(), true);
+
+			response.setCookie(cookieContent);
+			response.setAppUser(appUser);
+			response.setProfile(profile);
+			response.setUser(user);
+
+			return response;
+		} catch (Exception e) {
+			// todo: make SURE its not a failed login, etc.
+			throw new AccountNotFoundException("No user with username: " + username + " found.");
+		}
+	}
+
+	private String getSessionCookieContent(final int appUserId, final int picsUserId,
+										   final int profileId, final boolean rememberMe) {
 		SessionCookie sessionCookie = createSessionCookie(rememberMe, profileId, appUserId, picsUserId);
 
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
@@ -82,32 +126,6 @@ public class AuthenticationService {
 		sessionCookie.putData(SessionCookie.REMEMBER_ME_DATA_KEY, rememberMe);
 
 		return sessionCookie;
-	}
-
-	public LoginContext doPreLoginVerificationEG(final String username, final String password) throws AccountNotFoundException {
-		AppUser appUser = appUserService.findByUsername(username);
-
-		int appUserId = appUser.getId();
-		User user = userService.findByAppUserId(appUserId);
-		Profile profile = profileEntityService.findByAppUserId(appUserId);
-		if (profile == null) {
-			throw new AccountNotFoundException("No user with username: " + username + " found.");
-		}
-
-		LoginContext response = new LoginContext();
-		try {
-			String cookieContent = sessionCookieContent(appUserId, userId(user), profile.getId(), true);
-
-			response.setCookie(cookieContent);
-			response.setAppUser(appUser);
-			response.setProfile(profile);
-			response.setUser(user);
-
-			return response;
-		} catch (Exception e) {
-			// todo: make SURE its not a failed login, etc.
-			throw new AccountNotFoundException("No user with username: " + username + " found.");
-		}
 	}
 
 	private int userId(final User user) {
