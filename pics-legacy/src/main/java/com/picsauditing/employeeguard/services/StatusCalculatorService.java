@@ -309,6 +309,7 @@ public class StatusCalculatorService {
 				if (employeeSkillMap.containsKey(employee)) {
           //-- Documentations provided for this employee
 					Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
+          //-- Distill the collection specific to this employee's skills.
 					CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
 						@Override
 						public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
