@@ -50,7 +50,7 @@
                 <ng-include src="'/angular/src/app/employeeguard/operator/dashboard/_site-status.tpl.html'"></ng-include>
 
                 <div class="row beta-section">
-                    <div class="col-md-8" ng-show="user === 'operator'">
+                    <div class="col-md-8" ng-show="userType === 'operator'">
                         <section class="employee-guard-section">
                             <h1>
                                 <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
@@ -98,7 +98,7 @@
                             </div>
                         </section>
                     </div>
-                    <div class="col-md-8" ng-show="user === 'corporate'">
+                    <div class="col-md-8" ng-show="userType === 'corporate'">
                         <section class="employee-guard-section" >
                             <h1>
                                 <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
