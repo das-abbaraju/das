@@ -381,6 +381,10 @@ public class PicsCollectionUtil {
 
 	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
 																		final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptySet();
+		}
+
 		Set<PROPERTY> properties = new HashSet<>();
 
 		for (ENTITY entity : entities) {
