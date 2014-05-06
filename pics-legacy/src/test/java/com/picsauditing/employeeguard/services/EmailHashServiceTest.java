@@ -8,7 +8,6 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuilder;
-import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -27,7 +26,10 @@ public class EmailHashServiceTest {
 
 	public static final String INVALID_HASH = "MY_HASH";
 	public static final String VALID_HASH = "VALID_HASH";
+	public static final int EMPLOYEE_ID = 45;
+	public static final String EMPLOYEE_EMAIL = "test@test.com";
 
+	// Class under test
 	private EmailHashService emailHashService;
 
 	@Mock
@@ -75,7 +77,8 @@ public class EmailHashServiceTest {
 	@Test
 	public void testCreateNewHash() throws Exception {
 		Employee fakeEmployee = setupTestCreateNewHash();
-		when(softDeletedEmployeeDAO.find(anyInt())).thenReturn(new SoftDeletedEmployeeBuilder().id(45).email("test@test.com").build());
+		when(softDeletedEmployeeDAO.find(anyInt())).thenReturn(new SoftDeletedEmployeeBuilder().id(EMPLOYEE_ID)
+				.email(EMPLOYEE_EMAIL).build());
 
 		EmailHash result = emailHashService.createNewHash(fakeEmployee);
 
@@ -83,7 +86,7 @@ public class EmailHashServiceTest {
 	}
 
 	private Employee setupTestCreateNewHash() {
-		Employee fakeEmployee = new EmployeeBuilder().id(45).email("test@test.com").build();
+		Employee fakeEmployee = new EmployeeBuilder().id(EMPLOYEE_ID).email(EMPLOYEE_EMAIL).build();
 
 		when(emailHashDAO.save(any(EmailHash.class))).thenAnswer(new Answer<EmailHash>() {
 
