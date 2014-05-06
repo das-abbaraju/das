@@ -27,7 +27,7 @@ public class IndustryAverageService {
             return answer;
         }
 
-        answer = TradeService.getNaicsTRIRI(trade.getTrade());
+        answer = TradeService.getNaicsLWCRI(trade.getTrade());
 
         return answer;
     }
