@@ -1955,7 +1955,12 @@ public class FlagDataCalculatorTest {
 
         calculator.setMessagePublisherService(messagePublisherService);
         calculator.setContractorOperator(contractorOperator);
-        calculator.saveFlagData(changes);
+        boolean needsNote = calculator.saveFlagData(changes);
+        assertTrue(needsNote);
+        Mockito.verify(contractorOperator).setFlagDetail(anyString());
+        Mockito.verify(contractorOperator, times(1)).setFlagColor(any(FlagColor.class));
+        Mockito.verify(contractorOperator, times(1)).setBaselineFlag(FlagColor.Clear);
+        Mockito.verify(dao).save(contractorOperator);
     }
 
     @Test
@@ -1970,7 +1975,12 @@ public class FlagDataCalculatorTest {
 
         calculator.setMessagePublisherService(messagePublisherService);
         calculator.setContractorOperator(contractorOperator);
-        calculator.saveFlagData(changes);
+        boolean needsNote = calculator.saveFlagData(changes);
+        assertTrue(needsNote);
+        Mockito.verify(contractorOperator).setFlagDetail(anyString());
+        Mockito.verify(contractorOperator, times(1)).setFlagColor(FlagColor.Clear);
+        Mockito.verify(contractorOperator, times(1)).setBaselineFlag(FlagColor.Clear);
+        Mockito.verify(dao).save(contractorOperator);
     }
 
     @Test
@@ -1986,7 +1996,12 @@ public class FlagDataCalculatorTest {
 
         calculator.setMessagePublisherService(messagePublisherService);
         calculator.setContractorOperator(contractorOperator);
-        calculator.saveFlagData(changes);
+        boolean needsNote = calculator.saveFlagData(changes);
+        assertTrue(needsNote);
+        Mockito.verify(contractorOperator).setFlagDetail(anyString());
+        Mockito.verify(contractorOperator, times(1)).setFlagColor(any(FlagColor.class));
+        Mockito.verify(contractorOperator, times(2)).setBaselineFlag(any(FlagColor.class));
+        Mockito.verify(dao).save(contractorOperator);
     }
 
     @Test
@@ -2008,7 +2023,14 @@ public class FlagDataCalculatorTest {
 
         calculator.setMessagePublisherService(messagePublisherService);
         calculator.setContractorOperator(contractorOperator);
-        calculator.saveFlagData(changes);
+        boolean needsNote = calculator.saveFlagData(changes);
+        assertFalse(needsNote);
+        Mockito.verify(contractorOperator).setFlagDetail(anyString());
+        Mockito.verify(contractorOperator).setFlagColor(FlagColor.Amber);
+        Mockito.verify(contractorOperator, times(2)).setBaselineFlag(any(FlagColor.class));
+        Mockito.verify(contractorOperator).setBaselineFlagDetail(anyString());
+        Mockito.verify(dao).remove(any(FlagData.class));
+        Mockito.verify(dao).save(contractorOperator);
     }
 
     private void addCaoAndCaopToAudit(ContractorAudit audit, OperatorAccount operator) {
