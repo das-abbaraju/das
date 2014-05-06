@@ -6,6 +6,7 @@
                 $form, eula_id, submit_event, user_credentials, user_eula;
 
             function init() {
+                PICS.getClass('widget.SessionTimer').disableReload();
                 $body.delegate('form.eula-required', 'submit', onEulaRequiredFormSubmit);                
             }
 
@@ -59,7 +60,9 @@
                     url: getUserEulaUrl(),
                     dataType: 'json',
                     success: onUserEulaRequestSuccess,
-                    error: submitForm
+                    statusCode: {
+                        401: submitForm
+                    }
                 });
             }
 
@@ -88,7 +91,9 @@
                     type: 'GET',
                     url: eula_url,
                     dataType: 'html',
-                    error: submitForm,
+                    statusCode: {
+                        401: submitForm
+                    },
                     success: function (data) {
                         var eula_html = $.trim(data);
 
@@ -173,6 +178,8 @@
 
                 inputs.val('');
                 inputs.filter('[tabindex="2"]').focus();
+
+                $('div.alert').remove();
             }
 
             function acceptEula(callback) {

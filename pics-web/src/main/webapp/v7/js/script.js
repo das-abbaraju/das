@@ -23615,6 +23615,7 @@ PICS.define('select2.Select2', {
                 $form, eula_id, submit_event, user_credentials, user_eula;
 
             function init() {
+                PICS.getClass('widget.SessionTimer').disableReload();
                 $body.delegate('form.eula-required', 'submit', onEulaRequiredFormSubmit);                
             }
 
@@ -23668,7 +23669,9 @@ PICS.define('select2.Select2', {
                     url: getUserEulaUrl(),
                     dataType: 'json',
                     success: onUserEulaRequestSuccess,
-                    error: submitForm
+                    statusCode: {
+                        401: submitForm
+                    }
                 });
             }
 
@@ -23697,7 +23700,9 @@ PICS.define('select2.Select2', {
                     type: 'GET',
                     url: eula_url,
                     dataType: 'html',
-                    error: submitForm,
+                    statusCode: {
+                        401: submitForm
+                    },
                     success: function (data) {
                         var eula_html = $.trim(data);
 
@@ -23782,6 +23787,8 @@ PICS.define('select2.Select2', {
 
                 inputs.val('');
                 inputs.filter('[tabindex="2"]').focus();
+
+                $('div.alert').remove();
             }
 
             function acceptEula(callback) {
@@ -24077,14 +24084,20 @@ PICS.define('widgets.Mibew', {
 PICS.define('widget.SessionTimer', {
     methods: (function () {
 
+        var reload_disabled = false;
+
+        function disableReload() {
+            reload_disabled = true;
+        };
+
         function init() {
             bindGlobalAjaxErrorHandler();
         }
 
         function bindGlobalAjaxErrorHandler() {
             $(document).on('ajaxError', function (event, jqXHR, ajaxSettings, thrownError) {
-                if (jqXHR.status === 401) {
-                    reloadPageToInvalidateSession();
+                if (jqXHR.status === 401 && !reload_disabled) {
+                    reloadPageToInvalidateSession();                        
                 }
             });
         }
@@ -24092,11 +24105,12 @@ PICS.define('widget.SessionTimer', {
         /*This request triggers a java interceptor which
         handles the redirect to the login page*/
         function reloadPageToInvalidateSession() {
-            document.location.reload();
+            window.location.reload();
         }
 
         return {
-            init: init
+            init: init,
+            disableReload: disableReload
         };
     }())
 });
