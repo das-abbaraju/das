@@ -2,10 +2,13 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.authentication.dao.EmailHashDAO;
+import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,6 +19,7 @@ import org.powermock.reflect.Whitebox;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,6 +32,8 @@ public class EmailHashServiceTest {
 
 	@Mock
 	private EmailHashDAO emailHashDAO;
+	@Mock
+	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
 	@Before
 	public void setup() {
@@ -36,6 +42,7 @@ public class EmailHashServiceTest {
 		emailHashService = new EmailHashService();
 
 		Whitebox.setInternalState(emailHashService, "emailHashDAO", emailHashDAO);
+		Whitebox.setInternalState(emailHashService, "softDeletedEmployeeDAO", softDeletedEmployeeDAO);
 	}
 
 	@Test
@@ -68,6 +75,7 @@ public class EmailHashServiceTest {
 	@Test
 	public void testCreateNewHash() throws Exception {
 		Employee fakeEmployee = setupTestCreateNewHash();
+		when(softDeletedEmployeeDAO.find(anyInt())).thenReturn(new SoftDeletedEmployeeBuilder().id(45).email("test@test.com").build());
 
 		EmailHash result = emailHashService.createNewHash(fakeEmployee);
 
