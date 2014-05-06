@@ -1341,6 +1341,17 @@
             <result name="address-response">/struts/address-verification-test-response.jsp</result>
         </action>
 
+        <action name="eulas/login/users/{userName}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEulaUserInfo">
+        </action>
+
+        <action name="eulas/login/{country}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEula">
+                <result>/struts/eula/login-eula.jsp</result>
+        </action>
+
 	</package>
 
 	<!-- Reports & API -->
