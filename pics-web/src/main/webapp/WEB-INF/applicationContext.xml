@@ -172,10 +172,10 @@
         <constructor-arg ref="RegistrationBillingBean" />
         <constructor-arg ref="ContractorAccountService" />
         <constructor-arg ref="AppUserService" />
-        <constructor-arg ref="AppUserDAO" />
         <constructor-arg ref="LanguageModel" />
         <constructor-arg ref="AltUserService" />
         <constructor-arg ref="RegistrationRequestService" />
+        <constructor-arg ref="AuthenticationService" />
     </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" scope="prototype"/>
@@ -183,6 +183,7 @@
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
+    <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>

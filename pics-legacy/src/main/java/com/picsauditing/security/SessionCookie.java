@@ -9,6 +9,9 @@ import java.util.Map;
 
 
 public class SessionCookie {
+
+	public static final String REMEMBER_ME_DATA_KEY = "rememberMe";
+
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	private int userID;

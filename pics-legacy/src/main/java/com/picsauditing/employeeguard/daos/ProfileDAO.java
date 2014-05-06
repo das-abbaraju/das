@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 public class ProfileDAO extends AbstractBaseEntityDAO<Profile> {
 
@@ -13,12 +14,13 @@ public class ProfileDAO extends AbstractBaseEntityDAO<Profile> {
     }
 
 	public Profile findByAppUserId(final int appUserId) {
-		Query query = em.createNativeQuery("SELECT p.* FROM profile p " +
-				"WHERE p.appUserID = :appUserId", Profile.class);
+		TypedQuery<Profile> query = em.createQuery("SELECT p FROM Profile p " +
+				"WHERE p.userId = :appUserId", Profile.class);
+
 		query.setParameter("appUserId", appUserId);
 
 		try {
-			return (Profile) query.getSingleResult();
+			return query.getSingleResult();
 		} catch (Exception exception) {
 			return null;
 		}
