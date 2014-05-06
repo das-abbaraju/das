@@ -79,9 +79,9 @@ public class OperatorFlagHistory extends ChartMSAction {
     protected String getOperatorFlagHistorySQL(Date date, String label, int operatorID) throws Exception {
         String dbDate = DateBean.toDBFormat(date);
 
-        return String.format("SELECT '%s' AS label, flag AS series, count(*) AS value, "
-                + "creationDate FROM flag_archive WHERE flag in ('Red','Amber','Green') AND opID = %d "
-                + "AND creationDate = '%s' GROUP BY flag", label, operatorID, dbDate);
+        return String.format("SELECT '%s' AS label, flag_archive.flag AS series, count(*) AS value, "
+                + "flag_archive.creationDate FROM flag_archive LEFT JOIN accounts on accounts.id = flag_archive.conID WHERE flag_archive.flag in ('Red','Amber','Green') AND flag_archive.opID = %d "
+                + "AND accounts.status <> 'Demo' AND flag_archive.creationDate = '%s' GROUP BY flag", label, operatorID, dbDate);
     }
 	
 	private ChartDAO getChartDAO() {

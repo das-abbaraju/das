@@ -8,6 +8,7 @@ import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorRegistrationStep;
 import com.picsauditing.jpa.entities.User;
@@ -513,6 +514,10 @@ public class LoginController extends PicsActionSupport {
 		boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
 		return userBetaTester;
 	}
+
+    public boolean isEulaFeatureEnabled() {
+        return Features.USE_EULA.isActive();
+    }
 
 	/* GETTER & SETTERS */
 	private HttpServletResponse getResponse() {

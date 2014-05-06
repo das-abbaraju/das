@@ -35,7 +35,6 @@ public class LoginService {
 	}
 
 	public User getUserForUserName(String username) throws LoginException {
-
         AppUser appUser = appUserDAO.findByUserName(username);
         User user;
         if (appUser == null) {

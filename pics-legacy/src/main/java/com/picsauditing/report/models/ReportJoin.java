@@ -158,7 +158,7 @@ public class ReportJoin {
 					return true;
 
 				if (column.getField() == null) {
-					logger.error("ReportJoin.isNeeded() - Column: "  + column + " has a null field");
+					logger.warn("ReportJoin.isNeeded() - Column: "  + column + " has a null field");
 				} else {
 					for (String dependentField : column.getField().getDependentFields()) {
 						if (dependentField.equalsIgnoreCase(fieldName))
@@ -180,7 +180,7 @@ public class ReportJoin {
                 }
 
                 if (filter.getField() == null) {
-                    logger.error("ReportJoin.isNeeded() - filter: "  + filter + " has a null field");
+                    logger.warn("ReportJoin.isNeeded() - filter: "  + filter + " has a null field");
                 } else {
                     String filterRequiredJoin = filter.getField().getRequiredJoin();
                     if (alias.equalsIgnoreCase(filterRequiredJoin)) {

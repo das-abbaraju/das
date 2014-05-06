@@ -1,5 +1,8 @@
 package com.picsauditing.access;
 
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -8,21 +11,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.util.reflection.Whitebox;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
 import javax.security.auth.login.FailedLoginException;
+import javax.security.auth.login.LoginException;
 import java.util.Date;
 
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class LoginServiceTest {
-	private LoginService loginService;
+    private LoginService loginService;
 
 	private String username = "joesixpack";
 	private String password = "8675309";
@@ -34,8 +41,12 @@ public class LoginServiceTest {
 	private User user;
 	@Mock
 	private ContractorAccount account;
+    @Mock
+    private AppUserDAO appUserDAO;
+    @Mock
+    private UserDAO userDAO;
 
-	@Before
+    @Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		loginService = new LoginService();
@@ -45,6 +56,9 @@ public class LoginServiceTest {
 
 		when(user.getAccount()).thenReturn(account);
 		when(account.getId()).thenReturn(123);
+
+        Whitebox.setInternalState(loginService, "appUserDAO", appUserDAO);
+        Whitebox.setInternalState(loginService, "userDAO", userDAO);
 	}
 
 	@Test
@@ -238,7 +252,37 @@ public class LoginServiceTest {
 		loginService.loginForResetPassword(username, key);
 	}
 
-	private void setupNormalUser() {
+    @Test
+    public void testGetUserForUserName() throws LoginException {
+        String userName = "tswift";
+        int appUserId = 22;
+        when(appUserDAO.findByUserName(userName)).thenReturn(
+                AppUser.builder()
+                        .id(appUserId)
+                        .build()
+        );
+
+        when(userDAO.findUserByAppUserID(appUserId)).thenReturn(
+                User.builder()
+                        .userName(userName)
+                        .build()
+        );
+
+        User user = loginService.getUserForUserName(userName);
+
+        assertNotNull(user);
+        assertEquals(userName, user.getUsername());
+    }
+
+    @Test(expected = LoginException.class)
+    public void testGetUserForUserName_NoAppUserFound() throws LoginException {
+        when(appUserDAO.findByUserName(anyString())).thenReturn(null);
+
+        loginService.getUserForUserName(anyString());
+    }
+
+
+    private void setupNormalUser() {
 		when(user.isLocked()).thenReturn(false);
 		when(user.isEncryptedPasswordEqual(password)).thenReturn(true);
 		when(user.getResetHash()).thenReturn(key);
