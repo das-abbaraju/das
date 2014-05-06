@@ -108,7 +108,11 @@ public class ProfileDocumentService {
 
 	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
 		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
-				.findByProfile(profileDocument.getProfile());
+				.findByProfileDocument(profileDocument);
+
+		if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+			return;
+		}
 
 		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
 			accountSkillEmployee.setStartDate(profileDocument.getStartDate());
