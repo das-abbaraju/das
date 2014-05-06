@@ -7,6 +7,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.persistence.model.Eula;
 import com.picsauditing.persistence.model.EulaAgreement;
+import com.picsauditing.service.authentication.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,15 @@ import javax.security.auth.login.LoginException;
 
 
 public class EulaService {
+
+	@Autowired
+	private AuthenticationService authenticationService;
     @Autowired
     private EulaAgreementDao eulaAgreementDao;
     @Autowired
     private EulaDao eulaDao;
     @Autowired
     private LoginService loginService;
-    @Autowired
-    private com.picsauditing.employeeguard.services.LoginService egLoginService;
 
     private final Logger logger = LoggerFactory.getLogger(EulaService.class);
 
@@ -43,7 +45,7 @@ public class EulaService {
         if (user != null) {
             loginService.doPreLoginVerification(user, userName, password);
         } else {
-            egLoginService.doPreLoginVerificationEG(userName, password);
+            authenticationService.doPreLoginVerificationEG(userName, password);
         }
     }
 
