@@ -14,7 +14,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 
 public class SessionSecurity {
-	public static final String SESSION_COOKIE_DOMAIN = ".picsorganizer.com";
+	public static final String SESSION_COOKIE_DOMAIN = "picsorganizer.com";
 
 	private static final Logger logger = LoggerFactory.getLogger(SessionSecurity.class);
 	private static String secretKeyspec;
