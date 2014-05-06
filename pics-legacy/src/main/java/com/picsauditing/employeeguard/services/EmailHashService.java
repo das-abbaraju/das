@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.authentication.dao.EmailHashDAO;
+import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
@@ -18,6 +19,8 @@ public class EmailHashService {
 
 	@Autowired
 	private EmailHashDAO emailHashDAO;
+	@Autowired
+	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
 	public boolean hashIsValid(final String hash) {
 		if (isInvalidHash(hash)) {
@@ -90,7 +93,7 @@ public class EmailHashService {
 		emailHash.setCreatedDate(DateBean.today());
 		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
 		emailHash.setEmailAddress(employee.getEmail());
-		emailHash.setEmployee(new SoftDeletedEmployee(employee.getId()));
+		emailHash.setEmployee(softDeletedEmployeeDAO.find(employee.getId()));
 
 		emailHash.setHashCode(buildHashCode(emailHash));
 
