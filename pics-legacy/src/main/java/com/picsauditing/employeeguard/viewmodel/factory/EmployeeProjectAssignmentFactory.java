@@ -12,7 +12,7 @@ import java.util.*;
 
 public class EmployeeProjectAssignmentFactory {
 
-    public EmployeeProjectAssignment create(final AccountModel accountModel,
+    private EmployeeProjectAssignment create(final AccountModel accountModel,
                                             final Employee employee,
                                             final List<AccountSkill> roleSkills,
                                             final List<AccountSkill> projectSkills,
@@ -102,22 +102,23 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-      //-- Default to highest severity, since we are trying to find the lowest one.
+      //-- Default to expired in case employee has no documentation at all.
       SkillStatus lowestStatus = SkillStatus.Expired;
-        for (AccountSkill skill : roleSkills) {
-            if (employeeSkillsMap.containsKey(skill)) {
-                SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
-                if (skillStatus == SkillStatus.Expired) {
-                    return skillStatus;
-                }
+      for (AccountSkill skill : roleSkills) {
+        if (employeeSkillsMap.containsKey(skill)) {
+            lowestStatus = SkillStatus.Completed;
+            SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
+            if (skillStatus == SkillStatus.Expired) {
+              return skillStatus;
+            }
 
-                if (skillStatus.compareTo(lowestStatus) < 0) {
-                    lowestStatus = skillStatus;
-                }
+            if (skillStatus.compareTo(lowestStatus) < 0) {
+                lowestStatus = skillStatus;
             }
         }
+      }
 
-        return lowestStatus;
+      return lowestStatus;
     }
 
     private SkillStatus worstOf(final List<SkillStatus> skillStatuses) {
