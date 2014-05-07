@@ -102,11 +102,9 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-      //-- Default to expired in case employee has no documentation at all.
-      SkillStatus lowestStatus = SkillStatus.Expired;
+      SkillStatus lowestStatus = SkillStatus.Completed;
       for (AccountSkill skill : roleSkills) {
         if (employeeSkillsMap.containsKey(skill)) {
-            lowestStatus = SkillStatus.Completed;
             SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
             if (skillStatus == SkillStatus.Expired) {
               return skillStatus;
@@ -115,6 +113,10 @@ public class EmployeeProjectAssignmentFactory {
             if (skillStatus.compareTo(lowestStatus) < 0) {
                 lowestStatus = skillStatus;
             }
+        }
+        else{
+          //-- If there's no documentation for this skill, then we are at the highest status of "expired".
+          return SkillStatus.Expired;
         }
       }
 
