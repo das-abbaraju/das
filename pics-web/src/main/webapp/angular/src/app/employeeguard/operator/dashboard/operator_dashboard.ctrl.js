@@ -31,11 +31,14 @@ angular.module('PICS.employeeguard')
 
     function onLoadAssignmentsSuccess(site_details){
         $scope.site_assignments = site_details;
-        $scope.chartData = [
-            site_details.completed + site_details.pending,
-            site_details.expiring,
-            site_details.expired
-        ];
+
+        if (site_details.employees > 0) {
+            $scope.chartData = [
+                site_details.completed + site_details.pending,
+                site_details.expiring,
+                site_details.expired
+            ];
+        }
     }
 
     $scope.calculateStatusPercentage = function (amount, total) {
