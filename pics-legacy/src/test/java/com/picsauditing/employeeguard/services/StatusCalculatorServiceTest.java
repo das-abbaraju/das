@@ -55,6 +55,21 @@ public class StatusCalculatorServiceTest {
 		Whitebox.setInternalState(service, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
 	}
 
+  @Test
+  public void testGetEmployeeStatusRollUpForSkills_WhenEmployeeHasNoDocumentation() throws Exception {
+    List<AccountSkill> fakeSkills = buildFakeAccountSkills();
+    List<Employee> fakeEmployees = buildFakeEmployees();
+
+    //-- Employee has no documentation.
+    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
+            anyCollectionOf(AccountSkill.class))).thenReturn(Collections.EMPTY_LIST);
+
+    Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
+
+    verifyResults_WhenEmployeeHasNoDocumentation(fakeEmployees, result);
+  }
+
+
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
 		setupMocksForGetEmployeeStatusRollUpForSkills();
@@ -120,6 +135,22 @@ public class StatusCalculatorServiceTest {
 				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("jill@test.com").build()
 		);
 	}
+
+  private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
+    assertEquals(3, result.size());
+
+    // first skill is complete, second and third skill is expired
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(0))));
+
+    // first skill is expired, second skill is expiring, third skill is complete
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(1))));
+
+    // all skills are expired
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(2))));
+  }
 
 	private void verifyResults(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
 		assertEquals(3, result.size());
