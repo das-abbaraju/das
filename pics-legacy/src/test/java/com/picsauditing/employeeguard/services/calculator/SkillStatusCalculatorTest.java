@@ -13,13 +13,6 @@ import static org.junit.Assert.assertEquals;
 
 public class SkillStatusCalculatorTest {
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testCalculateStatusRollUp_ExpiredWhenEmployeeHasntProvidedAnyDocumentation() {
-    List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
-    SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
-    assertEquals(SkillStatus.Expired, result);
-  }
-
 	@Test
 	public void testCalculateStatusFromSkill_Expired() throws Exception {
         AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder()
