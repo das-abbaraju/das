@@ -70,6 +70,7 @@ public class SkillStatusCalculator {
 			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
 		}
 
+
 		SkillStatus worstStatus = SkillStatus.Completed;
 		for (SkillStatus skillStatus : skillStatuses) {
 

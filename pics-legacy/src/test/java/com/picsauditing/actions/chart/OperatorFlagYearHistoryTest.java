@@ -47,26 +47,6 @@ public class OperatorFlagYearHistoryTest extends PicsTest {
 		Whitebox.setInternalState(operatorFlagYearHistory, "permissions", permissions);
 	}
 
-	@Test
-	public void testBuildSql() throws Exception {
-		// it is supposed to be for 12 months, so we should have 12 createdDate references
-		// it is for our specific operator account id
-		// "UNION" should not be stuck on the end of the query
-		String sql = operatorFlagYearHistory.buildSql();
-
-		Pattern pattern = Pattern.compile("creationDate = '\\d{4}-\\d{2}-\\d{2}'");
-		Matcher matcher = pattern.matcher(sql);
-		int numberOfCreationDateReferences = 0;
-		while (matcher.find()) numberOfCreationDateReferences++;
-		assertEquals(MONTHS_IN_YEAR, numberOfCreationDateReferences);
-		
-		Pattern pattern2 = Pattern.compile("opID = "+OPERATOR_ACCOUNT_ID);
-		Matcher matcher2 = pattern2.matcher(sql);
-		assertTrue(matcher2.find());
-		
-		assertTrue(sql.lastIndexOf("UNION") < sql.length() - 10);
-	}
-	
 	/*
 	 * Testing the comparator we're going to use in the widget by 
 	 * 1. getting that comparator 

@@ -8,10 +8,10 @@ public enum SkillStatus implements JSONable {
     // TODO: Rename expiring to something more meaningful that the Skill is about to expire
 
     // Keep in order of severity, from highest severity to lowest
-    Expired("expired"),
+    Expired("expired"),    //-- Lowest Ordinal
     Expiring("expiring"),
     Pending("pending"),
-    Completed("complete");
+    Completed("complete"); //-- Highest Ordinal
 
     private String displayValue;
 
