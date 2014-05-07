@@ -2,9 +2,11 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProfileDAO;
+import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.SiteAssignment;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
@@ -21,6 +23,8 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 	private EmployeeDAO employeeDAO;
 	@Autowired
 	private ProfileDAO profileDAO;
+	@Autowired
+	private ProjectDAO projectDAO;
 	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
 
@@ -53,6 +57,10 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 						return siteAssignment.getSiteId();
 					}
 				});
+	}
+
+	public Set<Project> findProjectsForProfile(final Profile profile) {
+		return new HashSet<>(projectDAO.findByProfile(profile));
 	}
 
 	/* All Save Methods */

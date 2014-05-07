@@ -514,4 +514,19 @@ public class PicsCollectionUtil {
 
 		return values;
 	}
+
+	public static <K, V> Map<K, Set<V>> addKeys(final Map<K, Set<V>> map, final Collection<K> allKeys) {
+		Map<K, Set<V>> completeMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(map)) {
+			completeMap.putAll(map);
+		}
+
+		for (K key : allKeys) {
+			if (!completeMap.containsKey(key)) {
+				completeMap.put(key, new HashSet<V>());
+			}
+		}
+
+		return completeMap;
+	}
 }

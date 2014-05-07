@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.process;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
@@ -9,7 +12,6 @@ import java.util.Set;
 
 public class ProfileSkillData {
 
-	private Map<AccountSkill, SkillStatus> skillStatusMap;
 	private Map<AccountModel, Set<Role>> roles;
 	private Map<Role, Set<AccountSkill>> allRoleSkills;
 	private Map<AccountModel, Set<Project>> siteProjects;
@@ -24,7 +26,11 @@ public class ProfileSkillData {
 	private Map<Project, SkillStatus> projectStatuses;
 	private Map<AccountModel, SkillStatus> siteStatuses;
 	private Map<Project, Set<AccountSkill>> allProjectSkills;
+	private Map<AccountSkill, SkillStatus> skillStatusMap;
 	private SkillStatus overallStatus;
+	private Map<Integer, AccountModel> contractorAccounts;
+	private Map<Integer, AccountModel> siteAndCorporateAccounts;
+	private Map<Integer, AccountModel> allAccounts;
 
 	public Map<AccountSkill, SkillStatus> getSkillStatusMap() {
 		return skillStatusMap;
@@ -136,5 +142,29 @@ public class ProfileSkillData {
 
 	public void setOverallStatus(SkillStatus overallStatus) {
 		this.overallStatus = overallStatus;
+	}
+
+	public Map<Integer, AccountModel> getContractorAccounts() {
+		return contractorAccounts;
+	}
+
+	public void setContractorAccounts(Map<Integer, AccountModel> contractorAccounts) {
+		this.contractorAccounts = contractorAccounts;
+	}
+
+	public Map<Integer, AccountModel> getSiteAndCorporateAccounts() {
+		return siteAndCorporateAccounts;
+	}
+
+	public void setSiteAndCorporateAccounts(Map<Integer, AccountModel> siteAndCorporateAccounts) {
+		this.siteAndCorporateAccounts = siteAndCorporateAccounts;
+	}
+
+	public Map<Integer, AccountModel> getAllAccounts() {
+		return allAccounts;
+	}
+
+	public void setAllAccounts(Map<Integer, AccountModel> allAccounts) {
+		this.allAccounts = allAccounts;
 	}
 }
