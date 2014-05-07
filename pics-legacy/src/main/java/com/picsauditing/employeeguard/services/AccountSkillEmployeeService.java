@@ -156,6 +156,6 @@ public class AccountSkillEmployeeService {
 			}
 		}
 
-		return new AccountSkillEmployeeBuilder().endDate(DateBean.today()).build();
+    return new AccountSkillEmployeeBuilder().build();
 	}
 }
