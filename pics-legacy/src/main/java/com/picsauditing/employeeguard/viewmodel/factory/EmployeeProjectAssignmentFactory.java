@@ -12,7 +12,7 @@ import java.util.*;
 
 public class EmployeeProjectAssignmentFactory {
 
-    public EmployeeProjectAssignment create(final AccountModel accountModel,
+    private EmployeeProjectAssignment create(final AccountModel accountModel,
                                             final Employee employee,
                                             final List<AccountSkill> roleSkills,
                                             final List<AccountSkill> projectSkills,
@@ -102,22 +102,25 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-      //-- Default to highest severity, since we are trying to find the lowest one.
-      SkillStatus lowestStatus = SkillStatus.Expired;
-        for (AccountSkill skill : roleSkills) {
-            if (employeeSkillsMap.containsKey(skill)) {
-                SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
-                if (skillStatus == SkillStatus.Expired) {
-                    return skillStatus;
-                }
+      SkillStatus lowestStatus = SkillStatus.Completed;
+      for (AccountSkill skill : roleSkills) {
+        if (employeeSkillsMap.containsKey(skill)) {
+            SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
+            if (skillStatus == SkillStatus.Expired) {
+              return skillStatus;
+            }
 
-                if (skillStatus.compareTo(lowestStatus) < 0) {
-                    lowestStatus = skillStatus;
-                }
+            if (skillStatus.compareTo(lowestStatus) < 0) {
+                lowestStatus = skillStatus;
             }
         }
+        else{
+          //-- If there's no documentation for this skill, then we are at the highest status of "expired".
+          return SkillStatus.Expired;
+        }
+      }
 
-        return lowestStatus;
+      return lowestStatus;
     }
 
     private SkillStatus worstOf(final List<SkillStatus> skillStatuses) {
