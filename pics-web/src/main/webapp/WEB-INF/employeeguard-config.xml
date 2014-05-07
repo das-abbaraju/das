@@ -66,10 +66,12 @@
     <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
     <bean id="LiveIDEmployeeService" class="com.picsauditing.employeeguard.services.LiveIDEmployeeService"/>
     <bean id="OperatorEmployeeService" class="com.picsauditing.employeeguard.services.OperatorEmployeeService"/>
+    <bean id="EmployeeSkillsModelService" class="com.picsauditing.employeeguard.services.EmployeeSkillsModelService"/>
 
     <!-- Processes -->
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
     <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
+    <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
 
     <!-- Skill Engine and related classes -->
     <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine" />

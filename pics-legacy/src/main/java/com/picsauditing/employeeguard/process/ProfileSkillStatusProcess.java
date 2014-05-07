@@ -8,7 +8,6 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
-import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -127,21 +126,6 @@ public class ProfileSkillStatusProcess {
 		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(projects);
 
 		return PicsCollectionUtil.addKeys(projectRoles, projects);
-	}
-
-	private Map<Project, Set<Role>> addProjectsWithNoRoles(Map<Project, Set<Role>> projectRoles, Set<Project> projects) {
-		Map<Project, Set<Role>> allProjectRoles = new HashMap<>();
-		if (MapUtils.isNotEmpty(projectRoles)) {
-			allProjectRoles.putAll(projectRoles);
-		}
-
-		for (Project project : projects) {
-			if (!allProjectRoles.containsKey(project)) {
-				allProjectRoles.put(project, new HashSet<Role>());
-			}
-		}
-
-		return allProjectRoles;
 	}
 
 	private Map<Group, Set<AccountSkill>> getGroupSkills(final Profile profile) {

@@ -305,6 +305,13 @@
         <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
         </action>
 
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="profile/skills" class="com.picsauditing.employeeguard.controllers.employee.ProfileSkillsAction"
+                method="skills">
+        </action>
+
         <!-- Profile -->
         <action name="profile" class="com.picsauditing.employeeguard.controllers.employee.EmployeeAction">
             <result name="show">/struts/employee-guard/employee/employee/show.jsp</result>
