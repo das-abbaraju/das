@@ -9,7 +9,7 @@
         <div class="row">
             <div class="span6 offset3">
                 <div class="panel-heading clearfix">
-                    <strong class="pull-left">End User License Agreement (EULA)</strong>
+                    <strong class="pull-left title">End User License Agreement (EULA)</strong>
                     <div class="pull-right text-right version-container">
                         <span class="version">Version 1.0</span>
                         <a href="#"><i class="icon-print icon-large"></i></a>
