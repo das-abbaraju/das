@@ -39,8 +39,7 @@
                                 <h3 class="panel-title">Site Selection</h3>
                             </div>
                             <div class="panel-body">
-                                <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadSelectedSiteData(selected_site)">
-                                    <option value="null">Select a site...</option>
+                                <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadAssignmentsBySiteId(selected_site)">
                                     <option ng-repeat="site in siteList | orderBy:'name'" ng-selected="{{ site.id === selected_site }}" value="{{ site.id }}">{{ site.name }}</option>
                                 </select>
                             </div>
@@ -51,7 +50,7 @@
                 <ng-include src="'/angular/src/app/employeeguard/operator/dashboard/_site-status.tpl.html'"></ng-include>
 
                 <div class="row beta-section">
-                    <div class="col-md-8" ng-show="user === 'operator'">
+                    <div class="col-md-8" ng-show="userType === 'operator'">
                         <section class="employee-guard-section">
                             <h1>
                                 <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
@@ -99,7 +98,7 @@
                             </div>
                         </section>
                     </div>
-                    <div class="col-md-8" ng-show="user === 'corporate'">
+                    <div class="col-md-8" ng-show="userType === 'corporate'">
                         <section class="employee-guard-section" >
                             <h1>
                                 <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
