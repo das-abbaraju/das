@@ -100,6 +100,6 @@ function sendCorsEmptySuccess(response) {
 }
 
 function rejectRequest(request, response) {
-    response.writeHead(4056);
+    response.writeHead(405);
     response.end();
 }
