@@ -8,5 +8,5 @@ angular.module('PICSApp', [
 ])
 
 .run(function (translationsService) {
-    translationsService.setLogKeysToConsole(false);
+    translationsService.setDevelopmentMode('off');
 });

@@ -14,7 +14,7 @@ describe('translate directive', function () {
         var linkingFn, element, parsedExpression, interpolatedExpression;
 
         translationsService.setTranslations({
-            'my.first.translation.key': 'My {1} value for translation #{2}'
+            'my.first.translation.key': 'My {0} value for translation #{1}'
         });
 
         linkingFn = $compile([

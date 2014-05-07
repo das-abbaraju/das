@@ -27,30 +27,30 @@
  *    For a translation with key 'my.first.translation.key' and value 'My {1} value for translation #{2}':
  *    <p>{{ text['my.first.translation.key'] | translationValues:['translation', '1'] }}</p>
  *
- * Translation keys for each route must be added to the routePathToTranslationKeys value
- * in translationKeys.js. The value of routeKeyToTranslationKeys is a JavaScript object mapping
- * each route path to an array of translation keys associated with that route path.
+ * Translation keys for each route must be added to the routePathToTranslationKeys value in translationKeys.js.
+ * The value of routeKeyToTranslationKeys is a JavaScript object mapping each route path to an array of translation keys
+ * associated with that route path.
  *
- * You can generate these key-value pairs automatically by doing the following:
+ * These key-value pairs in this file are auto-updated by the provided node.js micro-server located in the application root:
  *
- * 1) Inject translationsService into your main app module's run block, and call setLogKeysToConsole,
- *    passing a boolean value of true, e.g.:
+ * 1) Inject translationsService into your main app module's run block, and call setDevelopmentMode,
+ *    passing the string 'on', e.g.:
  *
  *    app.module('app').run(function (translationsService) {
- *        translations.Service.setLogKeysToConsole(true);
+ *        translations.Service.setDevelopmentMode('on');
  *    });
  *
- * 2) Open your browser, and navigate to the target route path.
+ * 2) In Terminal, navigate to /angular, and type: node translation.js.
  *
- * 3) Open the JavaScript console of your browser to view the key-value pair.
+ * 3) Open your browser, and navigate to the target route path.
  *
- * 4) Copy-and-paste the key-value pair into the translationKeys file.
+ * 4) The translation keys in translationKeys.js will be added if they were missing or updated if they existed previously.
  *
- * 5) To turn logging off (e.g., for production), change the value passed to setLogKeysToConsole to false.
+ * 5) To turn logging off (e.g., for production), remove the call to setDevelopmentMode, or pass to it any value other than 'on'.
+ *
  */
 (function () {
-    var logKeysToConsole = true,
-        translationKeys = [],
+    var translationKeys = [],
         routePath;
 
     angular.module('PICS.translations', [])
@@ -59,8 +59,12 @@
         $provide.factory('translationsService', function ($http, $rootScope, $q, routePathToTranslationKeys) {
             var deferred = $q.defer();
 
-            function setLogKeysToConsole(value) {
-                logKeysToConsole = !!value;
+            function setDevelopmentMode(value) {
+                isDevelopmentMode = (value == 'on');
+            }
+
+            function isDevelopmentMode() {
+                return isDevelopmentMode;
             }
 
             function createRouteParamsFromKeys(keys) {
@@ -87,7 +91,8 @@
             }
 
             return {
-                setLogKeysToConsole: setLogKeysToConsole,
+                setDevelopmentMode: setDevelopmentMode,
+                isDevelopmentMode: isDevelopmentMode,
                 fetchTranslations: fetchTranslations,
                 createRouteParamsFromKeys: createRouteParamsFromKeys,
                 getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
@@ -115,7 +120,7 @@
         });
     })
 
-    .directive('translatedPage', function ($rootScope, $http, $log) {
+    .directive('translatedPage', function ($rootScope, $http, $log, translationsService) {
         function getKeyValueJson(key, value) {
             return '"' + routePath + '":' + JSON.stringify(translationKeys);
         }
@@ -123,8 +128,14 @@
         return {
             restrict: 'A',
             link: function (scope) {
-                scope.$on('$includeContentLoaded', function () {
-                    if (logKeysToConsole) {
+                scope.$on('$viewContentLoaded', function () {
+                    if (translationsService.isDevelopmentMode()) {
+                        var newKeyValuePair = {};
+
+                        newKeyValuePair[routePath] = translationKeys;
+
+                        $http.post('http://localhost:8081', newKeyValuePair);
+
                         $log.info(getKeyValueJson(routePath, JSON.stringify(translationKeys)));
                     }
                 });
@@ -132,7 +143,7 @@
         };
     })
 
-    .directive('translate', function () {
+    .directive('translate', function (translationsService) {
         function getKeysFromText(text) {
             var expressions = text.match(/[{\s*]text\[('|\")[\w.]+('|\")\]/g),
                 keys = [];
@@ -155,7 +166,7 @@
         return {
             restrict: 'A',
             link: function (scope, element) {
-                if (logKeysToConsole) {
+                if (translationsService.isDevelopmentMode()) {
                     addKeysFromElementText(element.text());
                 }
             }
@@ -164,11 +175,13 @@
 
     .filter('translationValues', function () {
         return function (translationExpression, replaceValues) {
+            if (!translationExpression) return;
+
             function replaceFn (replaceParam, replaceValueIndex) {
-                return replaceValues[replaceValueIndex-1];
+                return replaceValues[replaceValueIndex];
             }
 
-            return translationExpression.replace(/{([0-9]+)}/g, replaceFn);
+            return translationExpression.replace(/{([0-9]+)}/g, replaceFn) || '';
         };
     });
 }());
