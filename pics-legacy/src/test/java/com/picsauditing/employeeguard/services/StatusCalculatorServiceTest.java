@@ -139,15 +139,15 @@ public class StatusCalculatorServiceTest {
   private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
     assertEquals(3, result.size());
 
-    // first skill is complete, second and third skill is expired
+    // All expired
     assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
             result.get(fakeEmployees.get(0))));
 
-    // first skill is expired, second skill is expiring, third skill is complete
+    // All expired
     assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
             result.get(fakeEmployees.get(1))));
 
-    // all skills are expired
+    // All expired
     assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
             result.get(fakeEmployees.get(2))));
   }
