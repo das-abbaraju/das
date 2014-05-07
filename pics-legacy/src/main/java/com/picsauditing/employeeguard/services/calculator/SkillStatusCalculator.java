@@ -35,10 +35,8 @@ public class SkillStatusCalculator {
         }
 
         Date today = DateBean.today();
-        //-- Default to the highest severity (Expired) since we are calculating the lowest status.
-        SkillStatus lowestStatus = SkillStatus.Expired;
+        SkillStatus lowestStatus = SkillStatus.Completed;
         for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-            lowestStatus = SkillStatus.Completed;
             SkillStatus calculatedStatus = calculateStatus(accountSkillEmployee, today);
 
             // exit early if any status is "Expired", because we have already hit the lowest status

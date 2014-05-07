@@ -62,7 +62,7 @@ public class SkillStatusCalculatorTest {
 
     @Test
     public void testCalculateStatusRollUp_LowestIsExpired() {
-        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList();
+        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Expired();
 
         SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
 
@@ -71,7 +71,7 @@ public class SkillStatusCalculatorTest {
 
     @Test
     public void testCalculateStatusRollUp_LowestIsExpiring() {
-        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList().subList(0, 6);
+        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Expiring();
 
         SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
 
@@ -80,16 +80,17 @@ public class SkillStatusCalculatorTest {
 
     @Test
     public void testCalculateStatusRollUp_LowestIsCompleted() {
-        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList().subList(0, 3);
+        List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Completed();
 
         SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
 
         assertEquals(SkillStatus.Completed, result);
     }
 
-    private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList() {
+    private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Expired() {
         return Arrays.asList(
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 50)).build(),
+                new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), -40)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 100)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 40)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 2)).build(),
@@ -98,8 +99,27 @@ public class SkillStatusCalculatorTest {
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), -45)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 2)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 5)).build(),
-                new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), -40)).build(),
                 new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 5)).build(),
                 null);
     }
+
+  private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Expiring() {
+    return Arrays.asList(
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 6)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 50)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 100)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 2)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 40)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 75)).build()
+            );
+  }
+
+  private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Completed() {
+    return Arrays.asList(
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 50)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 100)).build(),
+            new AccountSkillEmployeeBuilder().endDate(DateBean.addDays(DateBean.today(), 40)).build());
+  }
+
+
 }

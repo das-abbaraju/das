@@ -89,9 +89,9 @@ public class SkillAction extends PicsRestActionSupport {
 	private List<CompanySkillInfo> buildCompanySkillInfoList() {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 
-		CompanySkillsForm companySkillsForm = formBuilderFactory.getCompanySkillsFormBuilder().build(profile);
 
-		return companySkillsForm.getCompanySkillInfoList();
+    CompanySkillsForm companySkillsForm = formBuilderFactory.getCompanySkillsFormBuilder().build(profile);
+    return companySkillsForm.getCompanySkillInfoList();
 	}
 
 	public String manage() {
