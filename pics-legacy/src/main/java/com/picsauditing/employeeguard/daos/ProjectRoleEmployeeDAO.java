@@ -117,28 +117,20 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 
-  /**
-   * @Deprecated
-   * Use findByEmployeesAndProjects(Collection<Employee> employees, Collection<Project> projects) instead, which works.
-   *
-   * Details
-   * The commented query or the join query doesn't return any results. The converted query returns results when we fire it on sql prompt,
-   * but HQL doesnt return anything.  Tried clearing cache as well.
-   *
-   *
-   */
-  @Deprecated
 	public List<ProjectRoleEmployee> findByEmployeeAndSiteId(final int employeeId, final int siteId) {
+//-- this style doesn't work
 /*
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("select pre FROM ProjectRoleEmployee pre " +
 				"WHERE pre.employee.id = :employeeId " +
 				"AND pre.projectRole.project.accountId = :siteId", ProjectRoleEmployee.class);
 */
+
     TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+            "JOIN pre.employee e " +
             "JOIN pre.projectRole pr " +
             "JOIN pr.project p " +
             "WHERE " +
-            "pre.employee.id = :employeeId " +
+            "e.id = :employeeId " +
             "and " +
             "p.accountId = :siteId", ProjectRoleEmployee.class);
 

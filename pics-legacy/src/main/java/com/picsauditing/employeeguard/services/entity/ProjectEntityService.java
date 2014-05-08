@@ -214,16 +214,16 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 
-	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, Employee employee) {
+	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, final int employeeId) {
+    List<ProjectRoleEmployee> projectRoleEmployees = this.findByEmployeesAndSiteProjects(siteId, employeeId);
 
-    List<ProjectRoleEmployee> projectRoleEmployees = this.findByEmployeesAndSiteProjects(siteId,Arrays.asList(employee));
     projectRoleEmployeeDAO.delete(projectRoleEmployees);
 
 	}
 
-  public List<ProjectRoleEmployee> findByEmployeesAndSiteProjects(final int siteId, final Collection<Employee> employees) {
-    Collection<Project> projects=this.getAllProjectsForSite(siteId);
-    return  projectRoleEmployeeDAO.findByEmployeesAndProjects(employees, projects);
+  public List<ProjectRoleEmployee> findByEmployeesAndSiteProjects(final int siteId, final int employeeId) {
+
+    return  projectRoleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
   }
 
 	public void deleteEmployeeFromProjectRole(final int siteId, final int roleId, final int employeeId) {

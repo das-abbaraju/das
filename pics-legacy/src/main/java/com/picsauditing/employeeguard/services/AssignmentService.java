@@ -198,8 +198,7 @@ public class AssignmentService {
 	public void unassignEmployeeFromSite(final int siteId, final int employeeId) {
     roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
 
-    Employee employee=employeeEntityService.find(employeeId);
-    projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employee);
+    projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
 	}
 
 	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
