@@ -308,6 +308,9 @@
         <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="skills/sites" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
         <action name="profile/skills" class="com.picsauditing.employeeguard.controllers.employee.ProfileSkillsAction"
                 method="skills">
         </action>

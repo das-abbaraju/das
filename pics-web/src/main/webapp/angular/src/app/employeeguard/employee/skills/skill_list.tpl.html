@@ -18,20 +18,20 @@
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
                         <ul class="nav" role="menu">
                             <li ng-class="{active: selectedMenuItem == 'all'}">
-                                <a href="/employee-guard/employee/skillz">All
+                                <a href="/employee-guard/employee/skills">All
                                 {{ skillModel }}
                                     <skillstatusicon status="{{ overallStatus }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
                             <li class="nav-divider"></li>
                             <li ng-repeat="site in sites" ng-class="{active: selectedMenuItem == site.slug}">
-                                <a href="/employee-guard/employee/skillz/sites/{{ site.slug }}">
+                                <a href="/employee-guard/employee/skills/sites/{{ site.slug }}">
                                     {{ site.name }}
                                     <skillstatusicon status="{{ site.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                                 <ul class="nav" role="submenu">
                                     <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == project.slug}">
-                                        <a href="/employee-guard/employee/skillz/sites/{{ site.slug }}/projects/{{ project.slug }}">
+                                        <a href="/employee-guard/employee/skills/sites/{{ site.slug }}/projects/{{ project.slug }}">
                                             {{ project.name }}
                                             <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
                                         </a>
