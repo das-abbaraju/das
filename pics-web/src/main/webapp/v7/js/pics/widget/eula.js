@@ -156,9 +156,11 @@
                 $eula_container_el = $('.eula-container');
                 $eula_accept_button_el = $eula_container_el.find('.btn-agree');
                 $eula_exit_button_el = $eula_container_el.find('.btn-exit');
+                $eula_print_button_el = $eula_container_el.find('.icon-print');
 
                 $eula_accept_button_el.on('click', onEulaAcceptButtonClick);
                 $eula_exit_button_el.on('click', onEulaExitButtonClick);
+                $eula_print_button_el.on('click', onEulaPrintButtonClick)
             }
 
             function onEulaAcceptButtonClick() {
@@ -171,6 +173,10 @@
                 resetForm();
 
                 $eula_container_el.remove();
+            }
+
+            function onEulaPrintButtonClick() {
+                window.print();
             }
 
             function resetForm() {

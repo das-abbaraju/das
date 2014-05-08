@@ -1,0 +1,12 @@
+#!/bin/sh
+
+osascript -e '
+    on run argv
+     tell application "Terminal"
+         activate
+         tell window 1
+             do script "cd " & item 1 of argv
+         end tell
+     end tell
+    end run
+' "$PWD"
