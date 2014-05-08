@@ -10,20 +10,12 @@ import java.util.Set;
 
 public class ProfileSkillData {
 
-//	private Map<AccountModel, Set<Role>> roles;
-//	private Map<Role, Set<AccountSkill>> allRoleSkills;
-//	private Map<AccountModel, Set<Project>> siteProjects;
-//	private Map<Project, Set<AccountSkill>> projectRequiredSkills;
-//	private Map<Project, Set<Role>> projectRoles;
-//	private Map<AccountModel, Set<Group>> contractorGroups;
-//	private Map<Role, SkillStatus> roleStatuses;
-//	private Map<AccountModel, Set<Role>> siteAssignmentRoles;
-
 	// All Corporate/Site Required Skills + SiteAssignment Role Skills (for Roles not in Projects)
 	// All Contractor Group Skills + Skills Required for all Employees
 	private Map<AccountModel, Set<AccountSkill>> allRequiredSkills;
 
-	private Map<Project, SkillStatus> projectStatuses;
+	private Map<AccountModel, Set<Project>> siteProjects;
+ 	private Map<Project, SkillStatus> projectStatuses;
 	private Map<AccountModel, SkillStatus> siteStatuses;
 	private Map<Project, Set<AccountSkill>> allProjectSkills;
 	private Map<AccountSkill, SkillStatus> skillStatusMap;
@@ -33,20 +25,21 @@ public class ProfileSkillData {
 	private Map<Integer, AccountModel> allAccounts;
 	private Map<AccountModel, Set<AccountModel>> parentSites;
 
-	public Map<AccountSkill, SkillStatus> getSkillStatusMap() {
-		return skillStatusMap;
-	}
-
-	public void setSkillStatusMap(Map<AccountSkill, SkillStatus> skillStatusMap) {
-		this.skillStatusMap = skillStatusMap;
-	}
-
 	public Map<AccountModel, Set<AccountSkill>> getAllRequiredSkills() {
+
 		return allRequiredSkills;
 	}
 
 	public void setAllRequiredSkills(Map<AccountModel, Set<AccountSkill>> allRequiredSkills) {
 		this.allRequiredSkills = allRequiredSkills;
+	}
+
+	public Map<AccountModel, Set<Project>> getSiteProjects() {
+		return siteProjects;
+	}
+
+	public void setSiteProjects(Map<AccountModel, Set<Project>> siteProjects) {
+		this.siteProjects = siteProjects;
 	}
 
 	public Map<Project, SkillStatus> getProjectStatuses() {
@@ -73,6 +66,14 @@ public class ProfileSkillData {
 		this.allProjectSkills = allProjectSkills;
 	}
 
+	public Map<AccountSkill, SkillStatus> getSkillStatusMap() {
+		return skillStatusMap;
+	}
+
+	public void setSkillStatusMap(Map<AccountSkill, SkillStatus> skillStatusMap) {
+		this.skillStatusMap = skillStatusMap;
+	}
+
 	public SkillStatus getOverallStatus() {
 		return overallStatus;
 	}
@@ -89,6 +90,14 @@ public class ProfileSkillData {
 		this.contractorAccounts = contractorAccounts;
 	}
 
+	public Map<Integer, AccountModel> getSiteAccounts() {
+		return siteAccounts;
+	}
+
+	public void setSiteAccounts(Map<Integer, AccountModel> siteAccounts) {
+		this.siteAccounts = siteAccounts;
+	}
+
 	public Map<Integer, AccountModel> getAllAccounts() {
 		return allAccounts;
 	}
@@ -103,13 +112,5 @@ public class ProfileSkillData {
 
 	public void setParentSites(Map<AccountModel, Set<AccountModel>> parentSites) {
 		this.parentSites = parentSites;
-	}
-
-	public Map<Integer, AccountModel> getSiteAccounts() {
-		return siteAccounts;
-	}
-
-	public void setSiteAccounts(Map<Integer, AccountModel> siteAccounts) {
-		this.siteAccounts = siteAccounts;
 	}
 }

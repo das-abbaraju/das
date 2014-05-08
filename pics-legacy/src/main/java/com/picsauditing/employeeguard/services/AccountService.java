@@ -120,10 +120,11 @@ public class AccountService {
 			ArrayList<Integer> visited = new ArrayList<>();
 			List<OperatorAccount> topmostCorporates = getTopmostCorporates(site, visited);
 
-			siteToCorporates.put(mapAccountToAccountModel(site), new HashSet<AccountModel>());
+			AccountModel siteAccountModel = mapAccountToAccountModel(site);
+			siteToCorporates.put(siteAccountModel, new HashSet<AccountModel>());
 
 			for (OperatorAccount corporate : topmostCorporates) {
-				siteToCorporates.get(site).add(mapAccountToAccountModel(corporate));
+				siteToCorporates.get(siteAccountModel).add(mapAccountToAccountModel(corporate));
 			}
 		}
 

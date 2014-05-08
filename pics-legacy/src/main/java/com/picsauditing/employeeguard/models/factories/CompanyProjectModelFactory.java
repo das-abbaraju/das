@@ -20,7 +20,7 @@ public class CompanyProjectModelFactory {
 			companyProjectModels.add(create(project, projectStatusMap.get(project), projectSkillsMap.get(project)));
 		}
 
-		return null;
+		return companyProjectModels;
 	}
 
 	public CompanyProjectModel create(final Project project, final SkillStatus status,

@@ -3,7 +3,8 @@ package com.picsauditing.employeeguard.process;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.entity.GroupEntityService;
+import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
@@ -20,13 +21,13 @@ public class ProfileSkillStatusProcess {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private GroupEntityService groupEntityService;
-	@Autowired
 	private ProfileEntityService profileEntityService;
 	@Autowired
 	private RoleEntityService roleEntityService;
 	@Autowired
 	private SkillEntityService skillEntityService;
+	@Autowired
+	private StatusCalculatorService statusCalculatorService;
 
 	@Autowired
 	private ProcessHelper processHelper;
@@ -37,26 +38,101 @@ public class ProfileSkillStatusProcess {
 	// Only Project required skills and skills for roles under a project show up listed under the project
 
 	public ProfileSkillData buildProfileSkillData(final Profile profile) {
-		ProfileSkillData profileSkillData = new ProfileSkillData();
-
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
 		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
-		Map<Integer, Set<Role>> siteAssignmentRoles;
-		Map<Integer, Map<Project, Set<Role>>> siteProjectRoles; // Could be transformed from 
+		Map<Role, Set<AccountSkill>> roleSkills = processHelper.getRoleSkills(roles);
+		Map<Project, Set<AccountSkill>> projectRequiredSkills = processHelper.getProjectRequiredSkills(projects);
+
+		ProfileSkillData profileSkillData = new ProfileSkillData();
+
+		profileSkillData.setAllProjectSkills(processHelper.allProjectSkills(projects,
+				projectRequiredSkills, projectRoles, roleSkills));
 
 		profileSkillData = addAccountInformation(profileSkillData, profile);
-		profileSkillData = addAccountRequiredSkills(profileSkillData, profile);
+		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projects, projectRoles, roleSkills);
+		profileSkillData = addSiteProjects(profileSkillData, projects);
+		profileSkillData = addProjectStatus(profileSkillData, projects, profile);
+		profileSkillData = addAccountStatus(profileSkillData, profile);
+		profileSkillData = addAllSkillStatuses(profileSkillData, profile);
+		profileSkillData = addOverallSkillStatus(profileSkillData);
 
 		return profileSkillData;
 	}
 
-	private ProfileSkillData addAccountRequiredSkills(final ProfileSkillData profileSkillData, final Profile profile) {
+	private ProfileSkillData addOverallSkillStatus(final ProfileSkillData profileSkillData) {
+		profileSkillData.setOverallStatus(statusCalculatorService
+				.calculateOverallStatus(profileSkillData.getSkillStatusMap().values()));
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addAllSkillStatuses(final ProfileSkillData profileSkillData, final Profile profile) {
+		Map<AccountSkill, SkillStatus> allSkillStatuses = statusCalculatorService
+				.getSkillStatuses(profile.getEmployees().get(0), aggregateAllSkills(profileSkillData));
+
+		profileSkillData.setSkillStatusMap(allSkillStatuses);
+
+		return profileSkillData;
+	}
+
+	private Set<AccountSkill> aggregateAllSkills(final ProfileSkillData profileSkillData) {
+		Set<AccountSkill> allSkills = new HashSet<>();
+
+		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllProjectSkills().values()));
+		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllRequiredSkills().values()));
+
+		return allSkills;
+	}
+
+	private ProfileSkillData addAccountStatus(final ProfileSkillData profileSkillData,
+											  final Profile profile) {
+		Map<AccountModel, Set<AccountSkill>> allSiteSkills =
+				processHelper.allSkillsForAllSite(profileSkillData.getSiteProjects(),
+						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
+
+		profileSkillData.setSiteStatuses(statusCalculatorService.getSkillStatusPerEntity(profile.getEmployees().get(0), allSiteSkills));
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addProjectStatus(final ProfileSkillData profileSkillData,
+											  final Set<Project> projects,
+											  final Profile profile) {
+
+
+		Map<Project, Set<AccountSkill>> allSkillsRequiredByProject =
+				processHelper.aggregateAllSkillsForProjects(projects, profileSkillData.getSiteAccounts(),
+						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
+
+		profileSkillData.setProjectStatuses(statusCalculatorService
+				.getSkillStatusPerEntity(profile.getEmployees().get(0), allSkillsRequiredByProject));
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addSiteProjects(final ProfileSkillData profileSkillData,
+											 final Set<Project> projects) {
+		profileSkillData.setSiteProjects(processHelper.getSiteProjects(profileSkillData.getSiteAccounts(),
+				processHelper.getProjectsBySite(projects)));
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addAccountRequiredSkills(final ProfileSkillData profileSkillData,
+													  final Profile profile,
+													  final Set<Project> projects,
+													  final Map<Project, Set<Role>> projectRoles,
+													  final Map<Role, Set<AccountSkill>> roleSkills) {
 		// Add Contractor Required Skills
 		Map<AccountModel, Set<AccountSkill>> allContractorSkills = buildContractorSkillsMap(profileSkillData, profile);
 
 		// Add Corp/Site Required Skills + Site Assignment Roles Skills not part of projects
-//		Map<AccountModel, Set<AccountSkill>> allSiteRequiredSkills = buildSiteRequiredSkillsMap(profileSkillData, profile);
+		Map<AccountModel, Set<AccountSkill>> allSiteRequiredSkills =
+				buildSiteRequiredSkillsMap(profileSkillData, profile, projects, projectRoles, roleSkills);
+
+		profileSkillData.setAllRequiredSkills(PicsCollectionUtil.mergeMapOfSets(allContractorSkills,
+				allSiteRequiredSkills));
 
 		return profileSkillData;  //To change body of created methods use File | Settings | File Templates.
 	}
@@ -107,6 +183,10 @@ public class ProfileSkillStatusProcess {
 		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects = new HashMap<>();
 		for (Integer siteId : siteRolesNotInProjects.keySet()) {
 			Set<AccountSkill> skillsForRole = roleSkills.get(siteRolesNotInProjects.get(siteId));
+			if (skillsForRole == null) {
+				skillsForRole = new HashSet<>();
+			}
+
 			roleSkillsNotForProjects.put(siteAccounts.get(siteId), skillsForRole);
 		}
 
@@ -159,6 +239,7 @@ public class ProfileSkillStatusProcess {
 		Map<Integer, AccountModel> siteAccounts = accountService.getIdToAccountModelMap(siteIds);
 
 		profileSkillData.setContractorAccounts(contractorAccounts);
+		profileSkillData.setSiteAccounts(siteAccounts);
 		profileSkillData.setParentSites(accountService.getSiteParentAccounts(siteIds));
 		profileSkillData.setAllAccounts(PicsCollectionUtil.mergeMaps(contractorAccounts, siteAccounts));
 
@@ -193,6 +274,4 @@ public class ProfileSkillStatusProcess {
 	}
 
 	// TODO: Move these methods to another class
-
-
 }

@@ -51,7 +51,7 @@ class ProcessHelper {
 		return PicsCollectionUtil.addKeys(projectRequiredSkills, projects);
 	}
 
-	public Map<Role, Set<AccountSkill>> getRoleRequiredSkills(final Set<Role> roles) {
+	public Map<Role, Set<AccountSkill>> getRoleSkills(final Set<Role> roles) {
 		Map<Role, Set<AccountSkill>> roleSkillsMap = skillEntityService.getSkillsForRoles(roles);
 
 		return PicsCollectionUtil.addKeys(roleSkillsMap, roles);
@@ -136,5 +136,40 @@ class ProcessHelper {
 						return project.getAccountId();
 					}
 				});
+	}
+
+	public Map<AccountModel, Set<Project>> getSiteProjects(final Map<Integer, AccountModel> siteAccounts,
+														   final Map<Integer, Set<Project>> siteProjects) {
+		Map<AccountModel, Set<Project>> siteProjectsMap = new HashMap<>();
+		for (Integer siteId : siteAccounts.keySet()) {
+			siteProjectsMap.put(siteAccounts.get(siteId), siteProjects.get(siteId));
+		}
+
+		return siteProjectsMap;
+	}
+
+	public Map<Project, Set<AccountSkill>> aggregateAllSkillsForProjects(final Set<Project> projects,
+																		 final Map<Integer, AccountModel> siteAccounts,
+																		 final Map<Project, Set<AccountSkill>> projectSkills,
+																		 final Map<AccountModel, Set<AccountSkill>> siteRequiredSkills) {
+		Map<Project, Set<AccountSkill>> allSkillsRequiredForProjects = new HashMap<>(projectSkills);
+		for (Project project : projects) {
+			if (!allSkillsRequiredForProjects.containsKey(project)) {
+				allSkillsRequiredForProjects.put(project, new HashSet<AccountSkill>());
+			}
+
+			allSkillsRequiredForProjects.get(project).addAll(siteRequiredSkills.get(siteAccounts.get(project.getAccountId())));
+		}
+
+		return allSkillsRequiredForProjects;
+	}
+
+	public Map<AccountModel, Set<AccountSkill>> allSkillsForAllSite(final Map<AccountModel, Set<Project>> accountProjects,
+																	final Map<Project, Set<AccountSkill>> allSkillsForProjects,
+																	final Map<AccountModel, Set<AccountSkill>> siteRequiredSkills) {
+		Map<AccountModel, Set<AccountSkill>> projectSkillsByAccount =
+				PicsCollectionUtil.reduceMapOfCollections(accountProjects, allSkillsForProjects);
+
+		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills, projectSkillsByAccount);
 	}
 }

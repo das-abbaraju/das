@@ -31,7 +31,7 @@ public class EmployeeSkillsModelService {
 		Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountCompanyProjectModelMap =
 				buildAccountCompanyProjectModelMap(profileSkillData);
 
-		Map<AccountModel, RequiredSkills> requiredSkillsMap = buildRequiredSkillsMap();
+		Map<AccountModel, RequiredSkills> requiredSkillsMap = buildRequiredSkillsMap(profileSkillData);
 		Set<CompanyStatusModelFactory.CompanyStatusModel> companyStatusModels =
 				ModelFactory.getCompanyStatusModelFactory().create(profileSkillData.getSiteStatuses(),
 						requiredSkillsMap, accountCompanyProjectModelMap);
@@ -39,21 +39,27 @@ public class EmployeeSkillsModelService {
 		return ModelFactory.getEmployeeSkillsModelFactory().create(profileSkillData.getOverallStatus(), companyStatusModels);
 	}
 
-	private Map<AccountModel, RequiredSkills> buildRequiredSkillsMap() {
-		return null;
+	private Map<AccountModel, RequiredSkills> buildRequiredSkillsMap(final ProfileSkillData profileSkillData) {
+		Map<AccountModel, Set<AccountSkill>> requiredSkills = profileSkillData.getAllRequiredSkills();
+
+		Map<AccountModel, RequiredSkills> accountRequiredSkills = new HashMap<>();
+		for (AccountModel accountModel : requiredSkills.keySet()) {
+			accountRequiredSkills.put(accountModel, new RequiredSkills(ModelFactory.getSkillStatusModelFactory()
+					.create(requiredSkills.get(accountModel), profileSkillData.getSkillStatusMap())));
+		}
+
+		return accountRequiredSkills;
 	}
 
 	private Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> buildAccountCompanyProjectModelMap(
 			final ProfileSkillData profileSkillData) {
 
-//		Map<Project, Set<SkillStatusModel>> projectSkillStatusMap = buildProjectSkillStatusMap(profileSkillData);
-//		Set<CompanyProjectModelFactory.CompanyProjectModel> companyProjectModels =
-//				ModelFactory.getCompanyProjectModelFactory().create(profileSkillData.getProjectStatuses(),
-//						projectSkillStatusMap);
-//
-//		return buildAccountProjectsMap(profileSkillData.getSiteAndCorporateAccounts(), companyProjectModels);
+		Map<Project, Set<SkillStatusModel>> projectSkillStatusMap = buildProjectSkillStatusMap(profileSkillData);
+		Set<CompanyProjectModelFactory.CompanyProjectModel> companyProjectModels =
+				ModelFactory.getCompanyProjectModelFactory().create(profileSkillData.getProjectStatuses(),
+						projectSkillStatusMap);
 
-		return null;
+		return buildAccountProjectsMap(profileSkillData.getSiteAccounts(), companyProjectModels);
 	}
 
 	private Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> buildAccountProjectsMap(
