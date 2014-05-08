@@ -1,4 +1,5 @@
 // Add PICS.myModule to app.js
+// Also add to gruntfile
 angular.module('PICS.myModule', [
     'ngRoute',
     'ngResource'
