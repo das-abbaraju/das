@@ -11,6 +11,7 @@ import com.picsauditing.service.account.events.ContractorEventType;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.DataScrubber;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.math.NumberUtils;
 import org.json.simple.JSONObject;
@@ -81,6 +82,14 @@ public class RegistrationService {
         //FIXME: What does this mean? Agree to what?? This is poorly named.
         newAccount.setAgreedBy(newUser);
         newAccount.setAgreementDate(new Date());
+
+        if (!newAccount.isDemo()) {
+            newAccount.setQbSync(true);
+            SapAppPropertyUtil sapAppPropertyUtil = SapAppPropertyUtil.factory();
+            if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(newAccount)) {
+                newAccount.setSapSync(true);
+            }
+        }
 
         //Persist the user to get the user ID back.
         userService.persist(newUser);
