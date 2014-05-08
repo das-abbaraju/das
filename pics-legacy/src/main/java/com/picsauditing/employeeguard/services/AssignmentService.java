@@ -11,11 +11,15 @@ import com.picsauditing.employeeguard.services.processor.ProjectAssignmentProces
 import com.picsauditing.employeeguard.services.processor.RoleAssignmentProcess;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class AssignmentService {
+
+  public static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
 	@Autowired
 	private AccountService accountService;
@@ -192,9 +196,9 @@ public class AssignmentService {
 	}
 
 	public void unassignEmployeeFromSite(final int siteId, final int employeeId) {
-		roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
+    roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
 
-		projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
+    projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
 	}
 
 	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
