@@ -107,7 +107,8 @@ module.exports = function(grunt) {
             dist: {
                 src: dependencies.concat([
                     'src/**/*.js',
-                    '!src/**/*.spec.js'
+                    '!src/**/*.spec.js',
+                    '!src/app/my-module/*.js'
                 ]),
                 dest: 'build/script.js'
             }
