@@ -4,7 +4,7 @@ describe('My View', function() {
     beforeEach(angular.mock.module('PICS.myModule'));
 
     beforeEach(inject(function(_$http_ /* other required services */ ) {
-        $http = _$http_
+        $http = _$http_;
         /* other required services */
     }));
 
