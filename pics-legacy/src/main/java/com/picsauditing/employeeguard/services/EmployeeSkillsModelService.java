@@ -46,12 +46,14 @@ public class EmployeeSkillsModelService {
 	private Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> buildAccountCompanyProjectModelMap(
 			final ProfileSkillData profileSkillData) {
 
-		Map<Project, Set<SkillStatusModel>> projectSkillStatusMap = buildProjectSkillStatusMap(profileSkillData);
-		Set<CompanyProjectModelFactory.CompanyProjectModel> companyProjectModels =
-				ModelFactory.getCompanyProjectModelFactory().create(profileSkillData.getProjectStatuses(),
-						projectSkillStatusMap);
+//		Map<Project, Set<SkillStatusModel>> projectSkillStatusMap = buildProjectSkillStatusMap(profileSkillData);
+//		Set<CompanyProjectModelFactory.CompanyProjectModel> companyProjectModels =
+//				ModelFactory.getCompanyProjectModelFactory().create(profileSkillData.getProjectStatuses(),
+//						projectSkillStatusMap);
+//
+//		return buildAccountProjectsMap(profileSkillData.getSiteAndCorporateAccounts(), companyProjectModels);
 
-		return buildAccountProjectsMap(profileSkillData.getSiteAndCorporateAccounts(), companyProjectModels);
+		return null;
 	}
 
 	private Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> buildAccountProjectsMap(

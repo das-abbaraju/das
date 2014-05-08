@@ -529,4 +529,24 @@ public class PicsCollectionUtil {
 
 		return completeMap;
 	}
+
+	public interface KeyTransformable<K, N> {
+
+		N getNewKey(K key);
+
+	}
+
+	public static <K, V, N> Map<N, Set<V>> transformMap(final Map<K, Set<V>> map,
+														final KeyTransformable<K, N> keyTransformable) {
+		if (MapUtils.isEmpty(map)) {
+			return Collections.emptyMap();
+		}
+
+		Map<N, Set<V>> transformedMap = new HashMap<>();
+		for (K key : map.keySet()) {
+			transformedMap.put(keyTransformable.getNewKey(key), map.get(key));
+		}
+
+		return transformedMap;
+	}
 }

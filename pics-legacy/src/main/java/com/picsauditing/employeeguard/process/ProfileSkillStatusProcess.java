@@ -10,7 +10,10 @@ import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class ProfileSkillStatusProcess {
 
@@ -25,6 +28,9 @@ public class ProfileSkillStatusProcess {
 	@Autowired
 	private SkillEntityService skillEntityService;
 
+	@Autowired
+	private ProcessHelper processHelper;
+
 	// Required Skills contains all the group skills, Site and Corporate Required Skills, Skills from Roles
 	// the person is assigned to at the Site
 
@@ -35,26 +41,126 @@ public class ProfileSkillStatusProcess {
 
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
+		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
+		Map<Integer, Set<Role>> siteAssignmentRoles;
+		Map<Integer, Map<Project, Set<Role>>> siteProjectRoles; // Could be transformed from 
 
 		profileSkillData = addAccountInformation(profileSkillData, profile);
+		profileSkillData = addAccountRequiredSkills(profileSkillData, profile);
 
 		return profileSkillData;
 	}
 
+	private ProfileSkillData addAccountRequiredSkills(final ProfileSkillData profileSkillData, final Profile profile) {
+		// Add Contractor Required Skills
+		Map<AccountModel, Set<AccountSkill>> allContractorSkills = buildContractorSkillsMap(profileSkillData, profile);
+
+		// Add Corp/Site Required Skills + Site Assignment Roles Skills not part of projects
+//		Map<AccountModel, Set<AccountSkill>> allSiteRequiredSkills = buildSiteRequiredSkillsMap(profileSkillData, profile);
+
+		return profileSkillData;  //To change body of created methods use File | Settings | File Templates.
+	}
+
+	private Map<AccountModel, Set<AccountSkill>> buildSiteRequiredSkillsMap(final ProfileSkillData profileSkillData,
+																			final Profile profile,
+																			final Set<Project> projects,
+																			final Map<Project, Set<Role>> projectRoles,
+																			final Map<Role, Set<AccountSkill>> roleSkills) {
+		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = findAllRequiredSkillsForEachSite(profileSkillData.getParentSites());
+		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects =
+				findAllRoleSkillsNotForProjects(profileSkillData.getSiteAccounts(), projects, projectRoles,
+						roleSkills, profile);
+
+		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills, roleSkillsNotForProjects);
+	}
+
+	private Map<AccountModel, Set<AccountSkill>> findAllRequiredSkillsForEachSite(final Map<AccountModel, Set<AccountModel>> parentSitesMap) {
+		Map<AccountModel, Set<AccountSkill>> siteRequiredSkillsMap = new HashMap<>();
+		for (AccountModel site : parentSitesMap.keySet()) {
+			Set<AccountSkill> requiredSkills = skillEntityService.getSiteAndCorporateRequiredSkills(site.getId(),
+					PicsCollectionUtil.getIdsFromCollection(parentSitesMap.get(site),
+
+							new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+
+								@Override
+								public Integer getId(AccountModel accountModel) {
+									return accountModel.getId();
+								}
+							}));
+
+			siteRequiredSkillsMap.put(site, requiredSkills);
+		}
+
+		return siteRequiredSkillsMap;
+	}
+
+	private Map<AccountModel, Set<AccountSkill>> findAllRoleSkillsNotForProjects(final Map<Integer, AccountModel> siteAccounts,
+																				 final Set<Project> projects,
+																				 final Map<Project, Set<Role>> projectRoles,
+																				 final Map<Role, Set<AccountSkill>> roleSkills,
+																				 final Profile profile) {
+		Map<Integer, Set<Project>> siteProjects = processHelper.getProjectsBySite(projects);
+		Map<Integer, Set<Role>> siteRoles = processHelper.getRolesBySite(profile.getEmployees());
+		Map<Integer, Set<Role>> siteRolesNotInProjects = processHelper
+				.siteRolesNotInProjects(siteProjects, siteRoles, projectRoles);
+
+		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects = new HashMap<>();
+		for (Integer siteId : siteRolesNotInProjects.keySet()) {
+			Set<AccountSkill> skillsForRole = roleSkills.get(siteRolesNotInProjects.get(siteId));
+			roleSkillsNotForProjects.put(siteAccounts.get(siteId), skillsForRole);
+		}
+
+		return roleSkillsNotForProjects;
+	}
+
+	private Map<AccountModel, Set<AccountSkill>> buildContractorSkillsMap(final ProfileSkillData profileSkillData,
+																		  final Profile profile) {
+
+		Map<Integer, Set<AccountSkill>> contractorSkillsForGroups = getGroupSkillsByContractorAccountId(profile);
+
+		Map<Integer, AccountModel> contractorAccounts = profileSkillData.getContractorAccounts();
+		Map<Integer, Set<AccountSkill>> contractorRequiredSkills =
+				processHelper.contractorRequiredSkills(contractorAccounts.keySet());
+
+		Map<Integer, Set<AccountSkill>> allContractorSkillsByAccountId = PicsCollectionUtil
+				.mergeMapOfSets(contractorSkillsForGroups, contractorRequiredSkills);
+
+		Map<AccountModel, Set<AccountSkill>> contractorRequiredSkill = new HashMap<>();
+		for (Integer accountId : contractorAccounts.keySet()) {
+			Set<AccountSkill> allContractorSkills = allContractorSkillsByAccountId.get(accountId);
+			if (allContractorSkills == null) {
+				allContractorSkills = new HashSet<>();
+			}
+
+			contractorRequiredSkill.put(contractorAccounts.get(accountId), allContractorSkills);
+		}
+
+		return contractorRequiredSkill;
+	}
+
+	private Map<Integer, Set<AccountSkill>> getGroupSkillsByContractorAccountId(final Profile profile) {
+		Map<Group, Set<AccountSkill>> groupSkills = processHelper.getGroupSkills(profile);
+		return PicsCollectionUtil.transformMap(groupSkills,
+
+				new PicsCollectionUtil.KeyTransformable<Group, Integer>() {
+
+					@Override
+					public Integer getNewKey(Group group) {
+						return group.getAccountId();
+					}
+				});
+	}
+
 	private ProfileSkillData addAccountInformation(final ProfileSkillData profileSkillData, final Profile profile) {
 		Set<Integer> contractorIds = allContractors(profile);
-		Set<Integer> siteIds = allSites(profile);
-		Set<Integer> corporateIds = new HashSet<>(accountService.getTopmostCorporateAccountIds(siteIds));
-
 		Map<Integer, AccountModel> contractorAccounts = accountService.getIdToAccountModelMap(contractorIds);
 
-		Set<Integer> siteAndCorporateIds = new HashSet<>(siteIds);
-		siteAndCorporateIds.addAll(corporateIds);
-		Map<Integer, AccountModel> siteAndCorporateAccounts = accountService.getIdToAccountModelMap(siteAndCorporateIds);
+		Set<Integer> siteIds = allSites(profile);
+		Map<Integer, AccountModel> siteAccounts = accountService.getIdToAccountModelMap(siteIds);
 
 		profileSkillData.setContractorAccounts(contractorAccounts);
-		profileSkillData.setSiteAndCorporateAccounts(siteAndCorporateAccounts);
-		profileSkillData.setAllAccounts(PicsCollectionUtil.mergeMaps(contractorAccounts, siteAndCorporateAccounts));
+		profileSkillData.setParentSites(accountService.getSiteParentAccounts(siteIds));
+		profileSkillData.setAllAccounts(PicsCollectionUtil.mergeMaps(contractorAccounts, siteAccounts));
 
 		return profileSkillData;
 	}
@@ -88,51 +194,5 @@ public class ProfileSkillStatusProcess {
 
 	// TODO: Move these methods to another class
 
-	private Map<Project, Set<AccountSkill>> allProjectSkills(final Set<Project> projects,
-															 final Map<Project, Set<AccountSkill>> projectRequiredSkills,
-															 final Map<Project, Set<Role>> projectRoles,
-															 final Map<Role, Set<AccountSkill>> roleSkills) {
 
-		Map<Project, Set<AccountSkill>> allProjectSkills = new HashMap<>();
-		allProjectSkills = PicsCollectionUtil.mergeMapOfSets(allProjectSkills, projectRequiredSkills);
-		allProjectSkills = PicsCollectionUtil.mergeMapOfSets(allProjectSkills, getProjectRoleSkills(projectRoles, roleSkills));
-
-		return PicsCollectionUtil.addKeys(allProjectSkills, projects);
-	}
-
-	private Map<Project, Set<AccountSkill>> addProjectRequiredSkills(final Map<Project, Set<AccountSkill>> allProjectSkills,
-																	 final Map<Project, Set<AccountSkill>> projectRequiredSkills) {
-		return PicsCollectionUtil.mergeMapOfSets(allProjectSkills, projectRequiredSkills);
-	}
-
-	private Map<Project, Set<AccountSkill>> getProjectRoleSkills(final Map<Project, Set<Role>> projectRoles,
-																 final Map<Role, Set<AccountSkill>> roleSkills) {
-		return PicsCollectionUtil.reduceMapOfCollections(projectRoles, roleSkills);
-	}
-
-	private Map<Project, Set<AccountSkill>> getProjectRequiredSkills(final Set<Project> projects) {
-		Map<Project, Set<AccountSkill>> projectRequiredSkills = skillEntityService.getRequiredSkillsForProjects(projects);
-
-		return PicsCollectionUtil.addKeys(projectRequiredSkills, projects);
-	}
-
-	private Map<Role, Set<AccountSkill>> getRoleRequiredSkills(final Set<Role> roles) {
-		Map<Role, Set<AccountSkill>> roleSkillsMap = skillEntityService.getSkillsForRoles(roles);
-
-		return PicsCollectionUtil.addKeys(roleSkillsMap, roles);
-	}
-
-	private Map<Project, Set<Role>> getProjectRoles(final Set<Project> projects) {
-		Map<Project, Set<Role>> projectRoles = roleEntityService.getRolesForProjects(projects);
-
-		return PicsCollectionUtil.addKeys(projectRoles, projects);
-	}
-
-	private Map<Group, Set<AccountSkill>> getGroupSkills(final Profile profile) {
-		return groupEntityService.getGroupSkillsForProfile(profile);
-	}
-
-	private Map<Integer, Set<AccountSkill>> contractorRequiredSkills(final Collection<Integer> contractorIds) {
-		return skillEntityService.getRequiredSkillsForContractor(contractorIds);
-	}
 }

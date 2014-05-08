@@ -56,11 +56,12 @@ public class Profile implements BaseEntity, Identifiable {
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 2)
+	@BatchSize(size = 5)
 	private List<Employee> employees = new ArrayList<>();
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 10)
 	private List<ProfileDocument> documents = new ArrayList<>();
 
 	public int getId() {
