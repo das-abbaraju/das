@@ -215,4 +215,8 @@
 	<!-- 7.2.8 -->
 	<include file="./liquibase/2014/Q2/aananighian4_DE545_DDL_Create_New_Email_Hash_Table.sql"/>
 	<include file="./liquibase/2014/Q2/aananighian5_US854_DML_Add_Email_Template.sql"/>
+
+	<!-- 7.2.10 -->
+	<include file="./liquibase/2014/Q2/cfranks2_PICS_15233_DML_Move_All_Users_To_Version7Menus.sql"/>
+
 </databaseChangeLog>
