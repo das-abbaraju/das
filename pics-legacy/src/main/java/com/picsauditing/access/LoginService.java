@@ -1,5 +1,9 @@
 package com.picsauditing.access;
 
+import com.picsauditing.access.model.LoginContext;
+import com.picsauditing.authentication.dao.AppUserDAO;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
@@ -18,25 +22,44 @@ public class LoginService {
 
 	@Autowired
 	protected UserService userService;
+    @Autowired
+    private AppUserDAO appUserDAO;
+    @Autowired
+    private UserDAO userDAO;
 
-	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
+    // todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public User loginNormally(String username, String password) throws LoginException {
 
 		User user = loadUserByUsername(username);
-		return loginNormally(user, username, password);
+		return doPreLoginVerification(user, username, password).getUser();
 	}
 
-	public User loginNormally(User user, String username, String password) throws LoginException {
+	public User getUserForUserName(String username) throws LoginException {
+        AppUser appUser = appUserDAO.findByUserName(username);
+        User user;
+        if (appUser == null) {
+            throw new AccountNotFoundException("No user with username: " + username + " found.");
+        } else {
+            user = userDAO.findUserByAppUserID(appUser.getId());
+        }
+
+		return user;
+	}
+
+	public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
 		verifyUserExists(user, username);
 		verifyUserStatusForLogin(user);
 		verifyPasswordIsCorrect(user, password);
 		verifyPasswordIsNotExpired(user);
 
-		return user;
+        LoginContext loginContext = new LoginContext();
+        loginContext.setUser(user);
+
+		return loginContext;
 	}
 
 	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
-	public User loginForResetPassword(String username, String key) throws LoginException {
+	public LoginContext loginForResetPassword(String username, String key) throws LoginException {
 
 		User user = loadUserByUsername(username);
 
@@ -46,7 +69,10 @@ public class LoginService {
 		verifyUserStatusForLogin(user);
 		verifyPasswordIsNotExpired(user);
 
-		return user;
+        LoginContext loginContext = new LoginContext();
+        loginContext.setUser(user);
+
+		return loginContext;
 	}
 
 	public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {

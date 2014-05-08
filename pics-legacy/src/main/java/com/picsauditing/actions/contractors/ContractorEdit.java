@@ -114,7 +114,9 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				contractor.setBillingCountry(countryDAO.find(billingCountryIsos[0]));
 			}
 
-			defaultConTypeHelpText();
+            if (contractor != null) {
+                defaultConTypeHelpText();
+            }
 		}
 
 		if (contractor != null && !supportedLanguages.getVisibleLocales().contains(contractor.getLocale())) {

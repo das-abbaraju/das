@@ -24,6 +24,12 @@ public class ModelFactory {
 	private static SkillStatusModelFactory skillStatusModelFactory = new SkillStatusModelFactory();
 	private static StatusSummaryFactory statusSummaryFactory = new StatusSummaryFactory();
 	private static UserModelFactory userModelFactory = new UserModelFactory();
+	private static LiveIDEmployeeModelFactory liveIDEmployeeModelFactory = new LiveIDEmployeeModelFactory();
+	private static OperatorEmployeeModelFactory operatorEmployeeModelFactory = new OperatorEmployeeModelFactory();
+
+	public static LiveIDEmployeeModelFactory getLiveIDEmployeeModelFactory() {
+		return liveIDEmployeeModelFactory;
+	}
 
 	public static CompanyEmployeeModelFactory getCompanyEmployeeModelFactory() {
 		return companyEmployeeModelFactory;
@@ -99,5 +105,9 @@ public class ModelFactory {
 
 	public static UserModelFactory getUserModelFactory() {
 		return userModelFactory;
+	}
+
+	public static OperatorEmployeeModelFactory getOperatorEmployeeModelFactory() {
+		return operatorEmployeeModelFactory;
 	}
 }

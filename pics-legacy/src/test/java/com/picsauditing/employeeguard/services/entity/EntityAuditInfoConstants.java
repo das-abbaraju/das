@@ -34,7 +34,7 @@ public class EntityAuditInfoConstants {
 			.build();
 
 	public static AccountSkill buildFakeAccountSkill() {
-		return new AccountSkillBuilder()
+		return new AccountSkillBuilder(ACCOUNT_ID)
 				.id(ENTITY_ID)
 				.accountId(ACCOUNT_ID)
 				.skillType(SkillType.Certification)
@@ -45,7 +45,7 @@ public class EntityAuditInfoConstants {
 	public static List<AccountSkill> buildFakeAccountSkills() {
 		return Arrays.asList(
 				buildFakeAccountSkill(),
-				new AccountSkillBuilder()
+				new AccountSkillBuilder(ACCOUNT_ID)
 						.id(ENTITY_ID + 1)
 						.accountId(ACCOUNT_ID)
 						.skillType(SkillType.Certification)

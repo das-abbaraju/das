@@ -9,7 +9,7 @@ import com.picsauditing.employeeguard.models.ProjectStatisticsModel;
 import com.picsauditing.employeeguard.models.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.models.ProjectAssignmentBreakdown;

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.forms.operator;
 
 public class RoleProjectsForm {
+
 	private int[] projects;
 
 	public int[] getProjects() {

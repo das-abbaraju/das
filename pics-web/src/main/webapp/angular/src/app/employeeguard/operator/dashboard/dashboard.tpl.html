@@ -32,7 +32,6 @@
                 </ul>
             </div>
             <div class="col-md-9">
-
                 <div class="row" ng-show="siteList.length > 0">
                     <div class="col-md-4 col-md-offset-4">
                         <div class="panel panel-primary">
@@ -40,8 +39,7 @@
                                 <h3 class="panel-title">Site Selection</h3>
                             </div>
                             <div class="panel-body">
-                                <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadSelectedSiteData(selected_site)">
-                                    <option value="null">Select a site...</option>
+                                <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadAssignmentsBySiteId(selected_site)">
                                     <option ng-repeat="site in siteList | orderBy:'name'" ng-selected="{{ site.id === selected_site }}" value="{{ site.id }}">{{ site.name }}</option>
                                 </select>
                             </div>
@@ -50,6 +48,128 @@
                 </div>
 
                 <ng-include src="'/angular/src/app/employeeguard/operator/dashboard/_site-status.tpl.html'"></ng-include>
+
+                <div class="row beta-section">
+                    <div class="col-md-8" ng-show="userType === 'operator'">
+                        <section class="employee-guard-section">
+                            <h1>
+                                <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Expiring status is not taking precedence over Complete
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Project Status is not calculating correctly
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Deleting a Project or elements of the Project will not corrupt the Project
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Fixed anomalies for Skill statuses
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Location now displays in the Location column
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Removed any duplicated Skills or Job Roles on Live ID pages
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Assignments section is now accurate
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Current Assignments section is now accurate
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/operators/changelog">
+                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-8" ng-show="userType === 'corporate'">
+                        <section class="employee-guard-section" >
+                            <h1>
+                                <i class="icon-code icon-large"></i>Beta Updates (Monday 2014-05-05)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Can't re-name a Skill or Job Role with a previously deleted Skill or Job Role name
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        No error message when trying to create a duplicate Job Role
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Expiring status is not taking precedence over Complete
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Site Status not showing up in Site Assignments
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Projects are not displaying in the Project Assignments section
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Projects Status is not calculating correctly
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Deleting a Project or elements of the Project will not corrupt the Project
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Job Roles now show for newly created Skills
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Fixed anomalies for Skill statuses
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Location now displays in the Location column
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Removed any duplicated Skills or Job Roles on Live ID pages
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Assignments section is now accurate
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Current Assignments section is now accurate
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/operators/changelog">
+                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-4">
+                        <betafeedback></betafeedback>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -68,6 +68,7 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	protected boolean showSoleProprietership = true;
 	protected boolean showAccountLevel = false;
 	protected boolean showLocation = false;
+	protected boolean showPostalCode = false;
 	protected boolean showFlagOverrideHistory = false;
 	protected boolean showRequiredTags = false;
 	protected boolean showGeneralContractors = false;
@@ -964,7 +965,15 @@ public class ReportFilterContractor extends ReportFilterAccount {
 		this.showLocation = showLocation;
 	}
 
-	public static String getDefaultAmount() {
+    public boolean isShowPostalCode() {
+        return showPostalCode;
+    }
+
+    public void setShowPostalCode(boolean showPostalCode) {
+        this.showPostalCode = showPostalCode;
+    }
+
+    public static String getDefaultAmount() {
 		return TranslationServiceFactory.getTranslationService().getText("JS.Filters.label.EnterAmount", getLocaleStatic());
 	}
 

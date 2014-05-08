@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.models.UserModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountType;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,7 +1,5 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.models.AccountType;
-
 public class UserModel implements Nameable {
 
 	private int userId;

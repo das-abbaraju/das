@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
+import javax.validation.constraints.AssertTrue;
 import java.util.*;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
@@ -49,7 +50,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testFind() throws Exception {
-		Project expected = buildFakeProject(null);
+		Project expected = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		when(projectDAO.find(expected.getId())).thenReturn(expected);
 
@@ -61,7 +62,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testGetProjectsForEmployees() {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 		List<Employee> fakeEmployees = buildFakeEmployees();
 		when(projectRoleEmployeeDAO.findByEmployeesAndSiteIds(anyListOf(Employee.class), anyListOf(Integer.class)))
 				.thenReturn(buildFakeProjectRoleEmployees(fakeEmployees.get(0), fakeProject));
@@ -86,17 +87,24 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testGetProjectsForEmployee() {
-		List<Project> projects = Arrays.asList(buildFakeProject(null));
+		Project fakeProject = setupTestGetProjectsForEmployee();
+
+		Set<Project> result = projectEntityService.getProjectsForEmployee(new Employee());
+
+		assertTrue(result.contains(fakeProject));
+	}
+
+	private Project setupTestGetProjectsForEmployee() {
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
+		List<Project> projects = Arrays.asList(fakeProject);
 		when(projectDAO.findByEmployee(any(Employee.class))).thenReturn(projects);
 
-		List<Project> result = projectEntityService.getProjectsForEmployee(new Employee());
-
-		assertEquals(projects, result);
+		return fakeProject;
 	}
 
 	@Test
 	public void testGetProjectByRoleAndAccount() {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		when(projectDAO.findProjectByRoleAndAccount(anyInt(), anyInt())).thenReturn(fakeProject);
 
@@ -160,7 +168,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testSearch() throws Exception {
-		when(projectDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeProject(null)));
+		when(projectDAO.search(SEARCH_TERM, ACCOUNT_ID)).thenReturn(Arrays.asList(buildFakeProject(new ArrayList<ProjectCompany>())));
 
 		List<Project> result = projectEntityService.search(SEARCH_TERM, ACCOUNT_ID);
 
@@ -171,7 +179,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testSave() throws Exception {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		when(projectDAO.save(fakeProject)).thenReturn(fakeProject);
 
@@ -185,11 +193,11 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testUpdate() throws Exception {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 		fakeProject.setName("Fake Project");
 		fakeProject.setLocation("Fake Location");
 
-		Project updatedProject = buildFakeProject(null);
+		Project updatedProject = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		when(projectDAO.find(updatedProject.getId())).thenReturn(updatedProject);
 		when(projectDAO.save(updatedProject)).thenReturn(updatedProject);
@@ -207,7 +215,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testDelete() throws Exception {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		projectEntityService.delete(fakeProject);
 
@@ -216,7 +224,7 @@ public class ProjectEntityServiceTest {
 
 	@Test
 	public void testDeleteById() throws Exception {
-		Project fakeProject = buildFakeProject(null);
+		Project fakeProject = buildFakeProject(new ArrayList<ProjectCompany>());
 
 		when(projectDAO.find(fakeProject.getId())).thenReturn(fakeProject);
 

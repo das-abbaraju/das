@@ -1,5 +1,6 @@
 package com.picsauditing.access.user;
 
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.user.UserService;
@@ -12,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -64,17 +66,28 @@ public class UserModeProviderImplTest {
 	public void testGetCurrentUserMode_ADMIN_Mode() throws Exception {
 		when(sessionInfoProvider.getNamespace()).thenReturn(NameSpace.PICSORG);
 
-		UserMode result = userModeProvider.getCurrentUserMode();
+		UserMode result = userModeProvider.getCurrentUserMode(new Permissions());
 
 		assertEquals(UserMode.ADMIN, result);
 	}
 
 	@Test
 	public void testGetCurrentUserMode_Employee_Mode() throws Exception {
-		when(sessionInfoProvider.getNamespace()).thenReturn(NameSpace.EMPLOYEEGUARD);
+		Permissions fakePermissions = setupTestGetCurrentUserMode_Employee_Mode();
 
-		UserMode result = userModeProvider.getCurrentUserMode();
+		UserMode result = userModeProvider.getCurrentUserMode(fakePermissions);
 
 		assertEquals(UserMode.EMPLOYEE, result);
+	}
+
+	private Permissions setupTestGetCurrentUserMode_Employee_Mode() {
+		Permissions fakePermissions = new Permissions();
+		fakePermissions.setAvailableUserModes(new HashSet<UserMode>() {{
+			add(UserMode.EMPLOYEE);
+		}});
+
+		when(sessionInfoProvider.getNamespace()).thenReturn(NameSpace.EMPLOYEEGUARD);
+
+		return fakePermissions;
 	}
 }

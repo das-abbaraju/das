@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -70,7 +70,7 @@ public class SiteAssignmentModelFactory {
 			for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
 				Role role = siteAssignment.getRole();
 
-				if (role.getAccountId() == siteId) {
+				if (siteAssignment.getSiteId() == siteId) {
 					PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, role);
 				}
 			}
@@ -132,7 +132,8 @@ public class SiteAssignmentModelFactory {
 	}
 
 	private SkillStatus calculateWorstStatusOf(List<AccountSkillEmployee> employeeSkills) {
-		SkillStatus worst = SkillStatus.Completed;
+		//-- Default to highest severity
+    SkillStatus worst = SkillStatus.Expired;
 
 		for (AccountSkillEmployee employeeSkill : employeeSkills) {
 			SkillStatus current = SkillStatusCalculator.calculateStatusFromSkill(employeeSkill);

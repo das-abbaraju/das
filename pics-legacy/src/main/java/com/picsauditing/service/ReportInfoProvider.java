@@ -1,15 +1,7 @@
 package com.picsauditing.service;
 
-import java.util.Collections;
-import java.util.List;
-
-import com.picsauditing.dao.ReportDAO;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.dao.mapper.ReportInfoMapper;
 import com.picsauditing.report.ReportPaginationParameters;
@@ -18,6 +10,13 @@ import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.pagination.Paginatable;
 import com.picsauditing.util.pagination.PaginationParameters;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ReportInfoProvider implements Paginatable<ReportInfo> {
 
@@ -28,8 +27,8 @@ public class ReportInfoProvider implements Paginatable<ReportInfo> {
 
     private static final Logger logger = LoggerFactory.getLogger(ReportInfoProvider.class);
 
-    public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions, int size) {
-        return reportUserDAO.findTenMostFavoritedReports(permissions, size);
+    public List<ReportInfo> findTenMostFavoritedReports(Permissions permissions) {
+        return reportUserDAO.findTenMostFavoritedReports(permissions);
     }
 
     public List<ReportInfo> findReportSuggestions(Permissions permissions) {

@@ -13,24 +13,22 @@ import com.picsauditing.util.comparators.CalendarMonthAsStringComparator;
 
 public class OperatorFlagYearHistory extends OperatorFlagHistory {
 	private static final long serialVersionUID = 568576145565611258L;
-	private final int MONTHS_IN_YEAR = 12;
 	private String[] months = new DateFormatSymbols().getShortMonths();
 	
 	@Override
 	protected String buildSql() throws Exception {
-		int operatorID = permissions.getAccountId();
-		Date now = new Date();
-		StringBuffer sql = new StringBuffer();
-		for(int month = 0; month < MONTHS_IN_YEAR; month++) {
-			Calendar firstOfMonth = Calendar.getInstance();
-			firstOfMonth.setTime(DateBean.getFirstofMonth(now, -month));
-			String monthName = months[firstOfMonth.get(Calendar.MONTH)];
-			sql.append(getOperatorFlagHistorySQL(firstOfMonth.getTime(), getText("Month.Short."+monthName), operatorID));
-			if ((month+1) < MONTHS_IN_YEAR) {
-				sql.append(" UNION ");
-			}
-		}
-		return sql.toString();
+        return "select DATE_FORMAT(tmp.maxDate, '%b') as 'label', tmp.flag as 'series', count(tmp.conID) as 'value'\n" +
+                "from (select fa.conID, fa.flag, DATE_FORMAT(fa.creationDate, '%b') as 'label', max(fa.creationDate) as maxDate\n" +
+                "from flag_archive fa\n" +
+                "join accounts a on a.id = fa.conID\n" +
+                "where fa.opID = " + permissions.getAccountId() + "\n" +
+                "and a.status <> 'Demo'\n" +
+                "and fa.flag in ('Green', 'Amber', 'Red')\n" +
+                "group by fa.conID, label\n" +
+                ") as tmp\n" +
+                "group by label, series\n" +
+                "order by DATE_FORMAT(tmp.maxDate, '%y') desc, DATE_FORMAT(tmp.maxDate, '%m') desc\n" +
+                "limit 36";
 	}
 	
 	@Override

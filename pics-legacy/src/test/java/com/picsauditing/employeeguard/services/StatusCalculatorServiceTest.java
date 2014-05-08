@@ -159,6 +159,27 @@ public class StatusCalculatorServiceTest {
 		assertFalse(result.isEmpty());
 	}
 
+  @Test
+  public void testGetAllSkillStatusesForEntity_EmployeeHasNoDocumentation() {
+    List<AccountSkill> skills = buildFakeAccountSkills();
+    List<Employee> employees = buildFakeEmployees();
+
+    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
+            .thenReturn(Collections.EMPTY_LIST);
+
+    HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
+    entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
+
+    for (Employee employee : employees) {
+      entityEmployeeMap.get(project).put(employee, new HashSet<>(skills));
+    }
+
+    Map<Project, List<SkillStatus>> result = service.getAllSkillStatusesForEntity(entityEmployeeMap);
+
+    assertNotNull(result);
+    assertFalse(result.isEmpty());
+  }
+
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
 																	  final List<AccountSkill> skills) {
 		return Arrays.asList(

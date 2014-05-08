@@ -7,7 +7,6 @@ import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.SearchForm;
@@ -18,9 +17,8 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.validators.skill.OperatorSkillFormValidator;
-import com.picsauditing.employeeguard.viewmodel.factory.RoleEmployeeCountFactory;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.web.UrlBuilder;
@@ -126,7 +124,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 			loadSkill();
 			operatorSkillForm = new OperatorSkillForm.Builder().accountSkill(skill).build();
 		} else {
-			skill = operatorSkillForm.buildAccountSkill();
+			skill = operatorSkillForm.buildAccountSkill(permissions.getAccountId());
 		}
 
 		loadRoles();
@@ -135,7 +133,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	}
 
 	public String insert() throws Exception {
-		skill = operatorSkillForm.buildAccountSkill();
+		skill = operatorSkillForm.buildAccountSkill(permissions.getAccountId());
 		skillService.save(skill, permissions.getAccountId(), permissions.getUserId());
 
 		if (addAnother(operatorSkillForm)) {

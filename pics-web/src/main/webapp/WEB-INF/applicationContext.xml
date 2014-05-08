@@ -131,6 +131,8 @@
     <bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
     <bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
+    <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
+    <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
@@ -179,7 +181,7 @@
         <constructor-arg ref="RegistrationRequestService" />
     </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
-    <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils"/>
+    <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" scope="prototype"/>
     <bean id="SQLIndexerEngine" class="com.picsauditing.util.SQLIndexerEngine" scope="prototype"/>
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
@@ -249,6 +251,7 @@
     <bean id="SeleniumDAO" class="com.picsauditing.selenium.SeleniumDAO" scope="prototype"/>
 
     <!-- Beans for service layers -->
+    <bean id="AuditService" class="com.picsauditing.service.AuditService"/>
     <bean id="AuditDataService" class="com.picsauditing.service.AuditDataService"/>
     <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
     <bean id="MailCronService" class="com.picsauditing.service.mail.MailCronService"/>
@@ -259,6 +262,7 @@
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+    <bean id="EulaService" class="com.picsauditing.eula.service.EulaService" />
 
     <bean id="IdentityProviderStrutsWebApp" class="com.picsauditing.security.IdentityProviderStrutsWebApp" scope="prototype"/>
     <bean id="NoteService" class="com.picsauditing.service.notes.NoteService" scope="prototype">
@@ -320,7 +324,6 @@
     <bean id="MessageService" class="com.picsauditing.messaging.MessagePublisherService">
         <property name="csrAssignmentSinglePublisher" ref="CsrAssignmentSinglePublisher"/>
         <property name="flagChangePublisher" ref="FlagChangePublisher"/>
-        <property name="employeeGuardPublisher" ref="EmployeeGuardPublisher"/>
         <property name="emailRequestPublisher" ref="EmailRequestPublisher"/>
     </bean>
 

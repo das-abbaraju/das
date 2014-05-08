@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.services.factory;
 
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
 import com.picsauditing.jpa.entities.Account;
 import org.mockito.Mockito;
 
@@ -29,7 +29,7 @@ public class AccountServiceFactory {
 		when(accountService.getChildOperators(anyInt())).thenReturn(Arrays.asList(operator));
 		when(accountService.getContractors(anyInt())).thenReturn(Arrays.asList(contractor));
 		when(accountService.getTopmostCorporateAccountIds(anyInt())).thenReturn(Arrays.asList(Account.PICS_CORPORATE_ID));
-		when(accountService.getTopmostCorporateAccounts(anyInt())).thenReturn(Arrays.asList(corporate));
+		when(accountService.extractParentAccounts(anyInt())).thenReturn(Arrays.asList(corporate));
 
 		return accountService;
 	}

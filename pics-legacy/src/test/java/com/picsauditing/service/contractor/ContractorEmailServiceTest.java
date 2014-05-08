@@ -22,6 +22,7 @@ import static org.mockito.Mockito.when;
 public class ContractorEmailServiceTest {
 
 	ContractorEmailService contractorEmailService;
+
 	@Mock
 	private User fromContractorUser;
 	@Mock
@@ -80,6 +81,7 @@ public class ContractorEmailServiceTest {
 		emailFromBuilderService.setToAddresses("joecsr@example.com");
 		emailFromBuilderService.setSubject("Message Your CSR");
 		emailFromBuilderService.setBody("*Body text from template*");
+
 		return emailFromBuilderService;
 	}
 

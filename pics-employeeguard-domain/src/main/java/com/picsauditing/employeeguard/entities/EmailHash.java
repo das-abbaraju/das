@@ -2,23 +2,33 @@ package com.picsauditing.employeeguard.entities;
 
 
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
+import com.picsauditing.util.Strings;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name="email_hash")
-public class EmailHash {
+@Table(name = "employee_email_hash")
+public class EmailHash implements Serializable {
+
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	private String hash;
+
+	private String hashCode;
 
 	@ManyToOne
-	@JoinColumn(name = "account_employeeID")
+	@JoinColumn(name = "employeeID")
 	private SoftDeletedEmployee employee;
 
+	@Column(name = "email")
 	private String emailAddress;
-	private Date creationDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
+
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date expirationDate;
 
 	public int getId() {
@@ -29,12 +39,12 @@ public class EmailHash {
 		this.id = id;
 	}
 
-	public String getHash() {
-		return hash;
+	public String getHashCode() {
+		return hashCode;
 	}
 
-	public void setHash(String hash) {
-		this.hash = hash;
+	public void setHashCode(String hashCode) {
+		this.hashCode = hashCode;
 	}
 
 	public SoftDeletedEmployee getEmployee() {
@@ -53,12 +63,12 @@ public class EmailHash {
 		this.emailAddress = emailAddress;
 	}
 
-	public Date getCreationDate() {
-		return creationDate;
+	public Date getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
+	public void setCreatedDate(Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 	public Date getExpirationDate() {
@@ -71,6 +81,8 @@ public class EmailHash {
 
 	@Override
 	public String toString() {
-		return id + "-" + employee.getId() + "-" + emailAddress + "-" + creationDate.toString();
+		return getId() + "-"
+				+ (getEmailAddress() != null ? getEmailAddress() : Strings.EMPTY_STRING) + "-"
+				+ (getCreatedDate() != null ? Strings.EMPTY_STRING : getCreatedDate().toString());
 	}
 }

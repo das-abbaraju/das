@@ -7,8 +7,8 @@ public class AccountSkillBuilder {
 
 	private AccountSkill accountSkill;
 
-	public AccountSkillBuilder() {
-		this.accountSkill = new AccountSkill();
+	public AccountSkillBuilder(int accountId) {
+		this.accountSkill = new AccountSkill(accountId);
 	}
 
 	public AccountSkillBuilder(int id, int accountId) {
@@ -63,14 +63,12 @@ public class AccountSkillBuilder {
 		return this;
 	}
 
-	public AccountSkillBuilder groups(String[] groups) {
+	public AccountSkillBuilder groups(Integer[] groups) {
 		if (!ArrayUtils.isEmpty(groups)) {
 			accountSkill.getGroups().clear();
 
-			for (String group : groups) {
-				Group accountGroup = new Group();
-				accountGroup.setName(group);
-				accountGroup.setAccountId(accountSkill.getAccountId());
+			for (int groupId : groups) {
+				Group accountGroup = new Group(groupId, accountSkill.getAccountId());
 				AccountSkillGroup accountSkillGroup = new AccountSkillGroup(accountGroup, accountSkill);
 
 				accountSkill.getGroups().add(accountSkillGroup);
@@ -80,22 +78,21 @@ public class AccountSkillBuilder {
 		return this;
 	}
 
-	public AccountSkillBuilder roles(String[] roles) {
-		if (!ArrayUtils.isEmpty(roles)) {
-			accountSkill.getRoles().clear();
+  public AccountSkillBuilder roles(int[] roles) {
+    if (!ArrayUtils.isEmpty(roles)) {
+      accountSkill.getRoles().clear();
 
-			for (String role : roles) {
-				Role accountRole = new Role();
-				accountRole.setName(role);
-				accountRole.setAccountId(accountSkill.getAccountId());
-				AccountSkillRole accountSkillRole = new AccountSkillRole(accountRole, accountSkill);
+      for (int roleId : roles) {
 
-				accountSkill.getRoles().add(accountSkillRole);
-			}
-		}
+        Role accountRole = new Role(roleId, accountSkill.getAccountId());
+        AccountSkillRole accountSkillRole = new AccountSkillRole(accountRole, accountSkill);
 
-		return this;
-	}
+        accountSkill.getRoles().add(accountSkillRole);
+      }
+    }
+
+    return this;
+  }
 
 	public AccountSkill build() {
 		return accountSkill;

@@ -48,6 +48,8 @@ public class EmailTemplate extends BaseTableRequiringLanguages implements java.i
     public static final int CONTRACTOR_APPROVE_GC_RELATIONSHIP_EMAIL_TEMPLATE = 238;
     public static final int UPCOMING_IMPLEMENTATION_AUDIT_EMAIL_TEMPLATE = 247;
     public static final int CONTACT_YOUR_CSR_EMAIL_TEMPLATE = 381;
+	public static final int EMPLOYEE_GUARD_FEED_BACK_EMAIL_TEMPLATE = 441;
+	public static final int EMPLOYEE_GUARD_WELCOME_TEMPLATE = 357;
 
     private int accountID;
 	private String templateName = "";

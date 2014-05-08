@@ -11,9 +11,10 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -161,7 +162,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Test
 	public void testRole() throws Exception {
 		Role corporateRole = new RoleBuilder().accountId(CORPORATE_ID).name("Corporate Role").build();
-		AccountSkill skill = new AccountSkillBuilder().name("Corporate Skill").build();
+		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").build();
 		Employee employee = new EmployeeBuilder()
 				.firstName("First")
 				.lastName("Last")

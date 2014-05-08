@@ -1,31 +1,62 @@
 (function ($) {
     PICS.define('login.LoginController', {
-        methods: {
-            init: function () {
+        methods: (function () {
+            var $login_container_el,
+                $login_form_el,
+                $username_input_el,
+                $password_input_el,
+                $body = $('body'),
+
+                user_credentials,
+                user_eula;
+
+           function init() {
                 if ($('.Login-page').length) {
+                    initEls();
 
-                    $('#username').focus();
+                    $username_input_el.focus();
 
-                    $('.login-container').delegate('select', 'change', this.setLanguage);
+                    $login_container_el.delegate('select', 'change', onLanguageSelect);
                 }
-            },
+            }
 
-            setLanguage: function () {
-                var supported_locale_element = $(this),
-                    locale = supported_locale_element.val();
+            function initEls() {
+                $login_container_el = $('.login-container');
+                $login_form_el = $login_container_el.find('form');
+                $username_input_el = $login_form_el.find('[name=username]');
+                $password_input_el = $login_form_el.find('[name=password]');
+            }
 
+            // Language
+
+            function onLanguageSelect(event) {
+                var language_select_el = $(event.target),
+                    language = language_select_el.val();
+
+                updateLanguage(language);
+            }
+
+            function updateLanguage(language) {
                 PICS.ajax({
                     url: "Login!loginform.action",
                     data: {
-                        request_locale: locale
+                        request_locale: language
                     },
-                    success: function(data, textStatus, jqXHR) {
-                        var login_container_element = supported_locale_element.closest('.login-container');
-
-                        login_container_element.html(data);
-                    }
+                    success: onUpdateLanguageRequestSuccess
                 });
             }
-        }
+
+            function onUpdateLanguageRequestSuccess(data) {
+                var new_login_form_html = data;
+
+                $login_container_el.html(new_login_form_html);
+
+                initEls();
+            }
+
+            return {
+                init: init
+            };
+        }())
     });
 }(jQuery));

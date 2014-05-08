@@ -1,12 +1,12 @@
 package com.picsauditing.struts.controller.pdf;
 
-import com.lowagie.text.DocumentException;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.contractor.ContractorCertificate;
 import com.picsauditing.service.contractor.ContractorCertificateService;
 import com.picsauditing.util.VelocityAdaptor;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import javax.servlet.ServletOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -54,6 +53,7 @@ public class GeneratePdf extends ContractorActionSupport {
         }
 
         data.put("contractorCertificate", contractorCertificate);
+        data.put("contractorName", StringEscapeUtils.escapeHtml(contractorCertificate.getContractor().getName()));
         return data;
     }
 
@@ -78,7 +78,7 @@ public class GeneratePdf extends ContractorActionSupport {
             iTextRenderer.createPDF(outputStream);
             outputStream.close();
 
-        } catch (DocumentException | IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

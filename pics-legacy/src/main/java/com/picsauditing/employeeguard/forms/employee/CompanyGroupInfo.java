@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.forms.employee;
 
 import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 
 import java.util.List;
 

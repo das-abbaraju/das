@@ -5,9 +5,9 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.external.BillingService;
-import com.picsauditing.employeeguard.services.models.AccountModel;
-import com.picsauditing.employeeguard.services.models.AccountType;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.AccountFilter;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -29,28 +29,41 @@ public class AccountService {
 	@Autowired
 	private AccountDAO accountDAO;
 	@Autowired
+	private AccountFilter accountFilter;
+	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
-	@Autowired
-	private BillingService billingService;
 
-	public AccountModel getAccountById(int accountId) {
+	public AccountModel getAccountById(final int accountId) {
 		Account account = accountDAO.find(accountId);
 		return mapAccountToAccountModel(account);
 	}
 
-	public List<AccountModel> getAccountsByIds(Collection<Integer> accountIds) {
+	public List<AccountModel> getAccountsByIds(final Collection<Integer> accountIds) {
 		List<Account> accounts = accountDAO.findByIds(accountIds);
 		return mapAccountsToAccountModels(accounts);
 	}
 
-	public List<AccountModel> getTopmostCorporateAccounts(final int accountId) {
+	public Collection<Integer> extractParentAccountIds(final int accountId) {
+		List<AccountModel> accountModels = this.extractParentAccounts(accountId);
+		Collection<Integer> parentSiteIds = PicsCollectionUtil.getIdsFromCollection(accountModels, new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+			@Override
+			public Integer getId(AccountModel accountModel) {
+				return accountModel.getId();
+			}
+		});
+
+		return parentSiteIds;
+	}
+
+	public List<AccountModel> extractParentAccounts(final int accountId) {
 		if (accountId <= 0) {
 			throw new IllegalArgumentException("Invalid account ID: " + accountId);
 		}
 
 		List<OperatorAccount> employeeGUARDCorporates = getEmployeeGUARDCorporates(Arrays.asList(accountId));
+
 		// We don't have a need to modify accounts, so we'll map these corporate accounts to AccountModels
 		return mapAccountsToAccountModels(employeeGUARDCorporates);
 	}
@@ -89,7 +102,7 @@ public class AccountService {
 		Set<OperatorAccount> corporates = new HashSet<>();
 		for (OperatorAccount operator : operators) {
 			List<OperatorAccount> topmostCorporates = getTopmostCorporates(operator, visited);
-			corporates.addAll(billingService.filterEmployeeGUARDAccounts(topmostCorporates));
+			corporates.addAll(accountFilter.filterEmployeeGUARDAccounts(topmostCorporates));
 		}
 
 		return new ArrayList<>(corporates);
@@ -161,7 +174,7 @@ public class AccountService {
 		Set<OperatorAccount> childAccounts = new HashSet<>();
 		for (OperatorAccount corporate : corporates) {
 			List<OperatorAccount> childOperators = new ArrayList<>(corporate.getChildOperators());
-			childAccounts.addAll(billingService.filterEmployeeGUARDAccounts(childOperators));
+			childAccounts.addAll(accountFilter.filterEmployeeGUARDAccounts(childOperators));
 		}
 
 		return mapAccountsToAccountModels(new ArrayList<>(childAccounts));
@@ -227,18 +240,18 @@ public class AccountService {
 			}
 		}
 
-		List<ContractorAccount> accounts = billingService.filterEmployeeGUARDAccounts(contractors);
+		List<ContractorAccount> accounts = accountFilter.filterEmployeeGUARDAccounts(contractors);
 
 		return mapAccountsToAccountModels(accounts);
 	}
 
-	private void addContractorsFromOperator(OperatorAccount operator, List<ContractorAccount> contractors) {
+	private void addContractorsFromOperator(final OperatorAccount operator, final List<ContractorAccount> contractors) {
 		for (ContractorOperator contractorOperator : operator.getContractorOperators()) {
 			contractors.add(contractorOperator.getContractorAccount());
 		}
 	}
 
-	private <E extends Account> List<AccountModel> mapAccountsToAccountModels(List<E> accounts) {
+	private <E extends Account> List<AccountModel> mapAccountsToAccountModels(final List<E> accounts) {
 		if (CollectionUtils.isEmpty(accounts)) {
 			return Collections.emptyList();
 		}
@@ -251,12 +264,17 @@ public class AccountService {
 		return accountModels;
 	}
 
-	private AccountModel mapAccountToAccountModel(Account account) {
+	private AccountModel mapAccountToAccountModel(final Account account) {
 		return new AccountModel.Builder().accountType(getAccountTypeForAccount(account)).id(account.getId())
 				.name(account.getName()).build();
 	}
 
-	private AccountType getAccountTypeForAccount(Account account) {
+	private AccountType getAccountTypeForAccount(final Account account) {
+		// From the EmployeeGUARD Perspective, PICS is a Contractor for now
+		if (account.getId() == Account.PicsID) {
+			return AccountType.CONTRACTOR;
+		}
+
 		switch (account.getType()) {
 			case "Admin":
 				return AccountType.ADMIN_ACCOUNT;
@@ -291,7 +309,7 @@ public class AccountService {
 		return ids;
 	}
 
-	private List<Integer> extractIdFromAccountModel(List<? extends Account> accounts) {
+	private List<Integer> extractIdFromAccountModel(final List<? extends Account> accounts) {
 		if (CollectionUtils.isEmpty(accounts)) {
 			return Collections.emptyList();
 		}

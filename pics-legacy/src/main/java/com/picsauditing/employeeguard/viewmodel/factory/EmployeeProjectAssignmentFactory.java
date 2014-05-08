@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectAssignment;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,7 +12,7 @@ import java.util.*;
 
 public class EmployeeProjectAssignmentFactory {
 
-    public EmployeeProjectAssignment create(final AccountModel accountModel,
+    private EmployeeProjectAssignment create(final AccountModel accountModel,
                                             final Employee employee,
                                             final List<AccountSkill> roleSkills,
                                             final List<AccountSkill> projectSkills,
@@ -102,21 +102,25 @@ public class EmployeeProjectAssignmentFactory {
 
     private SkillStatus getLowestSkillStatus(final Map<AccountSkill, AccountSkillEmployee> employeeSkillsMap,
                                              final List<AccountSkill> roleSkills) {
-        SkillStatus lowestStatus = SkillStatus.Completed;
-        for (AccountSkill skill : roleSkills) {
-            if (employeeSkillsMap.containsKey(skill)) {
-                SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
-                if (skillStatus == SkillStatus.Expired) {
-                    return skillStatus;
-                }
+      SkillStatus lowestStatus = SkillStatus.Completed;
+      for (AccountSkill skill : roleSkills) {
+        if (employeeSkillsMap.containsKey(skill)) {
+            SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(employeeSkillsMap.get(skill));
+            if (skillStatus == SkillStatus.Expired) {
+              return skillStatus;
+            }
 
-                if (skillStatus.compareTo(lowestStatus) < 0) {
-                    lowestStatus = skillStatus;
-                }
+            if (skillStatus.compareTo(lowestStatus) < 0) {
+                lowestStatus = skillStatus;
             }
         }
+        else{
+          //-- If there's no documentation for this skill, then we are at the highest status of "expired".
+          return SkillStatus.Expired;
+        }
+      }
 
-        return lowestStatus;
+      return lowestStatus;
     }
 
     private SkillStatus worstOf(final List<SkillStatus> skillStatuses) {

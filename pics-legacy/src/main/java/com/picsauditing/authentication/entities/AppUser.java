@@ -1,19 +1,23 @@
 package com.picsauditing.authentication.entities;
 
+import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name="app_user")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class AppUser {
+public class AppUser implements Serializable {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
 	private String username;
 	private String password = "";
 	private String hashSalt;
@@ -70,4 +74,8 @@ public class AppUser {
 	public void setResetHash(String resetHash) {
 		this.resetHash = resetHash;
 	}
+
+    public static AppUserBuilder builder() {
+        return new AppUserBuilder();
+    }
 }

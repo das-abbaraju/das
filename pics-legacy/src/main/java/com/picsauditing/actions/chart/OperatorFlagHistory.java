@@ -75,14 +75,14 @@ public class OperatorFlagHistory extends ChartMSAction {
 				+ getOperatorFlagHistorySQL(yesterday, getText("OperatorFlagHistoryAjax.1DayAgo"), operatorID);
 		return sql;
 	}
-	
-	protected String getOperatorFlagHistorySQL(Date date, String label, int operatorID) throws Exception {
-		String dbDate = DateBean.toDBFormat(date);
 
-		return String.format("SELECT '%s' AS label, flag AS series, count(*) AS value, "
-				+ "creationDate FROM flag_archive WHERE flag in ('Red','Amber','Green') AND opID = %d "
-				+ "AND creationDate = '%s' GROUP BY flag", label, operatorID, dbDate);
-	}
+    protected String getOperatorFlagHistorySQL(Date date, String label, int operatorID) throws Exception {
+        String dbDate = DateBean.toDBFormat(date);
+
+        return String.format("SELECT '%s' AS label, flag AS series, count(*) AS value, "
+                + "creationDate FROM flag_archive WHERE flag in ('Red','Amber','Green') AND opID = %d "
+                + "AND creationDate = '%s' GROUP BY flag", label, operatorID, dbDate);
+    }
 	
 	private ChartDAO getChartDAO() {
 		if (this.chartDao == null) {

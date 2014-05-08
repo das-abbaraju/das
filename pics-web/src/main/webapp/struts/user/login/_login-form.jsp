@@ -5,7 +5,9 @@
 <%-- URL --%>
 <s:url action="Login.action" var="loginform" />
 
-<s:form id="login_form" name="login_form" action="%{#loginform}" cssClass="form-login">
+<s:set var="eula_required_class" value="isEulaFeatureEnabled() ? 'eula-required' : ''" />
+
+<s:form id="login_form" name="login_form" action="%{#loginform}" cssClass="form-login %{#eula_required_class}" data-eula-id="login">
     <input type="hidden" name="button" value="Login" />
 
 <%-- grab the switchToUser parameters if its passed to this page when switch servers.--%>

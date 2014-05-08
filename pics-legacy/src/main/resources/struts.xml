@@ -337,6 +337,12 @@
 			</result>
 		</action>
 
+        <action name="translations" class="com.picsauditing.struts.controller.TranslationJsonController" method="getTranslationMessages">
+        </action>
+
+        <action name="translations/{translationKey}" class="com.picsauditing.struts.controller.TranslationJsonController" method="getSingleTranslationMessage">
+        </action>
+
 		<action name="ContractorViewAjax"
 		        class="com.picsauditing.actions.contractors.ContractorDashboard">
 			<result>/struts/blank.jsp</result>
@@ -1333,6 +1339,17 @@
         <action name="AddressVerificationTest" class="com.picsauditing.actions.AddressVerificationTest">
             <result>/struts/address-verification-test.jsp</result>
             <result name="address-response">/struts/address-verification-test-response.jsp</result>
+        </action>
+
+        <action name="eulas/login/users/{userName}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEulaUserInfo">
+        </action>
+
+        <action name="eulas/login/{country}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEula">
+                <result>/struts/eula/login-eula.jsp</result>
         </action>
 
 	</package>

@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.contractor.JobRoleInfo;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 
 import java.util.ArrayList;
 import java.util.List;

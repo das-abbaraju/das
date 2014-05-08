@@ -7812,6 +7812,13 @@ INSERT INTO `app_index` VALUES ('CO',2781,'CORPORATEACCOUNT',7);
 INSERT INTO `app_index` VALUES ('CO',2781,'UNITED STATES',3);
 INSERT INTO `app_index` VALUES ('CO',2781,'US',3);
 INSERT INTO `app_index` VALUES ('CO',2781,'US-CA',4);
+INSERT INTO `app_index` VALUES ('U',5000,'5000',4);
+INSERT INTO `app_index` VALUES ('U',5000,'AETEST',7);
+INSERT INTO `app_index` VALUES ('U',5000,'AETEST0EBDFEA6',5);
+INSERT INTO `app_index` VALUES ('U',5000,'AETESTV7',6);
+INSERT INTO `app_index` VALUES ('U',5000,'PICSAUDITINGCOM',5);
+INSERT INTO `app_index` VALUES ('U',5000,'USER',2);
+INSERT INTO `app_index` VALUES ('U',5000,'V7MENUS',7);
 INSERT INTO `app_index` VALUES ('CO',55653,'12345',3);
 INSERT INTO `app_index` VALUES ('CO',55653,'55653',10);
 INSERT INTO `app_index` VALUES ('CO',55653,'COMPANY',7);
@@ -8100,6 +8107,11 @@ INSERT INTO `app_index_stats` VALUES ('CO','55661',1);
 INSERT INTO `app_index_stats` VALUES ('U','AMITCORPUSER',1);
 INSERT INTO `app_index_stats` VALUES ('U','AMITCORP',1);
 INSERT INTO `app_index_stats` VALUES ('U','118821',1);
+INSERT INTO `app_index_stats` VALUES ('U','AETEST0EBDFEA6',1);
+INSERT INTO `app_index_stats` VALUES ('U','AETESTV7',1);
+INSERT INTO `app_index_stats` VALUES ('U','AETEST',1);
+INSERT INTO `app_index_stats` VALUES ('U','V7MENUS',1);
+INSERT INTO `app_index_stats` VALUES ('U','5000',1);
 /*!40000 ALTER TABLE `app_index_stats` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -11901,6 +11913,7 @@ INSERT INTO `databasechangelog` VALUES ('1','sshacter','./liquibase/2013/sshacte
 INSERT INTO `databasechangelog` VALUES ('1','uaung','./liquibase/2013/uaung1_PICS-13398_AlterEmployeeGUARDTables.sql','2013-11-15 18:21:25',40,'EXECUTED','3:56649f7bf17a02a1113f5ef39d11dcc6','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','dalvarado','./liquibase/2014/Q1/dalvarado10_US572_add_cdmScope.sql','2014-03-18 16:38:13',205,'EXECUTED','3:917acc9285b3f1a9a9d91418f1485382','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','kchase','./liquibase/2013/kchase10_PICS-13610_SSForAuditRules.sql','2013-11-26 13:57:30',48,'EXECUTED','3:ca7e437ee89709c4f7d3682795990bae','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('10','lkam','./liquibase/2014/Q2/lkam10_US820_Add_EULA_Tables.sql','2014-04-24 09:01:54',227,'EXECUTED','3:32c11ea07fcd174b801a5687e7df8c89','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','mdo','./liquibase/2013/mdo10_PICS-13606_SS_populate.sql','2013-11-26 13:57:36',50,'EXECUTED','3:30d890e68a5bea6987d1270521fe5298','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','pschlesinger','./liquibase/2014/Q1/pschlesinger10_PICS-14106_ChangeNameOfEmeaBusinessUnit.sql','2014-01-08 14:13:48',144,'EXECUTED','3:e742b2e49d2ae49b526a617303c55dfc','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('10','sshacter','./liquibase/2013/sshacter10_PICS-12562_AccountsNAICtoNULL.sql','2013-11-22 14:09:08',46,'EXECUTED','3:c7405d0752b1c25287cf6e1d391a7d03','Custom SQL','',NULL,'2.0.1');
@@ -12009,6 +12022,7 @@ INSERT INTO `databasechangelog` VALUES ('39','kchase','./liquibase/2014/Q2/kchas
 INSERT INTO `databasechangelog` VALUES ('39','mdo','./liquibase/2014/Q1/mdo39_PICS-11896_changeAURecords.sql','2014-02-05 17:56:38',168,'EXECUTED','3:4f6382db0b1134f98cc035945e8d04a7','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('3a','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',142,'EXECUTED','3:e9a021f476071ba0282cf8bb12ad0b9d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('3b','gmeurer','./liquibase/2014/Q1/gmeurer3_etlTranslationUsage.sql','2014-01-07 12:18:04',143,'EXECUTED','3:bacccd9d8c44983b3ac1d7c391c55949','Custom SQL','',NULL,'2.0.1');
+INSERT INTO `databasechangelog` VALUES ('4','aananighian','./liquibase/2014/Q2/aananighian4_DE545_DDL_Create_New_Email_Hash_Table.sql','2014-04-28 13:54:57',228,'EXECUTED','3:456993cd905115e497a6471e259ffa50','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','dalvarado','./liquibase/2013/dalvarado4_PICS-12464_Add_audit_type_rule.yearToCheck.sql','2013-11-13 15:10:01',19,'EXECUTED','3:1e51a4dac1b76cf0810c36da80fd951d','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','gmeurer','./liquibase/2014/Q1/gmeurer4_US494-TA707_MakeBrainTreeUrlConfigurable.sql','2014-03-18 12:01:26',198,'EXECUTED','3:b0cd6ade15ebc614d2049799e7236651','Custom SQL','',NULL,'2.0.1');
 INSERT INTO `databasechangelog` VALUES ('4','kchase','./liquibase/2013/kchase4_PICS-13049_CSRShiftHours.sql','2013-10-23 15:22:24',14,'EXECUTED','3:d467b39e162b43b8eb255e1b6470d6e0','Custom SQL','',NULL,'2.0.1');
@@ -12680,6 +12694,36 @@ LOCK TABLES `employee_competency` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `employee_email_hash`
+--
+
+DROP TABLE IF EXISTS `employee_email_hash`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `employee_email_hash` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Email Hash ID',
+  `hashCode` varchar(256) NOT NULL COMMENT 'Hash Code for the email',
+  `employeeID` int(11) NOT NULL COMMENT 'Employee ID',
+  `email` varchar(128) NOT NULL COMMENT 'Email address the sign-up email was sent to',
+  `createdDate` datetime NOT NULL COMMENT 'Date the hashCode was created',
+  `expirationDate` datetime NOT NULL COMMENT 'Date the hashCode expires',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ak2Employee_Email_Hash` (`employeeID`,`email`),
+  KEY `akEmployee_Email_Hash` (`hashCode`(255)),
+  CONSTRAINT `fk1_employee_email_hash` FOREIGN KEY (`employeeID`) REFERENCES `account_employee` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `employee_email_hash`
+--
+
+LOCK TABLES `employee_email_hash` WRITE;
+/*!40000 ALTER TABLE `employee_email_hash` DISABLE KEYS */;
+/*!40000 ALTER TABLE `employee_email_hash` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `employee_qualification`
 --
 
@@ -12803,6 +12847,70 @@ CREATE TABLE `employee_site_task` (
 LOCK TABLES `employee_site_task` WRITE;
 /*!40000 ALTER TABLE `employee_site_task` DISABLE KEYS */;
 /*!40000 ALTER TABLE `employee_site_task` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eula`
+--
+
+DROP TABLE IF EXISTS `eula`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eula` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `NAME` varchar(200) COLLATE utf8_bin NOT NULL,
+  `creationDate` datetime NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `versionNumber` int(11) NOT NULL,
+  `isoCode` varchar(10) CHARACTER SET latin1 NOT NULL,
+  `eulaBody` text COLLATE utf8_bin NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_EULA_REF_COUNTRY` (`isoCode`),
+  CONSTRAINT `FK_EULA_REF_COUNTRY` FOREIGN KEY (`isoCode`) REFERENCES `ref_country` (`isoCode`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eula`
+--
+
+LOCK TABLES `eula` WRITE;
+/*!40000 ALTER TABLE `eula` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eula` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `eula_agreement`
+--
+
+DROP TABLE IF EXISTS `eula_agreement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `eula_agreement` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `creationDate` datetime NOT NULL,
+  `createdBy` int(11) NOT NULL,
+  `updateDate` datetime NOT NULL,
+  `updatedBy` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `eulaId` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_EULA_AGREEMENT_EULA` (`eulaId`),
+  KEY `FK_EULA_AGREEMENT_USERS` (`userId`),
+  CONSTRAINT `FK_EULA_AGREEMENT_EULA` FOREIGN KEY (`eulaId`) REFERENCES `eula` (`id`),
+  CONSTRAINT `FK_EULA_AGREEMENT_USERS` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `eula_agreement`
+--
+
+LOCK TABLES `eula_agreement` WRITE;
+/*!40000 ALTER TABLE `eula_agreement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `eula_agreement` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -25907,7 +26015,7 @@ CREATE TABLE `report_user` (
 
 LOCK TABLES `report_user` WRITE;
 /*!40000 ALTER TABLE `report_user` DISABLE KEYS */;
-INSERT INTO `report_user` VALUES (1,1000,1000,'2014-02-13 17:58:49','2014-04-02 16:47:20',21,1000,'2014-04-02 16:47:20',1,2,18,0,-1,0);
+INSERT INTO `report_user` VALUES (1,1000,1000,'2014-02-13 17:58:49','2014-05-07 07:28:00',21,1000,'2014-05-07 07:28:00',1,2,21,0,-1,0);
 INSERT INTO `report_user` VALUES (11,1000,1000,'2014-02-13 18:03:41','2014-02-13 19:15:02',31,1000,'2014-02-13 19:15:02',1,1,5,0,-1,0);
 INSERT INTO `report_user` VALUES (21,1000,1000,'2014-02-13 18:30:41','2014-02-14 08:26:43',41,1000,'2014-02-14 08:26:43',1,3,6,0,-1,0);
 /*!40000 ALTER TABLE `report_user` ENABLE KEYS */;
@@ -26685,10 +26793,10 @@ INSERT INTO `users` VALUES (10,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Employee Gro
 INSERT INTO `users` VALUES (12,NULL,NULL,'Yes',NULL,NULL,NULL,'Contractor Group','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,'en',NULL,NULL,1,NULL,1,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (20,'GROUP1100PICS Developer',NULL,'Yes',NULL,'First','Last','PICS Developer','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2011-03-03 16:40:34','2011-03-03 16:40:34',NULL,'America/Chicago',0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,9,17,'xMTWTFx',0,NULL,NULL);
 INSERT INTO `users` VALUES (21,'GROUP1100PICS API User',NULL,'Yes',NULL,'First','Last','PICS API User','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-03-26 17:30:43','2013-03-26 17:30:43',NULL,NULL,0,1,'en_US',NULL,NULL,0,NULL,0,NULL,NULL,0,8,16,'xMTWTFx',0,NULL,NULL);
-INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-04-08 14:06:51',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
+INSERT INTO `users` VALUES (1000,NULL,NULL,'No','tester@picsauditing.com','PICS','Admin','PICS Admin','Yes','2014-05-07 07:23:16',1100,NULL,0,NULL,NULL,'949-936-4504','949-269-9177','9499364504',NULL,927,34663,'2006-04-21 00:00:00','2013-10-15 13:06:17',NULL,'America/Los_Angeles',0,0,'en_US','Operations',NULL,1,'2013-11-01 14:20:22',1,'2013-11-01 00:00:00','2013-06-13 00:00:00',0,8,16,'xMTWTFx',0,NULL,31);
 INSERT INTO `users` VALUES (1001,NULL,NULL,'No','tester@picsauditing.com','PICS','CSR','PICS CSR','Yes',NULL,1100,NULL,2,NULL,NULL,NULL,NULL,'',NULL,37951,23157,'2012-11-19 18:58:25','2013-04-12 10:50:56',NULL,NULL,0,0,'en','PICS',NULL,1,'2013-05-13 19:20:34',1,'2013-05-13 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,171);
 INSERT INTO `users` VALUES (1002,NULL,NULL,'No','tester@picsauditing.com','PICS','Auditor','PICS Auditor','Yes','2014-02-13 16:54:58',1100,NULL,0,NULL,'',NULL,NULL,NULL,NULL,941,90574,'2013-02-19 16:32:06','2013-09-09 12:02:45',NULL,'America/Los_Angeles',0,0,'en_US','Technology',NULL,1,'2013-02-19 00:00:00',1,'2013-02-19 00:00:00','2013-08-06 00:00:00',0,8,16,'xMTWTFx',0,NULL,181);
-INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
+INSERT INTO `users` VALUES (5000,'AETestv7',NULL,'No','aetest0ebdfea6@picsauditing.com','AETest','v7Menus','AETest v7Menus','Yes',NULL,1100,NULL,5,NULL,NULL,NULL,NULL,NULL,NULL,1000,1000,'2013-07-17 15:17:42','2014-03-18 11:54:22',NULL,'America/Los_Angeles',0,1,'en_US','Selenium Test',NULL,1,'2013-12-20 00:00:00',1,'2013-12-20 00:00:00','2013-07-25 00:00:00',0,8,16,'xMTWTFx',0,'1eyndgv4iddubsry9u9kheniab7r4cvb',32);
 INSERT INTO `users` VALUES (98431,NULL,NULL,'Yes',NULL,NULL,NULL,'PICS Group1','Yes',NULL,1100,NULL,0,NULL,NULL,'123-456-7890','123-456-7890','1234567890','2014-02-14',1000,1000,'2014-02-14 10:15:43','2014-02-14 10:15:43',NULL,NULL,0,1,'en',NULL,NULL,1,'2014-02-14 10:15:43',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41081);
 INSERT INTO `users` VALUES (98441,NULL,NULL,'No','tester@picsauditing.com','Jeffrey','Stewart','Jeffrey Stewart','Yes','2014-02-14 11:32:50',14,NULL,0,NULL,NULL,NULL,NULL,NULL,'2014-02-14',1000,1000,'2014-02-14 11:25:26','2014-02-14 11:25:26',NULL,'US/Arizona',0,1,'en_US',NULL,NULL,1,'2014-02-14 11:25:25',1,'2014-02-14 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41091);
 INSERT INTO `users` VALUES (98461,NULL,NULL,'No','tester@picsauditing.com','PICS','No Permissions','PICS No Permissions','Yes','2014-02-19 21:02:45',1100,NULL,0,NULL,NULL,'9495559584',NULL,'9495559584','2014-02-19',1000,1000,'2014-02-19 18:40:03','2014-02-19 18:40:03',NULL,'US/Pacific',0,1,'en_US','Technology',NULL,1,'2014-02-19 18:40:01',1,'2014-02-19 00:00:00',NULL,0,8,16,'xMTWTFx',0,NULL,41101);

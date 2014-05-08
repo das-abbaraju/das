@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.picsauditing.jpa.entities.*;
 import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -125,10 +126,15 @@ public class ReportNewContractorSearch extends ReportAccount {
 
 		sql.addAudit(AuditType.PQF);
 
-		if (permissions.getAccountStatus().isDemo())
-			sql.addWhere("a.status IN ('Active', 'Requested', 'Demo')");
-		else
-			sql.addWhere("a.status IN ('Active', 'Requested')");
+		if (permissions.getAccountStatus().isDemo()) {
+            sql.addWhere("a.status IN ('Active', 'Requested', 'Demo')");
+        } else {
+            sql.addWhere("a.status IN ('Active', 'Requested')");
+        }
+
+        if (isZipPresent(getFilter().getZip())) {
+            sql.addWhere("a.zip = '" + getFilter().getZip() + "'");
+        }
 
 		if (!Strings.isEmpty(getOrderBy()))
 			sql.addOrderBy(getOrderBy());
@@ -166,7 +172,14 @@ public class ReportNewContractorSearch extends ReportAccount {
 		}
 	}
 
-	@Override
+    private boolean isZipPresent(String zip) {
+        if(StringUtils.isEmpty(zip) || zip.contains("Zip")|| zip.contains("null")){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
 	public String execute() throws Exception {
 		if (ActionContext.getContext().getSession().get("actionMessage") != null) {
 			addActionMessage(ActionContext.getContext().getSession().get("actionMessage").toString());
@@ -179,7 +192,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 		getFilter().setShowRegistrationDate(false);
 		getFilter().setShowMinorityOwned(true);
 		getFilter().setShowLocation(true);
-		getFilter().setPermissions(permissions);
+        getFilter().setShowPostalCode(true);
+        getFilter().setPermissions(permissions);
 
 		if (!permissions.isOperator())
 			getFilter().setShowFlagStatus(false);

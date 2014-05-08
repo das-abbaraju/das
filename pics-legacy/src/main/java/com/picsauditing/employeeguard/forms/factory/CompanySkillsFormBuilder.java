@@ -10,7 +10,7 @@ import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -70,7 +70,7 @@ public class CompanySkillsFormBuilder {
 	private void addProjectSiteSkillInfo(Profile profile, List<CompanySkillInfo> companySkillInfoList) {
 		Set<Integer> allAccountIds = new HashSet<>();
 		for (Employee employee : profile.getEmployees()) {
-			List<Project> employeeProjects = projectService.getProjectsForEmployee(employee);
+			Set<Project> employeeProjects = projectService.getProjectsForEmployee(employee);
 			List<Integer> accounts = ExtractorUtil.extractList(employeeProjects, new Extractor<Project, Integer>() {
 				@Override
 				public Integer extract(Project project) {
@@ -84,7 +84,7 @@ public class CompanySkillsFormBuilder {
 			}
 		}
 
-		List<SiteSkill> siteSkills = siteSkillDAO.findByAccountIds(new ArrayList<>(allAccountIds));
+		List<SiteSkill> siteSkills = getSiteSkills(allAccountIds);
 		List<AccountModel> accountModels = accountService.getAccountsByIds(allAccountIds);
 
 		Map<AccountModel, Set<AccountSkill>> accountToSkill = new TreeMap<>();
@@ -119,6 +119,14 @@ public class CompanySkillsFormBuilder {
 
 			companySkillInfoList.add(companySkillInfo);
 		}
+	}
+
+	private List<SiteSkill> getSiteSkills(final Set<Integer> allAccountIds) {
+		if (CollectionUtils.isEmpty(allAccountIds)) {
+			return Collections.emptyList();
+		}
+
+		return siteSkillDAO.findByAccountIds(new ArrayList<>(allAccountIds));
 	}
 
 	private void addProjectCompanySkillInfo(Profile profile, List<CompanySkillInfo> companySkillInfoList) {

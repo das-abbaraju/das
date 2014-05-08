@@ -1,56 +1,150 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $filter, EmployeeSkills, Employee) {
-    var subview = 'all',
-        employee = EmployeeSkills.get(),
-        model;
+.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI) {
+    var skillModel;
 
-    function onSuccess(result) {
-        model = new Employee(result);
+    var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id}, function(employee) {
+        $scope.employee = employee;
+        $scope.employeeStatusIcon = employee.status;
+    });
 
-        $scope.projectSkills = model.getAllProjectSkills();
-        $scope.projectRoles = model.getAllProjectRoles();
+    var user = WhoAmI.get(function(user) {
+        $scope.user = user.type.toLowerCase();
 
-        $scope.highlightedStatus = $scope.employee.status;
+        if ($scope.user === 'corporate') {
+            SiteList.query(function(sites) {
+                $scope.siteList = sites;
+
+                //load first site if none specified in url. Remove when no longer an issue
+                if (!$routeParams.siteId) {
+                    $scope.initialState = true;
+                    loadEmployeeSkills(sites[0].id);
+                } else {
+                    loadEmployeeSkills($routeParams.siteId);
+                }
+            });
+        } else {
+            loadEmployeeSkills();
+        }
+    });
+
+    function loadEmployeeSkills(site_id) {
+        $scope.selected_site = site_id;
+
+        //make sure the employee info has populated first
+        employee_info.$promise.then(function(employee) {
+            SkillList.get({siteId: site_id, id: employee.id}, function(result) {
+                skillModel = new SkillModel(result);
+                loadMenuItems();
+                selectViewModel();
+            });
+        });
     }
 
-    function onError(error) {
-        console.log(error);
+    function loadMenuItems() {
+        $scope.projects = skillModel.getProjects();
+        $scope.roles = skillModel.getRoles();
     }
 
-    function changeSubView(template_name, subview_name) {
-        $scope.subview = template_name;
-        $scope.subview_name = subview_name;
+    function selectViewModel() {
+        var model;
 
-        switch (template_name) {
-            case 'project':
-                $scope.currentProject = model.getProjectByName(subview_name);
-                $scope.updateHighlightedStatus($scope.currentProject.status);
-                break;
-            case 'role':
-                $scope.currentRole = model.getRoleByName(subview_name);
-                $scope.updateHighlightedStatus($scope.currentRole.status);
-                break;
-            case 'all':
-                $scope.updateHighlightedStatus($scope.employee.status);
-                break;
-            default:
-                break;
+        if ($routeParams.roleSlug) {
+            model = getRoleModel();
+            setScopeModel(model);
+        } else if ($routeParams.projectSlug) {
+            model = getProjectModel();
+            setScopeModel(model);
+        } else {
+            model = getDefaultModel();
+            setScopeModel(model);
         }
     }
 
-    function updateHighlightedStatus(status) {
-        $scope.highlightedStatus = status;        
+    function getRoleModel() {
+        var slugname = $routeParams.roleSlug,
+            role = skillModel.getRoleBySlug(slugname);
+
+        return {
+            requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
+            skillGroup: role,
+            employeeStatusIcon: role.status,
+            selectedMenuItem: slugname,
+            viewTitle: skillModel.getRoleNameBySlug(slugname)
+        };
     }
 
-    employee.$promise.then(onSuccess, onError);
+    function getProjectModel() {
+        var slugname = $routeParams.projectSlug,
+            project = skillModel.getProjectBySlug(slugname);
+
+        return {
+            requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
+            skillGroup: project,
+            employeeStatusIcon: project.status,
+            selectedMenuItem: slugname,
+            viewTitle: skillModel.getProjectNameBySlug(slugname)
+        };
+    }
+
+    function getDefaultModel() {
+        return {
+            requiredSkills: skillModel.getAllRequiredSkills(),
+            selectedMenuItem: 'all'
+        };
+    }
+
+    function setScopeModel(model) {
+        $scope.requiredSkills = model.requiredSkills;
+        $scope.skillGroup = model.skillGroup;
+        $scope.selectedMenuItem = model.selectedMenuItem;
+        $scope.viewTitle = model.viewTitle;
+
+        if (model.employeeStatusIcon) {
+            $scope.employeeStatusIcon = model.employeeStatusIcon;
+        }
+    }
+
+    $scope.loadSelectedSiteData = function(site_id) {
+        //TODO: Remove initial state asap
+        if ($scope.initialState) {
+            $scope.initialState = false;
+            return;
+        }
+
+        if (site_id !== 'null') {
+            $location.path('/employee-guard/operators/employees/' + $routeParams.id +'/sites/' + site_id);
+        }
+    };
+
+    $scope.getSelectedView = function() {
+        var view;
+
+        if ($routeParams.roleSlug) {
+            view = 'role';
+        } else if ($routeParams.projectSlug) {
+            view = 'project';
+        } else {
+            view = 'all';
+        }
+
+        return view;
+    };
 
     angular.extend($scope, {
-        subview: subview,
-        employee: employee,
-        onSuccess: onSuccess,
-        onError: onError,
-        changeSubView: changeSubView,
-        updateHighlightedStatus: updateHighlightedStatus
+        loadEmployeeSkills: loadEmployeeSkills,
+        loadMenuItems: loadMenuItems,
+        selectViewModel: selectViewModel,
+        getRoleModel: getRoleModel,
+        getProjectModel: getProjectModel,
+        getDefaultModel: getDefaultModel
     });
+})
+
+.filter('removeInvalidCharactersFromUrl', function () {
+        return function (text) {
+
+            var str = text.replace(/\s+/g, '-').toLowerCase();
+            return str;
+        };
 });

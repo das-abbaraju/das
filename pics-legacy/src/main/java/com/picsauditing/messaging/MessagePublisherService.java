@@ -1,9 +1,9 @@
 package com.picsauditing.messaging;
 
 public class MessagePublisherService {
+
     private Publisher csrAssignmentSinglePublisher;
     private Publisher flagChangePublisher;
-    private Publisher employeeGuardPublisher;
     private Publisher emailRequestPublisher;
 
     public Publisher getCsrAssignmentSinglePublisher() {
@@ -20,14 +20,6 @@ public class MessagePublisherService {
 
     public void setFlagChangePublisher(Publisher flagChangePublisher) {
         this.flagChangePublisher = flagChangePublisher;
-    }
-
-    public Publisher getEmployeeGuardPublisher() {
-        return employeeGuardPublisher;
-    }
-
-    public void setEmployeeGuardPublisher(Publisher employeeGuardPublisher) {
-        this.employeeGuardPublisher = employeeGuardPublisher;
     }
 
     public Publisher getEmailRequestPublisher() {

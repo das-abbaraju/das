@@ -37,13 +37,13 @@ public class ProjectAssignmentProcessTest {
 	));
 
 	private static final Map<String, AccountSkill> FAKE_SKILLS = Collections.unmodifiableMap(new HashMap<String, AccountSkill>() {{
-		put("Project 1 Welder", new AccountSkillBuilder().accountId(SITE_ID).name("Project 1 Welder").build());
-		put("Project 1 Driller", new AccountSkillBuilder().accountId(SITE_ID).name("Project 1 Driller").build());
-		put("Site Skill", new AccountSkillBuilder().accountId(SITE_ID).name("Site Skill").build());
-		put("Corporate Skill", new AccountSkillBuilder().accountId(CORPORATE_ID).name("Corporate Skill").build());
-		put("Role 1 Manager", new AccountSkillBuilder().accountId(SITE_ID).name("Role 1 Manager").build());
-		put("Role 1 Architect", new AccountSkillBuilder().accountId(SITE_ID).name("Role 1 Architect").build());
-		put("Role 2 Driller", new AccountSkillBuilder().accountId(SITE_ID).name("Role 2 Driller").build());
+		put("Project 1 Welder", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Project 1 Welder").build());
+		put("Project 1 Driller", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Project 1 Driller").build());
+		put("Site Skill", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Site Skill").build());
+		put("Corporate Skill", new AccountSkillBuilder(SITE_ID).accountId(CORPORATE_ID).name("Corporate Skill").build());
+		put("Role 1 Manager", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Role 1 Manager").build());
+		put("Role 1 Architect", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Role 1 Architect").build());
+		put("Role 2 Driller", new AccountSkillBuilder(SITE_ID).accountId(SITE_ID).name("Role 2 Driller").build());
 	}});
 
 	@Test

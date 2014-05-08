@@ -18,7 +18,7 @@ public class AccountEmployeeGuardDAO {
 	protected EntityManager em;
 
 	@Transactional(readOnly = true)
-	public AccountEmployeeGuard find(int accountId) {
+	public AccountEmployeeGuard find(final int accountId) {
 		if (accountId == 0) {
 			return null;
 		}
