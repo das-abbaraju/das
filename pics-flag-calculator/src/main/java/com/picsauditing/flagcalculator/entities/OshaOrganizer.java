@@ -32,42 +32,6 @@ public class OshaOrganizer implements OshaVisitor {
 		return yearList;
 	}
 
-//	public List<Integer> getAllYears(OshaType type) {
-//		List<Integer> yearList = new ArrayList<Integer>();
-//
-//		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
-//			for (int year : safetyStatisticsData.get(type).keySet()) {
-//				yearList.add(year);
-//			}
-//		}
-//
-//		Collections.sort(yearList);
-//		return yearList;
-//	}
-//
-//	public Integer getOutOfScopeYear(OshaType type) {
-//		List<Integer> yearList = new ArrayList<Integer>();
-//
-//		if (safetyStatisticsData.get(type) != null && safetyStatisticsData.get(type).size() > 0) {
-//			for (int year : safetyStatisticsData.get(type).keySet()) {
-//				yearList.add(year);
-//			}
-//		}
-//
-//		Collections.sort(yearList);
-//		Integer earliestYear = yearList.get(0);
-//
-//		YearList scopedYears = mostRecentThreeYears(type);
-//		Integer lastYear = scopedYears.getYearForScope(MultiYearScope.LastYearOnly);
-//		Integer secondYear = scopedYears.getYearForScope(MultiYearScope.TwoYearsAgo);
-//		Integer thirdYear = scopedYears.getYearForScope(MultiYearScope.ThreeYearsAgo);
-//
-//		if (earliestYear.equals(lastYear) || earliestYear.equals(secondYear) || earliestYear.equals(thirdYear)) {
-//			return null;
-//		}
-//		else return earliestYear;
-//	}
-//
 	/**
 	 * Returns whether or the audit has been verified.
 	 *

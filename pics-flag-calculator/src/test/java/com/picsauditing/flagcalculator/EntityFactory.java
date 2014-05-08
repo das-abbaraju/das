@@ -127,14 +127,14 @@ public class EntityFactory {
 //        return country;
 //    }
 //
-//    public static ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
-//        ContractorOperator co = new ContractorOperator();
-//        co.setContractorAccount(contractor);
-//        co.setOperatorAccount(operator);
-//        contractor.getOperators().add(co);
-//        return co;
-//    }
-//
+    public static ContractorOperator addContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
+        ContractorOperator co = new ContractorOperator();
+        co.setContractorAccount(contractor);
+        co.setOperatorAccount(operator);
+        // contractor.getOperators().add(co);
+        return co;
+    }
+
     /**
      * make an Active conAudit for the given contractor of the given typeID
      *

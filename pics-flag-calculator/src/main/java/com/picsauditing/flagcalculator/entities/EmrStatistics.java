@@ -23,10 +23,4 @@ public class EmrStatistics extends SafetyStatistics {
 			}
 		}
 	}
-//
-//	@Override
-//	public List<AuditData> getQuestionsToVerify() {
-//		List<AuditData> questionsToVerify = new ArrayList<AuditData>();
-//		return questionsToVerify;
-//	}
 }

@@ -57,7 +57,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private List<FlagCriteriaOperator> opCriteria;
 	private OperatorAccount operator;
 	private ContractorAccount contractor;
-	private Map<Integer, FlagColor> byConID = new HashMap<Integer, FlagColor>();
+	private Map<Integer, FlagColor> byConID = new HashMap<>();
 
 	private final Logger logger = LoggerFactory.getLogger(ReportNewContractorSearch.class);
 
@@ -75,7 +75,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 		if (operator != null && operator.getFlagCriteriaInherited() != null)
 			opCriteria = operator.getFlagCriteriaInherited();
 		else
-			opCriteria = new ArrayList<FlagCriteriaOperator>();
+			opCriteria = new ArrayList<>();
 	}
 
 	@Override
@@ -418,15 +418,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 	 * @param flagData
 	 * @return
 	 */
-	private FlagColor getWorstColor(List<FlagData> flagData) {
+	private FlagColor getWorstColor(List<com.picsauditing.flagcalculator.FlagData> flagData) {
 		if (flagData == null)
 			return null;
 		FlagColor worst = FlagColor.Green;
-		for (FlagData flagDatum : flagData) {
-			if (flagDatum.getFlag().isRed())
-				return flagDatum.getFlag();
-			if (flagDatum.getFlag().isAmber())
-				worst = flagDatum.getFlag();
+		for (com.picsauditing.flagcalculator.FlagData flagDatum : flagData) {
+            FlagData data = (FlagData)flagDatum;
+			if (data.getFlag().isRed())
+				return data.getFlag();
+			if (data.getFlag().isAmber())
+				worst = data.getFlag();
 		}
 
 		return worst;

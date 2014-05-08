@@ -1,27 +1,25 @@
 package com.picsauditing.flagcalculator.entities;
 
+import org.hibernate.annotations.*;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Parameter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagCriteria")
 @Table(name = "flag_criteria")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
-public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> {
+public class FlagCriteria extends BaseTable {
 
-//    private FlagCriteriaCategory backwardCompatibleCategory;
     private FlagCriteriaCategory category;
     private int displayOrder = 999;
     private AuditQuestion question;
     private AuditType auditType;
     private OshaType oshaType;
     private OshaRateType oshaRateType;
-//    private String label;
-//    private String description;
     private String comparison;
     private MultiYearScope multiYearScope = null;
     protected AuditStatus requiredStatus = AuditStatus.Complete;
@@ -37,12 +35,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     public static final String NUMBER = "number";
     public static final String DATE = "date";
     public static final String STRING = "string";
-//
-//    public static final int EMR_AVERAGE_ID = 506;
-//    public static final int ANNUAL_UPDATE_ID = 142;
-//
-//    public static final List<Integer> EMR_IDS = new ArrayList<Integer>(Arrays.asList(505, 506, 507, 542));
-//
+
     @Enumerated(EnumType.STRING)
     @Column(name = "category")
     public FlagCriteriaCategory getCategory() {
@@ -73,7 +66,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.auditType = auditType;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaType") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.OshaType") })
     @Enumerated(EnumType.STRING)
     public OshaType getOshaType() {
         return oshaType;
@@ -83,7 +76,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.oshaType = oshaType;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.OshaRateType") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.OshaRateType") })
     @Enumerated(EnumType.STRING)
     public OshaRateType getOshaRateType() {
         return oshaRateType;
@@ -93,55 +86,6 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.oshaRateType = oshaRateType;
     }
 
-//    @Transient
-//    public String getLabel() {
-//        if (label != null) {
-//            return label;
-//        }
-//
-//        return new TranslatableString(getI18nKey("label")).toTranslatedString();
-//    }
-//
-//    public void setLabel(String label) {
-//        this.label = label;
-//    }
-//
-//    @Transient
-//    public String getDescription() {
-//        if (description != null) {
-//            return description;
-//        }
-//
-//        return new TranslatableString(getI18nKey("description")).toTranslatedString();
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    @Transient
-//    public String getDescriptionBeforeHurdle() {
-//        String desc = getDescription();
-//        try {
-//            return desc.substring(0, desc.indexOf("{HURDLE}"));
-//        } catch (Exception e) {
-//            return desc;
-//        }
-//    }
-//
-//    @Transient
-//    public String getDescriptionAfterHurdle() {
-//        String desc = getDescription();
-//        try {
-//            if (desc.indexOf("{HURDLE}") < 0) {
-//                return null;
-//            }
-//            return desc.substring(desc.indexOf("{HURDLE}") + 8);
-//        } catch (Exception e) {
-//            return null;
-//        }
-//    }
-//
     public String getComparison() {
         return comparison;
     }
@@ -150,7 +94,7 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
         this.comparison = comparison;
     }
 
-    @Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.MultiYearScope") })
+    @Type(type = "com.picsauditing.flagcalculator.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.flagcalculator.entities.MultiYearScope") })
     @Enumerated(EnumType.STRING)
     public MultiYearScope getMultiYearScope() {
         return multiYearScope;
@@ -234,53 +178,4 @@ public class FlagCriteria extends BaseTable implements Comparable<FlagCriteria> 
     public void setOptionCode(FlagCriteriaOptionCode optionCode) {
         this.optionCode = optionCode;
     }
-
-//    @Override
-//    public String toString() {
-//        return category + ": " + getDescription();
-//    }
-//
-//    @SuppressWarnings("unchecked")
-//    @Override
-//    public JSONObject toJSON(boolean full) {
-//        JSONObject json = super.toJSON(full);
-//
-//        json.put("category", category);
-//        json.put("displayOrder", displayOrder);
-//        json.put("question", question == null ? null : question.toJSON(full));
-//        json.put("auditType", auditType == null ? null : auditType.toJSON(full));
-//        json.put("oshaType", oshaType == null ? null : oshaType.toString());
-//        json.put("oshaRateType", oshaRateType == null ? null : oshaRateType.toString());
-//        json.put("label", getLabel());
-//        json.put("description", getDescription());
-//        json.put("comparison", comparison);
-//        json.put("multiYearScope", multiYearScope == null ? null : multiYearScope.toString());
-//        json.put("requiredStatus", requiredStatus);
-//        json.put("defaultValue", defaultValue);
-//        json.put("allowCustomValue", allowCustomValue);
-//        json.put("dataType", dataType);
-//        json.put("insurance", insurance);
-//
-//        return json;
-//    }
-//
-    public int compareTo(FlagCriteria o) {
-        return ((Integer) displayOrder).compareTo(o.displayOrder);
-    }
-
-//    public void cascadeRequiredLanguages(List<String> add, List<String> remove) {
-//        return;
-//    }
-//
-//    public boolean hasMissingChildRequiredLanguages() {
-//        return getLanguages().isEmpty();
-//    }
-//
-//    public static FlagCriteriaBuilder builder() {
-//        return new FlagCriteriaBuilder();
-//    }
-//
-//    protected ExplicitUsageContext context() {
-//        return null;
-//    }
 }
