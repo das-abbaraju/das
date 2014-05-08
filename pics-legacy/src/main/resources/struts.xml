@@ -1161,11 +1161,6 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 
-		<action name="OperatorFlagsCalculatorCSV"
-		        class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<action name="AuditBuilder"
 		        class="com.picsauditing.actions.audits.AuditBuilderDebugger">
 			<result>struts/audits/tester/audit_builder.jsp</result>
