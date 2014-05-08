@@ -218,5 +218,6 @@
 
 	<!-- 7.2.10 -->
 	<include file="./liquibase/2014/Q2/cfranks2_PICS_15233_DML_Move_All_Users_To_Version7Menus.sql"/>
+	<include file="./liquibase/2014/Q2/cfranks1_PICS_14860_Add_John_Deere_Supplier_Numbers_To_US_Site.sql"/>
 
 </databaseChangeLog>
