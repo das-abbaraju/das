@@ -13,11 +13,16 @@ import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.TypedQuery;
 import java.util.*;
 
 public class ProjectEntityService implements EntityService<Project, Integer>, Searchable<Project> {
+
+  public static final Logger logger = LoggerFactory.getLogger(ProjectEntityService.class);
 
 	@Autowired
 	private ProjectDAO projectDAO;
@@ -209,9 +214,17 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 
-	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, final int employeeId) {
-		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(siteId, employeeId);
+	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, Employee employee) {
+
+    List<ProjectRoleEmployee> projectRoleEmployees = this.findByEmployeesAndSiteProjects(siteId,Arrays.asList(employee));
+    projectRoleEmployeeDAO.delete(projectRoleEmployees);
+
 	}
+
+  public List<ProjectRoleEmployee> findByEmployeesAndSiteProjects(final int siteId, final Collection<Employee> employees) {
+    Collection<Project> projects=this.getAllProjectsForSite(siteId);
+    return  projectRoleEmployeeDAO.findByEmployeesAndProjects(employees, projects);
+  }
 
 	public void deleteEmployeeFromProjectRole(final int siteId, final int roleId, final int employeeId) {
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findBySiteIdRoleIdEmployeeId(siteId, roleId, employeeId);
