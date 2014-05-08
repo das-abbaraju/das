@@ -72,6 +72,7 @@
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
     <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
     <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
+    <bean id="ProcessHelper" class="com.picsauditing.employeeguard.process.ProcessHelper"/>
 
     <!-- Skill Engine and related classes -->
     <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine" />
