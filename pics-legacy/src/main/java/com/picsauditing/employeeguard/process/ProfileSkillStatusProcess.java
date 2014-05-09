@@ -51,7 +51,7 @@ public class ProfileSkillStatusProcess {
 				projectRequiredSkills, projectRoles, roleSkills));
 
 		profileSkillData = addAccountInformation(profileSkillData, profile);
-		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projects, projectRoles, roleSkills);
+		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projectRoles, roleSkills);
 		profileSkillData = addSiteProjects(profileSkillData, projects);
 		profileSkillData = addProjectStatus(profileSkillData, projects, profile);
 		profileSkillData = addAccountStatus(profileSkillData, profile);
@@ -101,7 +101,6 @@ public class ProfileSkillStatusProcess {
 											  final Set<Project> projects,
 											  final Profile profile) {
 
-
 		Map<Project, Set<AccountSkill>> allSkillsRequiredByProject =
 				processHelper.aggregateAllSkillsForProjects(projects, profileSkillData.getSiteAccounts(),
 						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
@@ -122,7 +121,6 @@ public class ProfileSkillStatusProcess {
 
 	private ProfileSkillData addAccountRequiredSkills(final ProfileSkillData profileSkillData,
 													  final Profile profile,
-													  final Set<Project> projects,
 													  final Map<Project, Set<Role>> projectRoles,
 													  final Map<Role, Set<AccountSkill>> roleSkills) {
 		// Add Contractor Required Skills
@@ -130,7 +128,7 @@ public class ProfileSkillStatusProcess {
 
 		// Add Corp/Site Required Skills + Site Assignment Roles Skills not part of projects
 		Map<AccountModel, Set<AccountSkill>> allSiteRequiredSkills =
-				buildSiteRequiredSkillsMap(profileSkillData, profile, projects, projectRoles, roleSkills);
+				buildSiteRequiredSkillsMap(profileSkillData, profile, projectRoles, roleSkills);
 
 		profileSkillData.setAllRequiredSkills(PicsCollectionUtil.mergeMapOfSets(allContractorSkills,
 				allSiteRequiredSkills));
@@ -140,12 +138,11 @@ public class ProfileSkillStatusProcess {
 
 	private Map<AccountModel, Set<AccountSkill>> buildSiteRequiredSkillsMap(final ProfileSkillData profileSkillData,
 																			final Profile profile,
-																			final Set<Project> projects,
 																			final Map<Project, Set<Role>> projectRoles,
 																			final Map<Role, Set<AccountSkill>> roleSkills) {
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = findAllRequiredSkillsForEachSite(profileSkillData.getParentSites());
 		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects =
-				findAllRoleSkillsNotForProjects(profileSkillData.getSiteAccounts(), projects, projectRoles,
+				findAllRoleSkillsNotForProjects(profileSkillData.getSiteAccounts(), projectRoles,
 						roleSkills, profile);
 
 		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills, roleSkillsNotForProjects);
@@ -172,18 +169,18 @@ public class ProfileSkillStatusProcess {
 	}
 
 	private Map<AccountModel, Set<AccountSkill>> findAllRoleSkillsNotForProjects(final Map<Integer, AccountModel> siteAccounts,
-																				 final Set<Project> projects,
 																				 final Map<Project, Set<Role>> projectRoles,
 																				 final Map<Role, Set<AccountSkill>> roleSkills,
 																				 final Profile profile) {
-		Map<Integer, Set<Project>> siteProjects = processHelper.getProjectsBySite(projects);
+
+		Map<Integer, Set<Project>> siteProjects = processHelper.getProjectsBySite(projectRoles.keySet());
 		Map<Integer, Set<Role>> siteRoles = processHelper.getRolesBySite(profile.getEmployees());
-		Map<Integer, Set<Role>> siteRolesNotInProjects = processHelper
+		Map<Integer, Set<Role>> siteRolesNotInProjectRoles = processHelper
 				.siteRolesNotInProjects(siteProjects, siteRoles, projectRoles);
 
 		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects = new HashMap<>();
-		for (Integer siteId : siteRolesNotInProjects.keySet()) {
-			Set<AccountSkill> skillsForRole = roleSkills.get(siteRolesNotInProjects.get(siteId));
+		for (Integer siteId : siteRolesNotInProjectRoles.keySet()) {
+			Set<AccountSkill> skillsForRole = roleSkills.get(siteRolesNotInProjectRoles.get(siteId));
 			if (skillsForRole == null) {
 				skillsForRole = new HashSet<>();
 			}
