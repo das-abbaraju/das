@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.controllers.helper;
 
 import com.picsauditing.util.Strings;
 import com.picsauditing.web.SessionInfoProviderFactory;
+import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * Instead of having this class, add a parameter and ID on the end of the URL.
@@ -26,7 +27,8 @@ public class RefererHelper {
 	}
 
 	public static int getSkillIdFromSession() {
-		return (int) SessionInfoProviderFactory.getSessionInfoProvider().getSession().get(EMPLOYEE_SKILL_REFERER_SKILL_ID);
+		return NumberUtils.toInt((String) SessionInfoProviderFactory.getSessionInfoProvider()
+				.getSession().get(EMPLOYEE_SKILL_REFERER_SKILL_ID));
 	}
 
 }

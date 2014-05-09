@@ -124,7 +124,8 @@ public class ProfileDocumentService {
 
 	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,
 												 final ProfileDocument profileDocument) {
-		accountSkillEmployeeDAO.delete(profileDocument);
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findBySkillIdAndProfile(skillId, profile);
+		accountSkillEmployeeDAO.delete(accountSkillEmployees);
 		accountSkillEmployeeDAO.save(buildAccountSkillEmployees(profile, skillId, profileDocument));
 	}
 
@@ -137,6 +138,8 @@ public class ProfileDocumentService {
 			accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
 					.accountSkill(new AccountSkill(skillId))
 					.employee(employee)
+					.createdBy(1)
+					.createdDate(DateBean.today())
 					.profileDocument(profileDocument)
 					.startDate(DateBean.today())
 					.endDate(profileDocument.getEndDate())

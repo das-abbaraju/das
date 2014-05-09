@@ -67,7 +67,7 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 	}
 
 	public List<AccountSkillEmployee> findByProfileDocument(final ProfileDocument profileDocument) {
-		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
 				"WHERE ase.profileDocument = :profileDocument", AccountSkillEmployee.class);
 
 		query.setParameter("profileDocument", profileDocument);
@@ -240,6 +240,18 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 				"WHERE ase.skill = :skill AND p = :profile", AccountSkillEmployee.class);
 
 		query.setParameter("skill", accountSkill);
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkillEmployee> findBySkillIdAndProfile(final int skillId, final Profile profile) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN e.profile p " +
+				"WHERE ase.skill.id = :skillId AND p = :profile", AccountSkillEmployee.class);
+
+		query.setParameter("skillId", skillId);
 		query.setParameter("profile", profile);
 
 		return query.getResultList();

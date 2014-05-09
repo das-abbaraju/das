@@ -1,15 +1,14 @@
 package com.picsauditing.employeeguard.entities;
 
-import org.hibernate.annotations.*;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.*;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
+import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "profiledocument")
@@ -199,13 +198,44 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 	@Transient
 	public boolean isDoesNotExpire() {
-        if (endDate == null) {
-            return false;
-        }
+		if (endDate == null) {
+			return false;
+		}
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(endDate);
 		return calendar.get(Calendar.YEAR) > 3000;
+	}
+
+	public final static class ProfileDocumentUniqueIndex implements UniqueIndexable {
+
+		private final int id;
+		private final int appUserId;
+		private final String name;
+
+		public ProfileDocumentUniqueIndex(final int id, final int appUserId, final String name) {
+			this.id = id;
+			this.appUserId = appUserId;
+			this.name = name;
+		}
+
+		@Override
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {{
+				put("profile.userId", new HashMap<String, Object>() {{
+					put("appUserId", appUserId);
+				}});
+
+				put("name", new HashMap<String, Object>() {{
+					put("name", name);
+				}});
+			}});
+		}
+
+		@Override
+		public int getId() {
+			return id;
+		}
 	}
 
 	@Override
@@ -215,9 +245,12 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 
 		ProfileDocument profileDocument = (ProfileDocument) o;
 
-		if (getProfile() != null ? !getProfile().equals(profileDocument.getProfile()) : profileDocument.getProfile() != null) return false;
-		if (getDocumentType() != null ? !(getDocumentType() == profileDocument.getDocumentType()) : profileDocument.getDocumentType() != null) return false;
-		if (getName() != null ? !getName().equals(profileDocument.getName()) : profileDocument.getName() != null) return false;
+		if (getProfile() != null ? !getProfile().equals(profileDocument.getProfile()) : profileDocument.getProfile() != null)
+			return false;
+		if (getDocumentType() != null ? !(getDocumentType() == profileDocument.getDocumentType()) : profileDocument.getDocumentType() != null)
+			return false;
+		if (getName() != null ? !getName().equals(profileDocument.getName()) : profileDocument.getName() != null)
+			return false;
 
 		return true;
 	}
@@ -230,18 +263,18 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		return result;
 	}
 
-    @Override
-    public int compareTo(final ProfileDocument that) {
-        if (this == that) {
-            return 0;
-        }
+	@Override
+	public int compareTo(final ProfileDocument that) {
+		if (this == that) {
+			return 0;
+		}
 
-        int comparison = this.getName().compareToIgnoreCase(that.getName());
-        if (comparison != 0) {
-            return comparison;
-        }
+		int comparison = this.getName().compareToIgnoreCase(that.getName());
+		if (comparison != 0) {
+			return comparison;
+		}
 
-        return 0;
-    }
+		return 0;
+	}
 
 }

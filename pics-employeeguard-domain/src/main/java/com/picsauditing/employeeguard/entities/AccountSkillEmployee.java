@@ -12,8 +12,8 @@ import java.util.Date;
 @Entity
 @Table(name = "account_skill_employee")
 @Where(clause = "deletedDate IS NULL")
-@SQLInsert(sql = "INSERT INTO account_skill_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, finishDate, documentID, skillID, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_skill_employee SET deletedDate = NOW() WHERE id = ?")
+//@SQLInsert(sql = "INSERT INTO account_skill_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, finishDate, documentID, skillID, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
+//@SQLDelete(sql = "UPDATE account_skill_employee SET deletedDate = NOW() WHERE id = ?")
 public class AccountSkillEmployee implements BaseEntity {
 
 	private static final long serialVersionUID = 2117121655234863607L;
