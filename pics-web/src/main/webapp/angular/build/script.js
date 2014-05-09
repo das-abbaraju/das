@@ -68495,7 +68495,9 @@ window.log=function(){log.history=log.history||[];log.history.push(arguments);if
         scope: {
             title: '@',
             skills: '=',
-            icon: '@'
+            icon: '@',
+            urlPrefix: '@',
+            target:'@'
         },
         templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };
