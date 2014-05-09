@@ -45,14 +45,14 @@
             <div class="col-md-9">
                 <div ng-switch on="getSelectedView()">
                     <div ng-switch-when="site">
-                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
                     </div>
                     <div ng-switch-when="project">
-                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills"></employeeskillsection>
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
                     </div>
                     <div ng-switch-default>
                         <span ng-repeat="site in sites">
-                            <employeeskillsection title="{{ site.name }}" skills="site.skills"></employeeskillsection>
+                            <employeeskillsection title="{{ site.name }}" skills="site.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
                         </span>
                     </div>
                </div>
