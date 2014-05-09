@@ -2,6 +2,7 @@ describe("A Employee Skill List", function() {
     var scope, $httpBackend, routeParams;
 
     var skill_list_dev_url = '/angular/json/employee/skills/skill_list.json';
+    var skill_list_url = '/employee-guard/employee/profile/skills';
 
     var skillListData = {
         "status": "Expired",
@@ -83,6 +84,7 @@ describe("A Employee Skill List", function() {
         routeParams = $routeParams;
 
         $httpBackend.when('GET', /\angular\/json\/employee\/skills\/skill_list.json/).respond(skillListData);
+        $httpBackend.when('GET', skill_list_url).respond(skillListData);
 
         scope = $rootScope.$new();
         $controller("employeeSkillListCtrl", {

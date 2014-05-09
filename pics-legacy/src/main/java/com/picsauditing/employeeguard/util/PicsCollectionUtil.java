@@ -343,11 +343,11 @@ public class PicsCollectionUtil {
 		return mergedValues;
 	}
 
-	public static <E, V> Map<E, Set<V>> mergeMapOfSets(final Map<E, Set<V>> map1, final Map<E, Set<V>> map2) {
-		Map<E, Set<V>> mergedValues = new HashMap<>(map1);
+	public static <K, V> Map<K, Set<V>> mergeMapOfSets(final Map<K, Set<V>> map1, final Map<K, Set<V>> map2) {
+		Map<K, Set<V>> mergedValues = copyMapOfSets(map1);
 
-		for (Map.Entry<E, Set<V>> entrySet : map2.entrySet()) {
-			E key = entrySet.getKey();
+		for (Map.Entry<K, Set<V>> entrySet : map2.entrySet()) {
+			K key = entrySet.getKey();
 
 			if (mergedValues.containsKey(key)) {
 				mergedValues.get(key).addAll(map2.get(key));
@@ -357,6 +357,19 @@ public class PicsCollectionUtil {
 		}
 
 		return mergedValues;
+	}
+
+	public static <K, V> Map<K, Set<V>> copyMapOfSets(final Map<K, Set<V>> map) {
+		if (MapUtils.isEmpty(map)) {
+			return new HashMap<>();
+		}
+
+		Map<K, Set<V>> copy = new HashMap<>();
+		for (K key : map.keySet()) {
+			copy.put(key, new HashSet<>(map.get(key)));
+		}
+
+		return copy;
 	}
 
 	public static <E, V> Map<E, V> mergeMaps(final Map<E, V> map1, final Map<E, V> map2) {
@@ -381,6 +394,10 @@ public class PicsCollectionUtil {
 
 	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
 																		final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptySet();
+		}
+
 		Set<PROPERTY> properties = new HashSet<>();
 
 		for (ENTITY entity : entities) {
@@ -509,5 +526,40 @@ public class PicsCollectionUtil {
 		}
 
 		return values;
+	}
+
+	public static <K, V> Map<K, Set<V>> addKeys(final Map<K, Set<V>> map, final Collection<K> allKeys) {
+		Map<K, Set<V>> completeMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(map)) {
+			completeMap = copyMapOfSets(map);
+		}
+
+		for (K key : allKeys) {
+			if (!completeMap.containsKey(key)) {
+				completeMap.put(key, new HashSet<V>());
+			}
+		}
+
+		return completeMap;
+	}
+
+	public interface KeyTransformable<K, N> {
+
+		N getNewKey(K key);
+
+	}
+
+	public static <K, V, N> Map<N, Set<V>> transformMap(final Map<K, Set<V>> map,
+														final KeyTransformable<K, N> keyTransformable) {
+		if (MapUtils.isEmpty(map)) {
+			return Collections.emptyMap();
+		}
+
+		Map<N, Set<V>> transformedMap = new HashMap<>();
+		for (K key : map.keySet()) {
+			transformedMap.put(keyTransformable.getNewKey(key), map.get(key));
+		}
+
+		return transformedMap;
 	}
 }

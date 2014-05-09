@@ -1,0 +1,120 @@
+package com.picsauditing.employeeguard.models.factories;
+
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.IdNameComposite;
+import com.picsauditing.employeeguard.models.RequiredSkills;
+import com.picsauditing.employeeguard.models.SkillStatusInfo;
+import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+public class CompanyStatusModelFactory {
+
+	public Set<CompanyStatusModel> create(final Map<AccountModel, SkillStatus> accountStatusMap,
+										  final Map<AccountModel, RequiredSkills> requiredSkillsMap,
+										  final Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountProjectsMap) {
+
+		Set<CompanyStatusModel> companyStatusModels = new HashSet<>();
+		for (AccountModel accountModel : accountStatusMap.keySet()) {
+			companyStatusModels.add(create(accountModel, accountStatusMap.get(accountModel),
+					requiredSkillsMap.get(accountModel), accountProjectsMap.get(accountModel)));
+		}
+
+		return companyStatusModels;
+	}
+
+	public CompanyStatusModel create(final AccountModel accountModel,
+									 final SkillStatus status,
+									 final RequiredSkills requiredSkills,
+									 final Set<CompanyProjectModelFactory.CompanyProjectModel> projectModels) {
+
+		CompanyStatusModel companyStatusModel = new CompanyStatusModel();
+
+		companyStatusModel.setId(accountModel.getId());
+		companyStatusModel.setName(accountModel.getName());
+		companyStatusModel.setStatus(status);
+		companyStatusModel.setRequired(requiredSkills);
+		companyStatusModel.setProjects(projectModels);
+
+		return companyStatusModel;
+	}
+
+	public class CompanyStatusModel implements IdNameComposite, SkillStatusInfo {
+
+		private int id;
+		private String name;
+		private SkillStatus status;
+		private RequiredSkills required;
+		private Set<CompanyProjectModelFactory.CompanyProjectModel> projects;
+
+		@Override
+		public int getId() {
+			return id;
+		}
+
+		@Override
+		public void setId(int id) {
+			this.id = id;
+		}
+
+		@Override
+		public String getName() {
+			return name;
+		}
+
+		@Override
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		@Override
+		public SkillStatus getStatus() {
+			return status;
+		}
+
+		@Override
+		public void setStatus(SkillStatus status) {
+			this.status = status;
+		}
+
+		public RequiredSkills getRequired() {
+			return required;
+		}
+
+		public void setRequired(RequiredSkills required) {
+			this.required = required;
+		}
+
+		public Set<CompanyProjectModelFactory.CompanyProjectModel> getProjects() {
+			return projects;
+		}
+
+		public void setProjects(Set<CompanyProjectModelFactory.CompanyProjectModel> projects) {
+			this.projects = projects;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			CompanyStatusModel that = (CompanyStatusModel) o;
+
+			if (id != that.id) return false;
+			if (name != null ? !name.equals(that.name) : that.name != null) return false;
+			if (status != that.status) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = id;
+			result = 31 * result + (name != null ? name.hashCode() : 0);
+			result = 31 * result + (status != null ? status.hashCode() : 0);
+			return result;
+		}
+	}
+}

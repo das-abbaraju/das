@@ -4,10 +4,7 @@ import com.picsauditing.employeeguard.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 
@@ -121,12 +118,16 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 		super.delete(skill);
 	}
 
-	public List<AccountSkill> findRequiredByAccount(final int accountId) {
+	public List<AccountSkill> findRequiredByContractorId(final int contractorId) {
+		return findRequiredByContractorIds(Arrays.asList(contractorId));
+	}
+
+	public List<AccountSkill> findRequiredByContractorIds(final Collection<Integer> contractorIds) {
 		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
-				"WHERE s.accountId = :accountId " +
+				"WHERE s.accountId IN (:contractorIds) " +
 				"AND s.ruleType = 'Required'", AccountSkill.class);
 
-		query.setParameter("accountId", accountId);
+		query.setParameter("contractorIds", contractorIds);
 
 		return query.getResultList();
 	}

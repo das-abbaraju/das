@@ -184,6 +184,20 @@ public class PicsCollectionUtilTest {
 	}
 
 	@Test
+	public void testMergeValuesOfMapOfSets_EmptyMap() {
+		Map<Integer, Set<String>> map1 = Collections.emptyMap();
+
+		Map<Integer, Set<String>> map2 = new HashMap<>();
+		map2.put(2, new HashSet<>(Arrays.asList("Test 4")));
+		map2.put(3, new HashSet<>(Arrays.asList("Test 5")));
+
+		Map<Integer, Set<String>> result = PicsCollectionUtil.mergeMapOfSets(map1, map2);
+
+		assertEquals(2, result.size());
+		assertTrue(Utilities.mapsAreEqual(map2, result));
+	}
+
+	@Test
 	public void testMergeValuesOfMapOfSets() {
 		Map<Integer, Set<String>> map1 = new HashMap<>();
 		map1.put(1, new HashSet<>(Arrays.asList("Test 1", "Test 2")));
@@ -270,6 +284,37 @@ public class PicsCollectionUtilTest {
 			result = 31 * result + (name != null ? name.hashCode() : 0);
 			return result;
 		}
+	}
+
+	@Test
+	public void testAddKeys() {
+		Map<Integer, Set<Integer>> fakeMap = buildFakeMap();
+		List<Integer> fakeKeys = buildFakeKeys();
+
+		Map<Integer, Set<Integer>> result = PicsCollectionUtil.addKeys(fakeMap, fakeKeys);
+
+		verifyTestAddKeys(result);
+	}
+
+	private Map<Integer, Set<Integer>> buildFakeMap() {
+		return new HashMap<Integer, Set<Integer>>() {{
+
+			put(1, new HashSet<>(Arrays.asList(2)));
+			put(2, new HashSet<>(Arrays.asList(3)));
+			put(3, new HashSet<>(Arrays.asList(4)));
+
+		}};
+	}
+
+	private List<Integer> buildFakeKeys() {
+		return new ArrayList<>(Arrays.asList(0, 1, 2, 4, 3, 4));
+	}
+
+	private void verifyTestAddKeys(Map<Integer, Set<Integer>> result) {
+		Utilities.collectionsAreEqual(Arrays.asList(0, 1, 2, 3, 4), result.keySet());
+		Utilities.collectionsAreEqual(Arrays.asList(2), result.get(1));
+		Utilities.collectionsAreEqual(Arrays.asList(3), result.get(2));
+		Utilities.collectionsAreEqual(Arrays.asList(4), result.get(3));
 	}
 
 }

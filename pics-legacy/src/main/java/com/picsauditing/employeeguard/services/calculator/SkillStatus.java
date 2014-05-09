@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.calculator;
 import com.picsauditing.jpa.entities.JSONable;
 import org.json.simple.JSONObject;
 
+// TODO: Rename so it is more generic since status is now applied to more than just skills
 public enum SkillStatus implements JSONable {
 
     // TODO: Rename expiring to something more meaningful that the Skill is about to expire

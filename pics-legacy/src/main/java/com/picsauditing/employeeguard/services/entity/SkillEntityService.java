@@ -210,7 +210,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
+																		   final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -249,7 +249,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
 																		   final Collection<Employee> employees) {
-		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByAccount(contractorId);
+		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByContractorId(contractorId);
 
 		if (CollectionUtils.isEmpty(requiredSkills) || CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
@@ -268,6 +268,20 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 					@Override
 					public AccountSkill getValue(AccountSkillEmployee entity) {
 						return entity.getSkill();
+					}
+				}
+		);
+	}
+
+	public Map<Integer, Set<AccountSkill>> getRequiredSkillsForContractor(final Collection<Integer> contractorIds) {
+		return PicsCollectionUtil.convertToMapOfSets(
+				accountSkillDAO.findRequiredByContractorIds(contractorIds),
+
+				new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+					@Override
+					public Integer getKey(AccountSkill accountSkill) {
+						return accountSkill.getAccountId();
 					}
 				}
 		);
@@ -297,8 +311,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Override
 	public AccountSkill save(AccountSkill accountSkill, final EntityAuditInfo entityAuditInfo) {
 		EntityHelper.setCreateAuditFields(accountSkill, entityAuditInfo);
-    EntityHelper.setCreateAuditFields(accountSkill.getRoles(), entityAuditInfo);
-    EntityHelper.setCreateAuditFields(accountSkill.getGroups(), entityAuditInfo);
+		EntityHelper.setCreateAuditFields(accountSkill.getRoles(), entityAuditInfo);
+		EntityHelper.setCreateAuditFields(accountSkill.getGroups(), entityAuditInfo);
 
 		return accountSkillDAO.save(accountSkill);
 	}

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 
 import javax.persistence.TypedQuery;
@@ -102,5 +103,18 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<Project> findByProfile(final Profile profile) {
+		TypedQuery<Project> query = em.createQuery("SELECT project FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project project " +
+				"JOIN pre.employee e " +
+				"JOIN e.profile profile " +
+				"WHERE profile = :profile", Project.class);
+
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
 	}
 }

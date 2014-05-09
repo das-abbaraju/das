@@ -40,6 +40,16 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.save(accountSkillEmployee);
 	}
 
+	public void linkProfileDocumentToEmployeeSkills(final List<AccountSkillEmployee> accountSkillEmployees,
+													final ProfileDocument profileDocument) {
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			accountSkillEmployee.setProfileDocument(profileDocument);
+			accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+		}
+
+		accountSkillEmployeeDAO.save(accountSkillEmployees);
+	}
+
 	public AccountSkillEmployee getAccountSkillEmployeeForProfileAndSkill(Profile profile, AccountSkill skill) {
 		return accountSkillEmployeeDAO.findByProfileAndSkill(profile, skill);
 	}
@@ -74,6 +84,61 @@ public class AccountSkillEmployeeService {
 
 			accountSkillEmployeeDAO.save(accountSkillEmployee);
 		}
+	}
+
+	public void update(final AccountSkill accountSkill, final Profile profile, final SkillDocumentForm skillDocumentForm) {
+		SkillType skillType = accountSkill.getSkillType();
+
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findBySkillAndProfile(accountSkill, profile);
+
+		accountSkillEmployees = addNewAccountSkillEmployees(accountSkillEmployees, profile, accountSkill);
+
+		if (skillType.isCertification()) {
+			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
+			linkProfileDocumentToEmployeeSkills(accountSkillEmployees, document);
+		} else if (skillType.isTraining()) {
+			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
+				for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+					accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+				}
+			} else {
+				for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+					accountSkillEmployee.setEndDate(null);
+				}
+			}
+
+			accountSkillEmployeeDAO.save(accountSkillEmployees);
+		}
+	}
+
+	public List<AccountSkillEmployee> addNewAccountSkillEmployees(final List<AccountSkillEmployee> accountSkillEmployees,
+																  final Profile profile,
+																  final AccountSkill accountSkill) {
+		List<AccountSkillEmployee> allAccountSkillEmployees = new ArrayList<>(accountSkillEmployees);
+		for (Employee employee : profile.getEmployees()) {
+			if (!foundAccountSkillEmployee(employee, allAccountSkillEmployees)) {
+				allAccountSkillEmployees.add(new AccountSkillEmployeeBuilder()
+						.employee(employee)
+						.accountSkill(accountSkill)
+						.createdBy(1)
+						.createdDate(DateBean.today())
+						.startDate(DateBean.today())
+						.build());
+			}
+		}
+
+		return allAccountSkillEmployees;
+	}
+
+	private boolean foundAccountSkillEmployee(final Employee employee, List<AccountSkillEmployee> accountSkillEmployees) {
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			if (accountSkillEmployee.getEmployee().equals(employee)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public void update(AccountSkillEmployee accountSkillEmployee, final ProfileDocument document) {
@@ -156,6 +221,6 @@ public class AccountSkillEmployeeService {
 			}
 		}
 
-    return new AccountSkillEmployeeBuilder().build();
+		return new AccountSkillEmployeeBuilder().build();
 	}
 }

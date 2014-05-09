@@ -1,16 +1,32 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProfileDAO;
+import com.picsauditing.employeeguard.daos.ProjectDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.SiteAssignment;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ProfileEntityService implements EntityService<Profile, Integer> {
 
 	@Autowired
+	private EmployeeDAO employeeDAO;
+	@Autowired
 	private ProfileDAO profileDAO;
+	@Autowired
+	private ProjectDAO projectDAO;
+	@Autowired
+	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -25,6 +41,26 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 
 	public Profile findByAppUserId(final int appUserId) {
 		return profileDAO.findByAppUserId(appUserId);
+	}
+
+	public Set<Employee> getEmployeesForProfile(final Profile profile) {
+		return new HashSet<>(employeeDAO.findByProfile(profile));
+	}
+
+	public Set<Integer> getSiteAssignments(final Profile profile) {
+		return PicsCollectionUtil.extractPropertyToSet(siteAssignmentDAO.findByProfile(profile),
+
+				new PicsCollectionUtil.PropertyExtractor<SiteAssignment, Integer>() {
+
+					@Override
+					public Integer getProperty(SiteAssignment siteAssignment) {
+						return siteAssignment.getSiteId();
+					}
+				});
+	}
+
+	public Set<Project> findProjectsForProfile(final Profile profile) {
+		return new HashSet<>(projectDAO.findByProfile(profile));
 	}
 
 	/* All Save Methods */
