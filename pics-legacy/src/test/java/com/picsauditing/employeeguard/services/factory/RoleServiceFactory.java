@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services.factory;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.forms.contractor.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.services.RoleService;
 import org.mockito.Mockito;
 
@@ -29,7 +30,7 @@ public class RoleServiceFactory {
         when(roleService.getRole(anyString(), anyInt())).thenReturn(role);
         when(roleService.search(anyString(), anyInt())).thenReturn(Roles);
         when(roleService.getRolesForAccount(anyInt())).thenReturn(Roles);
-        when(roleService.update(any(GroupNameSkillsForm.class), anyString(), anyInt(), anyInt())).thenReturn(role);
+        when(roleService.update(any(RoleNameSkillsForm.class), anyString(), anyInt(), anyInt())).thenReturn(role);
         when(roleService.update(any(GroupEmployeesForm.class), anyString(), anyInt(), anyInt())).thenReturn(role);
 
         return roleService;

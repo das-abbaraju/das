@@ -3,9 +3,9 @@ package com.picsauditing.employeeguard.forms.operator;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.forms.contractor.RoleNameSkillsForm;
 
-public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnotherForm {
+public class OperatorJobRoleForm extends RoleNameSkillsForm implements AddAnotherForm {
 
 	private String description;
 
