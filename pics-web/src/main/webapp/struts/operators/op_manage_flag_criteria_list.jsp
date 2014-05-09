@@ -141,6 +141,8 @@
 		</tbody>
 	</table>
 
+    <a href="Report.action?report=2487"><s:text name="OperatorFlagMatrix.title" /></a> &nbsp;|&nbsp;
+
 	<s:if test="canEdit">
 		<pics:permission perm="ManageAudits">
 			<a href="ManageFlagCriteria.action"><s:text name="ManageFlagCriteriaOperator.link.ManageFlagCriteria" /></a> &nbsp;|&nbsp;
