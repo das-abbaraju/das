@@ -13,6 +13,7 @@ import com.picsauditing.employeeguard.models.factories.EmployeeSkillsModelFactor
 import com.picsauditing.employeeguard.process.ProfileSkillData;
 import com.picsauditing.employeeguard.process.ProfileSkillStatusProcess;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -59,16 +60,19 @@ public class EmployeeSkillsModelService {
 				ModelFactory.getCompanyProjectModelFactory().create(profileSkillData.getProjectStatuses(),
 						projectSkillStatusMap);
 
-		return buildAccountProjectsMap(profileSkillData.getSiteAccounts(), companyProjectModels);
+		return buildAccountProjectsMap(profileSkillData.getSiteAccounts(), profileSkillData.getProjects(),
+				companyProjectModels);
 	}
 
 	private Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> buildAccountProjectsMap(
 			final Map<Integer, AccountModel> accountModelMap,
+			final Set<Project> projects,
 			final Set<CompanyProjectModelFactory.CompanyProjectModel> companyProjectModels) {
 
 		Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountProjectsMap = new HashMap<>();
 		for (CompanyProjectModelFactory.CompanyProjectModel companyProjectModel : companyProjectModels) {
-			AccountModel accountModel = accountModelMap.get(companyProjectModel.getId());
+			int accountId = getAccountIdFromProject(projects, companyProjectModel.getId());
+			AccountModel accountModel = accountModelMap.get(accountId);
 			if (!accountProjectsMap.containsKey(accountModel)) {
 				accountProjectsMap.put(accountModel, new HashSet<CompanyProjectModelFactory.CompanyProjectModel>());
 			}
@@ -77,6 +81,20 @@ public class EmployeeSkillsModelService {
 		}
 
 		return accountProjectsMap;
+	}
+
+	private int getAccountIdFromProject(final Set<Project> projects, final int projectId) {
+		if (CollectionUtils.isEmpty(projects)) {
+			return 0;
+		}
+
+		for (Project project : projects) {
+			if (project.getId() == projectId) {
+				return project.getAccountId();
+			}
+		}
+
+		return 0;
 	}
 
 	private Map<Project, Set<SkillStatusModel>> buildProjectSkillStatusMap(final ProfileSkillData profileSkillData) {

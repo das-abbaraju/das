@@ -152,7 +152,7 @@ class ProcessHelper {
 																		 final Map<Integer, AccountModel> siteAccounts,
 																		 final Map<Project, Set<AccountSkill>> projectSkills,
 																		 final Map<AccountModel, Set<AccountSkill>> siteRequiredSkills) {
-		Map<Project, Set<AccountSkill>> allSkillsRequiredForProjects = new HashMap<>(projectSkills);
+		Map<Project, Set<AccountSkill>> allSkillsRequiredForProjects = copyProjectSkills(projectSkills);
 		for (Project project : projects) {
 			if (!allSkillsRequiredForProjects.containsKey(project)) {
 				allSkillsRequiredForProjects.put(project, new HashSet<AccountSkill>());
@@ -162,6 +162,15 @@ class ProcessHelper {
 		}
 
 		return allSkillsRequiredForProjects;
+	}
+
+	private Map<Project, Set<AccountSkill>> copyProjectSkills(final Map<Project, Set<AccountSkill>> projectSkills) {
+		Map<Project, Set<AccountSkill>> projectSkillsCopy = new HashMap<>();
+		for (Project project : projectSkills.keySet()) {
+			projectSkillsCopy.put(project, new HashSet<>(projectSkills.get(project)));
+		}
+
+		return projectSkillsCopy;
 	}
 
 	public Map<AccountModel, Set<AccountSkill>> allSkillsForAllSite(final Map<AccountModel, Set<Project>> accountProjects,

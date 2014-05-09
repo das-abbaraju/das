@@ -14,8 +14,9 @@ public class ProfileSkillData {
 	// All Contractor Group Skills + Skills Required for all Employees
 	private Map<AccountModel, Set<AccountSkill>> allRequiredSkills;
 
+	private Set<Project> projects;
 	private Map<AccountModel, Set<Project>> siteProjects;
- 	private Map<Project, SkillStatus> projectStatuses;
+	private Map<Project, SkillStatus> projectStatuses;
 	private Map<AccountModel, SkillStatus> siteStatuses;
 	private Map<Project, Set<AccountSkill>> allProjectSkills;
 	private Map<AccountSkill, SkillStatus> skillStatusMap;
@@ -32,6 +33,14 @@ public class ProfileSkillData {
 
 	public void setAllRequiredSkills(Map<AccountModel, Set<AccountSkill>> allRequiredSkills) {
 		this.allRequiredSkills = allRequiredSkills;
+	}
+
+	public Set<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(Set<Project> projects) {
+		this.projects = projects;
 	}
 
 	public Map<AccountModel, Set<Project>> getSiteProjects() {

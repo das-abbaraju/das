@@ -46,6 +46,7 @@ public class ProfileSkillStatusProcess {
 
 		ProfileSkillData profileSkillData = new ProfileSkillData();
 
+		profileSkillData.setProjects(projects);
 		profileSkillData.setAllProjectSkills(processHelper.allProjectSkills(projects,
 				projectRequiredSkills, projectRoles, roleSkills));
 
@@ -69,7 +70,7 @@ public class ProfileSkillStatusProcess {
 
 	private ProfileSkillData addAllSkillStatuses(final ProfileSkillData profileSkillData, final Profile profile) {
 		Map<AccountSkill, SkillStatus> allSkillStatuses = statusCalculatorService
-				.getSkillStatuses(profile.getEmployees().get(0), aggregateAllSkills(profileSkillData));
+				.getSkillStatuses(getEmployee(profile), aggregateAllSkills(profileSkillData));
 
 		profileSkillData.setSkillStatusMap(allSkillStatuses);
 
@@ -91,7 +92,7 @@ public class ProfileSkillStatusProcess {
 				processHelper.allSkillsForAllSite(profileSkillData.getSiteProjects(),
 						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
 
-		profileSkillData.setSiteStatuses(statusCalculatorService.getSkillStatusPerEntity(profile.getEmployees().get(0), allSiteSkills));
+		profileSkillData.setSiteStatuses(statusCalculatorService.getSkillStatusPerEntity(getEmployee(profile), allSiteSkills));
 
 		return profileSkillData;
 	}
@@ -106,7 +107,7 @@ public class ProfileSkillStatusProcess {
 						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
 
 		profileSkillData.setProjectStatuses(statusCalculatorService
-				.getSkillStatusPerEntity(profile.getEmployees().get(0), allSkillsRequiredByProject));
+				.getSkillStatusPerEntity(getEmployee(profile), allSkillsRequiredByProject));
 
 		return profileSkillData;
 	}
@@ -273,5 +274,7 @@ public class ProfileSkillStatusProcess {
 		return roleEntityService.getRolesForProfile(profile);
 	}
 
-	// TODO: Move these methods to another class
+	private Employee getEmployee(final Profile profile) {
+		return profile.getEmployees().get(profile.getEmployees().size() - 1);
+	}
 }
