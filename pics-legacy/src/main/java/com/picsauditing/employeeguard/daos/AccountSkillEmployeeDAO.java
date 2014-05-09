@@ -223,4 +223,16 @@ public class AccountSkillEmployeeDAO extends AbstractBaseEntityDAO<AccountSkillE
 
 		query.executeUpdate();
 	}
+
+	public List<AccountSkillEmployee> findBySkillAndProfile(AccountSkill accountSkill, Profile profile) {
+		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
+				"JOIN ase.employee e " +
+				"JOIN e.profile p " +
+				"WHERE ase.skill = :skill AND p = :profile", AccountSkillEmployee.class);
+
+		query.setParameter("skill", accountSkill);
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
+	}
 }

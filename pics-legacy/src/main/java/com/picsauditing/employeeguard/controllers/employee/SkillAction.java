@@ -1,10 +1,9 @@
 package com.picsauditing.employeeguard.controllers.employee;
 
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
@@ -92,7 +91,13 @@ public class SkillAction extends PicsRestActionSupport {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
 		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
-		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(accountSkillEmployee);
+
+		if (accountSkillEmployee == null) {
+			SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
+			skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, null);
+		} else {
+			skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(accountSkillEmployee);
+		}
 
 		return "training";
 	}
@@ -118,11 +123,14 @@ public class SkillAction extends PicsRestActionSupport {
 	public String update() throws Exception {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
 
-		accountSkillEmployeeService.update(accountSkillEmployee, skillDocumentForm);
+		accountSkillEmployeeService.update(accountSkill, profile, skillDocumentForm);
 
 		return setUrlForRedirect("/employee-guard/employee/skill/" + accountSkill.getId());
+	}
+
+	private Employee getEmployee(final Profile profile) {
+		return profile.getEmployees().get(profile.getEmployees().size() - 1);
 	}
 
 	public AccountSkill getSkill() {
