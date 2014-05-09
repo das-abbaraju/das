@@ -106,9 +106,6 @@ public class StatusCalculatorService {
 	private Map<Employee, List<SkillStatus>> buildSkillStatusMap(final Set<Employee> employees,
 																 final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
 																 final List<AccountSkill> orderedSkills) {
-		if (MapUtils.isEmpty(employeeMap) || CollectionUtils.isEmpty(orderedSkills)) {
-			return Collections.emptyMap();
-		}
 
 		final int numberOfSkills = orderedSkills.size();
 		Map<Employee, List<SkillStatus>> employeeSkillStatusMap = new HashMap<>();
