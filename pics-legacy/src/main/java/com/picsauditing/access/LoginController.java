@@ -404,9 +404,9 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private String doLogin(LoginContext loginContext) throws Exception {
-		User user = loginContext.getUser();
+		user = loginContext.getUser();
 		permissions = permissionBuilder.login(user);
-		ActionContext.getContext().getSession().put("permissions", permissions);
+		ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
 		addClientSessionCookieToResponse(rememberMe, switchToUser);
 
