@@ -1,7 +1,7 @@
 package com.picsauditing.service.authentication;
 
-import com.picsauditing.authentication.builder.AppUserBuilder;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
@@ -21,7 +21,6 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.login.FailedLoginException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 

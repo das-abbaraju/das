@@ -13,7 +13,7 @@ public class AppUserService {
 	private AppUserDAO appUserDAO;
 
 	public boolean isUserNameAvailable(final String username) {
-		return (appUserDAO.findListByUserName(username).size() >= 1);
+		return findByUsername(username) == null;
 	}
 
 	public AppUser generateNewAppUser(final String username, final String password) {

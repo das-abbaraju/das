@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.controllers;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.authentication.builder.AppUserBuilder;
+import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
