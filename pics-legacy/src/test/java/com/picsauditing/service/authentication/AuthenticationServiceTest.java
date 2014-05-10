@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 public class AuthenticationServiceTest {
 
-	public static final String TESTER_USERNAME = "Tester";
+	public static final String USERNAME = "Username";
 	public static final String PASSWORD = "Password";
 	public static final int APPUSER_ID = 123;
 	public static final int PROFILE_ID = 451;
@@ -68,35 +68,35 @@ public class AuthenticationServiceTest {
 	public void testCreateNewAppUser_Username_Unavailable() {
 		when(appUserService.isUserNameAvailable("Tester")).thenReturn(false);
 
-		authenticationService.createNewAppUser(TESTER_USERNAME, PASSWORD);
+		authenticationService.createNewAppUser(USERNAME, PASSWORD);
 	}
 
 	@Test
 	public void testCreateNewAppUser() {
 		setUpTestCreateNewAppUser();
 
-		AppUser result = authenticationService.createNewAppUser(TESTER_USERNAME, PASSWORD);
+		AppUser result = authenticationService.createNewAppUser(USERNAME, PASSWORD);
 
 		verifyTestCreateNewAppUser(result);
 	}
 
 	private void setUpTestCreateNewAppUser() {
-		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(TESTER_USERNAME).password(PASSWORD).build();
+		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(USERNAME).password(PASSWORD).build();
 
-		when(appUserService.isUserNameAvailable(TESTER_USERNAME)).thenReturn(true);
-		when(appUserService.generateNewAppUser(TESTER_USERNAME, PASSWORD)).thenReturn(fakeAppUser);
+		when(appUserService.isUserNameAvailable(USERNAME)).thenReturn(true);
+		when(appUserService.generateNewAppUser(USERNAME, PASSWORD)).thenReturn(fakeAppUser);
 	}
 
 	private void verifyTestCreateNewAppUser(AppUser result) {
 		assertEquals(APPUSER_ID, result.getId());
-		assertEquals(TESTER_USERNAME, result.getUsername());
+		assertEquals(USERNAME, result.getUsername());
 	}
 
 	@Test(expected = FailedLoginException.class)
 	public void testAuthenticateEmployeeGUARDUser_No_AppUser_Found() throws FailedLoginException {
-		when(appUserService.findByUsernameAndUnencodedPassword(TESTER_USERNAME, PASSWORD)).thenReturn(null);
+		when(appUserService.findByUsernameAndUnencodedPassword(USERNAME, PASSWORD)).thenReturn(null);
 
-		authenticationService.authenticateEmployeeGUARDUser(TESTER_USERNAME, PASSWORD, true);
+		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
 	}
 
 	@Test(expected = FailedLoginException.class)
@@ -104,14 +104,14 @@ public class AuthenticationServiceTest {
 		setupAppUserService();
 		when(profileEntityService.findByAppUserId(APPUSER_ID)).thenReturn(null);
 
-		authenticationService.authenticateEmployeeGUARDUser(TESTER_USERNAME, PASSWORD, true);
+		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
 	}
 
 	@Test
 	public void testAuthenticateEmployeeGUARDUser() throws FailedLoginException {
 		setupTestAuthenticateEmployeeGUARDUser();
 
-		String result = authenticationService.authenticateEmployeeGUARDUser(TESTER_USERNAME, PASSWORD, true);
+		String result = authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
 
 		assertTrue(result.startsWith("810|"));
 		assertTrue(result.contains("|{\"rememberMe\":true}|123|"));
@@ -128,7 +128,7 @@ public class AuthenticationServiceTest {
 	}
 
 	private void setupAppUserService() {
-		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(TESTER_USERNAME).password(PASSWORD).build();
-		when(appUserService.findByUsernameAndUnencodedPassword(TESTER_USERNAME, PASSWORD)).thenReturn(fakeAppUser);
+		AppUser fakeAppUser = new AppUserBuilder().id(APPUSER_ID).username(USERNAME).password(PASSWORD).build();
+		when(appUserService.findByUsernameAndUnencodedPassword(USERNAME, PASSWORD)).thenReturn(fakeAppUser);
 	}
 }

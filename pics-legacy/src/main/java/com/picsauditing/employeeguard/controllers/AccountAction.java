@@ -36,11 +36,11 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	@Autowired
 	private AuthenticationService authenticationService;
 	@Autowired
-	private ProfileEntityService profileEntityService;
-	@Autowired
 	private EmailHashService emailHashService;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
+	@Autowired
+	private ProfileEntityService profileEntityService;
 	@Autowired
 	private ProfileFormValidator profileFormValidator;
 
@@ -69,7 +69,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		if (emailHash.getEmployee() != null) {
 			profile.setFirstName(emailHash.getEmployee().getFirstName());
 			profile.setLastName(emailHash.getEmployee().getLastName());
-			profile.setEmail(emailHash.getEmailAddress());
+			profile.setEmail(emailHash.getEmployee().getEmail());
 		}
 	}
 
