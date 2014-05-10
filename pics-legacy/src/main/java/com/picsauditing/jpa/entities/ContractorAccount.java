@@ -1017,6 +1017,7 @@ public class ContractorAccount extends Account implements JSONable {
         this.yearList = yearList;
     }
 
+    @Deprecated
     @Transient
     public Map<MultiYearScope, ContractorAudit> getAfterPendingAnnualUpdates() {
         Map<MultiYearScope, ContractorAudit> annualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
@@ -1041,6 +1042,7 @@ public class ContractorAccount extends Account implements JSONable {
 
     }
 
+    @Deprecated
 	@Transient
 	public Map<MultiYearScope, ContractorAudit> getCompleteAnnualUpdates() {
 		Map<MultiYearScope, ContractorAudit> completeAnnualUpdates = new LinkedHashMap<MultiYearScope, ContractorAudit>();
@@ -1077,6 +1079,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return annualAList;
 	}
 
+    @Deprecated
     @Transient
     public List<ContractorAudit> getAuditByAuditType(AuditType auditType) {
         List<ContractorAudit> auditList = new ArrayList<ContractorAudit>();

@@ -12,6 +12,7 @@
     <context:property-placeholder location="classpath:amqp_connection.properties"/>
     <import resource="rabbit-config.xml"/>
     <import resource="employeeguard-config.xml"/>
+    <import resource="classpath*:META-INF/flag-calculator-context.xml"/>
 
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
@@ -130,6 +131,8 @@
     <bean id="WidgetUserDAO" class="com.picsauditing.dao.WidgetUserDAO"/>
     <bean id="WorkFlowDAO" class="com.picsauditing.dao.WorkFlowDAO"/>
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
+    <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
+    <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
@@ -171,11 +174,11 @@
     <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService">
         <constructor-arg ref="RegistrationBillingBean" />
         <constructor-arg ref="ContractorAccountService" />
-        <constructor-arg ref="AppUserService" />
         <constructor-arg ref="LanguageModel" />
         <constructor-arg ref="AltUserService" />
         <constructor-arg ref="RegistrationRequestService" />
         <constructor-arg ref="AuthenticationService" />
+        <constructor-arg ref="AppUserService" />
     </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" scope="prototype"/>
@@ -260,6 +263,7 @@
     <bean id="CaoSaveModel" class="com.picsauditing.models.audits.CaoSaveModel"/>
     <bean id="AuditPeriodService" class="com.picsauditing.service.audit.AuditPeriodService"/>
     <bean id="ContractorEmailService" class="com.picsauditing.service.contractor.ContractorEmailService"/>
+    <bean id="EulaService" class="com.picsauditing.eula.service.EulaService" />
 
     <bean id="IdentityProviderStrutsWebApp" class="com.picsauditing.security.IdentityProviderStrutsWebApp" scope="prototype"/>
     <bean id="NoteService" class="com.picsauditing.service.notes.NoteService" scope="prototype">
@@ -390,6 +394,8 @@
     <bean id="translationLogger" class="com.picsauditing.model.i18n.TranslationUsageLogSynchronizer"/>
     <bean id="translateRestClient" class="com.picsauditing.i18n.service.TranslateRestClient"/>
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.SpringConfiguredTranslationUsageDAO" scope="prototype"/>
+
+    <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"

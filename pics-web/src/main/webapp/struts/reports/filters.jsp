@@ -199,6 +199,18 @@
 			</div>
 		</s:if>
 
+		<s:if test="filter.showPostalCode">
+			<br clear="all" />
+
+			<div class="filterOption">
+				<span class="q_status">
+					<s:text name="Report.ContractorBillingZip" />
+					:
+				</span>
+				<s:textfield name="filter.zip" cssClass="forms" size="8" />
+			</div>
+		</s:if>
+
 		<s:if test="filter.showLocation">
 			<div class="filterOption">
 				<a href="#" class="filterBox">

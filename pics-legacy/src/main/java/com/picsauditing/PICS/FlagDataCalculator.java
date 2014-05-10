@@ -2,40 +2,54 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.dao.CollectionDAO;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.SlickEnhancedContractorOperatorDAO;
+import com.picsauditing.flagcalculator.FlagCalculator;
+import com.picsauditing.flagcalculator.FlagData;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.messaging.FlagChange;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
-public class FlagDataCalculator {
+@Deprecated
+public class FlagDataCalculator implements FlagCalculator {
 	private FlagCriteriaDAO flagCriteriaDao;
     private SlickEnhancedContractorOperatorDAO contractorOperatorDAO;
 	protected BasicDAO dao;
+    protected MessagePublisherService messagePublisherService;
 
 	private Map<FlagCriteria, FlagCriteriaContractor> contractorCriteria = null;
 	private Map<FlagCriteria, List<FlagCriteriaOperator>> operatorCriteria = null;
 	private Map<FlagCriteria, List<FlagDataOverride>> overrides = null;
 	private OperatorAccount operator = null;
+	private ContractorOperator contractorOperator = null;
 	private Map<Integer, List<Integer>> correspondingMultiYearCriteria = null;
 
 	// Assume this is true for the contractor in question
 	private boolean worksForOperator = true;
 	private final Logger logger = LoggerFactory.getLogger(FlagDataCalculator.class);
 
-	public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
+    public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria) {
+        setContractorCriteria(contractorCriteria);
+    }
+
+    public FlagDataCalculator(Collection<FlagCriteriaContractor> contractorCriteria, Map<FlagCriteria, List<FlagDataOverride>> overrides) {
 		setContractorCriteria(contractorCriteria);
+        this.overrides = overrides;
 	}
 
 	public FlagDataCalculator(FlagCriteriaContractor conCriteria, FlagCriteriaOperator opCriteria) {
-		contractorCriteria = new HashMap<FlagCriteria, FlagCriteriaContractor>();
+		contractorCriteria = new HashMap<>();
 		contractorCriteria.put(conCriteria.getCriteria(), conCriteria);
-		operatorCriteria = new HashMap<FlagCriteria, List<FlagCriteriaOperator>>();
+		operatorCriteria = new HashMap<>();
 		if (operatorCriteria.get(opCriteria.getCriteria()) == null) {
 			operatorCriteria.put(opCriteria.getCriteria(), new ArrayList<FlagCriteriaOperator>());
 		}
@@ -44,7 +58,8 @@ public class FlagDataCalculator {
 
     public FlagDataCalculator() {}
 
-	private FlagCriteriaDAO flagCriteriaDao() {
+    @Deprecated
+    private FlagCriteriaDAO flagCriteriaDao() {
 		if (flagCriteriaDao == null) {
 			return SpringUtils.getBean(SpringUtils.FLAG_CRITERIA_DAO);
 		} else {
@@ -52,6 +67,7 @@ public class FlagDataCalculator {
 		}
 	}
 
+    @Deprecated
 	private BasicDAO basicDAO() {
 		if (dao == null) {
 			return SpringUtils.getBean(SpringUtils.BASIC_DAO);
@@ -67,11 +83,12 @@ public class FlagDataCalculator {
         return contractorOperatorDAO ;
     }
 
+    @Deprecated
 	public List<FlagData> calculate() {
 		flagCriteriaDao = flagCriteriaDao();
 		dao = basicDAO();
 
-		Map<FlagCriteria, FlagData> dataSet = new HashMap<FlagCriteria, FlagData>();
+		Map<FlagCriteria, com.picsauditing.jpa.entities.FlagData> dataSet = new HashMap<>();
 
 		boolean flaggable = isFlaggableContractor();
 		for (FlagCriteria key : operatorCriteria.keySet()) {
@@ -91,7 +108,7 @@ public class FlagDataCalculator {
 							flag = fco.getFlag();
 						}
 
-						FlagData data = new FlagData();
+                        com.picsauditing.jpa.entities.FlagData data = new com.picsauditing.jpa.entities.FlagData();
 						data.setCriteria(key);
 						data.setContractor(contractorCriteria.get(key).getContractor());
 						data.setCriteriaContractor(contractorCriteria.get(key));
@@ -128,6 +145,7 @@ public class FlagDataCalculator {
 		return new ArrayList<FlagData>(dataSet.values());
 	}
 
+    @Deprecated
 	private boolean isFlaggableContractor() {
 		if (contractorCriteria.size() == 0)
 			return false;
@@ -157,6 +175,7 @@ public class FlagDataCalculator {
 	 *         False if a criteria is met (i.e. Green Flagged). NULL can be
 	 *         returned from this method when flagging does not apply.
 	 */
+    @Deprecated
 	private Boolean isFlagged(FlagCriteriaOperator opCriteria, FlagCriteriaContractor conCriteria) {
 		if (!opCriteria.getCriteria().equals(conCriteria.getCriteria())) {
 			throw new RuntimeException("FlagDataCalculator: Operator and Contractor Criteria must be of the same type");
@@ -170,6 +189,7 @@ public class FlagDataCalculator {
 			hurdle = opCriteria.getHurdle();
 		}
         if (criteriaEligibleForRulesBasedInsurance(opCriteria)) {
+            // TODO: This is for a feature that is not currently active
             String newHurdle = findRulesBasedInsuranceCriteriaLimit(con, opCriteria);
             if (newHurdle != null) {
                 hurdle = newHurdle;
@@ -227,6 +247,7 @@ public class FlagDataCalculator {
 								if (!cao.getStatus().before(criteria.getRequiredStatus())) {
 									auditIsGood = true;
 								} else if (cao.getStatus().isSubmitted() && con.getAccountLevel().isBidOnly()) {
+                                    // TODO: Because of the above check for when contractors don't work for the operator, this is never reached
 									/*
 									 * I don't think Bid-only contractors are
 									 * going to get AUs anymore So this may not
@@ -239,6 +260,7 @@ public class FlagDataCalculator {
 							}
 						}
 						if (!worksForOperator) {
+                            // TODO: Because of the above check for when contractors don't work for the operator, this is never reached
 							if (ca.hasCaoStatusAfter(AuditStatus.Incomplete)) {
 								auditIsGood = true;
 							}
@@ -678,11 +700,11 @@ public class FlagDataCalculator {
 		return WaitingOn.None;
 	}
 
-	public FlagColor calculateCaoStatus(AuditType auditType, Set<FlagData> flagDatas) {
+	public FlagColor calculateCaoStatus(AuditType auditType, Set<com.picsauditing.jpa.entities.FlagData> flagDatas) {
 		logger.info("Calculating recommendation for {}", auditType);
 
 		FlagColor flag = null;
-		for (FlagData flagData : flagDatas) {
+		for (com.picsauditing.jpa.entities.FlagData flagData : flagDatas) {
 			if (isInsuranceCriteria(flagData, auditType)) {
 				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
 				if (flag.isRed()) {
@@ -700,7 +722,7 @@ public class FlagDataCalculator {
 		return flag;
 	}
 
-	private boolean isInsuranceCriteria(FlagData flagData, AuditType auditType) {
+	private boolean isInsuranceCriteria(com.picsauditing.jpa.entities.FlagData flagData, AuditType auditType) {
 		boolean isAppropriateAudit = true;
 		if (flagData.getCriteria().getQuestion() != null && flagData.getCriteria().getQuestion().getAuditType() != null) {
 			isAppropriateAudit = flagData.getCriteria().getQuestion().getAuditType().equals(auditType);
@@ -825,7 +847,24 @@ public class FlagDataCalculator {
 		return operator;
 	}
 
-	private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
+    public ContractorOperator getContractorOperator() {
+        return contractorOperator;
+    }
+
+    public void setContractorOperator(ContractorOperator contractorOperator) {
+        this.contractorOperator = contractorOperator;
+    }
+
+    public MessagePublisherService getMessagePublisherService() {
+        return messagePublisherService;
+    }
+
+    public void setMessagePublisherService(MessagePublisherService messagePublisherService) {
+        this.messagePublisherService = messagePublisherService;
+    }
+
+    @Deprecated
+    private FlagDataOverride hasForceDataFlag(FlagCriteria key, OperatorAccount operator) {
 		String auditYear = null;
 
 		List<Integer> criteriaIds = new ArrayList<Integer>();
@@ -939,8 +978,7 @@ public class FlagDataCalculator {
 		return fdo2;
 	}
 
-	private FlagDataOverride searchOverridesByCriteria(
-			List<FlagDataOverride> fdos, FlagCriteria key) {
+	private FlagDataOverride searchOverridesByCriteria(List<FlagDataOverride> fdos, FlagCriteria key) {
 		for (FlagDataOverride fdo : fdos) {
 			if (fdo.getCriteria().equals(key)) {
 				return fdo;
@@ -989,7 +1027,7 @@ public class FlagDataCalculator {
 	}
 
 	private List<FlagDataOverride> getApplicableFlagDataOverrides(OperatorAccount operator, List<Integer> criteriaIds) {
-		ArrayList<FlagDataOverride> fdos = new ArrayList<FlagDataOverride>();
+		ArrayList<FlagDataOverride> fdos = new ArrayList<>();
 		for (int id : criteriaIds) {
 			FlagCriteria criteriaKey = new FlagCriteria();
 			criteriaKey.setId(id);
@@ -1078,4 +1116,108 @@ public class FlagDataCalculator {
 
 		return caos;
 	}
+
+    public boolean saveFlagData(List<FlagData> changes) {
+        List<com.picsauditing.jpa.entities.FlagData> changedFlagData = new ArrayList<>();
+        // Save the FlagDetail to the ContractorOperator as a JSON string
+        JSONObject flagJson = new JSONObject();
+        for (FlagData data : changes) {
+            if (!data.isInsurance()) {
+                JSONObject flag = new JSONObject();
+                flag.put("category", data.getCriteriaCategory());
+                flag.put("label", data.getCriteriaLabel());
+                flag.put("flag", data.getFlagColor());
+
+                flagJson.put(data.getCriteriaID(), flag);
+            }
+            changedFlagData.add((com.picsauditing.jpa.entities.FlagData)data);
+        }
+        contractorOperator.setFlagDetail(flagJson.toString());
+
+        // Find overall flag color for this operator
+        FlagColor overallColor = FlagColor.Green;
+        if (contractorOperator.getContractorAccount().getAccountLevel().isBidOnly()
+                || contractorOperator.getContractorAccount().getStatus().isPending()
+                || contractorOperator.getContractorAccount().getStatus().isDeleted()
+                || contractorOperator.getContractorAccount().getStatus().isDeclined()
+                || contractorOperator.getContractorAccount().getStatus().isDeactivated()) {
+            overallColor = FlagColor.Clear;
+        }
+
+        for (FlagData change : changes) {
+            FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
+            if (!change.isInsurance()) {
+                FlagColor worst = FlagColor.getWorseColor(overallColor, changeFlag);
+
+                overallColor = worst;
+            }
+        }
+
+        boolean needNote = false;
+
+        ContractorOperator conOperator = contractorOperator.getForceOverallFlag();
+        if (conOperator != null) { // operator has a forced flag
+            contractorOperator.setFlagColor(conOperator.getForceFlag());
+            contractorOperator.setFlagLastUpdated(new Date());
+            if (contractorOperator.getForceBegin() != null) {
+                Calendar forceFlagCreatedOn = Calendar.getInstance();
+                forceFlagCreatedOn.setTime(contractorOperator.getForceBegin());
+                Calendar yesterday = Calendar.getInstance();
+                yesterday.add(Calendar.DATE, -1);
+                Calendar tomorrow = Calendar.getInstance();
+                tomorrow.add(Calendar.DATE, 1);
+                if (!(forceFlagCreatedOn.after(tomorrow) || forceFlagCreatedOn.before(yesterday))) {
+                    if (overallColor.equals(conOperator.getForceFlag())) {
+                        contractorOperator.setBaselineFlag(overallColor);
+                    }
+                }
+            }
+        } else if (!overallColor.equals(contractorOperator.getFlagColor())) {
+            FlagChange flagChange = getFlagChange(contractorOperator, overallColor);
+            messagePublisherService.getFlagChangePublisher().publish(flagChange);
+
+            if (contractorOperator.getFlagColor() == FlagColor.Clear) {
+                contractorOperator.setBaselineFlag(overallColor);
+                contractorOperator.setBaselineFlagDetail(flagJson.toString());
+            }
+            contractorOperator.setFlagColor(overallColor);
+            contractorOperator.setFlagLastUpdated(new Date());
+
+            needNote = true;
+        }
+
+        // set baselineFlag to clear and baselineFlagDetail for null baselines
+        if (contractorOperator.getBaselineFlag() == null) {
+            contractorOperator.setBaselineFlag(FlagColor.Clear);
+            contractorOperator.setBaselineFlagDetail(flagJson.toString());
+        }
+
+        Iterator<com.picsauditing.jpa.entities.FlagData> flagDataList = CollectionDAO.insertUpdateDeleteManaged(contractorOperator.getFlagDatas(), changedFlagData).iterator();
+        while (flagDataList.hasNext()) {
+            com.picsauditing.jpa.entities.FlagData flagData = flagDataList.next();
+            contractorOperator.getFlagDatas().remove(flagData);
+            dao.remove(flagData);
+        }
+        contractorOperator.setAuditColumns(new User(User.SYSTEM));
+        dao.save(contractorOperator);
+
+        return needNote;
+    }
+
+    private FlagChange getFlagChange(ContractorOperator co, FlagColor overallColor) {
+        FlagChange flagChange = new FlagChange();
+        flagChange.setContractor(co.getContractorAccount());
+        flagChange.setOperator(co.getOperatorAccount());
+        flagChange.setFromColor(co.getFlagColor());
+        flagChange.setToColor(overallColor);
+        flagChange.setTimestamp(new Date());
+        flagChange.setDetails(co.getFlagDetail());
+        return flagChange;
+    }
+
+    @Override
+    public void setShouldPublishChanges(boolean shouldPublishChanges) {
+        // do nothing. This is for the extraction
+    }
+
 }

@@ -242,6 +242,11 @@ public final class MenuBuilder {
 
 			companyMenu.addChild(getText("menu.CompanyProfile"), contractorEdit, "contractor_edit");
 		}
+
+        if (permissions.hasPermission(OpPerms.AuditVerification)) {
+            String verifyView = urlUtils.getActionUrl("VerifyView", "id", accountId);
+            companyMenu.addChild(getText("menu.PQFVerification"), verifyView, "verify_view");
+        }
 	}
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {

@@ -55,6 +55,21 @@ public class StatusCalculatorServiceTest {
 		Whitebox.setInternalState(service, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
 	}
 
+  @Test
+  public void testGetEmployeeStatusRollUpForSkills_WhenEmployeeHasNoDocumentation() throws Exception {
+    List<AccountSkill> fakeSkills = buildFakeAccountSkills();
+    List<Employee> fakeEmployees = buildFakeEmployees();
+
+    //-- Employee has no documentation.
+    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
+            anyCollectionOf(AccountSkill.class))).thenReturn(Collections.EMPTY_LIST);
+
+    Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
+
+    verifyResults_WhenEmployeeHasNoDocumentation(fakeEmployees, result);
+  }
+
+
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
 		setupMocksForGetEmployeeStatusRollUpForSkills();
@@ -121,6 +136,22 @@ public class StatusCalculatorServiceTest {
 		);
 	}
 
+  private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
+    assertEquals(3, result.size());
+
+    // All expired
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(0))));
+
+    // All expired
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(1))));
+
+    // All expired
+    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+            result.get(fakeEmployees.get(2))));
+  }
+
 	private void verifyResults(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
 		assertEquals(3, result.size());
 
@@ -158,6 +189,27 @@ public class StatusCalculatorServiceTest {
 		assertNotNull(result);
 		assertFalse(result.isEmpty());
 	}
+
+  @Test
+  public void testGetAllSkillStatusesForEntity_EmployeeHasNoDocumentation() {
+    List<AccountSkill> skills = buildFakeAccountSkills();
+    List<Employee> employees = buildFakeEmployees();
+
+    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
+            .thenReturn(Collections.EMPTY_LIST);
+
+    HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
+    entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
+
+    for (Employee employee : employees) {
+      entityEmployeeMap.get(project).put(employee, new HashSet<>(skills));
+    }
+
+    Map<Project, List<SkillStatus>> result = service.getAllSkillStatusesForEntity(entityEmployeeMap);
+
+    assertNotNull(result);
+    assertFalse(result.isEmpty());
+  }
 
 	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
 																	  final List<AccountSkill> skills) {

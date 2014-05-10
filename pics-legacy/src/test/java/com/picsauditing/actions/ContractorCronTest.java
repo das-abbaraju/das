@@ -3,6 +3,7 @@ package com.picsauditing.actions;
 import com.google.common.collect.Lists;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.BasicDAO;
@@ -10,6 +11,7 @@ import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.UserAssignmentDAO;
 import com.picsauditing.featuretoggle.Features;
+import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.messaging.Publisher;
@@ -26,35 +28,41 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.togglz.junit.TogglzRule;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class ContractorCronTest extends PicsActionTest {
 
 	ContractorCron contractorCron;
 
-	@Mock
-	private Database databaseForTesting;
+    @Mock
+    private EntityManager entityManager;
+    @Mock
+    private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private ContractorAccountDAO contractorDAO;
 	@Mock
 	private BasicDAO dao;
-	@Mock
-	private ContractorAccount contractor;
     @Mock
-    private ContractorAudit contractorAudit;
+    private ContractorAccount contractor;
+    @Mock
+    private com.picsauditing.flagcalculator.entities.ContractorAccount newContractor;
 	@Mock
 	private ContractorAuditDAO contractorAuditDAO;
+    @Mock
+    private ContractorOperator contractorOperator;
+    @Mock
+    private com.picsauditing.flagcalculator.entities.ContractorOperator newContractorOperator;
 	@Mock
-	private ContractorOperator contractorOperator;
+	private com.picsauditing.flagcalculator.entities.OperatorAccount newOperator;
 	@Mock
 	private OperatorAccount operator;
 	@Mock
@@ -73,6 +81,12 @@ public class ContractorCronTest extends PicsActionTest {
     private MessagePublisherService messageService;
     @Mock
     private EmployeeGuardRulesService employeeGuardRulesService;
+    @Mock
+    private Query query;
+    @Mock
+    private FlagCalculatorFactory flagCalculatorFactory;
+    @Mock
+    private FlagCriteriaOperator flagCriteriaOperator;
 
     @Rule
     public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
@@ -82,6 +96,7 @@ public class ContractorCronTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 
 		contractorCron = new ContractorCron();
+        setupEntityManager();
 
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
@@ -91,9 +106,18 @@ public class ContractorCronTest extends PicsActionTest {
         Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
         Whitebox.setInternalState(contractorCron, "messageService", messageService);
         Whitebox.setInternalState(contractorCron, "employeeGuardRulesService", employeeGuardRulesService);
+        Whitebox.setInternalState(contractorCron, "flagCalculatorFactory", flagCalculatorFactory);
 
         when(messageService.getFlagChangePublisher()).thenReturn(flagChangePublisher);
 	}
+
+    private void setupEntityManager() {
+        when(entityManager.find(com.picsauditing.flagcalculator.entities.ContractorOperator.class, 1234)).thenReturn(newContractorOperator);
+        when(newContractorOperator.getContractorAccount()).thenReturn(newContractor);
+        when(newContractorOperator.getOperatorAccount()).thenReturn(newOperator);
+        when(entityManager.createNativeQuery(FlagCalculatorDAO.CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL1)).thenReturn(query);
+        when(entityManager.createNativeQuery(FlagCalculatorDAO.CORRESPONDING_MULTISCOPE_CRITERIA_IDS_SQL2)).thenReturn(query);
+    }
 
     @Test
     public void testRunWaitingOn_Operator_No() throws Exception {
@@ -176,6 +200,21 @@ public class ContractorCronTest extends PicsActionTest {
     }
 
     @Test
+    public void testRunFlag_wrongStep() throws Exception {
+        ContractorCronStep[] steps = new ContractorCronStep[1];
+        steps[0] = ContractorCronStep.WaitingOn;
+
+        ContractorOperator conOp = new ContractorOperator();
+        conOp.setContractorAccount(contractor);
+        conOp.setOperatorAccount(operator);
+        conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
+
+        Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
+        verify(flagDataCalculator,never()).saveFlagData(anyList());
+    }
+
+    @Test
     public void testNoInsuranceCriteriaInFlagDifferences() throws Exception {
         ContractorCronStep[] steps = new ContractorCronStep[1];
         steps[0] = ContractorCronStep.Flag;
@@ -183,22 +222,27 @@ public class ContractorCronTest extends PicsActionTest {
         ContractorOperator conOp = new ContractorOperator();
         conOp.setContractorAccount(contractor);
         conOp.setOperatorAccount(operator);
+        conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
 
         FlagCriteria criteria = new FlagCriteria();
         criteria.setInsurance(true);
         FlagData flagData = new FlagData();
         flagData.setCriteria(criteria);
-        List<FlagData> changes = new ArrayList<>();
+        flagData.setFlag(FlagColor.Red);
+        List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
+        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        assertEquals("{}", conOp.getFlagDetail());
+        verify(flagDataCalculator).saveFlagData(anyList());
     }
 
     @Test
@@ -209,25 +253,46 @@ public class ContractorCronTest extends PicsActionTest {
         ContractorOperator conOp = new ContractorOperator();
         conOp.setContractorAccount(contractor);
         conOp.setOperatorAccount(operator);
+        conOp.setId(1234);
+        conOp.setFlagColor(FlagColor.Green);
 
         FlagCriteria criteria = new FlagCriteria();
-        criteria.setInsurance(true);
+        criteria.setInsurance(false);
         FlagData flagData = new FlagData();
         flagData.setCriteria(criteria);
-        List<FlagData> changes = new ArrayList<>();
+        flagData.setFlag(FlagColor.Red);
+        List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
+        List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
+        criteriaList.add(flagCriteriaOperator);
+        when(operator.getFlagCriteriaInherited()).thenReturn(criteriaList);
+        when(flagCriteriaOperator.getCriteria()).thenReturn(criteria);
+
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        Whitebox.setInternalState(contractorCron, "flagDataCalculator", flagDataCalculator);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
         when(flagDataCalculator.calculate()).thenReturn(changes);
+        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
+        when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        assertEquals("{}", conOp.getFlagDetail());
-        assertEquals(FlagColor.Clear, conOp.getFlagColor());
+        verify(flagDataCalculator).saveFlagData(anyList());
     }
 
+	/**
+	 * More Test Cases to be added.
+	 *
+	 * Multiple WCB Types, one with overlapping where the overlapping one has a status of Pending,
+	 * another where the overlapping one has a status of Approved, another where there isn't one
+	 * for this year (none generated for the current year, so no need to add it to the list).
+	 */
+
+	/**
+	 * Test that no WCBs are added to the list if all the WCBs are NOT about to
+	 * expire and they all have a status of Submitted further in the workflow.
+	 */
 	@Test
 	public void testContractorAccountOnlyWCBs() throws Exception {
 		ContractorAccount contractorAccount = setupContractorAccountWithOnlyWCBs();

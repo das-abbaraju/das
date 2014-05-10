@@ -10,8 +10,12 @@ public enum Features implements Feature {
     @Label("StrikeIron address verification service")
     USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE,
     @Label("EmployeeGUARD Billing Rules")
-    USE_NEW_EMPLOYEE_GUARD_RULES;
-
+    USE_NEW_EMPLOYEE_GUARD_RULES,
+    @Label("Require users to accept a EULA on login")
+    USE_EULA,
+    @Label("Use New Flag Calculator")
+    USE_NEW_FLAGCALCULATOR;
+    
     public boolean isActive() {
         return FeatureContext.getFeatureManager().isActive(this);
     }

@@ -62,14 +62,4 @@ public class UkStatistics extends SafetyStatistics{
 
 		}
 	}
-
-//	@Override
-//	public String toString() {
-//		return "|UK Stats|";
-//	}
-//
-//	@Override
-//	public List<AuditData> getQuestionsToVerify() {
-//		return questionsToVerify;
-//	}
 }

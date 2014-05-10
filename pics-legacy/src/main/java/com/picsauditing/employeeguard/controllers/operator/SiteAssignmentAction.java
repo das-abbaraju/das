@@ -51,12 +51,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 			return BLANK;
 		}
 
-		if (permissions.isCorporate()) {
-			// TODO: Implement
-			return "status";
-		}
-
-		int siteId = permissions.getAccountId();
+		int siteId = siteId();
 		site = accountService.getAccountById(siteId);
 
 		List<AccountModel> contractors = accountService.getContractors(siteId);
@@ -86,6 +81,14 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		return "status";
 	}
 
+	private int siteId() {
+		if (permissions.isCorporate()) {
+			return getIdAsInt();
+		}
+
+		return permissions.getAccountId();
+	}
+
 	private Map<RoleInfo, Integer> buildRoleCounts(final int siteId, final List<Employee> employeesAtSite) {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(siteId);
 		List<Role> roles = roleService.getRolesForAccounts(corporateIds);
@@ -100,11 +103,6 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	public String role() {
 		if (!permissions.isOperatorCorporate()) {
 			return BLANK;
-		}
-
-		if (permissions.isCorporate()) {
-			// FIXME
-			return "status";
 		}
 
 		site = accountService.getAccountById(siteId);

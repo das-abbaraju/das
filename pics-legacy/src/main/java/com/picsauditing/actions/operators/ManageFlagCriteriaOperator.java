@@ -356,9 +356,9 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		for (FlagCriteriaContractor fcc : fccList) {
 			FlagDataCalculator calculator = new FlagDataCalculator(fcc, fco);
 			calculator.setOperator(operator);
-			List<FlagData> flagList = calculator.calculate();
+			List<com.picsauditing.flagcalculator.FlagData> flagList = calculator.calculate();
 			if (flagList.size() > 0) {
-				FlagData flagged = flagList.get(0);
+				FlagData flagged = (FlagData)flagList.get(0);
 
 				if (flagged.getFlag().equals(fco.getFlag()))
 					affected.add(fcc);

@@ -3,30 +3,29 @@ package com.picsauditing.flagcalculator.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagData")
 @Table(name = "flag_data")
-public class FlagData extends BaseTable /*implements Comparable<FlagData>, UpdatableListItem */ {
+public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData {
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
-//    private ContractorOperator contractorOperator;
+    private ContractorOperator contractorOperator;
     private FlagCriteria criteria;
     private FlagColor flag;
-//    private FlagColor baselineFlag;
     private FlagCriteriaContractor criteriaContractor;
-//
-//    @ManyToOne
-//    @JoinColumns(
-//            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
-//                    @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
-//    public ContractorOperator getContractorOperator() {
-//        return contractorOperator;
-//    }
-//
-//    public void setContractorOperator(ContractorOperator contractorOperator) {
-//        this.contractorOperator = contractorOperator;
-//    }
-//
+
+    @ManyToOne
+    @JoinColumns(
+            { @JoinColumn(name = "opID", referencedColumnName = "opID", insertable=false, updatable=false),
+                    @JoinColumn(name = "conID", referencedColumnName = "conID", insertable=false, updatable=false) })
+    public ContractorOperator getContractorOperator() {
+        return contractorOperator;
+    }
+
+    public void setContractorOperator(ContractorOperator contractorOperator) {
+        this.contractorOperator = contractorOperator;
+    }
+
     @ManyToOne
     @JoinColumn(name = "conID", nullable = false)
     public ContractorAccount getContractor() {
@@ -37,12 +36,12 @@ public class FlagData extends BaseTable /*implements Comparable<FlagData>, Updat
         this.contractor = contractor;
     }
 
-//    @ManyToOne
-//    @JoinColumn(name = "opID", nullable = false)
-//    public OperatorAccount getOperator() {
-//        return operator;
-//    }
-//
+    @ManyToOne
+    @JoinColumn(name = "opID", nullable = false)
+    public OperatorAccount getOperator() {
+        return operator;
+    }
+
     public void setOperator(OperatorAccount operator) {
         this.operator = operator;
     }
@@ -57,6 +56,36 @@ public class FlagData extends BaseTable /*implements Comparable<FlagData>, Updat
         this.criteria = criteria;
     }
 
+    @Override
+    @Transient
+    public boolean isInsurance() {
+        return criteria.isInsurance();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaCategory() {
+        return criteria.getCategory().toString();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaLabel() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public String getFlagColor() {
+        return flag.toString();
+    }
+
+    @Override
+    @Transient
+    public int getCriteriaID() {
+        return criteria.getId();
+    }
+
     @Enumerated(EnumType.STRING)
     public FlagColor getFlag() {
         return flag;
@@ -66,16 +95,6 @@ public class FlagData extends BaseTable /*implements Comparable<FlagData>, Updat
         this.flag = flag;
     }
 
-//    @Enumerated(EnumType.STRING)
-//    @ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Low)
-//    public FlagColor getBaselineFlag() {
-//        return baselineFlag;
-//    }
-//
-//    public void setBaselineFlag(FlagColor baselineFlag) {
-//        this.baselineFlag = baselineFlag;
-//    }
-//
     @Transient
     public FlagCriteriaContractor getCriteriaContractor() {
         return criteriaContractor;
@@ -85,45 +104,19 @@ public class FlagData extends BaseTable /*implements Comparable<FlagData>, Updat
         this.criteriaContractor = criteriaContractor;
     }
 
-//    @Override
-//    public boolean equals(Object other) {
-//        FlagData fd = (FlagData) other;
-//
-//        if (id > 0 && fd.getId() > 0)
-//            return super.equals(other);
-//
-//        if (!contractor.equals(fd.getContractor()))
-//            return false;
-//        if (!operator.equals(fd.getOperator()))
-//            return false;
-//        if (!criteria.equals(fd.getCriteria()))
-//            return false;
-//        return true;
-//    }
-//
-//    @Override
-//    public void update(UpdatableListItem change) {
-//        FlagData fd = (FlagData) change;
-//        if (!equals(change))
-//            // Don't update flag data for the wrong contractor/operator/criteria
-//            return;
-//
-//        if (!flag.equals(fd.getFlag())) {
-//            this.setFlag(fd.getFlag());
-//            this.setAuditColumns(new User(User.SYSTEM));
-//        }
-//    }
-//
-//    @Override
-//    public int compareTo(FlagData o) {
-//        return criteria.compareTo(o.criteria);
-//    }
-//
-//    public void resetBaseline() {
-//        this.setBaselineFlag(this.getFlag());
-//    }
-//
-//    public static FlagDataBuilder builder() {
-//        return new FlagDataBuilder();
-//    }
+    @Override
+    public boolean equals(Object other) {
+        FlagData fd = (FlagData) other;
+
+        if (id > 0 && fd.getId() > 0)
+            return super.equals(other);
+
+        if (!contractor.equals(fd.getContractor()))
+            return false;
+        if (!operator.equals(fd.getOperator()))
+            return false;
+        if (!criteria.equals(fd.getCriteria()))
+            return false;
+        return true;
+    }
 }
