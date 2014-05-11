@@ -16,6 +16,7 @@ public class AppUserService {
 		return findByUsername(username) == null;
 	}
 
+	@Transactional(propagation = Propagation.NESTED)
 	public AppUser generateNewAppUser(final String username, final String password) {
 		AppUser newAppUser = new AppUser();
 

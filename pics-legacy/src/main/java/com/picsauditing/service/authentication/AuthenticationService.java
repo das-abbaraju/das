@@ -27,7 +27,7 @@ public class AuthenticationService {
 	@Autowired
 	private UserService userService;
 
-	@Transactional(propagation = Propagation.NESTED)
+
 	public AppUser createNewAppUser(final String username, final String password) {
 		validateUsernameAndPassword(username, password);
 
