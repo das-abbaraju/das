@@ -3,21 +3,20 @@ package com.picsauditing.employeeguard.controllers;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.authentication.dao.AppUserDAO;
-import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
+import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.LoginForm;
-import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
-import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
-import com.picsauditing.employeeguard.services.factory.LoginServiceFactory;
-import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +24,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
+import javax.security.auth.login.FailedLoginException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -35,56 +34,81 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LoginActionTest extends PicsActionTest {
-	private LoginAction loginAction;
 
-	private EmailHashService emailHashService;
-	private EmployeeService employeeService;
-	private LoginService loginService;
-	private ProfileService profileService;
+	private static final String USERNAME = "username";
+	private static final String PASSWORD = "password";
+	private static final String VALID_HASH = "valid hash";
+	private static final String EMPLOYEE_FIRST_NAME = "First";
+	private static final String EMPLOYEE_LAST_NAME = "Last";
+	private static final String EMPLOYEE_EMAIL = "tester@picsauditing.com";
+	public static final int EMPLOYEE_ID = 890;
+	public static final String EMPLOYEE_COMPANY_NAME = "PICS";
+
+	// Class under test
+	private LoginAction loginAction;
 
 	@Mock
 	private AccountService accountService;
 	@Mock
-	private AppUserDAO appUserDAO;
+	private AuthenticationService authenticationService;
+	@Mock
+	private EmailHashService emailHashService;
+	@Mock
+	private EmployeeEntityService employeeEntityService;
 	@Mock
 	private PicsEnvironment picsEnvironment;
+	@Mock
+	private ProfileEntityService profileEntityService;
+	@Mock
+	private LoginFormValidator loginFormValidator;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
 		loginAction = new LoginAction();
-		emailHashService = EmailHashServiceFactory.getEmailHashService();
-		employeeService = EmployeeServiceFactory.getEmployeeService();
-		loginService = LoginServiceFactory.getLoginService();
-		profileService = ProfileServiceFactory.getProfileService();
 
 		super.setUp(loginAction);
 
 		Whitebox.setInternalState(loginAction, "accountService", accountService);
+		Whitebox.setInternalState(loginAction, "authenticationService", authenticationService);
 		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
-		Whitebox.setInternalState(loginAction, "employeeService", employeeService);
-		Whitebox.setInternalState(loginAction, "loginService", loginService);
+		Whitebox.setInternalState(loginAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(loginAction, "picsEnvironment", picsEnvironment);
-		Whitebox.setInternalState(loginAction, "profileService", profileService);
+		Whitebox.setInternalState(loginAction, "profileEntityService", profileEntityService);
 
 		AccountModel accountModel = new AccountModel.Builder().name("PICS").build();
+
 		when(accountService.getAccountById(anyInt())).thenReturn(accountModel);
 		when(picsEnvironment.isLocalhost()).thenReturn(true);
+		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+
+		when(emailHashService.findByHash(VALID_HASH)).thenReturn(new EmailHashBuilder()
+				.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
+						.id(EMPLOYEE_ID)
+						.firstName(EMPLOYEE_FIRST_NAME)
+						.lastName(EMPLOYEE_LAST_NAME)
+						.build())
+				.build());
 	}
 
 	@Test
 	public void testIndex() throws Exception {
-		String validHash = EmailHashServiceFactory.VALID_HASH;
-		loginAction.setHashCode(validHash);
+		loginAction.setHashCode(VALID_HASH);
 
-		assertEquals(PicsRestActionSupport.LIST, loginAction.index());
+		String result = loginAction.index();
+
+		verifyTestIndex(result);
+	}
+
+	private void verifyTestIndex(String result) {
+		assertEquals(PicsRestActionSupport.LIST, result);
 		assertNotNull(loginAction.getProfile());
-		assertEquals("First", loginAction.getProfile().getFirstName());
-		assertEquals("Last", loginAction.getProfile().getLastName());
-		assertEquals("PICS", loginAction.getCompanyName());
-		verify(emailHashService).hashIsValid(validHash);
-		verify(emailHashService).findByHash(validHash);
+		assertEquals(EMPLOYEE_FIRST_NAME, loginAction.getProfile().getFirstName());
+		assertEquals(EMPLOYEE_LAST_NAME, loginAction.getProfile().getLastName());
+		assertEquals(EMPLOYEE_COMPANY_NAME, loginAction.getCompanyName());
+		verify(emailHashService).hashIsValid(VALID_HASH);
+		verify(emailHashService).findByHash(VALID_HASH);
 	}
 
 	@Test(expected = PageNotFoundException.class)
@@ -101,44 +125,50 @@ public class LoginActionTest extends PicsActionTest {
 	@Test(expected = PageNotFoundException.class)
 	public void testIndex_EmployeeIsMissing() throws Exception {
 		EmailHash emailHash = new EmailHash();
-		String validHash = EmailHashServiceFactory.VALID_HASH;
 
-		when(emailHashService.findByHash(validHash)).thenReturn(emailHash);
+		when(emailHashService.findByHash(VALID_HASH)).thenReturn(emailHash);
 
 		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
 
-		loginAction.setHashCode(validHash);
+		loginAction.setHashCode(VALID_HASH);
 		loginAction.index();
 	}
 
 	@Test
 	public void testLogin() throws Exception {
+		setupTestLogin();
+
+		String result = loginAction.login();
+
+		verifyTestLogin(result);
+	}
+
+	private void setupTestLogin() throws FailedLoginException {
 		LoginForm loginForm = new LoginForm();
-		loginForm.setUsername(LoginServiceFactory.USERNAME);
-		loginForm.setPassword(LoginServiceFactory.PASSWORD);
-		loginForm.setHashCode(EmailHashServiceFactory.VALID_HASH);
+		loginForm.setUsername(USERNAME);
+		loginForm.setPassword(PASSWORD);
+		loginForm.setHashCode(VALID_HASH);
 
-		String validHash = EmailHashServiceFactory.VALID_HASH;
-
-		AppUser appUser = new AppUser();
-		appUser.setId(Identifiable.SYSTEM);
-		when(appUserDAO.findListByUserName(LoginServiceFactory.USERNAME)).thenReturn(Arrays.asList(appUser));
-
-		loginAction.setHashCode(validHash);
+		loginAction.setHashCode(VALID_HASH);
 		loginAction.setLoginForm(loginForm);
 
-		assertEquals(PicsActionSupport.REDIRECT, loginAction.login());
-		verify(emailHashService).findByHash(validHash);
-		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(employeeService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
+		when(authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true))
+				.thenReturn("fake cookie content");
+	}
+
+	private void verifyTestLogin(String result) {
+		assertEquals(PicsActionSupport.REDIRECT, result);
+		verify(emailHashService).findByHash(VALID_HASH);
+		verify(profileEntityService).findByAppUserId(anyInt());
+		verify(employeeEntityService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void testLogin_Failure() throws Exception {
 		LoginForm loginForm = new LoginForm();
-		loginForm.setUsername(LoginServiceFactory.FAIL);
-		loginForm.setPassword(LoginServiceFactory.FAIL);
-		loginForm.setHashCode(EmailHashServiceFactory.VALID_HASH);
+		loginForm.setUsername(USERNAME);
+		loginForm.setPassword(PASSWORD);
+		loginForm.setHashCode(VALID_HASH);
 
 		loginAction.setLoginForm(loginForm);
 		loginAction.login();

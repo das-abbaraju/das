@@ -131,9 +131,9 @@ public class UsersManageTest extends PicsActionTest {
         // newUser (e.g. new group)
         when(user.getId()).thenReturn(0);
 	    when(appUser.getId()).thenReturn(0);
-	    when(appUserService.createNewAppUser(anyString(), anyString())).thenReturn(jsonObject);
+	    when(appUserService.generateNewAppUser(anyString(), anyString())).thenReturn(appUser);
 	    when(jsonObject.get(anyString())).thenReturn(1);
-	    when(appUserDAO.findByAppUserID(anyInt())).thenReturn(appUser);
+	    when(appUserDAO.findById(anyInt())).thenReturn(appUser);
 
         usersManage.save();
 
