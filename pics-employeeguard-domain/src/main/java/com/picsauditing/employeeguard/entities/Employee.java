@@ -274,11 +274,16 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		}
 
 		@Override
-		public Map<String, Object> getUniqueIndexableValues() {
-			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {
 				{
-					put("accountId", accountId);
-					put("email", email);
+					put("accountId", new HashMap<String, Object>() {{
+						put("accountId", accountId);
+					}});
+
+					put("email", new HashMap<String, Object>() {{
+						put("email", email);
+					}});
 				}
 			});
 		}
@@ -302,11 +307,16 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		}
 
 		@Override
-		public Map<String, Object> getUniqueIndexableValues() {
-			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {
 				{
-					put("accountId", accountId);
-					put("slug", slug);
+					put("accountId", new HashMap<String, Object>() {{
+						put("accountId", accountId);
+					}});
+
+					put("slug", new HashMap<String, Object>() {{
+						put("slug", slug);
+					}});
 				}
 			});
 		}
@@ -332,12 +342,20 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		}
 
 		@Override
-		public Map<String, Object> getUniqueIndexableValues() {
-			return Collections.unmodifiableMap(new HashMap<String, Object>() {
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {
 				{
-					put("accountId", accountId);
-					put("email", email);
-					put("slug", slug);
+					put("accountId", new HashMap<String, Object>() {{
+						put("accountId", accountId);
+					}});
+
+					put("email", new HashMap<String, Object>() {{
+						put("email", email);
+					}});
+
+					put("slug", new HashMap<String, Object>() {{
+						put("slug", slug);
+					}});
 				}
 			});
 		}

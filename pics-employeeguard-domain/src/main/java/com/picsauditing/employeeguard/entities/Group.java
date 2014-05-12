@@ -67,34 +67,38 @@ public class Group extends AccountGroup implements Comparable<Group> {
 		this.skills = skills;
 	}
 
-    public final static class GroupUniqueKey implements UniqueIndexable {
+	public final static class GroupUniqueKey implements UniqueIndexable {
 
-        private final int id;
-        private final int accountId;
-        private final String name;
+		private final int id;
+		private final int accountId;
+		private final String name;
 
-        public GroupUniqueKey(final int id, final int accountId, final String name) {
-            this.id = id;
-            this.accountId = accountId;
-            this.name = name;
-        }
+		public GroupUniqueKey(final int id, final int accountId, final String name) {
+			this.id = id;
+			this.accountId = accountId;
+			this.name = name;
+		}
 
+		@Override
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {
+				{
+					put("accountId", new HashMap<String, Object>() {{
+						put("accountId", accountId);
+					}});
 
-        @Override
-        public Map<String, Object> getUniqueIndexableValues() {
-            return Collections.unmodifiableMap(new HashMap<String, Object>() {
-                {
-                    put("accountId", accountId);
-                    put("name", name);
-                }
-            });
-        }
+					put("name", new HashMap<String, Object>() {{
+						put("name", name);
+					}});
+				}
+			});
+		}
 
-        @Override
-        public int getId() {
-            return id;
-        }
-    }
+		@Override
+		public int getId() {
+			return id;
+		}
+	}
 
 	@Override
 	public boolean equals(final Object o) {
