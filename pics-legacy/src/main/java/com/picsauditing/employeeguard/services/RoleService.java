@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -49,14 +49,14 @@ public class RoleService {
 		return roleDAO.findByAccounts(accountIds);
 	}
 
-	public Role update(GroupNameSkillsForm groupNameSkillsForm, String id, int accountId, int appUserId) {
+	public Role update(RoleNameSkillsForm roleNameSkillsForm, String id, int accountId, int appUserId) {
 		Role roleInDatabase = getRole(id, accountId);
-		roleInDatabase.setName(groupNameSkillsForm.getName());
+		roleInDatabase.setName(roleNameSkillsForm.getName());
 		roleInDatabase = roleDAO.save(roleInDatabase);
 
 		List<AccountSkillRole> newAccountSkillRoles = new ArrayList<>();
-		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
-			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
+		if (ArrayUtils.isNotEmpty(roleNameSkillsForm.getSkills())) {
+			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(roleNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
 				newAccountSkillRoles.add(new AccountSkillRole(roleInDatabase, accountSkill));
 			}
@@ -69,8 +69,8 @@ public class RoleService {
 				AccountSkillRole.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-    roleInDatabase.getSkills().clear();
-    roleInDatabase.getSkills().addAll(accountSkillGroups);
+		roleInDatabase.getSkills().clear();
+		roleInDatabase.getSkills().addAll(accountSkillGroups);
 
 		roleInDatabase = roleDAO.save(roleInDatabase);
 

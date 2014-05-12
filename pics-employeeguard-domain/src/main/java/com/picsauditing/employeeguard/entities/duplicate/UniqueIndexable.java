@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface UniqueIndexable {
 
-    Map<String, Object> getUniqueIndexableValues();
+	Map<String, Map<String, Object>> getUniqueIndexableValues();
 
     int getId();
 

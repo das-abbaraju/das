@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.entities;
 
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLInsert;
@@ -9,8 +10,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @DiscriminatorValue("Role")
@@ -82,6 +82,40 @@ public class Role extends AccountGroup implements Comparable<Role> {
 
 	public void setSiteAssignments(List<SiteAssignment> siteAssignments) {
 		this.siteAssignments = siteAssignments;
+	}
+
+	public final static class RoleUniqueKey implements UniqueIndexable {
+
+		private final int id;
+		private final int accountId;
+		private final String name;
+
+		public RoleUniqueKey(final int id, final int accountId, final String name) {
+			this.id = id;
+			this.accountId = accountId;
+			this.name = name;
+		}
+
+
+		@Override
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {
+				{
+					put("accountId", new HashMap<String, Object>() {{
+						put("accountId", accountId);
+					}});
+
+					put("name", new HashMap<String, Object>() {{
+						put("name", name);
+					}});
+				}
+			});
+		}
+
+		@Override
+		public int getId() {
+			return id;
+		}
 	}
 
 	@Override
