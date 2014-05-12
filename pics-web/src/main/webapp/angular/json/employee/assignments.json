@@ -12,10 +12,10 @@
     "site": "BASF Houston Texas"
 }, {
     "name": "BP Oil",
-    "status": "Complete",
+    "status": "Completed",
     "site": "BASF Raleigh"
 }, {
     "name": "PICS",
     "status": "Expired",
-    "groups": 2}
-]
+    "groups": 2
+}]
