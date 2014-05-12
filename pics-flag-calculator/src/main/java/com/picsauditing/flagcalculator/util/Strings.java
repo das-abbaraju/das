@@ -1,7 +1,10 @@
 package com.picsauditing.flagcalculator.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.DecimalFormat;
 import java.util.Collection;
 
 public class Strings {
@@ -14,9 +17,9 @@ public class Strings {
     private static final int NO_STRING_ESCAPE_STRATEGY = 0;
     private static final int STRING_ESCAPE_STRATEGY = 1;
     private static final int OBJECT_TO_STRING_ESCAPE_STRATEGY = 2;
-//
-//    private static final Logger logger = LoggerFactory.getLogger(Strings.class);
-//
+
+    private static final Logger logger = LoggerFactory.getLogger(Strings.class);
+
 //    /** Use StringUtils.isEmpty() instead */
 //    public static boolean isEmpty(String value) {
 //        if (value == null) {
@@ -399,29 +402,29 @@ public class Strings {
 //        return formatShort(value / 1000000000) + "B";
 //    }
 //
-//    public static String formatDecimalComma(String decimalNumber) {
-//        if (!Strings.isEmpty(decimalNumber)) {
-//            try {
-//                Double value = Double.parseDouble(decimalNumber.replace(",", ""));
-//                DecimalFormat df;
-//
-//                if (value >= 100)
-//                    df = new DecimalFormat("#,##0");
-//                else
-//                    df = new DecimalFormat("0.00");
-//
-//                if (value != 0)
-//                    decimalNumber = df.format(value);
-//                else
-//                    return "0";
-//            } catch (Exception e) {
-//                logger.error("Could not parse number: {}", decimalNumber);
-//            }
-//        }
-//
-//        return decimalNumber;
-//    }
-//
+    public static String formatDecimalComma(String decimalNumber) {
+        if (!StringUtils.isEmpty(decimalNumber)) {
+            try {
+                Double value = Double.parseDouble(decimalNumber.replace(",", ""));
+                DecimalFormat df;
+
+                if (value >= 100)
+                    df = new DecimalFormat("#,##0");
+                else
+                    df = new DecimalFormat("0.00");
+
+                if (value != 0)
+                    decimalNumber = df.format(value);
+                else
+                    return "0";
+            } catch (Exception e) {
+                logger.error("Could not parse number: {}", decimalNumber);
+            }
+        }
+
+        return decimalNumber;
+    }
+
 //    public static String formatNumber(String number) {
 //        // Returns only digits and decimal points
 //        number = number.replaceAll("[^\\d\\.]", EMPTY_STRING);

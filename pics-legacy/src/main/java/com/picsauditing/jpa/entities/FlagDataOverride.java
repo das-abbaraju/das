@@ -1,19 +1,11 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+
+import javax.persistence.*;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -105,6 +97,7 @@ public class FlagDataOverride extends BaseTable {
 		return forceEnd.after(new Date());
 	}
 
+    @Deprecated
     @Override
     public Object clone() {
         FlagDataOverride flagDataOverride = new FlagDataOverride();
@@ -125,6 +118,7 @@ public class FlagDataOverride extends BaseTable {
      * the contents (the payload). The payload is all non-key fields.
      * @param source
      */
+    @Deprecated
     public void copyPayloadFrom(FlagDataOverride source) {
         assert (source != null);
         this.setForceEnd(source.getForceEnd());
@@ -136,7 +130,9 @@ public class FlagDataOverride extends BaseTable {
         this.setUpdateDate(source.getUpdateDate());
         this.setUpdatedBy(source.getUpdatedBy());
     }
+
     @Override
+    @Deprecated
     public boolean equals(Object that) {
         if (!(that instanceof FlagDataOverride))
             return false;

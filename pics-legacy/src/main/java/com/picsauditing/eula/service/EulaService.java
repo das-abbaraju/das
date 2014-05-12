@@ -17,14 +17,14 @@ import javax.security.auth.login.LoginException;
 
 public class EulaService {
 
-	@Autowired
-	private AuthenticationService authenticationService;
     @Autowired
     private EulaAgreementDao eulaAgreementDao;
     @Autowired
     private EulaDao eulaDao;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private AuthenticationService authenticationService;
 
     private final Logger logger = LoggerFactory.getLogger(EulaService.class);
 

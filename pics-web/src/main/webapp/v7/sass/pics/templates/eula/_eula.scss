@@ -20,7 +20,7 @@
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
     
-        strong {
+        .title {
             display: block;
             position: relative;
             width: 75%;
@@ -73,6 +73,7 @@
         padding: 0 5%;
     }
 }
+
 @media (max-width: 480px)  {
     .eula-container {
         position: absolute;
@@ -82,5 +83,41 @@
             height: auto;
             overflow-y: visible;
         }
+    }
+}
+
+@media print {
+    .page .eula-container {
+        width: 100%;
+
+        .button-container,
+        .icon-print {
+            display: none;
+        }
+
+        .title,
+        .version-container {
+            float: none;
+            width: 100%;
+            text-align: left;
+            margin: 0;
+            padding: 0;
+        }
+
+        .panel-heading {
+            position: absolute;
+            width: 100%;
+            padding: 0;
+        }
+
+        .panel-body {
+            margin-top: 60px;
+            position: absolute;
+            background: #fff;
+            overflow-y: visible;
+            display: block;
+            width: 100%;
+            padding: 0;
+        }        
     }
 }

@@ -36,11 +36,11 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	@Autowired
 	private AuthenticationService authenticationService;
 	@Autowired
-	private ProfileEntityService profileEntityService;
-	@Autowired
 	private EmailHashService emailHashService;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
+	@Autowired
+	private ProfileEntityService profileEntityService;
 	@Autowired
 	private ProfileFormValidator profileFormValidator;
 
@@ -69,7 +69,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		if (emailHash.getEmployee() != null) {
 			profile.setFirstName(emailHash.getEmployee().getFirstName());
 			profile.setLastName(emailHash.getEmployee().getLastName());
-			profile.setEmail(emailHash.getEmailAddress());
+			profile.setEmail(emailHash.getEmployee().getEmail());
 		}
 	}
 
@@ -104,32 +104,6 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 			LOG.error("Error creating appUser and logging in ", e);
 			return ERROR;
 		}
-//
-//
-//		JSONObject createAppUserResult = appUserService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
-//
-//		if (!"SUCCESS".equals(createAppUserResult.get("status").toString())) {
-//			return ERROR;
-//		}
-//
-//		AppUser appUser = authenticationService.createNewAppUser(profileForm.getEmail(), profileForm.getEmail());
-//
-////		String appUserID = createAppUserResult.get("id").toString();
-//		Profile profile = profileForm.buildProfile(appUser.getId());
-//		profile = profileEntityService.save(profile, new EntityAuditInfo.Builder().appUserId(User.SYSTEM)
-//				.timestamp(DateBean.today()).build());
-//
-//		EmailHash emailHash = emailHashService.findByHash(hashCode);
-//		employeeEntityService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
-//		emailHashService.expire(emailHash);
-//
-//		JSONObject loginResult = loginService.loginViaRest(profileForm.getEmail(), profileForm.getPassword());
-//		if (!"SUCCESS".equals(loginResult.get("status").toString())) {
-//			throw new FailedLoginException();
-//		} else {
-//			doSetCookie(loginResult.get("cookie").toString(), 10);
-//			return setUrlForRedirect(EMPLOYEE_SUMMARY);
-//		}
 	}
 
 	@Override

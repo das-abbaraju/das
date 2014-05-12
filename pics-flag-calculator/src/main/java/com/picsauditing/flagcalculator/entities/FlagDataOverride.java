@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.flagcalculator.entities.FlagDataOverride")
 @Table(name = "flag_data_override")
 public class FlagDataOverride extends BaseTable {
 

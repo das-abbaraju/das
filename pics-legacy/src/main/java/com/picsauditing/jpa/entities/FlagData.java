@@ -1,24 +1,17 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.database.domain.UpdatableListItem;
 import com.picsauditing.jpa.entities.builders.FlagDataBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 
+import javax.persistence.*;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
-public class FlagData extends BaseTable implements Comparable<FlagData>, UpdatableListItem {
+public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData, Comparable<FlagData>, UpdatableListItem {
 
 	private ContractorAccount contractor;
 	private OperatorAccount operator;
@@ -140,4 +133,35 @@ public class FlagData extends BaseTable implements Comparable<FlagData>, Updatab
     public static FlagDataBuilder builder() {
         return new FlagDataBuilder();
     }
+
+    @Override
+    @Transient
+    public boolean isInsurance() {
+        return criteria.isInsurance();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaCategory() {
+        return criteria.getCategory().toString();
+    }
+
+    @Override
+    @Transient
+    public String getCriteriaLabel() {
+        return null;
+    }
+
+    @Override
+    @Transient
+    public String getFlagColor() {
+        return flag.toString();
+    }
+
+    @Override
+    @Transient
+    public int getCriteriaID() {
+        return criteria.getId();
+    }
+
 }

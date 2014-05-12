@@ -42,6 +42,7 @@ public interface FeatureToggle {
     String TOGGLE_STRIKE_IRON = "Toggle.StrikeIron";
     String TOGGLE_USE_MOCK_PAYMENT_SERVICE = "Toggle.UseMockPaymentService";
 	String TOGGLE_TURN_OFF_UNNECESSARY_MENUS = "Toggle.TurnOffUnnecessaryMenus";
+	String TOGGLE_PUBLISH_FLAG_CHANGES = "Toggle.BackgroundProcesses.FlagChanges";
 
 	boolean isFeatureEnabled(String toggleName);
 
