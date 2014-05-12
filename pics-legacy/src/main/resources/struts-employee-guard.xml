@@ -24,6 +24,10 @@
 
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
         </action>
+
+      <action name="info" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
+      </action>
+
     </package>
 
     <!-- Operator -->
