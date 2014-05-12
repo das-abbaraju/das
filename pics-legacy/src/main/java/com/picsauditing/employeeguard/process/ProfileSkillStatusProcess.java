@@ -48,7 +48,7 @@ public class ProfileSkillStatusProcess {
 
 		profileSkillData.setProjects(projects);
 		profileSkillData.setAllProjectSkills(processHelper.allProjectSkills(projects,
-				projectRequiredSkills, projectRoles, roleSkills));
+				projectRequiredSkills, projectRoles, roleSkills ));
 
 		profileSkillData = addAccountInformation(profileSkillData, profile);
 		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projectRoles, roleSkills);
