@@ -272,6 +272,7 @@ public class FlagCriteria extends BaseTableRequiringLanguages implements Compara
 	/**
 	 * @return the question ID if this criteria should include
 	 */
+    @Deprecated
 	public Integer includeExcess() {
 		if (!insurance || optionCode == null) {
 			return null;

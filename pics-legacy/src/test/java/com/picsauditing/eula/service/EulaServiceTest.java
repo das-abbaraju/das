@@ -46,7 +46,7 @@ public class EulaServiceTest {
     @Mock
     private LoginService loginService;
     @Mock
-	private AuthenticationService authenticationService;
+    private AuthenticationService authenticationService;
 
     private EulaService eulaService;
     private User user;

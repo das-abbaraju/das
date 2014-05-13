@@ -49,16 +49,26 @@ public class ProfileEntityServiceTest {
 
 	@Test
 	public void testSave() throws Exception {
-		Profile fakeProfile = buildFakeProfile();
-
-		when(profileDAO.save(fakeProfile)).thenReturn(fakeProfile);
+		Profile fakeProfile = setupTestSave();
 
 		Profile result = profileEntityService.save(fakeProfile, CREATED);
 
+		verifyTestSave(fakeProfile, result);
+	}
+
+	private Profile setupTestSave() {
+		Profile fakeProfile = buildFakeProfile();
+
+		when(profileDAO.save(fakeProfile)).thenReturn(fakeProfile);
+		return fakeProfile;
+	}
+
+	private void verifyTestSave(Profile fakeProfile, Profile result) {
 		verify(profileDAO).save(fakeProfile);
 		assertEquals(USER_ID, result.getCreatedBy());
 		assertEquals(CREATED_DATE, result.getCreatedDate());
 		assertNull(result.getUpdatedDate());
+		assertNotNull(fakeProfile.getSlug());
 	}
 
 	@Test

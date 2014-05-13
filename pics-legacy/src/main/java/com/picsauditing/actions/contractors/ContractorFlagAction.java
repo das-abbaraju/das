@@ -637,8 +637,9 @@ public class ContractorFlagAction extends ContractorActionSupport {
 			for (FlagCriteriaContractor fcc : contractor.getFlagCriteria()) {
 				for (FlagCriteriaOperator fco : fcos) {
 					FlagDataCalculator calc = new FlagDataCalculator(fcc, fco);
-					for (FlagData d : calc.calculate()) {
-						if (!d.getFlag().isGreen())
+					for (com.picsauditing.flagcalculator.FlagData d : calc.calculate()) {
+                        FlagData flagData = (FlagData)d;
+						if (!flagData.getFlag().isGreen())
 							return fco;
 					}
 				}
@@ -650,7 +651,7 @@ public class ContractorFlagAction extends ContractorActionSupport {
 
 	public Map<FlagColor, Integer> getFlagCounts() {
 		if (flagCounts == null) {
-			flagCounts = new LinkedHashMap<FlagColor, Integer>();
+			flagCounts = new LinkedHashMap<>();
 			flagCounts.put(FlagColor.Red, 0);
 			flagCounts.put(FlagColor.Amber, 0);
 			flagCounts.put(FlagColor.Green, 0);

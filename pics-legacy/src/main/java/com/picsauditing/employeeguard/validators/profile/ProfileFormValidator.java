@@ -15,8 +15,6 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 	@Autowired
 	private AppUserService appUserService;
 	@Autowired
-	private AuthenticationService authenticationService;
-	@Autowired
 	private InputValidator inputValidator;
 
 	@Override
@@ -47,6 +45,7 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 
 	private void performValidationOnEmail(ProfileForm profileForm) {
 		boolean emailValidationFails = false;
+
 		if (!ProfileValidationUtil.valid(profileForm, ProfileValidationUtil.ProfileField.EMAIL)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is missing or does not match");
 			emailValidationFails = true;
@@ -62,11 +61,7 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 			emailValidationFails = true;
 		}
 
-//		if (!emailValidationFails && !appUserService.isUserNameAvailable(profileForm.getEmail())) {
-//			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is already used");
-//		}
-
-		if (!emailValidationFails && authenticationService.isDuplicateUserName(profileForm.getEmail())) {
+		if (!emailValidationFails && !appUserService.isUserNameAvailable(profileForm.getEmail())) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is already used");
 		}
 	}

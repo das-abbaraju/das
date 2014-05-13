@@ -2,41 +2,36 @@ package com.picsauditing.service.authentication;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.model.LoginContext;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.User;
-import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.auth.login.AccountNotFoundException;
+import javax.security.auth.login.FailedLoginException;
 
 public class AuthenticationService {
 
-	// TODO: Replace with AppUserService
-	@Autowired
-	private AppUserDAO appUserDAO;
-	@Autowired
-	private ProfileEntityService profileEntityService;
-	// TODO: Replace with user service
-	@Autowired
-	private UserDAO userDAO;
 	@Autowired
 	private AppUserService appUserService;
+	@Autowired
+	private ProfileEntityService profileEntityService;
+	@Autowired
+	private UserService userService;
 
-	@Transactional(propagation = Propagation.NESTED)
+
 	public AppUser createNewAppUser(final String username, final String password) {
 		validateUsernameAndPassword(username, password);
 
-		return createAppUser(username, password);
+		return appUserService.generateNewAppUser(username, password);
 	}
 
 	private void validateUsernameAndPassword(String username, String password) {
@@ -44,74 +39,75 @@ public class AuthenticationService {
 			throw new IllegalArgumentException("username and password cannot be blank");
 		}
 
-		if (isDuplicateUserName(username)) {
-			throw new DuplicateUsernameException("username " + username + " is not available");
+		if (!appUserService.isUserNameAvailable(username)) {
+			throw new UsernameNotAvailableException("username " + username + " is not available");
 		}
 	}
 
-	private AppUser createAppUser(String username, String password) {
-		AppUser newAppUser = new AppUser();
+	public String authenticateEmployeeGUARDUser(final String username, final String password, final boolean rememberMe)
+			throws FailedLoginException {
 
-		newAppUser.setUsername(username);
-		newAppUser = appUserDAO.save(newAppUser);
-
-		String hashSalt = generateHashSalt(newAppUser);
-		newAppUser.setHashSalt(hashSalt);
-		newAppUser.setPassword(encodePassword(password, hashSalt));
-
-		return appUserDAO.save(newAppUser);
-	}
-
-	private String generateHashSalt(AppUser newAppUser) {
-		return Integer.toString(newAppUser.getId());
-	}
-
-	private String encodePassword(String password, String hashSalt) {
-		return EncodedMessage.hash(password + hashSalt);
-	}
-
-	public boolean isDuplicateUserName(final String username) {
-		return (appUserDAO.findListByUserName(username).size() >= 1);
-	}
-
-	public String authenticateEmployeeGUARDUser(final String username, final String password, final boolean rememberMe) throws Exception {
-		AppUser appUser = appUserDAO.findByUserName(username);
-		appUser = appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
-
-		//
-		if (appUser == null) {
-			throw new RuntimeException("Could not authenticate username = " + username);
-		}
+		AppUser appUser = loadAppUser(username, password);
 
 		int appUserId = appUser.getId();
+		Profile profile = loadProfile(appUserId);
+		User user = userService.findByAppUserId(appUserId);
 
-		Profile profile = verifyEmployeeGuardStatus(appUserId);
+		return getSessionCookieContent(appUserId, userId(user), profile.getId(), rememberMe);
+	}
+
+	public LoginContext doPreLoginVerificationEG(final String username, final String password)
+			throws AccountNotFoundException, FailedLoginException {
+
+		AppUser appUser = loadAppUser(username, password);
+
+		int appUserId = appUser.getId();
+		User user = userService.findByAppUserId(appUserId);
+		Profile profile = loadProfile(appUserId);
+
+		return buildLoginContext(username, appUser, appUserId, user, profile);
+	}
+
+	private AppUser loadAppUser(String username, String password) throws FailedLoginException {
+		AppUser appUser = appUserService.findByUsernameAndUnencodedPassword(username, password);
+		if (appUser == null) {
+			throw new FailedLoginException("Could not authenticate username = " + username);
+		}
+
+		return appUser;
+	}
+
+	private Profile loadProfile(int appUserId) throws FailedLoginException {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
 		if (profile == null) {
-			throw new RuntimeException("Profile was not found for appUserId = " + appUserId);
+			throw new FailedLoginException("Profile was not found for appUserId = " + appUserId);
 		}
 
-		return sessionCookieContent(appUserId, findUserId(appUserId), profile.getId(), rememberMe);
+		return profile;
 	}
 
-	private int findUserId(final int appUserId) {
-		User user = userDAO.findUserByAppUserID(appUserId);
-		if (user == null) {
-			return 0;
+	private LoginContext buildLoginContext(final String username, final AppUser appUser, final int appUserId,
+										   final User user, final Profile profile)
+			throws AccountNotFoundException {
+
+		LoginContext response = new LoginContext();
+		try {
+			String cookieContent = getSessionCookieContent(appUserId, userId(user), profile.getId(), true);
+
+			response.setCookie(cookieContent);
+			response.setAppUser(appUser);
+			response.setProfile(profile);
+			response.setUser(user);
+
+			return response;
+		} catch (Exception e) {
+			// todo: make SURE its not a failed login, etc.
+			throw new AccountNotFoundException("No user with username: " + username + " found.");
 		}
-
-		return user.getId();
 	}
 
-	private AppUser findAppUser(final String username, final String password) {
-		return appUserDAO.findByUserNameAndPassword(username, password);
-	}
-
-	private Profile verifyEmployeeGuardStatus(final int appUserId) throws Exception {
-		return profileEntityService.findByAppUserId(appUserId);
-	}
-
-	private String sessionCookieContent(final int appUserId, final int picsUserId,
-										final int profileId, final boolean rememberMe) {
+	private String getSessionCookieContent(final int appUserId, final int picsUserId,
+										   final int profileId, final boolean rememberMe) {
 		SessionCookie sessionCookie = createSessionCookie(rememberMe, profileId, appUserId, picsUserId);
 
 		SessionSecurity.addValidationHashToSessionCookie(sessionCookie);
@@ -127,29 +123,12 @@ public class AuthenticationService {
 		sessionCookie.setAppUserID(appUserID);
 		sessionCookie.setProfileID(profileId);
 		sessionCookie.setCookieCreationTime(DateBean.today());
-		sessionCookie.putData("rememberMe", rememberMe);
+		sessionCookie.putData(SessionCookie.REMEMBER_ME_DATA_KEY, rememberMe);
 
 		return sessionCookie;
 	}
 
-	public LoginContext doPreLoginVerificationEG(final String username, final String password) throws AccountNotFoundException {
-		AppUser appUser = appUserService.findAppUser(username);
-		Profile profile = profileEntityService.findByAppUserId(appUser.getId());
-
-		if (profile == null) {
-			throw new AccountNotFoundException("No user with username: " + username + " found.");
-		}
-
-		LoginContext response = new LoginContext();
-		try {
-			String cookieContent = authenticateEmployeeGUARDUser(username, password, true);
-			response.setCookie(cookieContent);
-			response.setAppUser(appUser);
-			response.setProfile(profile);
-			return response;
-		} catch (Exception e) {
-			// todo: make SURE its not a failed login, etc.
-			throw new AccountNotFoundException("No user with username: " + username + " found.");
-		}
+	private int userId(final User user) {
+		return user == null ? 0 : user.getId();
 	}
 }

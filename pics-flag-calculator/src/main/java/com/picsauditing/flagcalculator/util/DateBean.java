@@ -1,5 +1,6 @@
 package com.picsauditing.flagcalculator.util;
 
+import com.picsauditing.flagcalculator.entities.BaseHistory;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.slf4j.Logger;
@@ -879,4 +880,17 @@ public class DateBean {
 //        return calendar.getTime();
 //    }
 
+
+    public static boolean isCurrent(BaseHistory history) {
+        Date now = new Date();
+        return isCurrent(history, now);
+    }
+
+    public static boolean isCurrent(BaseHistory history, Date now) {
+        if (history.getEffectiveDate() != null && history.getEffectiveDate().after(now))
+            return false;
+        if (history.getExpirationDate() != null && history.getExpirationDate().before(now))
+            return false;
+        return true;
+    }
 }

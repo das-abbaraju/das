@@ -8,9 +8,11 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.service.account.AccountService;
 import com.picsauditing.service.account.events.ContractorEventType;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.DataScrubber;
+import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.math.NumberUtils;
 import org.json.simple.JSONObject;
@@ -30,7 +32,7 @@ public class RegistrationService {
     private final LanguageModel supportedLanguages;
     private final UserService userService;
     private final RegistrationRequestService regReqService;
-    private final AppUserDAO appUserDAO;
+	private final AuthenticationService authenticationService;
     private final AppUserService appUserService;
 
     public RegistrationService(
@@ -39,9 +41,7 @@ public class RegistrationService {
             LanguageModel supportedLanguages,
             UserService userService,
             RegistrationRequestService regReqService,
-
-            //FIXME: Remove the dao in favor of a service call.
-            AppUserDAO appUserDAO,
+			AuthenticationService authenticationService,
             AppUserService service
     ) {
         this.billingBean = bean;
@@ -49,7 +49,7 @@ public class RegistrationService {
         this.supportedLanguages = supportedLanguages;
         this.userService = userService;
         this.regReqService = regReqService;
-        this.appUserDAO = appUserDAO;
+		this.authenticationService = authenticationService;
         this.appUserService = service;
     }
 
@@ -84,6 +84,14 @@ public class RegistrationService {
         newAccount.setAgreedBy(newUser);
         newAccount.setAgreementDate(new Date());
 
+        if (!newAccount.isDemo()) {
+            newAccount.setQbSync(true);
+            SapAppPropertyUtil sapAppPropertyUtil = SapAppPropertyUtil.factory();
+            if (sapAppPropertyUtil.isSAPBusinessUnitSetSyncTrueEnabledForObject(newAccount)) {
+                newAccount.setSapSync(true);
+            }
+        }
+
         //Persist the user to get the user ID back.
         userService.persist(newUser);
         //Re-persist the contractor, because we added the user.
@@ -91,7 +99,7 @@ public class RegistrationService {
         accountService.persist(newAccount);
 
         //This probably doesn't need to be done syncrhonously.
-        appUserDAO.save(appUser);
+        appUserService.save(appUser);
 
         //Propagate the registration events.
         publishCreation(newAccount);
@@ -183,18 +191,15 @@ public class RegistrationService {
         return supportedLanguages.getClosestVisibleLocale(locale);
     }
 
-    //FIXME: JSON parsing from an internal service? Are you kidding me?
-    // This can probably be done asynchronously, too.
-    private AppUser createAppUserFrom(User user) {
-        String username = user.getUsername();
-        JSONObject appUserResponse = appUserService.createNewAppUser(username, user.getPassword());
-        if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {
-            int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
-            return appUserDAO.findByAppUserID(appUserID);
-        } else {
-            // FIXME: Find a better way to deal with a non-success.
-            throw new RuntimeException("App User Service is Down.");
-        }
-    }
+	// This can probably be done asynchronously, too.
+	private AppUser createAppUserFrom(User user) {
+		String username = user.getUsername();
+		try {
+			return authenticationService.createNewAppUser(username, user.getPassword());
+		} catch (Exception e) {
+			// FIXME: Find a better way to deal with a non-success.
+			throw new RuntimeException("Unable to create an AppUser - " + e.getMessage());
+		}
+	}
 
 }

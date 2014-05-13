@@ -170,6 +170,7 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
     public void fromJSON(JSONObject obj) {
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

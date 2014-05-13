@@ -1,14 +1,13 @@
 package com.picsauditing.flagcalculator.entities;
 
 import com.picsauditing.flagcalculator.service.AuditService;
-
 import java.util.*;
 
 /**
  * Decorator for ContractorAudit, specifically for when ContractorAudit is an OSHa type, that adds OSHA-specific logic.
  */
-public class OshaAudit /*implements OshaVisitable*/ {
-//
+public class OshaAudit {
+
     public static final int CAT_ID_OSHA = 2033; // U.S.
     public static final int CAT_ID_OSHA_ADDITIONAL = 2209; // U.S.
     public static final int CAT_ID_MSHA = 2256; // U.S.
@@ -32,16 +31,11 @@ public class OshaAudit /*implements OshaVisitable*/ {
 	public static final int CAT_ID_CZECH = 3764;
 	public static final int CAT_ID_HUNGARY = 3760;
 	public static final int CAT_ID_GREECE = 3766;
-//
+
     public static final int CAT_ID_OSHA_PARENT = 1153;
     public static final int CAT_ID_COHS_PARENT = 1155;
     public static final int CAT_ID_UK_HSE_PARENT = 1690;
 
-//    // Arrays can have their contents modified during runtime, so make this an unmodifiable set. Since it is only
-//    // loaded once, there is no runtime performance hit.
-//    public static final Set<Integer> SAFETY_STATISTICS_CATEGORY_IDS =
-//            Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA, CAT_ID_OSHA_ADDITIONAL,
-//                    CAT_ID_MSHA, CAT_ID_COHS, CAT_ID_UK_HSE)));
     public static final Set<Integer> DISPLAY_SAFETY_STATISTICS_CATEGORY_IDS =
             Collections.unmodifiableSet(new HashSet<Integer>(Arrays.asList(CAT_ID_OSHA,
                     CAT_ID_COHS, CAT_ID_UK_HSE, CAT_ID_EMR, CAT_ID_MEXICO, CAT_ID_AUSTRALIA, CAT_ID_IRElAND,
@@ -49,19 +43,6 @@ public class OshaAudit /*implements OshaVisitable*/ {
                     CAT_ID_SPAIN, CAT_ID_POLAND, CAT_ID_AUSTRIA, CAT_ID_ITALY, CAT_ID_PORTUGAL, CAT_ID_DENMARK,
                     CAT_ID_CZECH, CAT_ID_HUNGARY, CAT_ID_GREECE)));
 
-//    private static final Logger logger = LoggerFactory.getLogger(OshaAudit.class);
-//
-//    public static boolean isSafetyStatisticsCategory(int categoryId) {
-//        // why not?
-//        // return SAFETY_STATISTICS_CATEGORY_IDS.contains(categoryId);
-//        for (int safetyStatisticsCategory : SAFETY_STATISTICS_CATEGORY_IDS) {
-//            if (categoryId == safetyStatisticsCategory)
-//                return true;
-//        }
-//
-//        return false;
-//    }
-//
     public static OshaType convertCategoryToOshaType(int catId) {
         OshaType type = null;
 
@@ -82,7 +63,7 @@ public class OshaAudit /*implements OshaVisitable*/ {
 
     private Map<OshaType, SafetyStatistics> safetyStatisticsMap;
     private Map<OshaType, Boolean> displaySafetyStatisticsMap;
-//
+
     public OshaAudit(ContractorAudit contractorAudit) {
         assert (AuditService.isAnnualAddendum(contractorAudit.getAuditType().getId()));
 
@@ -93,10 +74,6 @@ public class OshaAudit /*implements OshaVisitable*/ {
         initializeStatistics();
     }
 
-//    public ContractorAudit getContractorAudit() {
-//        return contractorAudit;
-//    }
-//
     private void initializeDisplaySafetyStatistics() {
 	    for (OshaType type:OshaType.values()) {
 		    displaySafetyStatisticsMap.put(type, false);
@@ -123,14 +100,6 @@ public class OshaAudit /*implements OshaVisitable*/ {
         return contractorAudit.getAuditFor();
     }
 
-//    public int getId() {
-//        return contractorAudit.getId();
-//    }
-//
-//    public List<ContractorAuditOperator> getCaos() {
-//        return contractorAudit.getOperatorsVisible();
-//    }
-//
     private List<AuditCatData> getCategories() {
         return contractorAudit.getCategories();
     }
@@ -208,69 +177,6 @@ public class OshaAudit /*implements OshaVisitable*/ {
         return safetyStatisticsMap.get(oshaType);
     }
 
-//    public String getSpecificRate(OshaType oshaType, OshaRateType rateType) {
-//        if (getSafetyStatistics(oshaType) == null) {
-//            return Strings.EMPTY_STRING;
-//        }
-//
-//        return getSafetyStatistics(oshaType).getStats(rateType);
-//    }
-//
-//    // Used in Line 65 in verification_detail.jsp line 298 in verification_audit.jsp
-//    public Integer getFileUploadId(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getFileUpload() == null
-//                || getSafetyStatistics(oshaType).getFileUpload().getQuestion() == null) {
-//            return Integer.valueOf(-1);
-//        }
-//
-//        return getSafetyStatistics(oshaType).getFileUpload().getQuestion().getId();
-//    }
-//
-//    public List<AuditData> getQuestionsToVerify(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null) {
-//            return Collections.emptyList();
-//        }
-//
-//        return getSafetyStatistics(oshaType).getQuestionsToVerify();
-//    }
-//
-//    public Collection<AuditData> getAllQuestionsInOshaType(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null) {
-//            return Collections.emptyList();
-//        }
-//
-//        return getSafetyStatistics(oshaType).getAnswerMap().values();
-//    }
-//
-//    public boolean isEmpty(OshaType oshaType) {
-//        return (getSafetyStatistics(oshaType) == null);
-//    }
-//
-//    public String getComment(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getCommentAuditData() == null) {
-//            return Strings.EMPTY_STRING;
-//        }
-//
-//        String comment = getSafetyStatistics(oshaType).getCommentAuditData().getComment();
-//        if (Strings.isEmpty(comment))
-//            comment = Strings.EMPTY_STRING;
-//        return comment;
-//    }
-//
-//    public AuditData stampOshaComment(OshaType oshaType, String comment) {
-//        if (getSafetyStatistics(oshaType) == null) {
-//            return null;
-//        }
-//
-//        AuditData data = getSafetyStatistics(oshaType).getCommentAuditData();
-//        if (data != null) {
-//            data.setComment(comment);
-//        }
-//
-//        return data;
-//    }
-//
-//    @Override
     public void accept(OshaVisitor visitor) {
         for (SafetyStatistics stats : getStatistics()) {
             visitor.gatherData(stats);
@@ -295,22 +201,4 @@ public class OshaAudit /*implements OshaVisitable*/ {
 
         return AuditService.isVerified(getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours));
     }
-
-//    public Date getVerifiedDate(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
-//                || getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
-//            return null;
-//        }
-//
-//        return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getDateVerified();
-//    }
-//
-//    public User getAuditor(OshaType oshaType) {
-//        if (getSafetyStatistics(oshaType) == null || getSafetyStatistics(oshaType).getAnswerMap() == null
-//                || getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours) == null) {
-//            return null;
-//        }
-//
-//        return getSafetyStatistics(oshaType).getAnswerMap().get(OshaRateType.Hours).getAuditor();
-//    }
 }

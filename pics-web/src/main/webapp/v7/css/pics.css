@@ -3313,7 +3313,7 @@ hr {
   border-top-right-radius: 3px;
 }
 /* line 23, ../sass/pics/templates/eula/_eula.scss */
-.eula-container .panel-heading strong {
+.eula-container .panel-heading .title {
   display: block;
   position: relative;
   width: 75%;
@@ -3366,14 +3366,50 @@ hr {
   }
 }
 @media (max-width: 480px) {
-  /* line 77, ../sass/pics/templates/eula/_eula.scss */
+  /* line 78, ../sass/pics/templates/eula/_eula.scss */
   .eula-container {
     position: absolute;
   }
-  /* line 80, ../sass/pics/templates/eula/_eula.scss */
+  /* line 81, ../sass/pics/templates/eula/_eula.scss */
   .eula-container .panel-body {
     bottom: auto;
     height: auto;
     overflow-y: visible;
+  }
+}
+@media print {
+  /* line 90, ../sass/pics/templates/eula/_eula.scss */
+  .page .eula-container {
+    width: 100%;
+  }
+  /* line 94, ../sass/pics/templates/eula/_eula.scss */
+  .page .eula-container .button-container,
+  .page .eula-container .icon-print {
+    display: none;
+  }
+  /* line 99, ../sass/pics/templates/eula/_eula.scss */
+  .page .eula-container .title,
+  .page .eula-container .version-container {
+    float: none;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+  }
+  /* line 110, ../sass/pics/templates/eula/_eula.scss */
+  .page .eula-container .panel-heading {
+    position: absolute;
+    width: 100%;
+    padding: 0;
+  }
+  /* line 116, ../sass/pics/templates/eula/_eula.scss */
+  .page .eula-container .panel-body {
+    margin-top: 60px;
+    position: absolute;
+    background: #fff;
+    overflow-y: visible;
+    display: block;
+    width: 100%;
+    padding: 0;
   }
 }

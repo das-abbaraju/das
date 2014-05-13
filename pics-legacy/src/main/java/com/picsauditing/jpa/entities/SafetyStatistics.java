@@ -1,7 +1,5 @@
 package com.picsauditing.jpa.entities;
 
-import com.picsauditing.util.Strings;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,18 +84,22 @@ public abstract class SafetyStatistics {
 		return data;
 	}
 
+    @Deprecated
 	public boolean isApplicable() {
 		return applicable;
 	}
 
+    @Deprecated
 	public void setApplicable(boolean applicable) {
 		this.applicable = applicable;
 	}
 
+    @Deprecated
 	public boolean isDisplay() {
 		return display;
 	}
 
+    @Deprecated
 	public void setDisplay(boolean display) {
 		this.display = display;
 	}

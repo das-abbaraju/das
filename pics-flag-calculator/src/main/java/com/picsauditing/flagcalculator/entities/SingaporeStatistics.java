@@ -43,18 +43,4 @@ public class SingaporeStatistics extends SafetyStatistics {
 			}
 		}
 	}
-
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<AuditData> getQuestionsToVerify() {
-//		List<AuditData> questionsToVerify = new ArrayList<AuditData>();
-//
-//		questionsToVerify.add(answerMap.get(OshaRateType.Hours));
-//		questionsToVerify.add(answerMap.get(OshaRateType.Fatalities));
-//		questionsToVerify.add(answerMap.get(OshaRateType.AFR));
-//		questionsToVerify.add(answerMap.get(OshaRateType.WIR));
-//		questionsToVerify.add(answerMap.get(OshaRateType.ODI));
-//
-//		return questionsToVerify;
-//	}
 }

@@ -6,10 +6,10 @@ import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.service.account.AccountService;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.service.billing.RegistrationBillingBean;
 import com.picsauditing.service.user.UserService;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -36,15 +36,17 @@ public class RegistrationServiceTest extends PicsTranslationTest {
 	private UserService userService;
 	@Mock
 	private RegistrationRequestService regReqService;
+	@Mock
+	private AuthenticationService authenticationService;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		registrationService = new RegistrationService(billingBean, accountService, supportedLanguages, userService, regReqService, appUserDAO, appUserService);
+		registrationService = new RegistrationService(billingBean, accountService, supportedLanguages, userService,
+				regReqService, authenticationService, appUserService);
 	}
 
-	@Ignore
 	@Test
 	public void testCreateContractorAccountFrom() throws Exception {
 		RegistrationSubmission form = new RegistrationSubmission(registrationService);

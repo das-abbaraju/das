@@ -25,23 +25,17 @@ public class AppUserDAO {
 		return o;
 	}
 
-	public AppUser find(int id) {
+	public AppUser findById(final int id) {
 		return em.find(AppUser.class, id);
 	}
 
-	public List<AppUser> findWhere(String where) {
-		if (where == null)
-			where = "";
-		if (where.length() > 0)
-			where = "WHERE " + where;
+	public List<AppUser> findListByUserName(final String username) {
+		TypedQuery<AppUser> query = em.createQuery("FROM AppUser " +
+				"WHERE username = :username", AppUser.class);
 
-		Query query = em.createQuery("select a from AppUser a " + where);
+		query.setParameter("username", username);
 
 		return query.getResultList();
-	}
-
-	public List<AppUser> findListByUserName(String username) {
-		return findWhere("username = '" + username + "'");
 	}
 
 	public AppUser findByUserName(String username) {
@@ -57,12 +51,7 @@ public class AppUserDAO {
 		}
 	}
 
-	public AppUser findByAppUserID(int appUserID) {
-		return find(appUserID);
-		//return findWhere("id = '" + appUserID + "'");
-	}
-
-	public AppUser findByUserNameAndPassword(String username, String password) {
+	public AppUser findByUserNameAndPassword(final String username, final String password) {
 		TypedQuery<AppUser> q = em.createQuery("SELECT a FROM AppUser a WHERE a.username = :username " +
 				"AND a.password = :password", AppUser.class);
 
@@ -76,7 +65,7 @@ public class AppUserDAO {
 		}
 	}
 
-	public boolean duplicateUsername(String username, int appUserID) {
+	public boolean duplicateUsername(final String username, final int appUserID) {
 		try {
 			AppUser appUser = findByUserName(username);
 			if (appUser == null) {
