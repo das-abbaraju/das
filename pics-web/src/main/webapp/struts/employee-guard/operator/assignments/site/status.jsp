@@ -63,7 +63,7 @@
                                         ${site_assignment_employee.employeeId}
                                     </s:param>
                                 </s:url>
-                                <a href="${employee_liveID}">${site_assignment_employee.employeeName}</a>
+                                <a href="${employee_liveID}/sites/${site.id}">${site_assignment_employee.employeeName}</a>
                             </td>
                             <s:if test="#site_assignment_employee.status.expired" >
                                 <s:set var="skill_icon">icon-minus-sign-alt</s:set>
