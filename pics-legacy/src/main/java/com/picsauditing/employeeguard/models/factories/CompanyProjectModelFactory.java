@@ -6,21 +6,21 @@ import com.picsauditing.employeeguard.models.SkillStatusInfo;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CompanyProjectModelFactory {
 
 	public Set<CompanyProjectModel> create(final Map<Project, SkillStatus> projectStatusMap,
-											  final Map<Project, Set<SkillStatusModel>> projectSkillsMap) {
+										   final Map<Project, Set<SkillStatusModel>> projectSkillsMap) {
 
-		Set<CompanyProjectModel> companyProjectModels = new HashSet<>();
+		List<CompanyProjectModel> companyProjectModels = new ArrayList<>();
 		for (Project project : projectStatusMap.keySet()) {
 			companyProjectModels.add(create(project, projectStatusMap.get(project), projectSkillsMap.get(project)));
 		}
 
-		return companyProjectModels;
+		Collections.sort(companyProjectModels);
+
+		return new LinkedHashSet<>(companyProjectModels);
 	}
 
 	public CompanyProjectModel create(final Project project, final SkillStatus status,
@@ -36,7 +36,7 @@ public class CompanyProjectModelFactory {
 		return companyProjectModel;
 	}
 
-	public class CompanyProjectModel implements IdNameComposite, SkillStatusInfo {
+	public class CompanyProjectModel implements IdNameComposite, SkillStatusInfo, Comparable<CompanyProjectModel> {
 
 		private int id;
 		private String name;
@@ -79,6 +79,11 @@ public class CompanyProjectModelFactory {
 
 		public void setSkills(Set<SkillStatusModel> skills) {
 			this.skills = skills;
+		}
+
+		@Override
+		public int compareTo(CompanyProjectModel that) {
+			return this.name.compareTo(that.name);
 		}
 
 		@Override

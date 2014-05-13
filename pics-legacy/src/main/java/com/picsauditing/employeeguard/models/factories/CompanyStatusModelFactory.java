@@ -6,9 +6,7 @@ import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.SkillStatusInfo;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CompanyStatusModelFactory {
 
@@ -16,13 +14,15 @@ public class CompanyStatusModelFactory {
 										  final Map<AccountModel, RequiredSkills> requiredSkillsMap,
 										  final Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountProjectsMap) {
 
-		Set<CompanyStatusModel> companyStatusModels = new HashSet<>();
+		List<CompanyStatusModel> companyStatusModels = new ArrayList<>();
 		for (AccountModel accountModel : accountStatusMap.keySet()) {
 			companyStatusModels.add(create(accountModel, accountStatusMap.get(accountModel),
 					requiredSkillsMap.get(accountModel), accountProjectsMap.get(accountModel)));
 		}
 
-		return companyStatusModels;
+		Collections.sort(companyStatusModels);
+
+		return new LinkedHashSet<>(companyStatusModels);
 	}
 
 	public CompanyStatusModel create(final AccountModel accountModel,
@@ -41,7 +41,7 @@ public class CompanyStatusModelFactory {
 		return companyStatusModel;
 	}
 
-	public class CompanyStatusModel implements IdNameComposite, SkillStatusInfo {
+	public class CompanyStatusModel implements IdNameComposite, SkillStatusInfo, Comparable<CompanyStatusModel> {
 
 		private int id;
 		private String name;
@@ -93,6 +93,11 @@ public class CompanyStatusModelFactory {
 
 		public void setProjects(Set<CompanyProjectModelFactory.CompanyProjectModel> projects) {
 			this.projects = projects;
+		}
+
+		@Override
+		public int compareTo(CompanyStatusModel that) {
+			return this.name.compareToIgnoreCase(that.name);
 		}
 
 		@Override
