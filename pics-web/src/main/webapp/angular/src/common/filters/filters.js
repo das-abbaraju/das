@@ -2,9 +2,11 @@ angular.module('PICS.filters', [])
 
 .filter('removeInvalidCharactersFromUrl', function () {
     return function (text) {
+        var str = text.replace(/\s+/g, '-');
+            str = str.replace(/-{2,}/g, '-');
+            str = str.replace(/[\'\",:\/#%&*{}<>?\\\+]+/g, '');
 
-        var str = text.replace(/\s+/g, '-').toLowerCase();
-        return str;
+        return str.toLowerCase();
     };
 })
 
