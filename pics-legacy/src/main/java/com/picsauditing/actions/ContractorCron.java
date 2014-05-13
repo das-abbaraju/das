@@ -566,6 +566,8 @@ public class ContractorCron extends PicsActionSupport {
 
 		logger.trace("ContractorCron starting Flags for {}", contractorOperator.getOperatorAccount().getName());
 
+        FlagColor previousFlagColor = contractorOperator.getFlagColor();
+
         FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(contractorOperator, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
         boolean needNote = flagCalculator.saveFlagData(changes);
@@ -595,7 +597,7 @@ public class ContractorCron extends PicsActionSupport {
             note.setAccount(contractorOperator.getContractorAccount());
             note.setNoteCategory(NoteCategory.Flags);
             note.setAuditColumns(new User(User.SYSTEM));
-            note.setSummary("Flag color changed from " + contractorOperator.getFlagColor() + " to " + contractorOperator.getFlagColor() + " for "
+            note.setSummary("Flag color changed from " + previousFlagColor + " to " + contractorOperator.getFlagColor() + " for "
                     + contractorOperator.getOperatorAccount().getName());
             note.setBody(reason);
             note.setCanContractorView(true);
