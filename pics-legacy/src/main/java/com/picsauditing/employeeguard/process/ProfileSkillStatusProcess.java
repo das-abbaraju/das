@@ -92,7 +92,8 @@ public class ProfileSkillStatusProcess {
 				processHelper.allSkillsForAllSite(profileSkillData.getSiteProjects(),
 						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
 
-		profileSkillData.setSiteStatuses(statusCalculatorService.getSkillStatusPerEntity(getEmployee(profile), allSiteSkills));
+		profileSkillData.setSiteStatuses(statusCalculatorService
+				.getSkillStatusPerEntity(getEmployee(profile), allSiteSkills, SkillStatus.Completed));
 
 		return profileSkillData;
 	}

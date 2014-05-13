@@ -164,6 +164,33 @@ public class StatusCalculatorService {
 		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap);
 	}
 
+	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee,
+																	 final Map<E, Set<AccountSkill>> skillMap,
+																	 final SkillStatus defaultStatus) {
+		if (employee == null || MapUtils.isEmpty(skillMap)) {
+			return Collections.emptyMap();
+		}
+
+		Set<AccountSkill> skills = getSkillsFromMap(skillMap);
+		if (CollectionUtils.isEmpty(skills)) {
+			return Collections.emptyMap();
+		}
+
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+				.findByEmployeeAndSkills(employee, skills);
+
+		Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap =
+				buildAccountSkillToAccountSkillEmployeeMap(accountSkillEmployees);
+
+		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap, defaultStatus);
+	}
+
+	public <E> Map<E, SkillStatus> getSkillStatusPerEntity(final Employee employee,
+														   final Map<E, Set<AccountSkill>> skillMap,
+														   final SkillStatus defaultStatus) {
+		return getOverallStatusPerEntity(getSkillStatusListPerEntity(employee, skillMap, defaultStatus));
+	}
+
 	public <E> Map<E, SkillStatus> getSkillStatusPerEntity(final Employee employee, final Map<E, Set<AccountSkill>> skillMap) {
 		return getOverallStatusPerEntity(getSkillStatusListPerEntity(employee, skillMap));
 	}
@@ -194,7 +221,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-	                                                            final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
+																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -204,6 +231,30 @@ public class StatusCalculatorService {
 			List<SkillStatus> skillStatusList = new ArrayList<>();
 			for (AccountSkill accountSkill : skillMap.get(entity)) {
 				skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployeeMap.get(accountSkill)));
+			}
+
+			entityStatusMap.put(entity, skillStatusList);
+		}
+
+		return entityStatusMap;
+	}
+
+	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
+																final Map<AccountSkill, AccountSkillEmployee> accountSkillEmployeeMap,
+																final SkillStatus defaultStatus) {
+		if (MapUtils.isEmpty(skillMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<E, List<SkillStatus>> entityStatusMap = new HashMap<>();
+		for (E entity : skillMap.keySet()) {
+			List<SkillStatus> skillStatusList = new ArrayList<>();
+			if (CollectionUtils.isEmpty(skillMap.get(entity))) {
+				skillStatusList.add(defaultStatus);
+			} else {
+				for (AccountSkill accountSkill : skillMap.get(entity)) {
+					skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployeeMap.get(accountSkill)));
+				}
 			}
 
 			entityStatusMap.put(entity, skillStatusList);
@@ -262,7 +313,7 @@ public class StatusCalculatorService {
 			return Collections.emptyMap();
 		}
 
-    ///-- Prepare Unique list of employees and Skills
+		///-- Prepare Unique list of employees and Skills
 		Set<Employee> employees = new HashSet<>();
 		Set<AccountSkill> skills = new HashSet<>();
 		for (E entity : entityEmployeeSkillMap.keySet()) {
@@ -272,14 +323,14 @@ public class StatusCalculatorService {
 			}
 		}
 
-    //-- Get documentations for the list of employees with list of skills
+		//-- Get documentations for the list of employees with list of skills
 		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(employees) && CollectionUtils.isNotEmpty(skills)) {
 			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, skills);
 		}
 
     /* Prepare collection of Employees with skills that have documentation attached. This map of maps contains
-    only the skills that the employee has provided documentation for !
+	only the skills that the employee has provided documentation for !
     * */
 
 		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
@@ -296,17 +347,17 @@ public class StatusCalculatorService {
 					}
 				});
 
-    //-- Roll up skill status of each Employee
+		//-- Roll up skill status of each Employee
 		Map<E, List<SkillStatus>> skillStatusPerEntityEmployee = new HashMap<>();
 		for (final E entity : entityEmployeeSkillMap.keySet()) {
 			for (final Employee employee : entityEmployeeSkillMap.get(entity).keySet()) {
 
-        SkillStatus skillStatus=SkillStatus.Expired;
-        //-- If employee has any documentations at all.
+				SkillStatus skillStatus = SkillStatus.Expired;
+				//-- If employee has any documentations at all.
 				if (employeeSkillMap.containsKey(employee)) {
-          //-- Documentations provided for this employee
+					//-- Documentations provided for this employee
 					Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
-          //-- Distill the collection specific to this employee's skills.
+					//-- Distill the collection specific to this employee's skills.
 					CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
 						@Override
 						public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
@@ -319,11 +370,11 @@ public class StatusCalculatorService {
 					}
 				}
 
-        //-- Add Skill status information to the entity in question.
-        if (!skillStatusPerEntityEmployee.containsKey(entity)) {
-          skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
-        }
-        skillStatusPerEntityEmployee.get(entity).add(skillStatus);
+				//-- Add Skill status information to the entity in question.
+				if (!skillStatusPerEntityEmployee.containsKey(entity)) {
+					skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
+				}
+				skillStatusPerEntityEmployee.get(entity).add(skillStatus);
 
 			}
 		}
