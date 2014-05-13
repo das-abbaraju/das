@@ -25,8 +25,12 @@
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
         </action>
 
-      <action name="serverInfo" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
-      </action>
+
+        <action name="serverInfo" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
+        </action>
+
+        <action name="info" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
 
     </package>
 
