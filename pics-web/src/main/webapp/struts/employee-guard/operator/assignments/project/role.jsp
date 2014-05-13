@@ -66,7 +66,7 @@
                                     ${operator_project_employee.employeeId}
                                 </s:param>
                             </s:url>
-                            <a href="${employee_liveID}">${operator_project_employee.employeeName}</a>
+                            <a href="${employee_liveID}/sites/${project.accountId}">${operator_project_employee.employeeName}</a>
                         </td>
                         <s:iterator value="#operator_project_employee.skillStatuses" var="employee_skill_status">
                             <s:if test="#employee_skill_status.expired">
