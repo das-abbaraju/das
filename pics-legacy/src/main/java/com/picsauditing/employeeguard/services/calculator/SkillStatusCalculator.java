@@ -45,7 +45,6 @@ public class SkillStatusCalculator {
 		/* Figure out endDate in runtime, looking at the information in AccountSkill, instead of relying on
 		 endDate stamped on AccountSkillEmployee, because the expiration criteria may have been updated for that skill
 		  */
-		//Date endDate = accountSkillEmployee.getEndDate();
 		Date endDate =ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
 
 		if (endDate == null || endDate.before(today)) {
