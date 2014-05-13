@@ -52,8 +52,8 @@ module.exports = function(grunt) {
                     ]),
                     plugins:[
                         'karma-junit-reporter',
-                        "karma-jasmine",
-                        "karma-phantomjs-launcher"
+                        'karma-jasmine',
+                        'karma-phantomjs-launcher'
                     ],
                     junitReporter: {
                         outputFile: 'unit.xml',
@@ -65,7 +65,8 @@ module.exports = function(grunt) {
                     browsers:[
                         "PhantomJS"
                     ],
-                    singleRun: true
+                    singleRun: true,
+                    logLevel: 'ERROR'
                 }
             },
             coverage: {
@@ -155,7 +156,7 @@ module.exports = function(grunt) {
             scripts: {
                 files: vendor_js_files.concat([
                     'src/**/*.js',
-                    'src/common/*.js',
+                    'src/common/*.js'
                 ]),
                 tasks: [
                     'jshint',
@@ -170,10 +171,23 @@ module.exports = function(grunt) {
             styles: {
                 files: [
                     'src/**/*.scss',
-                    'vendor/**/*.scss',
+                    'vendor/**/*.scss'
                 ],
                 tasks: [
                     'compass:dist'
+                ],
+                options: {
+                    interrupt: true
+                }
+            },
+
+            cover: {
+                files: vendor_js_files.concat([
+                    'src/**/*.js',
+                    'src/common/*.js',
+                ]),
+                tasks: [
+                    'karma:coverage'
                 ],
                 options: {
                     interrupt: true
@@ -189,6 +203,10 @@ module.exports = function(grunt) {
         'karma:unit',
         'concat',
         'compass:dist'
+    ]);
+
+    grunt.registerTask('watchcover', [
+        'watch:cover'
     ]);
 
     grunt.registerTask('coverage', [

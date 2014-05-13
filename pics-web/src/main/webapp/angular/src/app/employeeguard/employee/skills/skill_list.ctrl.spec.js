@@ -130,23 +130,14 @@ describe("A Employee Skill List", function() {
 
         it("should populate the skill list with the selected site", function() {
             expect(scope.skillList).toBeDefined();
-            expect(scope.skillList.name).toEqual('Spectre');
-            expect(scope.skillList.status).toEqual('Completed');
         });
 
-        it("should have all site and project skills for the selected site", function() {
-            var expected_result = [
-                {
-                     "id":6,
-                     "name":"Spectre Site Required Skill 1",
-                     "status": "Expired"
-                },
-                {
-                 "id":4,
-                 "name":"Volcano Base Skill",
+        it("should have all site required skills for the selected site", function() {
+            var expected_result = [{
+                 "id":6,
+                 "name":"Spectre Site Required Skill 1",
                  "status": "Expired"
-                }
-            ];
+            }];
 
             expect(scope.skillList.skills).toEqual(expected_result);
         });

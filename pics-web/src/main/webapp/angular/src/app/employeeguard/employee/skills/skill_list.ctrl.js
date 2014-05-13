@@ -33,7 +33,7 @@ angular.module('PICS.employeeguard')
         var slugname = $routeParams.siteSlug;
 
         return {
-            skillList: skillModel.getAllSiteAndProjectSkillsBySlug(slugname),
+            skillList: skillModel.getSiteSkillsBySlug(slugname),
             selectedMenuItem: slugname,
             viewTitle: skillModel.getSiteNameBySlug(slugname)
         };

@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="row" ng-show="skillList">
+        <div class="row" ng-show="sites">
             <div class="col-md-3">
                 <div class="bs-sidebar">
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
@@ -58,7 +58,7 @@
                </div>
             </div>
         </div>
-        <div class="row" ng-show="!skillList">
+        <div class="row" ng-show="sites.length <= 0">
             <div class="col-md-6 col-md-offset-3">
                 <div class="alert alert-info">
                     <h4>No Required Skills</h4>
