@@ -5,8 +5,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.forms.contractor.RoleNameSkillsForm;
+import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -70,8 +69,8 @@ public class RoleService {
 				AccountSkillRole.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-    roleInDatabase.getSkills().clear();
-    roleInDatabase.getSkills().addAll(accountSkillGroups);
+		roleInDatabase.getSkills().clear();
+		roleInDatabase.getSkills().addAll(accountSkillGroups);
 
 		roleInDatabase = roleDAO.save(roleInDatabase);
 

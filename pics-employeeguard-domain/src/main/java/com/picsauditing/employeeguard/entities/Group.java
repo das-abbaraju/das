@@ -79,7 +79,6 @@ public class Group extends AccountGroup implements Comparable<Group> {
 			this.name = name;
 		}
 
-
 		@Override
 		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
 			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {

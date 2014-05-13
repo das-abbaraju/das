@@ -1,24 +1,9 @@
 package com.picsauditing.actions.report;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.*;
-import org.apache.commons.beanutils.BasicDynaBean;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.PICS.FacilityChanger;
-import com.picsauditing.PICS.FlagDataCalculator;
+import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
@@ -27,12 +12,23 @@ import com.picsauditing.auditBuilder.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.flagcalculator.FlagCalculator;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.ReportFilterAccount;
 import com.picsauditing.util.ReportFilterContractor;
 import com.picsauditing.util.Strings;
+import org.apache.commons.beanutils.BasicDynaBean;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Used by operators to search for new contractors
@@ -53,6 +49,10 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private FacilityChanger facilityChanger;
 	@Autowired
 	private EmailSender emailSender;
+	@Autowired
+	private FlagCalculatorFactory flagCalculatorFactory;
+	@Autowired
+	private MessagePublisherService messagePublisherService;
 
 	private List<FlagCriteriaOperator> opCriteria;
 	private OperatorAccount operator;
@@ -401,13 +401,20 @@ public class ReportNewContractorSearch extends ReportAccount {
 			if (contractor.getFlagCriteria().size() == 0) {
 				byConID.put(contractor.getId(), FlagColor.Clear);
 			} else {
-				FlagDataCalculator calculator = new FlagDataCalculator(contractor.getFlagCriteria());
-				calculator.setOperatorCriteria(opCriteria);
-				if (!conIDs.get(contractor.getId()).isEmpty())
-					calculator.setWorksForOperator(false);
-				calculator.setOperator(operator);
-				FlagColor flagColor = getWorstColor(calculator.calculate());
-				byConID.put(contractor.getId(), flagColor);
+                ContractorOperator co = new ContractorOperator();
+                co.setContractorAccount(contractor);
+                co.setOperatorAccount(operator);
+
+                try {
+                    FlagCalculator calculator = flagCalculatorFactory.flagCalculator(co, messagePublisherService);
+                    if (!conIDs.get(contractor.getId()).isEmpty())
+                        calculator.setWorksForOperator(false);
+                    FlagColor flagColor = getWorstColor(calculator.calculate());
+                    byConID.put(contractor.getId(), flagColor);
+                }
+                catch (Exception e) {
+                    logger.debug("Calculate Failure!");
+                }
 			}
 		}
 	}

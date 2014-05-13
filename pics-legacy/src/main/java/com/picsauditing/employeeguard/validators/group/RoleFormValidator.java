@@ -1,9 +1,8 @@
 package com.picsauditing.employeeguard.validators.group;
 
 import com.opensymphony.xwork2.util.ValueStack;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.forms.contractor.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
+import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<RoleNameSkillsForm> {
@@ -29,8 +28,8 @@ public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<RoleNa
 		return (OperatorJobRoleForm) valueStack.findValue(ROLE_FORM, OperatorJobRoleForm.class);
 	}
 
-    @Override
-    protected String getDuplicateErrorMessage() {
-        return "Name";
-    }
+	@Override
+	protected String getDuplicateErrorMessage() {
+		return "Name";
+	}
 }

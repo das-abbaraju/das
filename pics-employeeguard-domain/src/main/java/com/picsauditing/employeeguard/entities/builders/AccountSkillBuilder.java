@@ -12,7 +12,7 @@ public class AccountSkillBuilder {
 	}
 
 	public AccountSkillBuilder(int accountId) {
-		this.accountSkill = new AccountSkill(accountId);
+		this.accountSkill = new AccountSkill(0, accountId);
 	}
 
 	public AccountSkillBuilder(int id, int accountId) {

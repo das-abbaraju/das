@@ -310,9 +310,17 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		@Override
 		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
 			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {{
-				put("accountId", new HashMap<String, Object>() {{ put("accountId", accountId); }} );
-				put("skillType", new HashMap<String, Object>() {{ put("skillType", skillType); }} );
-				put("name", new HashMap<String, Object>() {{ put("name", name); }} );
+				put("accountId", new HashMap<String, Object>() {{
+					put("accountId", accountId);
+				}});
+
+				put("skillType", new HashMap<String, Object>() {{
+					put("skillType", skillType);
+				}});
+
+				put("name", new HashMap<String, Object>() {{
+					put("name", name);
+				}});
 			}});
 		}
 

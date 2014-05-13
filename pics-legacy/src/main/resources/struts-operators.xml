@@ -58,10 +58,6 @@
 			<result>/struts/operators/operator_quick.jsp</result>
 		</action>
 		
-		<action name="OperatorFlagsCalculatorAjax" class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
-			<result>struts/operators/op_manage_flag_criteria_impact.jsp</result>
-		</action>
-		
 		<action name="OperatorFlagMatrix" class="com.picsauditing.actions.report.OperatorFlagMatrix">
 			<result>struts/reports/flag_matrix.jsp</result>
 		</action>

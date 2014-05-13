@@ -23,11 +23,6 @@
 				<th>
 					<s:text name="global.Flag" />
 				</th>
-				<th>
-					<nobr>
-						<s:text name="ManageFlagCriteriaOperator.header.NumberAffected" />
-					</nobr>
-				</th>
 
 				<s:if test="canEdit">
 					<th>
@@ -123,10 +118,6 @@
 					<td class="center">
 						<span class="viewable"><s:text name="%{flag.getI18nKey('smallIcon')}" /></span>
 					</td>
-					<td class="center">
-						<a href="#" title="<s:text name="ManageFlagCriteriaOperator.title.ClickToSeeList" />" class="viewable oldImpact getImpact"><s:property value="affected" /></a>
-						<span class="newImpact"></span>
-					</td>
 
 					<s:if test="canEdit">
 						<td class="nobr">
@@ -150,7 +141,7 @@
 		</tbody>
 	</table>
 
-	<input type="button" value="<s:text name="ManageFlagCriteriaOperator.button.UpdateAffectedCounts" />" class="picsbutton" id="recalculateAll" />
+    <a href="Report.action?report=2487"><s:text name="OperatorFlagMatrix.title" /></a> &nbsp;|&nbsp;
 
 	<s:if test="canEdit">
 		<pics:permission perm="ManageAudits">

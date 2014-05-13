@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.forms.contractor;
+package com.picsauditing.employeeguard.forms.operator;
 
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
