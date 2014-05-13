@@ -15,7 +15,6 @@ angular.module('PICS.employeeguard')
         if (assignment.site) {
             siteSlug = $filter('removeInvalidCharactersFromUrl')(assignment.site);
             projectSlug = $filter('removeInvalidCharactersFromUrl')(assignment.name);
-
             $location.path('/employee-guard/employee/skills/sites/' + siteSlug + '/projects/' + projectSlug);
         } else {
             siteSlug = $filter('removeInvalidCharactersFromUrl')(assignment.name);

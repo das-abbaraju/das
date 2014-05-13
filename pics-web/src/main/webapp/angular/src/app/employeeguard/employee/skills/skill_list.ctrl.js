@@ -47,7 +47,7 @@ angular.module('PICS.employeeguard')
 
         return {
             skillList: skillList,
-            selectedMenuItem: slugname,
+            selectedMenuItem: $routeParams.siteSlug + '-' + $routeParams.projectSlug,
             viewTitle: viewTitle
         };
     }

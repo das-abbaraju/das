@@ -195,7 +195,7 @@ describe("A Employee Skill List", function() {
         });
 
         it("should have the correct menu item selected", function() {
-            expect(scope.selectedMenuItem).toEqual('ninja-dojo');
+            expect(scope.selectedMenuItem).toEqual('basf-houston-texas-ninja-dojo');
         });
     });
 

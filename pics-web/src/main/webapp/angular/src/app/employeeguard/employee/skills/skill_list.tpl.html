@@ -30,7 +30,7 @@
                                     <skillstatusicon status="{{ site.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                                 <ul class="nav" role="submenu">
-                                    <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == project.slug}">
+                                    <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == site.slug + '-' + project.slug}">
                                         <a href="/employee-guard/employee/skills/sites/{{ site.slug }}/projects/{{ project.slug }}">
                                             {{ project.name }}
                                             <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
