@@ -1,0 +1,32 @@
+<section class="employee-guard-section">
+    <h1>
+        <i ng-show="icon" class="icon-{{ icon }} icon-large"></i>{{ title }}
+    </h1>
+    <div class="content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="list-group skill-list">
+                        <a ng-repeat="skill in skills | filter:{status:'Expired'}" href="{{ urlPrefix ? urlPrefix + skill.id : '#' }}" target="{{ target }}" class="list-group-item danger">
+                            {{ skill.name }}
+                        </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="list-group skill-list">
+                        <a ng-repeat="skill in skills | filter:{status:'Expiring'}" href="{{ urlPrefix ? urlPrefix + skill.id : '#' }}" target="{{ target }}" class="list-group-item warning">
+                            {{ skill.name }}
+                        </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="list-group skill-list">
+                    <span ng-repeat="skill in skills">
+                        <a ng-if="skill.status=='Completed' || skill.status=='Pending'" href="{{ urlPrefix ? urlPrefix + skill.id : '#' }}" target="{{ target }}" class="list-group-item success">
+                            {{ skill.name }}
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

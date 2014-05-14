@@ -1,0 +1,179 @@
+.table thead > tr > th {
+    background-color: $default_steel;
+    border: 0;
+    color: $pics_cool_grey;
+    font-weight: normal;
+
+    &.success {
+        background-color: $default_steel;
+
+        i {
+            color: $success_light;
+        }
+    }
+
+    &.warning {
+        background-color: $default_steel;
+
+        i {
+            color: $warning_light;
+        }
+    }
+
+    &.danger {
+        background-color: $default_steel;
+
+        i {
+            color: $danger_light;
+        }
+    }
+
+    &.primary {
+        background-color: $default_steel;
+
+        i {
+            color: $primary_light;
+        }
+    }
+}
+
+.table-striped > tbody > tr:nth-child(odd) td {
+    background-color: $pics_cool_grey;
+}
+
+.table tbody > tr > td,
+.table-striped > tbody > tr:nth-child(odd) td,
+.table-striped > tbody > tr:nth-child(even) td {
+    border: 0;
+    vertical-align: middle;
+
+    i {
+        color: $default_pewter;
+    }
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+
+        i {
+            color: $success_light;
+        }
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+
+        i {
+            color: $warning_med;
+        }
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+
+        i {
+            color: $danger_light;
+        }
+    }
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+
+.table-striped > tbody > tr.odd td {
+    background-color: $pics_cool_grey;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+/* This must be duplicated in order for it to work in ie8.
+ * If not, the nth-child selector causes ie8 to ignore them.
+ */
+.table-striped > tbody > tr.even td {
+    background-color: none;
+
+    &.success {
+        background-color: $success_tint;
+        color: $success_light;
+    }
+
+    &.warning {
+        background-color: $warning_tint;
+        color: $warning_med;
+    }
+
+    &.danger {
+        background-color: $danger_tint;
+        color: $danger_light;
+    }
+}
+
+.table-hover tbody tr:hover td {
+    background-color: $primary-tint;
+}
+
+.table td a {
+    display: block;
+}
+
+.table-sort {
+    i {
+        color: $default_aluminum;
+
+        &.icon-sort-up {
+            margin-top: 6px;
+        }
+    }
+
+    th.sort-active {
+        background-color: $default_iron;
+
+        &.success,
+        &.warning,
+        &.danger,
+        &.primary {
+            background-color: $default_iron;
+        }
+    }
+}
+
+.table-search-section {
+    header {
+        background-color: $default_platinum;
+        color: $pics_warm_grey;
+        padding: 0px 10px;
+        margin-bottom: 0px;
+        margin-top: 20px;
+
+        h1 {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 44px;
+            margin: 0px;
+
+            i {
+                margin-right: 5px;
+            }
+        }
+    }
+
+    &.employee-guard-section .content {
+        padding: 0px;
+    }
+}

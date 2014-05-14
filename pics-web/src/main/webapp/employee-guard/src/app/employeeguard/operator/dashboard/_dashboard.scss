@@ -1,0 +1,45 @@
+.operator-dashboard {
+    .nav-stacked {
+        margin-bottom: 20px;
+    }
+
+    .project-assignments {
+        .name {
+            font-weight: bold;
+        }
+
+        .date {
+            color: $default_pewter;
+            font-size: 12px;
+            margin-left: 20px;
+        }
+
+        .location {
+            color: $default_nickel;
+        }
+
+        .row {
+            margin-bottom: 15px;
+        }
+
+        .list-inline {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+
+            li {
+                margin-right: 10px;
+
+                &.success,
+                &.warning,
+                &.danger {
+                    background: transparent;
+                }
+
+                i {
+                    margin-right: 10px;
+                }
+            }
+        }
+    }
+}

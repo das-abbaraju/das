@@ -1,0 +1,56 @@
+.operator-employee-page {
+    #side-navigation .nav > li > a {
+        padding-right: 15px;
+    }
+
+    #side-navigation {
+        .nav > li.active {
+            a {
+                padding-right: 14px;
+            }
+        }
+
+        i {
+            background-color: transparent;
+        }
+    }
+
+    .employee-info {
+        .img-responsive {
+            max-height: 450px;
+        }
+
+        .name {
+            color: $default_steel;
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        li {
+            line-height: 21px;
+        }
+
+        .company {
+            color: $default_nickel;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .title {
+            color: $default_nickel;
+            font-size: 21px;
+        }
+
+        i {
+            font-size: 160px;
+
+            &.danger,
+            &.warning,
+            &.success {
+                background-color: transparent;
+            }
+        }
+    }
+
+
+}

@@ -1,0 +1,12 @@
+.simple-layout
+{
+    background-color: $pics_blue;
+}
+
+@media (max-width: 480px)
+{
+    .simple-layout
+    {
+        background: $pics_cool_grey;
+    }
+}

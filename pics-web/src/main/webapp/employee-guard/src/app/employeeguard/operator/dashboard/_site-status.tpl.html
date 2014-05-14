@@ -1,0 +1,67 @@
+<section class="employee-guard-section chart-section">
+    <h1>
+        <i class="icon-map-marker icon-large"></i>Current Assignments
+    </h1>
+    <div class="content">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="current-assignments">
+                    <div class="row success">
+                        <div class="col-xs-6 text-right">
+                            <i class="icon-ok-sign icon-large"></i>
+                        </div>
+                        <div class="col-xs-6">
+                            {{ site_assignments.completed + site_assignments.pending }}
+                        </div>
+                    </div>
+                    <div class="row warning">
+                        <div class="col-xs-6 text-right">
+                            <i class="icon-warning-sign icon-large"></i>
+                        </div>
+                        <div class="col-xs-6">
+                            {{ site_assignments.expiring }}
+                        </div>
+                    </div>
+                    <div class="row danger">
+                        <div class="col-xs-6 text-right">
+                            <i class="danger icon-minus-sign-alt icon-large"></i>
+                        </div>
+                        <div class="col-xs-6">
+                            {{ site_assignments.expired }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="chart-container text-center">
+                    <chart type="arc" data="chartData"></chart>
+                    <div class="col-xs-6 col-xs-offset-3 number-of-employees">
+                        <i class="icon-user icon-large"></i>
+                        <a href="#" class="employees">
+                            {{ site_assignments.employees }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="employee-guard-section project-assignments">
+    <h1>
+        <i class="icon-sitemap icon-large"></i>Current Projects
+    </h1>
+
+    <div class="content">
+        <div class="row" ng-repeat="project in project_assignments">
+            <div class="col-md-6">
+                <a href="/employee-guard/operators/project/{{ project.id }}" class="name" target="_self">{{ project.name }}</a>
+                <em class="date">{{ project.startDate | date: 'MM/dd/yyyy' }} <i ng-show="project.startDate && project.endDate" class="icon-long-arrow-right" ></i> {{ project.endDate | date: 'MM/dd/yyyy' }}</em>
+                <p class="location">{{ project.location }}</p>
+            </div>
+            <div class="col-md-6">
+                <stackedprogressbar values="getProjectStatus(project)"></stackedprogressbar>
+            </div>
+        </div>
+    </div>
+</section>

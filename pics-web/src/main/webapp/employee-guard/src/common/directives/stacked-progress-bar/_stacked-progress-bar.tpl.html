@@ -1,0 +1,14 @@
+<div class="progress">
+    <div class="progress-bar progress-bar-success" style="width: {{ progress.success.width }}%">
+        {{ progress.success.amount }}
+        <span class="sr-only">{{ progress.success.width }}% Complete (success)</span>
+    </div>
+    <div class="progress-bar progress-bar-warning" style="width: {{ progress.warning.width }}%">
+        {{ progress.warning.amount }}
+        <span class="sr-only">{{ progress.warning.width }}% Complete (warning)</span>
+    </div>
+    <div class="progress-bar progress-bar-danger" style="width: {{ progress.danger.width }}%">
+        {{ progress.danger.amount }}
+        <span class="sr-only">{{ progress.danger.width }}% Complete (danger)</span>
+    </div>
+</div>

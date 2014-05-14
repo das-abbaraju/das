@@ -1,0 +1,36 @@
+@mixin employee-guard-information {
+    @media (min-width: 992px) {
+        .employee-guard-information {
+            @include clearfix;
+            margin: 0px;
+
+            dt {
+                clear: left;
+                color: $default_aluminum;
+                font-weight: normal;
+                margin: 0 0px 5px 0;
+                text-align: right;
+            }
+
+            dd {
+                margin-bottom: 5px;
+            }
+        }
+    }
+
+    @media (max-width: 991px) {
+        .employee-guard-information {
+            dt {
+                margin: 0;
+            }
+
+            dd {
+                margin-bottom: 5px;
+
+                ul.inline li:first-child {
+                    padding-left: 0;
+                }
+            }
+        }
+    }
+}

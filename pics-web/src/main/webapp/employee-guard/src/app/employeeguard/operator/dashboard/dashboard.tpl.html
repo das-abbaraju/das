@@ -1,0 +1,116 @@
+<div class="operator-dashboard" ng-controller="operatorDashboardCtrl">
+    <div class="container">
+        <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
+
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="/employee-guard/operators/assignments">
+                            <i class="icon-map-marker icon-large"></i>Assignments
+                        </a>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li>
+                        <span class="nav-title">Manage</span>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/operators/projects">
+                            <i class="icon-sitemap icon-large"></i>Projects
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/operators/role" target="_self">
+                            <i class="icon-group icon-large"></i>Job Roles
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/operators/skill" target="_self">
+                            <i class="icon-certificate icon-large"></i>Skills
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <div class="row" ng-show="siteList.length > 0">
+                    <div class="col-md-4 col-md-offset-4">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading ">
+                                <h3 class="panel-title">Site Selection</h3>
+                            </div>
+                            <div class="panel-body">
+                                <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadAssignmentsBySiteId(selected_site)">
+                                    <option ng-repeat="site in siteList | orderBy:'name'" ng-selected="{{ site.id === selected_site }}" value="{{ site.id }}">{{ site.name }}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <ng-include src="'/angular/src/app/employeeguard/operator/dashboard/_site-status.tpl.html'"></ng-include>
+
+                <div class="row beta-section">
+                    <div class="col-md-8" ng-show="userType === 'operator'">
+                        <section class="employee-guard-section">
+                            <h1>
+                                <i class="icon-code icon-large"></i>Beta Updates (Thursday 2014-05-08)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Live ID is not displaying an assigned employee's information
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/operators/changelog">
+                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-8" ng-show="userType === 'corporate'">
+                        <section class="employee-guard-section" >
+                            <h1>
+                                <i class="icon-code icon-large"></i>Beta Updates (Thursday 2014-05-08)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Trying to create a duplicate item will create an error
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Re-naming something with a deleted item's name will create an error
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Live ID's are not showing assigned employees' Job Roles or Projects
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Site status now shows correctly in Site Assignments
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Projects now display under Project Assignments
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/operators/changelog">
+                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-4">
+                        <betafeedback></betafeedback>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
