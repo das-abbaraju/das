@@ -188,7 +188,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <check/>
                     <excludes>
                         <exclude>**/*Test.class</exclude>
                         <exclude>com/picsauditing/quickbooks/**/*.class</exclude>
@@ -269,7 +268,7 @@
         <dependency>
             <groupId>com.picsauditing</groupId>
             <artifactId>pics-flag-calculator</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <!-- End of PICS Dependencies -->
 
