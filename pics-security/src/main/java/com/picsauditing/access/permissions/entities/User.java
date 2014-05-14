@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;

@@ -1,4 +1,4 @@
-package com.picsauditing.access.builder;
+package com.picsauditing.access.permissions.builder;
 
 public class PermissionsBuilder {
 //    private Permissions permissions = new Permissions();

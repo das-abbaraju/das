@@ -1,6 +1,6 @@
-package com.picsauditing.access.service;
+package com.picsauditing.access.permissions.service;
 
-import com.picsauditing.entities.*;
+import com.picsauditing.access.permissions.entities.*;
 
 import java.util.*;
 

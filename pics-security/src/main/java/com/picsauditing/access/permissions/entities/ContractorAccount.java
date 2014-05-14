@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;

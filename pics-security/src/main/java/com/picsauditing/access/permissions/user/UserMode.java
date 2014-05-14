@@ -1,4 +1,4 @@
-package com.picsauditing.access.user;
+package com.picsauditing.access.permissions.user;
 
 public enum UserMode {
 

@@ -1,5 +1,5 @@
 
-package com.picsauditing.access;
+package com.picsauditing.access.permissions;
 
 /**
  * This Enum defines the User Permissions.

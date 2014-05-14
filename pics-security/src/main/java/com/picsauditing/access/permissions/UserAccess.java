@@ -1,4 +1,4 @@
-package com.picsauditing.access;
+package com.picsauditing.access.permissions;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ public class UserAccess implements Serializable {
 	public UserAccess() {
 	}
 
-	public UserAccess(com.picsauditing.entities.UserAccess jpa) {
+	public UserAccess(com.picsauditing.access.permissions.entities.UserAccess jpa) {
 		this.opPerm = jpa.getOpPerm();
 		this.viewFlag = isTrue(jpa.getViewFlag());
 		this.editFlag = isTrue(jpa.getEditFlag());

@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;

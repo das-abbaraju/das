@@ -1,12 +1,13 @@
-package com.picsauditing.access;
+package com.picsauditing.access.permissions;
 
-import com.picsauditing.access.builder.PermissionsBuilder;
-import com.picsauditing.access.service.AccountService;
-import com.picsauditing.access.service.UserService;
-import com.picsauditing.access.user.UserMode;
+import com.picsauditing.access.*;
+import com.picsauditing.access.permissions.builder.PermissionsBuilder;
+import com.picsauditing.access.permissions.service.AccountService;
+import com.picsauditing.access.permissions.service.UserService;
+import com.picsauditing.access.permissions.user.UserMode;
 import com.picsauditing.database.domain.Identifiable;
-import com.picsauditing.entities.*;
-import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.access.permissions.entities.*;
+import com.picsauditing.access.permissions.strutsutil.AjaxUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.struts2.ServletActionContext;
 
@@ -290,7 +291,7 @@ public class Permissions implements Serializable {
 			}
 		}
 
-		for (com.picsauditing.entities.UserAccess ua : UserService.getPermissions(user)) {
+		for (com.picsauditing.access.permissions.entities.UserAccess ua : UserService.getPermissions(user)) {
 			permissions.add(new UserAccess(ua));
 		}
 

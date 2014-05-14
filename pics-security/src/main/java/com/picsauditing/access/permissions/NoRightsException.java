@@ -1,4 +1,6 @@
-package com.picsauditing.access;
+package com.picsauditing.access.permissions;
+
+import com.picsauditing.access.OpType;
 
 public class NoRightsException extends Exception {
 //	private static final long serialVersionUID = 263711643706157627L;

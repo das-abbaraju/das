@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;

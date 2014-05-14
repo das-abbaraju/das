@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 public enum YesNo {
 	Yes,No;

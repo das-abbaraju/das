@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Parameter;
@@ -8,10 +8,9 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("serial")
-@Entity(name = "com.picsauditing.entities.OperatorAccount")
+@Entity(name = "com.picsauditing.access.permissions.entities.OperatorAccount")
 @Table(name = "operators")
 public class OperatorAccount extends Account {
 //

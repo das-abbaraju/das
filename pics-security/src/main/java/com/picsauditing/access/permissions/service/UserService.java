@@ -1,11 +1,11 @@
-package com.picsauditing.access.service;
+package com.picsauditing.access.permissions.service;
 
-import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.permissions.OpPerms;
 import com.picsauditing.access.OpType;
-import com.picsauditing.entities.User;
-import com.picsauditing.entities.UserAccess;
-import com.picsauditing.entities.UserGroup;
-import com.picsauditing.entities.YesNo;
+import com.picsauditing.access.permissions.entities.User;
+import com.picsauditing.access.permissions.entities.UserAccess;
+import com.picsauditing.access.permissions.entities.UserGroup;
+import com.picsauditing.access.permissions.entities.YesNo;
 import org.apache.commons.lang3.StringUtils;
 import org.perf4j.StopWatch;
 import org.perf4j.slf4j.Slf4JStopWatch;

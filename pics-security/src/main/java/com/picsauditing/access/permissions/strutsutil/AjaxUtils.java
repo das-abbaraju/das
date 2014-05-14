@@ -1,4 +1,4 @@
-package com.picsauditing.strutsutil;
+package com.picsauditing.access.permissions.strutsutil;
 
 import javax.servlet.http.HttpServletRequest;
 

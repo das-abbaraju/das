@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;

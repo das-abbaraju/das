@@ -1,6 +1,6 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
-import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.permissions.OpPerms;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -54,7 +54,7 @@ public class UserAccess implements java.io.Serializable/*, Comparable<UserAccess
 //	}
 //
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.picsauditing.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.access.OpPerms") })
+	@Type(type = "com.picsauditing.access.permissions.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.access.permissions.OpPerms") })
 	@Column(name = "accessType", nullable = false)
 	public OpPerms getOpPerm() {
 		return opPerm;

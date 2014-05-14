@@ -1,4 +1,4 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
 public enum AccountStatus /*implements Translatable, PermissionAware*/ {
     Active/*(false)*/,

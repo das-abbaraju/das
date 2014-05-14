@@ -1,6 +1,6 @@
-package com.picsauditing.entities;
+package com.picsauditing.access.permissions.entities;
 
-import com.picsauditing.access.service.AccountService;
+import com.picsauditing.access.permissions.service.AccountService;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
@@ -360,7 +360,7 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 //		this.naicsValid = naicsValid;
 //	}
 //
-	@Type(type = "com.picsauditing.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.entities.AccountStatus") })
+	@Type(type = "com.picsauditing.access.permissions.entities.EnumMapperWithEmptyStrings", parameters = { @Parameter(name = "enumClass", value = "com.picsauditing.access.permissions.entities.AccountStatus") })
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	public AccountStatus getStatus() {
