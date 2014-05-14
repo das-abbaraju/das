@@ -20,16 +20,17 @@ public class ExpirationCalculator {
 	private static Date calculateExpirationDateForTraining(AccountSkillEmployee accountSkillEmployee) {
 		int intervalPeriod = accountSkillEmployee.getSkill().getIntervalPeriod();
 
-		Date now = new Date();
+		Date trainingSkillDocUpdated = accountSkillEmployee.getStartDate();
+
 		switch (accountSkillEmployee.getSkill().getIntervalType()) {
 			case DAY:
-				return DateBean.addDays(now, intervalPeriod);
+				return DateBean.addDays(trainingSkillDocUpdated, intervalPeriod);
 			case WEEK:
-				return DateBean.addDays(now, intervalPeriod * 7);
+				return DateBean.addDays(trainingSkillDocUpdated, intervalPeriod * 7);
 			case MONTH:
-				return DateBean.addMonths(now, intervalPeriod);
+				return DateBean.addMonths(trainingSkillDocUpdated, intervalPeriod);
 			case YEAR:
-				return DateBean.addMonths(now, intervalPeriod * 12);
+				return DateBean.addMonths(trainingSkillDocUpdated, intervalPeriod * 12);
 			case NOT_APPLICABLE:
 				return DateBean.getEndOfTime();
 			case NO_EXPIRATION:
