@@ -20,13 +20,14 @@ public class ExpirationCalculatorTest {
 	@Mock
 	private AccountSkillEmployee accountSkillEmployee;
 
-	private Calendar now;
+	private Calendar expectedExpirationDate;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		when(accountSkillEmployee.getSkill()).thenReturn(accountSkill);
-		now = Calendar.getInstance();
+		expectedExpirationDate = Calendar.getInstance();
+		when(accountSkillEmployee.getStartDate()).thenReturn(expectedExpirationDate.getTime());
 	}
 
 	@Test
@@ -35,15 +36,15 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.DAY);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
-		Calendar expirationCalendar = Calendar.getInstance();
-		expirationCalendar.setTime(expiration);
+		Date calculatedExpiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Calendar calculatedExpirationCalendar = Calendar.getInstance();
+		calculatedExpirationCalendar.setTime(calculatedExpiration);
 
-		now.add(Calendar.DAY_OF_YEAR, INTERVAL_PERIOD);
+		expectedExpirationDate.add(Calendar.DAY_OF_YEAR, INTERVAL_PERIOD);
 
-		assertEquals(now.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
-		assertEquals(now.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
-		assertEquals(now.get(Calendar.DAY_OF_YEAR), expirationCalendar.get(Calendar.DAY_OF_YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.YEAR), calculatedExpirationCalendar.get(Calendar.YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.MONTH), calculatedExpirationCalendar.get(Calendar.MONTH));
+		assertEquals(expectedExpirationDate.get(Calendar.DAY_OF_YEAR), calculatedExpirationCalendar.get(Calendar.DAY_OF_YEAR));
 	}
 
 	@Test
@@ -56,11 +57,11 @@ public class ExpirationCalculatorTest {
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
-		now.add(Calendar.WEEK_OF_YEAR, INTERVAL_PERIOD);
+		expectedExpirationDate.add(Calendar.WEEK_OF_YEAR, INTERVAL_PERIOD);
 
-		assertEquals(now.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
-		assertEquals(now.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
-		assertEquals(now.get(Calendar.DAY_OF_YEAR), expirationCalendar.get(Calendar.DAY_OF_YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
+		assertEquals(expectedExpirationDate.get(Calendar.DAY_OF_YEAR), expirationCalendar.get(Calendar.DAY_OF_YEAR));
 	}
 
 	@Test
@@ -73,11 +74,11 @@ public class ExpirationCalculatorTest {
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
-		now.add(Calendar.MONTH, INTERVAL_PERIOD);
+		expectedExpirationDate.add(Calendar.MONTH, INTERVAL_PERIOD);
 
-		assertEquals(now.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
-		assertEquals(now.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
-		assertEquals(now.get(Calendar.DAY_OF_MONTH), expirationCalendar.get(Calendar.DAY_OF_MONTH));
+		assertEquals(expectedExpirationDate.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
+		assertEquals(expectedExpirationDate.get(Calendar.DAY_OF_MONTH), expirationCalendar.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Test
@@ -90,11 +91,11 @@ public class ExpirationCalculatorTest {
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
-		now.add(Calendar.YEAR, INTERVAL_PERIOD);
+		expectedExpirationDate.add(Calendar.YEAR, INTERVAL_PERIOD);
 
-		assertEquals(now.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
-		assertEquals(now.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
-		assertEquals(now.get(Calendar.DAY_OF_YEAR), expirationCalendar.get(Calendar.DAY_OF_YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.YEAR), expirationCalendar.get(Calendar.YEAR));
+		assertEquals(expectedExpirationDate.get(Calendar.MONTH), expirationCalendar.get(Calendar.MONTH));
+		assertEquals(expectedExpirationDate.get(Calendar.DAY_OF_YEAR), expirationCalendar.get(Calendar.DAY_OF_YEAR));
 	}
 
 	@Test
@@ -115,12 +116,12 @@ public class ExpirationCalculatorTest {
 	@Test
 	public void testCalculateExpirationDate_Certificate() throws Exception {
 		ProfileDocument profileDocument = mock(ProfileDocument.class);
-		when(profileDocument.getEndDate()).thenReturn(now.getTime());
+		when(profileDocument.getEndDate()).thenReturn(expectedExpirationDate.getTime());
 
 		when(accountSkill.getSkillType()).thenReturn(SkillType.Certification);
 		when(accountSkillEmployee.getProfileDocument()).thenReturn(profileDocument);
-		profileDocument.setEndDate(now.getTime());
+		profileDocument.setEndDate(expectedExpirationDate.getTime());
 
-		assertEquals(now.getTime(), ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+		assertEquals(expectedExpirationDate.getTime(), ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
 	}
 }

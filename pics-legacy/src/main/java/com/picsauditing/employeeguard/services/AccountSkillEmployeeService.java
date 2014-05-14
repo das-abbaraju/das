@@ -36,7 +36,7 @@ public class AccountSkillEmployeeService {
 
 	public AccountSkillEmployee linkProfileDocumentToEmployeeSkill(final AccountSkillEmployee accountSkillEmployee, final ProfileDocument profileDocument) {
 		accountSkillEmployee.setProfileDocument(profileDocument);
-		accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+		accountSkillEmployee.setEndDate(null);
 		return accountSkillEmployeeDAO.save(accountSkillEmployee);
 	}
 
@@ -76,12 +76,7 @@ public class AccountSkillEmployeeService {
 			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
 			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
 		} else if (skillType.isTraining()) {
-			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
-				accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
-			} else {
-				accountSkillEmployee.setEndDate(null);
-			}
-
+			accountSkillEmployee.setEndDate(null);
 			accountSkillEmployeeDAO.save(accountSkillEmployee);
 		}
 	}
