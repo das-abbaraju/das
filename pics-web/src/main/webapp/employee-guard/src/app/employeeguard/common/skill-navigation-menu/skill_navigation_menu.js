@@ -7,6 +7,6 @@ angular.module('PICS.employeeguard')
             employee: '=',
             onmenuitemclick: '='
         },
-        templateUrl: '/angular/src/app/employeeguard/common/skill-navigation-menu/_skill-navigation-menu.tpl.html'
+        templateUrl: '/employee-guard/src/app/employeeguard/common/skill-navigation-menu/_skill-navigation-menu.tpl.html'
     };
 });

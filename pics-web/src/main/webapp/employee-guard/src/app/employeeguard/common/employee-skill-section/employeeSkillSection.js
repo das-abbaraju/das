@@ -10,6 +10,6 @@ angular.module('PICS.employeeguard')
             urlPrefix: '@',
             target:'@'
         },
-        templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
+        templateUrl: '/employee-guard/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };
 });

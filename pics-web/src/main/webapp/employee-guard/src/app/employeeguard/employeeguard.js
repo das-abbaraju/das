@@ -1,9 +1,11 @@
 angular.module('PICS.employeeguard', [
     'ngRoute',
     'ngResource',
+    'PICS.directives',
     'PICS.charts',
     'PICS.skills',
-    'PICS.filters'
+    'PICS.filters',
+    'ui.select2'
 ])
 
 .config(function ($locationProvider, $routeProvider) {
@@ -11,6 +13,6 @@ angular.module('PICS.employeeguard', [
 
     $routeProvider
         .when('/employee-guard/info', {
-            templateUrl: '/angular/src/app/employeeguard/serverinfo/serverinfo.tpl.html'
+            templateUrl: '/employee-guard/src/app/employeeguard/serverinfo/serverinfo.tpl.html'
         });
 });

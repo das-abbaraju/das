@@ -14,6 +14,6 @@ angular.module('PICS.employeeguard')
 .directive('betafeedback', function () {
     return {
         restrict: 'E',
-        templateUrl: '/angular/src/app/employeeguard/common/betafeedback/_beta-feedback.tpl.html'
+        templateUrl: '/employee-guard/src/app/employeeguard/common/betafeedback/_beta-feedback.tpl.html'
     };
 });

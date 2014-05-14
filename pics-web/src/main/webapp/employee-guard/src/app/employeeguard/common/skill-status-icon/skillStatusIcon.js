@@ -7,6 +7,6 @@ angular.module('PICS.employeeguard')
             status: '@status'
         },
         replace: true,
-        templateUrl: '/angular/src/app/employeeguard/common/skill-status-icon/_skill-status-icon.tpl.html'
+        templateUrl: '/employee-guard/src/app/employeeguard/common/skill-status-icon/_skill-status-icon.tpl.html'
     };
 });
