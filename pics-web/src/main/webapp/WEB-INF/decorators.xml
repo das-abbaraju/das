@@ -2,6 +2,7 @@
     <excludes>
         <pattern>/employee-guard/build/*</pattern>
         <pattern>/employee-guard/src/*</pattern>
+        <pattern>/employee-guard/vendor/*</pattern>
     </excludes>
     <decorator name="ignoreMe">
         <pattern>/ReportApi!print.action</pattern>
@@ -46,7 +47,7 @@
         <pattern>/InvoiceRefund.action</pattern>
         <pattern>/Cron!*.action</pattern>
     </decorator>
-    <decorator name="index" page="index.jsp">
+    <decorator name="eg-index" page="eg-index.jsp">
         <pattern>/employee-guard/operators/employees/*</pattern>
         <pattern>/employee-guard/operators/dashboard</pattern>
         <pattern>/employee-guard/operators/assignments</pattern>
@@ -58,6 +59,8 @@
         <pattern>/employee-guard/employee/skills/sites/*</pattern>
         <pattern>/employee-guard/*/changelog</pattern>
         <pattern>/employee-guard/info</pattern>
+    </decorator>
+    <decorator name="index" page="index.jsp">
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>

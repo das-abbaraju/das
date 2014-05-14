@@ -8,6 +8,6 @@ angular.module('PICS.directives')
         link: function(scope) {
             scope.progress = scope.values();
         },
-        templateUrl: '/angular/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
+        templateUrl: '/employee-guard/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
     };
 });
