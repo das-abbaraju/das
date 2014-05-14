@@ -9,6 +9,8 @@ import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 
 import java.util.*;
 
+
+// TODO: Rewrite this
 public class ProjectAssignmentBreakdownFactory {
 
 	public ProjectAssignmentBreakdown create(Collection<ProjectRoleEmployee> projectRoleEmployees,

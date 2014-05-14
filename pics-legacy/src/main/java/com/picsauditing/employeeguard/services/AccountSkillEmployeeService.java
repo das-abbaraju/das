@@ -3,9 +3,8 @@ package com.picsauditing.employeeguard.services;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -18,23 +17,24 @@ import java.util.*;
 public class AccountSkillEmployeeService {
 
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
 
-	public List<AccountSkillEmployee> findByProfile(final Profile profile) {
-		return accountSkillEmployeeDAO.findByProfile(profile);
+	public List<AccountSkillProfile> findByProfile(final Profile profile) {
+		return accountSkillProfileDAO.findByProfile(profile);
 	}
 
-	public List<AccountSkillEmployee> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
+	public List<AccountSkillProfile> findByEmployeesAndSkills(final List<Employee> employees, final List<AccountSkill> accountSkills) {
 		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(accountSkills)) {
 			return Collections.emptyList();
 		}
 
-		return accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, accountSkills);
+		return accountSkillProfileDAO.findByEmployeesAndSkills(employees, accountSkills);
 	}
 
-	public AccountSkillEmployee linkProfileDocumentToEmployeeSkill(final AccountSkillEmployee accountSkillEmployee, final ProfileDocument profileDocument) {
+	public AccountSkillEmployee linkProfileDocumentToEmployeeSkill(final AccountSkillEmployee accountSkillEmployee,
+																   final ProfileDocument profileDocument) {
 		accountSkillEmployee.setProfileDocument(profileDocument);
 		accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
 		return accountSkillEmployeeDAO.save(accountSkillEmployee);
@@ -54,8 +54,8 @@ public class AccountSkillEmployeeService {
 		return accountSkillEmployeeDAO.findByProfileAndSkill(profile, skill);
 	}
 
-	public List<AccountSkillEmployee> getSkillsForAccountAndEmployee(Employee employee) {
-		return accountSkillEmployeeDAO.findByAccountAndEmployee(employee);
+	public List<AccountSkillProfile> getSkillsForAccountAndEmployee(Employee employee) {
+		return accountSkillProfileDAO.findByAccountAndEmployee(employee);
 	}
 
 	public void save(AccountSkillEmployee accountSkillEmployee) {

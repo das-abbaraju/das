@@ -2,10 +2,9 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
@@ -24,7 +23,7 @@ import java.util.List;
 public class ProfileDocumentService {
 
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
 	@Autowired
@@ -107,16 +106,15 @@ public class ProfileDocumentService {
 	}
 
 	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
-				.findByProfileDocument(profileDocument);
+		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO.findByProfileDocument(profileDocument);
 
 		if (CollectionUtils.isEmpty(accountSkillEmployees)) {
 			return;
 		}
 
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			accountSkillEmployee.setStartDate(profileDocument.getStartDate());
-			accountSkillEmployee.setEndDate(profileDocument.getEndDate());
+		for (AccountSkillProfile accountSkillProfile : accountSkillEmployees) {
+			accountSkillProfile.setStartDate(profileDocument.getStartDate());
+			accountSkillProfile.setEndDate(profileDocument.getEndDate());
 		}
 
 		accountSkillEmployeeDAO.save(accountSkillEmployees);

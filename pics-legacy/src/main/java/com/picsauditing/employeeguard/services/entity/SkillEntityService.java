@@ -20,7 +20,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
@@ -256,9 +256,9 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		}
 
 		return PicsCollectionUtil.convertToMapOfSets(
-				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
+				accountSkillProfileDAO.findByEmployeesAndSkills(employees, requiredSkills),
 
-				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillProfile, Employee, AccountSkill>() {
 
 					@Override
 					public Employee getKey(AccountSkillEmployee entity) {

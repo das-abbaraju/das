@@ -18,15 +18,35 @@ public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBu
 		return this;
 	}
 
+	public ProfileBuilder slug(final String slug) {
+		entity.setSlug(slug);
+		return this;
+	}
+
+	public ProfileBuilder firstName(final String firstName) {
+		entity.setFirstName(firstName);
+		return this;
+	}
+
+	public ProfileBuilder lastName(final String lastName) {
+		entity.setLastName(lastName);
+		return this;
+	}
+
+	public ProfileBuilder email(final String email) {
+		entity.setEmail(email);
+		return this;
+	}
+
 	public ProfileBuilder employees(List<Employee> employees) {
-    entity.getEmployees().clear();
-    entity.getEmployees().addAll(employees);
+		entity.getEmployees().clear();
+		entity.getEmployees().addAll(employees);
 		return this;
 	}
 
 	public ProfileBuilder documents(final List<ProfileDocument> documents) {
-    entity.getDocuments().clear();
-    entity.getDocuments().addAll(documents);
+		entity.getDocuments().clear();
+		entity.getDocuments().addAll(documents);
 		return this;
 	}
 

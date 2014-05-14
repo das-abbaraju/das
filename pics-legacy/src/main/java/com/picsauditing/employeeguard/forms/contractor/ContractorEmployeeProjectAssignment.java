@@ -12,6 +12,7 @@ public class ContractorEmployeeProjectAssignment implements Comparable<Contracto
 	private String name;
 	private String title;
 	private List<SkillStatus> skillStatuses;
+
 	// May not be needed anymore
 	private List<Integer> assignedGroupIds;
 

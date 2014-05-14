@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.services.calculator;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
@@ -9,48 +9,48 @@ import java.util.*;
 
 public class SkillStatusCalculator {
 
-    public static SkillStatus calculateStatusFromSkill(final AccountSkillEmployee accountSkillEmployee) {
-        return calculateStatus(accountSkillEmployee, DateBean.today());
-    }
+	public static SkillStatus calculateStatusFromSkill(final AccountSkillProfile accountSkillProfile) {
+		return calculateStatus(accountSkillProfile, DateBean.today());
+	}
 
-    private static SkillStatus calculateStatus(final AccountSkillEmployee accountSkillEmployee, final Date today) {
-        if (accountSkillEmployee == null) {
-            return SkillStatus.Expired;
-        }
+	private static SkillStatus calculateStatus(final AccountSkillProfile accountSkillProfile, final Date today) {
+		if (accountSkillProfile == null) {
+			return SkillStatus.Expired;
+		}
 
-        Date endDate = accountSkillEmployee.getEndDate();
+		Date endDate = accountSkillProfile.getEndDate();
 
-        if (endDate == null || endDate.before(today)) {
-            return SkillStatus.Expired;
-        } else if (endDate.before(DateBean.addMonths(today, 1))) {
-            return SkillStatus.Expiring;
-        } else {
-            return SkillStatus.Completed;
-        }
-    }
+		if (endDate == null || endDate.before(today)) {
+			return SkillStatus.Expired;
+		} else if (endDate.before(DateBean.addMonths(today, 1))) {
+			return SkillStatus.Expiring;
+		} else {
+			return SkillStatus.Completed;
+		}
+	}
 
-    public static SkillStatus calculateStatusRollUp(final Collection<AccountSkillEmployee> accountSkillEmployees) {
-        if (CollectionUtils.isEmpty(accountSkillEmployees)) {
-            throw new IllegalArgumentException("accountSkillEmployees Collection cannot be empty.");
-        }
+	public static SkillStatus calculateStatusRollUp(final Collection<AccountSkillProfile> accountSkillProfiles) {
+		if (CollectionUtils.isEmpty(accountSkillProfiles)) {
+			throw new IllegalArgumentException("accountSkillEmployees Collection cannot be empty.");
+		}
 
-        Date today = DateBean.today();
-        SkillStatus lowestStatus = SkillStatus.Completed;
-        for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-            SkillStatus calculatedStatus = calculateStatus(accountSkillEmployee, today);
+		Date today = DateBean.today();
+		SkillStatus lowestStatus = SkillStatus.Completed;
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			SkillStatus calculatedStatus = calculateStatus(accountSkillProfile, today);
 
-            // exit early if any status is "Expired", because we have already hit the lowest status
-            if (calculatedStatus.isExpired()) {
-                return SkillStatus.Expired;
-            }
+			// exit early if any status is "Expired", because we have already hit the lowest status
+			if (calculatedStatus.isExpired()) {
+				return SkillStatus.Expired;
+			}
 
-            if (calculatedStatus.compareTo(lowestStatus) < 0) {
-                lowestStatus = calculatedStatus;
-            }
-        }
+			if (calculatedStatus.compareTo(lowestStatus) < 0) {
+				lowestStatus = calculatedStatus;
+			}
+		}
 
-        return lowestStatus;
-    }
+		return lowestStatus;
+	}
 
 	public static <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, ? extends Collection<SkillStatus>> entitySkillStatusMap) {
 		if (MapUtils.isEmpty(entitySkillStatusMap)) {

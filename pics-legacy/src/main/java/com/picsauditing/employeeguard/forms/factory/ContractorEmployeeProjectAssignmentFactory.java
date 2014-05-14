@@ -13,27 +13,32 @@ import java.util.TreeMap;
 
 public class ContractorEmployeeProjectAssignmentFactory {
 
-	public List<ContractorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<Group> jobRoles) {
-		Map<Employee, List<AccountSkillEmployee>> employeeMap = buildEmployeeSkillsMap(accountEmployees, accountSkillEmployees);
+	// TODO: Find out who is using this
+	public List<ContractorEmployeeProjectAssignment> buildList(final List<Employee> accountEmployees,
+															   final List<AccountSkillProfile> accountSkillProfiles,
+															   final List<AccountSkill> accountSkills,
+															   final List<Role> jobRoles) {
+		Map<Employee, List<AccountSkillProfile>> employeeMap = buildEmployeeSkillsMap(accountEmployees, accountSkillProfiles);
 
 		List<ContractorEmployeeProjectAssignment> employeeAssignmentInformation = new ArrayList<>();
-		Map<Employee, List<Group>> employeeJobRolesMap = buildEmployeeJobRoles(accountEmployees, jobRoles);
-		for (Map.Entry<Employee, List<AccountSkillEmployee>> employeeMapEntry : employeeMap.entrySet()) {
+		Map<Employee, List<Role>> employeeJobRolesMap = buildEmployeeJobRoles(accountEmployees, jobRoles);
+		for (Map.Entry<Employee, List<AccountSkillProfile>> employeeMapEntry : employeeMap.entrySet()) {
 			List<Group> employeeJobRoles = employeeJobRolesMap.get(employeeMapEntry.getKey());
-			employeeAssignmentInformation.add(build(employeeMapEntry.getKey(), employeeMapEntry.getValue(), accountSkills, employeeJobRoles));
+			employeeAssignmentInformation.add(build(employeeMapEntry.getKey(), employeeMapEntry.getValue(),
+					accountSkills, employeeJobRoles));
 		}
 
 		return employeeAssignmentInformation;
 	}
 
-	private Map<Employee, List<Group>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<Group> jobRoles) {
-		Map<Employee, List<Group>> employeeJobRoles = new TreeMap<>();
+	private Map<Employee, List<Role>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<Role> jobRoles) {
+		Map<Employee, List<Role>> employeeJobRoles = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
 			for (GroupEmployee groupEmployee : employee.getGroups()) {
 				if (jobRoles.contains(groupEmployee.getGroup())) {
 					if (!employeeJobRoles.containsKey(employee)) {
-						employeeJobRoles.put(employee, new ArrayList<Group>());
+						employeeJobRoles.put(employee, new ArrayList<Role>());
 					}
 
 					employeeJobRoles.get(employee).add(groupEmployee.getGroup());
@@ -44,16 +49,17 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeJobRoles;
 	}
 
-	private Map<Employee, List<AccountSkillEmployee>> buildEmployeeSkillsMap(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees) {
-		Map<Employee, List<AccountSkillEmployee>> employeeSkillMap = new TreeMap<>();
+	private Map<Employee, List<AccountSkillProfile>> buildEmployeeSkillsMap(final List<Employee> accountEmployees,
+																			final List<AccountSkillProfile> accountSkillProfiles) {
+		Map<Employee, List<AccountSkillProfile>> employeeSkillMap = new TreeMap<>();
 
 		for (Employee employee : accountEmployees) {
-			employeeSkillMap.put(employee, new ArrayList<AccountSkillEmployee>());
+			employeeSkillMap.put(employee, new ArrayList<AccountSkillProfile>());
 
-			for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-				if (employee.equals(accountSkillEmployee.getEmployee())) {
+			for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+				if (accountSkillProfile.getProfile().getEmployees().contains(employee)) {
 					if (employeeSkillMap.containsKey(employee)) {
-						employeeSkillMap.get(employee).add(accountSkillEmployee);
+						employeeSkillMap.get(employee).add(accountSkillProfile);
 					}
 				}
 			}
@@ -62,10 +68,13 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeSkillMap;
 	}
 
-	public ContractorEmployeeProjectAssignment build(Employee employee, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, List<Group> jobRoles) {
+	public ContractorEmployeeProjectAssignment build(final Employee employee,
+													 final List<AccountSkillProfile> accountSkillProfiles,
+													 final List<AccountSkill> accountSkills,
+													 final List<Role> jobRoles) {
 		ContractorEmployeeProjectAssignment employeeAssignmentInformation = new ContractorEmployeeProjectAssignment();
 		employeeAssignmentInformation = addEmployeeInfo(employeeAssignmentInformation, employee);
-		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillEmployees));
+		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillProfiles));
 		employeeAssignmentInformation.setAssignedGroupIds(EntityHelper.getIdsForEntities(jobRoles));
 		return employeeAssignmentInformation;
 	}
@@ -77,9 +86,10 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeAssignmentInformation;
 	}
 
-	private List<SkillStatus> buildOrderedSkillStatus(List<AccountSkill> accountSkills, List<AccountSkillEmployee> accountSkillEmployees) {
+	private List<SkillStatus> buildOrderedSkillStatus(final List<AccountSkill> accountSkills,
+													  final List<AccountSkillProfile> accountSkillProfiles) {
 		TreeMap<String, SkillStatus> statusMap = fillMapWithKeys(accountSkills);
-		statusMap = buildSkillStatusMap(statusMap, accountSkillEmployees);
+		statusMap = buildSkillStatusMap(statusMap, accountSkillProfiles);
 		return new ArrayList<>(statusMap.values());
 	}
 
@@ -92,10 +102,11 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return statusMap;
 	}
 
-	private TreeMap<String, SkillStatus> buildSkillStatusMap(TreeMap<String, SkillStatus> statusMap, List<AccountSkillEmployee> accountSkillEmployees) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
-			insertIntoMap(statusMap, accountSkillEmployee.getSkill().getName(), skillStatus);
+	private TreeMap<String, SkillStatus> buildSkillStatusMap(final TreeMap<String, SkillStatus> statusMap,
+															 final List<AccountSkillProfile> accountSkillProfiles) {
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
+			insertIntoMap(statusMap, accountSkillProfile.getSkill().getName(), skillStatus);
 		}
 
 		return statusMap;
@@ -107,9 +118,12 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		}
 	}
 
-	public List<ContractorEmployeeProjectAssignment> buildListForRole(final List<Employee> employees, final List<AccountSkill> requiredSkills, final List<AccountSkillEmployee> accountSkillEmployees, final List<ProjectRoleEmployee> projectRoleEmployees) {
+	public List<ContractorEmployeeProjectAssignment> buildListForRole(final List<Employee> employees,
+																	  final List<AccountSkill> requiredSkills,
+																	  final List<AccountSkillProfile> accountSkillProfiles,
+																	  final List<ProjectRoleEmployee> projectRoleEmployees) {
 		List<ContractorEmployeeProjectAssignment> assignments = new ArrayList<>();
-		Map<Employee, List<SkillStatus>> employeeSkillStatuses = getEmployeeSkillStatuses(employees, requiredSkills, accountSkillEmployees);
+		Map<Employee, List<SkillStatus>> employeeSkillStatuses = getEmployeeSkillStatuses(employees, requiredSkills, accountSkillProfiles);
 
 		for (Employee employee : employees) {
 			ContractorEmployeeProjectAssignment assignment = new ContractorEmployeeProjectAssignment();
@@ -125,29 +139,34 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return assignments;
 	}
 
-	private Map<Employee, List<SkillStatus>> getEmployeeSkillStatuses(final List<Employee> employees, final List<AccountSkill> requiredSkills, final List<AccountSkillEmployee> accountSkillEmployees) {
+	private Map<Employee, List<SkillStatus>> getEmployeeSkillStatuses(final List<Employee> employees,
+																	  final List<AccountSkill> requiredSkills,
+																	  final List<AccountSkillProfile> accountSkillProfiles) {
 		Map<Employee, List<SkillStatus>> employeeSkillStatuses = new TreeMap<>();
 
 		for (Employee employee : employees) {
 			employeeSkillStatuses.put(employee, new ArrayList<SkillStatus>());
 
 			for (AccountSkill requiredSkill : requiredSkills) {
-				AccountSkillEmployee accountSkillEmployee = getAccountSkillEmployeeWithDefault(employee, requiredSkill, accountSkillEmployees);
-				employeeSkillStatuses.get(employee).add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
+				AccountSkillProfile accountSkillProfile = getAccountSkillEmployeeWithDefault(employee, requiredSkill, accountSkillProfiles);
+				employeeSkillStatuses.get(employee).add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile));
 			}
 		}
 
 		return employeeSkillStatuses;
 	}
 
-	private AccountSkillEmployee getAccountSkillEmployeeWithDefault(Employee employee, AccountSkill requiredSkill, List<AccountSkillEmployee> accountSkillEmployees) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			if (accountSkillEmployee.getSkill().equals(requiredSkill) && accountSkillEmployee.getEmployee().equals(employee)) {
-				return accountSkillEmployee;
+	private AccountSkillProfile getAccountSkillEmployeeWithDefault(final Employee employee,
+																   final AccountSkill requiredSkill,
+																   final List<AccountSkillProfile> accountSkillProfiles) {
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			if (accountSkillProfile.getSkill().equals(requiredSkill)
+					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {
+				return accountSkillProfile;
 			}
 		}
 
-		return new AccountSkillEmployee(requiredSkill, employee);
+		return new AccountSkillProfile(requiredSkill, employee.getProfile());
 	}
 
 	private boolean employeeIsAssignedToRole(final List<ProjectRoleEmployee> projectRoleEmployees, final Employee employee) {

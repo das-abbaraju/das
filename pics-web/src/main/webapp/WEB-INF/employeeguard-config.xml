@@ -11,7 +11,7 @@
     <bean id="AccountGroupDAO" class="com.picsauditing.employeeguard.daos.AccountGroupDAO"/>
     <bean id="AccountGroupEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO"/>
     <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
-    <bean id="AccountSkillEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO"/>
+    <bean id="AccountSkillProfileDAO" class="com.picsauditing.employeeguard.daos.AccountSkillProfileDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
     <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
     <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>

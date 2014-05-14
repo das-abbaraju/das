@@ -29,7 +29,7 @@ public class ContractorProjectService {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
@@ -76,13 +76,13 @@ public class ContractorProjectService {
 	private List<ContractorEmployeeProjectAssignment> buildAssignments(final Project project, final List<AccountSkill> requiredSkills, final int accountId) {
 		List<Employee> employees = getAssignedEmployees(project, accountId);
 
-		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		List<AccountSkillProfile> accountSkillProfiles = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(employees) && CollectionUtils.isNotEmpty(requiredSkills)) {
-			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+			accountSkillProfiles = accountSkillProfileDAO.findByEmployeesAndSkills(employees, requiredSkills);
 		}
 
 		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory()
-				.buildList(employees, accountSkillEmployees, requiredSkills, Collections.<Group>emptyList());
+				.buildList(employees, accountSkillProfiles, requiredSkills, Collections.<Group>emptyList());
 	}
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
