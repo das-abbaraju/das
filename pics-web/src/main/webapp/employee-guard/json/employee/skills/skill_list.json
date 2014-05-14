@@ -1,98 +1,119 @@
 {
-    "status": "Expired",
-    "sites": [
-    {
-        "id": 2,
-        "name": "BASF Houston Texas",
-        "status": "Expired",
-        "projects": [
+   "status":"Expired",
+   "sites":[
+      {
+         "id":2,
+         "name":"BASF Houston Texas",
+         "status":"Expired",
+         "projects":[
             {
-                "id": 3,
-                "name": "Dynamic Reporting",
-                "status": "Expired",
-                "skills": [
-                    {
-                         "id":210,
-                         "name":"Dynamic Reporting Skill",
-                         "status": "Expiring"
-                    },
-                    {
-                         "id":5,
-                         "name":"Dynamic Reporting Skill 2",
-                         "status": "Completed"
-                    }
-                ]
+               "id":3,
+               "name":"Dynamic Reporting",
+               "status":"Expired",
+               "skills":[
+                  {
+                     "id":45,
+                     "name":"BASF Site Skill 1",
+                     "status":"Expired"
+                  },
+                  {
+                     "id":10,
+                     "name":"BASF Corp Skill 1",
+                     "status":"Expiring"
+                  },
+                  {
+                     "id":210,
+                     "name":"Dynamic Reporting Skill",
+                     "status":"Expiring"
+                  },
+                  {
+                     "id":5,
+                     "name":"Dynamic Reporting Skill 2",
+                     "status":"Completed"
+                  }
+               ]
             },
             {
-                "id": 3,
-                "name": "Ninja Dojo",
-                "status": "Expiring",
-                "skills": [
-                    {
-                         "id":4,
-                         "name":"Ninja Dojo Skill 4",
-                         "status": "Expired"
-                    },
-                    {
-                         "id":5,
-                         "name":"Ninja Dojo Skill 5",
-                         "status": "Completed"
-                    }
-                ]
+               "id":3,
+               "name":"Ninja Dojo",
+               "status":"Expiring",
+               "skills":[
+                  {
+                     "id":45,
+                     "name":"BASF Site Skill 1",
+                     "status":"Expired"
+                  },
+                  {
+                     "id":10,
+                     "name":"BASF Corp Skill 1",
+                     "status":"Expiring"
+                  },
+                  {
+                     "id":4,
+                     "name":"Ninja Dojo Skill 4",
+                     "status":"Expired"
+                  },
+                  {
+                     "id":5,
+                     "name":"Ninja Dojo Skill 5",
+                     "status":"Completed"
+                  }
+               ]
             }
-        ],
-        "required" : {
-            "skills": [
-                {
-                 "id":45,
-                 "name":"BASF Site Skill 1",
-                 "status": "Expired"
-                },
-                {
-                 "id":10,
-                 "name":"BASF Corp Skill 1",
-                 "status": "Expiring"
-                }
-            ]
-        }
-    },
-    {
-        "id": 6,
-        "name": "PICS",
-        "status": "Expiring",
-        "required": {
-            "skills": [
-                {
-                 "id":4,
-                 "name":"PICS Site skill",
-                 "status": "Expired"
-                },
-                {
-                 "id":25,
-                 "name":"PICS Site skill 2",
-                 "status": "Expiring"
-                }
-            ]
-        }
-    },
-    {
-        "id": 8,
-        "name": "Spectre",
-        "status": "Completed",
-        "projects": [
+         ],
+         "skills":[
             {
-                "id": 32,
-                "name": "Volcano Base",
-                "status": "Completed",
-                "skills": [
-                    {
+               "id":45,
+               "name":"BASF Site Skill 1",
+               "status":"Expired"
+            },
+            {
+               "id":10,
+               "name":"BASF Corp Skill 1",
+               "status":"Expiring"
+            },
+            {
+               "id":14,
+               "name":"Site Role Skill",
+               "status":"Completed"
+            }
+         ]
+      },
+      {
+         "id":6,
+         "name":"PICS",
+         "status":"Expiring",
+         "skills":[
+            {
+               "id":4,
+               "name":"PICS Site skill",
+               "status":"Expired"
+            },
+            {
+               "id":25,
+               "name":"PICS Site skill 2",
+               "status":"Expiring"
+            }
+         ]
+      },
+      {
+         "id":8,
+         "name":"Spectre",
+         "status":"Completed",
+         "projects":[
+            {
+               "id":32,
+               "name":"Volcano Base",
+               "status":"Completed",
+               "skills":[
+                  {
                      "id":4,
                      "name":"Volcano Base Skill",
-                     "status": "Expired"
-                    }
-                ]
+                     "status":"Expired"
+                  }
+               ]
             }
-        ]
-    }
-    ]
+         ]
+      }
+   ]
 }
