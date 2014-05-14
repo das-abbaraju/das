@@ -21,8 +21,6 @@ module.exports = function(grunt) {
     ];
 
     var modules = [
-        'src/common/translations/translations.js',
-        'src/common/translations/translationKeys.js',
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
@@ -108,8 +106,7 @@ module.exports = function(grunt) {
             dist: {
                 src: dependencies.concat([
                     'src/**/*.js',
-                    '!src/**/*.spec.js',
-                    '!src/app/my-module/**/*.js'
+                    '!src/**/*.spec.js'
                 ]),
                 dest: 'build/script.js'
             }

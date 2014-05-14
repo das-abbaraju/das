@@ -1,49 +1,17 @@
 <div class="container server-info" ng-controller="serverInfoCtrl">
     <pagetitle title="Server Info"></pagetitle>
-<!--
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <ul class="list-unstyled">
-                <li>
-                    <span>OS</span>
-                    {{ server.os }}
-                </li>
-                <li>
-                    <span>Browser</span>
-                    {{ server.browser }}
-                </li>
-                <li>
-                    <span>Environment</span>
-                    {{ server.environment }}
-                </li>
-                <li>
-                    <span>App Server</span>
-                    {{ server.appservername }}
-                </li>
-                <li>
-                    <span>DB Server</span>
-                    {{ server.dbservername }}
-                </li>
-                <li>
-                    <span>Server Time</span>
-                    {{ server.time }}
-                </li>
-            </ul>
-        </div>
-    </div> -->
-
-            <dl>
-                <dt class="col-md-6">OS</dt>
-                <dd class="col-md-6">{{ server.os }}</dd>
-                <dt class="col-md-6">Browser</dt>
-                <dd class="col-md-6">{{ server.browser }}</dd>
-                <dt class="col-md-6">Environment</dt>
-                <dd class="col-md-6">{{ server.environment }}</dd>
-                <dt class="col-md-6">App Server</dt>
-                <dd class="col-md-6">{{ server.appservername }}</dd>
-                <dt class="col-md-6">DB Server</dt>
-                <dd class="col-md-6">{{ server.dbservername }}</dd>
-                <dt class="col-md-6">Server Time</dt>
-                <dd class="col-md-6">{{ server.time }}</dd>
-            </dl>
+    <dl>
+        <dt class="col-md-6">OS</dt>
+        <dd class="col-md-6">{{ server.os }}</dd>
+        <dt class="col-md-6">Browser</dt>
+        <dd class="col-md-6">{{ server.browser }}</dd>
+        <dt class="col-md-6">Environment</dt>
+        <dd class="col-md-6">{{ server.environment }}</dd>
+        <dt class="col-md-6">App Server</dt>
+        <dd class="col-md-6">{{ server.appservername }}</dd>
+        <dt class="col-md-6">DB Server</dt>
+        <dd class="col-md-6">{{ server.dbservername }}</dd>
+        <dt class="col-md-6">Server Time</dt>
+        <dd class="col-md-6">{{ server.time }}</dd>
+    </dl>
 </div>
