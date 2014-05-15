@@ -50,26 +50,34 @@ public class ProjectAction extends PicsRestActionSupport {
 		List<ProjectCompany> projectCompanies = null;
 		if (isSearch(searchForm)) {
 			projectCompanies = contractorProjectService.search(searchForm.getSearchTerm(), permissions.getAccountId());
+
 		} else {
 			projectCompanies = contractorProjectService.getProjectsForContractor(permissions.getAccountId());
 		}
 
 		buildSiteAssignmentsAndProjects(projectCompanies);
 
-		buildbuildSiteAssignmentNotAttachedToProjects();
+		buildbuildSiteAssignmentNotAttachedToProjects(permissions.getAccountId());
+
+		siteAssignmentsAndProjects=Collections.unmodifiableMap(siteAssignmentsAndProjects);
 
 		return LIST;
 	}
 
 
-	private void buildbuildSiteAssignmentNotAttachedToProjects(){
-		List<Integer> contractorClientSitesAttachedToProjs= contractorProjectService.findClientSitesByContractorAccount(permissions.getAccountId());
-		List<AccountModel> contractorClientSitesNotAttachedToProjects=accountService.findContractorClientSitesNotAttachedToProjects(contractorClientSitesAttachedToProjs);
-		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs=ModelFactory.getSiteAssignmentsAndProjectsFactory().buildSiteAssignStatsForClientSitesUnattachedToProjs(contractorClientSitesNotAttachedToProjects);
+	private void buildbuildSiteAssignmentNotAttachedToProjects(int contractorId){
+		List<Integer> contractorClientSitesAttachedToProjs= contractorProjectService.findClientSitesByContractorAccount(contractorId);
+
+		List<AccountModel> contractorClientSitesNotAttachedToProjects=accountService.findContractorClientSitesNotAttachedToProjects(contractorId, contractorClientSitesAttachedToProjs);
+
+		SiteAssignmentsAndProjectsFactory saapf=ModelFactory.getSiteAssignmentsAndProjectsFactory();
+
+		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs=saapf.buildSiteAssignStatsForClientSitesUnattachedToProjs(contractorClientSitesNotAttachedToProjects);
 
 		for(SiteAssignmentStatisticsModel siteAssignmentStatisticsModel:sasmForClientSitesNotAttchdToProjs){
 			siteAssignmentsAndProjects.put(siteAssignmentStatisticsModel, Collections.<ProjectStatisticsModel>emptyList());
 		}
+
 	}
 
 

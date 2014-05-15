@@ -355,6 +355,23 @@ public class EGTestDataUtil {
     return contractorEmployeeMap;
   }
 
+	public List<ProjectCompany> getFakeProjectCompanies() {
+		return Arrays.asList(
+						new ProjectCompanyBuilder()
+										.project(
+														new ProjectBuilder()
+																		.accountId(SITE_ID)
+																		.build())
+										.build(),
+						new ProjectCompanyBuilder()
+										.project(
+														new ProjectBuilder()
+																		.accountId(SITE_ID)
+																		.build()
+										)
+										.build());
+	}
+
   public static int getCorporateId() {
     return CORPORATE_ID;
   }

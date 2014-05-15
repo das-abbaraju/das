@@ -55,7 +55,7 @@ public class SiteAssignmentsAndProjectsFactory {
 			siteAssignmentsAndProjects.put(siteAssignmentStatistic, siteNameToProjectStatistics.get(siteAssignmentStatistic.getSite().getId()));
 		}
 
-		return Collections.unmodifiableMap(siteAssignmentsAndProjects);
+		return siteAssignmentsAndProjects;
 	}
 
 	private Map<AccountModel, Map<Employee, Set<Role>>> getEmployeeRolesPerSite(Map<AccountModel, Set<Project>> projects, Map<Employee, Set<Role>> employeeRoles) {

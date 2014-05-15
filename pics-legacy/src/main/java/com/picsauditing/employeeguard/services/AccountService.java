@@ -408,9 +408,9 @@ public class AccountService {
 		return operatorDAO.findAllOperatorsForContractor(contractor);
 	}
 
-	public List<AccountModel> findContractorClientSitesNotAttachedToProjects(Collection<Integer> excludeClientSites){
+	public List<AccountModel> findContractorClientSitesNotAttachedToProjects(int contractorId, Collection<Integer> excludeClientSites){
 
-		List<Account> accounts=picsorgDAO.findContractorClientSitesNotAttachedToProjects(excludeClientSites);
+		List<Account> accounts=picsorgDAO.findContractorClientSitesNotAttachedToProjects(contractorId,excludeClientSites);
 		List<AccountModel> accountModels=mapAccountsToAccountModels(accounts);
 		return accountModels;
 	}
