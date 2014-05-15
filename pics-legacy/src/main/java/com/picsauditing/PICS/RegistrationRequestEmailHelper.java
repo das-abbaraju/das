@@ -2,10 +2,7 @@ package com.picsauditing.PICS;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import com.picsauditing.dao.OperatorFormDAO;
 import org.slf4j.Logger;
@@ -151,7 +148,10 @@ public class RegistrationRequestEmailHelper {
 	}
 
 	private OperatorForm getContractorLetterFromHierarchy(OperatorAccount operator, BaseTable baseTable) {
-        List<OperatorForm> opForms = operatorFormDAO.findTopByOpID(operator.getId());
+        List<OperatorForm> opForms = new ArrayList();
+        if (operator != null) {
+            opForms = operatorFormDAO.findByopID(operator.getId());
+        }
 
 		if (operator != null) {
 			Set<Integer> alreadyProcessed = new TreeSet<Integer>();
