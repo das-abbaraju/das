@@ -3,6 +3,7 @@
         <pattern>/employee-guard/build/*</pattern>
         <pattern>/employee-guard/src/*</pattern>
         <pattern>/employee-guard/vendor/*</pattern>
+        <pattern>/employee-guard/json/*</pattern>
     </excludes>
     <decorator name="ignoreMe">
         <pattern>/ReportApi!print.action</pattern>

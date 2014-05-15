@@ -21,7 +21,7 @@
     <constant name="struts.mapper.prefixMapping" value="/employee-guard:picsRestful,/users:picsRestful,:struts"/>
     <constant name="struts.mapper.idParameterName" value="id"/>
 
-    <constant name="struts.action.excludePattern" value="/employee-guard/src/.*?,/employee-guard/build/.*?,,/employee-guard/vendor/.*?" />
+    <constant name="struts.action.excludePattern" value="/employee-guard/src/.*?,/employee-guard/build/.*?,/employee-guard/vendor/.*?,/employee-guard/json/.*?" />
 
     <bean type="org.apache.struts2.views.util.UrlHelper" name="picsUrlHelper"
           class="com.picsauditing.strutsutil.url.UrlHelperFacade"/>
