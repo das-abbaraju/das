@@ -1,7 +1,7 @@
 package com.picsauditing.securitysession.cookie;
 
-import com.picsauditing.securitysession.EncodedKey;
-import com.picsauditing.securitysession.EncodedMessage;
+import com.picsauditing.security.EncodedKey;
+import com.picsauditing.security.EncodedMessage;
 import com.picsauditing.util.Base64;
 import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
