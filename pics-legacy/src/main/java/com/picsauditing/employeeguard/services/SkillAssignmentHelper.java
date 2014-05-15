@@ -95,20 +95,20 @@ public class SkillAssignmentHelper {
 		return accountSkillDAO.findBySiteAssignments(siteIds, employee);
 	}
 
-	public Set<AccountSkillEmployee> filterNoLongerNeededEmployeeSkills(Employee employee,
-																		final int contractorId,
-																		final Set<AccountSkill> requiredSkills) {
-		HashSet<AccountSkillEmployee> accountSkillEmployees = new HashSet<>(employee.getSkills());
+	public Set<AccountSkillProfile> filterNoLongerNeededEmployeeSkills(final Employee employee,
+																	   final int contractorId,
+																	   final Set<AccountSkill> requiredSkills) {
+		HashSet<AccountSkillProfile> accountSkillProfiles = new HashSet<>(employee.getProfile().getSkills());
 
-		CollectionUtils.filter(accountSkillEmployees, new GenericPredicate<AccountSkillEmployee>() {
+		CollectionUtils.filter(accountSkillProfiles, new GenericPredicate<AccountSkillProfile>() {
 			@Override
-			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-				boolean notContractorSkill = accountSkillEmployee.getSkill().getAccountId() != contractorId;
-				boolean notRequiredSkill = !requiredSkills.contains(accountSkillEmployee.getSkill());
+			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+				boolean notContractorSkill = accountSkillProfile.getSkill().getAccountId() != contractorId;
+				boolean notRequiredSkill = !requiredSkills.contains(accountSkillProfile.getSkill());
 				return notContractorSkill && notRequiredSkill;
 			}
 		});
 
-		return accountSkillEmployees;
+		return accountSkillProfiles;
 	}
 }

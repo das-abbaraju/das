@@ -23,7 +23,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		List<ContractorEmployeeProjectAssignment> employeeAssignmentInformation = new ArrayList<>();
 		Map<Employee, List<Role>> employeeJobRolesMap = buildEmployeeJobRoles(accountEmployees, jobRoles);
 		for (Map.Entry<Employee, List<AccountSkillProfile>> employeeMapEntry : employeeMap.entrySet()) {
-			List<Group> employeeJobRoles = employeeJobRolesMap.get(employeeMapEntry.getKey());
+			List<Role> employeeJobRoles = employeeJobRolesMap.get(employeeMapEntry.getKey());
 			employeeAssignmentInformation.add(build(employeeMapEntry.getKey(), employeeMapEntry.getValue(),
 					accountSkills, employeeJobRoles));
 		}

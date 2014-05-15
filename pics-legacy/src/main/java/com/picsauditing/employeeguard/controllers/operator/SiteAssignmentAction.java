@@ -2,10 +2,7 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.common.collect.Table;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
@@ -116,7 +113,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
 		skills = ListUtil.removeDuplicatesAndSort(skills);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> accountSkillEmployees =
+		Table<Employee, AccountSkill, AccountSkillProfile> accountSkillEmployees =
 				accountSkillEmployeeService.buildTable(employeesAssignedToRole, skills);
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels =

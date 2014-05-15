@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.daos.*;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillRoleDAO;
+import com.picsauditing.employeeguard.daos.RoleDAO;
+import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -21,13 +24,7 @@ import java.util.*;
 public class RoleService {
 
 	@Autowired
-	private AccountService accountService;
-	@Autowired
 	private AccountSkillDAO accountSkillDAO;
-	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired

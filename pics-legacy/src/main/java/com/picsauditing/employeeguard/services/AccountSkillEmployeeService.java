@@ -5,9 +5,9 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.calculator.ExpirationCalculator;
-import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -33,93 +33,94 @@ public class AccountSkillEmployeeService {
 		return accountSkillProfileDAO.findByEmployeesAndSkills(employees, accountSkills);
 	}
 
-	public AccountSkillEmployee linkProfileDocumentToEmployeeSkill(final AccountSkillEmployee accountSkillEmployee,
-																   final ProfileDocument profileDocument) {
-		accountSkillEmployee.setProfileDocument(profileDocument);
-		accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
-		return accountSkillEmployeeDAO.save(accountSkillEmployee);
+	public AccountSkillProfile linkProfileDocumentToEmployeeSkill(final AccountSkillProfile accountSkillProfile,
+																  final ProfileDocument profileDocument) {
+		accountSkillProfile.setProfileDocument(profileDocument);
+		accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
+		return accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public void linkProfileDocumentToEmployeeSkills(final List<AccountSkillEmployee> accountSkillEmployees,
+	public void linkProfileDocumentToEmployeeSkills(final List<AccountSkillProfile> accountSkillProfiles,
 													final ProfileDocument profileDocument) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			accountSkillEmployee.setProfileDocument(profileDocument);
-			accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			accountSkillProfile.setProfileDocument(profileDocument);
+			accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
 		}
 
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+		accountSkillProfileDAO.save(accountSkillProfiles);
 	}
 
-	public AccountSkillEmployee getAccountSkillEmployeeForProfileAndSkill(Profile profile, AccountSkill skill) {
-		return accountSkillEmployeeDAO.findByProfileAndSkill(profile, skill);
+	public AccountSkillProfile getAccountSkillEmployeeForProfileAndSkill(final Profile profile,
+																		 final AccountSkill skill) {
+		return accountSkillProfileDAO.findByProfileAndSkill(profile, skill);
 	}
 
 	public List<AccountSkillProfile> getSkillsForAccountAndEmployee(Employee employee) {
 		return accountSkillProfileDAO.findByAccountAndEmployee(employee);
 	}
 
-	public void save(AccountSkillEmployee accountSkillEmployee) {
-		accountSkillEmployeeDAO.save(accountSkillEmployee);
+	public void save(AccountSkillProfile accountSkillProfile) {
+		accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public void save(List<AccountSkillEmployee> accountSkillEmployees) {
-		if (CollectionUtils.isNotEmpty(accountSkillEmployees)) {
-			accountSkillEmployeeDAO.save(accountSkillEmployees);
-		}
+	public void save(List<AccountSkillProfile> accountSkillProfiles) {
+		accountSkillProfileDAO.save(accountSkillProfiles);
 	}
 
-	public void update(AccountSkillEmployee accountSkillEmployee, final SkillDocumentForm skillDocumentForm) {
-		AccountSkill skill = accountSkillEmployee.getSkill();
+	public void update(final AccountSkillProfile accountSkillProfile, final SkillDocumentForm skillDocumentForm) {
+		AccountSkill skill = accountSkillProfile.getSkill();
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
 			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
-			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
+			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
 		} else if (skillType.isTraining()) {
 			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
-				accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+				accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
 			} else {
-				accountSkillEmployee.setEndDate(null);
+				accountSkillProfile.setEndDate(null);
 			}
 
-			accountSkillEmployeeDAO.save(accountSkillEmployee);
+			accountSkillProfileDAO.save(accountSkillProfile);
 		}
 	}
 
-	public void update(final AccountSkill accountSkill, final Profile profile, final SkillDocumentForm skillDocumentForm) {
+	public void update(final AccountSkill accountSkill,
+					   final Profile profile,
+					   final SkillDocumentForm skillDocumentForm) {
 		SkillType skillType = accountSkill.getSkillType();
 
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
 				.findBySkillAndProfile(accountSkill, profile);
 
-		accountSkillEmployees = addNewAccountSkillEmployees(accountSkillEmployees, profile, accountSkill);
+		accountSkillProfiles = addNewAccountSkillProfiles(accountSkillProfiles, profile, accountSkill);
 
 		if (skillType.isCertification()) {
 			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
-			linkProfileDocumentToEmployeeSkills(accountSkillEmployees, document);
+			linkProfileDocumentToEmployeeSkills(accountSkillProfiles, document);
 		} else if (skillType.isTraining()) {
 			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
-				for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-					accountSkillEmployee.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+					accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
 				}
 			} else {
-				for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-					accountSkillEmployee.setEndDate(null);
+				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+					accountSkillProfile.setEndDate(null);
 				}
 			}
 
-			accountSkillEmployeeDAO.save(accountSkillEmployees);
+			accountSkillProfileDAO.save(accountSkillProfiles);
 		}
 	}
 
-	public List<AccountSkillEmployee> addNewAccountSkillEmployees(final List<AccountSkillEmployee> accountSkillEmployees,
-																  final Profile profile,
-																  final AccountSkill accountSkill) {
-		List<AccountSkillEmployee> allAccountSkillEmployees = new ArrayList<>(accountSkillEmployees);
+	public List<AccountSkillProfile> addNewAccountSkillProfiles(final List<AccountSkillProfile> accountSkillProfiles,
+																final Profile profile,
+																final AccountSkill accountSkill) {
+		List<AccountSkillProfile> allAccountSkillProfiles = new ArrayList<>(accountSkillProfiles);
 		for (Employee employee : profile.getEmployees()) {
-			if (!foundAccountSkillEmployee(employee, allAccountSkillEmployees)) {
-				allAccountSkillEmployees.add(new AccountSkillEmployeeBuilder()
-						.employee(employee)
+			if (!foundAccountSkillProfile(employee, allAccountSkillProfiles)) {
+				allAccountSkillProfiles.add(new AccountSkillProfileBuilder()
+						.profile(profile)
 						.accountSkill(accountSkill)
 						.createdBy(1)
 						.createdDate(DateBean.today())
@@ -128,12 +129,12 @@ public class AccountSkillEmployeeService {
 			}
 		}
 
-		return allAccountSkillEmployees;
+		return allAccountSkillProfiles;
 	}
 
-	private boolean foundAccountSkillEmployee(final Employee employee, List<AccountSkillEmployee> accountSkillEmployees) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			if (accountSkillEmployee.getEmployee().equals(employee)) {
+	private boolean foundAccountSkillProfile(final Employee employee, List<AccountSkillProfile> acountSkillProfiles) {
+		for (AccountSkillProfile accountSkillProfile : acountSkillProfiles) {
+			if (accountSkillProfile.getProfile().getEmployees().contains(employee)) {
 				return true;
 			}
 		}
@@ -141,37 +142,32 @@ public class AccountSkillEmployeeService {
 		return false;
 	}
 
-	public void update(AccountSkillEmployee accountSkillEmployee, final ProfileDocument document) {
-		AccountSkill skill = accountSkillEmployee.getSkill();
+	public void update(AccountSkillProfile accountSkillProfile, final ProfileDocument document) {
+		AccountSkill skill = accountSkillProfile.getSkill();
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
-			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
-			accountSkillEmployeeDAO.save(accountSkillEmployee);
+			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
+			accountSkillProfileDAO.save(accountSkillProfile);
 		}
 	}
 
-	public List<AccountSkillEmployee> getAccountSkillEmployeeForProjectAndContractor(final Project project,
-																					 final int accountId) {
-		return accountSkillEmployeeDAO.findByProjectAndContractor(project, accountId);
+	public List<AccountSkillProfile> getAccountSkillEmployeeForProjectAndContractor(final Project project,
+																					final int accountId) {
+		return accountSkillProfileDAO.findByProjectAndContractor(project, accountId);
 	}
 
-	public List<AccountSkillEmployee> getSkillsForAccount(final int accountId) {
-		return accountSkillEmployeeDAO.findByEmployeeAccount(accountId);
+	public List<AccountSkillProfile> getSkillsForAccount(final int accountId) {
+		return accountSkillProfileDAO.findByEmployeeAccount(accountId);
 	}
 
-	public Map<Employee, Set<AccountSkillEmployee>> getSkillMapForAccountAndRole(final int accountId, final int roleId) {
-		List<AccountSkillEmployee> roleSkills = accountSkillEmployeeDAO.findByContractorAndRole(accountId, roleId);
+	public Map<Employee, Set<AccountSkillProfile>> getSkillMapForAccountAndRole(final int accountId, final int roleId) {
+		List<AccountSkillProfile> roleSkills = accountSkillProfileDAO.findByContractorAndRole(accountId, roleId);
 
-		Map<Employee, Set<AccountSkillEmployee>> skillMap = new HashMap<>();
-		for (AccountSkillEmployee accountSkillEmployee : roleSkills) {
-			PicsCollectionUtil.addToMapOfKeyToSet(skillMap, accountSkillEmployee.getEmployee(), accountSkillEmployee);
-		}
-
-		return skillMap;
+		return mapEmployeeToAccountSkillProfile(Arrays.asList(accountId), roleSkills);
 	}
 
-	public Map<Employee, Set<AccountSkillEmployee>> getEmployeeSkillMapForContractorsAndSite(
+	public Map<Employee, Set<AccountSkillProfile>> getEmployeeSkillMapForContractorsAndSite(
 			final Set<Integer> contractorIds,
 			final int siteId,
 			final List<Integer> corporateIds,
@@ -180,47 +176,68 @@ public class AccountSkillEmployeeService {
 		Set<Integer> siteAndCorporateIds = new HashSet<>(corporateIds);
 		siteAndCorporateIds.add(siteId);
 
-		Set<AccountSkillEmployee> allSiteSkills = getAllSiteSkills(contractorIds, siteId, corporateRoles, siteAndCorporateIds);
+		Set<AccountSkillProfile> allSiteSkills = getAllSiteSkills(contractorIds, siteId, corporateRoles,
+				siteAndCorporateIds);
 
-		Map<Employee, Set<AccountSkillEmployee>> employeeSkills = new HashMap<>();
-		for (AccountSkillEmployee accountSkillEmployee : allSiteSkills) {
-			PicsCollectionUtil.addToMapOfKeyToSet(employeeSkills, accountSkillEmployee.getEmployee(), accountSkillEmployee);
+		return mapEmployeeToAccountSkillProfile(contractorIds, allSiteSkills);
+	}
+
+	private Map<Employee, Set<AccountSkillProfile>> mapEmployeeToAccountSkillProfile(final Collection<Integer> contractorIds,
+																					 final Collection<AccountSkillProfile> accountSkillProfiles) {
+		Map<Employee, Set<AccountSkillProfile>> employeeSkills = new HashMap<>();
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			for (Employee employee : accountSkillProfile.getProfile().getEmployees()) {
+				if (contractorIds.contains(employee.getAccountId())) {
+					if (!employeeSkills.containsKey(employee)) {
+						employeeSkills.put(employee, new HashSet<AccountSkillProfile>());
+					}
+
+					employeeSkills.get(employee).add(accountSkillProfile);
+				}
+			}
 		}
 
 		return employeeSkills;
 	}
 
-	private Set<AccountSkillEmployee> getAllSiteSkills(Set<Integer> contractorIds, int siteId, Collection<Role> corporateRoles, Set<Integer> siteAndCorporateIds) {
-		Set<AccountSkillEmployee> allSiteSkills = new HashSet<>();
+	private Set<AccountSkillProfile> getAllSiteSkills(final Set<Integer> contractorIds,
+													  final int siteId,
+													  final Collection<Role> corporateRoles,
+													  final Set<Integer> siteAndCorporateIds) {
+		Set<AccountSkillProfile> allSiteSkills = new HashSet<>();
 
-		allSiteSkills.addAll(accountSkillEmployeeDAO.getProjectRoleSkillsForContractorsAndSite(contractorIds, siteId));
-		allSiteSkills.addAll(accountSkillEmployeeDAO.getProjectSkillsForContractorsAndSite(contractorIds, siteId));
-		allSiteSkills.addAll(accountSkillEmployeeDAO.getRoleSkillsForContractorsAndRoles(contractorIds, corporateRoles));
-		allSiteSkills.addAll(accountSkillEmployeeDAO.getSiteSkillsForContractorsAndSites(contractorIds, siteAndCorporateIds));
+		allSiteSkills.addAll(accountSkillProfileDAO.getProjectRoleSkillsForContractorsAndSite(contractorIds, siteId));
+		allSiteSkills.addAll(accountSkillProfileDAO.getProjectSkillsForContractorsAndSite(contractorIds, siteId));
+		allSiteSkills.addAll(accountSkillProfileDAO.getRoleSkillsForContractorsAndRoles(contractorIds, corporateRoles));
+		allSiteSkills.addAll(accountSkillProfileDAO.getSiteSkillsForContractorsAndSites(contractorIds, siteAndCorporateIds));
 
 		return allSiteSkills;
 	}
 
-	public Table<Employee, AccountSkill, AccountSkillEmployee> buildTable(final List<Employee> employees, final List<AccountSkill> skills) {
-		List<AccountSkillEmployee> accountSkillEmployees = findByEmployeesAndSkills(employees, skills);
+	public Table<Employee, AccountSkill, AccountSkillProfile> buildTable(final List<Employee> employees,
+																		 final List<AccountSkill> skills) {
+		List<AccountSkillProfile> accountSkillProfiles = findByEmployeesAndSkills(employees, skills);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
+		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
 		for (Employee employee : employees) {
 			for (AccountSkill skill : skills) {
-				table.put(employee, skill, findAccountSkillEmployeeByEmployeeAndSkill(accountSkillEmployees, employee, skill));
+				table.put(employee, skill, findAccountSkillEmployeeByEmployeeAndSkill(accountSkillProfiles, employee, skill));
 			}
 		}
 
 		return table;
 	}
 
-	private AccountSkillEmployee findAccountSkillEmployeeByEmployeeAndSkill(List<AccountSkillEmployee> accountSkillEmployees, Employee employee, AccountSkill skill) {
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			if (skill.equals(accountSkillEmployee.getSkill()) && employee.equals(accountSkillEmployee.getEmployee())) {
-				return accountSkillEmployee;
+	private AccountSkillProfile findAccountSkillEmployeeByEmployeeAndSkill(final List<AccountSkillProfile> accountSkillProfiles,
+																		   final Employee employee,
+																		   final AccountSkill skill) {
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			if (skill.equals(accountSkillProfile.getSkill())
+					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {
+				return accountSkillProfile;
 			}
 		}
 
-		return new AccountSkillEmployeeBuilder().build();
+		return new AccountSkillProfileBuilder().build();
 	}
 }

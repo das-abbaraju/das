@@ -82,7 +82,7 @@ public class ContractorProjectService {
 		}
 
 		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory()
-				.buildList(employees, accountSkillProfiles, requiredSkills, Collections.<Group>emptyList());
+				.buildList(employees, accountSkillProfiles, requiredSkills, Collections.<Role>emptyList());
 	}
 
 	private List<String> buildSkillNames(List<AccountSkill> requiredSkills) {
@@ -157,14 +157,14 @@ public class ContractorProjectService {
 		List<Employee> employees = employeeDAO.findByAccount(accountId);
 		Collections.sort(employees);
 
-		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		List<AccountSkillProfile> accountSkillProfile = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(requiredSkills) && CollectionUtils.isNotEmpty(employees)) {
-			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills);
+			accountSkillProfile = accountSkillProfileDAO.findByEmployeesAndSkills(employees, requiredSkills);
 		}
 
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployeesAndProjectRole(employees, projectRole);
 
-		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildListForRole(employees, requiredSkills, accountSkillEmployees, projectRoleEmployees);
+		return formBuilderFactory.getContractorEmployeeProjectAssignmentFactory().buildListForRole(employees, requiredSkills, accountSkillProfile, projectRoleEmployees);
 	}
 
 	private List<AccountSkill> getRequiredSkills(final ProjectRole projectRole) {

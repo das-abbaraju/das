@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -54,16 +54,16 @@ public class SkillInfoBuilder {
 		return skillInfo;
 	}
 
-	public SkillInfo build(AccountSkillEmployee accountSkillEmployee) {
-		AccountSkill accountSkill = accountSkillEmployee.getSkill();
-		SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
-		return build(accountSkill, skillStatus, accountSkillEmployee.getEndDate());
+	public SkillInfo build(AccountSkillProfile accountSkillProfile) {
+		AccountSkill accountSkill = accountSkillProfile.getSkill();
+		SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
+		return build(accountSkill, skillStatus, accountSkillProfile.getEndDate());
 	}
 
-	public List<SkillInfo> build(List<AccountSkillEmployee> accountSkillEmployees) {
+	public List<SkillInfo> build(List<AccountSkillProfile> accountSkillProfiles) {
 		List<SkillInfo> skillInfoList = new ArrayList<>();
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			skillInfoList.add(build(accountSkillEmployee));
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			skillInfoList.add(build(accountSkillProfile));
 		}
 
 		Collections.sort(skillInfoList);

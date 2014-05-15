@@ -287,7 +287,9 @@ public class SiteAssignmentsAndProjectsFactory {
 				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
 
-			ProjectAssignmentBreakdown assignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
+			ProjectAssignmentBreakdown assignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory()
+					.create(allRoles, allSkills, employeeSkillsByRole.rowKeySet());
+
 			projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
 		}
 

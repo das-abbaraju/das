@@ -5,6 +5,7 @@ import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
@@ -117,25 +118,25 @@ public class ProfileDocumentService {
 			accountSkillProfile.setEndDate(profileDocument.getEndDate());
 		}
 
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
+		accountSkillProfileDAO.save(accountSkillEmployees);
 	}
 
 	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,
 												 final ProfileDocument profileDocument) {
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO.findBySkillIdAndProfile(skillId, profile);
-		accountSkillEmployeeDAO.delete(accountSkillEmployees);
-		accountSkillEmployeeDAO.save(buildAccountSkillEmployees(profile, skillId, profileDocument));
+		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO.findBySkillIdAndProfile(skillId, profile);
+		accountSkillProfileDAO.delete(accountSkillEmployees);
+		accountSkillProfileDAO.save(buildAccountSkillEmployees(profile, skillId, profileDocument));
 	}
 
-	private List<AccountSkillEmployee> buildAccountSkillEmployees(final Profile profile, final int skillId,
-																  final ProfileDocument profileDocument) {
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
+	private List<AccountSkillProfile> buildAccountSkillEmployees(final Profile profile, final int skillId,
+																 final ProfileDocument profileDocument) {
+		List<AccountSkillProfile> accountSkillEmployees = new ArrayList<>();
 
 		List<Employee> employees = profile.getEmployees();
 		for (Employee employee : employees) {
-			accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
+			accountSkillEmployees.add(new AccountSkillProfileBuilder()
 					.accountSkill(new AccountSkill(skillId))
-					.employee(employee)
+					.profile(profile)
 					.createdBy(1)
 					.createdDate(DateBean.today())
 					.profileDocument(profileDocument)

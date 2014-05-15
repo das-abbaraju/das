@@ -11,6 +11,8 @@ import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.SiteSkillService;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.forms.binding.FormBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -60,7 +62,7 @@ public class ProjectAction extends PicsRestActionSupport {
 		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = siteSkillService.getRequiredSkillsForProjects(projectCompanies);
 		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
-		List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
+		List<AccountSkillProfile> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
 		siteAssignmentsAndProjects = ModelFactory.getSiteAssignmentsAndProjectsFactory()
 				.create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
@@ -71,13 +73,13 @@ public class ProjectAction extends PicsRestActionSupport {
 		AccountModel accountModel = accountService.getAccountById(projectCompany.getProject().getAccountId());
 		project = formBuilderFactory.getContratorDetailProjectFormBuilder().build(projectCompany, accountModel);
 
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService
 				.getAccountSkillEmployeeForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
 				(projectCompany.getProject(), permissions.getAccountId());
 
 		projectAssignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory()
-				.create(projectRoleEmployees, accountSkillEmployees);
+				.create(projectRoleEmployees, accountSkillProfiles);
 
 		return SHOW;
 	}

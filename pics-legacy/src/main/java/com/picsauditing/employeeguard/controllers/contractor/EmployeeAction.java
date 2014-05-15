@@ -256,9 +256,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 				employeeSkillStatuses.put(employee, skillStatus.getDisplayValue(), 0);
 			}
 
-			for (AccountSkillEmployee accountSkillEmployee : employee.getSkills()) {
-				SkillStatus status = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
-				employeeSkillStatuses.put(employee, status.getDisplayValue(), employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
+			for (AccountSkillProfile accountSkillProfile : employee.getProfile().getSkills()) {
+				SkillStatus status = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
+				employeeSkillStatuses.put(employee, status.getDisplayValue(),
+						employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
 			}
 		}
 	}

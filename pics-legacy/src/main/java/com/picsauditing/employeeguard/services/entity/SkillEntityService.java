@@ -256,6 +256,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		}
 
 		return PicsCollectionUtil.convertToMapOfSets(
+
 				accountSkillProfileDAO.findByEmployeesAndSkills(employees, requiredSkills),
 
 				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillProfile, Employee, AccountSkill>() {
