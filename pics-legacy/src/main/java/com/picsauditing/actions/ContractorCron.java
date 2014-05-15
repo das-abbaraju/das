@@ -592,6 +592,7 @@ public class ContractorCron extends PicsActionSupport {
                     if (worst != overallColor) {
                         reason = getFlagDataDescription(change, contractorOperator.getOperatorAccount());
                     }
+                    overallColor = worst;
                 }
             }
 
