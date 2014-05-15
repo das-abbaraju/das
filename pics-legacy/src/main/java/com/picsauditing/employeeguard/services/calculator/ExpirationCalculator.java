@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ExpirationCalculator {
 	public static Date calculateExpirationDate(AccountSkillEmployee accountSkillEmployee) {
-		if(accountSkillEmployee==null)
+		if (accountSkillEmployee == null || accountSkillEmployee.getSkill() == null)
 			return null;
 
 		if (accountSkillEmployee.getSkill().getSkillType().isCertification()) {
@@ -41,7 +41,7 @@ public class ExpirationCalculator {
 	}
 
 	private static Date calculateExpirationDateForCertificate(AccountSkillEmployee accountSkillEmployee) {
-		if(accountSkillEmployee.getProfileDocument()==null)
+		if (accountSkillEmployee.getProfileDocument() == null)
 			return null;
 
 		return accountSkillEmployee.getProfileDocument().getEndDate();
