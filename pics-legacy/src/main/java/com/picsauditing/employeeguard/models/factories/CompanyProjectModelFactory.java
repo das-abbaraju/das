@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.models.IdNameComposite;
 import com.picsauditing.employeeguard.models.SkillStatusInfo;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class CompanyProjectModelFactory {
 		companyProjectModel.setId(project.getId());
 		companyProjectModel.setName(project.getName());
 		companyProjectModel.setStatus(status);
-		companyProjectModel.setSkills(skillStatusModels);
+		companyProjectModel.setSkills(PicsCollectionUtil.sortSet(skillStatusModels));
 
 		return companyProjectModel;
 	}

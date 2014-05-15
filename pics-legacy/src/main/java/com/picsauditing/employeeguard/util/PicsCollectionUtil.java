@@ -562,4 +562,15 @@ public class PicsCollectionUtil {
 
 		return transformedMap;
 	}
+
+	public static <E extends Comparable> Set<E> sortSet(final Set<E> set) {
+		if (CollectionUtils.isEmpty(set)) {
+			return Collections.emptySet();
+		}
+
+		List<E> listToSort = new ArrayList<>(set);
+		Collections.sort(listToSort);
+
+		return new LinkedHashSet<>(listToSort);
+	}
 }

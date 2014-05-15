@@ -5,7 +5,6 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.ModelFactory;
-import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.models.factories.CompanyProjectModelFactory;
 import com.picsauditing.employeeguard.models.factories.CompanyStatusModelFactory;
@@ -13,13 +12,11 @@ import com.picsauditing.employeeguard.models.factories.EmployeeSkillsModelFactor
 import com.picsauditing.employeeguard.process.ProfileSkillData;
 import com.picsauditing.employeeguard.process.ProfileSkillStatusProcess;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EmployeeSkillsModelService {
 
@@ -32,21 +29,25 @@ public class EmployeeSkillsModelService {
 		Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountCompanyProjectModelMap =
 				buildAccountCompanyProjectModelMap(profileSkillData);
 
-		Map<AccountModel, RequiredSkills> requiredSkillsMap = buildRequiredSkillsMap(profileSkillData);
+		Map<AccountModel, Set<SkillStatusModel>> accountSkillsMap = buildAccountSkillsMap(profileSkillData);
 		Set<CompanyStatusModelFactory.CompanyStatusModel> companyStatusModels =
 				ModelFactory.getCompanyStatusModelFactory().create(profileSkillData.getSiteStatuses(),
-						requiredSkillsMap, accountCompanyProjectModelMap);
+						accountSkillsMap, accountCompanyProjectModelMap);
 
 		return ModelFactory.getEmployeeSkillsModelFactory().create(profileSkillData.getOverallStatus(), companyStatusModels);
 	}
 
-	private Map<AccountModel, RequiredSkills> buildRequiredSkillsMap(final ProfileSkillData profileSkillData) {
+	private Map<AccountModel, Set<SkillStatusModel>> buildAccountSkillsMap(final ProfileSkillData profileSkillData) {
 		Map<AccountModel, Set<AccountSkill>> requiredSkills = profileSkillData.getAllRequiredSkills();
 
-		Map<AccountModel, RequiredSkills> accountRequiredSkills = new HashMap<>();
+		Map<AccountModel, Set<SkillStatusModel>> accountRequiredSkills = new HashMap<>();
 		for (AccountModel accountModel : requiredSkills.keySet()) {
-			accountRequiredSkills.put(accountModel, new RequiredSkills(ModelFactory.getSkillStatusModelFactory()
-					.create(requiredSkills.get(accountModel), profileSkillData.getSkillStatusMap())));
+			List<SkillStatusModel> skills = ModelFactory.getSkillStatusModelFactory()
+					.create(requiredSkills.get(accountModel), profileSkillData.getSkillStatusMap());
+
+			Collections.sort(skills);
+
+			accountRequiredSkills.put(accountModel, new LinkedHashSet<>(skills));
 		}
 
 		return accountRequiredSkills;
@@ -98,7 +99,8 @@ public class EmployeeSkillsModelService {
 	}
 
 	private Map<Project, Set<SkillStatusModel>> buildProjectSkillStatusMap(final ProfileSkillData profileSkillData) {
-		Map<Project, Set<AccountSkill>> projectSkills = profileSkillData.getAllProjectSkills();
+		Map<Project, Set<AccountSkill>> projectSkills = appendSiteRequiredSkills(profileSkillData.getAllProjectSkills(),
+				profileSkillData);
 		Map<AccountSkill, SkillStatus> skillStatusMap = profileSkillData.getSkillStatusMap();
 
 		Map<Project, Set<SkillStatusModel>> projectSkillStatusModels = new HashMap<>();
@@ -113,5 +115,23 @@ public class EmployeeSkillsModelService {
 		}
 
 		return projectSkillStatusModels;
+	}
+
+	private Map<Project, Set<AccountSkill>> appendSiteRequiredSkills(final Map<Project, Set<AccountSkill>> projectSkills,
+																	 final ProfileSkillData profileSkillData) {
+		Map<Integer, AccountModel> siteAccounts = profileSkillData.getSiteAccounts();
+		Map<AccountModel, Set<AccountSkill>> accountRequiredSkills = profileSkillData.getAllRequiredSkills();
+
+		Map<Project, Set<AccountSkill>> allSkillsRequiredForProjects = PicsCollectionUtil.copyMapOfSets(projectSkills);
+		for (Project project : projectSkills.keySet()) {
+			if (!allSkillsRequiredForProjects.containsKey(project)) {
+				allSkillsRequiredForProjects.put(project, new HashSet<AccountSkill>());
+			}
+
+			allSkillsRequiredForProjects.get(project)
+					.addAll(accountRequiredSkills.get(siteAccounts.get(project.getAccountId())));
+		}
+
+		return allSkillsRequiredForProjects;
 	}
 }
