@@ -3,10 +3,7 @@ package com.picsauditing.securitysession.entities;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //	private String taxId;
 //	private String logoFile;
 //	private String brochureFile;
-//	private String mustPay = "Yes";
+	private String mustPay = "Yes";
 //	private OperatorAccount requestedBy;
 //	private String billingAddress;
 //	private String billingCity;
@@ -28,15 +25,15 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //	private Country billingCountry;
 //	private String billingZip;
 //	private Date membershipDate;
-//	private int payingFacilities;
+	private int payingFacilities;
 //	private User auditor;
 //	private User recommendedCsr;
 //    private boolean tradeSafetySensitive;
 //    private LowMedHigh tradeSafetyRisk = LowMedHigh.None;
 //    private boolean safetySensitive;
-//	private LowMedHigh safetyRisk = LowMedHigh.None;
+	private LowMedHigh safetyRisk = LowMedHigh.None;
 //	private Date safetyRiskVerified;
-//	private LowMedHigh productRisk = LowMedHigh.None;
+	private LowMedHigh productRisk = LowMedHigh.None;
 //	private Date productRiskVerified;
 //	private LowMedHigh transportationRisk = LowMedHigh.None;
 //	private Date transportationRiskVerified;
@@ -150,25 +147,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //	public void setInsuranceCriteriaContractorOperators(List<InsuranceCriteriaContractorOperator> insuranceCriteriaContractorOperators) {
 //		this.insuranceCriteriaContractorOperators = insuranceCriteriaContractorOperators;
-//	}
-//
-//	/**
-//	 * Only includes the Active/Pending/Demo operator accounts, not corporate
-//	 * accounts or Deleted/Deactivated Operators
-//	 *
-//	 * @return
-//	 */
-//	@Transient
-//	public List<OperatorAccount> getOperatorAccounts() {
-//		List<OperatorAccount> list = new ArrayList<OperatorAccount>();
-//		for (ContractorOperator co : operators) {
-//			if (co.getOperatorAccount().isOperator() && !co.getOperatorAccount().getStatus().isDeactivated()
-//					&& !co.getOperatorAccount().getStatus().isDeleted()) {
-//				list.add(co.getOperatorAccount());
-//			}
-//		}
-//		Collections.sort(list);
-//		return list;
 //	}
 //
 //	@Transient
@@ -342,16 +320,15 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //        this.safetySensitive = safetySensitive;
 //    }
 //
-//    @Column(name = "safetyRisk", nullable = false)
-//	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllContractors)
-//	public LowMedHigh getSafetyRisk() {
-//		return safetyRisk;
-//	}
-//
-//	public void setSafetyRisk(LowMedHigh safetyRisk) {
-//		this.safetyRisk = safetyRisk;
-//	}
-//
+    @Column(name = "safetyRisk", nullable = false)
+	public LowMedHigh getSafetyRisk() {
+		return safetyRisk;
+	}
+
+	public void setSafetyRisk(LowMedHigh safetyRisk) {
+		this.safetyRisk = safetyRisk;
+	}
+
 //	@Temporal(TemporalType.DATE)
 //	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllContractors)
 //	public Date getSafetyRiskVerified() {
@@ -362,16 +339,15 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //		this.safetyRiskVerified = safetyRiskVerified;
 //	}
 //
-//	@Column(name = "productRisk", nullable = false)
-//	@ReportField(type = FieldType.LowMedHigh, importance = FieldImportance.Average)
-//	public LowMedHigh getProductRisk() {
-//		return productRisk;
-//	}
-//
-//	public void setProductRisk(LowMedHigh productRisk) {
-//		this.productRisk = productRisk;
-//	}
-//
+	@Column(name = "productRisk", nullable = false)
+	public LowMedHigh getProductRisk() {
+		return productRisk;
+	}
+
+	public void setProductRisk(LowMedHigh productRisk) {
+		this.productRisk = productRisk;
+	}
+
 //	@Temporal(TemporalType.DATE)
 //	@ReportField(type = FieldType.Date)
 //	public Date getProductRiskVerified() {
@@ -447,36 +423,28 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //	// //// BILLING/ACCOUNT - related columns //////
 //
-//	/**
-//	 * Determines if this contractor must pay or not. It allows for PICS to
-//	 * grant "free" lifetime accounts to certain contractors. Yes or No
-//	 */
-//	@Column(name = "mustPay", nullable = false, length = 3)
-//	@ReportField(type = FieldType.Boolean, requiredPermissions = OpPerms.Billing, sql = "CASE "
-//			+ ReportOnClause.ToAlias + ".mustPay WHEN 'Yes' THEN 1 ELSE 0 END", importance = FieldImportance.Average)
-//	public String getMustPay() {
-//		return this.mustPay;
-//	}
-//
-//	public void setMustPay(String mustPay) {
-//		this.mustPay = mustPay;
-//	}
-//
-//	@Transient
-//	public boolean isMustPayB() {
-//		return "Yes".equals(mustPay);
-//	}
-//
-//	@Column(name = "payingFacilities", nullable = false)
-//	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average, requiredPermissions = OpPerms.AllOperators)
-//	public int getPayingFacilities() {
-//		return this.payingFacilities;
-//	}
-//
-//	public void setPayingFacilities(int payingFacilities) {
-//		this.payingFacilities = payingFacilities;
-//	}
-//
+	/**
+	 * Determines if this contractor must pay or not. It allows for PICS to
+	 * grant "free" lifetime accounts to certain contractors. Yes or No
+	 */
+	@Column(name = "mustPay", nullable = false, length = 3)
+	public String getMustPay() {
+		return this.mustPay;
+	}
+
+	public void setMustPay(String mustPay) {
+		this.mustPay = mustPay;
+	}
+
+	@Column(name = "payingFacilities", nullable = false)
+	public int getPayingFacilities() {
+		return this.payingFacilities;
+	}
+
+	public void setPayingFacilities(int payingFacilities) {
+		this.payingFacilities = payingFacilities;
+	}
+
 //	@Transient
 //	public boolean isPaymentMethodStatusValid() {
 //		if (paymentMethod == null) {
@@ -670,18 +638,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //
 //	public void setContractorOperatorNumbers(List<ContractorOperatorNumber> contractorOperatorNumbers) {
 //		this.contractorOperatorNumbers = contractorOperatorNumbers;
-//	}
-//
-//	@Transient
-//	public List<OperatorAccount> getGeneralContractorOperatorAccounts() {
-//		List<OperatorAccount> gcOperators = new ArrayList<OperatorAccount>();
-//		for (ContractorOperator co : operators) {
-//			if (co.getOperatorAccount().isGeneralContractor()) {
-//				gcOperators.add(co.getOperatorAccount());
-//			}
-//		}
-//
-//		return gcOperators;
 //	}
 //
 //	@Transient
@@ -1127,11 +1083,6 @@ public class ContractorAccount extends Account /*implements JSONable*/ {
 //		}
 //
 //		return false;
-//	}
-//
-//	@Transient
-//	public boolean isHasFreeMembership() {
-//		return this.getPayingFacilities() == 0 || !this.isMustPayB();
 //	}
 //
 //	/**

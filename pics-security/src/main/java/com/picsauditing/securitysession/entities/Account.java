@@ -70,10 +70,10 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 	protected boolean requiresCompetencyReview = false;
 //	protected boolean needsIndexing = true;
 //	// TODO: Do we want do default this?
-//	protected boolean onsiteServices = false;
-//	protected boolean offsiteServices = false;
-//	protected boolean materialSupplier = false;
-//	protected boolean transportationServices = false;
+	protected boolean onsiteServices = false;
+	protected boolean offsiteServices = false;
+	protected boolean materialSupplier = false;
+	protected boolean transportationServices = false;
 //	protected Date accreditation;
 //	private Locale locale = Locale.ENGLISH;
 //	protected TimeZone timezone;
@@ -511,42 +511,38 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 //		this.needsIndexing = needsIndex;
 //	}
 //
-//	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//	public boolean isOnsiteServices() {
-//		return onsiteServices;
-//	}
-//
-//	public void setOnsiteServices(boolean onsiteServices) {
-//		this.onsiteServices = onsiteServices;
-//	}
-//
-//	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//	public boolean isOffsiteServices() {
-//		return offsiteServices;
-//	}
-//
-//	public void setOffsiteServices(boolean offsiteServices) {
-//		this.offsiteServices = offsiteServices;
-//	}
-//
-//	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//	public boolean isMaterialSupplier() {
-//		return materialSupplier;
-//	}
-//
-//	public void setMaterialSupplier(boolean materialSupplier) {
-//		this.materialSupplier = materialSupplier;
-//	}
-//
-//	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//	public boolean isTransportationServices() {
-//		return transportationServices;
-//	}
-//
-//	public void setTransportationServices(boolean transportationServices) {
-//		this.transportationServices = transportationServices;
-//	}
-//
+	public boolean isOnsiteServices() {
+		return onsiteServices;
+	}
+
+	public void setOnsiteServices(boolean onsiteServices) {
+		this.onsiteServices = onsiteServices;
+	}
+
+	public boolean isOffsiteServices() {
+		return offsiteServices;
+	}
+
+	public void setOffsiteServices(boolean offsiteServices) {
+		this.offsiteServices = offsiteServices;
+	}
+
+	public boolean isMaterialSupplier() {
+		return materialSupplier;
+	}
+
+	public void setMaterialSupplier(boolean materialSupplier) {
+		this.materialSupplier = materialSupplier;
+	}
+
+	public boolean isTransportationServices() {
+		return transportationServices;
+	}
+
+	public void setTransportationServices(boolean transportationServices) {
+		this.transportationServices = transportationServices;
+	}
+
 	/**
 	 * Are they subject to Competency Reviews, and if Contractor, do they work
 	 * for an operator who does too?
@@ -821,24 +817,6 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 //		return "";
 //	}
 //
-//	@Transient
-//	public Set<ContractorType> getAccountTypes() {
-//		Set<ContractorType> types = new HashSet<ContractorType>();
-//		if (isMaterialSupplier()) {
-//			types.add(ContractorType.Supplier);
-//		}
-//		if (isOnsiteServices()) {
-//			types.add(ContractorType.Onsite);
-//		}
-//		if (isOffsiteServices()) {
-//			types.add(ContractorType.Offsite);
-//		}
-//		if (isTransportationServices()) {
-//			types.add(ContractorType.Transportation);
-//		}
-//		return types;
-//	}
-//
 //	public void addAccountTypes(List<ContractorType> conTypes) {
 //		if (conTypes != null) {
 //			for (ContractorType conType : conTypes) {
@@ -886,11 +864,6 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 //				break;
 //			}
 //		}
-//	}
-//
-//	@Transient
-//	public boolean isMaterialSupplierOnly() {
-//		return (getAccountTypes().size() == 1 && getAccountTypes().iterator().next().equals(ContractorType.Supplier));
 //	}
 //
 //	@Transient

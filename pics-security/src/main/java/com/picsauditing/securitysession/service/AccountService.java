@@ -5,6 +5,27 @@ import com.picsauditing.securitysession.entities.*;
 import java.util.*;
 
 public class AccountService {
+    public static boolean isMaterialSupplierOnly(Account account) {
+        return (getAccountTypes(account).size() == 1 && getAccountTypes(account).iterator().next().equals(ContractorType.Supplier));
+    }
+
+    public static Set<ContractorType> getAccountTypes(Account account) {
+        Set<ContractorType> types = new HashSet<>();
+        if (account.isMaterialSupplier()) {
+            types.add(ContractorType.Supplier);
+        }
+        if (account.isOnsiteServices()) {
+            types.add(ContractorType.Onsite);
+        }
+        if (account.isOffsiteServices()) {
+            types.add(ContractorType.Offsite);
+        }
+        if (account.isTransportationServices()) {
+            types.add(ContractorType.Transportation);
+        }
+        return types;
+    }
+
     public static List<OperatorAccount> getLinkedGeneralContractorOperatorAccounts(OperatorAccount operatorAccount) {
         List<OperatorAccount> linkedGeneralContractorOperatorAccounts = new ArrayList<>();
         for (Facility facility : operatorAccount.getLinkedGeneralContractors()) {
@@ -82,5 +103,42 @@ public class AccountService {
         Collections.sort(list);
         return list;
     }
+
+    public static boolean isHasFreeMembership(ContractorAccount contractorAccount) {
+        return contractorAccount.getPayingFacilities() == 0 || !isMustPayB(contractorAccount);
+    }
+
+    public static boolean isMustPayB(ContractorAccount contractorAccount) {
+        return "Yes".equals(contractorAccount.getMustPay());
+    }
+
+	public static List<OperatorAccount> getGeneralContractorOperatorAccounts(ContractorAccount contractorAccount) {
+		List<OperatorAccount> gcOperators = new ArrayList<>();
+		for (ContractorOperator co : contractorAccount.getOperators()) {
+			if (co.getOperatorAccount().isGeneralContractor()) {
+				gcOperators.add(co.getOperatorAccount());
+			}
+		}
+
+		return gcOperators;
+	}
+
+	/**
+	 * Only includes the Active/Pending/Demo operator accounts, not corporate
+	 * accounts or Deleted/Deactivated Operators
+	 *
+	 * @return
+	 */
+	public static List<OperatorAccount> getOperatorAccounts(ContractorAccount contractorAccount) {
+		List<OperatorAccount> list = new ArrayList<>();
+		for (ContractorOperator co : contractorAccount.getOperators()) {
+			if (isOperator(co.getOperatorAccount()) && co.getOperatorAccount().getStatus() != AccountStatus.Deactivated
+					&& co.getOperatorAccount().getStatus() != AccountStatus.Deleted) {
+				list.add(co.getOperatorAccount());
+			}
+		}
+		Collections.sort(list);
+		return list;
+	}
 
 }

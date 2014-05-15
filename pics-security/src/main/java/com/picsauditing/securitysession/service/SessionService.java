@@ -10,6 +10,7 @@ import com.picsauditing.securitysession.cookie.SessionCookie;
 import com.picsauditing.securitysession.cookie.SessionSecurity;
 import com.picsauditing.securitysession.dao.*;
 import com.picsauditing.securitysession.entities.*;
+import com.picsauditing.securitysession.util.AjaxUtils;
 import com.picsauditing.securitysession.util.system.PicsEnvironment;
 import com.picsauditing.util.Strings;
 import org.apache.struts2.ServletActionContext;
@@ -475,4 +476,41 @@ public class SessionService /*extends TranslationActionSupport implements Reques
                 .get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
     }
 
+    public void conductSessionActions() throws Exception {
+        if (sessionCookieIsValidAndNotExpired() && !isUserQuarantined()) {
+            updateClientSessionCookieExpiresTime();
+        } else {
+            clearPermissionsSessionAndCookie();
+        }
+    }
+
+    public String clearPermissionsSessionAndCookie() throws Exception {
+        if (permissions != null) {
+            permissions.clear();
+        }
+        ActionContext.getContext().getSession().clear();
+        clearPicsOrgCookie();
+        return "success";
+    }
+
+
+    public boolean isUserQuarantined() {
+        try {
+            if (!AjaxUtils.isAjax(getRequest())) {
+                User user = getUser();
+                if (user != null) {
+                    Account account = user.getAccount();
+                    if (account != null && AccountService.isContractor(account) && account.getStatus() != null && account.getStatus() == AccountStatus.Pending) {
+                        ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+                        if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(ServletActionContext.getActionMapping().getName())) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // if anything goes wrong (such as no action name for unmapped actions), we'll just let them pass
+        }
+        return false;
+    }
 }

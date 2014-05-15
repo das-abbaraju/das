@@ -53,10 +53,10 @@ public enum AccountStatus /*implements Translatable, PermissionAware*/ {
 //        return this == Pending || this == Deactivated;
 //    }
 //
-//	public boolean isPendingRequestedOrDeactivated() {
-//		return this == Pending || this == Deactivated || this == Requested;
-//	}
-//
+	public boolean isPendingRequestedOrDeactivated() {
+		return this == Pending || this == Deactivated || this == Requested;
+    }
+
 //    public boolean isPendingRequestedDeclinedOrDeactivated() {
 //        return this == Pending || this == Deactivated || this == Requested || this == Declined;
 //    }
