@@ -1,7 +1,7 @@
 describe("A Employee Skill List Controller", function() {
     var scope, $httpBackend, routeParams;
 
-    var skill_list_dev_url = '/angular/json/employee/skills/skill_list.json';
+    var skill_list_dev_url = '/employee-guard/json/employee/skills/skill_list.json';
     var skill_list_url = '/employee-guard/employee/profile/skills';
 
     var skillListData = {
@@ -96,7 +96,7 @@ describe("A Employee Skill List Controller", function() {
     beforeEach(inject(function($rootScope, $controller, $httpBackend, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
         routeParams = $routeParams;
 
-        $httpBackend.when('GET', /\employee\-guard\/json\/employee\/skills\/skill_list.json/).respond(skillListData);
+        $httpBackend.when('GET', skill_list_dev_url).respond(skillListData);
         $httpBackend.when('GET', skill_list_url).respond(skillListData);
 
         scope = $rootScope.$new();
