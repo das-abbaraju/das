@@ -178,19 +178,6 @@ module.exports = function(grunt) {
                 options: {
                     interrupt: true
                 }
-            },
-
-            cover: {
-                files: vendor_js_files.concat([
-                    'src/**/*.js',
-                    'src/common/*.js',
-                ]),
-                tasks: [
-                    'karma:coverage'
-                ],
-                options: {
-                    interrupt: true
-                }
             }
         }
     });

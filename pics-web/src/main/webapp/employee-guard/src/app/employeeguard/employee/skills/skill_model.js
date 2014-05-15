@@ -25,16 +25,14 @@ angular.module('PICS.employeeguard')
         return this.getData().sites;
     };
 
-    Model.prototype.getProjects = function () {
-        return this.getData().projects;
-    };
-
     Model.prototype.getSiteBySlug = function (site_slug) {
-        var data = this.getData(),
-        sites = $filter('filter')(data.sites, { slug: site_slug})[0];
+        var data = this.getData();
 
-        if (sites) {
-            return sites;
+        if (data.sites) {
+            sites = $filter('filter')(data.sites, { slug: site_slug})[0];
+            if (sites) {
+                return sites;
+            }
         }
     };
 
@@ -49,30 +47,37 @@ angular.module('PICS.employeeguard')
 
     Model.prototype.getAllSiteAndProjectSkills = function () {
         var sites = this.getSites(),
-            skills = [];
+            allSkills = [];
 
         angular.forEach(sites, function(site) {
-            site.skills = site.required ? site.required.skills : [];
+            allSkills = site.skills ? site.skills : [];
 
             angular.forEach(site.projects, function(project) {
-                site.skills = site.skills.concat(project.skills);
-                site.skills = $filter('removeDuplicateItemsFromArray')(site.skills);
+                allSkills = allSkills.concat(project.skills);
+                site.skills = $filter('removeDuplicateItemsFromArray')(allSkills);
             });
         });
 
         return sites;
     };
 
-    Model.prototype.getSiteSkillsBySlug = function (site_slug) {
-        var data = this.getData();
+    Model.prototype.getAllSiteAndProjectSkillsBySlug = function (site_slug) {
+        var site = this.getSiteBySlug(site_slug),
+            projectSkills = [],
+            allSkills,
+            filteredSkills;
 
-        if (data.sites) {
-            sites = $filter('filter')(data.sites, { slug: site_slug})[0];
+        angular.forEach(site.projects, function(project) {
+            projectSkills = projectSkills.concat(project.skills);
+        });
 
-            if (sites && sites.required) {
-                return sites.required;
-            }
-        }
+        allSkills = site.skills ? site.skills.concat(projectSkills) : projectSkills;
+
+        filteredSkills = $filter('removeDuplicateItemsFromArray')(allSkills);
+
+        site.skills = filteredSkills;
+
+        return site;
     };
 
     Model.prototype.getProjectBySlug = function (project_slug) {
@@ -84,9 +89,6 @@ angular.module('PICS.employeeguard')
             angular.forEach(site.projects, function(project) {
                 if (project.slug === project_slug) {
                     selected_project = project;
-                    if (site.required) {
-                        selected_project.skills = site.required.skills.concat(project.skills);
-                    }
                 }
             });
         });

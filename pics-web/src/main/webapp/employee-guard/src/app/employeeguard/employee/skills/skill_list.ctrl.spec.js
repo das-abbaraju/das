@@ -1,4 +1,4 @@
-describe("A Employee Skill List", function() {
+describe("A Employee Skill List Controller", function() {
     var scope, $httpBackend, routeParams;
 
     var skill_list_dev_url = '/angular/json/employee/skills/skill_list.json';
@@ -18,9 +18,14 @@ describe("A Employee Skill List", function() {
                     "status": "Expired",
                     "skills": [
                         {
-                             "id":210,
-                             "name":"Dynamic Reporting Skill",
-                             "status": "Expiring"
+                            "id":45,
+                            "name":"BASF Site Skill 1",
+                            "status": "Expired"
+                        },
+                        {
+                            "id":210,
+                            "name":"Dynamic Reporting Skill",
+                            "status": "Expiring"
                         }
                     ]
                 },
@@ -30,22 +35,27 @@ describe("A Employee Skill List", function() {
                     "status": "Expiring",
                     "skills": [
                         {
-                             "id":4,
-                             "name":"Ninja Dojo Skill 4",
-                             "status": "Expiring"
+                         "id":45,
+                         "name":"BASF Site Skill 1",
+                         "status": "Expired"
+                        },
+                        {
+                         "id":4,
+                         "name":"Ninja Dojo Skill 4",
+                         "status": "Expiring"
                         }
                     ]
                 }
             ],
-            "required": {
-                "skills": [
-                    {
-                     "id":45,
-                     "name":"BASF Site Skill 1",
-                     "status": "Expired"
-                    }
-                ]
-            }
+            "skills": [{
+                "id":45,
+                "name":"BASF Site Skill 1",
+                "status": "Expired"
+            },{
+                "id":14,
+                "name":"Site Role Skill",
+                "status":"Completed"
+            }]
         },
         {
             "id": 8,
@@ -58,6 +68,11 @@ describe("A Employee Skill List", function() {
                     "status": "Completed",
                     "skills": [
                         {
+                         "id":6,
+                         "name":"Spectre Site Required Skill 1",
+                         "status": "Expired"
+                        },
+                        {
                          "id":4,
                          "name":"Volcano Base Skill",
                          "status": "Expired"
@@ -65,15 +80,13 @@ describe("A Employee Skill List", function() {
                     ]
                 }
             ],
-            "required": {
-                "skills": [
-                    {
-                         "id":6,
-                         "name":"Spectre Site Required Skill 1",
-                         "status": "Expired"
-                    }
-                ]
-            }
+            "skills": [
+                {
+                     "id":6,
+                     "name":"Spectre Site Required Skill 1",
+                     "status": "Expired"
+                }
+            ]
         }
         ]
     };
@@ -83,7 +96,7 @@ describe("A Employee Skill List", function() {
     beforeEach(inject(function($rootScope, $controller, $httpBackend, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
         routeParams = $routeParams;
 
-        $httpBackend.when('GET', /\angular\/json\/employee\/skills\/skill_list.json/).respond(skillListData);
+        $httpBackend.when('GET', /\employee\-guard\/json\/employee\/skills\/skill_list.json/).respond(skillListData);
         $httpBackend.when('GET', skill_list_url).respond(skillListData);
 
         scope = $rootScope.$new();
@@ -132,11 +145,15 @@ describe("A Employee Skill List", function() {
             expect(scope.skillList).toBeDefined();
         });
 
-        it("should have all site required skills for the selected site", function() {
+        it("should have all site skills for the selected site", function() {
             var expected_result = [{
                  "id":6,
                  "name":"Spectre Site Required Skill 1",
                  "status": "Expired"
+            }, {
+                "id":4,
+                "name":"Volcano Base Skill",
+                "status": "Expired"
             }];
 
             expect(scope.skillList.skills).toEqual(expected_result);
@@ -196,26 +213,43 @@ describe("A Employee Skill List", function() {
         });
 
         it("should populate the skill list with all site and project skills", function() {
-            var expected_result = [
-                {
-                     "id":6,
-                     "name":"Spectre Site Required Skill 1",
-                     "status": "Expired"
-                },
-                {
+            var site1_result = [{
+                "id":45,
+                "name":"BASF Site Skill 1",
+                "status": "Expired"
+            },{
+                "id":14,
+                "name":"Site Role Skill",
+                "status":"Completed"
+            },{
+                "id":210,
+                "name":"Dynamic Reporting Skill",
+                "status": "Expiring"
+            },{
                  "id":4,
-                 "name":"Volcano Base Skill",
-                 "status": "Expired"
-                }
-            ];
+                 "name":"Ninja Dojo Skill 4",
+                 "status": "Expiring"
+            }];
+
+            var site2_result = [{
+                "id":6,
+                "name":"Spectre Site Required Skill 1",
+                "status": "Expired"
+            },{
+                "id":4,
+                "name":"Volcano Base Skill",
+                "status": "Expired"
+            }];
+
 
             expect(scope.skillList).toBeDefined();
 
             expect(scope.skillList[0].status).toEqual('Expired');
-            expect(scope.skillList[0].required.skills[0].name).toEqual('BASF Site Skill 1');
+            expect(scope.skillList[0].skills[0].name).toEqual('BASF Site Skill 1');
+            expect(scope.skillList[0].skills).toEqual(site1_result);
             expect(scope.skillList[1].name).toEqual('Spectre');
             expect(scope.skillList[1].projects[0].id).toEqual(32);
-            expect(scope.skillList[1].skills).toEqual(expected_result);
+            expect(scope.skillList[1].skills).toEqual(site2_result);
         });
 
         it("should have the correct menu item selected", function() {
