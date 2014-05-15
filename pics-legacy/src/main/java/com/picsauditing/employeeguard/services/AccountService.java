@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.employeeguard.daos.PicsorgDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.models.AccountModel;
@@ -34,6 +35,8 @@ public class AccountService {
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
 	private OperatorAccountDAO operatorDAO;
+	@Autowired
+	private PicsorgDAO picsorgDAO;
 
 	public AccountModel getAccountById(final int accountId) {
 		Account account = accountDAO.find(accountId);
@@ -404,4 +407,12 @@ public class AccountService {
 
 		return operatorDAO.findAllOperatorsForContractor(contractor);
 	}
+
+	public List<AccountModel> findContractorClientSitesNotAttachedToProjects(Collection<Integer> excludeClientSites){
+
+		List<Account> accounts=picsorgDAO.findContractorClientSitesNotAttachedToProjects(excludeClientSites);
+		List<AccountModel> accountModels=mapAccountsToAccountModels(accounts);
+		return accountModels;
+	}
+
 }

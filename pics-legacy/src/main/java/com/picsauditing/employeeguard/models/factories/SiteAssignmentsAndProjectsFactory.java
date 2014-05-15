@@ -263,6 +263,22 @@ public class SiteAssignmentsAndProjectsFactory {
 		return Collections.unmodifiableList(siteAssignmentStatistics);
 	}
 
+	public List<SiteAssignmentStatisticsModel> buildSiteAssignStatsForClientSitesUnattachedToProjs(List<AccountModel> contractorClientSitesNotAttachedToProjects) {
+		List<SiteAssignmentStatisticsModel> siteAssignmentStatistics = new ArrayList<>();
+
+		for (AccountModel accountModel : contractorClientSitesNotAttachedToProjects) {
+			SiteAssignmentStatisticsModel siteStatistics = new SiteAssignmentStatisticsModel.Builder()
+							.site(accountModel)
+							.completed(0)
+							.expiring(0)
+							.expired(0)
+							.build();
+			siteAssignmentStatistics.add(siteStatistics);
+		}
+
+		return Collections.unmodifiableList(siteAssignmentStatistics);
+	}
+
 	private <K> void calculateCountOfSkillStatus(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, Collection<AccountSkillEmployee> employeeSkills) {
 		initializeCountOfSkillStatus(countOfSkillStatus, key);
 

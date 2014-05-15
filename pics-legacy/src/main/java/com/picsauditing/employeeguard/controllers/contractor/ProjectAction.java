@@ -6,14 +6,17 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.*;
+import com.picsauditing.employeeguard.models.factories.SiteAssignmentsAndProjectsFactory;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.ContractorProjectService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.SiteSkillService;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.jpa.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -53,8 +56,23 @@ public class ProjectAction extends PicsRestActionSupport {
 
 		buildSiteAssignmentsAndProjects(projectCompanies);
 
+		buildbuildSiteAssignmentNotAttachedToProjects();
+
 		return LIST;
 	}
+
+
+	private void buildbuildSiteAssignmentNotAttachedToProjects(){
+		List<Integer> contractorClientSitesAttachedToProjs= contractorProjectService.findClientSitesByContractorAccount(permissions.getAccountId());
+		List<AccountModel> contractorClientSitesNotAttachedToProjects=accountService.findContractorClientSitesNotAttachedToProjects(contractorClientSitesAttachedToProjs);
+		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs=ModelFactory.getSiteAssignmentsAndProjectsFactory().buildSiteAssignStatsForClientSitesUnattachedToProjs(contractorClientSitesNotAttachedToProjects);
+
+		for(SiteAssignmentStatisticsModel siteAssignmentStatisticsModel:sasmForClientSitesNotAttchdToProjs){
+			siteAssignmentsAndProjects.put(siteAssignmentStatisticsModel, Collections.<ProjectStatisticsModel>emptyList());
+		}
+	}
+
+
 
 	private void buildSiteAssignmentsAndProjects(List<ProjectCompany> projectCompanies) {
 		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
