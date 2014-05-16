@@ -36,7 +36,7 @@
  * The value of routeKeyToTranslationKeys is a JavaScript object mapping each route path to an array of translation keys
  * associated with that route path.
  *
- * These key-value pairs may added to translationKeys.js manually, or they may be added automatically by following these steps:
+ * These key-value pairs may be added to translationKeys.js manually, or they may be added automatically by following these steps:
  *
  * 1) Inject translationsService into your main app module's run block, and call setDevelopmentMode,
  *    passing the string 'on', e.g.:
