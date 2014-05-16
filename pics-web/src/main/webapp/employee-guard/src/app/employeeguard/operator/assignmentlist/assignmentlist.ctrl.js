@@ -17,7 +17,7 @@ angular.module('PICS.employeeguard')
 
     $scope.loadAssignmentsBySiteId = function(site_id) {
         $scope.selected_site = site_id;
-        $scope.site_assignments = SiteAssignments.get();
+        $scope.site_assignments = SiteAssignments.get({id: site_id});
         $scope.project_assignments = ProjectAssignments.query({id: site_id});
     };
 
