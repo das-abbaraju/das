@@ -24,20 +24,25 @@
  *
  * 5) Use the following syntax in your template files:
  *
- *    For a translation with key 'my.first.translation.key' and value 'My {1} value for translation #{2}':
- *    <p>{{ text['my.first.translation.key'] | translationValues:['translation', '1'] }}</p>
+ *    A) For a translation with key 'my.translation.key' and value 'My translation value':
+ *       <p translate>{{ text['my.translation.key'] }}</p>
+ *
+ *    B) Translation values may also include parameters, e.g.:
+ *       
+ *       For a translation with key 'my.first.translation.key' and value 'My {1} value for translation #{2}':
+ *       <p translate>{{ text['my.first.translation.key'] | translationValues:['translation', '1'] }}</p>
  *
  * Translation keys for each route must be added to the routePathToTranslationKeys value in translationKeys.js.
  * The value of routeKeyToTranslationKeys is a JavaScript object mapping each route path to an array of translation keys
  * associated with that route path.
  *
- * These key-value pairs in this file are auto-updated by the provided node.js micro-server located in the application root:
+ * These key-value pairs may added to translationKeys.js manually, or they may be added automatically by following these steps:
  *
  * 1) Inject translationsService into your main app module's run block, and call setDevelopmentMode,
  *    passing the string 'on', e.g.:
  *
  *    app.module('app').run(function (translationsService) {
- *        translations.Service.setDevelopmentMode('on');
+ *        translationsService.setDevelopmentMode('on');
  *    });
  *
  * 2) In Terminal, navigate to /angular, and type: node translation.js.
@@ -82,8 +87,20 @@
             }
 
             function setTranslations(value) {
-                $rootScope.text = value;
-                deferred.resolve(value);
+                var translations = value;
+
+                if (isDevelopmentMode) {
+                    replaceEmptyStringValuesWithKeys(translations);
+                }
+
+                $rootScope.text = translations;
+                deferred.resolve(translations);
+            }
+
+            function replaceEmptyStringValuesWithKeys(obj) {
+                angular.forEach(obj, function (value, key) {
+                    obj[key] = value || key;
+                });
             }
 
             function getTranslations() {
@@ -111,6 +128,7 @@
             translationKeys = [];
 
             keys = routePathToTranslationKeys[routePath];
+
             requestParams = translationsService.createRouteParamsFromKeys(keys);
 
             translationsService.fetchTranslations(requestParams)
