@@ -1,33 +1,28 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorAssignmentsCtrl', function ($scope, SiteList, SiteAssignments, ProjectAssignments) {
-    $scope.siteList = SiteList.query(function(sites) {
-        if ($scope.hasSites(sites)) {
-            $scope.loadSelectedSiteData(sites[0].id);
+.controller('operatorAssignmentsCtrl', function ($scope, $routeParams, SiteList, SiteAssignments, ProjectAssignments, WhoAmI) {
+    WhoAmI.get(function (user) {
+        $scope.userType = user.type.toLowerCase();
+        if ($scope.userType === 'corporate') {
+            SiteList.query(function (sites) {
+                var site_id = $routeParams.siteId || sites[0].id;
+
+                $scope.siteList = sites;
+                $scope.loadAssignmentsBySiteId(site_id);
+            });
         } else {
-            $scope.site_assignments = SiteAssignments.get();
-            $scope.project_assignments = ProjectAssignments.query();
+            $scope.loadAssignments();
         }
     });
 
-    $scope.hasSites = function(sites) {
-        return sites.length > 0;
+    $scope.loadAssignmentsBySiteId = function(site_id) {
+        $scope.selected_site = site_id;
+        $scope.site_assignments = SiteAssignments.get();
+        $scope.project_assignments = ProjectAssignments.query({id: site_id});
     };
 
-    $scope.loadSelectedSiteData = function(site_id) {
-        if (site_id !== 'null') {
-            $scope.selected_site = site_id;
-            $scope.selected_site_name = $scope.getSiteNameFromSiteList(site_id);
-            $scope.site_assignments = SiteAssignments.get({id: site_id});
-            $scope.project_assignments = ProjectAssignments.query({id: site_id});
-        }
-    };
-
-    $scope.getSiteNameFromSiteList = function (id) {
-        for (var i = 0; i < $scope.siteList.length; i++) {
-            if ($scope.siteList[i].id == $scope.selected_site) {
-                return $scope.siteList[i].name;
-            }
-        }
+    $scope.loadAssignments = function() {
+        $scope.site_assignments = SiteAssignments.get();
+        $scope.project_assignments = ProjectAssignments.query();
     };
 });

@@ -1,6 +1,7 @@
 describe('The Operator Assignment Page', function() {
     var scope, $http, httpMock, result;
-    var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
+    var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json',
+        whoami_url = '/employee-guard/operators/who-am-i';
 
     var site_assignments = {
         "id": 1,
@@ -59,6 +60,20 @@ describe('The Operator Assignment Page', function() {
         name: "Barneys Warehouse"
     }];
 
+    var corporate_user = {
+       "userId":116679,
+       "accountId":55653,
+       "name":"Lydia Rodarte-Quayle",
+       "type":"CORPORATE"
+    };
+
+    var operator_user = {
+        "userId":116680,
+        "accountId":55654,
+        "name":"EmployeeGUARD User",
+        "type":"OPERATOR"
+    };
+
     beforeEach(angular.mock.module('PICS.employeeguard'));
     beforeEach(inject(function($injector, $rootScope, $controller, $http, $httpBackend, $routeParams) {
             scope = $rootScope.$new();
@@ -77,6 +92,7 @@ describe('The Operator Assignment Page', function() {
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(site_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_assignments);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects\/[0-9]+/).respond(project_assignments);
+            httpMock.when('GET', whoami_url).respond(corporate_user);
             httpMock.flush();
         });
 
@@ -87,13 +103,8 @@ describe('The Operator Assignment Page', function() {
         });
 
         it('should return individual site info if a corporate user', function() {
-            expect(scope.hasSites(scope.siteList)).toBeTruthy();
             expect(scope.site_assignments.employees).toEqual(site_assignments.employees);
             expect(scope.project_assignments[0].employees).toEqual(project_assignments[0].employees);
-        });
-
-        it("should return the name of selected_site", function() {
-            expect(scope.getSiteNameFromSiteList(24)).toEqual('Fish Warehouse');
         });
     });
 
@@ -127,12 +138,11 @@ describe('The Operator Assignment Page', function() {
             httpMock.when('GET', corp_sites_dev_url).respond('');
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/summary/).respond(operator_summary);
             httpMock.when('GET', /\employee-guard\/operators\/assignments\/projects/).respond(project_summary);
+            httpMock.when('GET', whoami_url).respond(operator_user);
             httpMock.flush();
         });
 
         it('should return operator summary if site operator user', function() {
-            expect(scope.hasSites(scope.siteList)).toBeFalsy();
-
             expect(scope.site_assignments.id).toEqual(operator_summary.id);
             expect(scope.site_assignments.employees).toEqual(operator_summary.employees);
             expect(scope.project_assignments[0].name).toEqual(project_summary[0].name);
