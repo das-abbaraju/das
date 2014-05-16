@@ -321,12 +321,14 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 		this.passwordChanged = passwordChanged;
 	}
 
+    @Transient
 	public String getResetHash() {
-		return resetHash;
+		return getAppUser().getResetHash();
 	}
 
+    @Transient
 	public void setResetHash(String resetHash) {
-		this.resetHash = resetHash;
+		getAppUser().setResetHash(resetHash);
 	}
 
 	public boolean isForcePasswordReset() {

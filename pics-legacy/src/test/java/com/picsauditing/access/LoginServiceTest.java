@@ -219,7 +219,7 @@ public class LoginServiceTest {
 		loginService.loginForResetPassword(username, key);
 
 		verify(user).setForcePasswordReset(true);
-		verify(user).setResetHash("");
+		verify(user).setResetHash(null);
 		verify(user).unlockLogin();
 		verify(user).setPasswordChanged(null);
 	}
