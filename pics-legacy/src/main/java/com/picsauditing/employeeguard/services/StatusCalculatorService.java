@@ -106,9 +106,6 @@ public class StatusCalculatorService {
 	private Map<Employee, List<SkillStatus>> buildSkillStatusMap(final Set<Employee> employees,
 																 final Map<Employee, Set<AccountSkillEmployee>> employeeMap,
 																 final List<AccountSkill> orderedSkills) {
-		if (MapUtils.isEmpty(employeeMap) || CollectionUtils.isEmpty(orderedSkills)) {
-			return Collections.emptyMap();
-		}
 
 		final int numberOfSkills = orderedSkills.size();
 		Map<Employee, List<SkillStatus>> employeeSkillStatusMap = new HashMap<>();
@@ -265,6 +262,7 @@ public class StatusCalculatorService {
 			return Collections.emptyMap();
 		}
 
+    ///-- Prepare Unique list of employees and Skills
 		Set<Employee> employees = new HashSet<>();
 		Set<AccountSkill> skills = new HashSet<>();
 		for (E entity : entityEmployeeSkillMap.keySet()) {
@@ -274,10 +272,15 @@ public class StatusCalculatorService {
 			}
 		}
 
+    //-- Get documentations for the list of employees with list of skills
 		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
 		if (CollectionUtils.isNotEmpty(employees) && CollectionUtils.isNotEmpty(skills)) {
 			accountSkillEmployees = accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, skills);
 		}
+
+    /* Prepare collection of Employees with skills that have documentation attached. This map of maps contains
+    only the skills that the employee has provided documentation for !
+    * */
 
 		Map<Employee, Map<AccountSkill, AccountSkillEmployee>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
 				accountSkillEmployees,
@@ -293,19 +296,17 @@ public class StatusCalculatorService {
 					}
 				});
 
+    //-- Roll up skill status of each Employee
 		Map<E, List<SkillStatus>> skillStatusPerEntityEmployee = new HashMap<>();
 		for (final E entity : entityEmployeeSkillMap.keySet()) {
 			for (final Employee employee : entityEmployeeSkillMap.get(entity).keySet()) {
-				if (!entityEmployeeSkillMap.containsKey(entity)) {
-					continue;
-				}
 
-				if (!entityEmployeeSkillMap.get(entity).containsKey(employee)) {
-					continue;
-				}
-
+        SkillStatus skillStatus=SkillStatus.Expired;
+        //-- If employee has any documentations at all.
 				if (employeeSkillMap.containsKey(employee)) {
+          //-- Documentations provided for this employee
 					Collection<AccountSkillEmployee> aseForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
+          //-- Distill the collection specific to this employee's skills.
 					CollectionUtils.filter(aseForStatusCalculation, new GenericPredicate<AccountSkillEmployee>() {
 						@Override
 						public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
@@ -314,15 +315,16 @@ public class StatusCalculatorService {
 					});
 
 					if (!aseForStatusCalculation.isEmpty()) {
-						SkillStatus skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
-
-						if (!skillStatusPerEntityEmployee.containsKey(entity)) {
-							skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
-						}
-
-						skillStatusPerEntityEmployee.get(entity).add(skillStatus);
+						skillStatus = SkillStatusCalculator.calculateStatusRollUp(aseForStatusCalculation);
 					}
 				}
+
+        //-- Add Skill status information to the entity in question.
+        if (!skillStatusPerEntityEmployee.containsKey(entity)) {
+          skillStatusPerEntityEmployee.put(entity, new ArrayList<SkillStatus>());
+        }
+        skillStatusPerEntityEmployee.get(entity).add(skillStatus);
+
 			}
 		}
 

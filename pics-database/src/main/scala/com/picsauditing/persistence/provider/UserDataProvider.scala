@@ -13,7 +13,7 @@ class UserDataProvider extends UserAccess with UserAccessAccess { this: Profile 
 
   private val contactRoleQuery = Compiled { (role: Column[String], accountID: Column[Long]) => {
     for {
-      user <- users if user.isActive === "Yes" && user.accountID === accountID
+      user <- users if user.isActive === true && user.accountID === accountID
       ua <- userAccess if user.id === ua.userID && ua.accessType === role
     } yield user.contactinfo
   }}

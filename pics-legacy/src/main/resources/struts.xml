@@ -1161,11 +1161,6 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 
-		<action name="OperatorFlagsCalculatorCSV"
-		        class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<action name="AuditBuilder"
 		        class="com.picsauditing.actions.audits.AuditBuilderDebugger">
 			<result>struts/audits/tester/audit_builder.jsp</result>
@@ -1339,6 +1334,17 @@
         <action name="AddressVerificationTest" class="com.picsauditing.actions.AddressVerificationTest">
             <result>/struts/address-verification-test.jsp</result>
             <result name="address-response">/struts/address-verification-test-response.jsp</result>
+        </action>
+
+        <action name="eulas/login/users/{userName}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEulaUserInfo">
+        </action>
+
+        <action name="eulas/login/{country}"
+                class="com.picsauditing.struts.controller.eula.EulaController"
+                method="loginEula">
+                <result>/struts/eula/login-eula.jsp</result>
         </action>
 
 	</package>

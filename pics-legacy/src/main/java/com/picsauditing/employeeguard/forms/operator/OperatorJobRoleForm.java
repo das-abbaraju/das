@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 
-public class OperatorJobRoleForm extends GroupNameSkillsForm implements AddAnotherForm {
+public class OperatorJobRoleForm extends RoleNameSkillsForm implements AddAnotherForm {
 
 	private String description;
 

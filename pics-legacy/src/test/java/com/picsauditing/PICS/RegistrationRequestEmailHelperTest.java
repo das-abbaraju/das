@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import com.picsauditing.dao.OperatorFormDAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -55,6 +56,8 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 	private OperatorAccount operator;
 	@Mock
 	private OperatorForm form;
+    @Mock
+    private OperatorFormDAO operatorFormDAO;
 	@Mock
 	private User user;
 
@@ -70,6 +73,7 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 
 		Whitebox.setInternalState(emailHelper, "builder", builder);
 		Whitebox.setInternalState(emailHelper, "sender", sender);
+        Whitebox.setInternalState(emailHelper, "operatorFormDAO", operatorFormDAO);
 	}
 
 	@Test
@@ -96,7 +100,7 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 		forms.add(form);
 
 		when(form.getFormName()).thenReturn("Letter*");
-		when(operator.getOperatorForms()).thenReturn(forms);
+		when(operatorFormDAO.findByopID(anyInt())).thenReturn(forms);
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 
 		OperatorForm contractorLetter = emailHelper.getContractorLetterFromHierarchy(contractor, relationship);
@@ -120,7 +124,7 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 		forms.add(form);
 
 		when(corporate.getId()).thenReturn(1);
-		when(corporate.getOperatorForms()).thenReturn(forms);
+        when(operatorFormDAO.findByopID(anyInt())).thenReturn(forms);
 		when(form.getFormName()).thenReturn("Letter*");
 		when(operator.getId()).thenReturn(2);
 		when(operator.getParent()).thenReturn(corporate);
@@ -139,7 +143,7 @@ public class RegistrationRequestEmailHelperTest extends PicsTranslationTest {
 
 		when(builder.build()).thenReturn(email);
 		when(form.getFormName()).thenReturn("Letter*");
-		when(operator.getOperatorForms()).thenReturn(forms);
+        when(operatorFormDAO.findByopID(anyInt())).thenReturn(forms);
 		when(relationship.getOperatorAccount()).thenReturn(operator);
 
 		emailHelper.sendInitialEmail(contractor, user, relationship, "ftpdir");

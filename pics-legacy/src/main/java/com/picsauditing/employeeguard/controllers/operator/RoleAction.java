@@ -9,13 +9,12 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
+import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.validators.group.RoleFormValidator;
@@ -54,7 +53,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	@FormBinding("operator_role_create")
 	private OperatorJobRoleForm roleForm;
 	@FormBinding("operator_role_edit_name_skills")
-	private GroupNameSkillsForm roleNameSkillsForm;
+	private RoleNameSkillsForm roleNameSkillsForm;
 	@FormBinding("operator_role_edit_employees")
 	private GroupEmployeesForm roleEmployeesForm;
 	@FormBinding("operator_role_project_edit")
@@ -272,11 +271,11 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		this.roleForm = roleForm;
 	}
 
-	public GroupNameSkillsForm getRoleNameSkillsForm() {
+	public RoleNameSkillsForm getRoleNameSkillsForm() {
 		return roleNameSkillsForm;
 	}
 
-	public void setRoleNameSkillsForm(GroupNameSkillsForm roleNameSkillsForm) {
+	public void setRoleNameSkillsForm(RoleNameSkillsForm roleNameSkillsForm) {
 		this.roleNameSkillsForm = roleNameSkillsForm;
 	}
 

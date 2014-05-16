@@ -1,22 +1,20 @@
 package com.picsauditing.dao;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import com.picsauditing.i18n.service.TranslationService;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.Translatable;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.ReflectUtil;
 import com.picsauditing.util.Strings;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
 
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
@@ -24,6 +22,7 @@ abstract public class PicsDAO {
 	protected static final int NO_LIMIT = 0;
 
 	protected EntityManager em;
+    @Deprecated
 	protected QueryMetaData queryMetaData = null;
 
 	@PersistenceContext
@@ -31,14 +30,17 @@ abstract public class PicsDAO {
 		this.em = em;
 	}
 
+    @Deprecated
 	public QueryMetaData getQueryMetaData() {
 		return queryMetaData;
 	}
 
+    @Deprecated
 	public void setQueryMetaData(QueryMetaData queryMetaData) {
 		this.queryMetaData = queryMetaData;
 	}
 
+    @Deprecated
 	protected void applyQueryMetaData(Query query) {
 		QueryMetaData qmd = getQueryMetaData();
 		if (qmd != null) {
@@ -52,6 +54,7 @@ abstract public class PicsDAO {
 		}
 	}
 
+    @Deprecated
 	protected static void setOptionalParameter(Query query, String name, Object value) {
 		try {
 			query.setParameter(name, value);
@@ -146,12 +149,14 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, "", name, value, null, limit);
 	}
 
+    @Deprecated
 	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
 			String value) {
 		return findByTranslatableField(cls, where, name, value, null);
 	}
 
-	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
+    @Deprecated
+    public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String where, String name,
 			String value, int limit) {
 		return findByTranslatableField(cls, where, name, value, null, limit);
 	}
@@ -222,7 +227,8 @@ abstract public class PicsDAO {
 		return findByTranslatableField(cls, "", value, Locale.ENGLISH, limit);
 	}
 
-	public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value, Locale locale) {
+    @Deprecated
+    public <T extends Translatable> List<T> findByTranslatableField(Class<T> cls, String value, Locale locale) {
 		return findByTranslatableField(cls, "", value, locale);
 	}
 

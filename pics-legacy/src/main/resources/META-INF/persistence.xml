@@ -98,6 +98,37 @@
         <class>com.picsauditing.employeeguard.entities.SiteSkill</class>
         <class>com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee</class>
 
+
+        <class>com.picsauditing.flagcalculator.entities.Account</class>
+        <class>com.picsauditing.flagcalculator.entities.AmBest</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditCatData</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditCategory</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditData</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditOptionGroup</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditQuestion</class>
+        <class>com.picsauditing.flagcalculator.entities.AuditType</class>
+        <class>com.picsauditing.flagcalculator.entities.BaseTable</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorAccount</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorAudit</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorAuditOperator</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorAuditOperatorPermission</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorOperator</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorTag</class>
+        <class>com.picsauditing.flagcalculator.entities.ContractorTrade</class>
+        <class>com.picsauditing.flagcalculator.entities.Facility</class>
+        <class>com.picsauditing.flagcalculator.entities.FlagCriteria</class>
+        <class>com.picsauditing.flagcalculator.entities.FlagCriteriaContractor</class>
+        <class>com.picsauditing.flagcalculator.entities.FlagCriteriaOperator</class>
+        <class>com.picsauditing.flagcalculator.entities.FlagData</class>
+        <class>com.picsauditing.flagcalculator.entities.FlagDataOverride</class>
+        <class>com.picsauditing.flagcalculator.entities.Naics</class>
+        <class>com.picsauditing.flagcalculator.entities.OperatorAccount</class>
+        <class>com.picsauditing.flagcalculator.entities.OperatorTag</class>
+        <class>com.picsauditing.flagcalculator.entities.Trade</class>
+        <class>com.picsauditing.flagcalculator.entities.User</class>
+        <class>com.picsauditing.flagcalculator.entities.Workflow</class>
+        <class>com.picsauditing.flagcalculator.entities.WorkflowStep</class>
+
         <properties>
             <property name="hibernate.hbm2ddl.auto" value=""/>
             <property name="hibernate.max_fetch_depth" value="1"/>
@@ -121,4 +152,5 @@
 
         </properties>
     </persistence-unit>
+
 </persistence>

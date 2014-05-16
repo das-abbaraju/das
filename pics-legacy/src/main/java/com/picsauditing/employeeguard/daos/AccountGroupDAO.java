@@ -2,9 +2,11 @@ package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.TypedQuery;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class AccountGroupDAO extends AbstractBaseEntityDAO<Group> {
@@ -51,6 +53,11 @@ public class AccountGroupDAO extends AbstractBaseEntityDAO<Group> {
 	}
 
   public List<Group> findGroupByAccountIdAndIds(final int accountId, final List<Integer> ids) {
+
+    if (CollectionUtils.isEmpty(ids)) {
+      return Collections.emptyList();
+    }
+
     TypedQuery<Group> query = em.createQuery("FROM Group g " +
             "WHERE g.accountId = :accountId " +
             "AND g.id IN ( :ids )", Group.class);

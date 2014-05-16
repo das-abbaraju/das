@@ -177,6 +177,38 @@
         <stringProp name="password">8arTyRev</stringProp>
       </JDBCDataSource>
       <hashTree/>
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="Alpha JDBC Connection Configuration" enabled="false">
+        <stringProp name="dataSource">PICS_ALPHA1</stringProp>
+        <stringProp name="poolMax">10</stringProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="checkQuery">Select 1</stringProp>
+        <stringProp name="dbUrl">jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1</stringProp>
+        <stringProp name="driver">com.mysql.jdbc.Driver</stringProp>
+        <stringProp name="username"></stringProp>
+        <stringProp name="password"></stringProp>
+      </JDBCDataSource>
+      <hashTree/>
+      <JDBCDataSource guiclass="TestBeanGUI" testclass="JDBCDataSource" testname="QA JDBC Connection Configuration" enabled="false">
+        <stringProp name="dataSource">PICS_ALPHA1</stringProp>
+        <stringProp name="poolMax">10</stringProp>
+        <stringProp name="timeout">10000</stringProp>
+        <stringProp name="trimInterval">60000</stringProp>
+        <boolProp name="autocommit">true</boolProp>
+        <stringProp name="transactionIsolation">DEFAULT</stringProp>
+        <boolProp name="keepAlive">true</boolProp>
+        <stringProp name="connectionAge">5000</stringProp>
+        <stringProp name="checkQuery">Select 1</stringProp>
+        <stringProp name="dbUrl">jdbc:mysql://db1.qa.picsorganizer.com:3306/pics_qa</stringProp>
+        <stringProp name="driver">com.mysql.jdbc.Driver</stringProp>
+        <stringProp name="username"></stringProp>
+        <stringProp name="password"></stringProp>
+      </JDBCDataSource>
+      <hashTree/>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Reset Smoketest Tags" enabled="false">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
@@ -247,6 +279,13 @@
               <stringProp name="resultVariable"></stringProp>
               <stringProp name="queryTimeout"></stringProp>
             </JDBCSampler>
+            <hashTree/>
+            <DebugPostProcessor guiclass="TestBeanGUI" testclass="DebugPostProcessor" testname="Debug PostProcessor" enabled="true">
+              <boolProp name="displayJMeterProperties">false</boolProp>
+              <boolProp name="displayJMeterVariables">true</boolProp>
+              <boolProp name="displaySamplerProperties">true</boolProp>
+              <boolProp name="displaySystemProperties">false</boolProp>
+            </DebugPostProcessor>
             <hashTree/>
           </hashTree>
         </hashTree>
@@ -391,13 +430,6 @@
                   </elementProp>
                   <elementProp name="steps" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">ContractorETL</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">steps</stringProp>
-                  </elementProp>
-                  <elementProp name="steps" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">Flag</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
@@ -435,7 +467,7 @@
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Flags After First Run" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select flag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
+            <stringProp name="query">select flag, conID, opID from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="variableNames"></stringProp>
@@ -470,6 +502,34 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
             <stringProp name="queryTimeout"></stringProp>
           </JDBCSampler>
           <hashTree/>
+          <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Sleep" enabled="false"/>
+          <hashTree>
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="/keepalive.jsp" enabled="true">
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain"></stringProp>
+              <stringProp name="HTTPSampler.port"></stringProp>
+              <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+              <stringProp name="HTTPSampler.response_timeout"></stringProp>
+              <stringProp name="HTTPSampler.protocol"></stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path">/keepalive.jsp</stringProp>
+              <stringProp name="HTTPSampler.method">GET</stringProp>
+              <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+              <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+              <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+              <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+              <boolProp name="HTTPSampler.monitor">false</boolProp>
+              <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+            </HTTPSamplerProxy>
+            <hashTree>
+              <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Constant Timer" enabled="true">
+                <stringProp name="ConstantTimer.delay">300000</stringProp>
+              </ConstantTimer>
+              <hashTree/>
+            </hashTree>
+          </hashTree>
           <ForeachController guiclass="ForeachControlPanel" testclass="ForeachController" testname="Run New Flags on Smoketest Contractors" enabled="true">
             <stringProp name="ForeachController.inputVal">SMOKETEST_CONTRACTOR_ID</stringProp>
             <stringProp name="ForeachController.returnVal">CONTRACTOR_ID</stringProp>
@@ -485,13 +545,6 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">conID</stringProp>
-                  </elementProp>
-                  <elementProp name="steps" elementType="HTTPArgument">
-                    <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">ContractorETL</stringProp>
-                    <stringProp name="Argument.metadata">=</stringProp>
-                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
-                    <stringProp name="Argument.name">steps</stringProp>
                   </elementProp>
                   <elementProp name="steps" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -543,7 +596,7 @@ vars.put(&quot;SMOKETEST_CONTRACTOR_IDS&quot;, concatIDs.toString());</stringPro
           <JDBCSampler guiclass="TestBeanGUI" testclass="JDBCSampler" testname="Get Flags After Second Run" enabled="true">
             <stringProp name="dataSource">PICS_ALPHA1</stringProp>
             <stringProp name="queryType">Select Statement</stringProp>
-            <stringProp name="query">select flag from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
+            <stringProp name="query">select flag, conID, opID from contractor_operator where conID in (${SMOKETEST_CONTRACTOR_IDS}) order by conID, opID</stringProp>
             <stringProp name="queryArguments"></stringProp>
             <stringProp name="queryArgumentsTypes"></stringProp>
             <stringProp name="variableNames"></stringProp>
@@ -563,8 +616,8 @@ for(int i = 0; i &lt; first.size(); i++) {
 	log.info(&quot;flagAfter is &quot; + flagAfter);
 	if ((flagBefore == null &amp;&amp; flagAfter != null) || (flagBefore != null &amp;&amp; !flagBefore.equals(flagAfter))) {
 		Failure = true;
-		FailureMessage = &quot;flag colors have changed&quot;;
-		break;
+		FailureMessage += &quot;flag colors have changed (&quot; + flagBefore + &quot; changed to &quot; + flagAfter + &quot;) for contractor &quot; + second.get(i).get(&quot;conID&quot;) + &quot; and operator &quot; + second.get(i).get(&quot;opID&quot;) + &quot;\n&quot;;
+		// break;
 	}
 }</stringProp>
               <stringProp name="BeanShellAssertion.filename"></stringProp>

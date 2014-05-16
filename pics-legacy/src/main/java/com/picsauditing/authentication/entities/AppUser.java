@@ -1,5 +1,6 @@
 package com.picsauditing.authentication.entities;
 
+import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -73,4 +74,8 @@ public class AppUser implements Serializable {
 	public void setResetHash(String resetHash) {
 		this.resetHash = resetHash;
 	}
+
+    public static AppUserBuilder builder() {
+        return new AppUserBuilder();
+    }
 }

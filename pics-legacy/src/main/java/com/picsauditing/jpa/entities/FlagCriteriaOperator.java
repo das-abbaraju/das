@@ -1,24 +1,16 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.Comparator;
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.jpa.entities.builders.FlagCriteriaOperatorBuilder;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.util.Strings;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import java.util.Comparator;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -29,7 +21,6 @@ public class FlagCriteriaOperator extends BaseTable {
 	private FlagCriteria criteria;
 	private FlagColor flag = FlagColor.Red;
 	private String hurdle;
-	private int affected = 0;
 	private Date lastCalculated;
 	private OperatorTag tag;
 
@@ -88,14 +79,6 @@ public class FlagCriteriaOperator extends BaseTable {
 
 	public void setHurdle(String hurdle) {
 		this.hurdle = hurdle;
-	}
-
-	public int getAffected() {
-		return affected;
-	}
-
-	public void setAffected(int affected) {
-		this.affected = affected;
 	}
 
 	public Date getLastCalculated() {

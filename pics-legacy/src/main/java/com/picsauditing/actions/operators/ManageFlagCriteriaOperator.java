@@ -161,7 +161,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 
 		if (!checkExists(fco)) {
 			fco.setOperator(operator);
-			fco.setAffected(calculateAffectedList(fco).size());
 			flagCriteriaOperatorDAO.save(fco);
 			operator.getFlagCriteria().add(fco);
 
@@ -186,25 +185,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	public String childOperator() {
 		operator = operatorDao.find(childID);
 		return "list";
-	}
-
-	@RequiredPermission(value = OpPerms.EditFlagCriteria)
-	public String calculateSingle() throws Exception {
-		if (!Strings.isEmpty(newHurdle)) {
-			tryPermissions(OpPerms.EditFlagCriteria, OpType.Edit);
-			flagCriteriaOperator.setHurdle(newHurdle);
-		}
-
-		int size = calculateAffectedList(flagCriteriaOperator).size();
-		output = Integer.toString(size);
-
-		if (Strings.isEmpty(newHurdle)) {
-			flagCriteriaOperator.setAffected(size);
-			flagCriteriaOperator.setLastCalculated(new Date());
-			flagCriteriaOperatorDAO.save(flagCriteriaOperator);
-		}
-
-		return BLANK;
 	}
 
 	public FlagCriteria getFlagCriteria() {
@@ -342,36 +322,6 @@ public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 		}
 
 		return valid;
-	}
-
-	public List<FlagCriteriaContractor> calculateAffectedList() throws Exception {
-		return calculateAffectedList(flagCriteriaOperator);
-	}
-
-	private List<FlagCriteriaContractor> calculateAffectedList(FlagCriteriaOperator fco) throws Exception {
-		List<FlagCriteriaContractor> fccList = OperatorFlagsCalculator.getFlagCriteriaContractorList(fco, operator,
-				permissions);
-		List<FlagCriteriaContractor> affected = new ArrayList<FlagCriteriaContractor>();
-
-		for (FlagCriteriaContractor fcc : fccList) {
-			FlagDataCalculator calculator = new FlagDataCalculator(fcc, fco);
-			calculator.setOperator(operator);
-			List<FlagData> flagList = calculator.calculate();
-			if (flagList.size() > 0) {
-				FlagData flagged = flagList.get(0);
-
-				if (flagged.getFlag().equals(fco.getFlag()))
-					affected.add(fcc);
-			}
-		}
-
-		Collections.sort(affected, new Comparator<FlagCriteriaContractor>() {
-			public int compare(FlagCriteriaContractor arg0, FlagCriteriaContractor arg1) {
-				return arg0.getContractor().getName().compareTo(arg1.getContractor().getName());
-			}
-		});
-
-		return affected;
 	}
 
 	public String getFormatted(String value) {

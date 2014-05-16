@@ -9,7 +9,8 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang.math.NumberUtils;
-import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /*
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
     API to consumers of the Model Service Classes.
  */
 public class UserGroupManager {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserGroupManager.class);
+
     @Autowired
     protected UserDAO userDAO;
 	@Autowired
@@ -38,11 +42,11 @@ public class UserGroupManager {
 
 	protected void saveNewAppUser(User user) {
 		String username = user.getUsername();
-		JSONObject appUserResponse = appUserService.createNewAppUser(username, "");
-		if (appUserResponse != null && "SUCCESS".equals(appUserResponse.get("status").toString())) {
-			int appUserID = NumberUtils.toInt(appUserResponse.get("id").toString());
-			AppUser appUser = appUserDAO.findByAppUserID(appUserID);
+		try {
+			AppUser appUser = appUserService.generateNewAppUser(username, Strings.EMPTY_STRING);
 			user.setAppUser(appUser);
+		} catch (Exception e) {
+			LOG.warn("Error generating new app user for username {} error = {}", username, e.getMessage());
 		}
 	}
 

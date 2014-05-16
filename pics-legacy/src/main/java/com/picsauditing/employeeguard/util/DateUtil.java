@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.IntervalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -81,4 +82,11 @@ public class DateUtil {
 
 		return new Date().after(documentExpiration.getTime());
 	}
+
+  public static String getSystemTime() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date systemTime = new Date();
+
+    return dateFormat.format(systemTime);
+  }
 }
