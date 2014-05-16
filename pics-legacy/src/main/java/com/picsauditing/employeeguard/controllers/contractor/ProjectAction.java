@@ -6,11 +6,7 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.*;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
-import com.picsauditing.employeeguard.services.ContractorProjectService;
-import com.picsauditing.employeeguard.services.ProjectRoleService;
-import com.picsauditing.employeeguard.services.SiteSkillService;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.forms.binding.FormBinding;
@@ -26,6 +22,8 @@ public class ProjectAction extends PicsRestActionSupport {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountService accountService;
+	@Autowired
+	private AssignmentService assignmentService;
 	@Autowired
 	private ContractorProjectService contractorProjectService;
 	@Autowired
@@ -78,8 +76,10 @@ public class ProjectAction extends PicsRestActionSupport {
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
 				(projectCompany.getProject(), permissions.getAccountId());
 
+		Set<Employee> employeesAssignedToProject = assignmentService.getEmployeesAssignedToProject(getIdAsInt());
+
 		projectAssignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory()
-				.create(projectRoleEmployees, accountSkillProfiles);
+				.create(projectRoleEmployees, accountSkillProfiles, employeesAssignedToProject);
 
 		return SHOW;
 	}

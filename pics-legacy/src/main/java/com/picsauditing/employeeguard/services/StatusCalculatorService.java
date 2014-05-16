@@ -303,7 +303,7 @@ public class StatusCalculatorService {
 					}
 
 					@Override
-					public SkillStatus getValue(AccountSkillProfile accountSkillProfile) {`
+					public SkillStatus getValue(AccountSkillProfile accountSkillProfile) {
 						return SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 					}
 				});

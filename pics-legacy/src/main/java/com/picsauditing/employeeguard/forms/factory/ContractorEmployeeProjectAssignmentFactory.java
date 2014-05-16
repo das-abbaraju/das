@@ -31,10 +31,10 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeAssignmentInformation;
 	}
 
-	private Map<Employee, List<Role>> buildEmployeeJobRoles(List<Employee> accountEmployees, List<Role> jobRoles) {
+	private Map<Employee, List<Role>> buildEmployeeJobRoles(final List<Employee> employees, final List<Role> jobRoles) {
 		Map<Employee, List<Role>> employeeJobRoles = new TreeMap<>();
 
-		for (Employee employee : accountEmployees) {
+		for (Employee employee : employees) {
 			for (GroupEmployee groupEmployee : employee.getGroups()) {
 				if (jobRoles.contains(groupEmployee.getGroup())) {
 					if (!employeeJobRoles.containsKey(employee)) {
@@ -75,11 +75,12 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		ContractorEmployeeProjectAssignment employeeAssignmentInformation = new ContractorEmployeeProjectAssignment();
 		employeeAssignmentInformation = addEmployeeInfo(employeeAssignmentInformation, employee);
 		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillProfiles));
-		employeeAssignmentInformation.setAssignedGroupIds(EntityHelper.getIdsForEntities(jobRoles));
+		employeeAssignmentInformation.setAssignedRoleIds(EntityHelper.getIdsForEntities(jobRoles));
 		return employeeAssignmentInformation;
 	}
 
-	private ContractorEmployeeProjectAssignment addEmployeeInfo(ContractorEmployeeProjectAssignment employeeAssignmentInformation, Employee employee) {
+	private ContractorEmployeeProjectAssignment addEmployeeInfo(final ContractorEmployeeProjectAssignment employeeAssignmentInformation,
+																final Employee employee) {
 		employeeAssignmentInformation.setEmployeeId(employee.getId());
 		employeeAssignmentInformation.setName(employee.getName());
 		employeeAssignmentInformation.setTitle(employee.getPositionName());
@@ -88,7 +89,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 
 	private List<SkillStatus> buildOrderedSkillStatus(final List<AccountSkill> accountSkills,
 													  final List<AccountSkillProfile> accountSkillProfiles) {
-		TreeMap<String, SkillStatus> statusMap = fillMapWithKeys(accountSkills);
+		Map<String, SkillStatus> statusMap = fillMapWithKeys(accountSkills);
 		statusMap = buildSkillStatusMap(statusMap, accountSkillProfiles);
 		return new ArrayList<>(statusMap.values());
 	}
@@ -102,8 +103,8 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return statusMap;
 	}
 
-	private TreeMap<String, SkillStatus> buildSkillStatusMap(final TreeMap<String, SkillStatus> statusMap,
-															 final List<AccountSkillProfile> accountSkillProfiles) {
+	private Map<String, SkillStatus> buildSkillStatusMap(final Map<String, SkillStatus> statusMap,
+														 final List<AccountSkillProfile> accountSkillProfiles) {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 			insertIntoMap(statusMap, accountSkillProfile.getSkill().getName(), skillStatus);
@@ -112,7 +113,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return statusMap;
 	}
 
-	private void insertIntoMap(TreeMap<String, SkillStatus> statusMap, String name, SkillStatus skillStatus) {
+	private void insertIntoMap(Map<String, SkillStatus> statusMap, String name, SkillStatus skillStatus) {
 		if (statusMap.containsKey(name)) {
 			statusMap.put(name, skillStatus);
 		}

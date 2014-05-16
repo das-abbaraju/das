@@ -12,10 +12,7 @@ import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import com.picsauditing.model.i18n.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeProfileFormBuilder {
 
@@ -63,6 +60,8 @@ public class EmployeeProfileFormBuilder {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			skills.add(mapAccountSkillToSkillInfo(accountSkillProfile));
 		}
+
+		Collections.sort(skills);
 
 		return skills;
 	}

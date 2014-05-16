@@ -60,7 +60,7 @@ public class ContractorEmployeeProjectAssignment implements Comparable<Contracto
 		return assignedGroupIds;
 	}
 
-	public void setAssignedGroupIds(List<Integer> assignedGroupIds) {
+	public void setAssignedRoleIds(List<Integer> assignedGroupIds) {
 		this.assignedGroupIds = assignedGroupIds;
 	}
 

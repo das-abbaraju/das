@@ -254,6 +254,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return new HashSet<>(employeeDAO.findContractorsForEmployeeBySite(siteId, employeeId));
 	}
 
+	public Set<Employee> getEmployeesAssignedToProject(final int projectId) {
+		return new HashSet<>(employeeDAO.findByProjectId(projectId));
+	}
+
 	/* All Search Methods */
 
 	@Override
