@@ -21,6 +21,7 @@ public class FeeService {
     private BillingService billingService;
 
     protected static AuditTypeRuleCache ruleCache;
+    @Autowired
     private EmployeeGuardRulesService employeeGuardRulesService;
 
     public AuditTypeRuleCache getRuleCache() {
