@@ -14,7 +14,7 @@ public class ContractorEmployeeProjectAssignment implements Comparable<Contracto
 	private List<SkillStatus> skillStatuses;
 
 	// May not be needed anymore
-	private List<Integer> assignedGroupIds;
+	private List<Integer> assignedRoleIds;
 
 	public boolean isAssigned() {
 		return assigned;
@@ -56,24 +56,24 @@ public class ContractorEmployeeProjectAssignment implements Comparable<Contracto
 		this.skillStatuses = skillStatuses;
 	}
 
-	public List<Integer> getAssignedGroupIds() {
-		return assignedGroupIds;
+	public List<Integer> getAssignedRoleIds() {
+		return assignedRoleIds;
 	}
 
-	public void setAssignedRoleIds(List<Integer> assignedGroupIds) {
-		this.assignedGroupIds = assignedGroupIds;
+	public void setAssignedRoleIds(List<Integer> assignedRoleIds) {
+		this.assignedRoleIds = assignedRoleIds;
 	}
 
 	public boolean hasRoles() {
-		return CollectionUtils.isNotEmpty(assignedGroupIds);
+		return CollectionUtils.isNotEmpty(assignedRoleIds);
 	}
 
 	public boolean hasRole(int roleId) {
-		if (CollectionUtils.isEmpty(assignedGroupIds)) {
+		if (CollectionUtils.isEmpty(assignedRoleIds)) {
 			return false;
 		}
 
-		return assignedGroupIds.contains(roleId);
+		return assignedRoleIds.contains(roleId);
 	}
 
 	@Override
