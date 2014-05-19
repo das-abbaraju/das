@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class ExpirationCalculator {
 
-	public static Date calculateExpirationDate(final AccountSkillProfile accountSkillProfile) {
+	public static Date calculateExpirationDate(AccountSkillProfile accountSkillProfile) {
 		if (accountSkillProfile == null || accountSkillProfile.getSkill() == null)
 			return null;
 
@@ -18,7 +18,7 @@ public class ExpirationCalculator {
 		}
 	}
 
-	private static Date calculateExpirationDateForTraining(final AccountSkillProfile accountSkillProfile) {
+	private static Date calculateExpirationDateForTraining(AccountSkillProfile accountSkillProfile) {
 		int intervalPeriod = accountSkillProfile.getSkill().getIntervalPeriod();
 
 		Date trainingSkillDocUpdated = accountSkillProfile.getStartDate();
@@ -47,7 +47,7 @@ public class ExpirationCalculator {
 		}
 	}
 
-	private static Date calculateExpirationDateForCertificate(final AccountSkillProfile accountSkillProfile) {
+	private static Date calculateExpirationDateForCertificate(AccountSkillProfile accountSkillProfile) {
 		if (accountSkillProfile.getProfileDocument() == null) {
 			return null;
 		}

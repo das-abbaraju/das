@@ -1,0 +1,79 @@
+<div class="employee-dashboard" ng-controller="employeeDashboardCtrl">
+    <div class="container">
+        <pagetitle title="{{ employee.firstName }} {{ employee.lastName }}" subtitle="{{ employee.slug }}"></pagetitle>
+
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="/employee-guard/employee/profile/{{ employee.id }}" target="_self">
+                            <i class="icon-user icon-large"></i>Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/skills" target="_self">
+                            <i class="icon-certificate icon-large"></i>Skills
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/employee/file" target="_self">
+                            <i class="icon-picture icon-large"></i>My Files
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <section class="employee-guard-section">
+                    <h1>
+                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                    </h1>
+
+                    <div class="content clearfix">
+                        <div class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
+                            <div class="tile" ng-class="getSkillClass(assignment.status)">
+                                <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
+                                <p class="title">{{ assignment.name }}</p>
+
+
+                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }} Employee
+                                    <ng-pluralize count="assignment.groups" when="{'1': 'Group','other': 'Groups'}" />
+                                </p>
+                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
+                                <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="row beta-section">
+                    <div class="col-md-8">
+                        <section class="employee-guard-section">
+                            <h1>
+                                <i class="icon-code icon-large"></i>Beta Updates (Thursday 2014-05-08)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Can't reset passwords
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Adding a duplicate file creates an error
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/employee/changelog">
+                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-4">
+                        <betafeedback></betafeedback>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

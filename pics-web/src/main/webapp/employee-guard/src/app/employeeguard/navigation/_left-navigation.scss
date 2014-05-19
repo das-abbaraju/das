@@ -1,0 +1,21 @@
+.bs-sidebar.affix {
+    position: static;
+}
+
+@media (min-width: 992px) {
+	.bs-sidebar.affix {
+		position: fixed;
+		top:68px;
+		width:213px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.bs-sidebar.affix {
+		width: 263px;
+	}
+}
+
+section.visible h1 {
+	margin-top: 0px;
+}

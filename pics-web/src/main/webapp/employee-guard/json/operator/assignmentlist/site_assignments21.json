@@ -1,0 +1,7 @@
+{
+    "employees": 20,
+    "completed": 0,
+    "pending": 2,
+    "expiring": 17,
+    "expired": 1
+}

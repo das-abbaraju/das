@@ -2,8 +2,8 @@ package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.IdNameComposite;
-import com.picsauditing.employeeguard.models.RequiredSkills;
 import com.picsauditing.employeeguard.models.SkillStatusInfo;
+import com.picsauditing.employeeguard.models.SkillStatusModel;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.*;
@@ -11,13 +11,13 @@ import java.util.*;
 public class CompanyStatusModelFactory {
 
 	public Set<CompanyStatusModel> create(final Map<AccountModel, SkillStatus> accountStatusMap,
-										  final Map<AccountModel, RequiredSkills> requiredSkillsMap,
+										  final Map<AccountModel, Set<SkillStatusModel>> accountSkillsMap,
 										  final Map<AccountModel, Set<CompanyProjectModelFactory.CompanyProjectModel>> accountProjectsMap) {
 
 		List<CompanyStatusModel> companyStatusModels = new ArrayList<>();
 		for (AccountModel accountModel : accountStatusMap.keySet()) {
 			companyStatusModels.add(create(accountModel, accountStatusMap.get(accountModel),
-					requiredSkillsMap.get(accountModel), accountProjectsMap.get(accountModel)));
+					accountSkillsMap.get(accountModel), accountProjectsMap.get(accountModel)));
 		}
 
 		Collections.sort(companyStatusModels);
@@ -27,7 +27,7 @@ public class CompanyStatusModelFactory {
 
 	public CompanyStatusModel create(final AccountModel accountModel,
 									 final SkillStatus status,
-									 final RequiredSkills requiredSkills,
+									 final Set<SkillStatusModel> skills,
 									 final Set<CompanyProjectModelFactory.CompanyProjectModel> projectModels) {
 
 		CompanyStatusModel companyStatusModel = new CompanyStatusModel();
@@ -35,7 +35,7 @@ public class CompanyStatusModelFactory {
 		companyStatusModel.setId(accountModel.getId());
 		companyStatusModel.setName(accountModel.getName());
 		companyStatusModel.setStatus(status);
-		companyStatusModel.setRequired(requiredSkills);
+		companyStatusModel.setSkills(skills);
 		companyStatusModel.setProjects(projectModels);
 
 		return companyStatusModel;
@@ -46,7 +46,7 @@ public class CompanyStatusModelFactory {
 		private int id;
 		private String name;
 		private SkillStatus status;
-		private RequiredSkills required;
+		private Set<SkillStatusModel> skills;
 		private Set<CompanyProjectModelFactory.CompanyProjectModel> projects;
 
 		@Override
@@ -79,12 +79,12 @@ public class CompanyStatusModelFactory {
 			this.status = status;
 		}
 
-		public RequiredSkills getRequired() {
-			return required;
+		public Set<SkillStatusModel> getSkills() {
+			return skills;
 		}
 
-		public void setRequired(RequiredSkills required) {
-			this.required = required;
+		public void setSkills(Set<SkillStatusModel> skills) {
+			this.skills = skills;
 		}
 
 		public Set<CompanyProjectModelFactory.CompanyProjectModel> getProjects() {

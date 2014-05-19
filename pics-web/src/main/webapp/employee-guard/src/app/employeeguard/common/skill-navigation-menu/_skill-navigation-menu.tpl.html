@@ -1,0 +1,34 @@
+<div class="bs-sidebar" ng-controller="menuFilterCtrl">
+    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+        <ul class="nav" role="menu">
+            <li ng-click="select('All')" ng-class="{active: isSelected('All')}">
+                <a href="#" ng-click="onmenuitemclick('all')">All
+                    <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
+                </a>
+            </li>
+            <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Job Roles</span>
+            </li>
+
+            <li ng-repeat="role in employee.roles" ng-click="select(role.name)" ng-class="{active: isSelected(role.name)}">
+                <a href="#" ng-click="onmenuitemclick('role', role.name)">
+                    {{ role.name }}
+                    <skillstatusicon status="{{ role.status }}" class="pull-right"></skillstatusicon>
+                </a>
+            </li>
+
+            <li class="nav-divider"></li>
+            <li>
+                <span class="nav-title">Projects</span>
+            </li>
+
+            <li ng-repeat="project in employee.projects" ng-click="select(project.name)" ng-class="{active: isSelected(project.name)}">
+                <a href="#" ng-click="onmenuitemclick('project', project.name)">
+                    {{ project.name }}
+                    <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

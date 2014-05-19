@@ -1,0 +1,219 @@
+{
+   "id":29,
+   "projects":[
+      {
+         "id":4,
+         "name":"ABC Project",
+         "roles":[
+            {
+               "id":3,
+               "name":"Electrician",
+               "skills":[
+                  {
+                     "id":6,
+                     "name":"Electrical Equipment Ground Assurance Training",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":51,
+                     "name":"Defensing Driving",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":5,
+                     "name":"Electrician License",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":14,
+                     "name":"Site Orientation",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":13,
+                     "name":"General Safety Training",
+                     "status": "Expired"
+                  }
+               ]
+            }
+         ],
+         "skills":[
+            {
+               "id":6,
+               "name":"Electrical Equipment Ground Assurance Training",
+               "status": "Expired"
+            },
+            {
+               "id":5,
+               "name":"Electrician License",
+               "status": "Expired"
+            },
+            {
+               "id":51,
+               "name":"Defensing Driving",
+               "status": "Expired"
+            },
+            {
+               "id":14,
+               "name":"Site Orientation",
+               "status": "Expired"
+            },
+            {
+               "id":15,
+               "name":"Controlled Explosives Video",
+               "status": "Expired"
+            },
+            {
+               "id":13,
+               "name":"General Safety Training",
+               "status": "Expired"
+            }
+         ]
+      },
+      {
+         "id":2,
+         "name":"Walter Site Demolition",
+         "roles":[
+            {
+               "id":6,
+               "name":"Demolition Operative",
+               "skills":[
+                  {
+                     "id":12,
+                     "name":"Fire Prevention Training",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":51,
+                     "name":"Defensing Driving",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":14,
+                     "name":"Site Orientation",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":13,
+                     "name":"General Safety Training",
+                     "status": "Expired"
+                  },
+                  {
+                     "id":11,
+                     "name":"NVQ Level 2 Certificate",
+                     "status": "Expired"
+                  }
+               ]
+            }
+         ],
+         "skills":[
+            {
+               "id":12,
+               "name":"Fire Prevention Training",
+               "status": "Expired"
+            },
+            {
+               "id":51,
+               "name":"Defensing Driving",
+               "status": "Expired"
+            },
+            {
+               "id":14,
+               "name":"Site Orientation",
+               "status": "Expired"
+            },
+            {
+               "id":15,
+               "name":"Controlled Explosives Video",
+               "status": "Expired"
+            },
+            {
+               "id":11,
+               "name":"NVQ Level 2 Certificate",
+               "status": "Expired"
+            },
+            {
+               "id":13,
+               "name":"General Safety Training",
+               "status": "Expired"
+            }
+         ]
+      }
+   ],
+   "image":"",
+   "status":"Expired",
+   "firstName":"Murphy",
+   "lastName":"Hibbert",
+   "companies":[
+      {
+         "id":54578,
+         "title":"Demo Op",
+         "name":"ACME Co."
+      }
+   ],
+   "roles":[
+      {
+         "id":6,
+         "name":"Demolition Operative",
+         "skills":[
+            {
+               "id":12,
+               "name":"Fire Prevention Training",
+               "status": "Completed"
+
+            },
+            {
+               "id":51,
+               "name":"Defensing Driving",
+               "status": "Expired"
+            },
+            {
+               "id":14,
+               "name":"Site Orientation",
+               "status": "Expired"
+            },
+            {
+               "id":13,
+               "name":"General Safety Training",
+               "status": "Expired"
+            },
+            {
+               "id":11,
+               "name":"NVQ Level 2 Certificate",
+               "status": "Expired"
+            }
+         ]
+      },
+      {
+         "id":3,
+         "name":"Electrician",
+         "skills":[
+            {
+               "id":6,
+               "name":"Electrical Equipment Ground Assurance Training",
+               "status": "Expired"
+            },
+            {
+               "id":51,
+               "name":"Defensing Driving",
+               "status": "Expired"
+            },
+            {
+               "id":5,
+               "name":"Electrician License",
+               "status": "Expired"
+            },
+            {
+               "id":14,
+               "name":"Site Orientation",
+               "status": "Expired"
+            },
+            {
+               "id":13,
+               "name":"General Safety Training",
+               "status": "Expired"
+            }
+         ]
+      }
+   ]
+}

@@ -1,0 +1,117 @@
+#secondary_navigation {
+    top: 49px;
+    background: #2c3f50;
+    @include background-image(linear-gradient(to bottom, #34495e, #2c3f50));
+    border-bottom: 2px solid #1a1a1a;
+    height: 30px;
+    z-index: 100;
+
+    .navbar {
+      background: none;
+      border: 0;
+      margin-bottom: 0;
+    }
+
+    .navbar-nav > li > {
+        a { 
+            padding-top: 5px;
+            padding-bottom: 5px;
+            color: $pics_cool_grey;
+        }
+
+        a:hover {
+            color: #ffffff;
+        }
+    }
+
+    .nav li.dropdown.open > .dropdown-toggle {
+        background: #2c3f50;
+        border-top: 2px solid #bcbcbc;
+        color: #ffffff;
+        height: 30px;
+    }
+
+/* TODO: Customize the styles below */;
+
+    .navbar .dropdown-menu li a:link,
+    .navbar .dropdown-menu li a:visited {
+        color: #454545;
+        text-decoration: none;
+    }
+
+    .navbar .dropdown-menu li a:hover {
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+    .navbar a:hover {
+        color: $pics_light_blue;
+        text-decoration: none;
+    }
+
+    .dropdown-menu {
+        border: 0px;
+        @include border-radius(5px);
+        @include box-shadow(rgba(0, 0, 0, 0.2) 0 1px 6px);
+        top: 35px;
+    }
+
+    .dropdown-menu li > a:hover,
+    .dropdown-menu .active > a,
+    .dropdown-menu .active > a:hover {
+        @include background-image(linear-gradient($primary_light, $primary_med));
+    }
+
+    .dropdown-menu .divider {
+        background-color: $pics_cool_grey;
+        border-bottom: 1px solid #ffffff;
+        height: 2px;
+        margin: 9px 1px;
+        overflow: hidden;
+    }
+
+    .dropdown-menu .nav-header {
+        color: $default_silver;
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        line-height: 20px;
+        margin-top: 9px;
+        padding: 3px 20px;
+        text-transform: uppercase;
+    }
+
+    .nav li + .nav-header {
+        margin-top: 9px;
+    }
+    /* END dropdown menu */
+
+    .nav li.dropdown.switch-to.open > .dropdown-toggle,
+    .nav li.dropdown.switch-to.active > .dropdown-toggle,
+    .nav li.dropdown.switch-to.open.active > .dropdown-toggle
+    {
+        background-color: #3f93c0 \9;
+        background-color: #3f93c0;
+        background-image: none;
+        outline: 0;
+        @include box-shadow(inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05));
+        color: #ffffff;
+    }
+}
+
+@media (min-width: 992px) {
+    body.has-contractor-menu {
+        padding-top: 80px;
+
+        #primary_navigation {
+            border-bottom: none;
+            height: 50px;
+        }
+    }
+}
+
+@media (max-width: 991px) {
+    #secondary_navigation {
+        display: none;
+    }
+}

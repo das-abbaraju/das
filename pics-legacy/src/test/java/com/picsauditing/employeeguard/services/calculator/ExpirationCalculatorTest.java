@@ -11,11 +11,14 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ExpirationCalculatorTest {
+
 	public static final int INTERVAL_PERIOD = 3;
+
 	@Mock
 	private AccountSkill accountSkill;
 	@Mock
@@ -124,5 +127,14 @@ public class ExpirationCalculatorTest {
 		profileDocument.setEndDate(expectedExpirationDate.getTime());
 
 		assertEquals(expectedExpirationDate.getTime(), ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
+	}
+
+	@Test
+	public void testCalculateExpirationDate_AccountSkillEmployeeHasNullSkill() throws Exception {
+		AccountSkillProfile accountSkillEmployee = new AccountSkillProfile();
+
+		Date result = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+
+		assertNull(result);
 	}
 }

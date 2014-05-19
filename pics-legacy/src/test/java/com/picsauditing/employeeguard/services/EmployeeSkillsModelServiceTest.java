@@ -79,6 +79,7 @@ public class EmployeeSkillsModelServiceTest {
 	private ProfileSkillData buildFakeProfileSkillData() {
 		ProfileSkillData profileSkillData = new ProfileSkillData();
 
+		profileSkillData = addProjects(profileSkillData);
 		profileSkillData = addAllProjectSkills(profileSkillData);
 		profileSkillData = addSkillStatusMap(profileSkillData);
 		profileSkillData = addSiteAccounts(profileSkillData);
@@ -87,6 +88,12 @@ public class EmployeeSkillsModelServiceTest {
 		profileSkillData = addAllRequiredSkills(profileSkillData);
 		profileSkillData = addOverallStatus(profileSkillData);
 		profileSkillData = addSiteStatuses(profileSkillData);
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addProjects(final ProfileSkillData profileSkillData) {
+		profileSkillData.setProjects(new HashSet<>(Arrays.asList(TEST_PROJECT)));
 
 		return profileSkillData;
 	}
@@ -140,7 +147,7 @@ public class EmployeeSkillsModelServiceTest {
 		profileSkillData.setAllRequiredSkills(new HashMap<AccountModel, Set<AccountSkill>>() {{
 
 			put(CORPORATE_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(CORPORATE_REQUIRED_SKILL)));
-			put(SITE_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(SITE_REQUIRED_SKILL)));
+			put(SITE_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(SITE_REQUIRED_SKILL, CORPORATE_REQUIRED_SKILL)));
 			put(CONTRACTOR_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(CONTRACTOR_REQUIRED_SKILL)));
 
 		}});
