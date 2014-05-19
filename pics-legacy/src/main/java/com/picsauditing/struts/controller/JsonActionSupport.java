@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public abstract  class JsonActionSupport extends PicsActionSupport {
+public abstract class JsonActionSupport extends PicsActionSupport {
 
     protected final <T> T getModelFromJsonRequest(Class<T> clazz) throws IOException {
         String body = getBodyFromRequest();
@@ -37,12 +37,12 @@ public abstract  class JsonActionSupport extends PicsActionSupport {
         return BLANK;
     }
 
-    private final String getBodyFromRequest() throws IOException {
+    private String getBodyFromRequest() throws IOException {
         HttpServletRequest request = getRequest();
         return getBody(request);
     }
 
-    private static String getBody(HttpServletRequest request) throws IOException {
+    public final String getBody(HttpServletRequest request) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = null;
 
