@@ -3,6 +3,7 @@ package com.picsauditing.jpa.entities.builders;
 import com.picsauditing.jpa.entities.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContractorAccountBuilder {
     private ContractorAccount contractor = new ContractorAccount();
@@ -85,6 +86,11 @@ public class ContractorAccountBuilder {
 
     public ContractorAccountBuilder safetyRisk(LowMedHigh safetyRisk) {
         contractor.setSafetyRisk(safetyRisk);
+        return this;
+    }
+
+    public ContractorAccountBuilder audits(List<ContractorAudit> contractorAudits) {
+        contractor.setAudits(contractorAudits);
         return this;
     }
 }

@@ -5,6 +5,7 @@ import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class FeeService {
     private BillingService billingService;
 
     protected static AuditTypeRuleCache ruleCache;
+    private EmployeeGuardRulesService employeeGuardRulesService;
 
     public AuditTypeRuleCache getRuleCache() {
         if (ruleCache == null) {
@@ -178,6 +180,7 @@ public class FeeService {
         BillingStatus currentBillingStatus = billingService.billingStatus(contractor);
 
         FeeClassParameters feeClassParameters = new FeeClassParameters(contractor).build();
+        employeeGuardRulesService.runEmployeeGuardRules(contractor, feeClassParameters.getAuditTypeDetails());
         Set<FeeClass> feeClasses = buildFeeClasses(contractor, feeClassParameters);
         buildFeeNewLevels(contractor, feeClassParameters.getPayingFacilities(), feeClasses, feeClassParameters.getOperatorsRequiringInsureGUARD());
 
@@ -579,6 +582,8 @@ public class FeeService {
                 if (auditType.getId() == AuditType.HSE_COMPETENCY)
                     hasHseCompetency = true;
             }
+
+
             return this;
         }
     }
