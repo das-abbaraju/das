@@ -6,12 +6,17 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.ContractorDetailProjectForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.*;
-import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
+import com.picsauditing.employeeguard.models.factories.SiteAssignmentsAndProjectsFactory;
+import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
+import com.picsauditing.employeeguard.services.ContractorProjectService;
+import com.picsauditing.employeeguard.services.ProjectRoleService;
+import com.picsauditing.employeeguard.services.SiteSkillService;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.jpa.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,8 +27,6 @@ public class ProjectAction extends PicsRestActionSupport {
 	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountService accountService;
-	@Autowired
-	private AssignmentService assignmentService;
 	@Autowired
 	private ContractorProjectService contractorProjectService;
 	@Autowired
@@ -47,20 +50,43 @@ public class ProjectAction extends PicsRestActionSupport {
 		List<ProjectCompany> projectCompanies = null;
 		if (isSearch(searchForm)) {
 			projectCompanies = contractorProjectService.search(searchForm.getSearchTerm(), permissions.getAccountId());
+
 		} else {
 			projectCompanies = contractorProjectService.getProjectsForContractor(permissions.getAccountId());
 		}
 
 		buildSiteAssignmentsAndProjects(projectCompanies);
 
+		buildbuildSiteAssignmentNotAttachedToProjects(permissions.getAccountId());
+
+		siteAssignmentsAndProjects=Collections.unmodifiableMap(siteAssignmentsAndProjects);
+
 		return LIST;
 	}
+
+
+	private void buildbuildSiteAssignmentNotAttachedToProjects(int contractorId){
+		List<Integer> contractorClientSitesAttachedToProjs= contractorProjectService.findClientSitesByContractorAccount(contractorId);
+
+		List<AccountModel> contractorClientSitesNotAttachedToProjects=accountService.findContractorClientSitesNotAttachedToProjects(contractorId, contractorClientSitesAttachedToProjs);
+
+		SiteAssignmentsAndProjectsFactory saapf=ModelFactory.getSiteAssignmentsAndProjectsFactory();
+
+		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs=saapf.buildSiteAssignStatsForClientSitesUnattachedToProjs(contractorClientSitesNotAttachedToProjects);
+
+		for(SiteAssignmentStatisticsModel siteAssignmentStatisticsModel:sasmForClientSitesNotAttchdToProjs){
+			siteAssignmentsAndProjects.put(siteAssignmentStatisticsModel, Collections.<ProjectStatisticsModel>emptyList());
+		}
+
+	}
+
+
 
 	private void buildSiteAssignmentsAndProjects(List<ProjectCompany> projectCompanies) {
 		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = siteSkillService.getRequiredSkillsForProjects(projectCompanies);
 		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
-		List<AccountSkillProfile> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
+		List<AccountSkillEmployee> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
 
 		siteAssignmentsAndProjects = ModelFactory.getSiteAssignmentsAndProjectsFactory()
 				.create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
@@ -71,15 +97,13 @@ public class ProjectAction extends PicsRestActionSupport {
 		AccountModel accountModel = accountService.getAccountById(projectCompany.getProject().getAccountId());
 		project = formBuilderFactory.getContratorDetailProjectFormBuilder().build(projectCompany, accountModel);
 
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService
+		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService
 				.getAccountSkillEmployeeForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
 				(projectCompany.getProject(), permissions.getAccountId());
 
-		Set<Employee> employeesAssignedToProject = assignmentService.getEmployeesAssignedToProject(getIdAsInt());
-
 		projectAssignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory()
-				.create(projectRoleEmployees, accountSkillProfiles, employeesAssignedToProject);
+				.create(projectRoleEmployees, accountSkillEmployees);
 
 		return SHOW;
 	}

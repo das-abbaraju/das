@@ -6,7 +6,6 @@ import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import org.joda.time.DateTime;
 
 import java.util.*;
 
@@ -15,29 +14,27 @@ public class EGTestDataUtil {
   private static final int CORPORATE_ID = sequencer++;
   private static final int SITE_ID = sequencer++;
   private static final int CONTRACTOR_ID = sequencer++;
-  private static final int EMPLOYEE_ID = sequencer++;
+  public static final int EMPLOYEE_ID = sequencer++;
 
-  private static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);
+  public static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);
 
+  // Project Mock Data
+  public static final Project PROJECT_NO_SKILLS_NO_ROLES = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills No Roles").build();
+  public static final Project PROJECT_WITH_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project Has Skills").build();
+  public static final Project PROJECT_NO_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills").build();
 
-  private static final Project PROJECT_NO_SKILLS_NO_ROLES = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills No Roles").build();
-  private static final Project PROJECT_WITH_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project Has Skills").build();
-  private static final Project PROJECT_NO_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills").build();
+  // Skill Mock Data
+  public static final AccountSkill SITE_REQUIRE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_REQUIRE_SKILL 1").build();
+  public static final AccountSkill CORPORATE_REQUIRED_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("CORPORATE_REQUIRED_SKILL 1").build();
+  public static final AccountSkill SKILL_FOR_ROLE_WITH_SKILLS = new AccountSkillBuilder(CORPORATE_ID).name("SKILL_FOR_ROLE_WITH_SKILLS").build();
+  public static final AccountSkill SITE_ASSIGNMENT_ROLE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE_SKILL").build();
+  public static final AccountSkill PROJECT_REQUIRED_SKILL_2 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_2").build();
+  public static final AccountSkill PROJECT_REQUIRED_SKILL_1 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_1").build();
 
-
-  private static final AccountSkill SITE_REQUIRE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_REQUIRE_SKILL 1").build();
-  private static final AccountSkill CORPORATE_REQUIRED_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("CORPORATE_REQUIRED_SKILL 1").build();
-  private static final AccountSkill SKILL_FOR_ROLE_WITH_SKILLS = new AccountSkillBuilder(CORPORATE_ID).name("SKILL_FOR_ROLE_WITH_SKILLS").build();
-  private static final AccountSkill SITE_ASSIGNMENT_ROLE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE_SKILL").build();
-  private static final AccountSkill PROJECT_REQUIRED_SKILL_2 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_2").build();
-  private static final AccountSkill PROJECT_REQUIRED_SKILL_1 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_1").build();
-
-
-  private static final Role SITE_ASSIGNMENT_ROLE = new RoleBuilder().accountId(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE").build();
-  private static final Role ROLE_WITH_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_WITH_SKILLS").build();
-  private static final Role ROLE_NO_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_NO_SKILLS").build();
-
-
+  // Role Mock Data
+  public static final Role SITE_ASSIGNMENT_ROLE = new RoleBuilder().accountId(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE").build();
+  public static final Role ROLE_WITH_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_WITH_SKILLS").build();
+  public static final Role ROLE_NO_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_NO_SKILLS").build();
 
 
   public AccountModel buildFakeContractorAccountModel() {
@@ -267,25 +264,6 @@ public class EGTestDataUtil {
             .build();
   }
 
-	public AccountSkill buildNewFakeTrainingSkill(){
-		int id=sequencer++;
-		return new AccountSkillBuilder(id, CORPORATE_ID)
-						.accountId(CORPORATE_ID)
-						.skillType(SkillType.Training)
-						.intervalPeriod(1)
-						.intervalType(IntervalType.DAY)
-						.name("Training Skill "+ id)
-						.build();
-	}
-
-	public AccountSkill buildNewFakeCertificationSkill(){
-		return new AccountSkillBuilder(sequencer++, CORPORATE_ID)
-						.accountId(CORPORATE_ID)
-						.skillType(SkillType.Certification)
-						.name("Certification Skill 1")
-						.build();
-	}
-
   public List<Role> buildNewFakeRoles() {
     return Arrays.asList(
             buildNewFakeRole(),
@@ -377,120 +355,88 @@ public class EGTestDataUtil {
     return contractorEmployeeMap;
   }
 
-
-	public AccountSkillEmployee prepareExpiredAccountSkillEmployee(){
-		DateTime skillDocSaveDate = (new DateTime().minusDays(35));
-		AccountSkill skill = this.buildNewFakeTrainingSkill();
-		skill.setIntervalType(IntervalType.MONTH);
-
-		DateTime oneYrFromNowDate =new DateTime().plusDays(365);
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder()
-						.startDate(skillDocSaveDate.toDate())
-						.endDate(oneYrFromNowDate.toDate()) // End date is not used.  Its intentionally populated to make sure its not
-						.build();
-
-		accountSkillEmployee.setSkill(skill);
-
-		return accountSkillEmployee;
+	public List<ProjectCompany> getFakeProjectCompanies() {
+		return Arrays.asList(
+						new ProjectCompanyBuilder()
+										.project(
+														new ProjectBuilder()
+																		.accountId(SITE_ID)
+																		.build())
+										.build(),
+						new ProjectCompanyBuilder()
+										.project(
+														new ProjectBuilder()
+																		.accountId(SITE_ID)
+																		.build()
+										)
+										.build());
 	}
 
-	public AccountSkillEmployee prepareExpiringAccountSkillEmployee(){
-		DateTime skillDocSaveDate = (new DateTime().minusDays(2));
-		AccountSkill skill = this.buildNewFakeTrainingSkill();
-		skill.setIntervalType(IntervalType.WEEK);
-
-		DateTime oneYrFromNowDate =new DateTime().plusDays(365);
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder()
-						.startDate(skillDocSaveDate.toDate())
-						.endDate(oneYrFromNowDate.toDate()) // End date is not used.  Its intentionally populated to make sure its not
-						.build();
-
-		accountSkillEmployee.setSkill(skill);
-
-		return accountSkillEmployee;
-	}
-
-	public AccountSkillEmployee prepareCompletedAccountSkillEmployee(){
-		DateTime skillDocSaveDate = (new DateTime().minusDays(3));
-		AccountSkill skill = this.buildNewFakeTrainingSkill();
-		skill.setIntervalType(IntervalType.YEAR);
-
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder()
-						.startDate(skillDocSaveDate.toDate())
-						.endDate((new DateTime().plusDays(5).toDate())) // End date is not used.  Its intentionally populated to make sure its not
-						.build();
-
-		accountSkillEmployee.setSkill(skill);
-
-		return accountSkillEmployee;
-	}
-
-
-  public int getCorporateId() {
+  public static int getCorporateId() {
     return CORPORATE_ID;
   }
 
-  public int getSiteId() {
+  public static int getSiteId() {
     return SITE_ID;
   }
 
-  public int getContractorId() {
+  public static int getContractorId() {
     return CONTRACTOR_ID;
   }
 
-  public int getEmployeeId() {
+  public static int getEmployeeId() {
     return EMPLOYEE_ID;
   }
 
-  public List<Integer> getCorporateAccountIds() {
+  public static List<Integer> getCorporateAccountIds() {
     return CORPORATE_ACCOUNT_IDS;
   }
 
-  public Project getProjectNoSkillsNoRoles() {
+  public static Project getProjectNoSkillsNoRoles() {
     return PROJECT_NO_SKILLS_NO_ROLES;
   }
 
-  public Project getProjectWithSkills() {
+  public static Project getProjectWithSkills() {
     return PROJECT_WITH_SKILLS;
   }
 
-  public Project getProjectNoSkills() {
+  public static Project getProjectNoSkills() {
     return PROJECT_NO_SKILLS;
   }
 
-  public AccountSkill getSiteRequireSkill() {
+  public static AccountSkill getSiteRequireSkill() {
     return SITE_REQUIRE_SKILL;
   }
 
-  public AccountSkill getCorporateRequiredSkill() {
+  public static AccountSkill getCorporateRequiredSkill() {
     return CORPORATE_REQUIRED_SKILL;
   }
 
-  public AccountSkill getSkillForRoleWithSkills() {
+  public static AccountSkill getSkillForRoleWithSkills() {
     return SKILL_FOR_ROLE_WITH_SKILLS;
   }
 
-  public AccountSkill getSiteAssignmentRoleSkill() {
+  public static AccountSkill getSiteAssignmentRoleSkill() {
     return SITE_ASSIGNMENT_ROLE_SKILL;
   }
 
-  public AccountSkill getProjectRequiredSkill2() {
+  public static AccountSkill getProjectRequiredSkill2() {
     return PROJECT_REQUIRED_SKILL_2;
   }
 
-  public AccountSkill getProjectRequiredSkill1() {
+  public static AccountSkill getProjectRequiredSkill1() {
     return PROJECT_REQUIRED_SKILL_1;
   }
 
-  public Role getSiteAssignmentRole() {
+  public static Role getSiteAssignmentRole() {
     return SITE_ASSIGNMENT_ROLE;
   }
 
-  public Role getRoleWithSkills() {
+  public static Role getRoleWithSkills() {
     return ROLE_WITH_SKILLS;
   }
 
-  public Role getRoleNoSkills() {
+  public static Role getRoleNoSkills() {
     return ROLE_NO_SKILLS;
   }
 }

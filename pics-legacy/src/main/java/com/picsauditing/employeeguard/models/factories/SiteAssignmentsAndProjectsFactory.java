@@ -4,11 +4,15 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.contractor.ContractorProjectForm;
-import com.picsauditing.employeeguard.models.*;
+import com.picsauditing.employeeguard.models.ModelFactory;
+import com.picsauditing.employeeguard.models.ProjectStatisticsModel;
+import com.picsauditing.employeeguard.models.SiteAssignmentStatisticsModel;
 import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.models.ProjectAssignmentBreakdown;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
@@ -21,11 +25,11 @@ public class SiteAssignmentsAndProjectsFactory {
 			final Map<AccountModel, Set<Project>> projects,
 			final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills,
 			final Map<Employee, Set<Role>> employeeRoles,
-			final List<AccountSkillProfile> profileSkills) {
+			final List<AccountSkillEmployee> employeeSkills) {
 
 		Map<AccountModel, Map<Employee, Set<Role>>> employeeRolesPerSite = getEmployeeRolesPerSite(projects, employeeRoles);
-		Table<Employee, Role, Set<AccountSkillProfile>> employeeSkillsByRole = getEmployeeSkillsByRole(employeeRoles, profileSkills);
-		Table<AccountModel, AccountSkill, Set<AccountSkillProfile>> employeeSkillsBySiteSkills = getEmployeeSkillsBySiteSkills(siteAndCorporateRequiredSkills, profileSkills);
+		Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole = getEmployeeSkillsByRole(employeeRoles, employeeSkills);
+		Table<AccountModel, AccountSkill, Set<AccountSkillEmployee>> employeeSkillsBySiteSkills = getEmployeeSkillsBySiteSkills(siteAndCorporateRequiredSkills, employeeSkills);
 
 		List<SiteAssignmentStatisticsModel> siteAssignmentStatistics = buildSiteAssignmentStatistics(employeeRolesPerSite, employeeSkillsByRole, employeeSkillsBySiteSkills);
 		List<ProjectStatisticsModel> projectStatistics = buildProjectStatistics(projects, employeeSkillsByRole);
@@ -51,7 +55,7 @@ public class SiteAssignmentsAndProjectsFactory {
 			siteAssignmentsAndProjects.put(siteAssignmentStatistic, siteNameToProjectStatistics.get(siteAssignmentStatistic.getSite().getId()));
 		}
 
-		return Collections.unmodifiableMap(siteAssignmentsAndProjects);
+		return siteAssignmentsAndProjects;
 	}
 
 	private Map<AccountModel, Map<Employee, Set<Role>>> getEmployeeRolesPerSite(Map<AccountModel, Set<Project>> projects, Map<Employee, Set<Role>> employeeRoles) {
@@ -116,14 +120,14 @@ public class SiteAssignmentsAndProjectsFactory {
 		return false;
 	}
 
-	private Table<Employee, Role, Set<AccountSkillProfile>> getEmployeeSkillsByRole(Map<Employee, Set<Role>> employeeRoles, List<AccountSkillProfile> profileSkills) {
-		Table<Employee, Role, Set<AccountSkillProfile>> projectRoleSkills = TreeBasedTable.create();
+	private Table<Employee, Role, Set<AccountSkillEmployee>> getEmployeeSkillsByRole(Map<Employee, Set<Role>> employeeRoles, List<AccountSkillEmployee> employeeSkills) {
+		Table<Employee, Role, Set<AccountSkillEmployee>> projectRoleSkills = TreeBasedTable.create();
 
 		for (Map.Entry<Employee, Set<Role>> roleEntry : employeeRoles.entrySet()) {
 			final Employee employee = roleEntry.getKey();
 
 			for (final Role role : roleEntry.getValue()) {
-				Set<AccountSkillProfile> employeeRoleSkills = filterAccountSkillEmployeesByEmployeeAndRole(profileSkills, employee, role);
+				Set<AccountSkillEmployee> employeeRoleSkills = filterAccountSkillEmployeesByEmployeeAndRole(employeeSkills, employee, role);
 				projectRoleSkills.put(employee, role, employeeRoleSkills);
 			}
 		}
@@ -131,40 +135,40 @@ public class SiteAssignmentsAndProjectsFactory {
 		return projectRoleSkills;
 	}
 
-	private Set<AccountSkillProfile> filterAccountSkillEmployeesByEmployeeAndRole(List<AccountSkillProfile> profileSkills, final Employee employee, final Role role) {
-		Set<AccountSkillProfile> employeeRoleSkills = new HashSet<>(profileSkills);
-		CollectionUtils.filter(employeeRoleSkills, new GenericPredicate<AccountSkillProfile>() {
+	private Set<AccountSkillEmployee> filterAccountSkillEmployeesByEmployeeAndRole(List<AccountSkillEmployee> employeeSkills, final Employee employee, final Role role) {
+		Set<AccountSkillEmployee> employeeRoleSkills = new HashSet<>(employeeSkills);
+		CollectionUtils.filter(employeeRoleSkills, new GenericPredicate<AccountSkillEmployee>() {
 			@Override
-			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
 				List<AccountSkill> roleSkills = ExtractorUtil.extractList(role.getSkills(), AccountSkillRole.SKILL_EXTRACTOR);
 
-				return accountSkillProfile.getProfile().getEmployees().contains(employee) && roleSkills.contains(accountSkillProfile.getSkill());
+				return accountSkillEmployee.getEmployee().equals(employee) && roleSkills.contains(accountSkillEmployee.getSkill());
 			}
 		});
 		return employeeRoleSkills;
 	}
 
-	private Table<AccountModel, AccountSkill, Set<AccountSkillProfile>> getEmployeeSkillsBySiteSkills(
+	private Table<AccountModel, AccountSkill, Set<AccountSkillEmployee>> getEmployeeSkillsBySiteSkills(
 			Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills,
-			List<AccountSkillProfile> profileSkills) {
-		Table<AccountModel, AccountSkill, Set<AccountSkillProfile>> employeeSkillsBySiteSkills = TreeBasedTable.create();
+			List<AccountSkillEmployee> employeeSkills) {
+		Table<AccountModel, AccountSkill, Set<AccountSkillEmployee>> employeeSkillsBySiteSkills = TreeBasedTable.create();
 
 		for (Map.Entry<AccountModel, Set<AccountSkill>> siteRequiredSkills : siteAndCorporateRequiredSkills.entrySet()) {
 			for (AccountSkill skill : siteRequiredSkills.getValue()) {
-				employeeSkillsBySiteSkills.put(siteRequiredSkills.getKey(), skill, filterAccountSkillEmployeesBySkill(profileSkills, skill));
+				employeeSkillsBySiteSkills.put(siteRequiredSkills.getKey(), skill, filterAccountSkillEmployeesBySkill(employeeSkills, skill));
 			}
 		}
 
 		return employeeSkillsBySiteSkills;
 	}
 
-	private Set<AccountSkillProfile> filterAccountSkillEmployeesBySkill(List<AccountSkillProfile> profileSkills, final AccountSkill skill) {
-		Set<AccountSkillProfile> filtered = new HashSet<>(profileSkills);
+	private Set<AccountSkillEmployee> filterAccountSkillEmployeesBySkill(List<AccountSkillEmployee> employeeSkills, final AccountSkill skill) {
+		Set<AccountSkillEmployee> filtered = new HashSet<>(employeeSkills);
 
-		CollectionUtils.filter(filtered, new GenericPredicate<AccountSkillProfile>() {
+		CollectionUtils.filter(filtered, new GenericPredicate<AccountSkillEmployee>() {
 			@Override
-			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
-				return accountSkillProfile.getSkill().equals(skill);
+			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
+				return accountSkillEmployee.getSkill().equals(skill);
 			}
 		});
 
@@ -173,21 +177,21 @@ public class SiteAssignmentsAndProjectsFactory {
 
 	private List<SiteAssignmentStatisticsModel> buildSiteAssignmentStatistics(
 			Map<AccountModel, Map<Employee, Set<Role>>> employeeRolesPerSite,
-			Table<Employee, Role, Set<AccountSkillProfile>> employeeSkillsPerRole,
-			Table<AccountModel, AccountSkill, Set<AccountSkillProfile>> siteAndCorporateRequiredSkills) {
+			Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsPerRole,
+			Table<AccountModel, AccountSkill, Set<AccountSkillEmployee>> siteAndCorporateRequiredSkills) {
 
-		Map<AccountModel, Set<AccountSkillProfile>> employeeSkillsPerSite = getEmployeeSkillsPerSite(employeeRolesPerSite, employeeSkillsPerRole, siteAndCorporateRequiredSkills);
+		Map<AccountModel, Set<AccountSkillEmployee>> employeeSkillsPerSite = getEmployeeSkillsPerSite(employeeRolesPerSite, employeeSkillsPerRole, siteAndCorporateRequiredSkills);
 		Table<AccountModel, SkillStatus, Integer> countOfSkillStatusPerSite = getCountOfSkillStatusPerSite(employeeSkillsPerSite);
 
 		return buildSiteAssignmentStatisticsModels(countOfSkillStatusPerSite);
 	}
 
-	private Map<AccountModel, Set<AccountSkillProfile>> getEmployeeSkillsPerSite(
+	private Map<AccountModel, Set<AccountSkillEmployee>> getEmployeeSkillsPerSite(
 			Map<AccountModel, Map<Employee, Set<Role>>> employeeRolesPerSite,
-			Table<Employee, Role, Set<AccountSkillProfile>> employeeSkillsPerRole,
-			Table<AccountModel, AccountSkill, Set<AccountSkillProfile>> siteAndCorporateRequiredSkills) {
+			Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsPerRole,
+			Table<AccountModel, AccountSkill, Set<AccountSkillEmployee>> siteAndCorporateRequiredSkills) {
 
-		Map<AccountModel, Set<AccountSkillProfile>> employeeSkillsPerSite = new HashMap<>();
+		Map<AccountModel, Set<AccountSkillEmployee>> employeeSkillsPerSite = new HashMap<>();
 
 		for (Map.Entry<AccountModel, Map<Employee, Set<Role>>> siteEntry : employeeRolesPerSite.entrySet()) {
 			AccountModel site = siteEntry.getKey();
@@ -199,22 +203,22 @@ public class SiteAssignmentsAndProjectsFactory {
 				}
 			}
 
-			Map<AccountSkill, Set<AccountSkillProfile>> requiredSkills = siteAndCorporateRequiredSkills.row(site);
-			Set<AccountSkillProfile> flattenedRequiredSkills = PicsCollectionUtil.extractAndFlattenValuesFromMap(requiredSkills);
+			Map<AccountSkill, Set<AccountSkillEmployee>> requiredSkills = siteAndCorporateRequiredSkills.row(site);
+			Set<AccountSkillEmployee> flattenedRequiredSkills = PicsCollectionUtil.extractAndFlattenValuesFromMap(requiredSkills);
 			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkillsPerSite, site, flattenedRequiredSkills);
 
 			if (!employeeSkillsPerSite.containsKey(site)) {
-				employeeSkillsPerSite.put(site, Collections.<AccountSkillProfile>emptySet());
+				employeeSkillsPerSite.put(site, Collections.<AccountSkillEmployee>emptySet());
 			}
 		}
 
 		return employeeSkillsPerSite;
 	}
 
-	private Table<AccountModel, SkillStatus, Integer> getCountOfSkillStatusPerSite(Map<AccountModel, Set<AccountSkillProfile>> employeeSkillsPerSite) {
+	private Table<AccountModel, SkillStatus, Integer> getCountOfSkillStatusPerSite(Map<AccountModel, Set<AccountSkillEmployee>> employeeSkillsPerSite) {
 		Table<AccountModel, SkillStatus, Integer> countOfSkillStatusPerSite = TreeBasedTable.create();
 
-		for (Map.Entry<AccountModel, Set<AccountSkillProfile>> entry : employeeSkillsPerSite.entrySet()) {
+		for (Map.Entry<AccountModel, Set<AccountSkillEmployee>> entry : employeeSkillsPerSite.entrySet()) {
 			calculateCountOfSkillStatus(countOfSkillStatusPerSite, entry.getKey(), entry.getValue());
 		}
 
@@ -227,8 +231,8 @@ public class SiteAssignmentsAndProjectsFactory {
 		countOfSkillStatus.put(key, SkillStatus.Expired, 0);
 	}
 
-	private <K> void incrementSkillStatusCount(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, AccountSkillProfile profileSkills) {
-		switch (SkillStatusCalculator.calculateStatusFromSkill(profileSkills)) {
+	private <K> void incrementSkillStatusCount(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, AccountSkillEmployee employeeSkill) {
+		switch (SkillStatusCalculator.calculateStatusFromSkill(employeeSkill)) {
 			case Completed:
 			case Pending:
 				countOfSkillStatus.put(key, SkillStatus.Completed, countOfSkillStatus.get(key, SkillStatus.Completed) + 1);
@@ -259,16 +263,32 @@ public class SiteAssignmentsAndProjectsFactory {
 		return Collections.unmodifiableList(siteAssignmentStatistics);
 	}
 
-	private <K> void calculateCountOfSkillStatus(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, Collection<AccountSkillProfile> profileSkills) {
+	public List<SiteAssignmentStatisticsModel> buildSiteAssignStatsForClientSitesUnattachedToProjs(List<AccountModel> contractorClientSitesNotAttachedToProjects) {
+		List<SiteAssignmentStatisticsModel> siteAssignmentStatistics = new ArrayList<>();
+
+		for (AccountModel accountModel : contractorClientSitesNotAttachedToProjects) {
+			SiteAssignmentStatisticsModel siteStatistics = new SiteAssignmentStatisticsModel.Builder()
+							.site(accountModel)
+							.completed(0)
+							.expiring(0)
+							.expired(0)
+							.build();
+			siteAssignmentStatistics.add(siteStatistics);
+		}
+
+		return Collections.unmodifiableList(siteAssignmentStatistics);
+	}
+
+	private <K> void calculateCountOfSkillStatus(Table<K, SkillStatus, Integer> countOfSkillStatus, K key, Collection<AccountSkillEmployee> employeeSkills) {
 		initializeCountOfSkillStatus(countOfSkillStatus, key);
 
-		for (AccountSkillProfile profileSkill : profileSkills) {
-			incrementSkillStatusCount(countOfSkillStatus, key, profileSkill);
+		for (AccountSkillEmployee employeeSkill : employeeSkills) {
+			incrementSkillStatusCount(countOfSkillStatus, key, employeeSkill);
 		}
 	}
 
 	private List<ProjectStatisticsModel> buildProjectStatistics(final Map<AccountModel, Set<Project>> accountsToProjects,
-																final Table<Employee, Role, Set<AccountSkillProfile>> employeeSkillsByRole) {
+																final Table<Employee, Role, Set<AccountSkillEmployee>> employeeSkillsByRole) {
 
 		Set<Project> projects = PicsCollectionUtil.extractAndFlattenValuesFromMap(accountsToProjects);
 		List<ContractorProjectForm> contractorProjects = ViewModelFactory.getContractorProjectFormFactory().build(accountsToProjects.keySet(), projects);
@@ -277,19 +297,17 @@ public class SiteAssignmentsAndProjectsFactory {
 		for (Project project : projects) {
 			ContractorProjectForm contractorProject = findContractorProject(project.getId(), contractorProjects);
 
-			Set<AccountSkillProfile> allSkills = new HashSet<>();
+			Set<AccountSkillEmployee> allSkills = new HashSet<>();
 			Set<ProjectRoleEmployee> allRoles = new HashSet<>();
 
 			for (ProjectRole projectRole : project.getRoles()) {
-				Map<Employee, Set<AccountSkillProfile>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
+				Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills = employeeSkillsByRole.column(projectRole.getRole());
 
 				allSkills.addAll(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeesAndSkills));
 				allRoles.addAll(filterProjectRoleEmployees(projectRole, employeesAndSkills));
 			}
 
-			ProjectAssignmentBreakdown assignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory()
-					.create(allRoles, allSkills, employeeSkillsByRole.rowKeySet());
-
+			ProjectAssignmentBreakdown assignmentBreakdown = ModelFactory.getProjectAssignmentBreakdownFactory().create(allRoles, allSkills);
 			projectStatistics.add(new ProjectStatisticsModel(contractorProject, assignmentBreakdown));
 		}
 
@@ -308,7 +326,7 @@ public class SiteAssignmentsAndProjectsFactory {
 		return null;
 	}
 
-	private Set<ProjectRoleEmployee> filterProjectRoleEmployees(ProjectRole projectRole, final Map<Employee, Set<AccountSkillProfile>> employeesAndSkills) {
+	private Set<ProjectRoleEmployee> filterProjectRoleEmployees(ProjectRole projectRole, final Map<Employee, Set<AccountSkillEmployee>> employeesAndSkills) {
 		Set<ProjectRoleEmployee> projectRoleEmployees = new HashSet<>(projectRole.getEmployees());
 
 		CollectionUtils.filter(projectRoleEmployees, new GenericPredicate<ProjectRoleEmployee>() {

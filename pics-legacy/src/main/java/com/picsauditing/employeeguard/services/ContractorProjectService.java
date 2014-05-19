@@ -48,7 +48,9 @@ public class ContractorProjectService {
 	public List<ProjectCompany> getProjectsForContractor(int accountId) {
 		return projectCompanyDAO.findByContractorAccount(accountId);
 	}
-
+	public List<Integer> findClientSitesByContractorAccount(final int accountId) {
+		return projectCompanyDAO.findClientSitesByContractorAccount(accountId);
+	}
 	public List<ProjectCompany> search(String searchTerm, int accountId) {
 		if (Strings.isEmpty(searchTerm)) {
 			return Collections.emptyList();
