@@ -50,7 +50,7 @@ public class AccountSkillEmployeeServiceTest {
 		accountSkillEmployeeService.update(accountSkillEmployee, skillDocumentForm);
 
 		verify(profileDocumentService).getDocument(anyInt());
-		assertNotNull(accountSkillEmployee.getEndDate());
+		assertNull(accountSkillEmployee.getEndDate());
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class AccountSkillEmployeeServiceTest {
 
 		accountSkillEmployeeService.update(accountSkillEmployee, skillDocumentForm);
 
-		assertNotNull(accountSkillEmployee.getEndDate());
+		assertNull(accountSkillEmployee.getEndDate());
 		verify(accountSkillEmployeeDAO).save(accountSkillEmployee);
 	}
 }

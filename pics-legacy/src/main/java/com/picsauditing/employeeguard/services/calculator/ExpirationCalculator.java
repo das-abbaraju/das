@@ -1,32 +1,36 @@
 package com.picsauditing.employeeguard.services.calculator;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.employeeguard.entities.AccountSkillProfile;
+import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 
 import java.util.Date;
 
 public class ExpirationCalculator {
-	public static Date calculateExpirationDate(AccountSkillProfile accountSkillProfile) {
-		if (accountSkillProfile.getSkill().getSkillType().isCertification()) {
-			return calculateExpirationDateForCertificate(accountSkillProfile);
+	public static Date calculateExpirationDate(AccountSkillEmployee accountSkillEmployee) {
+		if(accountSkillEmployee==null)
+			return null;
+
+		if (accountSkillEmployee.getSkill().getSkillType().isCertification()) {
+			return calculateExpirationDateForCertificate(accountSkillEmployee);
 		} else {
-			return calculateExpirationDateForTraining(accountSkillProfile);
+			return calculateExpirationDateForTraining(accountSkillEmployee);
 		}
 	}
 
-	private static Date calculateExpirationDateForTraining(AccountSkillProfile accountSkillProfile) {
-		int intervalPeriod = accountSkillProfile.getSkill().getIntervalPeriod();
+	private static Date calculateExpirationDateForTraining(AccountSkillEmployee accountSkillEmployee) {
+		int intervalPeriod = accountSkillEmployee.getSkill().getIntervalPeriod();
 
-		Date now = new Date();
-		switch (accountSkillProfile.getSkill().getIntervalType()) {
+		Date trainingSkillDocUpdated = accountSkillEmployee.getStartDate();
+
+		switch (accountSkillEmployee.getSkill().getIntervalType()) {
 			case DAY:
-				return DateBean.addDays(now, intervalPeriod);
+				return DateBean.addDays(trainingSkillDocUpdated, intervalPeriod);
 			case WEEK:
-				return DateBean.addDays(now, intervalPeriod * 7);
+				return DateBean.addDays(trainingSkillDocUpdated, intervalPeriod * 7);
 			case MONTH:
-				return DateBean.addMonths(now, intervalPeriod);
+				return DateBean.addMonths(trainingSkillDocUpdated, intervalPeriod);
 			case YEAR:
-				return DateBean.addMonths(now, intervalPeriod * 12);
+				return DateBean.addMonths(trainingSkillDocUpdated, intervalPeriod * 12);
 			case NOT_APPLICABLE:
 				return DateBean.getEndOfTime();
 			case NO_EXPIRATION:
@@ -36,7 +40,10 @@ public class ExpirationCalculator {
 		}
 	}
 
-	private static Date calculateExpirationDateForCertificate(AccountSkillProfile accountSkillProfile) {
-		return accountSkillProfile.getProfileDocument().getEndDate();
+	private static Date calculateExpirationDateForCertificate(AccountSkillEmployee accountSkillEmployee) {
+		if(accountSkillEmployee.getProfileDocument()==null)
+			return null;
+
+		return accountSkillEmployee.getProfileDocument().getEndDate();
 	}
 }

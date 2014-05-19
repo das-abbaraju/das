@@ -3,10 +3,7 @@ package com.picsauditing.employeeguard.controllers.operator;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
@@ -16,6 +13,7 @@ import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -162,7 +160,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Test
 	public void testRole() throws Exception {
 		Role corporateRole = new RoleBuilder().accountId(CORPORATE_ID).name("Corporate Role").build();
-		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").build();
+		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").intervalPeriod(1).skillType(SkillType.Training).intervalType(IntervalType.YEAR).build();
 		Employee employee = new EmployeeBuilder()
 				.firstName("First")
 				.lastName("Last")
@@ -174,7 +172,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
 
 		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().endDate(calendar.getTime()).build();
+		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().startDate((new DateTime().minusDays(2)).toDate()).endDate(null).build();
+		accountSkillEmployee.setSkill(skill);
 		table.put(employee, skill, accountSkillEmployee);
 
 		AccountModel accountModel = new AccountModel.Builder().id(CONTRACTOR_ID_1).name("Contractor").build();
