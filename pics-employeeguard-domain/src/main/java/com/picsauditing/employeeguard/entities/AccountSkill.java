@@ -79,7 +79,7 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
-	private List<AccountSkillEmployee> employees = new ArrayList<>();
+	private List<AccountSkillProfile> profiles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
@@ -232,12 +232,12 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		this.roles = roles;
 	}
 
-	public List<AccountSkillEmployee> getEmployees() {
-		return employees;
+	public List<AccountSkillProfile> getProfiles() {
+		return profiles;
 	}
 
-	public void setEmployees(List<AccountSkillEmployee> employees) {
-		this.employees = employees;
+	public void setProfiles(List<AccountSkillProfile> profiles) {
+		this.profiles = profiles;
 	}
 
 	public List<ProjectSkill> getProjects() {

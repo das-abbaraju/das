@@ -15,11 +15,6 @@
 
     <repositories>
         <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases/</url>
-        </repository>
-        <repository>
             <id>itextpdf.com</id>
             <name>Maven Repository for iText</name>
             <url>http://maven.itextpdf.com/</url>
@@ -188,7 +183,6 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <check/>
                     <excludes>
                         <exclude>**/*Test.class</exclude>
                         <exclude>com/picsauditing/quickbooks/**/*.class</exclude>
@@ -269,7 +263,7 @@
         <dependency>
             <groupId>com.picsauditing</groupId>
             <artifactId>pics-flag-calculator</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         <!-- End of PICS Dependencies -->
 
