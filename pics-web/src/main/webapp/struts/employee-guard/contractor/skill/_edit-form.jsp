@@ -37,7 +37,7 @@
         <div class="form-group">
             <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
             <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType select2Min" tabindex="3" disabled="${skill.id>0}">
+                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType select2Min" tabindex="3" disabled="${skill.id>0}" >
                     <tw:option value="Certification" selected="${skill.skillType == 'Certification'}">Certification</tw:option>
                     <tw:option value="Training" selected="${skill.skillType == 'Training'}">Training</tw:option>
                 </tw:select>
