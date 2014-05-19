@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.viewmodel.model;
 
 import com.picsauditing.employeeguard.entities.SkillType;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.Date;
 

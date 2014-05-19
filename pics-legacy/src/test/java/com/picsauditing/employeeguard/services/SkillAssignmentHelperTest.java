@@ -97,30 +97,32 @@ public class SkillAssignmentHelperTest {
 		requiredSkills.add(keep);
 
 		Employee employee = new EmployeeBuilder()
-				.skills(Arrays.asList(
-						new AccountSkillEmployeeBuilder()
-								.accountSkill(keep)
-								.build(),
-						new AccountSkillEmployeeBuilder()
-								.accountSkill(
-										new AccountSkillBuilder(CORPORATE_ID)
-												.name("Skill to remove")
-												.build())
-								.build()
-				))
+				.profile(new ProfileBuilder()
+						.skills(Arrays.asList(
+								new AccountSkillProfileBuilder()
+										.accountSkill(keep)
+										.build(),
+								new AccountSkillProfileBuilder()
+										.accountSkill(
+												new AccountSkillBuilder(CORPORATE_ID)
+														.name("Skill to remove")
+														.build())
+										.build()
+						))
+						.build())
 				.build();
 
-		Set<AccountSkillEmployee> result = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, 12345, requiredSkills);
+		Set<AccountSkillProfile> result = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, 12345, requiredSkills);
 
 		verifyTestFilterNoLongerNeededEmployeeSkills(result);
 	}
 
-	private void verifyTestFilterNoLongerNeededEmployeeSkills(Set<AccountSkillEmployee> result) {
-		assertFalse(result.isEmpty());
-		assertEquals(1, result.size());
+	private void verifyTestFilterNoLongerNeededEmployeeSkills(Set<AccountSkillProfile> accountSkillProfiles) {
+		assertFalse(accountSkillProfiles.isEmpty());
+		assertEquals(1, accountSkillProfiles.size());
 
-		for (AccountSkillEmployee accountSkillEmployee : result) {
-			assertEquals("Skill to remove", accountSkillEmployee.getSkill().getName());
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			assertEquals("Skill to remove", accountSkillProfile.getSkill().getName());
 		}
 	}
 }

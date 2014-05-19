@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.operator;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 public class EmployeeProjectAssignment {
 

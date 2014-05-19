@@ -27,7 +27,7 @@
     <bean id="RoleDAO" class="com.picsauditing.employeeguard.daos.RoleDAO"/>
     <bean id="SiteAssignmentDAO" class="com.picsauditing.employeeguard.daos.SiteAssignmentDAO"/>
     <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
-    <bean id="SkillCalculatorService" class="com.picsauditing.employeeguard.services.StatusCalculatorService"/>
+    <bean id="SkillCalculatorService" class="com.picsauditing.employeeguard.services.status.StatusCalculatorService"/>
     <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
     <bean id="PicsorgDAO" class="com.picsauditing.employeeguard.daos.PicsorgDAO"/>
 

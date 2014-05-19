@@ -2,10 +2,12 @@ package com.picsauditing.employeeguard.services;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
+import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
+import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -78,6 +80,73 @@ public class AccountSkillEmployeeService {
 			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
 			accountSkillProfileDAO.save(accountSkillEmployee);
 		}
+	}
+
+	public void update(final AccountSkill accountSkill,
+					   final Profile profile,
+					   final SkillDocumentForm skillDocumentForm) {
+		SkillType skillType = accountSkill.getSkillType();
+
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
+				.findBySkillAndProfile(accountSkill, profile);
+
+		accountSkillProfiles = addNewAccountSkillProfiles(accountSkillProfiles, profile, accountSkill);
+
+		if (skillType.isCertification()) {
+			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
+			linkProfileDocumentToEmployeeSkills(accountSkillProfiles, document);
+		} else if (skillType.isTraining()) {
+			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
+				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+					accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
+				}
+			} else {
+				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+					accountSkillProfile.setEndDate(null);
+				}
+			}
+
+			accountSkillProfileDAO.save(accountSkillProfiles);
+		}
+	}
+
+	public void linkProfileDocumentToEmployeeSkills(final List<AccountSkillProfile> accountSkillProfiles,
+													final ProfileDocument profileDocument) {
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			accountSkillProfile.setProfileDocument(profileDocument);
+			accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
+		}
+
+		accountSkillProfileDAO.save(accountSkillProfiles);
+	}
+
+	public List<AccountSkillProfile> addNewAccountSkillProfiles(final List<AccountSkillProfile> accountSkillProfiles,
+																final Profile profile,
+																final AccountSkill accountSkill) {
+		List<AccountSkillProfile> allAccountSkillProfiles = new ArrayList<>(accountSkillProfiles);
+		for (Employee employee : profile.getEmployees()) {
+			if (!foundAccountSkillProfile(employee, allAccountSkillProfiles)) {
+				allAccountSkillProfiles.add(new AccountSkillProfileBuilder()
+						.profile(profile)
+						.accountSkill(accountSkill)
+						.createdBy(1)
+						.createdDate(DateBean.today())
+						.startDate(DateBean.today())
+						.build());
+			}
+		}
+
+		return allAccountSkillProfiles;
+	}
+
+	private boolean foundAccountSkillProfile(final Employee employee, List<AccountSkillProfile> acountSkillProfiles) {
+		for (AccountSkillProfile accountSkillProfile : acountSkillProfiles) {
+			if (accountSkillProfile.getProfile().getEmployees().contains(employee)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public List<AccountSkillProfile> getAccountSkillEmployeeForProjectAndContractor(final Project project,

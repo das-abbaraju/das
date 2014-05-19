@@ -12,7 +12,7 @@ import com.picsauditing.employeeguard.models.factories.CompanyStatusModelFactory
 import com.picsauditing.employeeguard.models.factories.EmployeeSkillsModelFactory;
 import com.picsauditing.employeeguard.process.ProfileSkillData;
 import com.picsauditing.employeeguard.process.ProfileSkillStatusProcess;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -5,13 +5,13 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -171,8 +171,12 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().startDate((new DateTime().minusDays(2)).toDate()).endDate(null).build();
+		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
+		AccountSkillProfile accountSkillEmployee = new AccountSkillProfileBuilder()
+				.startDate((new DateTime().minusDays(2)).toDate())
+				.endDate(null)
+				.build();
+
 		accountSkillEmployee.setSkill(skill);
 		table.put(employee, skill, accountSkillEmployee);
 

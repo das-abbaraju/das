@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.calculator;
+package com.picsauditing.employeeguard.services.status;
 
 import com.picsauditing.jpa.entities.JSONable;
 import org.json.simple.JSONObject;

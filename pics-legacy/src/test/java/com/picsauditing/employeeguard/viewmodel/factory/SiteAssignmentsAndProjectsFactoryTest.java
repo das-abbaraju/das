@@ -33,7 +33,7 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 		Map<AccountModel, Set<Project>> siteProjects = Collections.emptyMap();
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = Collections.emptyMap();
 		Map<Employee, Set<Role>> employeeRoles = Collections.emptyMap();
-		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		List<AccountSkillProfile> accountSkillEmployees = Collections.emptyList();
 
 		Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignments =
 				siteAssignmentsAndProjectsFactory.create(siteProjects, siteRequiredSkills, employeeRoles, accountSkillEmployees);

@@ -1,12 +1,10 @@
-package com.picsauditing.employeeguard.services;
+package com.picsauditing.employeeguard.services.status;
 
 import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
@@ -25,12 +23,13 @@ public class StatusCalculatorService {
 			return Collections.emptyMap();
 		}
 
+		Set<Employee> employees = employeeSkills.keySet();
 		Map<Employee, Set<AccountSkillProfile>> accountSkillProfileMap =
-				convertToMap(accountSkillProfileDAO.findByEmployeesAndSkills(employeeSkills.keySet(),
+				convertToMap(employees, accountSkillProfileDAO.findByEmployeesAndSkills(employees,
 						PicsCollectionUtil.mergeCollectionOfCollections(employeeSkills.values())));
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
-		for (Employee employee : employeeSkills.keySet()) {
+		for (Employee employee : employees) {
 			SkillStatus rollUp = SkillStatus.Expired;
 
 			Set<AccountSkillProfile> accountSkillProfiles = accountSkillProfileMap.get(employee);
@@ -55,11 +54,12 @@ public class StatusCalculatorService {
 		for (final Employee employee : employees) {
 			SkillStatus rollUp = SkillStatus.Expired;
 			if (CollectionUtils.isNotEmpty(employeeRequiredSkills.get(employee))) {
-				List<AccountSkillEmployee> employeeSkills = new ArrayList<>(employee.getSkills());
-				CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillEmployee>() {
+				List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
+				CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillProfile>() {
+
 					@Override
-					public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-						return employeeRequiredSkills.get(employee).contains(accountSkillEmployee.getSkill());
+					public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+						return employeeRequiredSkills.get(employee).contains(accountSkillProfile.getSkill());
 					}
 				});
 
@@ -91,7 +91,9 @@ public class StatusCalculatorService {
 
 		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
 				.findByEmployeesAndSkills(employees, orderedSkills);
+
 		Map<Employee, Set<AccountSkillProfile>> employeeSetMap = convertToMap(employees, accountSkillProfiles);
+
 		return buildSkillStatusMap(new HashSet<>(employees), employeeSetMap, orderedSkills);
 	}
 
@@ -334,19 +336,20 @@ public class StatusCalculatorService {
 	only the skills that the employee has provided documentation for !
     * */
 
-		Map<Employee, Map<AccountSkill, AccountSkillProfile>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
+		Map<Profile, Map<AccountSkill, AccountSkillProfile>> employeeSkillMap = PicsCollectionUtil.convertToMapOfMaps(
 
 				accountSkillProfile,
 
-				new PicsCollectionUtil.CollectionToMapConverter<Employee, AccountSkill, AccountSkillEmployee>() {
+				new PicsCollectionUtil.CollectionToMapConverter<Profile, AccountSkill, AccountSkillProfile>() {
+
 					@Override
-					public Employee getRow(AccountSkillEmployee value) {
-						return value.getEmployee();
+					public Profile getRow(AccountSkillProfile accountSkillProfile) {
+						return accountSkillProfile.getProfile();
 					}
 
 					@Override
-					public AccountSkill getColumn(AccountSkillEmployee value) {
-						return value.getSkill();
+					public AccountSkill getColumn(AccountSkillProfile accountSkillProfile) {
+						return accountSkillProfile.getSkill();
 					}
 				});
 
@@ -357,9 +360,9 @@ public class StatusCalculatorService {
 
 				SkillStatus skillStatus = SkillStatus.Expired;
 				//-- If employee has any documentations at all.
-				if (employeeSkillMap.containsKey(employee)) {
+				if (employeeSkillMap.containsKey(employee.getProfile())) {
 					//-- Documentations provided for this employee
-					Collection<AccountSkillEmployee> aspForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee).values());
+					Collection<AccountSkillProfile> aspForStatusCalculation = new HashSet<>(employeeSkillMap.get(employee.getProfile()).values());
 					//-- Distill the collection specific to this employee's skills.
 					CollectionUtils.filter(aspForStatusCalculation, new GenericPredicate<AccountSkillProfile>() {
 						@Override

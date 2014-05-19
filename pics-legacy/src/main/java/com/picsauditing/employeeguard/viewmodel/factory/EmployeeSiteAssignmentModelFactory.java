@@ -2,8 +2,8 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.google.common.collect.Table;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 

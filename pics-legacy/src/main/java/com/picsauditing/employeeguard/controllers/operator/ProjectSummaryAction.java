@@ -10,8 +10,8 @@ import com.picsauditing.employeeguard.exceptions.NoOperatorForCorporateException
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
 import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

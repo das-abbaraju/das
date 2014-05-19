@@ -1,14 +1,14 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.EGTestDataUtil;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class StatusCalculatorServiceTest {
 	private AccountSkill skill;
 
 	@Mock
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Mock
 	private AccountSkillRole accountSkillRole;
 	@Mock
@@ -55,33 +55,33 @@ public class StatusCalculatorServiceTest {
 
 		service = new StatusCalculatorService();
 
-		Whitebox.setInternalState(service, "accountSkillEmployeeDAO", accountSkillEmployeeDAO);
+		Whitebox.setInternalState(service, "accountSkillProfileDAO", accountSkillProfileDAO);
 	}
 
-  @Test
-  public void testGetEmployeeStatusRollUpForSkills_WhenEmployeeHasNoDocumentation() throws Exception {
-    List<AccountSkill> fakeSkills = buildFakeAccountSkills();
-    List<Employee> fakeEmployees = buildFakeEmployees();
+	@Test
+	public void testGetEmployeeStatusRollUpForSkills_WhenEmployeeHasNoDocumentation() throws Exception {
+		List<AccountSkill> fakeSkills = buildFakeAccountSkills();
+		List<Employee> fakeEmployees = buildFakeEmployees();
 
-    //-- Employee has no documentation.
-    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
-            anyCollectionOf(AccountSkill.class))).thenReturn(Collections.EMPTY_LIST);
+		//-- Employee has no documentation.
+		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
+				anyCollectionOf(AccountSkill.class))).thenReturn(Collections.EMPTY_LIST);
 
-    Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
+		Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
 
-    verifyResults_WhenEmployeeHasNoDocumentation(fakeEmployees, result);
-  }
+		verifyResults_WhenEmployeeHasNoDocumentation(fakeEmployees, result);
+	}
 
 
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
-		AccountSkillEmployee accountSkillEmployee = egTestDataUtil.prepareExpiringAccountSkillEmployee();
-		AccountSkill skill = accountSkillEmployee.getSkill();
-		accountSkillEmployee.setEmployee(employee);
-		accountSkillEmployee.setEndDate(null);
+		AccountSkillProfile accountSkillProfile = egTestDataUtil.prepareExpiringAccountSkillEmployee();
+		AccountSkill skill = accountSkillProfile.getSkill();
+		accountSkillProfile.setProfile(employee.getProfile());
+		accountSkillProfile.setEndDate(null);
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(employee.getName()).thenReturn("Employee Name");
-		when(employee.getSkills()).thenReturn(Arrays.asList(accountSkillEmployee));
+		when(employee.getProfile().getSkills()).thenReturn(Arrays.asList(accountSkillProfile));
 
 		Set<Employee> accountEmployees = new HashSet<>();
 		accountEmployees.add(employee);
@@ -114,21 +114,21 @@ public class StatusCalculatorServiceTest {
 
 	}
 
-  private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
-    assertEquals(3, result.size());
+	private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
+		assertEquals(3, result.size());
 
-    // All expired
-    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
-            result.get(fakeEmployees.get(0))));
+		// All expired
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+				result.get(fakeEmployees.get(0))));
 
-    // All expired
-    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
-            result.get(fakeEmployees.get(1))));
+		// All expired
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+				result.get(fakeEmployees.get(1))));
 
-    // All expired
-    assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
-            result.get(fakeEmployees.get(2))));
-  }
+		// All expired
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
+				result.get(fakeEmployees.get(2))));
+	}
 
 	private void verifyResults(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {
 		assertEquals(3, result.size());
@@ -143,17 +143,17 @@ public class StatusCalculatorServiceTest {
 
 		// all skills are expired
 		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
-						result.get(fakeEmployees.get(2))));
+				result.get(fakeEmployees.get(2))));
 	}
 
 	@Test
 	public void testGetAllSkillStatusesForEntity_NoEmployeeSkill() {
 		List<AccountSkill> skills = buildFakeAccountSkills();
 		List<Employee> employees = buildFakeEmployees();
-		List<AccountSkillEmployee> accountSkillEmployees = buildFakeAccountSkillEmployees(employees, skills);
+		List<AccountSkillProfile> accountSkillProfiles = buildFakeAccountSkillEmployees(employees, skills);
 
-		when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
-				.thenReturn(accountSkillEmployees.subList(1, accountSkillEmployees.size()));
+		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
+				.thenReturn(accountSkillProfiles.subList(1, accountSkillProfiles.size()));
 
 		HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
 		entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
@@ -168,71 +168,72 @@ public class StatusCalculatorServiceTest {
 		assertFalse(result.isEmpty());
 	}
 
-  @Test
-  public void testGetAllSkillStatusesForEntity_EmployeeHasNoDocumentation() {
-    List<AccountSkill> skills = buildFakeAccountSkills();
-    List<Employee> employees = buildFakeEmployees();
+	@Test
+	public void testGetAllSkillStatusesForEntity_EmployeeHasNoDocumentation() {
+		List<AccountSkill> skills = buildFakeAccountSkills();
+		List<Employee> employees = buildFakeEmployees();
 
-    when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
-            .thenReturn(Collections.EMPTY_LIST);
+		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
+				.thenReturn(Collections.EMPTY_LIST);
 
-    HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
-    entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
+		HashMap<Project, Map<Employee, Set<AccountSkill>>> entityEmployeeMap = new HashMap<>();
+		entityEmployeeMap.put(project, new HashMap<Employee, Set<AccountSkill>>());
 
-    for (Employee employee : employees) {
-      entityEmployeeMap.get(project).put(employee, new HashSet<>(skills));
-    }
+		for (Employee employee : employees) {
+			entityEmployeeMap.get(project).put(employee, new HashSet<>(skills));
+		}
 
-    Map<Project, List<SkillStatus>> result = service.getAllSkillStatusesForEntity(entityEmployeeMap);
+		Map<Project, List<SkillStatus>> result = service.getAllSkillStatusesForEntity(entityEmployeeMap);
 
-    assertNotNull(result);
-    assertFalse(result.isEmpty());
-  }
+		assertNotNull(result);
+		assertFalse(result.isEmpty());
+	}
 
 
 	private void setupFakeAccountSkillEmployee(List<AccountSkill> fakeSkills, List<Employee> fakeEmployees) {
-		List<AccountSkillEmployee> fakeAccountSkillEmployees = buildFakeAccountSkillEmployees(fakeEmployees,
-						fakeSkills);
-		when(accountSkillEmployeeDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
-						anyCollectionOf(AccountSkill.class))).thenReturn(fakeAccountSkillEmployees);
+		List<AccountSkillProfile> fakeAccountSkillEmployees = buildFakeAccountSkillEmployees(fakeEmployees,
+				fakeSkills);
+
+		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
+				anyCollectionOf(AccountSkill.class))).thenReturn(fakeAccountSkillEmployees);
 	}
 
 	private List<AccountSkill> buildFakeAccountSkills() {
 		return Arrays.asList(
-						new AccountSkillBuilder(1, CORPORATE_ID).name("Test Skill 1").intervalPeriod(1).skillType(SkillType.Training).intervalType(IntervalType.YEAR).build(),
-						new AccountSkillBuilder(2, CORPORATE_ID).name("Test Skill 2").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.WEEK).build(),
-						new AccountSkillBuilder(3, CORPORATE_ID).name("Test Skill 3").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.YEAR).build()
+				new AccountSkillBuilder(1, CORPORATE_ID).name("Test Skill 1").intervalPeriod(1).skillType(SkillType.Training).intervalType(IntervalType.YEAR).build(),
+				new AccountSkillBuilder(2, CORPORATE_ID).name("Test Skill 2").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.WEEK).build(),
+				new AccountSkillBuilder(3, CORPORATE_ID).name("Test Skill 3").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.YEAR).build()
 		);
 	}
 
 	private List<Employee> buildFakeEmployees() {
 		return Arrays.asList(
-						new EmployeeBuilder().accountId(CONTRACTOR_ID).email("bob@test.com").build(),
-						new EmployeeBuilder().accountId(CONTRACTOR_ID).email("joe@test.com").build(),
-						new EmployeeBuilder().accountId(CONTRACTOR_ID).email("jill@test.com").build()
+				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("bob@test.com").build(),
+				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("joe@test.com").build(),
+				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("jill@test.com").build()
 		);
 	}
 
-	private List<AccountSkillEmployee> buildFakeAccountSkillEmployees(final List<Employee> employees,
-																	  final List<AccountSkill> skills) {
+	private List<AccountSkillProfile> buildFakeAccountSkillEmployees(final List<Employee> employees,
+																	 final List<AccountSkill> skills) {
 		return Arrays.asList(
-				new AccountSkillEmployeeBuilder()
+				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))
-						.employee(employees.get(0))
+						.profile(employees.get(0).getProfile())
 						.startDate((new DateTime().minusDays(2)).toDate())
 						.endDate(null)
 						.build(),
 
-				new AccountSkillEmployeeBuilder()
+				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(1))
-						.employee(employees.get(1))
+						.profile(employees.get(1).getProfile())
 						.startDate((new DateTime().minusDays(2)).toDate())
 						.endDate(null)
 						.build(),
 
-				new AccountSkillEmployeeBuilder()
+				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(2))
-						.employee(employees.get(1))
+						.profile(employees.get(1).getProfile())
 						.startDate((new DateTime().minusDays(2)).toDate())
 						.endDate(null)
 						.build()

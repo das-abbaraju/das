@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.operator;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.IdNameTitleModel;
 

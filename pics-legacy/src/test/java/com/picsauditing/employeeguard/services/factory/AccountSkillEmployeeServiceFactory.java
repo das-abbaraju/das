@@ -11,12 +11,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class AccountSkillEmployeeServiceFactory {
+
 	private static AccountSkillEmployeeService accountSkillEmployeeService = Mockito.mock(AccountSkillEmployeeService.class);
 
 	public static AccountSkillEmployeeService getAccountSkillEmployeeService() {
 		Mockito.reset(accountSkillEmployeeService);
 
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee();
+		AccountSkillProfile accountSkillEmployee = new AccountSkillProfile();
 		AccountSkill accountSkill = new AccountSkill();
 		accountSkill.setSkillType(SkillType.Certification);
 
@@ -25,12 +26,12 @@ public class AccountSkillEmployeeServiceFactory {
 		accountSkillEmployee.setProfileDocument(profileDocument);
 		accountSkillEmployee.setSkill(accountSkill);
 
-		List<AccountSkillEmployee> accountSkillEmployees = Arrays.asList(accountSkillEmployee, new AccountSkillEmployee());
+		List<AccountSkillProfile> accountSkillEmployees = Arrays.asList(accountSkillEmployee, new AccountSkillProfile());
 
 		when(accountSkillEmployeeService.findByProfile(any(Profile.class))).thenReturn(accountSkillEmployees);
 		when(accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(any(Profile.class), any(AccountSkill.class))).thenReturn(accountSkillEmployee);
 		when(accountSkillEmployeeService.getSkillsForAccountAndEmployee(any(Employee.class))).thenReturn(accountSkillEmployees);
-		when(accountSkillEmployeeService.linkProfileDocumentToEmployeeSkill(any(AccountSkillEmployee.class), any(ProfileDocument.class))).thenReturn(accountSkillEmployee);
+		when(accountSkillEmployeeService.linkProfileDocumentToEmployeeSkill(any(AccountSkillProfile.class), any(ProfileDocument.class))).thenReturn(accountSkillEmployee);
 
 		return accountSkillEmployeeService;
 	}

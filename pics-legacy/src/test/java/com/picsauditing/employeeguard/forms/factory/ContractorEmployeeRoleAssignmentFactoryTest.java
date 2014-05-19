@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 	@Mock
 	private AccountSkill accountSkill;
 	@Mock
-	private AccountSkillEmployee accountSkillEmployee;
+	private AccountSkillProfile accountSkillProfile;
 	@Mock
 	private AccountSkillRole accountSkillRole;
 	@Mock
@@ -81,10 +81,10 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 		Date threeMonthsFromNow = DateBean.addMonths(DateBean.today(), 3);
 		System.out.println(threeMonthsFromNow);
 
-		when(accountSkillEmployee.getEndDate()).thenReturn(threeMonthsFromNow);
-		when(accountSkillEmployee.getSkill()).thenReturn(accountSkill);
+		when(accountSkillProfile.getEndDate()).thenReturn(threeMonthsFromNow);
+		when(accountSkillProfile.getSkill()).thenReturn(accountSkill);
 		when(accountSkillRole.getSkill()).thenReturn(accountSkill);
-		when(employee1.getSkills()).thenReturn(Arrays.asList(accountSkillEmployee));
+		when(employee1.getProfile().getSkills()).thenReturn(Arrays.asList(accountSkillProfile));
 		when(employee1.getProjectRoles()).thenReturn(Arrays.asList(projectRoleEmployee));
 		when(employee1.getName()).thenReturn("First");
 		when(employee2.getName()).thenReturn("Second");

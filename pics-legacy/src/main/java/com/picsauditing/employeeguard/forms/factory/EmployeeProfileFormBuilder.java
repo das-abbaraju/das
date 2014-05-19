@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import com.picsauditing.model.i18n.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,5 @@
 package com.picsauditing.employeeguard.entities.softdeleted;
 
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.BaseEntity;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.Profile;

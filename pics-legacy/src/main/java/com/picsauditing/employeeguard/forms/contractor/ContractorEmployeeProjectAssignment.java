@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.contractor;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.List;
