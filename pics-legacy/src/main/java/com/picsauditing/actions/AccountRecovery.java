@@ -112,27 +112,29 @@ public class AccountRecovery extends PicsActionSupport {
 
             if (user == null && profile == null) {
                 messages.addNoValidAccountFound();
-            } else if (!user.isActiveB() && profile == null) {
-                messages.addUserNotActiveError();
             } else {
-                try {
-                    addResetHashTo(appUser);
-                    appUserService.save(appUser);
+                if (user != null && !user.isActiveB() && profile == null) {
+                    messages.addUserNotActiveError();
+                } else {
+                    try {
+                        addResetHashTo(appUser);
+                        appUserService.save(appUser);
 
-                    if (user != null) {
-                        emails.sendRecoveryEmail(user, getRequestHost());
-                        messages.successfulEmailSendTo(user.getEmail());
-                    } else {
-                        emails.sendRecoveryEmail(profile, getRequestHost());
-                        messages.successfulEmailSendTo(profile.getEmail());
+                        if (user != null) {
+                            emails.sendRecoveryEmail(user, getRequestHost());
+                            messages.successfulEmailSendTo(user.getEmail());
+                        } else {
+                            emails.sendRecoveryEmail(profile, getRequestHost());
+                            messages.successfulEmailSendTo(profile.getEmail());
+                        }
+
+                        return setUrlForRedirect("Login.action");
+
+                    } catch (EmailBuildErrorException e) {
+                        messages.failedEmailSend();
+                    } catch (IOException e) {
+                        messages.addUsernameNotFoundError();
                     }
-
-                    return setUrlForRedirect("Login.action");
-
-                } catch (EmailBuildErrorException e) {
-                    messages.failedEmailSend();
-                } catch (IOException e) {
-                    messages.addUsernameNotFoundError();
                 }
             }
         }
