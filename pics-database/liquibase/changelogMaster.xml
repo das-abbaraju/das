@@ -221,5 +221,8 @@
 	<include file="./liquibase/2014/Q2/cfranks1_PICS_14860_Add_John_Deere_Supplier_Numbers_To_US_Site.sql"/>
 	<include file="./liquibase/2014/Q2/cfranks3_PICS_15239_DML_Update_Operators_Missing_ReportingIDs.sql"/>
 	<include file="./liquibase/2014/Q2/mdo52_PICS-15105.sql"/>
+	
+	<!-- 7.2.12 -->
+	<include file="./liquibase/2014/Q2/rbeaini1_PICS-15271.sql"/>
 
 </databaseChangeLog>
