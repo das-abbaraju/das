@@ -151,6 +151,7 @@ public class ProfileDocumentService {
 
 	public void delete(final int documentId, final int profileId) {
 		ProfileDocument profileDocument = profileDocumentDAO.find(documentId);
+
 		profileDocumentDAO.delete(profileDocument);
 	}
 
