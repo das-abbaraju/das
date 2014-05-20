@@ -23,7 +23,6 @@
         <module>pics-web</module>
         <module>pics-employeeguard-domain</module>
         <module>service-strikeiron-global</module>
-        <module>pics-flag-calculator</module>
     </modules>
 
 	<repositories>

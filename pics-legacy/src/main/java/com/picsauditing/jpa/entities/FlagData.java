@@ -149,7 +149,7 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
     @Override
     @Transient
     public String getCriteriaLabel() {
-        return null;
+        return criteria.getLabel();
     }
 
     @Override

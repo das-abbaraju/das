@@ -15,6 +15,11 @@ angular.module('PICS.myModule', [
 
     $routeProvider
         .when('/my-url.action', {
-            templateUrl: '/angular/src/app/my-module/my-view/my-view.tpl.html'
+            templateUrl: '/angular/src/app/my-module/my-view/my-view.tpl.html',
+            resolve: {
+                text: function (translationsService) {
+                    return translationsService.getTranslations();
+                }
+            }
         });
 });

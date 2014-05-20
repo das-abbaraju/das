@@ -66,7 +66,7 @@ public class ProjectActionTest  extends PicsActionTest {
 	@Test
 	public void testIndex() throws Exception {
 
-		int contractorId = EGTestDataUtil.getContractorId();
+		int contractorId = egTestDataUtil.getContractorId();
 		when(permissions.getAccountId()).thenReturn(contractorId);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 		when(permissions.isOperatorCorporate()).thenReturn(false);

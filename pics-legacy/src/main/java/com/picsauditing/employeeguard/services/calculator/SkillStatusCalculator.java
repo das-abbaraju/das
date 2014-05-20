@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services.calculator;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -9,49 +10,51 @@ import java.util.*;
 
 public class SkillStatusCalculator {
 
-    public static SkillStatus calculateStatusFromSkill(final AccountSkillEmployee accountSkillEmployee) {
-        return calculateStatus(accountSkillEmployee, DateBean.today());
-    }
+	public static SkillStatus calculateStatusFromSkill(final AccountSkillEmployee accountSkillEmployee) {
+		return calculateStatus(accountSkillEmployee, DateBean.today());
+	}
 
-    private static SkillStatus calculateStatus(final AccountSkillEmployee accountSkillEmployee, final Date today) {
-        if (accountSkillEmployee == null) {
-            return SkillStatus.Expired;
-        }
+	public static SkillStatus calculateStatusRollUp(final Collection<AccountSkillEmployee> accountSkillEmployees) {
+		if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+			throw new IllegalArgumentException("accountSkillEmployees Collection cannot be empty.");
+		}
 
-        Date endDate = accountSkillEmployee.getEndDate();
+		Date today = DateBean.today();
+		SkillStatus lowestStatus = SkillStatus.Completed;
+		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
+			SkillStatus calculatedStatus = calculateStatus(accountSkillEmployee, today);
 
-        if (endDate == null || endDate.before(today)) {
-            return SkillStatus.Expired;
-        } else if (endDate.before(DateBean.addMonths(today, 1))) {
-            return SkillStatus.Expiring;
-        } else {
-            return SkillStatus.Completed;
-        }
-    }
+			// exit early if any status is "Expired", because we have already hit the lowest status
+			if (calculatedStatus.isExpired()) {
+				return SkillStatus.Expired;
+			}
 
-    public static SkillStatus calculateStatusRollUp(final Collection<AccountSkillEmployee> accountSkillEmployees) {
-        if (CollectionUtils.isEmpty(accountSkillEmployees)) {
-            throw new IllegalArgumentException("accountSkillEmployees Collection cannot be empty.");
-        }
+			if (calculatedStatus.compareTo(lowestStatus) < 0) {
+				lowestStatus = calculatedStatus;
+			}
+		}
 
-        Date today = DateBean.today();
-        SkillStatus lowestStatus = SkillStatus.Completed;
-        for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-            SkillStatus calculatedStatus = calculateStatus(accountSkillEmployee, today);
+		return lowestStatus;
+	}
 
-            // exit early if any status is "Expired", because we have already hit the lowest status
-            if (calculatedStatus.isExpired()) {
-                return SkillStatus.Expired;
-            }
+	private static SkillStatus calculateStatus(final AccountSkillEmployee accountSkillEmployee, final Date today) {
+		if (accountSkillEmployee == null) {
+			return SkillStatus.Expired;
+		}
 
-            if (calculatedStatus.compareTo(lowestStatus) < 0) {
-                lowestStatus = calculatedStatus;
-            }
-        }
+		/* Figure out endDate in runtime, looking at the information in AccountSkill, instead of relying on
+		 endDate stamped on AccountSkillEmployee, because the expiration criteria may have been updated for that skill
+		  */
+		Date endDate =ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
 
-        return lowestStatus;
-    }
-
+		if (endDate == null || endDate.before(today)) {
+			return SkillStatus.Expired;
+		} else if (endDate.before(DateBean.addMonths(today, 1))) {
+			return SkillStatus.Expiring;
+		} else {
+			return SkillStatus.Completed;
+		}
+	}
 	public static <E> Map<E, SkillStatus> getOverallStatusPerEntity(final Map<E, ? extends Collection<SkillStatus>> entitySkillStatusMap) {
 		if (MapUtils.isEmpty(entitySkillStatusMap)) {
 			return Collections.emptyMap();
