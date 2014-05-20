@@ -146,7 +146,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 		} else if (roleEmployeesForm != null) {
 			role = roleService.update(roleEmployeesForm, id, permissions.getAccountId(), permissions.getUserId());
 		} else {
-			role = groupService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
+			role = roleService.update(roleProjectsForm, role, permissions.getAccountId(), permissions.getAppUserID());
 		}
 
 		return setUrlForRedirect("/employee-guard/operators/role/" + role.getId());

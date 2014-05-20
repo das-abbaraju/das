@@ -4,7 +4,7 @@
 <s:if test="!#role_projects.isEmpty()">
     <ul class="employee-guard-list edit-display-values">
         <s:iterator value="#role_projects" var="role_project">
-            <s:if test="#role_project.project.deletedBy == 0 && #role_project.project.deletedDate == null">
+            <s:if test="#role_project.project.deletedBy == 0 && #role_project.project.deletedDate == null && (permissions.corporate==true || #role_project.project.accountId==permissions.accountId)">
                 <s:url action="project" var="role_project_show_url">
                     <s:param name="id">${role_project.project.id}</s:param>
                 </s:url>
