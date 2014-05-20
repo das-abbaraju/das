@@ -2,8 +2,10 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.auditBuilder.AuditTypesBuilder;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -92,6 +94,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     OperatorAccount mockOA2;
     @Mock
     private BillingService billingService;
+    @Mock
+    private EmployeeGuardRulesService employeeGuardRulesService;
 
     Set<OperatorAccount> OAMocksSet = new HashSet<>();
 
@@ -110,6 +114,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         FeeService.ruleCache = ruleCache;
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
         Whitebox.setInternalState(feeService, "billingService", billingService);
+        Whitebox.setInternalState(feeService, "employeeGuardRulesService", employeeGuardRulesService);
 
         setUpContractor();
 
@@ -1357,6 +1362,23 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(operatorTag.isBlockSSManualAudit()).thenReturn(true);
 
         Whitebox.invokeMethod(feeService, "dropBlockSSManualAuditTagIfUpgrading", contractor, BillingStatus.Upgrade);
+    }
+
+    @Test
+    public void testCalculateContractorInvoiceFees_EGRulesShouldBeRun() {
+        when(contractorAccount.getPayingFacilities()).thenReturn(5);
+        when(contractorAccount.getAccountLevel()).thenReturn(AccountLevel.ListOnly);
+        when(contractorAccount.getCountry()).thenReturn(country);
+        InvoiceFee invoiceFee = mock(InvoiceFee.class);
+        when(feeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+        when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Upgrade);
+
+
+        feeService.calculateContractorInvoiceFees(contractorAccount, false);
+
+        verify(employeeGuardRulesService).runEmployeeGuardRules(any(ContractorAccount.class), any(HashSet.class));
+
+
     }
 
 }
