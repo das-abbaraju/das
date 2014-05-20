@@ -10,20 +10,6 @@ import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import java.util.*;
 
 public class OperatorEmployeeProjectAssignmentFactory {
-//	public List<OperatorEmployeeProjectAssignment> buildList(List<Employee> accountEmployees, List<AccountSkillEmployee> accountSkillEmployees, List<AccountSkill> accountSkills, Map<Integer, AccountModel> accountModels, List<Group> jobRoles) {
-//		Map<Employee, List<AccountSkillEmployee>> employeeMap = buildEmployeeSkillsMap(accountEmployees, accountSkillEmployees);
-//
-//		List<OperatorEmployeeProjectAssignment> employeeAssignmentInformation = new ArrayList<>();
-//		Map<Employee, List<Group>> employeeJobRoles = buildEmployeeJobRoles(accountEmployees, jobRoles);
-//		for (Map.Entry<Employee, List<AccountSkillEmployee>> employeeMapEntry : employeeMap.entrySet()) {
-//			OperatorEmployeeProjectAssignment operatorEmployeeProjectAssignment = build(employeeMapEntry.getKey(), employeeMapEntry.getValue(), accountSkills, accountModels);
-//			operatorEmployeeProjectAssignment.setAssignedRoleIds(EntityHelper.getIdsForEntities(employeeJobRoles.get(employeeMapEntry.getKey())));
-//			employeeAssignmentInformation.add(operatorEmployeeProjectAssignment);
-//		}
-//
-//		return employeeAssignmentInformation;
-//	}
-
 	public List<OperatorEmployeeProjectAssignment> buildList(final List<Employee> accountEmployees,
 															 final List<AccountSkillProfile> accountSkillProfiles,
 															 final List<AccountSkill> accountSkills,
@@ -86,12 +72,12 @@ public class OperatorEmployeeProjectAssignmentFactory {
 	}
 
 	public OperatorEmployeeProjectAssignment build(final Employee employee,
-												   final List<AccountSkillProfile> accountSkillEmployees,
+												   final List<AccountSkillProfile> accountSkillProfiles,
 												   final List<AccountSkill> accountSkills,
 												   final Map<Integer, AccountModel> accountModels) {
 		OperatorEmployeeProjectAssignment employeeAssignmentInformation = new OperatorEmployeeProjectAssignment();
 		employeeAssignmentInformation = addEmployeeInfo(employeeAssignmentInformation, employee, accountModels);
-		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillEmployees));
+		employeeAssignmentInformation.setSkillStatuses(buildOrderedSkillStatus(accountSkills, accountSkillProfiles));
 		return employeeAssignmentInformation;
 	}
 

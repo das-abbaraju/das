@@ -124,8 +124,8 @@ public class SiteAssignmentsAndProjectsFactory {
 			final Employee employee = roleEntry.getKey();
 
 			for (final Role role : roleEntry.getValue()) {
-				Set<AccountSkillProfile> employeeRoleSkills = filterAccountSkillEmployeesByEmployeeAndRole(employeeSkills,
-						employee, role);
+				Set<AccountSkillProfile> employeeRoleSkills = filterAccountSkillProfilesByEmployeeAndRole(employeeSkills,
+								employee, role);
 
 				projectRoleSkills.put(employee, role, employeeRoleSkills);
 			}
@@ -134,9 +134,9 @@ public class SiteAssignmentsAndProjectsFactory {
 		return projectRoleSkills;
 	}
 
-	private Set<AccountSkillProfile> filterAccountSkillEmployeesByEmployeeAndRole(final List<AccountSkillProfile> employeeSkills,
-																				  final Employee employee,
-																				  final Role role) {
+	private Set<AccountSkillProfile> filterAccountSkillProfilesByEmployeeAndRole(final List<AccountSkillProfile> employeeSkills,
+																																							 final Employee employee,
+																																							 final Role role) {
 		Set<AccountSkillProfile> employeeRoleSkills = new HashSet<>(employeeSkills);
 		CollectionUtils.filter(employeeRoleSkills, new GenericPredicate<AccountSkillProfile>() {
 
@@ -159,14 +159,14 @@ public class SiteAssignmentsAndProjectsFactory {
 
 		for (Map.Entry<AccountModel, Set<AccountSkill>> siteRequiredSkills : siteAndCorporateRequiredSkills.entrySet()) {
 			for (AccountSkill skill : siteRequiredSkills.getValue()) {
-				employeeSkillsBySiteSkills.put(siteRequiredSkills.getKey(), skill, filterAccountSkillEmployeesBySkill(employeeSkills, skill));
+				employeeSkillsBySiteSkills.put(siteRequiredSkills.getKey(), skill, filterAccountSkillProfilesBySkill(employeeSkills, skill));
 			}
 		}
 
 		return employeeSkillsBySiteSkills;
 	}
 
-	private Set<AccountSkillProfile> filterAccountSkillEmployeesBySkill(List<AccountSkillProfile> employeeSkills, final AccountSkill skill) {
+	private Set<AccountSkillProfile> filterAccountSkillProfilesBySkill(List<AccountSkillProfile> employeeSkills, final AccountSkill skill) {
 		Set<AccountSkillProfile> filtered = new HashSet<>(employeeSkills);
 
 		CollectionUtils.filter(filtered, new GenericPredicate<AccountSkillProfile>() {

@@ -27,7 +27,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
@@ -114,12 +114,12 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
 		skills = ListUtil.removeDuplicatesAndSort(skills);
 
-		Table<Employee, AccountSkill, AccountSkillProfile> accountSkillEmployees =
-				accountSkillEmployeeService.buildTable(employeesAssignedToRole, skills);
+		Table<Employee, AccountSkill, AccountSkillProfile> accountSkillProfiles =
+				accountSkillProfileService.buildTable(employeesAssignedToRole, skills);
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels =
 				ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(
-						employeesAssignedToRole, skills, accountSkillEmployees, contractors);
+						employeesAssignedToRole, skills, accountSkillProfiles, contractors);
 
 		List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractors.keySet(), siteId);
 		Map<RoleInfo, Integer> roleCounts = buildRoleCounts(siteId, employeesAtSite);

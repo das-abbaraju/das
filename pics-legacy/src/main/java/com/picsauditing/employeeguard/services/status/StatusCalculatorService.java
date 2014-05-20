@@ -167,12 +167,12 @@ public class StatusCalculatorService {
 			return Collections.emptyMap();
 		}
 
-		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
 				.findByEmployeeAndSkills(employee, skills);
-		Map<AccountSkill, AccountSkillProfile> accountSkillEmployeeMap =
-				buildAccountSkillToAccountSkillEmployeeMap(accountSkillEmployees);
+		Map<AccountSkill, AccountSkillProfile> accountSkillProfileMap =
+				buildAccountSkillToAccountSkillProfileMap(accountSkillProfiles);
 
-		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap);
+		return buildMapOfSkillStatus(skillMap, accountSkillProfileMap);
 	}
 
 	public <E> Map<E, List<SkillStatus>> getSkillStatusListPerEntity(final Employee employee,
@@ -187,13 +187,13 @@ public class StatusCalculatorService {
 			return Collections.emptyMap();
 		}
 
-		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
 				.findByEmployeeAndSkills(employee, skills);
 
-		Map<AccountSkill, AccountSkillProfile> accountSkillEmployeeMap =
-				buildAccountSkillToAccountSkillEmployeeMap(accountSkillEmployees);
+		Map<AccountSkill, AccountSkillProfile> accountSkillProfileMap =
+				buildAccountSkillToAccountSkillProfileMap(accountSkillProfiles);
 
-		return buildMapOfSkillStatus(skillMap, accountSkillEmployeeMap, defaultStatus);
+		return buildMapOfSkillStatus(skillMap, accountSkillProfileMap, defaultStatus);
 	}
 
 	public <E> Map<E, SkillStatus> getSkillStatusPerEntity(final Employee employee,
@@ -219,8 +219,8 @@ public class StatusCalculatorService {
 		return skills;
 	}
 
-	private Map<AccountSkill, AccountSkillProfile> buildAccountSkillToAccountSkillEmployeeMap(
-			final List<AccountSkillProfile> accountSkillProfile) {
+	private Map<AccountSkill, AccountSkillProfile> buildAccountSkillToAccountSkillProfileMap(
+					final List<AccountSkillProfile> accountSkillProfile) {
 
 		return PicsCollectionUtil.convertToMap(accountSkillProfile,
 
@@ -234,7 +234,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-																final Map<AccountSkill, AccountSkillProfile> accountSkillEmployeeMap) {
+																final Map<AccountSkill, AccountSkillProfile> accountSkillProfileMap) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
 		}
@@ -243,7 +243,7 @@ public class StatusCalculatorService {
 		for (E entity : skillMap.keySet()) {
 			List<SkillStatus> skillStatusList = new ArrayList<>();
 			for (AccountSkill accountSkill : skillMap.get(entity)) {
-				skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployeeMap.get(accountSkill)));
+				skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfileMap.get(accountSkill)));
 			}
 
 			entityStatusMap.put(entity, skillStatusList);
@@ -253,7 +253,7 @@ public class StatusCalculatorService {
 	}
 
 	private <E> Map<E, List<SkillStatus>> buildMapOfSkillStatus(final Map<E, Set<AccountSkill>> skillMap,
-																final Map<AccountSkill, AccountSkillProfile> accountSkillEmployeeMap,
+																final Map<AccountSkill, AccountSkillProfile> accountSkillProfileMap,
 																final SkillStatus defaultStatus) {
 		if (MapUtils.isEmpty(skillMap)) {
 			return Collections.emptyMap();
@@ -266,7 +266,7 @@ public class StatusCalculatorService {
 				skillStatusList.add(defaultStatus);
 			} else {
 				for (AccountSkill accountSkill : skillMap.get(entity)) {
-					skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployeeMap.get(accountSkill)));
+					skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfileMap.get(accountSkill)));
 				}
 			}
 

@@ -19,7 +19,7 @@ import java.util.Set;
 public class ProjectAction extends PicsRestActionSupport {
 
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -81,7 +81,7 @@ public class ProjectAction extends PicsRestActionSupport {
 		Map<AccountModel, Set<Project>> siteProjects = contractorProjectService.getSiteToProjectMapping(projectCompanies);
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = siteSkillService.getRequiredSkillsForProjects(projectCompanies);
 		Map<Employee, Set<Role>> employeeRoles = projectRoleService.getEmployeeProjectAndSiteRolesByAccount(permissions.getAccountId());
-		List<AccountSkillProfile> employeeSkills = accountSkillEmployeeService.getSkillsForAccount(permissions.getAccountId());
+		List<AccountSkillProfile> employeeSkills = accountSkillProfileService.getSkillsForAccount(permissions.getAccountId());
 
 		siteAssignmentsAndProjects = ModelFactory.getSiteAssignmentsAndProjectsFactory()
 				.create(siteProjects, siteRequiredSkills, employeeRoles, employeeSkills);
@@ -92,8 +92,8 @@ public class ProjectAction extends PicsRestActionSupport {
 		AccountModel accountModel = accountService.getAccountById(projectCompany.getProject().getAccountId());
 		project = formBuilderFactory.getContratorDetailProjectFormBuilder().build(projectCompany, accountModel);
 
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService
-				.getAccountSkillEmployeeForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService
+				.getAccountSkillProfileForProjectAndContractor(projectCompany.getProject(), permissions.getAccountId());
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleService.getProjectRolesForContractor
 				(projectCompany.getProject(), permissions.getAccountId());
 

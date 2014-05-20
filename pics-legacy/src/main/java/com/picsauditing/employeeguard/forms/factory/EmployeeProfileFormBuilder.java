@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.forms.employee.CompanyGroupInfo;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
@@ -19,7 +19,7 @@ public class EmployeeProfileFormBuilder {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private GroupService groupService;
 
@@ -51,7 +51,7 @@ public class EmployeeProfileFormBuilder {
 	}
 
 	private List<Skill> getSkillsForProfile(Profile profile) {
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService.findByProfile(profile);
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByProfile(profile);
 		return getSkillInfo(accountSkillProfiles);
 	}
 

@@ -127,8 +127,8 @@ public class SiteAssignmentModelFactory {
 
 		CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillProfile>() {
 			@Override
-			public boolean evaluateEntity(AccountSkillProfile accountSkillEmployee) {
-				return requiredSkills.contains(accountSkillEmployee.getSkill());
+			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+				return requiredSkills.contains(accountSkillProfile.getSkill());
 			}
 		});
 

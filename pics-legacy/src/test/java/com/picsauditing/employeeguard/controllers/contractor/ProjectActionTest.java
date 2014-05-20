@@ -9,14 +9,11 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
-import com.picsauditing.jpa.entities.Account;
-import org.approvaltests.Approvals;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class ProjectActionTest  extends PicsActionTest {
 	private ContractorProjectService contractorProjectService;
 	private SearchForm searchForm=null;
 	@Mock
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Mock
 	private ProjectRoleService projectRoleService;
 	@Mock
@@ -55,7 +52,7 @@ public class ProjectActionTest  extends PicsActionTest {
 		Whitebox.setInternalState(projectAction, "contractorProjectService", contractorProjectService);
 		Whitebox.setInternalState(projectAction, "searchForm", searchForm);
 
-		Whitebox.setInternalState(projectAction, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(projectAction, "accountSkillProfileService", accountSkillProfileService);
 		Whitebox.setInternalState(projectAction, "projectRoleService", projectRoleService);
 		Whitebox.setInternalState(projectAction, "siteSkillService", siteSkillService);
 		Whitebox.setInternalState(projectAction, "formBuilderFactory", formBuilderFactory);

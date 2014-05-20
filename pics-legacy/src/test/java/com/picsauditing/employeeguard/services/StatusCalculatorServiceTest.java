@@ -76,7 +76,7 @@ public class StatusCalculatorServiceTest {
 
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
-		AccountSkillProfile accountSkillProfile = egTestDataUtil.prepareExpiringAccountSkillEmployee();
+		AccountSkillProfile accountSkillProfile = egTestDataUtil.prepareExpiringAccountSkillProfile();
 		AccountSkill skill = accountSkillProfile.getSkill();
 		accountSkillProfile.setProfile(employee.getProfile());
 		accountSkillProfile.setEndDate(null);
@@ -107,7 +107,7 @@ public class StatusCalculatorServiceTest {
 	public void testGetEmployeeStatusRollUpForSkills_CollectionOfEmployeesAndSkills() {
 		List<AccountSkill> fakeSkills = buildFakeAccountSkills();
 		List<Employee> fakeEmployees = buildFakeEmployees();
-		setupFakeAccountSkillEmployee(fakeSkills, fakeEmployees);
+		setupFakeAccountSkillProfile(fakeSkills, fakeEmployees);
 
 		Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
 
@@ -150,7 +150,7 @@ public class StatusCalculatorServiceTest {
 	public void testGetAllSkillStatusesForEntity_NoEmployeeSkill() {
 		List<AccountSkill> skills = buildFakeAccountSkills();
 		List<Employee> employees = buildFakeEmployees();
-		List<AccountSkillProfile> accountSkillProfiles = buildFakeAccountSkillEmployees(employees, skills);
+		List<AccountSkillProfile> accountSkillProfiles = buildFakeAccountSkillProfiles(employees, skills);
 
 		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class), anyCollectionOf(AccountSkill.class)))
 				.thenReturn(accountSkillProfiles.subList(1, accountSkillProfiles.size()));
@@ -190,9 +190,9 @@ public class StatusCalculatorServiceTest {
 	}
 
 
-	private void setupFakeAccountSkillEmployee(List<AccountSkill> fakeSkills, List<Employee> fakeEmployees) {
-		List<AccountSkillProfile> fakeAccountSkillProfiles = buildFakeAccountSkillEmployees(fakeEmployees,
-				fakeSkills);
+	private void setupFakeAccountSkillProfile(List<AccountSkill> fakeSkills, List<Employee> fakeEmployees) {
+		List<AccountSkillProfile> fakeAccountSkillProfiles = buildFakeAccountSkillProfiles(fakeEmployees,
+						fakeSkills);
 
 		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
 				anyCollectionOf(AccountSkill.class))).thenReturn(fakeAccountSkillProfiles);
@@ -228,34 +228,34 @@ public class StatusCalculatorServiceTest {
 				new EmployeeBuilder()
 						.accountId(CONTRACTOR_ID)
 						.profile(new ProfileBuilder()
-								.id(12)
-								.email("bob@test.com")
-								.build())
+										.id(12)
+										.email("bob@test.com")
+										.build())
 						.email("bob@test.com")
 						.build(),
 
 				new EmployeeBuilder()
 						.accountId(CONTRACTOR_ID)
 						.profile(new ProfileBuilder()
-								.id(13)
-								.email("joe@test.com")
-								.build())
+										.id(13)
+										.email("joe@test.com")
+										.build())
 						.email("joe@test.com")
 						.build(),
 
 				new EmployeeBuilder()
 						.accountId(CONTRACTOR_ID)
 						.profile(new ProfileBuilder()
-								.id(14)
-								.email("jill@test.com")
-								.build())
+										.id(14)
+										.email("jill@test.com")
+										.build())
 						.email("jill@test.com")
 						.build()
 		);
 	}
 
-	private List<AccountSkillProfile> buildFakeAccountSkillEmployees(final List<Employee> employees,
-																	 final List<AccountSkill> skills) {
+	private List<AccountSkillProfile> buildFakeAccountSkillProfiles(final List<Employee> employees,
+																																	final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))

@@ -101,51 +101,51 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
 
-		updateAccountSkillEmployees(profileDocumentFromDatabase);
+		updateAccountSkillProfiles(profileDocumentFromDatabase);
 
 		return profileDocumentFromDatabase;
 	}
 
-	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
-		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO.findByProfileDocument(profileDocument);
+	private void updateAccountSkillProfiles(final ProfileDocument profileDocument) {
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO.findByProfileDocument(profileDocument);
 
-		if (CollectionUtils.isEmpty(accountSkillEmployees)) {
+		if (CollectionUtils.isEmpty(accountSkillProfiles)) {
 			return;
 		}
 
-		for (AccountSkillProfile accountSkillProfile : accountSkillEmployees) {
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			accountSkillProfile.setStartDate(profileDocument.getStartDate());
 			accountSkillProfile.setEndDate(profileDocument.getEndDate());
 		}
 
-		accountSkillProfileDAO.save(accountSkillEmployees);
+		accountSkillProfileDAO.save(accountSkillProfiles);
 	}
 
 	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,
 												 final ProfileDocument profileDocument) {
-		List<AccountSkillProfile> accountSkillEmployees = accountSkillProfileDAO.findBySkillIdAndProfile(skillId, profile);
-		accountSkillProfileDAO.delete(accountSkillEmployees);
-		accountSkillProfileDAO.save(buildAccountSkillEmployees(profile, skillId, profileDocument));
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO.findBySkillIdAndProfile(skillId, profile);
+		accountSkillProfileDAO.delete(accountSkillProfiles);
+		accountSkillProfileDAO.save(buildAccountSkillProfiles(profile, skillId, profileDocument));
 	}
 
-	private List<AccountSkillProfile> buildAccountSkillEmployees(final Profile profile, final int skillId,
-																 final ProfileDocument profileDocument) {
-		List<AccountSkillProfile> accountSkillEmployees = new ArrayList<>();
+	private List<AccountSkillProfile> buildAccountSkillProfiles(final Profile profile, final int skillId,
+																															final ProfileDocument profileDocument) {
+		List<AccountSkillProfile> accountSkillProfiles = new ArrayList<>();
 
 		List<Employee> employees = profile.getEmployees();
 		for (Employee employee : employees) {
-			accountSkillEmployees.add(new AccountSkillProfileBuilder()
-					.accountSkill(new AccountSkill(skillId))
-					.profile(profile)
-					.createdBy(1)
-					.createdDate(DateBean.today())
-					.profileDocument(profileDocument)
-					.startDate(DateBean.today())
-					.endDate(profileDocument.getEndDate())
-					.build());
+			accountSkillProfiles.add(new AccountSkillProfileBuilder()
+							.accountSkill(new AccountSkill(skillId))
+							.profile(profile)
+							.createdBy(1)
+							.createdDate(DateBean.today())
+							.profileDocument(profileDocument)
+							.startDate(DateBean.today())
+							.endDate(profileDocument.getEndDate())
+							.build());
 		}
 
-		return accountSkillEmployees;
+		return accountSkillProfiles;
 	}
 
 	public void delete(final int documentId, final int profileId) {

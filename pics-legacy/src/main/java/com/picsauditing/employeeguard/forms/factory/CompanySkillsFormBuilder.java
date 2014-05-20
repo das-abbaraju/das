@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.ProjectService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
@@ -26,7 +26,7 @@ public class CompanySkillsFormBuilder {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
@@ -102,7 +102,7 @@ public class CompanySkillsFormBuilder {
 
 
 		List<AccountSkill> skills = ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR);
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService.findByEmployeesAndSkills(profile.getEmployees(), skills);
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByEmployeesAndSkills(profile.getEmployees(), skills);
 
 		Map<AccountModel, List<AccountSkillProfile>> accountToEmployeeSkills = new TreeMap<>();
 		for (Map.Entry<AccountModel, Set<AccountSkill>> entry : accountToSkill.entrySet()) {
@@ -152,7 +152,7 @@ public class CompanySkillsFormBuilder {
 		Set<AccountSkill> allRequiredSkills = new TreeSet<>();
 		// Find skills (including required) for project
 		Map<Project, Set<AccountSkill>> projectSkills = mapProjectRequiredSkills(projectRoleEmployees, allRequiredSkills);
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillEmployeeService.findByEmployeesAndSkills(profile.getEmployees(), new ArrayList<>(allRequiredSkills));
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByEmployeesAndSkills(profile.getEmployees(), new ArrayList<>(allRequiredSkills));
 
 		Map<Project, List<AccountSkillProfile>> projectEmployeeSkills = new TreeMap<>();
 		for (Map.Entry<Project, Set<AccountSkill>> entrySet : projectSkills.entrySet()) {
@@ -268,7 +268,7 @@ public class CompanySkillsFormBuilder {
 	}
 
 	private List<AccountSkillProfile> getSkillsForAccountAndEmployee(Employee employee) {
-		return accountSkillEmployeeService.getSkillsForAccountAndEmployee(employee);
+		return accountSkillProfileService.getSkillsForAccountAndEmployee(employee);
 	}
 
 	private List<SkillInfo> mapAccountSkillToSkillInfo(List<AccountSkillProfile> accountSkillProfiles) {

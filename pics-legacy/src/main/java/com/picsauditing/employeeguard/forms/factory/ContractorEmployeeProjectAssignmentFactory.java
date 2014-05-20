@@ -149,7 +149,7 @@ public class ContractorEmployeeProjectAssignmentFactory {
 			employeeSkillStatuses.put(employee, new ArrayList<SkillStatus>());
 
 			for (AccountSkill requiredSkill : requiredSkills) {
-				AccountSkillProfile accountSkillProfile = getAccountSkillEmployeeWithDefault(employee, requiredSkill, accountSkillProfiles);
+				AccountSkillProfile accountSkillProfile = getAccountSkillProfileWithDefault(employee, requiredSkill, accountSkillProfiles);
 				employeeSkillStatuses.get(employee).add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile));
 			}
 		}
@@ -157,9 +157,9 @@ public class ContractorEmployeeProjectAssignmentFactory {
 		return employeeSkillStatuses;
 	}
 
-	private AccountSkillProfile getAccountSkillEmployeeWithDefault(final Employee employee,
-																   final AccountSkill requiredSkill,
-																   final List<AccountSkillProfile> accountSkillProfiles) {
+	private AccountSkillProfile getAccountSkillProfileWithDefault(final Employee employee,
+																																final AccountSkill requiredSkill,
+																																final List<AccountSkillProfile> accountSkillProfiles) {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			if (accountSkillProfile.getSkill().equals(requiredSkill)
 					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {

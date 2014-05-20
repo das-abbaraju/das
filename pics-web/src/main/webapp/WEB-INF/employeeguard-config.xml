@@ -33,7 +33,7 @@
 
     <!-- Services -->
     <bean id="AccountGroupEmployeeService" class="com.picsauditing.employeeguard.services.AccountGroupEmployeeService"/>
-    <bean id="AccountSkillEmployeeService" class="com.picsauditing.employeeguard.services.AccountSkillEmployeeService"/>
+    <bean id="AccountSkillProfileService" class="com.picsauditing.employeeguard.services.AccountSkillProfileService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
     <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>

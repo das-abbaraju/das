@@ -65,9 +65,9 @@ public class SkillEngine {
 	}
 
 	private void removeRequiredCorporateSkillsFromEmployee(Employee employee, List<Integer> corporateIds) {
-		List<AccountSkillProfile> accountSkillEmployees =
+		List<AccountSkillProfile> accountSkillProfiles =
 				accountSkillProfileDAO.findByEmployeeAndCorporateIds(employee.getId(), corporateIds);
-		accountSkillProfileDAO.delete(accountSkillEmployees);
+		accountSkillProfileDAO.delete(accountSkillProfiles);
 	}
 
 	private Set<Integer> getOtherEmployeeAssignedSiteIds(List<Integer> childSiteIds, int siteId, Employee employee) {

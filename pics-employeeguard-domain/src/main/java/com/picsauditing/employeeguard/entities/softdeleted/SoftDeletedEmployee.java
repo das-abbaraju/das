@@ -194,14 +194,6 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 		this.groups = groups;
 	}
 
-//	public List<AccountSkillEmployee> getSkills() {
-//		return skills;
-//	}
-//
-//	public void setSkills(List<AccountSkillEmployee> skills) {
-//		this.skills = skills;
-//	}
-
 	@Transient
 	public String getName() {
 		return firstName + " " + getLastName();

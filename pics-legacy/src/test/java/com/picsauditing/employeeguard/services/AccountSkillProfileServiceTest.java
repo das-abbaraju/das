@@ -17,9 +17,9 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 
-public class AccountSkillEmployeeServiceTest {
+public class AccountSkillProfileServiceTest {
 
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 
 	private ProfileDocumentService profileDocumentService;
 	private static final int ACCOUNT_ID = 1100;
@@ -31,11 +31,11 @@ public class AccountSkillEmployeeServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		accountSkillEmployeeService = new AccountSkillEmployeeService();
+		accountSkillProfileService = new AccountSkillProfileService();
 		profileDocumentService = ProfileDocumentServiceFactory.getProfileDocumentService();
 
-		Whitebox.setInternalState(accountSkillEmployeeService, "accountSkillProfileDAO", accountSkillProfileDAO);
-		Whitebox.setInternalState(accountSkillEmployeeService, "profileDocumentService", profileDocumentService);
+		Whitebox.setInternalState(accountSkillProfileService, "accountSkillProfileDAO", accountSkillProfileDAO);
+		Whitebox.setInternalState(accountSkillProfileService, "profileDocumentService", profileDocumentService);
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class AccountSkillEmployeeServiceTest {
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 		skillDocumentForm.setDocumentId(1);
 
-		accountSkillEmployeeService.update(accountSkillProfile, skillDocumentForm);
+		accountSkillProfileService.update(accountSkillProfile, skillDocumentForm);
 
 		verify(profileDocumentService).getDocument(anyInt());
 		assertNull(accountSkillProfile.getEndDate());
@@ -59,7 +59,7 @@ public class AccountSkillEmployeeServiceTest {
 
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 
-		accountSkillEmployeeService.update(accountSkillProfile, skillDocumentForm);
+		accountSkillProfileService.update(accountSkillProfile, skillDocumentForm);
 
 		assertNull(accountSkillProfile.getEndDate());
 		verify(accountSkillProfileDAO).save(accountSkillProfile);
@@ -73,7 +73,7 @@ public class AccountSkillEmployeeServiceTest {
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 		skillDocumentForm.setVerified(true);
 
-		accountSkillEmployeeService.update(accountSkillProfile, skillDocumentForm);
+		accountSkillProfileService.update(accountSkillProfile, skillDocumentForm);
 
 		assertNull(accountSkillProfile.getEndDate());
 		verify(accountSkillProfileDAO).save(accountSkillProfile);

@@ -87,8 +87,8 @@ public class EGTestDataUtil {
 		);
 	}
 
-	public List<AccountSkillProfile> buildFakeAccountSkillEmployees_Expired(final List<Employee> employees,
-																			final List<AccountSkill> skills) {
+	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_Expired(final List<Employee> employees,
+																																				 final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))
@@ -113,7 +113,7 @@ public class EGTestDataUtil {
 		);
 	}
 
-	public List<AccountSkillProfile> buildFakeAccountSkillEmployees_Expiring(final List<Employee> employees,
+	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_Expiring(final List<Employee> employees,
 																			 final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
@@ -139,7 +139,7 @@ public class EGTestDataUtil {
 		);
 	}
 
-	public List<AccountSkillProfile> buildFakeAccountSkillEmployees_MixedBag(final List<Employee> employees,
+	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_MixedBag(final List<Employee> employees,
 																			 final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
@@ -374,51 +374,51 @@ public class EGTestDataUtil {
 						.build());
 	}
 
-	public AccountSkillProfile prepareExpiredAccountSkillEmployee() {
+	public AccountSkillProfile prepareExpiredAccountSkillProfile() {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(35));
 		AccountSkill skill = this.buildNewFakeTrainingSkill();
 		skill.setIntervalType(IntervalType.MONTH);
 
 		DateTime oneYrFromNowDate = new DateTime().plusDays(365);
-		AccountSkillProfile accountSkillEmployee = new AccountSkillProfileBuilder()
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
 				.startDate(skillDocSaveDate.toDate())
 				.endDate(oneYrFromNowDate.toDate()) // End date is not used.  Its intentionally populated to make sure its not
 				.build();
 
-		accountSkillEmployee.setSkill(skill);
+		accountSkillProfile.setSkill(skill);
 
-		return accountSkillEmployee;
+		return accountSkillProfile;
 	}
 
-	public AccountSkillProfile prepareExpiringAccountSkillEmployee() {
+	public AccountSkillProfile prepareExpiringAccountSkillProfile() {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(2));
 		AccountSkill skill = this.buildNewFakeTrainingSkill();
 		skill.setIntervalType(IntervalType.WEEK);
 
 		DateTime oneYrFromNowDate = new DateTime().plusDays(365);
-		AccountSkillProfile accountSkillEmployee = new AccountSkillProfileBuilder()
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
 				.startDate(skillDocSaveDate.toDate())
 				.endDate(oneYrFromNowDate.toDate()) // End date is not used.  Its intentionally populated to make sure its not
 				.build();
 
-		accountSkillEmployee.setSkill(skill);
+		accountSkillProfile.setSkill(skill);
 
-		return accountSkillEmployee;
+		return accountSkillProfile;
 	}
 
-	public AccountSkillProfile prepareCompletedAccountSkillEmployee() {
+	public AccountSkillProfile prepareCompletedAccountSkillProfile() {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(3));
 		AccountSkill skill = this.buildNewFakeTrainingSkill();
 		skill.setIntervalType(IntervalType.YEAR);
 
-		AccountSkillProfile accountSkillEmployee = new AccountSkillProfileBuilder()
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
 				.startDate(skillDocSaveDate.toDate())
 				.endDate((new DateTime().plusDays(5).toDate())) // End date is not used.  Its intentionally populated to make sure its not
 				.build();
 
-		accountSkillEmployee.setSkill(skill);
+		accountSkillProfile.setSkill(skill);
 
-		return accountSkillEmployee;
+		return accountSkillProfile;
 	}
 
 	public AccountSkill buildNewFakeTrainingSkill() {

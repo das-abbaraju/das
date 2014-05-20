@@ -13,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-@Deprecated
-public class AccountSkillEmployeeService {
+
+public class AccountSkillProfileService {
 
 	@Autowired
 	private AccountSkillProfileDAO accountSkillProfileDAO;
@@ -34,14 +34,14 @@ public class AccountSkillEmployeeService {
 		return accountSkillProfileDAO.findByEmployeesAndSkills(employees, accountSkills);
 	}
 
-	public AccountSkillProfile linkProfileDocumentToEmployeeSkill(final AccountSkillProfile accountSkillEmployee,
+	public AccountSkillProfile linkProfileDocumentToEmployeeSkill(final AccountSkillProfile accountSkillProfile,
 																  final ProfileDocument profileDocument) {
-		accountSkillEmployee.setProfileDocument(profileDocument);
-		accountSkillEmployee.setEndDate(null);
-		return accountSkillProfileDAO.save(accountSkillEmployee);
+		accountSkillProfile.setProfileDocument(profileDocument);
+		accountSkillProfile.setEndDate(null);
+		return accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public AccountSkillProfile getAccountSkillEmployeeForProfileAndSkill(Profile profile, AccountSkill skill) {
+	public AccountSkillProfile getAccountSkillProfileForProfileAndSkill(Profile profile, AccountSkill skill) {
 		return accountSkillProfileDAO.findByProfileAndSkill(profile, skill);
 	}
 
@@ -49,36 +49,36 @@ public class AccountSkillEmployeeService {
 		return accountSkillProfileDAO.findByAccountAndEmployee(employee);
 	}
 
-	public void save(AccountSkillProfile accountSkillEmployee) {
-		accountSkillProfileDAO.save(accountSkillEmployee);
+	public void save(AccountSkillProfile accountSkillProfile) {
+		accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public void save(List<AccountSkillProfile> accountSkillEmployees) {
-		if (CollectionUtils.isNotEmpty(accountSkillEmployees)) {
-			accountSkillProfileDAO.save(accountSkillEmployees);
+	public void save(List<AccountSkillProfile> accountSkillProfiles) {
+		if (CollectionUtils.isNotEmpty(accountSkillProfiles)) {
+			accountSkillProfileDAO.save(accountSkillProfiles);
 		}
 	}
 
-	public void update(AccountSkillProfile accountSkillEmployee, final SkillDocumentForm skillDocumentForm) {
-		AccountSkill skill = accountSkillEmployee.getSkill();
+	public void update(AccountSkillProfile accountSkillProfile, final SkillDocumentForm skillDocumentForm) {
+		AccountSkill skill = accountSkillProfile.getSkill();
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
 			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
-			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
+			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
 		} else if (skillType.isTraining()) {
-			accountSkillEmployee.setEndDate(null);
-			accountSkillProfileDAO.save(accountSkillEmployee);
+			accountSkillProfile.setEndDate(null);
+			accountSkillProfileDAO.save(accountSkillProfile);
 		}
 	}
 
-	public void update(AccountSkillProfile accountSkillEmployee, final ProfileDocument document) {
-		AccountSkill skill = accountSkillEmployee.getSkill();
+	public void update(AccountSkillProfile accountSkillProfile, final ProfileDocument document) {
+		AccountSkill skill = accountSkillProfile.getSkill();
 		SkillType skillType = skill.getSkillType();
 
 		if (skillType.isCertification()) {
-			linkProfileDocumentToEmployeeSkill(accountSkillEmployee, document);
-			accountSkillProfileDAO.save(accountSkillEmployee);
+			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
+			accountSkillProfileDAO.save(accountSkillProfile);
 		}
 	}
 
@@ -149,8 +149,8 @@ public class AccountSkillEmployeeService {
 		return false;
 	}
 
-	public List<AccountSkillProfile> getAccountSkillEmployeeForProjectAndContractor(final Project project,
-																					final int accountId) {
+	public List<AccountSkillProfile> getAccountSkillProfileForProjectAndContractor(final Project project,
+																																								 final int accountId) {
 		return accountSkillProfileDAO.findByProjectAndContractor(project, accountId);
 	}
 
@@ -212,22 +212,22 @@ public class AccountSkillEmployeeService {
 
 	public Table<Employee, AccountSkill, AccountSkillProfile> buildTable(final List<Employee> employees,
 																		 final List<AccountSkill> skills) {
-		List<AccountSkillProfile> accountSkillEmployees = findByEmployeesAndSkills(employees, skills);
+		List<AccountSkillProfile> accountSkillProfiles = findByEmployeesAndSkills(employees, skills);
 
 		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
 		for (Employee employee : employees) {
 			for (AccountSkill skill : skills) {
-				table.put(employee, skill, findAccountSkillEmployeeByEmployeeAndSkill(accountSkillEmployees, employee,
-						skill));
+				table.put(employee, skill, findAccountSkillProfileByEmployeeAndSkill(accountSkillProfiles, employee,
+								skill));
 			}
 		}
 
 		return table;
 	}
 
-	private AccountSkillProfile findAccountSkillEmployeeByEmployeeAndSkill(final List<AccountSkillProfile> accountSkillProfiles,
-																		   final Employee employee,
-																		   final AccountSkill skill) {
+	private AccountSkillProfile findAccountSkillProfileByEmployeeAndSkill(final List<AccountSkillProfile> accountSkillProfiles,
+																																				final Employee employee,
+																																				final AccountSkill skill) {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			if (skill.equals(accountSkillProfile.getSkill())
 					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {

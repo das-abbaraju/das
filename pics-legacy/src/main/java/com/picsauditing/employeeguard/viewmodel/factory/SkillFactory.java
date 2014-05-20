@@ -51,7 +51,7 @@ public class SkillFactory {
 
 	public static Skill create(final AccountSkill accountSkill, final AccountSkillProfile accountSkillProfile) {
 		if (!accountSkill.equals(accountSkillProfile.getSkill())) {
-			throw new IllegalArgumentException("The AccountSkillEmployee must be for the AccountSkill");
+			throw new IllegalArgumentException("The AccountSkillProfile must be for the AccountSkill");
 		}
 
 		return new Skill.Builder()

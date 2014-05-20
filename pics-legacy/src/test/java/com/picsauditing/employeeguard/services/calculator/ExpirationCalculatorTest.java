@@ -130,10 +130,10 @@ public class ExpirationCalculatorTest {
 	}
 
 	@Test
-	public void testCalculateExpirationDate_AccountSkillEmployeeHasNullSkill() throws Exception {
-		AccountSkillProfile accountSkillEmployee = new AccountSkillProfile();
+	public void testCalculateExpirationDate_AccountSkillProfileHasNullSkill() throws Exception {
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfile();
 
-		Date result = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date result = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 
 		assertNull(result);
 	}

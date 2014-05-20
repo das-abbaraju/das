@@ -265,10 +265,10 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 				"JOIN asp.skill s " +
 				"JOIN s.roles asr " +
 				"JOIN asr.role r " +
-				"JOIN r.projects pr " +
-				"JOIN pr.project p " +
+				"JOIN r.projects projs " +
+				"JOIN projs.project proj " +
 				"WHERE e.accountId IN (:contractorIds) " +
-				"AND p.accountId = :siteId", AccountSkillProfile.class);
+				"AND proj.accountId = :siteId", AccountSkillProfile.class);
 
 		query.setParameter("contractorIds", contractorIds);
 		query.setParameter("siteId", siteId);
@@ -291,10 +291,10 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
 				"JOIN asp.skill s " +
-				"JOIN s.projects ps " +
-				"JOIN ps.project p " +
+				"JOIN s.projects projs " +
+				"JOIN projs.project proj " +
 				"WHERE e.accountId IN (:contractorIds) " +
-				"AND p.accountId = :siteId", AccountSkillProfile.class);
+				"AND proj.accountId = :siteId", AccountSkillProfile.class);
 
 		query.setParameter("contractorIds", contractorIds);
 		query.setParameter("siteId", siteId);
@@ -392,7 +392,7 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
-				"JOIN p.employee e " +
+				"JOIN p.employees e " +
 				"WHERE asp.skill.id = :skillId AND p = :profile", AccountSkillProfile.class);
 
 		query.setParameter("skillId", skillId);
