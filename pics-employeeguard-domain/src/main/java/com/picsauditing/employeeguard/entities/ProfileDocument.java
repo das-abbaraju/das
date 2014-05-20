@@ -14,7 +14,7 @@ import java.util.*;
 @Table(name = "profiledocument")
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO profiledocument (createdBy, createdDate, deletedBy, deletedDate, documentType, finishDate, fileName, fileSize, fileType, name, profileID, startDate, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE profiledocument SET deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE profiledocument SET name=concat(name ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
 public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> {
 
 	private static final long serialVersionUID = 7654576030939128656L;
