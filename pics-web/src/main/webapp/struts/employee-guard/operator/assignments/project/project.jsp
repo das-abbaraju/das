@@ -60,10 +60,11 @@
                     <td>
                         <s:url action="employees/{id}" var="employee_liveID">
                             <s:param name="id">
-                                ${operator_project_employee.employeeId}
+                               ${operator_project_employee.employeeId}
                             </s:param>
+
                         </s:url>
-                        <a href="${employee_liveID}">${operator_project_employee.employeeName}</a>
+                        <a href="${employee_liveID}/sites/${assignmentId}">${operator_project_employee.employeeName}</a>
                     </td>
                     <s:iterator value="#operator_project_employee.skillStatusRollUp" var="employee_skill_status">
                         <s:if test="#employee_skill_status.expired" >
