@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectRoleAssignment;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,12 @@ public class EmployeeProjectRoleAssignmentFactory {
 	private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
 																			 final Employee employee,
 																			 final List<AccountSkill> orderedSkills) {
-		Map<AccountSkill, AccountSkillProfile> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getProfile().getSkills());
+		List<AccountSkillProfile> accountSkillProfiles = new ArrayList<>();
+		if (employee.getProfile() != null && CollectionUtils.isNotEmpty(employee.getProfile().getSkills())) {
+			accountSkillProfiles = employee.getProfile().getSkills();
+		}
+
+		Map<AccountSkill, AccountSkillProfile> employeeSkillMap = buildEmployeeAccountSkillMap(accountSkillProfiles);
 
 		return new EmployeeProjectRoleAssignment.Builder()
 				.contractorId(accountModel.getId())

@@ -98,7 +98,12 @@ public class SkillAssignmentHelper {
 	public Set<AccountSkillProfile> filterNoLongerNeededEmployeeSkills(final Employee employee,
 																	   final int contractorId,
 																	   final Set<AccountSkill> requiredSkills) {
-		HashSet<AccountSkillProfile> accountSkillProfiles = new HashSet<>(employee.getProfile().getSkills());
+		List<AccountSkillProfile> accountSkillProfileList = new ArrayList<>();
+		if (employee.getProfile() != null && CollectionUtils.isNotEmpty(employee.getProfile().getSkills())) {
+			accountSkillProfileList = employee.getProfile().getSkills();
+		}
+
+		HashSet<AccountSkillProfile> accountSkillProfiles = new HashSet<>(accountSkillProfileList);
 
 		CollectionUtils.filter(accountSkillProfiles, new GenericPredicate<AccountSkillProfile>() {
 			@Override

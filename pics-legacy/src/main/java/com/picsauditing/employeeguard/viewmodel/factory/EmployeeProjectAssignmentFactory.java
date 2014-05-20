@@ -18,12 +18,17 @@ public class EmployeeProjectAssignmentFactory {
 											 final List<AccountSkill> projectSkills,
 											 final List<AccountSkill> siteRequiredSkills,
 											 final List<AccountSkill> corporateRequiredSkills) {
+		List<AccountSkillProfile> accountSkillProfiles = new ArrayList<>();
+		if (employee.getProfile() != null && CollectionUtils.isNotEmpty(employee.getProfile().getSkills())) {
+			accountSkillProfiles = employee.getProfile().getSkills();
+		}
+
 		return new EmployeeProjectAssignment.Builder()
 				.contractorId(accountModel.getId())
 				.contractorName(accountModel.getName())
 				.employeeId(employee.getId())
 				.employeeName(employee.getName())
-				.skillStatusRollUp(getStatusRollUp(employee.getProfile().getSkills(), roleSkills, projectSkills, siteRequiredSkills,
+				.skillStatusRollUp(getStatusRollUp(accountSkillProfiles, roleSkills, projectSkills, siteRequiredSkills,
 						corporateRequiredSkills))
 				.build();
 	}

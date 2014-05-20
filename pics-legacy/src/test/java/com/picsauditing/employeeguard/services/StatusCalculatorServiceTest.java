@@ -134,16 +134,16 @@ public class StatusCalculatorServiceTest {
 		assertEquals(3, result.size());
 
 		// first skill is complete, second and third skill is expired
-		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Completed, SkillStatus.Expired, SkillStatus.Expired),
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Completed),
 				result.get(fakeEmployees.get(0))));
 
 		// first skill is expired, second skill is expiring, third skill is complete
-		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expiring, SkillStatus.Completed),
-				result.get(fakeEmployees.get(1))));
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Completed, SkillStatus.Expired, SkillStatus.Expired),
+				result.get(fakeEmployees.get(0))));
 
 		// all skills are expired
-		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expired, SkillStatus.Expired),
-				result.get(fakeEmployees.get(2))));
+		assertTrue(Utilities.collectionsAreEqual(Arrays.asList(SkillStatus.Expired, SkillStatus.Expiring, SkillStatus.Expired),
+				result.get(fakeEmployees.get(1))));
 	}
 
 	@Test
@@ -191,26 +191,66 @@ public class StatusCalculatorServiceTest {
 
 
 	private void setupFakeAccountSkillEmployee(List<AccountSkill> fakeSkills, List<Employee> fakeEmployees) {
-		List<AccountSkillProfile> fakeAccountSkillEmployees = buildFakeAccountSkillEmployees(fakeEmployees,
+		List<AccountSkillProfile> fakeAccountSkillProfiles = buildFakeAccountSkillEmployees(fakeEmployees,
 				fakeSkills);
 
 		when(accountSkillProfileDAO.findByEmployeesAndSkills(anyCollectionOf(Employee.class),
-				anyCollectionOf(AccountSkill.class))).thenReturn(fakeAccountSkillEmployees);
+				anyCollectionOf(AccountSkill.class))).thenReturn(fakeAccountSkillProfiles);
 	}
 
 	private List<AccountSkill> buildFakeAccountSkills() {
 		return Arrays.asList(
-				new AccountSkillBuilder(1, CORPORATE_ID).name("Test Skill 1").intervalPeriod(1).skillType(SkillType.Training).intervalType(IntervalType.YEAR).build(),
-				new AccountSkillBuilder(2, CORPORATE_ID).name("Test Skill 2").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.WEEK).build(),
-				new AccountSkillBuilder(3, CORPORATE_ID).name("Test Skill 3").skillType(SkillType.Training).intervalPeriod(1).intervalType(IntervalType.YEAR).build()
+				new AccountSkillBuilder(1, CORPORATE_ID)
+						.name("Test Skill 1")
+						.intervalPeriod(1)
+						.skillType(SkillType.Training)
+						.intervalType(IntervalType.YEAR)
+						.build(),
+
+				new AccountSkillBuilder(2, CORPORATE_ID)
+						.name("Test Skill 2")
+						.skillType(SkillType.Training)
+						.intervalPeriod(1)
+						.intervalType(IntervalType.WEEK)
+						.build(),
+
+				new AccountSkillBuilder(3, CORPORATE_ID)
+						.name("Test Skill 3")
+						.skillType(SkillType.Training)
+						.intervalPeriod(1)
+						.intervalType(IntervalType.YEAR)
+						.build()
 		);
 	}
 
 	private List<Employee> buildFakeEmployees() {
 		return Arrays.asList(
-				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("bob@test.com").build(),
-				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("joe@test.com").build(),
-				new EmployeeBuilder().accountId(CONTRACTOR_ID).email("jill@test.com").build()
+				new EmployeeBuilder()
+						.accountId(CONTRACTOR_ID)
+						.profile(new ProfileBuilder()
+								.id(12)
+								.email("bob@test.com")
+								.build())
+						.email("bob@test.com")
+						.build(),
+
+				new EmployeeBuilder()
+						.accountId(CONTRACTOR_ID)
+						.profile(new ProfileBuilder()
+								.id(13)
+								.email("joe@test.com")
+								.build())
+						.email("joe@test.com")
+						.build(),
+
+				new EmployeeBuilder()
+						.accountId(CONTRACTOR_ID)
+						.profile(new ProfileBuilder()
+								.id(14)
+								.email("jill@test.com")
+								.build())
+						.email("jill@test.com")
+						.build()
 		);
 	}
 
@@ -233,7 +273,7 @@ public class StatusCalculatorServiceTest {
 
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(2))
-						.profile(employees.get(1).getProfile())
+						.profile(employees.get(2).getProfile())
 						.startDate((new DateTime().minusDays(2)).toDate())
 						.endDate(null)
 						.build()
