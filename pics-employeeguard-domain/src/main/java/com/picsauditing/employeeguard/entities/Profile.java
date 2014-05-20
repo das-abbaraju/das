@@ -65,7 +65,7 @@ public class Profile implements BaseEntity, Identifiable, Comparable<Profile> {
 	private List<ProfileDocument> documents = new ArrayList<>();
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 10)
 	private List<AccountSkillProfile> skills = new ArrayList<>();
 
 	public int getId() {

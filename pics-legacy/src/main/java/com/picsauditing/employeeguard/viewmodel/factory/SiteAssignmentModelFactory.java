@@ -119,6 +119,10 @@ public class SiteAssignmentModelFactory {
 	}
 
 	private List<AccountSkillProfile> filterRequiredEmployeeSkills(final Employee employee, final Set<AccountSkill> requiredSkills) {
+		if (employee.getProfile() == null) {
+			return Collections.emptyList();
+		}
+
 		List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
 
 		CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillProfile>() {

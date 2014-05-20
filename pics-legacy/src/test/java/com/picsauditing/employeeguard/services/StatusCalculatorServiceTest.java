@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.joda.time.DateTime;
@@ -23,6 +24,7 @@ import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.when;
 
 public class StatusCalculatorServiceTest {
+
 	private EGTestDataUtil egTestDataUtil = new EGTestDataUtil();
 
 	public static final int CONTRACTOR_ID = 1234;
@@ -72,7 +74,6 @@ public class StatusCalculatorServiceTest {
 		verifyResults_WhenEmployeeHasNoDocumentation(fakeEmployees, result);
 	}
 
-
 	@Test
 	public void testGetEmployeeStatusRollUpForSkills() throws Exception {
 		AccountSkillProfile accountSkillProfile = egTestDataUtil.prepareExpiringAccountSkillEmployee();
@@ -81,7 +82,7 @@ public class StatusCalculatorServiceTest {
 		accountSkillProfile.setEndDate(null);
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);
 		when(employee.getName()).thenReturn("Employee Name");
-		when(employee.getProfile().getSkills()).thenReturn(Arrays.asList(accountSkillProfile));
+		when(employee.getProfile()).thenReturn(new ProfileBuilder().skills(Arrays.asList(accountSkillProfile)).build());
 
 		Set<Employee> accountEmployees = new HashSet<>();
 		accountEmployees.add(employee);
@@ -111,7 +112,6 @@ public class StatusCalculatorServiceTest {
 		Map<Employee, List<SkillStatus>> result = service.getEmployeeStatusRollUpForSkills(fakeEmployees, fakeSkills);
 
 		verifyResults(fakeEmployees, result);
-
 	}
 
 	private void verifyResults_WhenEmployeeHasNoDocumentation(List<Employee> fakeEmployees, Map<Employee, List<SkillStatus>> result) {

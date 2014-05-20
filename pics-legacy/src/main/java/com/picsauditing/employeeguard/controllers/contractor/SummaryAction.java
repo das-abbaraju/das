@@ -49,8 +49,4 @@ public class SummaryAction extends PicsRestActionSupport {
 
 		return JSON_STRING;
 	}
-
-	/* other methods */
-
-	/* getter + setters */
 }

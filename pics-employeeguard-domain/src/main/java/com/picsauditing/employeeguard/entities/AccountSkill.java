@@ -77,7 +77,6 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	private List<AccountSkillRole> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
 	private List<AccountSkillProfile> profiles = new ArrayList<>();
 
@@ -118,7 +117,6 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
-
 
 	public SkillType getSkillType() {
 		return skillType;

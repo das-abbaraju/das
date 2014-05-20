@@ -53,7 +53,7 @@ public class StatusCalculatorService {
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
 		for (final Employee employee : employees) {
 			SkillStatus rollUp = SkillStatus.Expired;
-			if (CollectionUtils.isNotEmpty(employeeRequiredSkills.get(employee))) {
+			if (CollectionUtils.isNotEmpty(employeeRequiredSkills.get(employee)) && employee.getProfile() != null) {
 				List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
 				CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillProfile>() {
 
@@ -99,9 +99,19 @@ public class StatusCalculatorService {
 
 	private Map<Employee, Set<AccountSkillProfile>> convertToMap(final Collection<Employee> employees,
 																 final List<AccountSkillProfile> accountSkillProfiles) {
-//		Map<Employee, Set<AccountSkillProfile>>
+		Map<Profile, Set<Employee>> employeeProfileMap = ServiceHelper.buildProfileToEmployeesMap(employees);
 
-		return null;
+		Map<Profile, Set<AccountSkillProfile>> profileSkills = PicsCollectionUtil.convertToMapOfSets(accountSkillProfiles,
+
+				new PicsCollectionUtil.MapConvertable<Profile, AccountSkillProfile>() {
+
+					@Override
+					public Profile getKey(AccountSkillProfile entity) {
+						return entity.getProfile();
+					}
+				});
+
+		return ServiceHelper.mapFromProfileToEmployee(profileSkills, employeeProfileMap);
 	}
 
 	private Map<Employee, List<SkillStatus>> buildSkillStatusMap(final Set<Employee> employees,

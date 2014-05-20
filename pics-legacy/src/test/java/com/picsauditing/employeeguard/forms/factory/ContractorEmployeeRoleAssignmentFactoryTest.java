@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
@@ -16,6 +17,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class ContractorEmployeeRoleAssignmentFactoryTest {
+
 	private ContractorEmployeeRoleAssignmentFactory factory;
 
 	@Mock
@@ -84,7 +86,7 @@ public class ContractorEmployeeRoleAssignmentFactoryTest {
 		when(accountSkillProfile.getEndDate()).thenReturn(threeMonthsFromNow);
 		when(accountSkillProfile.getSkill()).thenReturn(accountSkill);
 		when(accountSkillRole.getSkill()).thenReturn(accountSkill);
-		when(employee1.getProfile().getSkills()).thenReturn(Arrays.asList(accountSkillProfile));
+		when(employee1.getProfile()).thenReturn(new ProfileBuilder().skills(Arrays.asList(accountSkillProfile)).build());
 		when(employee1.getProjectRoles()).thenReturn(Arrays.asList(projectRoleEmployee));
 		when(employee1.getName()).thenReturn("First");
 		when(employee2.getName()).thenReturn("Second");

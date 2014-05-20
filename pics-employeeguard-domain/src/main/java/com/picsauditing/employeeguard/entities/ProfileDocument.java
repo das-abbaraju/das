@@ -65,7 +65,7 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 2)
 	private List<AccountSkillProfile> profileSkills;
 
 	public int getId() {
