@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app id="WebApp_ID" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+
+
+    <!-- SERVLET: perf4j -->
+    <servlet>
+        <servlet-name>perf4j</servlet-name>
+        <servlet-class>org.perf4j.log4j.servlet.GraphingServlet</servlet-class>
+        <!-- The graphNames parameter determines which graphs to expose. The param-value should be a comma-separated list 
+            of the appender NAMES as defined in the log4j.xml file. -->
+        <init-param>
+            <param-name>graphNames</param-name>
+            <param-value>ExecutionCount,ExecutionTPS,ExecutionMean</param-value>
+        </init-param>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>perf4j</servlet-name>
+        <url-pattern>/tool/perf4j</url-pattern>
+    </servlet-mapping>
+
+    <!-- SERVLET: springmvc -->
+    <servlet>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextClass</param-name>
+            <param-value>
+                org.springframework.web.context.support.AnnotationConfigWebApplicationContext
+            </param-value>
+        </init-param>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:spring-servlet.xml,classpath*:applicationContext*.xml</param-value>
+        </init-param>
+
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:applicationContext*.xml</param-value>
+    </context-param>
+
+
+    <listener>
+        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+    <welcome-file-list>
+        <welcome-file>version.html</welcome-file>    
+        <welcome-file>index.html</welcome-file>        
+    </welcome-file-list>
+    
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.html</location>
+    </error-page>    
+
+</web-app>

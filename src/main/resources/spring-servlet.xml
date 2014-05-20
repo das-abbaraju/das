@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/security
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!-- Declare a view resolver -->
+    <bean id="viewResolver"
+        class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+        p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
+
+
+    <http realm="Contacts Realm">
+        
+        <intercept-url pattern="/index.jsp" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/login.jsp*" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/admin/*" access="ROLE_ADMIN" />
+        <intercept-url pattern="/secret/*" access="ROLE_SECRET" />
+        <intercept-url pattern="/**" access="ROLE_USER,ROLE_ADMIN,ROLE_SECRET" />
+
+        <intercept-url pattern="/" access="permitAll" requires-channel="any" />   
+        <intercept-url pattern="/version.html" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/tool*/**" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />     
+        <intercept-url pattern="/static/**" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/api/**" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/pub/**" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/sec/recstate/tool/**" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8') and hasRole('ROLE_USER')" requires-channel="any" />
+        <intercept-url pattern="/sec/**" access="hasRole('ROLE_USER')" requires-channel="any" />
+        <intercept-url pattern="/**" access="hasRole('ROLE_USER')" requires-channel="any" />
+        
+        <http-basic />
+    </http>
+
+</beans>
