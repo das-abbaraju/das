@@ -55,7 +55,7 @@ public class SiteAssignmentsAndProjectsFactory {
 			siteAssignmentsAndProjects.put(siteAssignmentStatistic, siteNameToProjectStatistics.get(siteAssignmentStatistic.getSite().getId()));
 		}
 
-		return Collections.unmodifiableMap(siteAssignmentsAndProjects);
+		return siteAssignmentsAndProjects;
 	}
 
 	private Map<AccountModel, Map<Employee, Set<Role>>> getEmployeeRolesPerSite(Map<AccountModel, Set<Project>> projects, Map<Employee, Set<Role>> employeeRoles) {
@@ -257,6 +257,22 @@ public class SiteAssignmentsAndProjectsFactory {
 					.expiring(statusCount.get(SkillStatus.Expiring))
 					.expired(statusCount.get(SkillStatus.Expired))
 					.build();
+			siteAssignmentStatistics.add(siteStatistics);
+		}
+
+		return Collections.unmodifiableList(siteAssignmentStatistics);
+	}
+
+	public List<SiteAssignmentStatisticsModel> buildSiteAssignStatsForClientSitesUnattachedToProjs(List<AccountModel> contractorClientSitesNotAttachedToProjects) {
+		List<SiteAssignmentStatisticsModel> siteAssignmentStatistics = new ArrayList<>();
+
+		for (AccountModel accountModel : contractorClientSitesNotAttachedToProjects) {
+			SiteAssignmentStatisticsModel siteStatistics = new SiteAssignmentStatisticsModel.Builder()
+							.site(accountModel)
+							.completed(0)
+							.expiring(0)
+							.expired(0)
+							.build();
 			siteAssignmentStatistics.add(siteStatistics);
 		}
 
