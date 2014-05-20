@@ -2,10 +2,9 @@ package com.picsauditing.PICS;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
+import com.picsauditing.dao.OperatorFormDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,8 @@ public class RegistrationRequestEmailHelper {
 	private EmailSender sender;
 	@Autowired
 	private EmailTemplateDAO templateDAO;
+    @Autowired
+    private OperatorFormDAO operatorFormDAO;
 
 	private final int OLD_INITIAL_EMAIL = 83;
 	private final int INITIAL_EMAIL = 259;
@@ -147,6 +148,11 @@ public class RegistrationRequestEmailHelper {
 	}
 
 	private OperatorForm getContractorLetterFromHierarchy(OperatorAccount operator, BaseTable baseTable) {
+        List<OperatorForm> opForms = new ArrayList();
+        if (operator != null) {
+            opForms = operatorFormDAO.findByopID(operator.getId());
+        }
+
 		if (operator != null) {
 			Set<Integer> alreadyProcessed = new TreeSet<Integer>();
 
@@ -155,7 +161,7 @@ public class RegistrationRequestEmailHelper {
 
 			OperatorAccount current = operator;
 			while (current != null && !alreadyProcessed.contains(current.getId())) {
-				for (OperatorForm form : current.getOperatorForms()) {
+				for (OperatorForm form : opForms) {
 					if (!Strings.isEmpty(form.getFormName()) && form.getFormName().contains("*")) {
 						return form;
 					}

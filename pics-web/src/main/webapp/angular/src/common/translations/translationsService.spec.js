@@ -79,6 +79,16 @@ describe('translationsService', function() {
             expect($rootScope.text).toEqual(translationsMock);
         });
 
+        it('should replace undefined translation values with their associated translation keys when development mode is on', function () {
+            translationsMock['my.first.translation'] = undefined;
+
+            translationsService.setDevelopmentMode('on');
+
+            translationsService.setTranslations(translationsMock);
+
+            expect($rootScope.text['my.first.translation']).toEqual('my.first.translation');
+        });
+
         it('should resolve the promise returned by getTranslations', function () {
             var mySpy = {
                 callback: function () {}
