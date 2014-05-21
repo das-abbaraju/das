@@ -92,14 +92,11 @@
             </section>
         </s:if>
         <s:else>
-            <section class="employee-guard-section edit-container" data-url="${operator_role_project_url}">
+            <section class="employee-guard-section">
                 <h1>
                     <div class="row">
                         <div class="col-md-9 col-xs-9">
                             <i class="icon-sitemap icon-large"></i> Current Projects
-                        </div>
-                        <div class="col-md-3 col-xs-3 edit">
-                            <i class="icon-edit icon-large edit-toggle"></i>
                         </div>
                     </div>
                 </h1>

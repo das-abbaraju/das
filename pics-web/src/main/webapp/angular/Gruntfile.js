@@ -17,7 +17,10 @@ module.exports = function(grunt) {
         'vendor/mmenu/jquery.mmenu.dragopen.js',
         'vendor/select2/select2.js',
         'vendor/angular/angular-ui-select2.js',
-        'vendor/pics/core.js'
+        'vendor/pics/core.js',
+        'vendor/google-maps/markerclusterer.js',
+        'vendor/google-maps/markerwithlabel.js',
+        'vendor/angular/jasmine/angular-mocks.js'
     ];
 
     var modules = [
@@ -27,7 +30,9 @@ module.exports = function(grunt) {
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
         'src/app/employeeguard/common/skills/skills.js',
-        'src/app/employeeguard/employeeguard.js'
+        'src/app/employeeguard/employeeguard.js',
+        'src/common/services/services.js',
+        'src/app/company-finder/company-finder.js'
     ];
 
     var dependencies = vendor_js_files.concat(modules);
@@ -50,6 +55,9 @@ module.exports = function(grunt) {
                         'vendor/angular/**/*.js',
                         'src/**/*.js'
                     ]),
+                    exclude: [
+                        'vendor/google-maps/markerwithlabel.js'
+                    ],
                     plugins:[
                         'karma-junit-reporter',
                         "karma-jasmine",

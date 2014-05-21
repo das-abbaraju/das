@@ -15,7 +15,7 @@ import java.util.*;
 @Entity
 @DiscriminatorValue("Role")
 @SQLInsert(sql = "INSERT INTO account_group (accountID, createdBy, createdDate, deletedBy, deletedDate, description, name, type, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, 'Role', ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_group SET deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE account_group SET name=concat(name ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
 public class Role extends AccountGroup implements Comparable<Role> {
 
 	private static final long serialVersionUID = 7074027976165804080L;

@@ -15,11 +15,6 @@
 
     <repositories>
         <repository>
-            <id>scala-tools.org</id>
-            <name>Scala-tools Maven2 Repository</name>
-            <url>http://scala-tools.org/repo-releases/</url>
-        </repository>
-        <repository>
             <id>itextpdf.com</id>
             <name>Maven Repository for iText</name>
             <url>http://maven.itextpdf.com/</url>

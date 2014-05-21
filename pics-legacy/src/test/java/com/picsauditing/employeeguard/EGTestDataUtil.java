@@ -425,6 +425,22 @@ public class EGTestDataUtil {
 		return accountSkillEmployee;
 	}
 
+	public List<ProjectCompany> getFakeProjectCompanies() {
+		return Arrays.asList(
+				new ProjectCompanyBuilder()
+						.project(
+								new ProjectBuilder()
+										.accountId(SITE_ID)
+										.build())
+						.build(),
+				new ProjectCompanyBuilder()
+						.project(
+								new ProjectBuilder()
+										.accountId(SITE_ID)
+										.build()
+						)
+						.build());
+	}
 
   public int getCorporateId() {
     return CORPORATE_ID;

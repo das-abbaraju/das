@@ -1,4 +1,4 @@
-package com.picsauditing.security;
+package com.picsauditing.securitysession;
 
 import java.util.Collection;
 

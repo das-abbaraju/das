@@ -31,6 +31,7 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorDashboard extends ContractorActionSupport {
+    public static final String URL = "/ContractorView.action";
     private static Logger logger = LoggerFactory
 			.getLogger(ContractorDashboard.class);
 
