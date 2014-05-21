@@ -223,12 +223,12 @@ public class LanguageModel {
 
 	public List<Country> getDialectCountriesBasedOn(String language) {
 		List<Language> dialects = languageProvider.findDialectsByLanguage(language);
-		List<Country> countries = new ArrayList<Country>();
+		List<Country> countries = new ArrayList<>();
 
 		for (Language dialect : dialects) {
 			String countryIsoCode = dialect.getCountry();
 
-			if (countryIsoCode != null) {
+			if (countryIsoCode != null && dialect.getStatus() != LanguageStatus.Future) {
 				countries.add(countryDAO.findbyISO(countryIsoCode));
 			}
 		}
