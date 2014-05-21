@@ -46,7 +46,7 @@ public class AccountSkillProfileService {
 	}
 
 	public List<AccountSkillProfile> getSkillsForAccountAndEmployee(Employee employee) {
-		return accountSkillProfileDAO.findByAccountAndEmployee(employee);
+		return accountSkillProfileDAO.findByContractorCreatedSkillsForEmployee(employee);
 	}
 
 	public void save(AccountSkillProfile accountSkillProfile) {
@@ -159,7 +159,7 @@ public class AccountSkillProfileService {
 	}
 
 	public Map<Employee, Set<AccountSkillProfile>> getSkillMapForAccountAndRole(final int accountId, final int roleId) {
-		List<AccountSkillProfile> roleSkills = accountSkillProfileDAO.findByContractorAndRole(accountId, roleId);
+		List<AccountSkillProfile> roleSkills = accountSkillProfileDAO.findDistinctByContractorAndRole(accountId, roleId);
 
 		return buildEmployeeAccountSkillProfileMap(new HashSet<>(roleSkills), new HashSet<>(Arrays.asList(accountId)));
 	}
@@ -203,9 +203,9 @@ public class AccountSkillProfileService {
 		Set<AccountSkillProfile> allSiteSkills = new HashSet<>();
 
 		allSiteSkills.addAll(accountSkillProfileDAO.getProjectRoleSkillsForContractorsAndSite(contractorIds, siteId));
-		allSiteSkills.addAll(accountSkillProfileDAO.getProjectSkillsForContractorsAndSite(contractorIds, siteId));
+		allSiteSkills.addAll(accountSkillProfileDAO.getProjectReqdSkillsForContractorsAndSite(contractorIds, siteId));
 		allSiteSkills.addAll(accountSkillProfileDAO.getRoleSkillsForContractorsAndRoles(contractorIds, corporateRoles));
-		allSiteSkills.addAll(accountSkillProfileDAO.getSiteSkillsForContractorsAndSites(contractorIds, siteAndCorporateIds));
+		allSiteSkills.addAll(accountSkillProfileDAO.getSiteReqdSkillsForContractorsAndSites(contractorIds, siteAndCorporateIds));
 
 		return allSiteSkills;
 	}
