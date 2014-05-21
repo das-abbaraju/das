@@ -12,6 +12,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
+import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.service.email.AccountRecoveryEmailService;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,8 +44,14 @@ public class AccountRecoveryTest extends PicsActionTest {
 	private URLUtils urlUtils;
 	@Mock
 	private User user;
+    @Mock
+    private AppUser appUser;
 	@Mock
 	private UserDAO userDAO;
+    @Mock
+    private AppUserService appUserService;
+    @Mock
+    private ProfileEntityService profileService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -53,6 +63,8 @@ public class AccountRecoveryTest extends PicsActionTest {
         Whitebox.setInternalState(accountRecovery, "inputValidator", new InputValidator());
         Whitebox.setInternalState(accountRecovery, "urlUtils", urlUtils);
         Whitebox.setInternalState(accountRecovery, "userDAO", userDAO);
+        Whitebox.setInternalState(accountRecovery, "appUserService", appUserService);
+        Whitebox.setInternalState(accountRecovery, "profileService", profileService);
 
         super.setUp(accountRecovery);
 	}
@@ -180,19 +192,16 @@ public class AccountRecoveryTest extends PicsActionTest {
     }
 
 	@Test
-	public void testResetPassword_UsernameReturnsNullUser() throws Exception {
+	public void testResetPassword_UsernameReturnsNullAppUser() throws Exception {
 		accountRecovery.setUsername("test");
 
-		when(userDAO.findName(anyString())).thenReturn(null);
+		when(appUserService.findByUsername(anyString())).thenReturn(null);
 
         final String result = accountRecovery.resetPassword();
 
 		assertEquals(PASSWORD, result);
 		assertTrue(accountRecovery.hasActionErrors());
 		assertFalse(accountRecovery.hasActionMessages());
-
-		verify(user, never()).setResetHash(anyString());
-		verify(userDAO, never()).save(user);
 	}
 
 	@Test
@@ -217,7 +226,8 @@ public class AccountRecoveryTest extends PicsActionTest {
 		accountRecovery.setUsername("test");
 
 		when(user.isActiveB()).thenReturn(true);
-		when(userDAO.findName(anyString())).thenReturn(user);
+        when(userDAO.findName(anyString())).thenReturn(user);
+		when(appUserService.findByUsername(anyString())).thenReturn(appUser);
 
         final String result = accountRecovery.resetPassword();
 
@@ -226,7 +236,7 @@ public class AccountRecoveryTest extends PicsActionTest {
 		assertTrue(accountRecovery.hasActionMessages());
 		assertEquals("Login.action", accountRecovery.getUrl());
 
-		verify(user).setResetHash(anyString());
-		verify(userDAO).save(user);
+		verify(appUser).setResetHash(anyString());
+		verify(appUserService).save(appUser);
 	}
 }

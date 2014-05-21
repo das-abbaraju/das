@@ -14,7 +14,7 @@ import java.util.*;
 @Table(name = "project")
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO project (accountId, createdBy, createdDate, deletedBy, deletedDate, endDate, location, name, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE project SET deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE project SET name=concat(name ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
 public class Project implements BaseEntity, Comparable<Project> {
 
 	@Id

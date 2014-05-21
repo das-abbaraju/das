@@ -11,6 +11,7 @@ import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
@@ -20,8 +21,6 @@ import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
-import com.picsauditing.web.NameSpace;
-import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +35,7 @@ import java.util.Locale;
 public final class MenuBuilder {
 
 	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
+    private static final String COMPANY_FINDER_URL ="company-finder.action";
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	public static ReportUserDAO reportUserDAO;
@@ -378,6 +378,9 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			manageMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
+            if (Features.COMPANY_FINDER.isActive()) {
+                manageMenu.addChild(getText("CompanyFinder.title"), COMPANY_FINDER_URL, "CompanyFinder");
+            }
 		}
 
 		addEmailSubmenu(manageMenu, permissions);

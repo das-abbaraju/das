@@ -1,5 +1,7 @@
 package com.picsauditing.model.general;
 
+import com.picsauditing.model.general.builder.LatLongBuilder;
+
 public class LatLong {
 	private double latitude;
 	private double longitude;
@@ -32,4 +34,7 @@ public class LatLong {
 		return latitude + "," + longitude;
 	}
 
+    public static LatLongBuilder builder() {
+        return new LatLongBuilder();
+    }
 }
