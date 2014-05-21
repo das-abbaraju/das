@@ -14,7 +14,7 @@
 		username="pics"
 		password="6boNepOx" 
 		driverClassName="com.mysql.jdbc.Driver" 
-		url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_demo3" />
+		url="jdbc:mysql://cobalt.picsauditing.com:3306/pics_alpha1" />
 	<!-- Read Only Data Source -->
 	<Resource name="jdbc/picsro" auth="Container"
 		type="javax.sql.DataSource" maxActive="80" maxIdle="10"        

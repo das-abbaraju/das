@@ -1363,10 +1363,6 @@
                 method="findByViewPort">
         </action>
 
-        <action name="ConvertToLatLong"
-                class="com.picsauditing.struts.controller.ConvertToLatLong">
-        </action>
-
 	</package>
 
 	<!-- Reports & API -->
