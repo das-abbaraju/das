@@ -292,6 +292,7 @@
     <bean id="AccountRecoveryEmailService" class="com.picsauditing.service.email.AccountRecoveryEmailService" >
         <constructor-arg ref="EmailTemplateDAO" />
         <constructor-arg ref="EmailSender" />
+        <constructor-arg ref="AppUserService" />
     </bean>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
