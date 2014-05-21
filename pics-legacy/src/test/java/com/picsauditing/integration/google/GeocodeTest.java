@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import com.picsauditing.companyfinder.model.MapInfoResponse;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.json.simple.JSONObject;
@@ -69,6 +70,39 @@ public class GeocodeTest {
 
 		assertThat(latLong, is(equalTo(null)));
 	}
+
+    @Test
+    public void mapInfoFromAddressUnsecure_Happy() throws Exception {
+        InputStream stream = new ByteArrayInputStream(responseExample.getBytes("UTF-8"));
+        when(httpMethod.getResponseBodyAsStream()).thenReturn(stream);
+        when(httpClient.executeMethod(httpMethod)).thenReturn(200);
+
+        MapInfoResponse mapInfoResponse = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
+
+        LatLong latLong = mapInfoResponse.getCenter();
+        LatLong northEast = mapInfoResponse.getViewPort().getNorthEast();
+        LatLong southWest = mapInfoResponse.getViewPort().getSouthWest();
+
+        assertThat(39.71732000000001, is(equalTo(latLong.getLatitude())));
+        assertThat(-105.1713450, is(equalTo(latLong.getLongitude())));
+
+        assertThat(39.71866898029151, is(equalTo(northEast.getLatitude())));
+        assertThat(-105.1699960197085, is(equalTo(northEast.getLongitude())));
+
+        assertThat(39.71597101970851, is(equalTo(southWest.getLatitude())));
+        assertThat(-105.1726939802915, is(equalTo(southWest.getLongitude())));
+    }
+
+    @Test
+    public void mapInfoFromAddressUnsecure_HttpError() throws Exception {
+        InputStream stream = new ByteArrayInputStream(responseExample.getBytes("UTF-8"));
+        when(httpMethod.getResponseBodyAsStream()).thenReturn(stream);
+        when(httpClient.executeMethod(httpMethod)).thenReturn(500);
+
+        MapInfoResponse mapInfoResponse = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
+
+        assertThat(mapInfoResponse, is(equalTo(null)));
+    }
 
 	private static final String responseDeniedExample = "{\n" +
 			"   \"results\" : [],\n" +
