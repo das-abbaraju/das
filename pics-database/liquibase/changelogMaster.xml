@@ -224,5 +224,6 @@
 	
 	<!-- 7.2.12 -->
 	<include file="./liquibase/2014/Q2/rbeaini5_PICS-15271.sql"/>
+	<include file="./liquibase/2014/Q2/mdo53_PICS-15315.sql"/>
 
 </databaseChangeLog>
