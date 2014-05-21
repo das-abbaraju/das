@@ -223,6 +223,6 @@
 	<include file="./liquibase/2014/Q2/mdo52_PICS-15105.sql"/>
 	
 	<!-- 7.2.12 -->
-	<include file="./liquibase/2014/Q2/rbeaini1_PICS-15271.sql"/>
+	<include file="./liquibase/2014/Q2/rbeaini5_PICS-15271.sql"/>
 
 </databaseChangeLog>

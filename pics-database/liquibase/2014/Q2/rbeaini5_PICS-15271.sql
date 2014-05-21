@@ -1,3 +1,6 @@
+--liquibase formatted sql
+
+--changeset rbeaini:5
 UPDATE users SET resetHash = null WHERE id > 0 AND resetHash = '';
 UPDATE users SET resetHash = null WHERE isActive = 'No';
 
