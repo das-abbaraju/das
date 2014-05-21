@@ -1,7 +1,9 @@
 package com.picsauditing.employeeguard.process;
 
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 
@@ -10,10 +12,7 @@ import java.util.Set;
 
 public class ProfileSkillData {
 
-	// All Corporate/Site Required Skills + SiteAssignment Role Skills (for Roles not in Projects)
-	// All Contractor Group Skills + Skills Required for all Employees
 	private Map<AccountModel, Set<AccountSkill>> allRequiredSkills;
-
 	private Set<Project> projects;
 	private Map<AccountModel, Set<Project>> siteProjects;
 	private Map<Project, SkillStatus> projectStatuses;
@@ -25,6 +24,8 @@ public class ProfileSkillData {
 	private Map<Integer, AccountModel> siteAccounts;
 	private Map<Integer, AccountModel> allAccounts;
 	private Map<AccountModel, Set<AccountModel>> parentSites;
+	private Map<AccountModel, Set<Group>> accountGroups;
+	private Map<AccountModel, Set<Role>> accountRoles;
 
 	public Map<AccountModel, Set<AccountSkill>> getAllRequiredSkills() {
 
@@ -121,5 +122,21 @@ public class ProfileSkillData {
 
 	public void setParentSites(Map<AccountModel, Set<AccountModel>> parentSites) {
 		this.parentSites = parentSites;
+	}
+
+	public Map<AccountModel, Set<Group>> getAccountGroups() {
+		return accountGroups;
+	}
+
+	public void setAccountGroups(Map<AccountModel, Set<Group>> accountGroups) {
+		this.accountGroups = accountGroups;
+	}
+
+	public Map<AccountModel, Set<Role>> getAccountRoles() {
+		return accountRoles;
+	}
+
+	public void setAccountRoles(Map<AccountModel, Set<Role>> accountRoles) {
+		this.accountRoles = accountRoles;
 	}
 }

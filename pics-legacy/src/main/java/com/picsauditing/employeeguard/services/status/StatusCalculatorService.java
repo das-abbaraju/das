@@ -18,6 +18,60 @@ public class StatusCalculatorService {
 	@Autowired
 	private AccountSkillProfileDAO accountSkillProfileDAO;
 
+	public Map<Employee, List<SkillStatus>> getEmployeeSkillStatusList(final Map<Employee, Set<AccountSkill>> employeeSkills) {
+		if (MapUtils.isEmpty(employeeSkills)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Employee, Set<AccountSkillProfile>> accountSkillProfileMap =
+				convertToMap(employeeSkills.keySet(), accountSkillProfileDAO.findByEmployeesAndSkills(employeeSkills.keySet(),
+						PicsCollectionUtil.mergeCollectionOfCollections(employeeSkills.values())));
+
+		Map<Employee, List<SkillStatus>> employeeStatuses = new HashMap<>();
+		for (final Employee employee : employeeSkills.keySet()) {
+			Set<AccountSkillProfile> accountSkillProfiles =
+					filterAccountSkillProfiles(employeeSkills, accountSkillProfileMap, employee);
+
+			int numberOfEmployeeSkills = getNumberOfEmployeeSkills(employeeSkills, employee);
+
+			if (CollectionUtils.isEmpty(accountSkillProfiles)) {
+				employeeStatuses.put(employee, fillWithExpiredStatus(numberOfEmployeeSkills));
+			} else {
+				employeeStatuses.put(employee, buildSkillStatusList(accountSkillProfiles, numberOfEmployeeSkills));
+			}
+		}
+
+		return employeeStatuses;
+	}
+
+	private int getNumberOfEmployeeSkills(Map<Employee, Set<AccountSkill>> employeeSkillsMap, Employee employee) {
+		if (!employeeSkillsMap.containsKey(employee)) {
+			return 0;
+		}
+
+		Set<AccountSkill> employeeSkills = employeeSkillsMap.get(employee);
+
+		return CollectionUtils.isEmpty(employeeSkills) ? 0 : employeeSkills.size();
+	}
+
+	private List<SkillStatus> buildSkillStatusList(final Set<AccountSkillProfile> accountSkillEmployees,
+												   final int totalSkillsForEmployee) {
+		List<SkillStatus> skillStatusList = new ArrayList<>();
+		for (AccountSkillProfile accountSkillProfile : accountSkillEmployees) {
+			skillStatusList.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile));
+		}
+
+		int numberOfExpiredToAddToList = totalSkillsForEmployee - skillStatusList.size();
+		if (numberOfExpiredToAddToList > 0) {
+			while (numberOfExpiredToAddToList > 0) {
+				skillStatusList.add(SkillStatus.Expired);
+				numberOfExpiredToAddToList--;
+			}
+		}
+
+		return skillStatusList;
+	}
+
 	public Map<Employee, SkillStatus> getEmployeeStatusRollUpForSkills(final Map<Employee, Set<AccountSkill>> employeeSkills) {
 		if (MapUtils.isEmpty(employeeSkills)) {
 			return Collections.emptyMap();
@@ -29,11 +83,13 @@ public class StatusCalculatorService {
 						PicsCollectionUtil.mergeCollectionOfCollections(employeeSkills.values())));
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
-		for (Employee employee : employees) {
+		for (final Employee employee : employeeSkills.keySet()) {
 			SkillStatus rollUp = SkillStatus.Expired;
 
-			Set<AccountSkillProfile> accountSkillProfiles = accountSkillProfileMap.get(employee);
-			if (CollectionUtils.isNotEmpty(accountSkillProfiles)) {
+			Set<AccountSkillProfile> accountSkillProfiles =
+					filterAccountSkillProfiles(employeeSkills, accountSkillProfileMap, employee);
+			if (CollectionUtils.isNotEmpty(accountSkillProfiles)
+					&& employeeHasDocumentationForSkill(employeeSkills, employee, accountSkillProfiles)) {
 				rollUp = SkillStatusCalculator.calculateStatusRollUp(accountSkillProfiles);
 			}
 
@@ -41,6 +97,31 @@ public class StatusCalculatorService {
 		}
 
 		return employeeStatuses;
+	}
+
+	private boolean employeeHasDocumentationForSkill(Map<Employee, Set<AccountSkill>> employeeSkills, Employee employee, Set<AccountSkillProfile> accountSkillProfiles) {
+		return accountSkillProfiles.size() == getNumberOfEmployeeSkills(employeeSkills, employee);
+	}
+
+	private Set<AccountSkillProfile> filterAccountSkillProfiles(final Map<Employee, Set<AccountSkill>> employeeSkills,
+																final Map<Employee, Set<AccountSkillProfile>> accountSkillEmployeeMap,
+																final Employee employee) {
+		if (CollectionUtils.isEmpty(accountSkillEmployeeMap.get(employee))) {
+			return Collections.emptySet();
+		}
+
+		Set<AccountSkillProfile> accountSkillEmployees = new HashSet<>(accountSkillEmployeeMap.get(employee));
+		CollectionUtils.filter(accountSkillEmployees,
+
+				new GenericPredicate<AccountSkillProfile>() {
+
+					@Override
+					public boolean evaluateEntity(AccountSkillProfile accountSkillEmployee) {
+						return employeeSkills.get(employee).contains(accountSkillEmployee.getSkill());
+					}
+				});
+
+		return accountSkillEmployees;
 	}
 
 	@Deprecated

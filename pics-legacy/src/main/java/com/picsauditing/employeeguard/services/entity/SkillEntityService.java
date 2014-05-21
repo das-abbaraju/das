@@ -247,6 +247,10 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 				});
 	}
 
+	public Set<AccountSkill> getRequiredSkillsForContractor(final int contractorId) {
+		return new HashSet<>(accountSkillDAO.findRequiredByContractorId(contractorId));
+	}
+
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
 																		   final Collection<Employee> employees) {
 		if (CollectionUtils.isEmpty(employees)) {

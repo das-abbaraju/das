@@ -36,7 +36,7 @@ public class ProfileDocumentServiceTest {
 	}
 
 	@Test
-	public void testDelete_DocumentNotLinkedToAccountSkillEmployee() {
+	public void testDelete_DocumentNotLinkedToAccountSkillProfile() {
 		ProfileDocument fakeProfileDocument = buildFakeProfileDocument();
 		when(profileDocumentDAO.find(DOCUMENT_ID)).thenReturn(fakeProfileDocument);
 

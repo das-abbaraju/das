@@ -484,6 +484,27 @@ public class PicsCollectionUtil {
 		return result;
 	}
 
+	public static <E, K, V> Map<K, Set<V>> reduceMapsForPairKeyMap(final Map<K, E> keyEntityMap,
+																   final Map<E, ? extends Collection<V>> entityValueMap) {
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, Set<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new HashSet<V>());
+			}
+
+			E entity = keyEntityMap.get(key);
+			if (entityValueMap.containsKey(entity)) {
+				result.get(key).addAll(entityValueMap.get(entity));
+			}
+		}
+
+		return result;
+	}
+
 	public static <E, K, V> Map<K, List<V>> reduceMap(final Map<K, E> keyEntityMap,
 													  final Map<E, V> entityValueMap) {
 		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {

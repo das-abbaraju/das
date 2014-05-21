@@ -6,12 +6,12 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.status.SkillStatus;
-import com.picsauditing.employeeguard.services.engine.SkillEngine;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
@@ -33,7 +33,8 @@ import static org.mockito.Mockito.when;
 public class SummaryActionTest extends PicsActionTest {
 
 	public static final int SITE_ID = 123;
-  private static final int ACCOUNT_ID = 1100;
+	private static final int ACCOUNT_ID = 1100;
+
 	private SummaryAction summaryAction;
 
 	@Mock
@@ -41,7 +42,7 @@ public class SummaryActionTest extends PicsActionTest {
 	@Mock
 	private EmployeeEntityService employeeEntityService;
 	@Mock
-	private SkillEngine skillEngine;
+	private EmployeeSkillDataProcess employeeSkillDataProcess;
 	@Mock
 	private StatusCalculatorService statusCalculatorService;
 
@@ -56,7 +57,7 @@ public class SummaryActionTest extends PicsActionTest {
 
 		Whitebox.setInternalState(summaryAction, "accountService", accountService);
 		Whitebox.setInternalState(summaryAction, "employeeEntityService", employeeEntityService);
-		Whitebox.setInternalState(summaryAction, "skillEngine", skillEngine);
+		Whitebox.setInternalState(summaryAction, "employeeSkillDataProcess", employeeSkillDataProcess);
 		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
 	}
 
@@ -86,18 +87,18 @@ public class SummaryActionTest extends PicsActionTest {
 		when(accountService.getAccountById(SITE_ID)).thenReturn(accountModel);
 		when(employeeEntityService.getEmployeesForAccount(SITE_ID)).thenReturn(employees);
 		when(employeeEntityService.getRequestedEmployeeCount(SITE_ID)).thenReturn(4);
-		when(skillEngine.getEmployeeSkillsMapForAccount(employees, accountModel)).thenReturn(employeeSkills);
-		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(employees, employeeSkills))
+		when(employeeSkillDataProcess.allEmployeeSkillsForContractorAndSites(anyInt(), anyCollection(), anyMap()))
+				.thenReturn(employeeSkills);
+		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeSkills))
 				.thenReturn(employeeStatus);
 	}
 
 	private void performVerificationsForIndex() {
 		assertNotNull(summaryAction.getJsonString());
 
-		verify(accountService).getAccountById(SITE_ID);
 		verify(employeeEntityService).getEmployeesForAccount(SITE_ID);
 		verify(employeeEntityService).getRequestedEmployeeCount(SITE_ID);
-		verify(skillEngine).getEmployeeSkillsMapForAccount(anyListOf(Employee.class), any(AccountModel.class));
-		verify(statusCalculatorService).getEmployeeStatusRollUpForSkills(anyCollectionOf(Employee.class), anyMap());
+		verify(employeeSkillDataProcess).allEmployeeSkillsForContractorAndSites(anyInt(), anyCollection(), anyMap());
+		verify(statusCalculatorService).getEmployeeStatusRollUpForSkills(anyMap());
 	}
 }
