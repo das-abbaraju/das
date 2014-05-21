@@ -13,6 +13,8 @@ public enum Features implements Feature {
     USE_NEW_EMPLOYEE_GUARD_RULES,
     @Label("Require users to accept a EULA on login")
     USE_EULA,
+    @Label("Company Finder feature")
+    COMPANY_FINDER,
     @Label("Use New Flag Calculator")
     USE_NEW_FLAGCALCULATOR;
     

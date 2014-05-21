@@ -1341,10 +1341,30 @@
                 method="loginEulaUserInfo">
         </action>
 
+        <action name="company-finder" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="registration/address-validation/advanced-edit" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+
         <action name="eulas/login/{country}"
                 class="com.picsauditing.struts.controller.eula.EulaController"
                 method="loginEula">
                 <result>/struts/eula/login-eula.jsp</result>
+        </action>
+
+        <action name="location"
+                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                method="findLocation">
+        </action>
+
+        <action name="contractors/locations"
+                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                method="findByViewPort">
+        </action>
+
+        <action name="ConvertToLatLong"
+                class="com.picsauditing.struts.controller.ConvertToLatLong">
         </action>
 
 	</package>

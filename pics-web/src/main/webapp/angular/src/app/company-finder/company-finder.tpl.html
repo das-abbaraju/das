@@ -1,0 +1,96 @@
+<div id="company-finder" ng-controller="companyFinderCtrl" class="container">
+    <div class="page-header pics">
+        <h1 class="title">Company Finder</h1>
+    </div>
+
+    <section class="employee-guard-section">
+        <h1>
+            <div class="row">
+                <div class="col-md-9 col-xs-9">
+                    <i class="icon-filter icon-large"></i> Filters
+                </div>
+                <div class="col-md-3 col-xs-3 edit">
+                    <i ng-show="!filterEditMode" ng-click="onEditClick()"class="icon-edit icon-large"></i>
+                </div>
+            </div>
+        </h1>
+
+        <div ng-show="filterEditMode || selectedTrade" class="content">
+            <dl ng-show="!filterEditMode && selectedTrade" class="employee-guard-information">
+                <dt class="col-md-3">Trade</dt>
+                <dd class="col-md-9">{{ selectedTrade }}</dd>
+            </dl>
+            <form ng-show="filterEditMode" ng-submit="onUpdateClick()" name="" action="" class="form-horizontal" autocomplete="off" role="form">
+                <div class="form-group">
+                    <label name="trade" class="col-md-3 control-label">Trade</label>
+                    <div class="col-md-4">
+                        <input
+                            tabindex="tabindex"
+                            autocomplete-select
+                            on-keyup="onTradeKeyup"
+                            list-items="trades"
+                            select2-el="tradeSelect2El">
+                        </input>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-9 col-md-offset-3 form-actions">
+                        <button name="update" type="submit" class="btn btn-primary">Update</button>
+                        <button ng-click="onCancelClick()" name="cancel" type="button" class="btn btn-default cancel">Cancel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <div class="row">
+        <div class="col-md-4">
+            <section class="employee-guard-section search-results-section">
+                <h1>
+                    <div class="row">
+                        <div class="col-md-10 col-xs-10">
+                            <i class="icon-search icon-large"></i> Search Results
+                        </div>
+                        <div class="col-md-2 col-xs-2 text-right">
+                            <i class="icon-download icon-large" tooltip title="Export Results"></i>
+                        </div>
+                    </div>
+                </h1>
+                
+                <div class="content">
+                    <ul class="result-list list-unstyled">
+                        <li ng-repeat="location in locationsUnclustered">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="list-marker text-center">{{ $index + 1 }}</div>
+                                </div>
+                                <div class="col-md-10">
+                                    <p class="contractor-name"><a href="{{ location.link }}" target="_blank">{{ location.name }}</a></p>
+                                    <p class="primary-trade">{{ location.trade }}</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+        <div class="col-md-8">
+            <section class="employee-guard-section map-section">
+                <form name="" action="" class="search-query" role="form">
+                    <fieldset>
+                        <div class="col-md-8">
+                            <h1><i class="icon-map-marker icon-large"></i> Map</h1>
+                        </div>
+                        <div class="search-wrapper col-md-4">
+                            <input google-maps-autocomplete="autocomplete" name="searchQuery" ng-model="searchQuery" type="text" ng-Keyup="onSearchQueryKeyup($event)" class="form-control" placeholder="Search Location" value=""/>
+                            <i class="icon-search"></i>
+                            <ul id="" class="search-results"></ul>
+                        </div>
+                    </fieldset>
+                </form>
+
+                <marker-cluster-map google-map-config="googleMapConfig" marker-clusterer-config="markerClustererConfig"></marker-cluster-map>
+            </section>
+        </div>
+    </div>
+</div>
