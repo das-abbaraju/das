@@ -87,7 +87,7 @@
                                     ${employee_site_assignment.employeeId}
                                 </s:param>
                             </s:url>
-                            <a href="${employee_liveID}">${employee_site_assignment.employeeName}</a>
+                            <a href="${employee_liveID}/sites/${site.id}">${employee_site_assignment.employeeName}</a>
                         </td>
                         <td>${employee_site_assignment.employeeTitle}</td>
                         <s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">
