@@ -39,10 +39,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findByContractorCreatedSkillsForEmployee(final Employee employee) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
-//				"WHERE ase.employee = :employee " +
-//				"AND ase.skill.accountId = :accountId", AccountSkillEmployee.class);
-
 		if (employee.getProfile() == null) {
 			return Collections.emptyList();
 		}
@@ -61,10 +57,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public AccountSkillProfile findByProfileAndSkill(final Profile profile, final AccountSkill skill) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
-//				"WHERE ase.employee.profile = :profile " +
-//				"AND ase.skill = :skill", AccountSkillEmployee.class);
-
 		if (profile == null) {
 			return null;
 		}
@@ -85,9 +77,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findByProfile(final Profile profile) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
-//				"WHERE ase.employee.profile = :profile", AccountSkillEmployee.class);
-
 		if (profile == null) {
 			return Collections.emptyList();
 		}
@@ -102,9 +91,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findByProfileDocument(final ProfileDocument profileDocument) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
-//				"WHERE ase.profileDocument = :profileDocument", AccountSkillEmployee.class);
-
 		if (profileDocument == null) {
 			return Collections.emptyList();
 		}
@@ -118,9 +104,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findByEmployeeAccount(final int accountId) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
-//				"WHERE ase.employee.accountId = :accountId", AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -133,10 +116,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 	public List<AccountSkillProfile> findByEmployeesAndSkills(final Collection<Employee> employees,
 															  final Collection<AccountSkill> accountSkills) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("FROM AccountSkillEmployee ase " +
-//				"WHERE ase.employee IN (:employees) " +
-//				"AND ase.skill IN (:skills)", AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -150,17 +129,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findByProjectAndContractor(final Project project, final int accountId) {
-//		String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.roles asr " +
-//				"JOIN asr.role r " +
-//				"JOIN r.projects pr " +
-//				"JOIN pr.employees pre " +
-//				"JOIN pre.employee e " +
-//				"WHERE pr.project = :project AND e.accountId = :accountId";
-//
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT DISTINCT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.skill s " +
 				"JOIN s.roles asr " +
@@ -180,15 +148,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 		if (contractorId == 0 || roleId == 0) {
 			return Collections.emptyList();
 		}
-
-//		String s = "SELECT DISTINCT ase FROM AccountSkillEmployee ase " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.roles asr " +
-//				"JOIN asr.role r " +
-//				"JOIN ase.employee e " +
-//				"WHERE e.accountId = :contractorId " +
-//				"AND r.id = :roleId";
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
 
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT DISTINCT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.skill s " +
@@ -210,14 +169,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 			return Collections.emptyList();
 		}
 
-//		String s = "SELECT DISTINCT ase " +
-//				"FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN ase.skill s " +
-//				"WHERE e.id = :employeeId " +
-//				"AND s.accountId IN (:corporateIds)";
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery(s, AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT DISTINCT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -237,8 +188,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 			return;
 		}
 
-//		Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase WHERE ase.id IN (:ids)");
-
 		Query query = em.createQuery("DELETE FROM AccountSkillProfile asp WHERE asp.id IN (:ids)");
 
 		query.setParameter("ids", ids);
@@ -248,17 +197,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 	public List<AccountSkillProfile> getProjectRoleSkillsForContractorsAndSite(final Set<Integer> contractorIds,
 																			   final int siteId) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
-//				"FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.roles asr " +
-//				"JOIN asr.role r " +
-//				"JOIN r.projects pr " +
-//				"JOIN pr.project p " +
-//				"WHERE e.accountId IN (:contractorIds) " +
-//				"AND p.accountId = :siteId", AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -277,16 +215,7 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> getProjectReqdSkillsForContractorsAndSite(final Set<Integer> contractorIds,
-																																						 final int siteId) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
-//				"FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.projects ps " +
-//				"JOIN ps.project p " +
-//				"WHERE e.accountId IN (:contractorIds) " +
-//				"AND p.accountId = :siteId", AccountSkillEmployee.class);
-
+																			   final int siteId) {
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -304,14 +233,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 	public List<AccountSkillProfile> getRoleSkillsForContractorsAndRoles(final Set<Integer> contractorIds,
 																		 final Collection<Role> roles) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
-//				"FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.roles sr " +
-//				"WHERE e.accountId IN (:contractorIds) " +
-//				"AND sr.role IN (:roles)", AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -327,15 +248,7 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> getSiteReqdSkillsForContractorsAndSites(final Set<Integer> contractorIds,
-																																					 final Set<Integer> siteAndCorporateIds) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase " +
-//				"FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN ase.skill s " +
-//				"JOIN s.sites ss " +
-//				"WHERE e.accountId IN (:contractorIds) " +
-//				"AND ss.siteId IN (:siteAndCorporateIds)", AccountSkillEmployee.class);
-
+																			 final Set<Integer> siteAndCorporateIds) {
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +
@@ -352,9 +265,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 	@Transactional(propagation = Propagation.NESTED)
 	public void delete(final ProfileDocument profileDocument) {
-//		Query query = em.createQuery("DELETE FROM AccountSkillEmployee ase " +
-//				"WHERE ase.profileDocument = :profileDocument");
-
 		Query query = em.createQuery("DELETE FROM AccountSkillProfile asp " +
 				"WHERE asp.profileDocument = :profileDocument");
 
@@ -364,11 +274,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findBySkillAndProfile(AccountSkill accountSkill, Profile profile) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN e.profile p " +
-//				"WHERE ase.skill = :skill AND p = :profile", AccountSkillEmployee.class);
-
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"WHERE asp.skill = :skill AND p = :profile", AccountSkillProfile.class);
@@ -380,11 +285,6 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 	}
 
 	public List<AccountSkillProfile> findBySkillIdAndProfile(final int skillId, final Profile profile) {
-//		TypedQuery<AccountSkillEmployee> query = em.createQuery("SELECT ase FROM AccountSkillEmployee ase " +
-//				"JOIN ase.employee e " +
-//				"JOIN e.profile p " +
-//				"WHERE ase.skill.id = :skillId AND p = :profile", AccountSkillEmployee.class);
-
 		if (profile == null) {
 			return Collections.emptyList();
 		}
