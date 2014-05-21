@@ -3,26 +3,23 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.employee.CompanyGroupInfo;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
-import com.picsauditing.employeeguard.services.GroupService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
+import com.picsauditing.employeeguard.services.GroupService;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import com.picsauditing.model.i18n.KeyValue;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeProfileFormBuilder {
 
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private GroupService groupService;
 
@@ -54,26 +51,28 @@ public class EmployeeProfileFormBuilder {
 	}
 
 	private List<Skill> getSkillsForProfile(Profile profile) {
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByProfile(profile);
-		return getSkillInfo(accountSkillEmployees);
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByProfile(profile);
+		return getSkillInfo(accountSkillProfiles);
 	}
 
-	private List<Skill> getSkillInfo(List<AccountSkillEmployee> accountSkillEmployees) {
-		List<Skill> skills = new ArrayList<>(accountSkillEmployees.size());
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			skills.add(mapAccountSkillToSkillInfo(accountSkillEmployee));
+	private List<Skill> getSkillInfo(List<AccountSkillProfile> accountSkillProfiles) {
+		List<Skill> skills = new ArrayList<>(accountSkillProfiles.size());
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			skills.add(mapAccountSkillToSkillInfo(accountSkillProfile));
 		}
+
+		Collections.sort(skills);
 
 		return skills;
 	}
 
-	private Skill mapAccountSkillToSkillInfo(AccountSkillEmployee accountSkillEmployee) {
-        AccountSkill accountSkill = accountSkillEmployee.getSkill();
-        return new Skill.Builder()
-                .id(accountSkill.getId())
-                .name(accountSkill.getName())
-                .skillStatus(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee))
-                .build();
+	private Skill mapAccountSkillToSkillInfo(AccountSkillProfile accountSkillProfile) {
+		AccountSkill accountSkill = accountSkillProfile.getSkill();
+		return new Skill.Builder()
+				.id(accountSkill.getId())
+				.name(accountSkill.getName())
+				.skillStatus(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile))
+				.build();
 	}
 
 	private Map<Integer, List<KeyValue<Integer, String>>> getAccountGroupMap(Profile profile) {

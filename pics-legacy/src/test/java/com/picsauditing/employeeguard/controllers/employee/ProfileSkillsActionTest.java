@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
 import com.picsauditing.employeeguard.models.factories.EmployeeSkillsModelFactory;
 import com.picsauditing.employeeguard.services.EmployeeSkillsModelService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import org.junit.Before;
 import org.junit.Test;

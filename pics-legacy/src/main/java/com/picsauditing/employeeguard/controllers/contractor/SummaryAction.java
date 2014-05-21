@@ -7,8 +7,8 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.ContractorSummary;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.models.AccountModel;
@@ -49,8 +49,4 @@ public class SummaryAction extends PicsRestActionSupport {
 
 		return JSON_STRING;
 	}
-
-	/* other methods */
-
-	/* getter + setters */
 }

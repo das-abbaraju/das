@@ -4,8 +4,8 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.IdNameComposite;
 import com.picsauditing.employeeguard.models.SkillStatusInfo;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.*;
 

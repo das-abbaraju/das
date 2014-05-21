@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.services.calculator;
 
+import com.picsauditing.employeeguard.services.status.DocumentStatus;
+import com.picsauditing.employeeguard.services.status.DocumentStatusCalculator;
 import org.junit.Before;
 import org.junit.Test;
 

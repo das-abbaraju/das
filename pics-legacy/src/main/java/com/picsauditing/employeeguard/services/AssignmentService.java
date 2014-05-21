@@ -173,6 +173,10 @@ public class AssignmentService {
 		return employeeEntityService.getEmployeesByProjects(projects);
 	}
 
+	public Set<Employee> getEmployeesAssignedToProject(final int projectId) {
+		return employeeEntityService.getEmployeesAssignedToProject(projectId);
+	}
+
 	public void assignEmployeeToProject(final Project project, final int roleId, final int employeeId,
 										final EntityAuditInfo entityAuditInfo) {
 		projectEntityService.assignEmployeeToProjectRole(project, roleId, employeeId, entityAuditInfo);

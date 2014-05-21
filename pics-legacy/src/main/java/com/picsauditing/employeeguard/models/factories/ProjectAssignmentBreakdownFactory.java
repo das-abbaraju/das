@@ -4,17 +4,18 @@ import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.ProjectAssignmentBreakdown;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 
 import java.util.*;
 
 public class ProjectAssignmentBreakdownFactory {
 
-	public ProjectAssignmentBreakdown create(Collection<ProjectRoleEmployee> projectRoleEmployees,
-											 Collection<AccountSkillEmployee> accountSkillEmployees) {
+	public ProjectAssignmentBreakdown create(final Collection<ProjectRoleEmployee> projectRoleEmployees,
+											 final Collection<AccountSkillProfile> accountSkillProfiles,
+											 final Collection<Employee> employees) {
 		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkill(projectRoleEmployees);
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = buildTable(accountSkillEmployees);
+		Table<Employee, AccountSkill, AccountSkillProfile> table = buildTable(employees, accountSkillProfiles);
 
 		Map<SkillStatus, Integer> results = new HashMap<>();
 		for (Map.Entry<Employee, Set<AccountSkill>> employeeSkill : employeeSkills.entrySet()) {
@@ -25,7 +26,7 @@ public class ProjectAssignmentBreakdownFactory {
 	}
 
 	private void appendResults(Map<SkillStatus, Integer> results, Employee employee, Set<AccountSkill> accountSkills,
-							   Table<Employee, AccountSkill, AccountSkillEmployee> table) {
+							   Table<Employee, AccountSkill, AccountSkillProfile> table) {
 		SkillStatus skillStatus = getWorstStatus(employee, accountSkills, table);
 		if (!results.containsKey(skillStatus)) {
 			results.put(skillStatus, 0);
@@ -35,11 +36,13 @@ public class ProjectAssignmentBreakdownFactory {
 
 	}
 
-	private SkillStatus getWorstStatus(Employee employee, Set<AccountSkill> accountSkills, Table<Employee, AccountSkill, AccountSkillEmployee> table) {
+	private SkillStatus getWorstStatus(final Employee employee,
+									   final Set<AccountSkill> accountSkills,
+									   final Table<Employee, AccountSkill, AccountSkillProfile> table) {
 		SkillStatus worst = SkillStatus.Completed;
 		for (AccountSkill accountSkill : accountSkills) {
-			AccountSkillEmployee accountSkillEmployee = table.get(employee, accountSkill);
-			SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
+			AccountSkillProfile accountSkillProfile = table.get(employee, accountSkill);
+			SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 
 			if (skillStatus.compareTo(worst) < 0) {
 				worst = skillStatus;
@@ -49,10 +52,15 @@ public class ProjectAssignmentBreakdownFactory {
 		return worst;
 	}
 
-	private Table<Employee, AccountSkill, AccountSkillEmployee> buildTable(Collection<AccountSkillEmployee> accountSkillEmployees) {
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			table.put(accountSkillEmployee.getEmployee(), accountSkillEmployee.getSkill(), accountSkillEmployee);
+	private Table<Employee, AccountSkill, AccountSkillProfile> buildTable(final Collection<Employee> employees,
+																		  final Collection<AccountSkillProfile> accountSkillProfiles) {
+		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			for (Employee employee : employees) {
+				if (accountSkillProfile.getProfile().getEmployees().contains(employee)) {
+					table.put(employee, accountSkillProfile.getSkill(), accountSkillProfile);
+				}
+			}
 		}
 
 		return table;

@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services.calculator;
+package com.picsauditing.employeeguard.services.status;
 
 // TODO this is pretty much a copy of SkillStatus
 public enum DocumentStatus {

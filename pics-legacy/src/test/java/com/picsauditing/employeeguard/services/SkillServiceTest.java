@@ -7,7 +7,6 @@ import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.lang3.ArrayUtils;
@@ -50,7 +49,7 @@ public class SkillServiceTest {
 	@Mock
 	private AccountSkillDAO accountSkillDAO;
 	@Mock
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Mock
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Mock
@@ -78,7 +77,7 @@ public class SkillServiceTest {
 
 		Whitebox.setInternalState(skillService, "accountService", accountService);
 		Whitebox.setInternalState(skillService, "accountSkillDAO", accountSkillDAO);
-		Whitebox.setInternalState(skillService, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(skillService, "accountSkillProfileService", accountSkillProfileService);
 		Whitebox.setInternalState(skillService, "accountSkillRoleDAO", accountSkillRoleDAO);
 		Whitebox.setInternalState(skillService, "projectSkillDAO", projectSkillDAO);
     Whitebox.setInternalState(skillService, "siteSkillDAO", siteSkillDAO);

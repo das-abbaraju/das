@@ -12,7 +12,7 @@ import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.models.factories.EmployeeSkillsModelFactory;
 import com.picsauditing.employeeguard.process.ProfileSkillData;
 import com.picsauditing.employeeguard.process.ProfileSkillStatusProcess;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;

@@ -20,8 +20,8 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.process.EmployeeSkillData;
 import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
@@ -34,6 +34,7 @@ import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.validator.Validator;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.struts2.interceptor.validation.SkipValidation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -256,9 +257,14 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 				employeeSkillStatuses.put(employee, skillStatus.getDisplayValue(), 0);
 			}
 
-			for (AccountSkillEmployee accountSkillEmployee : employee.getSkills()) {
-				SkillStatus status = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
-				employeeSkillStatuses.put(employee, status.getDisplayValue(), employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
+			if (employee.getProfile() == null || CollectionUtils.isEmpty(employee.getProfile().getSkills())) {
+				return;
+			}
+
+			for (AccountSkillProfile accountSkillProfile : employee.getProfile().getSkills()) {
+				SkillStatus status = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
+				employeeSkillStatuses.put(employee, status.getDisplayValue(),
+						employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
 			}
 		}
 	}

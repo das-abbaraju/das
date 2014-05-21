@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services.calculator;
 
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -15,20 +16,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class ExpirationCalculatorTest {
+
 	public static final int INTERVAL_PERIOD = 3;
+
 	@Mock
 	private AccountSkill accountSkill;
 	@Mock
-	private AccountSkillEmployee accountSkillEmployee;
+	private AccountSkillProfile accountSkillProfile;
 
 	private Calendar expectedExpirationDate;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
-		when(accountSkillEmployee.getSkill()).thenReturn(accountSkill);
+		when(accountSkillProfile.getSkill()).thenReturn(accountSkill);
 		expectedExpirationDate = Calendar.getInstance();
-		when(accountSkillEmployee.getStartDate()).thenReturn(expectedExpirationDate.getTime());
+		when(accountSkillProfile.getStartDate()).thenReturn(expectedExpirationDate.getTime());
 	}
 
 	@Test
@@ -37,7 +40,7 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.DAY);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date calculatedExpiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date calculatedExpiration = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 		Calendar calculatedExpirationCalendar = Calendar.getInstance();
 		calculatedExpirationCalendar.setTime(calculatedExpiration);
 
@@ -54,7 +57,7 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.WEEK);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
@@ -71,7 +74,7 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.MONTH);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
@@ -88,7 +91,7 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.YEAR);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
@@ -105,7 +108,7 @@ public class ExpirationCalculatorTest {
 		when(accountSkill.getIntervalType()).thenReturn(IntervalType.NOT_APPLICABLE);
 		when(accountSkill.getIntervalPeriod()).thenReturn(INTERVAL_PERIOD);
 
-		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date expiration = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 		Calendar expirationCalendar = Calendar.getInstance();
 		expirationCalendar.setTime(expiration);
 
@@ -120,17 +123,17 @@ public class ExpirationCalculatorTest {
 		when(profileDocument.getEndDate()).thenReturn(expectedExpirationDate.getTime());
 
 		when(accountSkill.getSkillType()).thenReturn(SkillType.Certification);
-		when(accountSkillEmployee.getProfileDocument()).thenReturn(profileDocument);
+		when(accountSkillProfile.getProfileDocument()).thenReturn(profileDocument);
 		profileDocument.setEndDate(expectedExpirationDate.getTime());
 
-		assertEquals(expectedExpirationDate.getTime(), ExpirationCalculator.calculateExpirationDate(accountSkillEmployee));
+		assertEquals(expectedExpirationDate.getTime(), ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
 	}
 
 	@Test
-	public void testCalculateExpirationDate_AccountSkillEmployeeHasNullSkill() throws Exception {
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployee();
+	public void testCalculateExpirationDate_AccountSkillProfileHasNullSkill() throws Exception {
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfile();
 
-		Date result = ExpirationCalculator.calculateExpirationDate(accountSkillEmployee);
+		Date result = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
 
 		assertNull(result);
 	}

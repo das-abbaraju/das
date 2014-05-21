@@ -1,16 +1,14 @@
 package com.picsauditing.employeeguard.controllers.employee;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -24,7 +22,7 @@ public class SkillAction extends PicsRestActionSupport {
 	private static final long serialVersionUID = -76323003242644511L;
 
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private ProfileEntityService profileEntityService;
 	@Autowired
@@ -50,16 +48,17 @@ public class SkillAction extends PicsRestActionSupport {
 	public String show() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
+		AccountSkillProfile accountSkillProfile = accountSkillProfileService
+				.getAccountSkillProfileForProfileAndSkill(profile, accountSkill);
 
 		ProfileDocument profileDocument = null;
-		if (accountSkillEmployee != null) {
-			profileDocument = accountSkillEmployee.getProfileDocument();
+		if (accountSkillProfile != null) {
+			profileDocument = accountSkillProfile.getProfileDocument();
 		}
 
 		SkillInfo skillInfo = null;
-		if (accountSkillEmployee != null) {
-			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillEmployee);
+		if (accountSkillProfile != null) {
+			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillProfile);
 		} else {
 			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
 		}
@@ -72,10 +71,12 @@ public class SkillAction extends PicsRestActionSupport {
 	public String edit() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
-		ProfileDocument profileDocument = accountSkillEmployee.getProfileDocument();
+		AccountSkillProfile accountSkillProfile = accountSkillProfileService
+				.getAccountSkillProfileForProfileAndSkill(profile, accountSkill);
 
-		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillEmployee);
+		ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
+
+		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillProfile);
 		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, profileDocument);
 
 		return "edit-form";
@@ -90,13 +91,14 @@ public class SkillAction extends PicsRestActionSupport {
 	public String training() {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillEmployee accountSkillEmployee = accountSkillEmployeeService.getAccountSkillEmployeeForProfileAndSkill(profile, accountSkill);
+		AccountSkillProfile accountSkillProfile = accountSkillProfileService
+				.getAccountSkillProfileForProfileAndSkill(profile, accountSkill);
 
-		if (accountSkillEmployee == null) {
+		if (accountSkillProfile == null) {
 			SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
 			skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, null);
 		} else {
-			skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(accountSkillEmployee);
+			skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(accountSkillProfile);
 		}
 
 		return "training";
@@ -106,8 +108,8 @@ public class SkillAction extends PicsRestActionSupport {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 
 
-    CompanySkillsForm companySkillsForm = formBuilderFactory.getCompanySkillsFormBuilder().build(profile);
-    return companySkillsForm.getCompanySkillInfoList();
+		CompanySkillsForm companySkillsForm = formBuilderFactory.getCompanySkillsFormBuilder().build(profile);
+		return companySkillsForm.getCompanySkillInfoList();
 	}
 
 	public String manage() {
@@ -124,7 +126,7 @@ public class SkillAction extends PicsRestActionSupport {
 		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
 		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
 
-		accountSkillEmployeeService.update(accountSkill, profile, skillDocumentForm);
+		accountSkillProfileService.update(accountSkill, profile, skillDocumentForm);
 
 		return setUrlForRedirect("/employee-guard/employee/skill/" + accountSkill.getId());
 	}

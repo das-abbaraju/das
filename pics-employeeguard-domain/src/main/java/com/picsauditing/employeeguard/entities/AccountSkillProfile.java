@@ -1,20 +1,14 @@
 package com.picsauditing.employeeguard.entities;
 
 import com.picsauditing.util.Strings;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLInsert;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Comparator;
 import java.util.Date;
 
 @Entity
-@Table(name = "account_skill_employee")
-@Where(clause = "deletedDate IS NULL")
-//@SQLInsert(sql = "INSERT INTO account_skill_employee (createdBy, createdDate, deletedBy, deletedDate, employeeID, finishDate, documentID, skillID, startDate, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-//@SQLDelete(sql = "UPDATE account_skill_employee SET deletedDate = NOW() WHERE id = ?")
-public class AccountSkillEmployee implements BaseEntity {
+@Table(name = "account_skill_profile")
+public class AccountSkillProfile implements BaseEntity {
 
 	private static final long serialVersionUID = 2117121655234863607L;
 
@@ -27,8 +21,8 @@ public class AccountSkillEmployee implements BaseEntity {
 	private AccountSkill skill;
 
 	@ManyToOne
-	@JoinColumn(name = "employeeID", nullable = false)
-	private Employee employee;
+	@JoinColumn(name = "profileID", nullable = false)
+	private Profile profile;
 
 	@ManyToOne
 	@JoinColumn(name = "documentID")
@@ -55,9 +49,10 @@ public class AccountSkillEmployee implements BaseEntity {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date deletedDate;
 
-	public static transient final Comparator<AccountSkillEmployee> COMPARATOR = new Comparator<AccountSkillEmployee>() {
+	public static transient final Comparator<AccountSkillProfile> COMPARATOR = new Comparator<AccountSkillProfile>() {
+
 		@Override
-		public int compare(AccountSkillEmployee o1, AccountSkillEmployee o2) {
+		public int compare(AccountSkillProfile o1, AccountSkillProfile o2) {
 			if (o1 == null && o2 == null) {
 				return 0;
 			}
@@ -73,17 +68,17 @@ public class AccountSkillEmployee implements BaseEntity {
 			return 1;
 		}
 
-		private boolean areEqual(AccountSkillEmployee o1, AccountSkillEmployee o2) {
-			return ((o1.getSkill().equals(o2.getSkill())) && o1.getEmployee().equals(o2.getEmployee()));
+		private boolean areEqual(AccountSkillProfile o1, AccountSkillProfile o2) {
+			return ((o1.getSkill().equals(o2.getSkill())) && o1.getProfile().equals(o2.getProfile()));
 		}
 	};
 
-	public AccountSkillEmployee() {
+	public AccountSkillProfile() {
 	}
 
-	public AccountSkillEmployee(AccountSkill skill, Employee employee) {
+	public AccountSkillProfile(AccountSkill skill, Profile profile) {
 		this.skill = skill;
-		this.employee = employee;
+		this.profile = profile;
 	}
 
 	public int getId() {
@@ -102,12 +97,12 @@ public class AccountSkillEmployee implements BaseEntity {
 		this.skill = skill;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public Profile getProfile() {
+		return profile;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setProfile(Profile profile) {
+		this.profile = profile;
 	}
 
 	public ProfileDocument getProfileDocument() {
@@ -187,11 +182,11 @@ public class AccountSkillEmployee implements BaseEntity {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		AccountSkillEmployee accountSkillEmployee = (AccountSkillEmployee) o;
+		AccountSkillProfile accountSkillProfile = (AccountSkillProfile) o;
 
-		if (getSkill() != null ? !getSkill().equals(accountSkillEmployee.getSkill()) : accountSkillEmployee.getSkill() != null)
+		if (getSkill() != null ? !getSkill().equals(accountSkillProfile.getSkill()) : accountSkillProfile.getSkill() != null)
 			return false;
-		if (getEmployee() != null ? !getEmployee().equals(accountSkillEmployee.getEmployee()) : accountSkillEmployee.getEmployee() != null)
+		if (getProfile() != null ? !getProfile().equals(accountSkillProfile.getProfile()) : accountSkillProfile.getProfile() != null)
 			return false;
 
 		return true;
@@ -200,7 +195,7 @@ public class AccountSkillEmployee implements BaseEntity {
 	@Override
 	public int hashCode() {
 		int result = 31 * (getSkill() != null ? getSkill().hashCode() : 0);
-		result = 31 * result + (getEmployee() != null ? getEmployee().hashCode() : 0);
+		result = 31 * result + (getProfile() != null ? getProfile().hashCode() : 0);
 		return result;
 	}
 
@@ -208,8 +203,8 @@ public class AccountSkillEmployee implements BaseEntity {
 	public String toString() {
 		String string = Strings.EMPTY_STRING;
 
-		if (employee != null) {
-			string += " " + employee.toString();
+		if (getProfile() != null) {
+			string += " " + getProfile().toString();
 		}
 
 		if (skill != null) {

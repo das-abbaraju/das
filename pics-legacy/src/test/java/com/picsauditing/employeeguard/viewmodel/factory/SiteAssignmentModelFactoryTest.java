@@ -2,8 +2,8 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import org.junit.Before;
@@ -21,28 +21,28 @@ public class SiteAssignmentModelFactoryTest {
 
 	private SiteAssignmentModelFactory factory;
 
-  public static final int CONTRACTOR_ID = 2345;
+	public static final int CONTRACTOR_ID = 2345;
 	@Mock
 	private AccountSkill accountSkill;
 	@Mock
 	private Employee employee;
 	@Mock
 	private Role role;
-//	@Mock
+	//	@Mock
 //	private RoleEmployee roleEmployee;
 	@Mock
 	private SkillUsage skillUsage;
 
-  public static final int SITEASSIGNMENT_ROLE_ID = 5501;
-  public static final int PROJECTASSIGNMENT_ROLE_ID = 5502;
-  @Mock
-  private SiteAssignment siteAssignment;
-  @Mock
-  private ProjectRoleEmployee projectRoleEmployee;
-  @Mock
-  private Project project;
-  @Mock
-  private ProjectRole projectRole;
+	public static final int SITEASSIGNMENT_ROLE_ID = 5501;
+	public static final int PROJECTASSIGNMENT_ROLE_ID = 5502;
+	@Mock
+	private SiteAssignment siteAssignment;
+	@Mock
+	private ProjectRoleEmployee projectRoleEmployee;
+	@Mock
+	private Project project;
+	@Mock
+	private ProjectRole projectRole;
 
 
 	@Before
@@ -100,56 +100,56 @@ public class SiteAssignmentModelFactoryTest {
 	}
 
 
-  private Role buildRoleForSiteAssignment(){
-    Role role = new Role();
-    role.setId(SITEASSIGNMENT_ROLE_ID);
-    role.setName("buildRoleForSiteAssignment");
-    return role;
-  }
+	private Role buildRoleForSiteAssignment() {
+		Role role = new Role();
+		role.setId(SITEASSIGNMENT_ROLE_ID);
+		role.setName("buildRoleForSiteAssignment");
+		return role;
+	}
 
-  private Role buildRoleForProjectAssignment(){
-    Role role = new Role();
-    role.setId(PROJECTASSIGNMENT_ROLE_ID);
-    role.setName("buildRoleForProjectAssignment");
-    return role;
-  }
+	private Role buildRoleForProjectAssignment() {
+		Role role = new Role();
+		role.setId(PROJECTASSIGNMENT_ROLE_ID);
+		role.setName("buildRoleForProjectAssignment");
+		return role;
+	}
 
-  @Test
-  public void testCreate_AssertSiteStatusHasProjRolesAndSiteAssignmentRoles() throws Exception {
-    AccountModel site = new AccountModel.Builder().id(SITE_ID).name("Site").build();
-    AccountModel contractor = new AccountModel.Builder().id(CONTRACTOR_ID).name("Contractor").build();
-    Map<AccountSkill, Set<Integer>> siteRequiredSkills = new HashMap<>();
-    siteRequiredSkills.put(accountSkill, new HashSet<>(Arrays.asList(1, 2)));
+	@Test
+	public void testCreate_AssertSiteStatusHasProjRolesAndSiteAssignmentRoles() throws Exception {
+		AccountModel site = new AccountModel.Builder().id(SITE_ID).name("Site").build();
+		AccountModel contractor = new AccountModel.Builder().id(CONTRACTOR_ID).name("Contractor").build();
+		Map<AccountSkill, Set<Integer>> siteRequiredSkills = new HashMap<>();
+		siteRequiredSkills.put(accountSkill, new HashSet<>(Arrays.asList(1, 2)));
 
-    RoleInfo roleInfo = new RoleInfo.Builder().name("Role").build();
-    Map<RoleInfo, Integer> roleCount = new HashMap<>();
-    roleCount.put(roleInfo, 3);
+		RoleInfo roleInfo = new RoleInfo.Builder().name("Role").build();
+		Map<RoleInfo, Integer> roleCount = new HashMap<>();
+		roleCount.put(roleInfo, 3);
 
-    setupMocks(siteRequiredSkills);
+		setupMocks(siteRequiredSkills);
 
-    //-- Attach a role to Site
-    when(employee.getProjectRoles()).thenReturn(Arrays.asList(projectRoleEmployee));
-    when(projectRoleEmployee.getProjectRole()).thenReturn(projectRole);
-    when(projectRole.getProject()).thenReturn(project);
-    when(project.getAccountId()).thenReturn(SITE_ID);
-    when(projectRole.getRole()).thenReturn(buildRoleForProjectAssignment());
+		//-- Attach a role to Site
+		when(employee.getProjectRoles()).thenReturn(Arrays.asList(projectRoleEmployee));
+		when(projectRoleEmployee.getProjectRole()).thenReturn(projectRole);
+		when(projectRole.getProject()).thenReturn(project);
+		when(project.getAccountId()).thenReturn(SITE_ID);
+		when(projectRole.getRole()).thenReturn(buildRoleForProjectAssignment());
 
-    //-- Attach a role to Project
-    when(employee.getSiteAssignments()).thenReturn(Arrays.asList(siteAssignment));
-    when(siteAssignment.getSiteId()).thenReturn(SITE_ID);
-    when(siteAssignment.getRole()).thenReturn(buildRoleForSiteAssignment());
+		//-- Attach a role to Project
+		when(employee.getSiteAssignments()).thenReturn(Arrays.asList(siteAssignment));
+		when(siteAssignment.getSiteId()).thenReturn(SITE_ID);
+		when(siteAssignment.getRole()).thenReturn(buildRoleForSiteAssignment());
 
-    SiteAssignmentModel siteAssignmentModel = factory.create(
-            site,
-            Arrays.asList(contractor),
-            Arrays.asList(skillUsage),
-            roleCount);
+		SiteAssignmentModel siteAssignmentModel = factory.create(
+				site,
+				Arrays.asList(contractor),
+				Arrays.asList(skillUsage),
+				roleCount);
 
-    performAssertions(siteAssignmentModel, roleInfo);
+		performAssertions(siteAssignmentModel, roleInfo);
 
-    //-- Expect 2 roles assigned to this employee (site attached and project attached role)
-    assertEquals(siteAssignmentModel.getEmployeeSiteAssignmentModels().get(0).getNumberOfRolesAssigned(), 2);
-  }
+		//-- Expect 2 roles assigned to this employee (site attached and project attached role)
+		assertEquals(siteAssignmentModel.getEmployeeSiteAssignmentModels().get(0).getNumberOfRolesAssigned(), 2);
+	}
 
 	private void setupMocks(Map<AccountSkill, Set<Integer>> siteRequiredSkills) {
 		when(employee.getAccountId()).thenReturn(CONTRACTOR_ID);

@@ -8,8 +8,9 @@ import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.factories.OperatorEmployeeModelFactory;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;

@@ -65,8 +65,8 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 	private Date deletedDate;
 
 	@OneToMany(mappedBy = "profileDocument", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
-	private List<AccountSkillEmployee> employeeSkills;
+	@BatchSize(size = 2)
+	private List<AccountSkillProfile> profileSkills;
 
 	public int getId() {
 		return id;
@@ -188,12 +188,12 @@ public class ProfileDocument implements BaseEntity, Comparable<ProfileDocument> 
 		this.deletedDate = deletedDate;
 	}
 
-	public List<AccountSkillEmployee> getEmployeeSkills() {
-		return employeeSkills;
+	public List<AccountSkillProfile> getProfileSkills() {
+		return profileSkills;
 	}
 
-	public void setEmployeeSkills(List<AccountSkillEmployee> employeeSkills) {
-		this.employeeSkills = employeeSkills;
+	public void setProfileSkills(List<AccountSkillProfile> profileSkills) {
+		this.profileSkills = profileSkills;
 	}
 
 	@Transient

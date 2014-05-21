@@ -63,7 +63,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
     private List<EmployeeAssignmentModel> employeeAssignments;
 
     public String show() {
-		permissions.getCurrentMode();
 		profile = profileService.findById(id);
         loadProfileAssignments(profile);
 

@@ -20,7 +20,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
@@ -249,28 +249,25 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
 																		   final Collection<Employee> employees) {
-		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByContractorId(contractorId);
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
 
+		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByContractorId(contractorId);
 		if (CollectionUtils.isEmpty(requiredSkills) || CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
 		}
 
-		return PicsCollectionUtil.convertToMapOfSets(
-				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
+		Map<Employee, Set<AccountSkill>> employeeRequiredSkillsForContractor = new HashMap<>();
+		for (Employee employee : employees) {
+			if (!employeeRequiredSkillsForContractor.containsKey(employee)) {
+				employeeRequiredSkillsForContractor.put(employee, new HashSet<AccountSkill>());
+			}
 
-				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
+			employeeRequiredSkillsForContractor.get(employee).addAll(requiredSkills);
+		}
 
-					@Override
-					public Employee getKey(AccountSkillEmployee entity) {
-						return entity.getEmployee();
-					}
-
-					@Override
-					public AccountSkill getValue(AccountSkillEmployee entity) {
-						return entity.getSkill();
-					}
-				}
-		);
+		return employeeRequiredSkillsForContractor;
 	}
 
 	public Map<Integer, Set<AccountSkill>> getRequiredSkillsForContractor(final Collection<Integer> contractorIds) {

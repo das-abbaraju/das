@@ -13,7 +13,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findByAccount(final int accountId) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId = :accountId", AccountSkill.class);
 
 		query.setParameter("accountId", accountId);
@@ -22,7 +22,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findOptionalSkillsByAccount(final int accountId) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId = :accountId " +
 				"AND s.ruleType = 'Optional'", AccountSkill.class);
 
@@ -32,7 +32,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findOptionalSkillsByAccounts(final Collection<Integer> accountIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId IN (:accountIds) " +
 				"AND s.ruleType = 'Optional'", AccountSkill.class);
 
@@ -42,7 +42,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findByAccounts(final Collection<Integer> accountIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId IN ( :accountIds )", AccountSkill.class);
 
 		query.setParameter("accountIds", accountIds);
@@ -51,9 +51,9 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findByProfile(final Profile profile) {
-		TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT ase.skill " +
-				"FROM AccountSkillEmployee ase " +
-				"WHERE ase.employee.profile = :profile", AccountSkill.class);
+		TypedQuery<AccountSkill> query = em.createQuery("SELECT DISTINCT asp.skill " +
+				"FROM AccountSkillProfile asp " +
+				"WHERE asp.profile = :profile", AccountSkill.class);
 
 		query.setParameter("profile", profile);
 
@@ -61,7 +61,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public AccountSkill findSkillByAccount(final int skillId, final int accountId) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId = :accountId " +
 				"AND s.id = :skillId", AccountSkill.class);
 
@@ -72,7 +72,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findByIds(final Collection<Integer> skillIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.id IN (:skillIds)", AccountSkill.class);
 
 		query.setParameter("skillIds", skillIds);
@@ -81,7 +81,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findSkillsByAccountsAndIds(final List<Integer> accountIds, final List<Integer> skillIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId IN (:accountIds) " +
 				"AND s.id IN (:skillIds)", AccountSkill.class);
 
@@ -102,7 +102,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> search(final String searchTerm, final int accountId) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId = :accountId " +
 				"AND (s.name LIKE :searchTerm " +
 				"OR s.description LIKE :searchTerm)", AccountSkill.class);
@@ -123,7 +123,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findRequiredByContractorIds(final Collection<Integer> contractorIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId IN (:contractorIds) " +
 				"AND s.ruleType = 'Required'", AccountSkill.class);
 
@@ -134,8 +134,8 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 
 	public List<AccountSkill> findByEmployee(final Employee employee) {
 		TypedQuery<AccountSkill> query = em.createQuery("SELECT s FROM Employee e " +
-				"JOIN e.skills ase " +
-				"JOIN ase.skill s " +
+				"JOIN e.profile.skills eps " +
+				"JOIN eps.skill s " +
 				"WHERE e = :employee", AccountSkill.class);
 
 		query.setParameter("employee", employee);
@@ -144,7 +144,7 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> search(final String searchTerm, final List<Integer> accountIds) {
-		TypedQuery<AccountSkill> query = em.createQuery("FROM AccountSkill s WHERE s.accountId IN (:accountIds) " +
+		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s WHERE s.accountId IN (:accountIds) " +
 				"AND (s.name LIKE :searchTerm " +
 				"OR s.description LIKE :searchTerm)", AccountSkill.class);
 

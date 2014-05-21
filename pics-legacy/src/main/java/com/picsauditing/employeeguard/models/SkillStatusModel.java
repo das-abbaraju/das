@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 public class SkillStatusModel implements IdNameComposite, SkillStatusInfo, Comparable<SkillStatusModel> {
 
