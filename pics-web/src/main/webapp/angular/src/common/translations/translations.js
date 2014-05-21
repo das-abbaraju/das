@@ -131,6 +131,8 @@
 
             keys = routePathToTranslationKeys[routePath];
 
+            if (!keys) return;
+
             requestParams = translationsService.createRouteParamsFromKeys(keys);
 
             translationsService.fetchTranslations(requestParams)
