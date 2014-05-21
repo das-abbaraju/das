@@ -55,8 +55,6 @@ describe('translatedPage directive', function () {
     it('should NOT make a server request for translations when translationKeys.js contains no translation keys for the page', function () {
         var linkingFn, nextMock;
 
-        translationsService.setTranslations(undefined);
-
         nextMock = {
             $$route: {
                 originalPath: '/fakeroute'
