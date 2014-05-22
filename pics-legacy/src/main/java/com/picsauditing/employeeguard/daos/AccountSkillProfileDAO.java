@@ -120,6 +120,10 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 
 	public List<AccountSkillProfile> findByEmployeesAndSkills(final Collection<Employee> employees,
 															  final Collection<AccountSkill> accountSkills) {
+		if (CollectionUtils.isEmpty(employees) || CollectionUtils.isEmpty(accountSkills)) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"JOIN p.employees e " +

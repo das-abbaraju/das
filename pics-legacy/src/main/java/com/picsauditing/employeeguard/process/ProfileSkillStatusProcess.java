@@ -65,7 +65,7 @@ public class ProfileSkillStatusProcess {
 										  final Collection<Employee> employees) {
 		profileSkillData.setAccountRoles(processHelper.siteRoles(employees, profileSkillData.getSiteAccounts()));
 
-		return profileSkillData;  //To change body of created methods use File | Settings | File Templates.
+		return profileSkillData;
 	}
 
 	private ProfileSkillData addContractorGroups(final ProfileSkillData profileSkillData,
