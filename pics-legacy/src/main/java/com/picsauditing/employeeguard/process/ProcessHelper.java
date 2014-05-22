@@ -2,22 +2,21 @@ package com.picsauditing.employeeguard.process;
 
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.AccountModel;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.entity.GroupEntityService;
-import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-// For now, a place to put some simple, common operations between processes
-class ProcessHelper {
+public class ProcessHelper {
 
 	@Autowired
-	private AccountService accountService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private GroupEntityService groupEntityService;
+	@Autowired
+	private ProjectEntityService projectEntityService;
 	@Autowired
 	private RoleEntityService roleEntityService;
 	@Autowired
@@ -33,11 +32,6 @@ class ProcessHelper {
 		allProjectSkills = PicsCollectionUtil.mergeMapOfSets(allProjectSkills, getProjectRoleSkills(projectRoles, roleSkills));
 
 		return PicsCollectionUtil.addKeys(allProjectSkills, projects);
-	}
-
-	public Map<Project, Set<AccountSkill>> addProjectRequiredSkills(final Map<Project, Set<AccountSkill>> allProjectSkills,
-																	final Map<Project, Set<AccountSkill>> projectRequiredSkills) {
-		return PicsCollectionUtil.mergeMapOfSets(allProjectSkills, projectRequiredSkills);
 	}
 
 	public Map<Project, Set<AccountSkill>> getProjectRoleSkills(final Map<Project, Set<Role>> projectRoles,
@@ -150,5 +144,107 @@ class ProcessHelper {
 				PicsCollectionUtil.reduceMapOfCollections(accountProjects, allSkillsForProjects);
 
 		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills, projectSkillsByAccount);
+	}
+
+	public Map<Employee, Set<AccountSkill>> getAllSkillsForEmployees(final int contractorId,
+																	 final Collection<Employee> employees,
+																	 final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
+		employeeSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkills, groupSkills(employees));
+		employeeSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkills, contractorRequiredSkills(contractorId, employees));
+		employeeSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkills, projectRequiredSkills(employees));
+		employeeSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkills, siteAssignmentRoleSkills(employees));
+		employeeSkills = PicsCollectionUtil.mergeMapOfSets(employeeSkills, siteAndCorporateRequiredSkills(employees, siteHierarchy));
+
+		return employeeSkills;
+	}
+
+	public Map<Employee, Set<AccountSkill>> groupSkills(final Collection<Employee> employees) {
+		Map<Employee, Set<Group>> employeeGroups = groupEntityService.getEmployeeGroups(employees);
+
+		return PicsCollectionUtil.addKeys(skillEntityService.getGroupSkillsForEmployees(employeeGroups), employees);
+	}
+
+	public Map<Employee, Set<AccountSkill>> contractorRequiredSkills(final int contractorId,
+																	 final Collection<Employee> employees) {
+		Set<AccountSkill> contractorRequiredSkills = skillEntityService.getRequiredSkillsForContractor(contractorId);
+
+		Map<Employee, Set<AccountSkill>> employeeContractorRequiredSkills = new HashMap<>();
+		for (Employee employee : employees) {
+			employeeContractorRequiredSkills.put(employee, new HashSet<>(contractorRequiredSkills));
+		}
+
+		return employeeContractorRequiredSkills;
+	}
+
+	public Map<Employee, Set<AccountSkill>> projectRequiredSkills(final Collection<Employee> employees) {
+		Map<Employee, Set<Project>> employeeProjects = projectEntityService.getProjectsForEmployees(employees);
+		Map<Project, Set<AccountSkill>> requiredSkillsForProjects = skillEntityService
+				.getRequiredSkillsForProjects(PicsCollectionUtil.flattenCollectionOfCollection(employeeProjects.values()));
+
+		return PicsCollectionUtil.addKeys(
+				PicsCollectionUtil.reduceMapOfCollections(employeeProjects, requiredSkillsForProjects),
+				employees);
+	}
+
+	public Map<Employee, Set<AccountSkill>> siteAssignmentRoleSkills(final Collection<Employee> employees) {
+		Map<Employee, Set<Role>> employeeSiteRoles = roleEntityService.getEmployeeSiteRoles(employees);
+		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService
+				.getSkillsForRoles(PicsCollectionUtil.flattenCollectionOfCollection(employeeSiteRoles.values()));
+
+		return PicsCollectionUtil.addKeys(
+				PicsCollectionUtil.reduceMapOfCollections(employeeSiteRoles, roleSkills),
+				employees);
+	}
+
+	public Map<Employee, Set<AccountSkill>> siteAndCorporateRequiredSkills(final Collection<Employee> employees,
+																		   final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		Map<Employee, Set<Integer>> employeeSiteAssignments = employeeEntityService.getEmployeeSiteAssignments(employees);
+
+		Map<Integer, Set<AccountSkill>> siteAndCorporateRequiredSkills = new HashMap<>();
+		for (AccountModel accountModel : siteHierarchy.keySet()) {
+			if (CollectionUtils.isEmpty(siteHierarchy.get(accountModel))) {
+				continue;
+			}
+
+			int siteId = accountModel.getId();
+			Set<AccountSkill> requiredSkills = skillEntityService.getSiteAndCorporateRequiredSkills(siteId,
+					PicsCollectionUtil.getIdsFromCollection(siteHierarchy.get(accountModel),
+							new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+
+								@Override
+								public Integer getId(AccountModel accountModel) {
+									return accountModel.getId();
+								}
+							}));
+
+			siteAndCorporateRequiredSkills.put(siteId, requiredSkills);
+		}
+
+		return PicsCollectionUtil.addKeys(
+				PicsCollectionUtil.reduceMapOfCollections(employeeSiteAssignments, siteAndCorporateRequiredSkills),
+				employees);
+	}
+
+	public Map<AccountModel, Set<Group>> contractorGroups(final Collection<Employee> employees,
+														  final Map<Integer, AccountModel> contractorAccounts) {
+		Map<AccountModel, Integer> contractors = PicsCollectionUtil.invertMap(contractorAccounts);
+		Map<Integer, Set<Group>> contractorGroups = contractorGroups(employees);
+		return PicsCollectionUtil.reduceMapsForPairKeyMap(contractors, contractorGroups);
+	}
+
+	public Map<Integer, Set<Group>> contractorGroups(final Collection<Employee> employees) {
+		return groupEntityService.getGroupsByContractorId(employees);
+	}
+
+	public Map<AccountModel, Set<Role>> siteRoles(final Collection<Employee> employees,
+												  final Map<Integer, AccountModel> siteAccounts) {
+		Map<AccountModel, Integer> sites = PicsCollectionUtil.invertMap(siteAccounts);
+		Map<Integer, Set<Role>> siteRoles = siteAssignmentRoles(employees);
+		return PicsCollectionUtil.reduceMapsForPairKeyMap(sites, siteRoles);
+	}
+
+	public Map<Integer, Set<Role>> siteAssignmentRoles(final Collection<Employee> employees) {
+		return roleEntityService.getSiteRolesForEmployees(employees);
 	}
 }

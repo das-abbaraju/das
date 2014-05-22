@@ -1154,20 +1154,21 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   /* line 31, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .non-editable-form-field dd {
     margin-bottom: 15px;
+    padding-left: 10px;
   }
 }
 @media (max-width: 991px) {
-  /* line 40, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 41, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dt,
   .non-editable-form-field dt {
     margin: 0;
   }
-  /* line 44, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 45, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dd,
   .non-editable-form-field dd {
     margin-bottom: 5px;
   }
-  /* line 47, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
+  /* line 48, ../sass/pics/employee-guard/mixins/_employee-guard-information.scss */
   .employee-guard-information dd ul.inline li:first-child,
   .non-editable-form-field dd ul.inline li:first-child {
     padding-left: 0;

@@ -11,10 +11,7 @@ import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ProfileSkillStatusProcess {
 
@@ -38,6 +35,7 @@ public class ProfileSkillStatusProcess {
 	// Only Project required skills and skills for roles under a project show up listed under the project
 
 	public ProfileSkillData buildProfileSkillData(final Profile profile) {
+		Set<Employee> employees = new HashSet<>(profile.getEmployees());
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
 		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
@@ -48,7 +46,7 @@ public class ProfileSkillStatusProcess {
 
 		profileSkillData.setProjects(projects);
 		profileSkillData.setAllProjectSkills(processHelper.allProjectSkills(projects,
-				projectRequiredSkills, projectRoles, roleSkills ));
+				projectRequiredSkills, projectRoles, roleSkills));
 
 		profileSkillData = addAccountInformation(profileSkillData, profile);
 		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projectRoles, roleSkills);
@@ -57,6 +55,23 @@ public class ProfileSkillStatusProcess {
 		profileSkillData = addAccountStatus(profileSkillData, profile);
 		profileSkillData = addAllSkillStatuses(profileSkillData, profile);
 		profileSkillData = addOverallSkillStatus(profileSkillData);
+		profileSkillData = addSiteRoles(profileSkillData, employees);
+		profileSkillData = addContractorGroups(profileSkillData, employees);
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addSiteRoles(final ProfileSkillData profileSkillData,
+										  final Collection<Employee> employees) {
+		profileSkillData.setAccountRoles(processHelper.siteRoles(employees, profileSkillData.getSiteAccounts()));
+
+		return profileSkillData;  //To change body of created methods use File | Settings | File Templates.
+	}
+
+	private ProfileSkillData addContractorGroups(final ProfileSkillData profileSkillData,
+												 final Collection<Employee> employees) {
+		profileSkillData.setAccountGroups(processHelper.contractorGroups(employees,
+				profileSkillData.getContractorAccounts()));
 
 		return profileSkillData;
 	}
