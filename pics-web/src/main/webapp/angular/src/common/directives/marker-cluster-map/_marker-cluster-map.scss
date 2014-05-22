@@ -1,0 +1,34 @@
+@include keyframes(loader) {
+    0% { @include rotate(0deg) }
+    25% { @include rotate(90deg) }
+    50% { @include rotate(180deg) }
+    75% { @include rotate(270deg) }
+    100% { @include rotate(360deg) }
+}
+
+#loading_page {
+    width: 100%;
+    height: 500px;
+    position: relative;
+    margin-top: -530px;
+
+    .svg-container {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 50%;
+        margin-left: -50px;
+
+        svg {
+            @include animation('loader 3s infinite cubic-bezier(0.5, 0, 0, 1)');
+            margin-top: 200px;
+        }
+    }
+
+    .loading {
+        color: #b3b3b3;
+        font-size: 18px;
+        margin-top: 30px;
+        text-align: center;
+    }
+}

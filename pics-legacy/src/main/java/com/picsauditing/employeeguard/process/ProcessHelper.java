@@ -34,11 +34,6 @@ public class ProcessHelper {
 		return PicsCollectionUtil.addKeys(allProjectSkills, projects);
 	}
 
-	public Map<Project, Set<AccountSkill>> addProjectRequiredSkills(final Map<Project, Set<AccountSkill>> allProjectSkills,
-																	final Map<Project, Set<AccountSkill>> projectRequiredSkills) {
-		return PicsCollectionUtil.mergeMapOfSets(allProjectSkills, projectRequiredSkills);
-	}
-
 	public Map<Project, Set<AccountSkill>> getProjectRoleSkills(final Map<Project, Set<Role>> projectRoles,
 																final Map<Role, Set<AccountSkill>> roleSkills) {
 		return PicsCollectionUtil.reduceMapOfCollections(projectRoles, roleSkills);

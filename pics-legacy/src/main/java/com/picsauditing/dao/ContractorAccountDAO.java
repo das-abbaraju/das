@@ -1,4 +1,4 @@
-package com.picsauditing.dao;
+ package com.picsauditing.dao;
 
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
@@ -33,6 +33,14 @@ public class ContractorAccountDAO extends PicsDAO {
 		FileUtils.deleteFile(ftpDir + "/files/brochures/" + filename);
 		remove(row);
 	}
+
+    public List<ContractorAccount> findContractorsLatLong() {
+        Query q = em.createQuery("SELECT ca FROM ContractorAccount ca " +
+                "WHERE ca.id > 16791");
+        q.setMaxResults(2500);
+
+        return q.getResultList();
+    }
 
 	public ContractorAccount find(int id) {
 		return em.find(ContractorAccount.class, id);

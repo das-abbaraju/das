@@ -78,7 +78,7 @@ public class ProfileSkillStatusProcess {
 
 	private ProfileSkillData addOverallSkillStatus(final ProfileSkillData profileSkillData) {
 		profileSkillData.setOverallStatus(statusCalculatorService
-				.calculateOverallStatus(profileSkillData.getSkillStatusMap().values()));
+				.calculateOverallStatus(profileSkillData.getSkillStatusMap().values(), SkillStatus.Completed));
 
 		return profileSkillData;
 	}
