@@ -16,7 +16,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -46,7 +45,7 @@ public class ProfileDocumentService {
 								  final int appUserId, final int skillId) throws Exception {
 		ProfileDocument newProfileDocument = create(profile, documentForm, directory, appUserId);
 
-		insertEmployeeSkillsForDocument(profile, skillId, newProfileDocument);
+		addAccountSkillProfileForDocument(profile, skillId, newProfileDocument, appUserId);
 
 		return newProfileDocument;
 	}
@@ -121,34 +120,37 @@ public class ProfileDocumentService {
 		accountSkillProfileDAO.save(accountSkillProfiles);
 	}
 
-	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,
-												 final ProfileDocument profileDocument) {
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO.findBySkillIdAndProfile(skillId, profile);
-		accountSkillProfileDAO.delete(accountSkillProfiles);
-		accountSkillProfileDAO.save(buildAccountSkillProfiles(profile, skillId, profileDocument));
-	}
-
-	private List<AccountSkillProfile> buildAccountSkillProfiles(final Profile profile, final int skillId,
-																															final ProfileDocument profileDocument) {
-		List<AccountSkillProfile> accountSkillProfiles = new ArrayList<>();
-
-		List<Employee> employees = profile.getEmployees();
-		for (Employee employee : employees) {
-			accountSkillProfiles.add(new AccountSkillProfileBuilder()
-							.accountSkill(new AccountSkill(skillId))
-							.profile(profile)
-							.createdBy(1)
-							.createdDate(DateBean.today())
-							.profileDocument(profileDocument)
-							.startDate(DateBean.today())
-							.endDate(profileDocument.getEndDate())
-							.build());
+	private void addAccountSkillProfileForDocument(final Profile profile,
+												   final int skillId,
+												   final ProfileDocument profileDocument,
+												   final int appUserId) {
+		AccountSkillProfile accountSkillProfile = accountSkillProfileDAO.findByProfileAndSkillId(profile, skillId);
+		if (accountSkillProfile == null) {
+			accountSkillProfile = buildAccountSkillProfile(profile, skillId, profileDocument);
+		} else {
+			accountSkillProfile.setProfileDocument(profileDocument);
+			accountSkillProfile.setUpdatedBy(appUserId);
+			accountSkillProfile.setStartDate(DateBean.today());
+			accountSkillProfile.setUpdatedDate(DateBean.today());
 		}
 
-		return accountSkillProfiles;
+		accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public void delete(final int documentId, final int profileId) {
+	private AccountSkillProfile buildAccountSkillProfile(final Profile profile, final int skillId,
+														 final ProfileDocument profileDocument) {
+		return new AccountSkillProfileBuilder()
+				.accountSkill(new AccountSkill(skillId))
+				.profile(profile)
+				.createdBy(1)
+				.createdDate(DateBean.today())
+				.profileDocument(profileDocument)
+				.startDate(DateBean.today())
+				.endDate(profileDocument.getEndDate())
+				.build();
+	}
+
+	public void delete(final int documentId) {
 		ProfileDocument profileDocument = profileDocumentDAO.find(documentId);
 
 		profileDocumentDAO.delete(profileDocument);

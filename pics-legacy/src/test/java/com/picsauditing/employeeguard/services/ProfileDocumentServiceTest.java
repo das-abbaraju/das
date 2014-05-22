@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 public class ProfileDocumentServiceTest {
 
 	public static final int DOCUMENT_ID = 1;
-	public static final int PROFILE_ID = 2;
 
 	private ProfileDocumentService profileDocumentService;
 
@@ -40,7 +39,7 @@ public class ProfileDocumentServiceTest {
 		ProfileDocument fakeProfileDocument = buildFakeProfileDocument();
 		when(profileDocumentDAO.find(DOCUMENT_ID)).thenReturn(fakeProfileDocument);
 
-		profileDocumentService.delete(DOCUMENT_ID, PROFILE_ID);
+		profileDocumentService.delete(DOCUMENT_ID);
 
 		verify(profileDocumentDAO).delete(fakeProfileDocument);
 	}
