@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
+import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -57,7 +58,8 @@ public class SkillInfoBuilder {
 	public SkillInfo build(AccountSkillProfile accountSkillProfile) {
 		AccountSkill accountSkill = accountSkillProfile.getSkill();
 		SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
-		return build(accountSkill, skillStatus, accountSkillProfile.getEndDate());
+		Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
+		return build(accountSkill, skillStatus, endDate);
 	}
 
 	public List<SkillInfo> build(List<AccountSkillProfile> accountSkillProfiles) {

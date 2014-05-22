@@ -31,7 +31,6 @@ public class AccountSkillProfileServiceFactory {
 		when(accountSkillProfileService.findByProfile(any(Profile.class))).thenReturn(accountSkillProfiles);
 		when(accountSkillProfileService.getAccountSkillProfileForProfileAndSkill(any(Profile.class), any(AccountSkill.class))).thenReturn(accountSkillProfile);
 		when(accountSkillProfileService.getSkillsForAccountAndEmployee(any(Employee.class))).thenReturn(accountSkillProfiles);
-		when(accountSkillProfileService.linkProfileDocumentToEmployeeSkill(any(AccountSkillProfile.class), any(ProfileDocument.class))).thenReturn(accountSkillProfile);
 
 		return accountSkillProfileService;
 	}
