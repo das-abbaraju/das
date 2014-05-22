@@ -1289,7 +1289,7 @@ public class ContractorAccount extends Account implements JSONable {
         this.hasEmployeeGuard = hasEmployeeGuard;
     }
 
-	@Transient
+    @Transient
 	public Boolean hasPastDueInvoice() {
 		for (Invoice in : invoices) {
 			if (in.getStatus().equals(TransactionStatus.Unpaid)) {
@@ -1975,4 +1975,5 @@ public class ContractorAccount extends Account implements JSONable {
 
 		return false;
 	}
+
 }

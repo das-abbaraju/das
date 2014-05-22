@@ -133,6 +133,7 @@
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
     <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
     <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
+    <bean id="ContractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
@@ -186,6 +187,7 @@
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
+    <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
     <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
 
     <!-- CronTasks -->
@@ -292,6 +294,7 @@
     <bean id="AccountRecoveryEmailService" class="com.picsauditing.service.email.AccountRecoveryEmailService" >
         <constructor-arg ref="EmailTemplateDAO" />
         <constructor-arg ref="EmailSender" />
+        <constructor-arg ref="AppUserService" />
     </bean>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>
