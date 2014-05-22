@@ -15,6 +15,7 @@ class AccountRecoveryMessages {
     static final String USER_NOT_FOUND_ERROR_KEY = "AccountRecovery.error.UserNotFound";
     static final String USER_NOT_ACTIVE_ERROR_KEY = "AccountRecovery.error.UserNotActive";
     static final String USERNAME_NOT_FOUND_ERROR_KEY = "AccountRecovery.error.UserNameNotFound";
+    static final String NO_VALID_ACCOUNT_FOUND_ERROR_KEY = "AccountRecovery.error.NoValidAccountFound";
 
     final private PicsActionSupport parent;
 
@@ -40,18 +41,18 @@ class AccountRecoveryMessages {
     }
 
     void addNoUserNameError() { error(NO_USERNAME_ERROR_KEY); }
-    void addUserNotFoundError() { error(USER_NOT_FOUND_ERROR_KEY); }
     void addUsernameNotFoundError() { error(USERNAME_NOT_FOUND_ERROR_KEY); }
     void addUserEmailNotFoundError() { error(EMAIL_NOT_FOUND_KEY); }
     void addUserNotActiveError() { error(USER_NOT_ACTIVE_ERROR_KEY); }
     void addNoEmailSentError() { error(NO_EMAIL_SENT_ERROR_KEY); }
     void addBlankUsernameSubmittedError() { error(BLANK_USERNAME_INPUT_ERROR_KEY); }
     void addUsernameEmailSentMessage() { messageWithSentHeader(USERNAME_EMAIL_SENT_KEY); }
+    void addNoValidAccountFound() { error(NO_VALID_ACCOUNT_FOUND_ERROR_KEY); }
 
     void failedEmailSend() { error(EMAIL_RESET_ERROR_KEY); }
-    void successfulEmailSendTo(User user) {
+    void successfulEmailSendTo(String email) {
         setHeader();
-        parent.addActionMessage(parent.getTextParameterized(RECOVERY_EMAIL_SENT_KEY, user.getEmail()));
+        parent.addActionMessage(parent.getTextParameterized(RECOVERY_EMAIL_SENT_KEY, email));
     }
 
 }

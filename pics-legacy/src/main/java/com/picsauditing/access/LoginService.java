@@ -191,7 +191,7 @@ public class LoginService {
 	private void prepareUserForLoginAfterReset(User user) {
 		if (user != null) {
 			user.setForcePasswordReset(true);
-			user.setResetHash("");
+			user.setResetHash(null);
 			user.unlockLogin();
 			user.setPasswordChanged(null);
 		}

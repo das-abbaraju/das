@@ -25,16 +25,20 @@ public class SecurityInterceptor extends AbstractInterceptor {
             SecurityAware action = (SecurityAware) invocation.getAction();
             Method method = action.getClass().getMethod(invocation.getProxy().getMethod());
             if (!method.isAnnotationPresent(Anonymous.class)) {
-                if (action.sessionCookieIsValidAndNotExpired() && !action.isUserQuarantined()) {
-                    action.updateClientSessionCookieExpiresTime();
-                } else {
-                    action.clearPermissionsSessionAndCookie();
-                }
+                conductSessionActions(action);
             }
         }
     }
 
-	private void checkMethodLevelSecurity(ActionInvocation invocation) throws Exception {
+    private void conductSessionActions(SecurityAware action) throws Exception {
+        if (action.sessionCookieIsValidAndNotExpired() && !action.isUserQuarantined()) {
+            action.updateClientSessionCookieExpiresTime();
+        } else {
+            action.clearPermissionsSessionAndCookie();
+        }
+    }
+
+    private void checkMethodLevelSecurity(ActionInvocation invocation) throws Exception {
 		if (invocation.getAction() instanceof SecurityAware) {
 			// e.g. PicsActionSupport implements SecurityAware
 			SecurityAware action = (SecurityAware) invocation.getAction();

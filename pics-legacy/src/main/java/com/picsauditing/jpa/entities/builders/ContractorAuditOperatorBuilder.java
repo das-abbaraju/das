@@ -20,6 +20,11 @@ public class ContractorAuditOperatorBuilder {
         return this;
     }
 
+    public ContractorAuditOperatorBuilder invisible() {
+        cao.setVisible(false);
+        return this;
+    }
+
     public ContractorAuditOperatorBuilder caop(ContractorAuditOperatorPermission caop) {
         if (cao.getCaoPermissions() == null) {
             cao.setCaoPermissions(new ArrayList<ContractorAuditOperatorPermission>());

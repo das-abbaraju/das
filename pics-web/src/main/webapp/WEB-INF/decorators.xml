@@ -62,6 +62,8 @@
         <pattern>/employee-guard/info</pattern>
     </decorator>
     <decorator name="index" page="index.jsp">
+        <pattern>/registration/address-validation/*</pattern>
+        <pattern>/company-finder*</pattern>
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>

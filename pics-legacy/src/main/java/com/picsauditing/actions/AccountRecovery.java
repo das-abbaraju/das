@@ -2,7 +2,11 @@ package com.picsauditing.actions;
 
 import com.picsauditing.PICS.Grepper;
 import com.picsauditing.access.Anonymous;
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.EmailBuildErrorException;
 import com.picsauditing.service.email.AccountRecoveryEmailService;
@@ -20,6 +24,10 @@ public class AccountRecovery extends PicsActionSupport {
 
 	@Autowired
 	private UserDAO userDAO;
+    @Autowired
+    private AppUserService appUserService;
+    @Autowired
+    private ProfileEntityService profileService;
 	@Autowired
 	private InputValidator inputValidator;
     @Autowired
@@ -95,38 +103,47 @@ public class AccountRecovery extends PicsActionSupport {
 			return PASSWORD;
 		}
 
-        final User user = userDAO.findName(username);
+        final AppUser appUser = appUserService.findByUsername(username);
 
-        if (user == null) {
-            messages.addUserNotFoundError();
-        } else if (!user.isActiveB()) {
-            messages.addUserNotActiveError();
+        if (appUser == null) {
+            messages.addUsernameNotFoundError();
         } else {
-            try {
+            final User user = userDAO.findName(username);
+            final Profile profile = profileService.findByAppUserId(appUser.getId());
 
-                addResetHashTo(user);
-                userDAO.save(user);
+            if (user == null && profile == null) {
+                messages.addNoValidAccountFound();
+            } else {
+                if (user != null && !user.isActiveB() && profile == null) {
+                    messages.addUserNotActiveError();
+                } else {
+                    try {
+                        addResetHashTo(appUser);
+                        appUserService.save(appUser);
 
-                emails.sendRecoveryEmail(user, getRequestHost());
-                messages.successfulEmailSendTo(user);
+                        if (user != null) {
+                            emails.sendRecoveryEmail(user, getRequestHost());
+                            messages.successfulEmailSendTo(user.getEmail());
+                        } else {
+                            emails.sendRecoveryEmail(profile, getRequestHost());
+                            messages.successfulEmailSendTo(profile.getEmail());
+                        }
 
-                return setUrlForRedirect("Login.action");
+                        return setUrlForRedirect("Login.action");
 
-            } catch (EmailBuildErrorException e) {
-                messages.failedEmailSend();
-            } catch (IOException e) {
-                messages.addUsernameNotFoundError();
+                    } catch (EmailBuildErrorException e) {
+                        messages.failedEmailSend();
+                    } catch (IOException e) {
+                        messages.addUsernameNotFoundError();
+                    }
+                }
             }
         }
-
         return PASSWORD;
-
 	}
 
-    private void addResetHashTo(User user) {
-        // Seeding the time in the reset hash so that each one will be
-        // guaranteed unique
-        user.setResetHash(Strings.hashUrlSafe("u" + user.getId() + String.valueOf(new Date().getTime())));
+    private void addResetHashTo(AppUser appUser) {
+        appUser.setResetHash(Strings.hashUrlSafe("u" + appUser.getId() + String.valueOf(new Date().getTime())));
     }
 
     public String getEmail() {

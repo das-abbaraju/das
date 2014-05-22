@@ -149,7 +149,8 @@ public class ProfileDocumentService {
 	}
 
 	public void delete(final int documentId, final int profileId) {
-		profileDocumentDAO.delete(documentId, profileId);
+		ProfileDocument profileDocument = profileDocumentDAO.find(documentId);
+		profileDocumentDAO.delete(profileDocument);
 	}
 
 	public List<ProfileDocument> search(String searchTerm, int profileId) {

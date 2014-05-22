@@ -14,7 +14,7 @@ import java.util.*;
 @Table(name = "account_skill")
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_skill (accountID, createdBy, createdDate, deletedBy, deletedDate, description, intervalPeriod, intervalType, name, ruleType, skillType, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_skill SET deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE account_skill SET name=concat(name ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
 public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	private static final long serialVersionUID = -3528270237051318527L;

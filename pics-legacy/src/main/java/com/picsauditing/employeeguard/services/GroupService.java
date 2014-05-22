@@ -132,32 +132,6 @@ public class GroupService {
 		return accountGroupDAO.save(updatedGroup);
 	}
 
-	// TODO: Move to RoleEntityService
-	public Role update(final RoleProjectsForm roleProjectsForm, Role role, final int accountId, final int appUserId) {
-		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
-		List<Project> projects = projectService.getProjects(projectIds, accountId);
-
-		List<ProjectRole> newProjectRoles = new ArrayList<>();
-		Date now = new Date();
-
-		for (Project project : projects) {
-			ProjectRole projectRole = new ProjectRole(project, role);
-			EntityHelper.setCreateAuditFields(projectRole, appUserId, now);
-
-			newProjectRoles.add(projectRole);
-		}
-
-		newProjectRoles = IntersectionAndComplementProcess.intersection(
-				newProjectRoles,
-				role.getProjects(),
-				ProjectRole.COMPARATOR,
-				new BaseEntityCallback<ProjectRole>(appUserId, now));
-
-    role.getProjects().clear();
-    role.getProjects().addAll(newProjectRoles);
-
-		return roleDAO.save(role);
-	}
 
 	private void updateGroup(Group groupInDatabase, Group updatedGroup, int appUserId) {
 		groupInDatabase.setName(updatedGroup.getName());
