@@ -25,6 +25,10 @@ public class EGTestDataUtil {
 	public static final Project PROJECT_WITH_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project Has Skills").build();
 	public static final Project PROJECT_NO_SKILLS = new ProjectBuilder().accountId(SITE_ID).name("Test Project No Skills").build();
 
+	// Set of Mock Projects
+	public static final Set<Project> FAKE_PROJECT_SET = new HashSet<>(Arrays.asList(PROJECT_NO_SKILLS,
+			PROJECT_WITH_SKILLS, PROJECT_NO_SKILLS_NO_ROLES));
+
 	// Skill Mock Data
 	public static final AccountSkill SITE_REQUIRE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_REQUIRE_SKILL 1").build();
 	public static final AccountSkill CORPORATE_REQUIRED_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("CORPORATE_REQUIRED_SKILL 1").build();
@@ -32,12 +36,43 @@ public class EGTestDataUtil {
 	public static final AccountSkill SITE_ASSIGNMENT_ROLE_SKILL = new AccountSkillBuilder(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE_SKILL").build();
 	public static final AccountSkill PROJECT_REQUIRED_SKILL_2 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_2").build();
 	public static final AccountSkill PROJECT_REQUIRED_SKILL_1 = new AccountSkillBuilder(CORPORATE_ID).name("PROJECT_REQUIRED_SKILL_1").build();
+	public static final AccountSkill GROUP_SKILL = new AccountSkillBuilder(CONTRACTOR_ID).name("CONTRACTOR_GROUP_SKILL").build();
+
+	public static final Map<Project, Set<AccountSkill>> PROJECT_REQUIRED_SKILLS_MAP =
+			new HashMap<Project, Set<AccountSkill>>() {{
+
+				put(PROJECT_WITH_SKILLS,
+						new HashSet<>(Arrays.asList(PROJECT_REQUIRED_SKILL_1, PROJECT_REQUIRED_SKILL_2)));
+
+			}};
 
 	// Role Mock Data
 	public static final Role SITE_ASSIGNMENT_ROLE = new RoleBuilder().accountId(CORPORATE_ID).name("SITE_ASSIGNMENT_ROLE").build();
 	public static final Role ROLE_WITH_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_WITH_SKILLS").build();
 	public static final Role ROLE_NO_SKILLS = new RoleBuilder().accountId(CORPORATE_ID).name("ROLE_NO_SKILLS").build();
 
+	// Group Mock Data
+	public static final Group CONTRACTOR_GROUP = new GroupBuilder().accountId(CONTRACTOR_ID).name("CONTRACTOR_GROUP").build();
+
+	public static final Map<Project, Set<Role>> PROJECT_ROLES_MAP = new HashMap<Project, Set<Role>>() {{
+
+		put(PROJECT_WITH_SKILLS, new HashSet<>(Arrays.asList(ROLE_WITH_SKILLS, ROLE_NO_SKILLS)));
+
+		put(PROJECT_NO_SKILLS, new HashSet<>(Arrays.asList(ROLE_NO_SKILLS)));
+
+	}};
+
+	public static final Map<Role, Set<AccountSkill>> ROLE_SKILLS_MAP = new HashMap<Role, Set<AccountSkill>>() {{
+
+		put(ROLE_WITH_SKILLS, new HashSet<>(Arrays.asList(SKILL_FOR_ROLE_WITH_SKILLS)));
+
+	}};
+
+	public static final Map<Group, Set<AccountSkill>> GROUP_SKILLS_MAP = new HashMap<Group, Set<AccountSkill>>() {{
+
+		put(CONTRACTOR_GROUP, new HashSet<>(Arrays.asList(GROUP_SKILL)));
+
+	}};
 
 	public AccountModel buildFakeContractorAccountModel() {
 		return new AccountModel.Builder()
@@ -88,7 +123,7 @@ public class EGTestDataUtil {
 	}
 
 	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_Expired(final List<Employee> employees,
-																																				 final List<AccountSkill> skills) {
+																		   final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))
@@ -114,7 +149,7 @@ public class EGTestDataUtil {
 	}
 
 	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_Expiring(final List<Employee> employees,
-																			 final List<AccountSkill> skills) {
+																			final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))
@@ -140,7 +175,7 @@ public class EGTestDataUtil {
 	}
 
 	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_MixedBag(final List<Employee> employees,
-																			 final List<AccountSkill> skills) {
+																			final List<AccountSkill> skills) {
 		return Arrays.asList(
 				new AccountSkillProfileBuilder()
 						.accountSkill(skills.get(0))
