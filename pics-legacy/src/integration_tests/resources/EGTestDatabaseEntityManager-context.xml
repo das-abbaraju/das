@@ -22,18 +22,6 @@
 <!--	<context:component-scan base-package="com/picsauditing" />-->
 	<context:annotation-config />
 
-	<bean id="entityManagerFactory"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="dataSource" />
-		<property name="persistenceUnitName" value="punit" />
-		<property name="jpaVendorAdapter">
-			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
-				<property name="showSql" value="true" />
-				<property name="database" value="MYSQL" />
-			</bean>
-		</property>
-	</bean>
-
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${eg.jdbc.local.driverClassName}" />
 		<property name="url" value="${eg.jdbc.url}" />
@@ -49,6 +37,25 @@
         <property name="accessToUnderlyingConnectionAllowed" value="true"/>
 	</bean>
 
+  <bean id="sessionFactory"
+        class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
+
+  <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="persistenceUnitName" value="punit" />
+    <property name="jpaVendorAdapter">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="true" />
+        <property name="database" value="MYSQL" />
+      </bean>
+    </property>
+    <property name="packagesToScan" value="com.picsauditing.employeeguard.entities" />
+
+  </bean>
+
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
 		<property name="dataSource" ref="dataSource" />
@@ -61,5 +68,15 @@
 			<tx:method name="*" />
 		</tx:attributes>
 	</tx:advice>
+
+  <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+  <!--
+      Loads JPA beans
+      Will automatically be transactional due to @Transactional.
+      EntityManager will be auto-injected due to @PersistenceContext.
+      PersistenceExceptions will be auto-translated due to @Repository.
+  -->
+  <context:component-scan base-package="com.picsauditing.employeeguard.entities"/>
 
 </beans>

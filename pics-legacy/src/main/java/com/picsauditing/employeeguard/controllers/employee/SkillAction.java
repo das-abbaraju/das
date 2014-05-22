@@ -4,6 +4,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
+import com.picsauditing.employeeguard.forms.employee.ProfileDocumentInfo;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.services.AccountSkillProfileService;
@@ -33,11 +34,13 @@ public class SkillAction extends PicsRestActionSupport {
 	private FormBuilderFactory formBuilderFactory;
 
 	private AccountSkill skill;
-	private List<ProfileDocument> documents;
+	private List<ProfileDocumentInfo> documents;
 	private List<CompanySkillInfo> companySkillInfoList;
 
 	@FormBinding({"employee_skill_file", "employee_skill_training"})
 	private SkillDocumentForm skillDocumentForm;
+
+	private int documentId =0;
 
 	public String index() {
 		companySkillInfoList = buildCompanySkillInfoList();
@@ -46,45 +49,40 @@ public class SkillAction extends PicsRestActionSupport {
 	}
 
 	public String show() {
-		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
-		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillProfile accountSkillProfile = accountSkillProfileService
-				.getAccountSkillProfileForProfileAndSkill(profile, accountSkill);
-
-		ProfileDocument profileDocument = null;
-		if (accountSkillProfile != null) {
-			profileDocument = accountSkillProfile.getProfileDocument();
-		}
-
-		SkillInfo skillInfo = null;
-		if (accountSkillProfile != null) {
-			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillProfile);
-		} else {
-			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
-		}
-
-		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, profileDocument);
+		prepareSkillDocumentForm();
 
 		return SHOW;
 	}
 
 	public String edit() {
-		Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
-		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
-		AccountSkillProfile accountSkillProfile = accountSkillProfileService
-				.getAccountSkillProfileForProfileAndSkill(profile, accountSkill);
-
-		ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
-
-		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillProfile);
-		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, profileDocument);
-
+		prepareSkillDocumentForm();
 		return "edit-form";
 	}
 
-	public String file() {
-		documents = profileDocumentService.getDocumentsForProfile(profileEntityService.findByAppUserId(permissions.getAppUserID()).getId());
+	private SkillDocumentForm prepareSkillDocumentForm(){
+		AccountSkill accountSkill = skillEntityService.find(getIdAsInt());
+		AccountSkillProfile accountSkillProfile = accountSkillProfileService.getAccountSkillProfile(permissions.getAppUserID(), getIdAsInt());
+		ProfileDocument profileDocument = accountSkillProfileService.getAccountSkillProfileDocument(accountSkillProfile);
 
+		SkillInfo skillInfo;
+		if (accountSkillProfile != null) {
+			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkillProfile);
+		} else {
+			skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
+		}
+		skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, profileDocument);
+
+		return skillDocumentForm;
+	}
+
+	public String file() throws Exception {
+		ProfileDocument profileDocument = accountSkillProfileService.getAccountSkillProfileDocument(permissions.getAppUserID(), getIdAsInt());
+		if(profileDocument!=null) {
+			documentId = profileDocument.getId();
+		}
+
+		List<ProfileDocument> profileDocuments = profileDocumentService.getDocumentsForProfile(profileEntityService.findByAppUserId(permissions.getAppUserID()).getId());
+		documents = formBuilderFactory.getProfileDocumentInfoBuilder().buildList(profileDocuments);
 		return "file";
 	}
 
@@ -112,11 +110,12 @@ public class SkillAction extends PicsRestActionSupport {
 		return companySkillsForm.getCompanySkillInfoList();
 	}
 
-	public String manage() {
+	public String manage() throws Exception {
 		skill = skillEntityService.find(getIdAsInt());
 		if (skill.getSkillType().isCertification()) {
 			Profile profile = profileEntityService.findByAppUserId(permissions.getAppUserID());
-			documents = profileDocumentService.getDocumentsForProfile(profile.getId());
+			List<ProfileDocument> profileDocuments  = profileDocumentService.getDocumentsForProfile(profile.getId());
+			documents = formBuilderFactory.getProfileDocumentInfoBuilder().buildList(profileDocuments);
 		}
 
 		return "manage";
@@ -139,7 +138,7 @@ public class SkillAction extends PicsRestActionSupport {
 		return skill;
 	}
 
-	public List<ProfileDocument> getDocuments() {
+	public List<ProfileDocumentInfo> getDocuments() {
 		return documents;
 	}
 
@@ -153,5 +152,9 @@ public class SkillAction extends PicsRestActionSupport {
 
 	public void setSkillDocumentForm(SkillDocumentForm skillDocumentForm) {
 		this.skillDocumentForm = skillDocumentForm;
+	}
+
+	public int getDocumentId() {
+		return documentId;
 	}
 }

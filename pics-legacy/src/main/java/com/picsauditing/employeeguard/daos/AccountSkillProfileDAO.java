@@ -277,7 +277,7 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 		query.executeUpdate();
 	}
 
-	public List<AccountSkillProfile> findBySkillAndProfile(AccountSkill accountSkill, Profile profile) {
+	public AccountSkillProfile findBySkillAndProfile(AccountSkill accountSkill, Profile profile) {
 		TypedQuery<AccountSkillProfile> query = em.createQuery("SELECT asp FROM AccountSkillProfile asp " +
 				"JOIN asp.profile p " +
 				"WHERE asp.skill = :skill AND p = :profile", AccountSkillProfile.class);
@@ -285,7 +285,12 @@ public class AccountSkillProfileDAO extends AbstractBaseEntityDAO<AccountSkillPr
 		query.setParameter("skill", accountSkill);
 		query.setParameter("profile", profile);
 
-		return query.getResultList();
+		try {
+			return query.getSingleResult();
+		} catch (NoResultException | NonUniqueResultException e) {
+			return null;
+		}
+
 	}
 
 	public List<AccountSkillProfile> findBySkillIdAndProfile(final int skillId, final Profile profile) {

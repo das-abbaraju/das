@@ -14,7 +14,7 @@ import java.util.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"AccountSkillProfileDAOITest-context.xml"})
+@ContextConfiguration({ "classpath:EGITest-context.xml" })
 public class AccountSkillProfileDAOITest {
 	private static final int LENNY_LEONARD_PROFILE_ID =1;
 	private static final int LENNY_LEONARD_EMPLOYEE_ID =31;
@@ -211,14 +211,12 @@ public class AccountSkillProfileDAOITest {
 
 	@Test
 	public void testFindBySkillAndProfile() throws Exception {
-		final int EXPECTED_SIZE =1;
 
 		Profile profile = profileDAO.find(LENNY_LEONARD_PROFILE_ID);
 		AccountSkill skillFirePreventionTraining = accountSkillDAO.find(SKILL_FirePreventionTraining_ID);
-		List<AccountSkillProfile> profileDocuments = accountSkillProfileDAO.findBySkillAndProfile(skillFirePreventionTraining, profile);
+		AccountSkillProfile profileDocument = accountSkillProfileDAO.findBySkillAndProfile(skillFirePreventionTraining, profile);
 
-		assertTrue(String.format("Expected=[%d], Found=[%d]",EXPECTED_SIZE, profileDocuments.size()),
-						profileDocuments.size()==EXPECTED_SIZE);
+		assertNotNull(String.format("Expected to find 1 record", profileDocument));
 
 	}
 
