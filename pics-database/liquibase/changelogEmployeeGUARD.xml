@@ -8,5 +8,6 @@
     <include file="./liquibase/employeeguard/2014/Q2/aananighian6_US799_DDL_Add_Account_Skill_Profile_Table.sql"/>
     <include file="./liquibase/employeeguard/2014/Q2/aananighian7_US799_DML_Populate_Account_Skill_Profile_Table.sql"/>
     <include file="./liquibase/employeeguard/2014/Q2/aananighian8_DE593_Update_Soft_Deleted_Data_For_New_Soft_Delete.sql"/>
+    <include file="./liquibase/employeeguard/2014/Q2/aananighian9_DE664_Larger_Column_For_File_Type.sql"/>
 
 </databaseChangeLog>

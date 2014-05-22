@@ -526,6 +526,9 @@ public class PicsCollectionUtil {
 	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
 														   final Map<E, ? extends Collection<V>> entityValueMap) {
 		Collection<V> values = new ArrayList<>();
+		if (CollectionUtils.isEmpty(entities)) {
+			return values;
+		}
 
 		for (E entity : entities) {
 			if (entityValueMap.containsKey(entity)) {
