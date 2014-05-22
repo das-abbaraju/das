@@ -1,8 +1,9 @@
 package com.picsauditing.employeeguard.process;
 
 import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.entity.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,14 +15,13 @@ import java.util.*;
 
 import static com.picsauditing.employeeguard.EGTestDataUtil.*;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Mockito.when;
 
 public class ProcessHelperTest {
 
 	// class under test
 	private ProcessHelper processHelper;
-
-	private EGTestDataUtil egTestDataUtil;
 
 	@Mock
 	private EmployeeEntityService employeeEntityService;
@@ -118,5 +118,101 @@ public class ProcessHelperTest {
 		Map<Group, Set<AccountSkill>> result = processHelper.getGroupSkills(fakeProfile);
 
 		assertTrue(Utilities.mapsAreEqual(GROUP_SKILLS_MAP, result));
+	}
+
+	@Test
+	public void testContractorGroups() {
+		final AccountModel fakeContractor = buildFakeContractor();
+		final Set<Group> fakeGroups = new HashSet<>(Arrays.asList(CONTRACTOR_GROUP));
+		Map<Integer, AccountModel> accountsMap = setupTestContractorGroups(fakeContractor, fakeGroups);
+
+		Map<AccountModel, Set<Group>> result = processHelper.contractorGroups(Arrays.asList(new Employee()), accountsMap);
+
+		verifyTestContractorGroups(fakeContractor, fakeGroups, result);
+
+	}
+
+	private Map<Integer, AccountModel> setupTestContractorGroups(final AccountModel contractor,
+																 final Set<Group> fakeGroups) {
+		Map<Integer, Set<Group>> fakeGroupMap = new HashMap<Integer, Set<Group>>() {{
+			put(CONTRACTOR_ID, fakeGroups);
+		}};
+
+
+		Map<Integer, AccountModel> accountsMap = new HashMap<Integer, AccountModel>() {{
+
+
+			put(CONTRACTOR_ID, contractor);
+
+		}};
+
+		when(groupEntityService.getGroupsByContractorId(anyCollectionOf(Employee.class))).thenReturn(fakeGroupMap);
+		return accountsMap;
+	}
+
+
+	private void verifyTestContractorGroups(final AccountModel fakeContractor,
+											final Set<Group> fakeGroups,
+											final Map<AccountModel, Set<Group>> result) {
+		assertTrue(Utilities.mapsAreEqual(new HashMap<AccountModel, Set<Group>>() {{
+
+			put(fakeContractor, fakeGroups);
+
+		}},
+				result));
+	}
+
+	private AccountModel buildFakeContractor() {
+		return new AccountModel.Builder()
+				.id(CONTRACTOR_ID)
+				.name("CONTRACTOR")
+				.accountType(AccountType.CONTRACTOR)
+				.build();
+	}
+
+	@Test
+	public void testSiteRoles() {
+		final AccountModel site = buildFakeSite();
+		final Set<Role> fakeRoles = new HashSet<>(Arrays.asList(SITE_ASSIGNMENT_ROLE));
+		Map<Integer, AccountModel> accountsMap = setupTestSiteRoles(site, fakeRoles);
+
+		Map<AccountModel, Set<Role>> result = processHelper.siteRoles(Arrays.asList(new Employee()), accountsMap);
+
+		verifyTestSiteRoles(site, fakeRoles, result);
+
+	}
+
+	private Map<Integer, AccountModel> setupTestSiteRoles(final AccountModel site, final Set<Role> fakeRoles) {
+		Map<Integer, Set<Role>> fakeRolesMap = new HashMap<Integer, Set<Role>>() {{
+			put(SITE_ID, fakeRoles);
+		}};
+
+
+		Map<Integer, AccountModel> accountsMap = new HashMap<Integer, AccountModel>() {{
+
+
+			put(SITE_ID, site);
+
+		}};
+
+		when(roleEntityService.getSiteRolesForEmployees(anyCollectionOf(Employee.class))).thenReturn(fakeRolesMap);
+		return accountsMap;
+	}
+
+	private void verifyTestSiteRoles(final AccountModel site, final Set<Role> fakeRoles, Map<AccountModel, Set<Role>> result) {
+		assertTrue(Utilities.mapsAreEqual(new HashMap<AccountModel, Set<Role>>() {{
+
+			put(site, fakeRoles);
+
+		}},
+				result));
+	}
+
+	private AccountModel buildFakeSite() {
+		return new AccountModel.Builder()
+				.id(SITE_ID)
+				.name("SITE")
+				.accountType(AccountType.OPERATOR)
+				.build();
 	}
 }

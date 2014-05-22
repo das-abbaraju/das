@@ -13,9 +13,9 @@ import java.util.*;
 public class EGTestDataUtil {
 
 	private static int sequencer = 1;
-	private static final int CORPORATE_ID = sequencer++;
-	private static final int SITE_ID = sequencer++;
-	private static final int CONTRACTOR_ID = sequencer++;
+	public static final int CORPORATE_ID = sequencer++;
+	public static final int SITE_ID = sequencer++;
+	public static final int CONTRACTOR_ID = sequencer++;
 	public static final int EMPLOYEE_ID = sequencer++;
 
 	public static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);

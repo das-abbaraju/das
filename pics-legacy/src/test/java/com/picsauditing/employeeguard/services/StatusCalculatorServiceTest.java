@@ -189,6 +189,12 @@ public class StatusCalculatorServiceTest {
 		assertFalse(result.isEmpty());
 	}
 
+	@Test
+	public void testCalculateOverallStatus_With_Default() {
+		SkillStatus result = service.calculateOverallStatus(null, SkillStatus.Completed);
+
+		assertEquals(SkillStatus.Completed, result);
+	}
 
 	private void setupFakeAccountSkillProfile(List<AccountSkill> fakeSkills, List<Employee> fakeEmployees) {
 		List<AccountSkillProfile> fakeAccountSkillProfiles = buildFakeAccountSkillProfiles(fakeEmployees,
