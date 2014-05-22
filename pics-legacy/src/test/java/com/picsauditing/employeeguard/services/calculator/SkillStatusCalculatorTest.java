@@ -1,24 +1,19 @@
 package com.picsauditing.employeeguard.services.calculator;
 
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.EGTestDataUtil;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.IntervalType;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import org.joda.time.DateTime;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class SkillStatusCalculatorTest {
 
@@ -28,11 +23,11 @@ public class SkillStatusCalculatorTest {
 	@Test
 	public void testCalculateStatusFromSkill_Expired() throws Exception {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(35));
-		AccountSkillEmployee accountSkillEmployee = prepareAccountSkillEmployee(skillDocSaveDate.toDate());
+		AccountSkillProfile accountSkillProfile = prepareAccountSkillProfile(skillDocSaveDate.toDate());
 
-		accountSkillEmployee.getSkill().setIntervalType(IntervalType.MONTH);
+		accountSkillProfile.getSkill().setIntervalType(IntervalType.MONTH);
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
+		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 
 		assertEquals(SkillStatus.Expired, result);
 	}
@@ -40,11 +35,11 @@ public class SkillStatusCalculatorTest {
 	@Test
 	public void testCalculateStatusFromSkill_Expiring() throws Exception {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(3));
-		AccountSkillEmployee accountSkillEmployee = prepareAccountSkillEmployee(skillDocSaveDate.toDate());
+		AccountSkillProfile accountSkillProfile = prepareAccountSkillProfile(skillDocSaveDate.toDate());
 
-		accountSkillEmployee.getSkill().setIntervalType(IntervalType.WEEK);
+		accountSkillProfile.getSkill().setIntervalType(IntervalType.WEEK);
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
+		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 
 		assertEquals(SkillStatus.Expiring, result);
 
@@ -53,90 +48,90 @@ public class SkillStatusCalculatorTest {
 	@Test
 	public void testCalculateStatusFromSkill_Valid() throws Exception {
 		DateTime skillDocSaveDate = (new DateTime().minusDays(3));
-		AccountSkillEmployee accountSkillEmployee = prepareAccountSkillEmployee(skillDocSaveDate.toDate());
+		AccountSkillProfile accountSkillProfile = prepareAccountSkillProfile(skillDocSaveDate.toDate());
 
-		accountSkillEmployee.getSkill().setIntervalType(IntervalType.YEAR);
+		accountSkillProfile.getSkill().setIntervalType(IntervalType.YEAR);
 		// End date is not used.  Its intentionally populated to make sure its not
-		accountSkillEmployee.setEndDate((new DateTime().plusDays(5).toDate()));
+		accountSkillProfile.setEndDate((new DateTime().plusDays(5).toDate()));
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
+		SkillStatus result = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 
 		assertEquals(SkillStatus.Completed, result);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testCalculateStatusRollUp_EmptyList() {
-		List<AccountSkillEmployee> accountSkillEmployees = null;
+		List<AccountSkillProfile> accountSkillProfiles = null;
 
-		SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
+		SkillStatusCalculator.calculateStatusRollUp(accountSkillProfiles);
 	}
 
 	@Test
 	public void testCalculateStatusRollUp_LowestIsExpired() {
-		List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Expired();
+		List<AccountSkillProfile> accountSkillProfiles = getFakeAccountSkillProfileList_Expired();
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
+		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillProfiles);
 
 		assertEquals(SkillStatus.Expired, result);
 	}
 
 	@Test
 	public void testCalculateStatusRollUp_LowestIsExpiring() {
-		List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Expiring();
+		List<AccountSkillProfile> accountSkillProfiles = getFakeAccountSkillProfileList_Expiring();
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
+		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillProfiles);
 
 		assertEquals(SkillStatus.Expiring, result);
 	}
 
 	@Test
 	public void testCalculateStatusRollUp_LowestIsCompleted() {
-		List<AccountSkillEmployee> accountSkillEmployees = getFakeAccountSkillEmployeeList_Completed();
+		List<AccountSkillProfile> accountSkillProfiles = getFakeAccountSkillProfileList_Completed();
 
-		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillEmployees);
+		SkillStatus result = SkillStatusCalculator.calculateStatusRollUp(accountSkillProfiles);
 
 		assertEquals(SkillStatus.Completed, result);
 	}
 
-	private AccountSkillEmployee prepareAccountSkillEmployee(Date skillDocSaveDate){
+	private AccountSkillProfile prepareAccountSkillProfile(Date skillDocSaveDate){
 		DateTime oneYrFromNowDate =new DateTime().plusDays(365);
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder()
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
 						.startDate(skillDocSaveDate)
 						.endDate(oneYrFromNowDate.toDate()) // End date is not used.  Its intentionally populated to make sure its not
 						.build();
 
-		accountSkillEmployee.setSkill(egTestDataUtil.buildNewFakeTrainingSkill());
+		accountSkillProfile.setSkill(egTestDataUtil.buildNewFakeTrainingSkill());
 
-		return accountSkillEmployee;
+		return accountSkillProfile;
 	}
 
-	private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Expired() {
+	private List<AccountSkillProfile> getFakeAccountSkillProfileList_Expired() {
 
 		return Arrays.asList(
-						egTestDataUtil.prepareExpiredAccountSkillEmployee(),
-						egTestDataUtil.prepareExpiringAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareExpiredAccountSkillEmployee(),
-						egTestDataUtil.prepareExpiringAccountSkillEmployee(),
+						egTestDataUtil.prepareExpiredAccountSkillProfile(),
+						egTestDataUtil.prepareExpiringAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareExpiredAccountSkillProfile(),
+						egTestDataUtil.prepareExpiringAccountSkillProfile(),
 						null);
 	}
 
-	private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Expiring() {
+	private List<AccountSkillProfile> getFakeAccountSkillProfileList_Expiring() {
 		return Arrays.asList(
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareExpiringAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareExpiringAccountSkillEmployee()
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareExpiringAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareExpiringAccountSkillProfile()
 		);
 	}
 
-	private List<AccountSkillEmployee> getFakeAccountSkillEmployeeList_Completed() {
+	private List<AccountSkillProfile> getFakeAccountSkillProfileList_Completed() {
 		return Arrays.asList(
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee(),
-						egTestDataUtil.prepareCompletedAccountSkillEmployee()
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile(),
+						egTestDataUtil.prepareCompletedAccountSkillProfile()
 		);
 	}
 

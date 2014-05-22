@@ -21,6 +21,7 @@ import java.util.List;
 
 @SuppressWarnings("serial")
 public class AccountRecovery extends PicsActionSupport {
+
 	@Autowired
 	private UserDAO userDAO;
     @Autowired
@@ -166,6 +167,7 @@ public class AccountRecovery extends PicsActionSupport {
 		if (urlUtils == null) {
 			urlUtils = new URLUtils();
 		}
+
 		return urlUtils;
 	}
 

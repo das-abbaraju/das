@@ -1,0 +1,27 @@
+{
+"id": 21,
+"employees": 100,
+"completed": 65,
+"pending": 0,
+"expiring": 76,
+"expired": 0,
+"projects": [{
+        "name": "Dougs Test Project",
+        "startDate": "01-01-2013",
+        "endDate": "01-02-2015",
+        "location": "Main Building",
+        "completed": 3,
+        "pending": 2,
+        "expiring": 4,
+        "expired": 2
+    }, {
+        "name": "Red Rum",
+        "startDate": "02-28-2013",
+        "endDate": "03-02-2015",
+        "location": "Offsite",
+        "completed": 1078,
+        "pending": 0,
+        "expiring": 345,
+        "expired": 0
+    }]
+}

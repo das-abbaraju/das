@@ -33,10 +33,10 @@ public class SiteAssignmentsAndProjectsFactoryTest {
 		Map<AccountModel, Set<Project>> siteProjects = Collections.emptyMap();
 		Map<AccountModel, Set<AccountSkill>> siteRequiredSkills = Collections.emptyMap();
 		Map<Employee, Set<Role>> employeeRoles = Collections.emptyMap();
-		List<AccountSkillEmployee> accountSkillEmployees = Collections.emptyList();
+		List<AccountSkillProfile> accountSkillProfiles = Collections.emptyList();
 
 		Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> siteAssignments =
-				siteAssignmentsAndProjectsFactory.create(siteProjects, siteRequiredSkills, employeeRoles, accountSkillEmployees);
+				siteAssignmentsAndProjectsFactory.create(siteProjects, siteRequiredSkills, employeeRoles, accountSkillProfiles);
 
 		assertNotNull(siteAssignments);
 		assertTrue(siteAssignments.isEmpty());

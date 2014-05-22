@@ -22,6 +22,11 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	}
 
 	@Override
+	public int getAppUserId() {
+		return getPermissions().getAppUserID();
+	}
+
+	@Override
 	public int getId() {
 		Map<String, Object> params = getRequestParams();
 		if (MapUtils.isEmpty(params) || !params.containsKey(REST_ID_PARAM_KEY)) {

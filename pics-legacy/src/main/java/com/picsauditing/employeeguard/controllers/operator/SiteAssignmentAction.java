@@ -2,16 +2,14 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.common.collect.Table;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
@@ -29,7 +27,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
@@ -116,12 +114,12 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		skills.addAll(skillService.getRequiredSkillsForSiteAndCorporates(siteId));
 		skills = ListUtil.removeDuplicatesAndSort(skills);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> accountSkillEmployees =
-				accountSkillEmployeeService.buildTable(employeesAssignedToRole, skills);
+		Table<Employee, AccountSkill, AccountSkillProfile> accountSkillProfiles =
+				accountSkillProfileService.buildTable(employeesAssignedToRole, skills);
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels =
 				ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(
-						employeesAssignedToRole, skills, accountSkillEmployees, contractors);
+						employeesAssignedToRole, skills, accountSkillProfiles, contractors);
 
 		List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractors.keySet(), siteId);
 		Map<RoleInfo, Integer> roleCounts = buildRoleCounts(siteId, employeesAtSite);

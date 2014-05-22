@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.models.factories.*;
-import com.picsauditing.employeeguard.models.factories.ProjectAssignmentBreakdownFactory;
 
 public class ModelFactory {
 
@@ -26,6 +25,9 @@ public class ModelFactory {
 	private static UserModelFactory userModelFactory = new UserModelFactory();
 	private static LiveIDEmployeeModelFactory liveIDEmployeeModelFactory = new LiveIDEmployeeModelFactory();
 	private static OperatorEmployeeModelFactory operatorEmployeeModelFactory = new OperatorEmployeeModelFactory();
+	private static EmployeeSkillsModelFactory employeeSkillsModelFactory = new EmployeeSkillsModelFactory();
+	private static CompanyStatusModelFactory companyStatusModelFactory = new CompanyStatusModelFactory();
+	private static CompanyProjectModelFactory companyProjectModelFactory = new CompanyProjectModelFactory();
 
 	public static LiveIDEmployeeModelFactory getLiveIDEmployeeModelFactory() {
 		return liveIDEmployeeModelFactory;
@@ -109,5 +111,17 @@ public class ModelFactory {
 
 	public static OperatorEmployeeModelFactory getOperatorEmployeeModelFactory() {
 		return operatorEmployeeModelFactory;
+	}
+
+	public static EmployeeSkillsModelFactory getEmployeeSkillsModelFactory() {
+		return employeeSkillsModelFactory;
+	}
+
+	public static CompanyStatusModelFactory getCompanyStatusModelFactory() {
+		return companyStatusModelFactory;
+	}
+
+	public static CompanyProjectModelFactory getCompanyProjectModelFactory() {
+		return companyProjectModelFactory;
 	}
 }

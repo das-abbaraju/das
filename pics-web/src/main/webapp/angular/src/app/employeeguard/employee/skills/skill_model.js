@@ -60,27 +60,19 @@ angular.module('PICS.employeeguard')
             });
         });
 
-
         return sites;
     };
 
-    Model.prototype.getAllSiteAndProjectSkillsBySlug = function (site_slug) {
-        var site = this.getSiteBySlug(site_slug),
-            projectSkills = [],
-            allSkills,
-            filteredSkills;
+    Model.prototype.getSiteSkillsBySlug = function (site_slug) {
+        var data = this.getData();
 
-        angular.forEach(site.projects, function(project) {
-            projectSkills = projectSkills.concat(project.skills);
-        });
+        if (data.sites) {
+            sites = $filter('filter')(data.sites, { slug: site_slug})[0];
 
-        allSkills = site.required ? site.required.skills.concat(projectSkills) : projectSkills;
-
-        filteredSkills = $filter('removeDuplicateItemsFromArray')(allSkills);
-
-        site.skills = filteredSkills;
-
-        return site;
+            if (sites && sites.required) {
+                return sites.required;
+            }
+        }
     };
 
     Model.prototype.getProjectBySlug = function (project_slug) {
@@ -99,11 +91,14 @@ angular.module('PICS.employeeguard')
             });
         });
 
-        filteredSkills = $filter('removeDuplicateItemsFromArray')(selected_project.skills);
+        if (selected_project) {
+            filteredSkills = $filter('removeDuplicateItemsFromArray')(selected_project.skills);
 
-        selected_project.skills = filteredSkills;
+            selected_project.skills = filteredSkills;
 
-        return selected_project;
+            return selected_project;
+        }
+
     };
 
     Model.prototype.getSiteNameByProjectSlug = function (project_slug) {

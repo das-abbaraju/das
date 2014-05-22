@@ -1,13 +1,13 @@
 package com.picsauditing.employeeguard.services.engine;
 
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.SkillAssignmentHelper;
 import com.picsauditing.employeeguard.services.entity.*;
-import com.picsauditing.employeeguard.models.AccountModel;
-import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -22,7 +22,7 @@ public class SkillEngine {
 	private AccountService accountService;
 
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
@@ -51,22 +51,23 @@ public class SkillEngine {
 			List<ProjectCompany> projectCompanies = projectCompanyDAO.findByContractorExcludingSite(contractorId, siteId);
 
 			Set<AccountSkill> requiredSkills = skillAssignmentHelper.getRequiredSkillsFromProjectsAndSiteRoles(projectCompanies, employee);
-			Set<AccountSkillEmployee> deletableSkills = skillAssignmentHelper.filterNoLongerNeededEmployeeSkills(employee, contractorId, requiredSkills);
+			Set<AccountSkillProfile> deletableSkills = skillAssignmentHelper
+					.filterNoLongerNeededEmployeeSkills(employee, contractorId, requiredSkills);
 
-			accountSkillEmployeeDAO.deleteByIds(PicsCollectionUtil.getIdsFromCollection(deletableSkills,
-					new PicsCollectionUtil.Identitifable<AccountSkillEmployee, Integer>() {
+			accountSkillProfileDAO.deleteByIds(PicsCollectionUtil.getIdsFromCollection(deletableSkills,
+					new PicsCollectionUtil.Identitifable<AccountSkillProfile, Integer>() {
 						@Override
-						public Integer getId(AccountSkillEmployee accountSkillEmployee) {
-							return accountSkillEmployee.getId();
+						public Integer getId(AccountSkillProfile accountSkillProfile) {
+							return accountSkillProfile.getId();
 						}
 					}));
 		}
 	}
 
 	private void removeRequiredCorporateSkillsFromEmployee(Employee employee, List<Integer> corporateIds) {
-		List<AccountSkillEmployee> accountSkillEmployees =
-				accountSkillEmployeeDAO.findByEmployeeAndCorporateIds(employee.getId(), corporateIds);
-		accountSkillEmployeeDAO.delete(accountSkillEmployees);
+		List<AccountSkillProfile> accountSkillProfiles =
+				accountSkillProfileDAO.findDistinctByEmployeeAndCorporateIds(employee.getId(), corporateIds);
+		accountSkillProfileDAO.delete(accountSkillProfiles);
 	}
 
 	private Set<Integer> getOtherEmployeeAssignedSiteIds(List<Integer> childSiteIds, int siteId, Employee employee) {
@@ -130,7 +131,7 @@ public class SkillEngine {
 	}
 
 	public Map<Employee, Set<AccountSkill>> getEmployeeSkillsMapForAccount(final Collection<Employee> employees,
-	                                                                       final AccountModel accountModel) {
+																		   final AccountModel accountModel) {
 
 		Map<Employee, Set<AccountSkill>> employeeGroupSkills =
 				skillEntityService.getGroupSkillsForEmployees(groupEntityService.getEmployeeGroups(employees));
@@ -152,12 +153,12 @@ public class SkillEngine {
 	}
 
 	private Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final AccountModel accountModel,
-	                                                                        final Collection<Employee> employees) {
+																			final Collection<Employee> employees) {
 		return skillEntityService.getRequiredSkillsForContractor(accountModel.getId(), employees);
 	}
 
 	private Map<Employee, Set<AccountSkill>> getProjectSkillsForEmployees(final Collection<Employee> employees,
-	                                                                      final AccountModel accountModel) {
+																		  final AccountModel accountModel) {
 		Map<Employee, Set<Project>> employeeProjects = getProjectSkills(employees, accountModel);
 		Map<Project, Set<AccountSkill>> projectRequiredSkills =
 				skillEntityService.getRequiredSkillsForProjects(PicsCollectionUtil
@@ -167,7 +168,7 @@ public class SkillEngine {
 	}
 
 	private Map<Employee, Set<AccountSkill>> getRoleSkillsForEmployees(final Collection<Employee> employees,
-	                                                                   final AccountModel accountModel) {
+																	   final AccountModel accountModel) {
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeSiteAssignments(employees, accountModel);
 		Map<Role, Set<AccountSkill>> roleRequiredSkills =
 				skillEntityService.getSkillsForRoles(PicsCollectionUtil.extractAndFlattenValuesFromMap(employeeRoles));
@@ -176,8 +177,8 @@ public class SkillEngine {
 	}
 
 	private <ENTITY> Map<Employee, Set<AccountSkill>> getEmployeeSkillsMap(final Collection<Employee> employees,
-	                                                                       final Map<Employee, Set<ENTITY>> employeeToEntities,
-	                                                                       final Map<ENTITY, Set<AccountSkill>> entitySkills) {
+																		   final Map<Employee, Set<ENTITY>> employeeToEntities,
+																		   final Map<ENTITY, Set<AccountSkill>> entitySkills) {
 
 		if (MapUtils.isEmpty(employeeToEntities) || MapUtils.isEmpty(entitySkills)) {
 			return Collections.emptyMap();
@@ -202,7 +203,7 @@ public class SkillEngine {
 	}
 
 	private Map<Employee, Set<Project>> getProjectSkills(final Collection<Employee> employees,
-	                                                     final AccountModel accountModel) {
+														 final AccountModel accountModel) {
 		switch (accountModel.getAccountType()) {
 
 			case CONTRACTOR:
@@ -221,7 +222,7 @@ public class SkillEngine {
 	}
 
 	private Map<Employee, Set<Role>> getEmployeeSiteAssignments(final Collection<Employee> employees,
-	                                                            final AccountModel accountModel) {
+																final AccountModel accountModel) {
 		int id = accountModel.getId();
 		Map<Employee, Set<Role>> projectRoles;
 		Map<Employee, Set<Role>> siteAssignmentRoles;

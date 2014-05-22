@@ -45,18 +45,17 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.findRoleByAccount(id, accountId);
 	}
 
-  public Map<String,Role> retrieveRolesByAccounts(Collection<Integer> accountIds) {
-    if (CollectionUtils.isEmpty(accountIds)) {
-      return Collections.EMPTY_MAP;
+	public Map<String, Role> retrieveRolesByAccounts(Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.EMPTY_MAP;
 
-    }
-    return roleDAO.retrieveRolesByAccounts(accountIds);
-  }
+		}
+		return roleDAO.retrieveRolesByAccounts(accountIds);
+	}
 
 	public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.EMPTY_LIST;
-
 		}
 
 		return roleDAO.findByAccounts(accountIds);
@@ -212,6 +211,18 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public Set<Role> getAllSiteRolesForEmployee(final Employee employee) {
 		return new HashSet<>(roleDAO.findRolesForEmployee(employee));
+	}
+
+	public Set<Role> getRolesForProfile(final Profile profile) {
+		return PicsCollectionUtil.extractPropertyToSet(siteAssignmentDAO.findByProfile(profile),
+
+				new PicsCollectionUtil.PropertyExtractor<SiteAssignment, Role>() {
+
+					@Override
+					public Role getProperty(SiteAssignment siteAssignment) {
+						return siteAssignment.getRole();
+					}
+				});
 	}
 
 	/* All Search Methods */

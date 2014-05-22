@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.entities.softdeleted;
 
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
 import com.picsauditing.employeeguard.entities.BaseEntity;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.Profile;
@@ -48,9 +47,9 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 	@Where(clause = "deletedDate IS NULL")
 	private List<GroupEmployee> groups = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
-	private List<AccountSkillEmployee> skills = new ArrayList<>();
+//	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+//	@Where(clause = "deletedDate IS NULL")
+//	private List<AccountSkillProfile> skills = new ArrayList<>();
 
 	public SoftDeletedEmployee() {
 	}
@@ -193,14 +192,6 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 
 	public void setGroups(List<GroupEmployee> groups) {
 		this.groups = groups;
-	}
-
-	public List<AccountSkillEmployee> getSkills() {
-		return skills;
-	}
-
-	public void setSkills(List<AccountSkillEmployee> skills) {
-		this.skills = skills;
 	}
 
 	@Transient

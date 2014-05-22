@@ -47,14 +47,14 @@ final class UserModeProviderImpl implements UserModeProvider {
 
 		String uri = SessionInfoProviderFactory.getSessionInfoProvider().getURI();
 
-		if (checkUserIsInEmployeeMode(permissions, nameSpace, uri)) {
+		if (isUserInEmployeeMode(permissions, nameSpace, uri)) {
 			return UserMode.EMPLOYEE;
 		}
 
 		return UserMode.ADMIN;
 	}
 
-	private boolean checkUserIsInEmployeeMode(Permissions permissions, NameSpace nameSpace, String uri) {
+	private boolean isUserInEmployeeMode(Permissions permissions, NameSpace nameSpace, String uri) {
 		return (nameSpace == NameSpace.EMPLOYEEGUARD
 				|| (uri != null && uri.contains(SessionInfoProvider.EMPLOYEEGUARD_NAMESPACE)))
 				&& (permissions.getAvailableUserModes().contains(UserMode.EMPLOYEE));

@@ -5,6 +5,8 @@ import com.picsauditing.employeeguard.entities.DocumentType;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.util.FileSystemAccessor;
 import com.picsauditing.util.Strings;
 import edu.emory.mathcs.backport.java.util.Collections;
@@ -20,10 +22,10 @@ import java.util.Set;
 
 public class PhotoUtil {
 
-	public static final Set<String> VALID_PHOTO_EXTENSIONS =
-			Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif", "jpeg")));
 	public static final String DEFAULT_PHOTO_FILE = "/files/dummy.jpg";
 
+	@Autowired
+	private AppPropertyService appPropertyService;
 	@Autowired
 	private FileSystemAccessor fileSystemAccessor;
 
@@ -66,7 +68,7 @@ public class PhotoUtil {
 		String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 
 		File file;
-		for (String extension : VALID_PHOTO_EXTENSIONS) {
+		for (String extension : loadValidPhotoExtensions()) {
 			String pathname = getFilePath(directory, id, filename, extension);
 			file = fileSystemAccessor.getFile(pathname);
 
@@ -82,12 +84,33 @@ public class PhotoUtil {
 		return getFilePath(directory, id, filename, Strings.EMPTY_STRING);
 	}
 
-	public String getFilePath(final String directory, int id, String filename, String extention) {
-		return directory + "/files/" + fileSystemAccessor.thousandize(id) + filename + ((Strings.isEmpty(extention)) ? "" : ("." + extention));
+	public String getFilePath(final String directory, int id, String filename, String extension) {
+		return directory + "/files/" + fileSystemAccessor.thousandize(id) + filename + ((Strings.isEmpty(extension))
+				? Strings.EMPTY_STRING : ("." + extension));
 	}
 
 	public boolean isValidExtension(final String extension) {
-		return fileSystemAccessor.checkExtentions(extension, VALID_PHOTO_EXTENSIONS);
+		return fileSystemAccessor.checkExtentions(extension, loadValidPhotoExtensions());
+	}
+
+	private Set<String> loadValidPhotoExtensions() {
+		return parseCommaSeparatedList(appPropertyService.getPropertyString(AppProperty.VALID_PHOTO_UPLOAD_EXTENSIONS));
+	}
+
+	private Set<String> parseCommaSeparatedList(final String validPhotoExtensions) {
+		if (Strings.isEmpty(validPhotoExtensions)) {
+			return Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif", "jpeg")));
+		}
+
+		String[] parsedExtensions = validPhotoExtensions.split(",");
+		Set<String> result = new HashSet<>();
+		for (String extension : parsedExtensions) {
+			if (extension != null) {
+				result.add(extension.trim());
+			}
+		}
+
+		return result;
 	}
 
 	public File getFile(final String directory, final ProfileDocument document) {

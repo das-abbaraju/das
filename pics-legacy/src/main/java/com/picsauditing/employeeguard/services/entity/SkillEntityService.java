@@ -20,7 +20,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
@@ -210,7 +210,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	 * @return
 	 */
 	public Map<Project, Set<AccountSkill>> getSiteRequiredSkillsByProjects(final Collection<Project> projects,
-	                                                                       final Map<Integer, Set<Integer>> siteToCorporates) {
+																		   final Map<Integer, Set<Integer>> siteToCorporates) {
 		if (CollectionUtils.isEmpty(projects) || MapUtils.isEmpty(siteToCorporates)) {
 			return Collections.emptyMap();
 		}
@@ -249,25 +249,36 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	public Map<Employee, Set<AccountSkill>> getRequiredSkillsForContractor(final int contractorId,
 																		   final Collection<Employee> employees) {
-		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByAccount(contractorId);
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
 
+		List<AccountSkill> requiredSkills = accountSkillDAO.findRequiredByContractorId(contractorId);
 		if (CollectionUtils.isEmpty(requiredSkills) || CollectionUtils.isEmpty(employees)) {
 			return Collections.emptyMap();
 		}
 
+		Map<Employee, Set<AccountSkill>> employeeRequiredSkillsForContractor = new HashMap<>();
+		for (Employee employee : employees) {
+			if (!employeeRequiredSkillsForContractor.containsKey(employee)) {
+				employeeRequiredSkillsForContractor.put(employee, new HashSet<AccountSkill>());
+			}
+
+			employeeRequiredSkillsForContractor.get(employee).addAll(requiredSkills);
+		}
+
+		return employeeRequiredSkillsForContractor;
+	}
+
+	public Map<Integer, Set<AccountSkill>> getRequiredSkillsForContractor(final Collection<Integer> contractorIds) {
 		return PicsCollectionUtil.convertToMapOfSets(
-				accountSkillEmployeeDAO.findByEmployeesAndSkills(employees, requiredSkills),
+				accountSkillDAO.findRequiredByContractorIds(contractorIds),
 
-				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillEmployee, Employee, AccountSkill>() {
-
-					@Override
-					public Employee getKey(AccountSkillEmployee entity) {
-						return entity.getEmployee();
-					}
+				new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
 
 					@Override
-					public AccountSkill getValue(AccountSkillEmployee entity) {
-						return entity.getSkill();
+					public Integer getKey(AccountSkill accountSkill) {
+						return accountSkill.getAccountId();
 					}
 				}
 		);
@@ -297,8 +308,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	@Override
 	public AccountSkill save(AccountSkill accountSkill, final EntityAuditInfo entityAuditInfo) {
 		EntityHelper.setCreateAuditFields(accountSkill, entityAuditInfo);
-    EntityHelper.setCreateAuditFields(accountSkill.getRoles(), entityAuditInfo);
-    EntityHelper.setCreateAuditFields(accountSkill.getGroups(), entityAuditInfo);
+		EntityHelper.setCreateAuditFields(accountSkill.getRoles(), entityAuditInfo);
+		EntityHelper.setCreateAuditFields(accountSkill.getGroups(), entityAuditInfo);
 
 		return accountSkillDAO.save(accountSkill);
 	}

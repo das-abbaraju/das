@@ -42,7 +42,7 @@ public class EmployeeService {
 	private EmployeeEntityService employeeEntityService;
 	@Deprecated
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 	@Autowired

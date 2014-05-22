@@ -24,4 +24,7 @@ rebel-remote.xml
 /v7
 junitExcelBuilderTest.xls
 
-/pics-web/src/main/webapp/angular/coverage
+/pics-web/src/main/webapp/angular/coverage/*
+/pics-web/src/main/webapp/angular/unit.xml
+/pics-web/src/main/webapp/employee-guard/coverage/*
+/pics-web/src/main/webapp/employee-guard/unit.xml

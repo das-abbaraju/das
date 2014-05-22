@@ -5,13 +5,13 @@ import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -42,7 +42,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Mock
 	private EmployeeEntityService employeeEntityService;
 	@Mock
@@ -66,7 +66,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		when(permissions.isOperator()).thenReturn(true);
 
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
-		Whitebox.setInternalState(siteAssignmentAction, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(siteAssignmentAction, "accountSkillProfileService", accountSkillProfileService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
 		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
@@ -171,17 +171,21 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().startDate((new DateTime().minusDays(2)).toDate()).endDate(null).build();
-		accountSkillEmployee.setSkill(skill);
-		table.put(employee, skill, accountSkillEmployee);
+		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
+				.startDate((new DateTime().minusDays(2)).toDate())
+				.endDate(null)
+				.build();
+
+		accountSkillProfile.setSkill(skill);
+		table.put(employee, skill, accountSkillProfile);
 
 		AccountModel accountModel = new AccountModel.Builder().id(CONTRACTOR_ID_1).name("Contractor").build();
 		Map<Integer, AccountModel> accountMap = new HashMap<>();
 		accountMap.put(CONTRACTOR_ID_1, accountModel);
 
 		when(accountService.getContractorMapForSite(SITE_ID)).thenReturn(accountMap);
-		when(accountSkillEmployeeService.buildTable(anyListOf(Employee.class), anyListOf(AccountSkill.class))).thenReturn(table);
+		when(accountSkillProfileService.buildTable(anyListOf(Employee.class), anyListOf(AccountSkill.class))).thenReturn(table);
 		when(employeeService.getEmployeesAssignedToSiteRole(anyListOf(Integer.class), eq(SITE_ID), any(Role.class)))
 				.thenReturn(Arrays.asList(employee));
 		when(employeeService.getEmployeesAssignedToSite(anyListOf(Integer.class), eq(SITE_ID))).thenReturn(Arrays.asList(employee));

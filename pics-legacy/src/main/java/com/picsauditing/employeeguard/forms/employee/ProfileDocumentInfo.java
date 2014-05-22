@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.employee;
 
-import com.picsauditing.employeeguard.services.calculator.DocumentStatus;
+import com.picsauditing.employeeguard.services.status.DocumentStatus;
 
 import java.util.Date;
 

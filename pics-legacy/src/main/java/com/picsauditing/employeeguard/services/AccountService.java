@@ -111,6 +111,29 @@ public class AccountService {
 		return new ArrayList<>(corporates);
 	}
 
+	public Map<AccountModel, Set<AccountModel>> getSiteParentAccounts(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		List<OperatorAccount> sites = operatorDAO.findOperators(new ArrayList<>(siteIds));
+
+		Map<AccountModel, Set<AccountModel>> siteToCorporates = new HashMap<>();
+		for (OperatorAccount site : sites) {
+			ArrayList<Integer> visited = new ArrayList<>();
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(site, visited);
+
+			AccountModel siteAccountModel = mapAccountToAccountModel(site);
+			siteToCorporates.put(siteAccountModel, new HashSet<AccountModel>());
+
+			for (OperatorAccount corporate : topmostCorporates) {
+				siteToCorporates.get(siteAccountModel).add(mapAccountToAccountModel(corporate));
+			}
+		}
+
+		return siteToCorporates;
+	}
+
 	public Map<Integer, Set<Integer>> getSiteToCorporatesMap(final Collection<Integer> siteIds) {
 		if (CollectionUtils.isEmpty(siteIds)) {
 			return Collections.emptyMap();

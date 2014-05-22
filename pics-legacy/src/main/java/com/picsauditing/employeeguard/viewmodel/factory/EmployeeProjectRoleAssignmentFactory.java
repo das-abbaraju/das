@@ -1,13 +1,14 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeProjectRoleAssignment;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,12 @@ public class EmployeeProjectRoleAssignmentFactory {
 	private EmployeeProjectRoleAssignment buildEmployeeProjectRoleAssignment(final AccountModel accountModel,
 																			 final Employee employee,
 																			 final List<AccountSkill> orderedSkills) {
-		Map<AccountSkill, AccountSkillEmployee> employeeSkillMap = buildEmployeeAccountSkillMap(employee.getSkills());
+		List<AccountSkillProfile> accountSkillProfiles = new ArrayList<>();
+		if (employee.getProfile() != null && CollectionUtils.isNotEmpty(employee.getProfile().getSkills())) {
+			accountSkillProfiles = employee.getProfile().getSkills();
+		}
+
+		Map<AccountSkill, AccountSkillProfile> employeeSkillMap = buildEmployeeAccountSkillMap(accountSkillProfiles);
 
 		return new EmployeeProjectRoleAssignment.Builder()
 				.contractorId(accountModel.getId())
@@ -49,26 +55,26 @@ public class EmployeeProjectRoleAssignmentFactory {
 				.build();
 	}
 
-	private Map<AccountSkill, AccountSkillEmployee> buildEmployeeAccountSkillMap(List<AccountSkillEmployee> employeeSkills) {
-		return PicsCollectionUtil.convertToMap(employeeSkills,
-				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillEmployee>() {
+	private Map<AccountSkill, AccountSkillProfile> buildEmployeeAccountSkillMap(List<AccountSkillProfile> profileSkills) {
+		return PicsCollectionUtil.convertToMap(profileSkills,
+				new PicsCollectionUtil.MapConvertable<AccountSkill, AccountSkillProfile>() {
 
 					@Override
-					public AccountSkill getKey(AccountSkillEmployee accountSkillEmployee) {
-						return accountSkillEmployee.getSkill();
+					public AccountSkill getKey(AccountSkillProfile accountSkillProfile) {
+						return accountSkillProfile.getSkill();
 					}
 				});
 	}
 
-	private List<SkillStatus> getRoleSkillStatuses(final Map<AccountSkill, AccountSkillEmployee> employeeSkillMap,
+	private List<SkillStatus> getRoleSkillStatuses(final Map<AccountSkill, AccountSkillProfile> profileSkillMap,
 												   final List<AccountSkill> orderedSkills) {
 		List<SkillStatus> skillStatuses = new ArrayList<>();
 		for (AccountSkill skill : orderedSkills) {
-			AccountSkillEmployee accountSkillEmployee = employeeSkillMap.get(skill);
-			if (accountSkillEmployee == null) {
+			AccountSkillProfile accountSkillProfile = profileSkillMap.get(skill);
+			if (accountSkillProfile == null) {
 				skillStatuses.add(SkillStatus.Expired);
 			} else {
-				skillStatuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee));
+				skillStatuses.add(SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile));
 			}
 		}
 

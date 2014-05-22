@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignment;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -1,0 +1,27 @@
+{
+"id": 2,
+"employees": 50,
+"completed": 20,
+"pending": 0,
+"expiring": 0,
+"expired": 10,
+"projects": [{
+        "name": "Barneys Test Project",
+        "startDate": "01-02-2013",
+        "endDate": "01-02-2015",
+        "location": "Main Building",
+        "completed": 5,
+        "pending": 0,
+        "expiring": 0,
+        "expired": 1
+    }, {
+        "name": "Blue Nile",
+        "startDate": "02-28-2013",
+        "endDate": "03-02-2015",
+        "location": "Offsite",
+        "completed": 0,
+        "pending": 0,
+        "expiring": 0,
+        "expired": 992
+    }]
+}
