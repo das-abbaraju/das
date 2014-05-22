@@ -4230,7 +4230,9 @@ function Browser(window, document, $log, $sniffer) {
             location.replace(url);
           }
         } else {
-          location.href = url;
+          if (url.indexOf('#') === -1) {
+            location.href = url;
+          }
         }
       }
       return self;
