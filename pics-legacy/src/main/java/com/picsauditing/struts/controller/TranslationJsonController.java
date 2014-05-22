@@ -31,7 +31,7 @@ public class TranslationJsonController extends JsonActionSupport {
             requestTranslations = getModelFromJsonRequest(Translations.class);
 
             if (requestTranslations.getTranslationKeys() == null) {
-                throw new IOException();
+                throw new UnacceptableJsonException();
             }
         } catch (IOException e) {
             return badRequestResponse();

@@ -22,11 +22,11 @@ public abstract class JsonActionSupport extends PicsActionSupport {
         try {
             model = new Gson().fromJson(body, clazz);
         } catch (JsonSyntaxException e) {
-            throw new IOException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body, e);
+            throw new UnacceptableJsonException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body, e);
         }
 
         if (model == null) {
-            throw new IOException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body);
+            throw new UnacceptableJsonException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body);
         }
 
         return model;
@@ -43,7 +43,7 @@ public abstract class JsonActionSupport extends PicsActionSupport {
     }
 
     public final String getBody(HttpServletRequest request) throws IOException {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder requestBody = new StringBuilder();
         BufferedReader bufferedReader = null;
 
         try {
@@ -53,10 +53,10 @@ public abstract class JsonActionSupport extends PicsActionSupport {
                 char[] charBuffer = new char[128];
                 int bytesRead;
                 while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-                    stringBuilder.append(charBuffer, 0, bytesRead);
+                    requestBody.append(charBuffer, 0, bytesRead);
                 }
             } else {
-                stringBuilder.append("");
+                requestBody.append("");
             }
         } finally {
             if (bufferedReader != null) {
@@ -64,6 +64,6 @@ public abstract class JsonActionSupport extends PicsActionSupport {
             }
         }
 
-        return stringBuilder.toString();
+        return requestBody.toString();
     }
 }
