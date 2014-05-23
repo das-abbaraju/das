@@ -138,4 +138,19 @@ public class ProjectRoleService {
 
         return employeeRoles;
     }
+
+		public Map<Employee, Set<Role>> getEmployeeSiteRolesByAccount(final int accountId) {
+			List<Employee> employees = employeeDAO.findByAccount(accountId);
+
+			Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
+			for (Employee employee : employees) {
+
+				for (SiteAssignment siteAssignment : employee.getSiteAssignments()) {
+					PicsCollectionUtil.addToMapOfKeyToSet(employeeRoles, employee, siteAssignment.getRole());
+				}
+			}
+
+			return employeeRoles;
+		}
+
 }
