@@ -28,6 +28,9 @@ public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValid
 	}
 
 	private boolean isFileValid(DocumentForm documentForm) {
+		if(documentForm.getId()>0)
+			return true;
+
 		if (AjaxUtils.isAjax(request) && Strings.isEmpty(documentForm.getValidate_filename())) {
 			return false;
 		} else if (AjaxUtils.isAjax(request) && Strings.isNotEmpty(documentForm.getValidate_filename())) {
