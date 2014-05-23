@@ -4,7 +4,6 @@ module.exports = function(grunt) {
         'vendor/angular/angular.js',
         'vendor/angular/angular-route.js',
         'vendor/angular/angular-resource.js',
-        'vendor/jquery/jquery-ui.js',
         'vendor/bootstrap/bootstrap.js',
         'vendor/d3/d3.js',
         'vendor/bootstrap/bootstrap.tooltip.js',
@@ -17,7 +16,9 @@ module.exports = function(grunt) {
         'vendor/mmenu/jquery.mmenu.dragopen.js',
         'vendor/select2/select2.js',
         'vendor/angular/angular-ui-select2.js',
-        'vendor/pics/core.js'
+        'vendor/pics/core.js',
+        'vendor/modernizr-2.8.2.js',
+        'src/common/html5Elements/html5shiv.js'
     ];
 
     var modules = [
