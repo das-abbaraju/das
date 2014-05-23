@@ -735,7 +735,7 @@ public class ContractorAuditController extends AuditActionSupport {
 	}
 
     public boolean isCanIssueCertificate() {
-        return permissions.isAuditor();
+        return permissions.isAuditor() && permissions.isPicsEmployee();
     }
 
 }
