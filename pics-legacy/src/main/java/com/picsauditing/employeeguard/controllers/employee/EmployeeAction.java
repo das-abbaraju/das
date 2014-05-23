@@ -7,17 +7,18 @@ import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
-import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -37,48 +38,50 @@ import java.util.Set;
 public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
 	private static final long serialVersionUID = -490476912556033616L;
 
-    @Autowired
-    private AccountService accountService;
+	@Autowired
+	private AccountService accountService;
 	@Autowired
 	private ProfileService profileService;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
-    @Autowired
-    private FormBuilderFactory formBuilderFactory;
-    @Autowired
-    private PhotoUtil photoUtil;
-    @Autowired
-    private ProfileEditFormValidator profileEditFormValidator;
-    @Autowired
-    private ProjectRoleService projectRoleService;
+	@Autowired
+	private FormBuilderFactory formBuilderFactory;
+	@Autowired
+	private PhotoUtil photoUtil;
+	@Autowired
+	private ProfileEditFormValidator profileEditFormValidator;
+	@Autowired
+	private EmployeePhotoFormValidator employeePhotoFormValidator;
+	@Autowired
+	private ProjectRoleService projectRoleService;
 
-    @FormBinding("employee_profile_edit")
-    private EmployeeProfileEditForm personalInfo;
-    @FormBinding("contractor_employee_edit_photo")
-	private ProfilePhotoForm profilePhotoForm;
-    private EmployeeProfileForm employeeProfileForm;
+	@FormBinding("employee_profile_edit")
+	private EmployeeProfileEditForm personalInfo;
+	@FormBinding("contractor_employee_edit_photo")
+	private EmployeePhotoForm employeePhotoForm;
+	private EmployeeProfileForm employeeProfileForm;
 
 	private InputStream inputStream;
 	private Profile profile;
-    private List<EmployeeAssignmentModel> employeeAssignments;
+	private List<EmployeeAssignmentModel> employeeAssignments;
 
-    public String show() {
+	public String show() {
 		profile = profileService.findById(id);
-        loadProfileAssignments(profile);
+		loadProfileAssignments(profile);
 
-        employeeProfileForm = formBuilderFactory.getEmployeeProfileFormBuilder().build(profile);
+		employeeProfileForm = formBuilderFactory.getEmployeeProfileFormBuilder().build(profile);
 
 		return SHOW;
 	}
 
-    @SkipValidation
-    public String editPersonalSection() {
-        profile = profileService.findById(id);
+	@SkipValidation
+	public String editPersonalSection() {
+		profile = profileService.findById(id);
 
-        personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
+		personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
 
-        return "personal-form";
-    }
+		return "personal-form";
+	}
 
 	@SkipValidation
 	public String photo() throws FileNotFoundException {
@@ -99,11 +102,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	public String update() throws Exception {
-        Profile profile = profileService.findById(id);
+		Profile profile = profileService.findById(id);
 		if (personalInfo != null) {
 			profile = profileService.update(personalInfo, id, permissions.getAppUserID());
-		} else if (profilePhotoForm != null) {
-			profileDocumentService.update(profilePhotoForm, getFtpDir(), profile, permissions.getAppUserID());
+		} else if (employeePhotoForm != null) {
+			profileDocumentService.update(employeePhotoForm, getFtpDir(), profile, permissions.getAppUserID());
 		}
 
 		return setUrlForRedirect("/employee-guard/employee/profile/" + profile.getId());
@@ -116,7 +119,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String badge() {
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 
-        personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
+		personalInfo = formBuilderFactory.getEmployeeProfileEditFormBuilder().build(profile);
 
 		return "badge";
 	}
@@ -129,9 +132,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		return "settings";
 	}
 
-    private void loadProfileAssignments(Profile profile) {
-        List<ProjectRole> projectRoles = projectRoleService.getRolesForProfile(profile);
-        Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
+	private void loadProfileAssignments(Profile profile) {
+		List<ProjectRole> projectRoles = projectRoleService.getRolesForProfile(profile);
+		Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
 
 			@Override
 			public Integer getId(ProjectRole projectRole) {
@@ -139,34 +142,40 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 			}
 		});
 
-        Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
+		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
 
-        employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
-    }
+		employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+	}
 
     /* Validation */
 
-    @Override
-    public Validator getCustomValidator() {
-        return profileEditFormValidator;
-    }
+	@Override
+	public Validator getCustomValidator() {
+		return profileEditFormValidator;
+	}
 
-    @Override
-    public void validate() {
-        ValueStack valueStack = ActionContext.getContext().getValueStack();
-        DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
+	@Override
+	public void validate() {
+		ValueStack valueStack = ActionContext.getContext().getValueStack();
+		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
 
-        profileEditFormValidator.validate(valueStack, validatorContext);
-    }
+		if (personalInfo != null) {
+			profileEditFormValidator.validate(valueStack, validatorContext);
+		}
+
+		if (employeePhotoForm != null) {
+			employeePhotoFormValidator.validate(valueStack, validatorContext);
+		}
+	}
 
 	/* getters + setters */
 
-	public ProfilePhotoForm getProfilePhotoForm() {
-		return profilePhotoForm;
+	public EmployeePhotoForm getEmployeePhotoForm() {
+		return employeePhotoForm;
 	}
 
-	public void setProfilePhotoForm(ProfilePhotoForm profilePhotoForm) {
-		this.profilePhotoForm = profilePhotoForm;
+	public void setEmployeePhotoForm(EmployeePhotoForm employeePhotoForm) {
+		this.employeePhotoForm = employeePhotoForm;
 	}
 
 	public Profile getProfile() {
@@ -175,7 +184,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	public InputStream getInputStream() {
 		return inputStream;
-    }
+	}
 
 	public EmployeeProfileEditForm getPersonalInfo() {
 		return personalInfo;
@@ -185,11 +194,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		this.personalInfo = personalInfo;
 	}
 
-    public EmployeeProfileForm getEmployeeProfileForm() {
-        return employeeProfileForm;
-    }
+	public EmployeeProfileForm getEmployeeProfileForm() {
+		return employeeProfileForm;
+	}
 
-    public List<EmployeeAssignmentModel> getEmployeeAssignments() {
-        return employeeAssignments;
-    }
+	public List<EmployeeAssignmentModel> getEmployeeAssignments() {
+		return employeeAssignments;
+	}
 }

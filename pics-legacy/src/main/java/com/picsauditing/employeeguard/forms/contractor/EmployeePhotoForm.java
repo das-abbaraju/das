@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.forms.PhotoForm;
 import java.io.File;
 
 public class EmployeePhotoForm implements PhotoForm {
+
 	private File photo;
 	private String photoFileName;
 	private String photoContentType;

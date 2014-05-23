@@ -10,6 +10,7 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
 
 public class EmployeePhotoFormValidator extends AbstractBasicValidator<EmployeePhotoForm> {
+
 	public static final String EMPLOYEE_PHOTO_FORM = "employeePhotoForm";
 
 	@Override

@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
@@ -164,9 +165,9 @@ public class ProfileDocumentService {
 		return Collections.emptyList();
 	}
 
-	public void update(final ProfilePhotoForm profilePhotoForm, final String directory, final Profile profile,
+	public void update(final EmployeePhotoForm employeePhotoForm, final String directory, final Profile profile,
 					   final int appUserID) throws Exception {
-		String extension = FileUtils.getExtension(profilePhotoForm.getPhotoFileName());
+		String extension = FileUtils.getExtension(employeePhotoForm.getPhotoFileName());
 		if (photoUtil.isValidExtension(extension)) {
 			Date now = new Date();
 			String filename = PICSFileType.profile_photo.filename(profile.getId());
@@ -186,12 +187,12 @@ public class ProfileDocumentService {
 
 			profileDocument.setName("Profile photo");
 			profileDocument.setFileName(filename + "." + extension);
-			profileDocument.setFileType(profilePhotoForm.getPhotoContentType());
-			profileDocument.setFileSize((int) profilePhotoForm.getPhoto().length());
+			profileDocument.setFileType(employeePhotoForm.getPhotoContentType());
+			profileDocument.setFileSize((int) employeePhotoForm.getPhoto().length());
 			profileDocument.setStartDate(now);
 			profileDocument.setEndDate(ProfileDocument.END_OF_TIME);
 
-			photoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
+			photoUtil.sendPhotoToFilesDirectory(employeePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
 			profileDocumentDAO.save(profileDocument);
 		}
 	}
