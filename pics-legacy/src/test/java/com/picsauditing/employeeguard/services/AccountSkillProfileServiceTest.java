@@ -45,7 +45,6 @@ public class AccountSkillProfileServiceTest {
 
 		Whitebox.setInternalState(accountSkillProfileService, "accountSkillProfileDAO", accountSkillProfileDAO);
 		Whitebox.setInternalState(accountSkillProfileService, "profileDocumentService", profileDocumentService);
-
 	}
 
 	@Test
@@ -67,16 +66,24 @@ public class AccountSkillProfileServiceTest {
 
 	@Test
 	public void testUpdate_Training_Unverified() throws Exception {
-		AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID).skillType(SkillType.Training).intervalPeriod(3).intervalType(IntervalType.DAY).build();
-		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder().accountSkill(accountSkill).profile(profile).build();
-		when(accountSkillProfileDAO.findBySkillAndProfile(any(AccountSkill.class), any(Profile.class))).thenReturn(accountSkillProfile);
+		AccountSkill accountSkill = new AccountSkillBuilder(ACCOUNT_ID)
+				.skillType(SkillType.Training)
+				.intervalPeriod(3)
+				.intervalType(IntervalType.DAY)
+				.build();
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
+				.accountSkill(accountSkill)
+				.profile(profile)
+				.build();
+		when(accountSkillProfileDAO.findBySkillAndProfile(any(AccountSkill.class), any(Profile.class)))
+				.thenReturn(accountSkillProfile);
 
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 
 		accountSkillProfileService.update(accountSkill, profile, skillDocumentForm);
 
 		assertNull(accountSkillProfile.getStartDate());
-		verify(accountSkillProfileDAO).save(any(AccountSkillProfile.class));
+		verify(accountSkillProfileDAO).delete(any(AccountSkillProfile.class));
 	}
 
 	@Test
