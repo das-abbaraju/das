@@ -151,7 +151,11 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	@Override
 	public Validator getCustomValidator() {
-		return profileEditFormValidator;
+		if (personalInfo != null) {
+			return profileEditFormValidator;
+		}
+
+		return employeePhotoFormValidator;
 	}
 
 	@Override

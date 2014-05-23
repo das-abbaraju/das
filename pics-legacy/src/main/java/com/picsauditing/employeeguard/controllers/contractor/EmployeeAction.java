@@ -194,7 +194,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		emailService.sendEGWelcomeEmail(hash, permissions.getAccountName());
 
 		if (addAnother(employeeForm)) {
-			return setUrlForRedirect("/employee-guard/contractor/employee/create"); // EmployeeCreateAction,
+			return setUrlForRedirect("/employee-guard/contractor/employee/create");
 		}
 
 		return redirectToList();
@@ -255,7 +255,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		Map<AccountModel, Set<AccountModel>> siteHierarchy = getSiteHierarchy(employees);
 
 		employeeSkillStatuses = employeeSkillDataProcess.buildEmployeeSkillStatuses(permissions.getAccountId(),
-						employees, siteHierarchy);
+				employees, siteHierarchy);
 	}
 
 	private Map<AccountModel, Set<AccountModel>> getSiteHierarchy(Collection<Employee> employees) {
@@ -278,7 +278,15 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	// For the Ajax Validation
 	public Validator getCustomValidator() {
-		return employeeFormValidator;
+		if (employeeForm != null || employeePersonalForm != null) {
+			return employeeFormValidator;
+		}
+
+		if (employeeEmploymentForm != null) {
+			return employeeEmploymentFormValidator;
+		}
+
+		return employeePhotoFormValidator;
 	}
 
 	@Override
@@ -288,7 +296,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		ValueStack valueStack = ActionContext.getContext().getValueStack();
 		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
 
-		if (employeeForm != null || employeePersonalForm!=null) {
+		if (employeeForm != null || employeePersonalForm != null) {
 			employeeFormValidator.validate(valueStack, validatorContext);
 		}
 		if (employeeEmploymentForm != null) {
