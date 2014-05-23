@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jee="http://www.springframework.org/schema/jee"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+    http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+    http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd"
+       default-autowire="byName">
+
+  <context:property-placeholder location="classpath:eg-localhost-connection.properties"/>
+
+  <import resource="classpath:EGTestDatabaseEntityManager-context.xml"/>
+
+  <!-- EmployeeGUARD DAOs -->
+  <bean id="AccountEmployeeGuardDAO" class="com.picsauditing.employeeguard.daos.AccountEmployeeGuardDAO"/>
+  <bean id="AppUserDAO" class="com.picsauditing.authentication.dao.AppUserDAO"/>
+  <bean id="EmailHashDAO" class="com.picsauditing.authentication.dao.EmailHashDAO"/>
+  <bean id="AccountGroupDAO" class="com.picsauditing.employeeguard.daos.AccountGroupDAO"/>
+  <bean id="AccountGroupEmployeeDAO" class="com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO"/>
+  <bean id="AccountSkillDAO" class="com.picsauditing.employeeguard.daos.AccountSkillDAO"/>
+  <bean id="AccountSkillProfileDAO" class="com.picsauditing.employeeguard.daos.AccountSkillProfileDAO"/>
+  <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
+  <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
+  <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>
+  <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
+  <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
+  <bean id="ProfileDocumentDAO" class="com.picsauditing.employeeguard.daos.ProfileDocumentDAO"/>
+  <bean id="ProjectCompanyDAO" class="com.picsauditing.employeeguard.daos.ProjectCompanyDAO"/>
+  <bean id="ProjectDAO" class="com.picsauditing.employeeguard.daos.ProjectDAO"/>
+  <bean id="ProjectRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleDAO"/>
+  <bean id="ProjectRoleEmployeeDAO" class="com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO"/>
+  <bean id="ProjectSkillDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillDAO"/>
+  <bean id="ProjectSkillRoleDAO" class="com.picsauditing.employeeguard.daos.ProjectSkillRoleDAO"/>
+  <bean id="RoleDAO" class="com.picsauditing.employeeguard.daos.RoleDAO"/>
+  <bean id="SiteAssignmentDAO" class="com.picsauditing.employeeguard.daos.SiteAssignmentDAO"/>
+  <bean id="SiteSkillDAO" class="com.picsauditing.employeeguard.daos.SiteSkillDAO"/>
+  <bean id="SkillCalculatorService" class="com.picsauditing.employeeguard.services.status.StatusCalculatorService"/>
+  <bean id="SoftDeletedEmployeeDAO" class="com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO"/>
+  <bean id="PicsorgDAO" class="com.picsauditing.employeeguard.daos.PicsorgDAO"/>
+
+
+  <!-- Services -->
+  <bean id="AccountGroupEmployeeService" class="com.picsauditing.employeeguard.services.AccountGroupEmployeeService"/>
+  <bean id="AccountSkillProfileService" class="com.picsauditing.employeeguard.services.AccountSkillProfileService"/>
+  <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
+  <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
+  <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
+  <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
+  <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
+  <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
+  <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
+  <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
+  <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
+  <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
+  <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
+  <bean id="RoleService" class="com.picsauditing.employeeguard.services.RoleService"/>
+  <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
+  <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+  <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
+
+  <!-- External Services -->
+  <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
+  <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.AccountFilter"/>
+
+  <!-- Entity Services -->
+  <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
+  <bean id="GroupEntityService" class="com.picsauditing.employeeguard.services.entity.GroupEntityService"/>
+  <bean id="ProfileEntityService" class="com.picsauditing.employeeguard.services.entity.ProfileEntityService"/>
+  <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>
+  <bean id="RoleEntityService" class="com.picsauditing.employeeguard.services.entity.RoleEntityService"/>
+  <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillEntityService"/>
+
+  <!-- Factories -->
+  <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder"/>
+  <bean id="EmployeeProfileEditFormBuilder"
+        class="com.picsauditing.employeeguard.forms.factory.EmployeeProfileEditFormBuilder"/>
+  <bean id="EmployeeProfileFormBuilder"
+        class="com.picsauditing.employeeguard.forms.factory.EmployeeProfileFormBuilder"/>
+  <bean id="FormBuilderFactory" class="com.picsauditing.employeeguard.forms.factory.FormBuilderFactory"/>
+  <bean id="ProjectInfoFactory" class="com.picsauditing.employeeguard.forms.factory.ProjectInfoFactory"/>
+
+  <!-- Utilities -->
+  <bean id="PhotoUtil" class="com.picsauditing.employeeguard.util.PhotoUtil" scope="prototype"/>
+
+  <!-- from picsorg -->
+  <bean id="AppPropertyService" class="com.picsauditing.service.AppPropertyService"/>
+  <bean id="FileSystemAccessor" class="com.picsauditing.util.FileSystemAccessor"/>
+  <bean id="AppPropertyDAO" class="com.picsauditing.dao.AppPropertyDAO"/>
+  <!--<bean id="AccountDAO" class="com.picsauditing.dao.SpringConfiguredSlickEnhancedAccountDAO"/>-->
+  <bean id="AccountDAO" class="com.picsauditing.dao.AccountDAO"/>
+  <bean id="ProductSubscriptionService" class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
+  <bean id="ContractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
+  <bean id="ContractorOperatorDAO" class="com.picsauditing.dao.SpringConfiguredSlickEnhancedContractorOperatorDAO"/>
+  <bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
+  <bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
+  <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
+
+</beans>

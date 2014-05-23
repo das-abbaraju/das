@@ -7,19 +7,31 @@ import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
+import com.picsauditing.jpa.entities.Account;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 
 public class AccountSkillProfileService {
+	private static Logger logger = LoggerFactory.getLogger(AccountSkillProfileService.class);
 
 	@Autowired
 	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
+	@Autowired
+	private ProfileEntityService profileEntityService;
+	@Autowired
+	private SkillEntityService skillEntityService;
 
 	public List<AccountSkillProfile> findByProfile(final Profile profile) {
 		return accountSkillProfileDAO.findByProfile(profile);
@@ -34,12 +46,31 @@ public class AccountSkillProfileService {
 		return accountSkillProfileDAO.findByEmployeesAndSkills(employees, accountSkills);
 	}
 
-	public AccountSkillProfile linkProfileDocumentToEmployeeSkill(final AccountSkillProfile accountSkillProfile,
-																  final ProfileDocument profileDocument) {
-		accountSkillProfile.setProfileDocument(profileDocument);
-		accountSkillProfile.setEndDate(null);
-		return accountSkillProfileDAO.save(accountSkillProfile);
+	public AccountSkillProfile getAccountSkillProfile(int appUserId, int skillId) {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
+		AccountSkill skill = skillEntityService.find(skillId);
+
+		return this.getAccountSkillProfileForProfileAndSkill(profile, skill);
 	}
+
+	public ProfileDocument getAccountSkillProfileDocument(int appUserId, int skillId) {
+		Profile profile = profileEntityService.findByAppUserId(appUserId);
+		AccountSkill skill = skillEntityService.find(skillId);
+
+		AccountSkillProfile accountSkillProfile= this.getAccountSkillProfileForProfileAndSkill(profile, skill);
+
+		return this.getAccountSkillProfileDocument(accountSkillProfile);
+	}
+
+	public ProfileDocument getAccountSkillProfileDocument(AccountSkillProfile accountSkillProfile) {
+		ProfileDocument profileDocument = null;
+		if (accountSkillProfile != null) {
+			profileDocument = accountSkillProfile.getProfileDocument();
+		}
+
+		return profileDocument;
+	}
+
 
 	public AccountSkillProfile getAccountSkillProfileForProfileAndSkill(Profile profile, AccountSkill skill) {
 		return accountSkillProfileDAO.findByProfileAndSkill(profile, skill);
@@ -59,94 +90,57 @@ public class AccountSkillProfileService {
 		}
 	}
 
-	public void update(AccountSkillProfile accountSkillProfile, final SkillDocumentForm skillDocumentForm) {
-		AccountSkill skill = accountSkillProfile.getSkill();
-		SkillType skillType = skill.getSkillType();
-
-		if (skillType.isCertification()) {
-			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
-			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
-		} else if (skillType.isTraining()) {
-			accountSkillProfile.setEndDate(null);
-			accountSkillProfileDAO.save(accountSkillProfile);
-		}
-	}
-
-	public void update(AccountSkillProfile accountSkillProfile, final ProfileDocument document) {
-		AccountSkill skill = accountSkillProfile.getSkill();
-		SkillType skillType = skill.getSkillType();
-
-		if (skillType.isCertification()) {
-			linkProfileDocumentToEmployeeSkill(accountSkillProfile, document);
-			accountSkillProfileDAO.save(accountSkillProfile);
-		}
-	}
-
 	public void update(final AccountSkill accountSkill,
 					   final Profile profile,
 					   final SkillDocumentForm skillDocumentForm) {
+		boolean satisfyingSkillFirstTime=false;
 		SkillType skillType = accountSkill.getSkillType();
+		AccountSkillProfile accountSkillProfile = accountSkillProfileDAO.findBySkillAndProfile(accountSkill, profile);
+		if(accountSkillProfile==null){
+			satisfyingSkillFirstTime=true;
+			accountSkillProfile = newAccountSkillProfile(accountSkill, profile);
+		}
 
-		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO
-				.findBySkillAndProfile(accountSkill, profile);
+		if (skillType.isTraining()) {
+			handleTrainingSkillSatisfaction(accountSkillProfile, satisfyingSkillFirstTime, skillDocumentForm);
+		}
+		else if (skillType.isCertification()) {
+			handleCertificationSkillSatisfaction(accountSkillProfile, satisfyingSkillFirstTime, skillDocumentForm);
+		}
 
-		accountSkillProfiles = addNewAccountSkillProfiles(accountSkillProfiles, profile, accountSkill);
 
-		if (skillType.isCertification()) {
-			ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
-			linkProfileDocumentToEmployeeSkills(accountSkillProfiles, document);
-		} else if (skillType.isTraining()) {
-			if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
-				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
-					accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
-				}
-			} else {
-				for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
-					accountSkillProfile.setEndDate(null);
-				}
-			}
+		return;
+	}
 
-			accountSkillProfileDAO.save(accountSkillProfiles);
+	private void handleTrainingSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm){
+		if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
+			accountSkillProfile.setStartDate(DateBean.today());
+			accountSkillProfileDAO.save(accountSkillProfile);
+		}
+		else if(!satisfyingSkillFirstTime){
+			accountSkillProfileDAO.delete(accountSkillProfile);
 		}
 	}
 
-	public void linkProfileDocumentToEmployeeSkills(final List<AccountSkillProfile> accountSkillProfiles,
-													final ProfileDocument profileDocument) {
-		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
-			accountSkillProfile.setProfileDocument(profileDocument);
-			accountSkillProfile.setEndDate(ExpirationCalculator.calculateExpirationDate(accountSkillProfile));
+	private void handleCertificationSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm){
+		if(skillDocumentForm.getDocumentId()<=0) {
+			logger.warn("No document attached to Certification Skill - Returning without action");
+			return;
 		}
 
-		accountSkillProfileDAO.save(accountSkillProfiles);
+		ProfileDocument document = profileDocumentService.getDocument(skillDocumentForm.getDocumentId());
+		accountSkillProfile.setProfileDocument(document);
+		accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	public List<AccountSkillProfile> addNewAccountSkillProfiles(final List<AccountSkillProfile> accountSkillProfiles,
-																final Profile profile,
-																final AccountSkill accountSkill) {
-		List<AccountSkillProfile> allAccountSkillProfiles = new ArrayList<>(accountSkillProfiles);
-		for (Employee employee : profile.getEmployees()) {
-			if (!foundAccountSkillProfile(employee, allAccountSkillProfiles)) {
-				allAccountSkillProfiles.add(new AccountSkillProfileBuilder()
+	private AccountSkillProfile newAccountSkillProfile(final AccountSkill accountSkill, final Profile profile){
+		return new AccountSkillProfileBuilder()
 						.profile(profile)
 						.accountSkill(accountSkill)
 						.createdBy(1)
 						.createdDate(DateBean.today())
 						.startDate(DateBean.today())
-						.build());
-			}
-		}
-
-		return allAccountSkillProfiles;
-	}
-
-	private boolean foundAccountSkillProfile(final Employee employee, List<AccountSkillProfile> acountSkillProfiles) {
-		for (AccountSkillProfile accountSkillProfile : acountSkillProfiles) {
-			if (accountSkillProfile.getProfile().getEmployees().contains(employee)) {
-				return true;
-			}
-		}
-
-		return false;
+						.build();
 	}
 
 	public List<AccountSkillProfile> getAccountSkillProfileForProjectAndContractor(final Project project,
