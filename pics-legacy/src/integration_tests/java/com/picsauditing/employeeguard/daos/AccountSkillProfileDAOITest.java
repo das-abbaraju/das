@@ -14,7 +14,7 @@ import java.util.*;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration({ "classpath:EGITest-context.xml" })
+@ContextConfiguration({"classpath:EGITest-localhost-context.xml"})
 public class AccountSkillProfileDAOITest {
 	private static final int LENNY_LEONARD_PROFILE_ID =1;
 	private static final int LENNY_LEONARD_EMPLOYEE_ID =31;

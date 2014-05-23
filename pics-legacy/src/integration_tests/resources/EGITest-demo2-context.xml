@@ -19,7 +19,7 @@
     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd"
        default-autowire="byName">
 
-  <context:property-placeholder location="classpath:eg-localhost-connection.properties"/>
+  <context:property-placeholder location="classpath:eg-demo2-connection.properties"/>
 
   <import resource="classpath:EGTestDatabaseEntityManager-context.xml"/>
 
@@ -81,6 +81,12 @@
   <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>
   <bean id="RoleEntityService" class="com.picsauditing.employeeguard.services.entity.RoleEntityService"/>
   <bean id="SkillEntityService" class="com.picsauditing.employeeguard.services.entity.SkillEntityService"/>
+
+  <!-- Processes -->
+  <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
+  <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
+  <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
+  <bean id="ProcessHelper" class="com.picsauditing.employeeguard.process.ProcessHelper"/>
 
   <!-- Factories -->
   <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder"/>

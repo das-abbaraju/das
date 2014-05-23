@@ -54,7 +54,7 @@ public class ProjectAction extends PicsRestActionSupport {
 
 		buildSiteAssignmentsAndProjects(projectCompanies);
 
-		buildbuildSiteAssignmentNotAttachedToProjects(permissions.getAccountId());
+		buildSiteAssignmentsNotAttachedToProjects(permissions.getAccountId());
 
 		siteAssignmentsAndProjects = Collections.unmodifiableMap(siteAssignmentsAndProjects);
 
@@ -62,14 +62,18 @@ public class ProjectAction extends PicsRestActionSupport {
 	}
 
 
-	private void buildbuildSiteAssignmentNotAttachedToProjects(int contractorId) {
+	private void buildSiteAssignmentsNotAttachedToProjects(int contractorId) {
 		List<Integer> contractorClientSitesAttachedToProjs = contractorProjectService.findClientSitesByContractorAccount(contractorId);
 
 		List<AccountModel> contractorClientSitesNotAttachedToProjects = accountService.findContractorClientSitesNotAttachedToProjects(contractorId, contractorClientSitesAttachedToProjs);
+		Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills = siteSkillService.getCorporateSiteRequiredSkills(contractorClientSitesNotAttachedToProjects);
+		List<AccountSkillProfile> employeeSkills = accountSkillProfileService.getSkillsForAccount(contractorId);
 
 		SiteAssignmentsAndProjectsFactory saapf = ModelFactory.getSiteAssignmentsAndProjectsFactory();
 
-		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs = saapf.buildSiteAssignStatsForClientSitesUnattachedToProjs(contractorClientSitesNotAttachedToProjects);
+		List<SiteAssignmentStatisticsModel> sasmForClientSitesNotAttchdToProjs =  saapf.createSiteAssignmentsWithoutProjects(
+																																						siteAndCorporateRequiredSkills,
+																																						employeeSkills);
 
 		for (SiteAssignmentStatisticsModel siteAssignmentStatisticsModel : sasmForClientSitesNotAttchdToProjs) {
 			siteAssignmentsAndProjects.put(siteAssignmentStatisticsModel, Collections.<ProjectStatisticsModel>emptyList());
