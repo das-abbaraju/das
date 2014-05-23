@@ -4232,6 +4232,9 @@ function Browser(window, document, $log, $sniffer) {
         } else {
           if (url.indexOf('#') === -1) {
             location.href = url;
+          } else {
+            url = url.replace('#\/', '');
+            location.href = url;
           }
         }
       }
