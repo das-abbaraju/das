@@ -21,7 +21,7 @@ update account_group
 	and account_group.name not like '%_deleted_%';
 
 update project
-	set project.name = concat(name ,'_deleted_', now())
+	set project.name = concat(substring(name,30) ,'_deleted_', now())
 	where project.deletedDate is not null
 	and project.name not like '%_deleted_%';
 
