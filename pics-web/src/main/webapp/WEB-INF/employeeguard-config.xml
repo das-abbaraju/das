@@ -95,6 +95,8 @@
           scope="prototype"/>
     <bean id="EmployeeEmploymentFormValidator"
           class="com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator" scope="prototype"/>
+  <bean id="EmployeePhotoFormValidator" class="com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator"
+        scope="prototype"/>
     <bean id="GroupFormValidator" class="com.picsauditing.employeeguard.validators.group.GroupFormValidator"
           scope="prototype"/>
     <bean id="LoginFormValidator" class="com.picsauditing.employeeguard.validators.login.LoginFormValidator"
