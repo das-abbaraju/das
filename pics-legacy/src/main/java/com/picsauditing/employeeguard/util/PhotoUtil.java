@@ -99,7 +99,7 @@ public class PhotoUtil {
 
 	private Set<String> parseCommaSeparatedList(final String validPhotoExtensions) {
 		if (Strings.isEmpty(validPhotoExtensions)) {
-			return Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "gif", "jpeg")));
+			return Collections.unmodifiableSet(new HashSet<>(Arrays.asList("jpg", "png", "jpeg")));
 		}
 
 		String[] parsedExtensions = validPhotoExtensions.split(",");
