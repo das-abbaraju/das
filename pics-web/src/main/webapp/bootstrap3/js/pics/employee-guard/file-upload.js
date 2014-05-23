@@ -3,6 +3,7 @@ PICS.define('employee-guard.FileUpload', {
         function init() {
             $('body').on('click', '.btn-import', importFile);
             $('body').on('change', '.file-import', changeImportedFile);
+            $('body').on('submit', '.disable-on-submit', disableSubmitBtnAfterSubmit);
         }
 
         function importFile(event) {
@@ -35,6 +36,13 @@ PICS.define('employee-guard.FileUpload', {
                 filename = $element[0].files[0].name;
 
             $validate_filename.val(filename);
+        }
+
+        function disableSubmitBtnAfterSubmit(event) {
+            var $form = $(event.target),
+                $submitBtn = $form.find('button[type="submit"]');
+
+            $submitBtn.attr('disabled', true);
         }
 
         return {
