@@ -238,16 +238,16 @@ public class StatusCalculatorService {
 		return Arrays.asList(skillStatusArray);
 	}
 
+	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses) {
+		return calculateOverallStatus(skillStatuses, SkillStatus.Completed);
+	}
+
 	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses,
 											  final SkillStatus defaultStatus) {
 		if (CollectionUtils.isEmpty(skillStatuses)) {
 			return defaultStatus;
 		}
 
-		return SkillStatusCalculator.calculateOverallStatus(skillStatuses);
-	}
-
-	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses) {
 		return SkillStatusCalculator.calculateOverallStatus(skillStatuses);
 	}
 

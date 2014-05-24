@@ -62,7 +62,11 @@ public class SkillStatusCalculator {
 
 		Map<E, SkillStatus> overallSkillStatusMap = new HashMap<>();
 		for (E entity : entitySkillStatusMap.keySet()) {
-			overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+			if (CollectionUtils.isEmpty(entitySkillStatusMap.get(entity))) {
+				overallSkillStatusMap.put(entity, SkillStatus.Completed);
+			} else {
+				overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+			}
 		}
 
 		return overallSkillStatusMap;
