@@ -37,7 +37,7 @@
                         <i class="icon-map-marker icon-large"></i>Employee Assignment Status
                     </h1>
                     <div class="content">
-                        <div class="row" ng-show="{{ employees }}">
+                        <div class="row" ng-show="employees">
                             <div class="col-md-4">
                                 <div class="current-assignments">
                                     <div class="row success">
@@ -79,7 +79,7 @@
                             </div>
                         </div>
 
-                        <div class="row" ng-show="{{ !employess }}">
+                        <div class="row" ng-show="!employees">
                             <div class="col-md-8 col-md-offset-2">
                                 <div class="alert alert-info">
                                     <h4>No Employees Assigned</h4>
