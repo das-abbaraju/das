@@ -3,7 +3,7 @@ describe('An Employee', function() {
 
     var employee_info_url = '/employee-guard/employee/summary/employee-info';
     var employee_assignments_url = '/employee-guard/employee/summary/assignments';
-    var employee_assignments_dev_url = '/angular/json/employee/assignments.json';
+    var employee_assignments_dev_url = '/employee-guard/json/employee/assignments.json';
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
