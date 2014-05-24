@@ -2214,7 +2214,7 @@ section.visible h1 {
 /* line 21, ../sass/pics/components/_alert.scss */
 .alert-info {
   background-color: #ebf5fe;
-  color: #73bbe8;
+  color: #4496d8;
 }
 /* line 26, ../sass/pics/components/_alert.scss */
 .alert-info strong,
@@ -2522,7 +2522,7 @@ section.visible h1 {
 }
 
 /* line 151, ../sass/pics/components/_button.scss */
-.icon-plus-sign {
+.btn .icon-plus-sign {
   color: #229322;
 }
 
