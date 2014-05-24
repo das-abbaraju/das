@@ -29,7 +29,7 @@
                     </h1>
 
                     <div class="content clearfix">
-                        <div class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
+                        <div ng-show="assignments" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
                             <div class="tile" ng-class="getSkillClass(assignment.status)">
                                 <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
                                 <p class="title">{{ assignment.name }}</p>
@@ -40,6 +40,20 @@
                                 </p>
                                 <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
                                 <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
+                            </div>
+                        </div>
+
+                        <div ng-show="!assignments.length" class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-info">
+                                <h4>No Assignments</h4>
+
+                                <p>Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area</p>
+
+                                <p>You can get a head start by adding certificates or other skill proof ahead of time. Just go to <a href="/employee-guard/employee/file" target="_self">My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+
+                                <p>
+                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                                </p>
                             </div>
                         </div>
                     </div>

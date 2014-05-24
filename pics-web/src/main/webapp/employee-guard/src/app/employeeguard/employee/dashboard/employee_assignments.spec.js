@@ -2,7 +2,7 @@ describe('Employee Assignments', function() {
     var scope, $http, $httpBackend, httpMock, assignments;
 
     var employee_assignments_url = '/employee-guard/employee/summary/assignments';
-    var employee_assignments_dev_url = '/angular/json/employee/assignments.json';
+    var employee_assignments_dev_url = '/employee-guard/json/employee/assignments.json';
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
