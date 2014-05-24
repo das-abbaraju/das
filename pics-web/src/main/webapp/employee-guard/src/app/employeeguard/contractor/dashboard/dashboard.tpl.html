@@ -34,10 +34,10 @@
             <div class="col-md-9">
                 <section class="employee-guard-section chart-section">
                     <h1>
-                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                        <i class="icon-map-marker icon-large"></i>Employee Assignment Status
                     </h1>
                     <div class="content">
-                        <div class="row">
+                        <div class="row" ng-show="{{ employees }}">
                             <div class="col-md-4">
                                 <div class="current-assignments">
                                     <div class="row success">
@@ -75,6 +75,20 @@
                                             {{ employees }}
                                         </a>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="{{ !employess }}">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="alert alert-info">
+                                    <h4>No Employees Assigned</h4>
+
+                                    <p>Once you've added your employees, assign them to Job Roles at sites and projects by going to </p><a href="/employee-guard/contractor/project" target="_self">Employee Assignments</a>. The status of all your employee's assignments will be shown in this section so you can monitor how they're doing.</p>
+
+                                    <p>
+                                        <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

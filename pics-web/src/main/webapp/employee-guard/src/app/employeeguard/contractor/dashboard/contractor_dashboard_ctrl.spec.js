@@ -2,6 +2,7 @@ describe('An Employee', function() {
     var scope, httpMock, status;
 
     var contractor_status_url = '/employee-guard/contractor/summary';
+    var contractor_status_dev_url = '/employee-guard/json/contractor/dashboard.json';
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
@@ -16,6 +17,7 @@ describe('An Employee', function() {
 
         //Backend definition common for all tests
         $httpBackend.when('GET', contractor_status_url).respond(status);
+        $httpBackend.when('GET', contractor_status_dev_url).respond(status);
 
         scope = $rootScope.$new();
         $controller("contractorDashboardCtrl", {
