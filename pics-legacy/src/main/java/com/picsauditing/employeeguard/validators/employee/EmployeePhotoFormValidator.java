@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValida
 import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 
 public class EmployeePhotoFormValidator extends AbstractBasicValidator<EmployeePhotoForm> {
 
@@ -16,7 +17,7 @@ public class EmployeePhotoFormValidator extends AbstractBasicValidator<EmployeeP
 	@Override
 	protected void doFormValidation(EmployeePhotoForm form) {
 		if (!fileExtensionValid(form)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(EMPLOYEE_PHOTO_FORM, "photoFileName"), "Invalid filetype. Please upload either a .jpg or .png file.");
+			addFieldErrorIfMessage(fieldKeyBuilder(EMPLOYEE_PHOTO_FORM, "photo"), "Invalid filetype. Please upload either a .jpg or .png file.");
 		}
 	}
 
@@ -28,7 +29,9 @@ public class EmployeePhotoFormValidator extends AbstractBasicValidator<EmployeeP
 	private boolean fileExtensionValid(EmployeePhotoForm photoForm){
 		boolean status=false;
 
-		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
+        String fileName = Strings.isEmpty(photoForm.getPhotoFileName()) ? photoForm.getValidate_filename() : photoForm.getPhotoFileName();
+
+		String extension = FileUtils.getExtension(fileName).toLowerCase();
 		PhotoUtil photoUtil = SpringUtils.getBean("PhotoUtil");
 		if (photoUtil.isValidExtension(extension)) {
 			status=true;
