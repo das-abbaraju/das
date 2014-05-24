@@ -12,7 +12,7 @@
             </div>
         </div>
 
-        <div class="row" ng-show="sites">
+        <div class="row" ng-show="skillList">
             <div class="col-md-3">
                 <div class="bs-sidebar">
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
@@ -58,14 +58,18 @@
                </div>
             </div>
         </div>
-        <div class="row" ng-show="sites.length <= 0">
+        <div class="row" ng-show="!skillList">
             <div class="col-md-6 col-md-offset-3">
                 <div class="alert alert-info">
                     <h4>No Required Skills</h4>
 
-                    <p>Right now, no one is requiring any specific skills for you.</p>
+                    <p>Right now, no one is requiring any specific skills for you. Once skills are required, they'll show up here and you can complete them.</p>
 
-                    <p>You can get a head start on your skills by adding certificates or other skill proof ahead of time. Just go to My Files and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+                    <p>You can get a head start on your skills by adding certificates or other skill proof ahead of time. Just go to <a href="/employee-guard/employee/file" target="_self">My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+
+                    <p>
+                        <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                    </p>
                 </div>
             </div>
         </div>
