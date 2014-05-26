@@ -17,7 +17,7 @@
 <%-- Pagination --%>
 <s:include value="/struts/employee-guard/_pagination.jsp" />
 
-<s:if test="skillModels.isEmpty()">
+<s:if test="!skillModels.isEmpty()">
     <tw:form formName="contractor_skill_search" action="${contractor_skill_list_url}" class="search-query" role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
