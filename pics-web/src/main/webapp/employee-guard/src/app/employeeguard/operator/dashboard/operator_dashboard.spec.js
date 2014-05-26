@@ -159,6 +159,29 @@ describe('The Operator Dashboard', function() {
         });
     });
 
+    describe('call to calculateStatusPercentage', function() {
+
+        it('should calculate a percentage', function() {
+            expect(scope.calculateStatusPercentage(5, 10)).toEqual(50);
+        });
+    });
+
+    describe('call to onLoadAssignmentsSuccess', function() {
+
+        it('should not attempt to draw a chart if there are no employees', function() {
+            var assignments = {
+                "employees": 0,
+                "completed": 0,
+                "pending": 0,
+                "expiring": 2,
+                "expired": 2
+            };
+            scope.onLoadAssignmentsSuccess(assignments);
+
+            expect(scope.chartData).not.toBeDefined();
+        });
+    });
+
     describe('call to getProjectStatus', function() {
         it('should return a progress bar object', function() {
             var project = {
