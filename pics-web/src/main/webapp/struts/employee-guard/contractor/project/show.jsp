@@ -62,26 +62,37 @@
 
             <div class="content">
                 <dl class="employee-guard-information">
-                    <s:iterator value="project.jobRoles" var="project_role">
-                        <s:url action="role" var="project_role_url">
-                            <s:param name="id">
-                                ${project_role.id}
-                            </s:param>
-                        </s:url>
-                        <dt class="col-md-3">${project_role.name}</dt>
-                        <dd class="col-md-9">
-                            <s:set var="operator_skills" value="#project_role.skills"/>
-                            <s:if test="!#project_role.skills.isEmpty()">
-                                <ul class="employee-guard-list skills">
-                                    <s:iterator value="#project_role.skills" var="operator_skill">
-                                        <li>
-                                            <span class="label label-default" data-toggle="tooltip" data-placement="right" title="" data-original-title="${operator_skill.description}" data-container="body">${operator_skill.name}</span>
-                                        </li>
-                                    </s:iterator>
-                                </ul>
-                            </s:if>
-                        </dd>
-                    </s:iterator>
+                    <s:if test="!project.jobRoles.isEmpty()">
+                        <s:iterator value="project.jobRoles" var="project_role">
+                            <s:url action="role" var="project_role_url">
+                                <s:param name="id">
+                                    ${project_role.id}
+                                </s:param>
+                            </s:url>
+                            <dt class="col-md-3">${project_role.name}</dt>
+                            <dd class="col-md-9">
+                                <s:set var="operator_skills" value="#project_role.skills"/>
+                                <s:if test="!#project_role.skills.isEmpty()">
+                                    <ul class="employee-guard-list skills">
+                                        <s:iterator value="#project_role.skills" var="operator_skill">
+                                            <li>
+                                                <span class="label label-default" data-toggle="tooltip" data-placement="right" title="" data-original-title="${operator_skill.description}" data-container="body">${operator_skill.name}</span>
+                                            </li>
+                                        </s:iterator>
+                                    </ul>
+                                </s:if>
+                            </dd>
+                        </s:iterator>
+                    </s:if>
+                    <s:else>
+                       <div class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-warning">
+                                <h4>No Project Job Roles!</h4>
+
+                                <p>You can not assign employees until the project's owner adds Job Roles for assignments.</p>
+                            </div>
+                        </div>
+                    </s:else>
                 </dl>
             </div>
         </section>

@@ -111,8 +111,27 @@
         </div>
     </s:if>
     <s:else>
-        <div class="col-md-9 no-value text-center">
-            No current assignments
+        <div class="col-md-9">
+            <section class="employee-guard-section">
+                <h1>
+                    <i class="icon-map-marker icon-large"></i>Site Status
+                </h1>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-info">
+                                <h4>No Employees Assigned</h4>
+
+                                <p>Assign employees by first selecting a Job Role, and then click on the assign icon ( <i class='icon-map-marker'></i> ).  Once an employee is assigned, they'll see the assignment and the required skills that they'll need to complete.</p>
+
+                                <p>
+                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assigning Employees</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </s:else>
 </div>
