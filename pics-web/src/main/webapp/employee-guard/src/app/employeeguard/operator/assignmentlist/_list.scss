@@ -28,7 +28,9 @@
         }
 
         .content {
-            padding: 0px;
+            &.no_padding {
+                padding: 0px;
+            }
         }
 
         &.info-toolbar {
