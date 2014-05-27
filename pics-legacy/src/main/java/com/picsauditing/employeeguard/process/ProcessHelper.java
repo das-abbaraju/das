@@ -69,21 +69,20 @@ public class ProcessHelper {
 														  final Map<Integer, Set<Role>> siteRoles,
 														  final Map<Project, Set<Role>> projectRoles) {
 
-		Map<Integer, Set<Role>> rolesNotInProjects = new HashMap<>();
+		Map<Integer, Set<Role>> prepareRolesNotInProjects = PicsCollectionUtil.copyMapOfSets(siteRoles);
 		for (Integer siteId : siteProjects.keySet()) {
-			Set<Role> rolesNotInProject = new HashSet<>(siteRoles.get(siteId));
+			Set<Role> prepareRolesNotInProject = prepareRolesNotInProjects.get(siteId);
 			for (Project project : siteProjects.get(siteId)) {
 				if (!projectRoles.containsKey(project)) {
 					continue;
 				}
 
-				rolesNotInProject.removeAll(projectRoles.get(project));
+				prepareRolesNotInProject.removeAll(projectRoles.get(project));
 			}
 
-			rolesNotInProjects.put(siteId, rolesNotInProject);
 		}
 
-		return rolesNotInProjects;
+		return prepareRolesNotInProjects;
 	}
 
 	public Map<Integer, Set<Role>> getRolesBySite(final Collection<Employee> employees) {
