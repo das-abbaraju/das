@@ -44,7 +44,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.*;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -332,8 +332,12 @@ public class LoginController extends PicsActionSupport {
 		}
 
 		// todo: Continue to move the rest of this method to services as needed.
-		return doLogin(loginContext);
-	}
+        if (loginContext.getProfile() != null && loginContext.getUser() == null) {
+            return doLoginEG(authenticationService.buildLoginContext(loginContext.getAppUser()));
+        } else {
+		    return doLogin(loginContext);
+	    }
+    }
 
 	private String getResendEmailAction(String server, String userName) {
 		String serverName = server.replace("http://", "https://");
@@ -402,6 +406,15 @@ public class LoginController extends PicsActionSupport {
 
 		return setUrlForRedirect(EMPLOYEE_SUMMARY);
 	}
+
+    private String doLoginEGforPasswordReset(LoginContext loginContext) throws IOException {
+        doSetCookie(loginContext.getCookie(), 10);
+        permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
+        SessionInfoProviderFactory.getSessionInfoProvider()
+                .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+
+        return setUrlForRedirect(EMPLOYEE_PASSWORD_RESET);
+    }
 
 	private String doLogin(LoginContext loginContext) throws Exception {
 		user = loginContext.getUser();

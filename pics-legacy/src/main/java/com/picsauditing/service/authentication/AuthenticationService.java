@@ -124,6 +124,10 @@ public class AuthenticationService {
 		return profileEntityService.findByAppUserId(appUserId);
 	}
 
+    public LoginContext buildLoginContext(AppUser appUser) throws Exception {
+        return buildLoginContext(appUser.getUsername(), appUser, appUser.getId(), userService.findByAppUserId(appUser.getId()), profileEntityService.findByAppUserId(appUser.getId()));
+    }
+
 	private LoginContext buildLoginContext(final String username, final AppUser appUser, final int appUserId,
 										   final User user, final Profile profile)
 			throws AccountNotFoundException {
