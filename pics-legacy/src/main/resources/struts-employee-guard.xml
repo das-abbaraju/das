@@ -22,6 +22,10 @@
             <result name="create">/struts/employee-guard/account/create.jsp</result>
         </action>
 
+        <action name="password-reset" class="com.picsauditing.employeeguard.controllers.ResetPassword">
+            <result name="success">/struts/employee-guard/employee/reset-password.jsp</result>
+        </action>
+
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
         </action>
 
