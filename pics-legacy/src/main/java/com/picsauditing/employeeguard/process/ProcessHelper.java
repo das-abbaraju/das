@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -291,10 +292,89 @@ public class ProcessHelper {
 		return results;
 	}
 
-	public Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills(final Map<Project, Set<AccountSkill>> projectRequiredSkills,
+	public Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills(final Set<Project> allProjects,
+																				final Map<Project, Set<AccountSkill>> projectRequiredSkills,
 																				final Map<Project, Set<Role>> projectRoles,
 																				final Map<Role, Set<AccountSkill>> roleSkills,
-																				final Map<Project, Set<Employee>> ) {
-		return null;
+																				final Map<Project, Set<Employee>> employeeProjectAssignments,
+																				final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
+		if (CollectionUtils.isEmpty(allProjects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> allSkillsForProjects = aggregateAllSkillsForProjects(allProjects,
+				projectRequiredSkills, projectRoles, roleSkills, siteAndCorporateRequiredSkills);
+
+		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = new HashMap<>();
+		for (Project project : allProjects) {
+			if (!projectEmployeeSkills.containsKey(project)) {
+				projectEmployeeSkills.put(project, new HashMap<Employee, Set<AccountSkill>>());
+			}
+
+			if (!employeeProjectAssignments.containsKey(project)) {
+				continue;
+			}
+
+
+			for (Employee employee : employeeProjectAssignments.get(project)) {
+				projectEmployeeSkills.get(project).put(employee, allSkillsForProjects.get(project));
+			}
+		}
+
+		return projectEmployeeSkills;
+	}
+
+	public Map<Project, Set<AccountSkill>> aggregateAllSkillsForProjects(final Set<Project> allProjects,
+																		 final Map<Project, Set<AccountSkill>> projectRequiredSkills,
+																		 final Map<Project, Set<Role>> projectRoles,
+																		 final Map<Role, Set<AccountSkill>> roleSkills,
+																		 final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkillsMap) {
+		if (CollectionUtils.isEmpty(allProjects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> projectRoleSkills = PicsCollectionUtil.reduceMapOfCollections(projectRoles,
+				roleSkills);
+
+		Map<Project, Set<AccountSkill>> allSkillsForProjects = new HashMap<>();
+		for (Project project : allProjects) {
+			if (!allSkillsForProjects.containsKey(project)) {
+				allSkillsForProjects.put(project, new HashSet<AccountSkill>());
+			}
+
+			// Add project required skills
+			if (projectRequiredSkills.containsKey(project)) {
+				allSkillsForProjects.get(project).addAll(projectRequiredSkills.get(project));
+			}
+
+			// Add role required skills for project
+			if (projectRoleSkills.containsKey(project)) {
+				allSkillsForProjects.get(project).addAll(projectRoleSkills.get(project));
+			}
+
+			// Add site and corporate required skills for project
+			Set<AccountSkill> siteAndCorporateRequiredSkills = siteAndCorporateRequiredSkillsForProject(
+					project.getAccountId(), siteAndCorporateRequiredSkillsMap);
+			if (CollectionUtils.isNotEmpty(siteAndCorporateRequiredSkills)) {
+				allSkillsForProjects.get(project).addAll(siteAndCorporateRequiredSkills);
+			}
+		}
+
+		return allSkillsForProjects;
+	}
+
+	private Set<AccountSkill> siteAndCorporateRequiredSkillsForProject(final int siteId,
+																	   final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
+		if (MapUtils.isEmpty(siteAndCorporateRequiredSkills)) {
+			return Collections.emptySet();
+		}
+
+		for (AccountModel accountModel : siteAndCorporateRequiredSkills.keySet()) {
+			if (accountModel.getId() == siteId) {
+				return siteAndCorporateRequiredSkills.get(accountModel);
+			}
+		}
+
+		return Collections.emptySet();
 	}
 }

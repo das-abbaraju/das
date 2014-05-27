@@ -84,6 +84,11 @@ public class StatusCalculatorService {
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
 		for (final Employee employee : employeeSkills.keySet()) {
+			if (CollectionUtils.isEmpty(employeeSkills.get(employee))) {
+				employeeStatuses.put(employee, SkillStatus.Completed);
+				continue;
+			}
+
 			SkillStatus rollUp = SkillStatus.Expired;
 
 			Set<AccountSkillProfile> accountSkillProfiles =
@@ -133,6 +138,11 @@ public class StatusCalculatorService {
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
 		for (final Employee employee : employees) {
+			if (CollectionUtils.isEmpty(employeeRequiredSkills.get(employee))) {
+				employeeStatuses.put(employee, SkillStatus.Completed);
+				continue;
+			}
+
 			SkillStatus rollUp = SkillStatus.Expired;
 			if (CollectionUtils.isNotEmpty(employeeRequiredSkills.get(employee)) && employee.getProfile() != null) {
 				List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
