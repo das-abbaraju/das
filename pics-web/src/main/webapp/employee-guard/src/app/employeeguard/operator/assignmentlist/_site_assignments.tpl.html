@@ -4,7 +4,7 @@
     </h1>
     <div class="content" ng-class="{no_padding: totalAssignments > 0}">
          <div class="row" ng-show="totalAssignments > 0">
-            <div class="col-md-2 col-md-offset-1 text-center tile-container">
+            <div class="col-md-2 col-md-offset-2 text-center tile-container">
                 <div class="tile primary">
                     <a href="/employee-guard/operators/project/site-assignment/{{ selected_site }}" target="_self">
                         <i class="icon-user"></i>
@@ -17,14 +17,7 @@
                 <div class="tile success">
                     <i class="icon-ok-sign"></i>
                     <p class="title">{{ site_assignments.completed }}</p>
-                    <p class="subtitle">Approved</p>
-                </div>
-            </div>
-            <div class="col-md-2 text-center tile-container">
-                <div class="tile success">
-                    <i class="icon-ok-circle"></i>
-                    <p class="title">{{ site_assignments.pending }}</p>
-                    <p class="subtitle">Complete</p>
+                    <p class="subtitle">Completed</p>
                 </div>
             </div>
             <div class="col-md-2 text-center tile-container">
@@ -98,9 +91,6 @@
                         <th class="success text-center" ng-class="{'sort-active' : orderByField=='completed'}" ng-click="orderByField='completed'; reverseSort = !reverseSort">
                             <i class="icon-ok-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Approved"></i>
                         </th>
-                        <th class="success text-center" ng-class="{'sort-active' : orderByField=='pending'}" ng-click="orderByField='pending'; reverseSort = !reverseSort">
-                            <i class="icon-ok-circle icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Complete"></i>
-                        </th>
                         <th ng-class="{'sort-active' : orderByField=='expiring'}" ng-click="orderByField='expiring'; reverseSort = !reverseSort" class="warning text-center" >
                             <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring Soon"></i>
                         </th>
@@ -125,7 +115,6 @@
                     <tr ng-repeat="project in project_assignments | orderBy:orderByField:reverseSort | filter:search ">
                         <td class="text-center">{{ project.completed + project.pending + project.expiring + project.expired }}</td>
                         <td class="text-center" ng-class="{'success' : project.completed > 0}">{{ project.completed }}</td>
-                        <td class="text-center" ng-class="{'success' : project.pending > 0}">{{ project.pending }}</td>
                         <td class="text-center" ng-class="{'warning' : project.expiring > 0}">{{ project.expiring }}</td>
                         <td class="text-center" ng-class="{'danger' : project.expired > 0}">{{ project.expired }}</td>
                         <td>
