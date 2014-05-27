@@ -152,15 +152,19 @@
         </section>
     </div>
     <div class="col-md-4">
-        <section class="employee-guard-section" data-url="${operator_project_url}">
-            <h1>
-                <i class="icon-map-marker icon-large"></i> Assigned Employees
-            </h1>
+        <s:if test="project.roles.isEmpty() || projectSites.isEmpty()">
+        </s:if>
+        <s:else>
+            <section class="employee-guard-section" data-url="${operator_project_url}">
+                <h1>
+                    <i class="icon-map-marker icon-large"></i> Assigned Employees
+                </h1>
 
-            <div class="content">
-                <a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i>
-                    Current Assignments</a>
-            </div>
-        </section>
+                <div class="content">
+                    <a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i>
+                        Current Assignments</a>
+                </div>
+            </section>
+        </s:else>
     </div>
 </div>
