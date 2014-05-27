@@ -2,7 +2,10 @@ package com.picsauditing.access;
 
 import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -39,10 +42,16 @@ public class LoginServiceTest {
 	private UserService userService;
 	@Mock
 	private User user;
+    @Mock
+    private AppUser appUser;
+    @Mock
+    private Profile profile;
 	@Mock
 	private ContractorAccount account;
     @Mock
-    private AppUserDAO appUserDAO;
+    private AppUserService appUserService;
+    @Mock
+    private ProfileEntityService profileService;
     @Mock
     private UserDAO userDAO;
 
@@ -56,8 +65,11 @@ public class LoginServiceTest {
 
 		when(user.getAccount()).thenReturn(account);
 		when(account.getId()).thenReturn(123);
+        when(appUser.getId()).thenReturn(123);
 
-        Whitebox.setInternalState(loginService, "appUserDAO", appUserDAO);
+        Whitebox.setInternalState(loginService, "appUserService", appUserService);
+        Whitebox.setInternalState(loginService, "profileService", profileService);
+        Whitebox.setInternalState(loginService, "userService", userService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
 	}
 
@@ -197,9 +209,16 @@ public class LoginServiceTest {
 		loginService.loginNormally(username, password);
 	}
 
+    public void passwordResetSetUp() {
+        when(appUserService.findByUsername(anyString())).thenReturn(appUser);
+        when(profileService.findByAppUserId(anyInt())).thenReturn(null);
+        when(userService.findByAppUserId(anyInt())).thenReturn(user);
+    }
+
 	@Test
 	public void testLoginForResetPassword_HappyPathShouldNotThrowErrors() throws Exception {
-		when(user.getResetHash()).thenReturn(key);
+        passwordResetSetUp();
+		when(appUser.getResetHash()).thenReturn(key);
 
 		loginService.loginForResetPassword(username, key);
 	}
@@ -207,6 +226,7 @@ public class LoginServiceTest {
 
 	@Test(expected = InvalidResetKeyException.class)
 	public void testLoginForResetPassword_InvalidResetKeyShouldThrowInvalidResetKeyException() throws Exception {
+        passwordResetSetUp();
 		when(user.getResetHash()).thenReturn("notAMatch");
 
 		loginService.loginForResetPassword(username, key);
@@ -214,40 +234,50 @@ public class LoginServiceTest {
 
 	@Test
 	public void testLoginForResetPassword_IfKeyMatchesPrepareUserForLoginAfterReset() throws Exception {
-		when(user.getResetHash()).thenReturn(key);
+        passwordResetSetUp();
+		when(appUser.getResetHash()).thenReturn(key);
 
 		loginService.loginForResetPassword(username, key);
 
-		verify(user).setForcePasswordReset(true);
-		verify(user).setResetHash(null);
-		verify(user).unlockLogin();
-		verify(user).setPasswordChanged(null);
+		verify(appUser).setResetHash(null);
 	}
 
 	@Test(expected = AccountNotFoundException.class)
 	public void testLoginForResetPassword_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
-		when(userService.loadUserByUsername(username)).thenReturn(null);
+        passwordResetSetUp();
+        when(appUser.getResetHash()).thenReturn(key);
+
+        when(userService.findByAppUserId(anyInt())).thenReturn(null);
 
 		loginService.loginForResetPassword(username, key);
 	}
 
 	@Test(expected = AccountLockedException.class)
 	public void testLoginForResetPassword_LockedUserShouldThrowAccountLockedException() throws Exception {
-		when(user.isLocked()).thenReturn(true);
+        passwordResetSetUp();
+        when(appUser.getResetHash()).thenReturn(key);
+
+        when(user.isLocked()).thenReturn(true);
 
 		loginService.loginForResetPassword(username, key);
 	}
 
 	@Test(expected = AccountInactiveException.class)
 	public void testLoginForResetPassword_InactiveUserShouldThrowAccountInactiveException() throws Exception {
-		when(userService.isUserActive(user)).thenReturn(false);
+        passwordResetSetUp();
+        when(appUser.getResetHash()).thenReturn(key);
+
+        when(userService.isUserActive(user)).thenReturn(false);
 
 		loginService.loginForResetPassword(username, key);
 	}
 
 	@Test(expected = PasswordExpiredException.class)
 	public void testLoginForResetPassword_ExpiredPasswordShouldThrowPasswordExpiredException() throws Exception {
-		when(userService.isPasswordExpired(user)).thenReturn(true);
+        passwordResetSetUp();
+        when(appUser.getResetHash()).thenReturn(key);
+
+        when(userService.isPasswordExpired(user)).thenReturn(true);
 
 		loginService.loginForResetPassword(username, key);
 	}
@@ -256,7 +286,7 @@ public class LoginServiceTest {
     public void testGetUserForUserName() throws LoginException {
         String userName = "tswift";
         int appUserId = 22;
-        when(appUserDAO.findByUserName(userName)).thenReturn(
+        when(appUserService.findByUsername(userName)).thenReturn(
                 AppUser.builder()
                         .id(appUserId)
                         .build()
@@ -276,7 +306,7 @@ public class LoginServiceTest {
 
     @Test(expected = LoginException.class)
     public void testGetUserForUserName_NoAppUserFound() throws LoginException {
-        when(appUserDAO.findByUserName(anyString())).thenReturn(null);
+        when(appUserService.findByUsername(anyString())).thenReturn(null);
 
         loginService.getUserForUserName(anyString());
     }
