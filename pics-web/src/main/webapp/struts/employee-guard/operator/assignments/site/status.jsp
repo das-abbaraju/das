@@ -91,8 +91,27 @@
         </div>
     </s:if>
     <s:else>
-        <div class="col-md-9 no-value text-center">
-            No current assignments
+        <div class="col-md-9">
+            <section class="employee-guard-section">
+                <h1>
+                    <i class="icon-map-marker icon-large"></i>Site Status
+                </h1>
+                <div class="content">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-info">
+                                <h4>No Site Assignments</h4>
+
+                                <p>If all the correct Job Roles are ready, it's up to the companies doing work for you to assign their employees to the proper roles.</p>
+
+                                <p>
+                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Site Assignments</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </s:else>
 </div>
