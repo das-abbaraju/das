@@ -23,7 +23,7 @@
         </action>
 
         <action name="password-reset" class="com.picsauditing.employeeguard.controllers.ResetPassword">
-            <result name="success">/struts/employee-guard/account/reset-password.jsp</result>
+            <result name="success">/struts/employee-guard/employee/reset-password.jsp</result>
         </action>
 
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
