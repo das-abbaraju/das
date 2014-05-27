@@ -40,6 +40,10 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.find(id);
 	}
 
+	public Project findProjectByIdAndContractorId(final int id, final int contractorId) {
+		return projectDAO.findProjectByIdAndContractorId(id, contractorId);
+	}
+
 	public Set<Project> getProjectsForEmployeeBySiteId(final Employee employee, final int siteId) {
 		Map<Employee, Set<Project>> employeeProjects = getProjectsForEmployeesBySiteId(Arrays.asList(employee), siteId);
 

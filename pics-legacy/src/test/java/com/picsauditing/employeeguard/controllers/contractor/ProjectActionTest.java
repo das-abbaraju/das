@@ -7,8 +7,7 @@ import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.ContractorProjectService;
+import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.factory.AccountServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,19 +21,23 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 public class ProjectActionTest extends PicsActionTest {
-
 	EGTestDataUtil egTestDataUtil = new EGTestDataUtil();
 
-	// Class under test
 	private ProjectAction projectAction;
-
-	private SearchForm searchForm = null;
 	private AccountService accountService;
 
 	@Mock
 	private ContractorProjectService contractorProjectService;
+	private SearchForm searchForm = null;
+	@Mock
+	private AccountSkillProfileService accountSkillProfileService;
+	@Mock
+	private ProjectRoleService projectRoleService;
+	@Mock
+	private SiteSkillService siteSkillService;
 	@Mock
 	private FormBuilderFactory formBuilderFactory;
+
 
 	@Before
 	public void setUp() throws Exception {
@@ -49,7 +52,12 @@ public class ProjectActionTest extends PicsActionTest {
 		Whitebox.setInternalState(projectAction, "contractorProjectService", contractorProjectService);
 		Whitebox.setInternalState(projectAction, "searchForm", searchForm);
 
+		Whitebox.setInternalState(projectAction, "accountSkillProfileService", accountSkillProfileService);
+		Whitebox.setInternalState(projectAction, "projectRoleService", projectRoleService);
+		Whitebox.setInternalState(projectAction, "siteSkillService", siteSkillService);
 		Whitebox.setInternalState(projectAction, "formBuilderFactory", formBuilderFactory);
+
+
 	}
 
 	@Test

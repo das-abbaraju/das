@@ -54,14 +54,14 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String assign() {
 		try {
-			Project project = projectEntityService.find(projectId);
+			Project project = projectEntityService.findProjectByIdAndContractorId(projectId, permissions.getAccountId());
 
 			assignmentService.assignEmployeeToProject(project, roleId, NumberUtils.toInt(id),
 					new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today()).build());
 
 			json.put("status", "SUCCESS");
 		} catch (Exception exception) {
-			LOG.error("Error assigning employee {} to job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
+			LOG.info("Error assigning employee {} to job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
 			json.put("status", "FAILURE");
 		}
 
@@ -70,13 +70,13 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	public String unassign() {
 		try {
-			Project project = projectEntityService.find(projectId);
+			Project project = projectEntityService.findProjectByIdAndContractorId(projectId, permissions.getAccountId());
 
 			assignmentService.unassignEmployeeFromProject(project, roleId, NumberUtils.toInt(id));
 
 			json.put("status", "SUCCESS");
 		} catch (Exception exception) {
-			LOG.error("Error unassigning employee {} from job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
+			LOG.info("Error unassigning employee {} from job role {} under project {}\n{}", new Object[]{employeeId, roleId, id, exception});
 			json.put("status", "FAILURE");
 		}
 

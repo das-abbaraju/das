@@ -290,11 +290,4 @@ public class ProcessHelper {
 
 		return results;
 	}
-
-	public Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills(final Map<Project, Set<AccountSkill>> projectRequiredSkills,
-																				final Map<Project, Set<Role>> projectRoles,
-																				final Map<Role, Set<AccountSkill>> roleSkills,
-																				final Map<Project, Set<Employee>> ) {
-		return null;
-	}
 }

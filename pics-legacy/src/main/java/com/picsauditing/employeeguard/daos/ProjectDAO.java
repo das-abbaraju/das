@@ -30,6 +30,22 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 		}
 	}
 
+	public Project findProjectByIdAndContractorId(final int id, final int contractorId) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"JOIN p.companies c " +
+				"WHERE p.id = :id " +
+				"AND c.accountId = :contractorId", Project.class);
+
+		query.setParameter("id", id);
+		query.setParameter("contractorId", contractorId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public Project findProjectByAccounts(final int id, final Collection<Integer> accountIds) {
 		TypedQuery<Project> query = em.createQuery("FROM Project p " +
 				"WHERE p.id = :id " +

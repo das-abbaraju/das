@@ -93,28 +93,4 @@ public class SkillStatusCalculator {
 
 		return worstStatus;
 	}
-
-	public static <E> Map<SkillStatus, Integer> statusCount(final Map<E, List<SkillStatus>> entityStatusMap) {
-		if (MapUtils.isEmpty(entityStatusMap)) {
-			return Collections.emptyMap();
-		}
-
-		Map<SkillStatus, Integer> statusCount = buildMapWithCountsToZero();
-		for (E entity : entityStatusMap.keySet()) {
-			for (SkillStatus skillStatus : entityStatusMap.get(entity)) {
-				statusCount.put(skillStatus, statusCount.get(skillStatus) + 1);
-			}
-		}
-
-		return statusCount;
-	}
-
-	private static Map<SkillStatus, Integer> buildMapWithCountsToZero() {
-		Map<SkillStatus, Integer> statusCount = new HashMap<>();
-		for (SkillStatus skillStatus : SkillStatus.values()) {
-			statusCount.put(skillStatus, 0);
-		}
-
-		return statusCount;
-	}
 }
