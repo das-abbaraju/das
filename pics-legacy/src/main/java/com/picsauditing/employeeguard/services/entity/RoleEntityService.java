@@ -246,6 +246,23 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Integer, Set<Role>> getSiteAssignmentRoles(final Collection<Integer> siteIds) {
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findBySiteIds(siteIds),
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Integer, Role>() {
+
+					@Override
+					public Integer getKey(SiteAssignment entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public Role getValue(SiteAssignment entity) {
+						return entity.getRole();
+					}
+				});
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -334,5 +351,26 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public void deleteAllEmployeeSiteAssignmentsForSite(final int siteId, final int employeeId) {
 		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(employeeId, siteId);
+	}
+
+	public Map<Integer, Map<Employee, Set<Role>>> getSiteEmployeeRoles(final Collection<Integer> sites) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findBySiteIds(sites);
+
+		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoles = new HashMap<>();
+		for (SiteAssignment siteAssignment : siteAssignments) {
+			int siteId = siteAssignment.getSiteId();
+			if (!siteEmployeeRoles.containsKey(siteId)) {
+				siteEmployeeRoles.put(siteId, new HashMap<Employee, Set<Role>>());
+			}
+
+			Employee employee = siteAssignment.getEmployee();
+			if (!siteEmployeeRoles.get(siteId).containsKey(siteAssignment.getEmployee())) {
+				siteEmployeeRoles.get(siteId).put(employee, new HashSet<Role>());
+			}
+
+			siteEmployeeRoles.get(siteId).get(employee).add(siteAssignment.getRole());
+		}
+
+		return siteEmployeeRoles;
 	}
 }

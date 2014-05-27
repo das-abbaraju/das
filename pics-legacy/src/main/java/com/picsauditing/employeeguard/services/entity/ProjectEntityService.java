@@ -3,7 +3,6 @@ package com.picsauditing.employeeguard.services.entity;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
-import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.ProjectRoleEmployeeBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
@@ -17,12 +16,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.TypedQuery;
 import java.util.*;
 
 public class ProjectEntityService implements EntityService<Project, Integer>, Searchable<Project> {
 
-  public static final Logger logger = LoggerFactory.getLogger(ProjectEntityService.class);
+	public static final Logger logger = LoggerFactory.getLogger(ProjectEntityService.class);
 
 	@Autowired
 	private ProjectDAO projectDAO;
@@ -30,8 +28,6 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
-	@Autowired
-	private SiteAssignmentDAO siteAssignmentDAO;
 
 	/* All Find Methods */
 
@@ -215,16 +211,16 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	}
 
 	public void unassignEmployeeFromAllProjectsOnSite(final int siteId, final int employeeId) {
-    List<ProjectRoleEmployee> projectRoleEmployees = this.findByEmployeesAndSiteProjects(siteId, employeeId);
+		List<ProjectRoleEmployee> projectRoleEmployees = this.findByEmployeesAndSiteProjects(siteId, employeeId);
 
-    projectRoleEmployeeDAO.delete(projectRoleEmployees);
+		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 
 	}
 
-  public List<ProjectRoleEmployee> findByEmployeesAndSiteProjects(final int siteId, final int employeeId) {
+	public List<ProjectRoleEmployee> findByEmployeesAndSiteProjects(final int siteId, final int employeeId) {
 
-    return  projectRoleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
-  }
+		return projectRoleEmployeeDAO.findByEmployeeAndSiteId(employeeId, siteId);
+	}
 
 	public void deleteEmployeeFromProjectRole(final int siteId, final int roleId, final int employeeId) {
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findBySiteIdRoleIdEmployeeId(siteId, roleId, employeeId);
