@@ -3,7 +3,7 @@ angular.module('PICS.employeeguard')
 .controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI) {
     var skillModel;
 
-    var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id}, function(employee) {
+    var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id, siteId: $routeParams.siteId}, function(employee) {
         $scope.employee = employee;
         $scope.employeeStatusIcon = employee.status;
     });
