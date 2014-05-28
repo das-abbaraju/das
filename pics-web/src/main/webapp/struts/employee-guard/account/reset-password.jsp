@@ -2,7 +2,7 @@
 <%@ taglib prefix="s" uri="/struts-tags"%>
 
 <%-- URL --%>
-<s:url action="GoSomewhere" method="doSomething" var="reset_password" />
+<s:url action="password-reset!resetPassword" var="reset_password" />
 
 <div class="notice">
     <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png"><!--<![endif]-->
@@ -12,10 +12,10 @@
 
     <form action="${reset_password}" method="post">
         <label for="username"><s:text name="global.Password.new" /></label>
-        <input type="text" name="password1" />
+        <input type="password" name="password" />
 
         <label for="username"><s:text name="ProfileEdit.ConfirmPassword" /></label>
-        <input type="text" name="password2" />
+        <input type="password" name="password2" />
 
         <div class="form-actions">
             <button type="submit" class="btn btn-success" tabindex="6"><s:text name="button.Save" /></button>

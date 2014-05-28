@@ -43,6 +43,14 @@ public class AppUserService {
 		return appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
 	}
 
+    public AppUser encodeAndSavePassword(int appUserID, String password) {
+        AppUser appUser = findById(appUserID);
+        String hashSalt = generateHashSalt(appUser);
+        appUser.setHashSalt(hashSalt);
+        appUser.setPassword(encodePassword(password, hashSalt));
+        return appUserDAO.save(appUser);
+    }
+
 	private String encodePassword(String password, String hashSalt) {
 		return EncodedMessage.hash(password + hashSalt);
 	}
