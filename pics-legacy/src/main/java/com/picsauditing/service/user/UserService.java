@@ -1,6 +1,7 @@
 package com.picsauditing.service.user;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.PasswordSecurityLevel;
@@ -15,7 +16,9 @@ import java.util.Date;
 
 public class UserService {
 
-	@Autowired
+    @Autowired
+    private AppUserService appUserService;
+   	@Autowired
 	private UserDAO userDAO;
 	@Autowired
 	private UserEventPublisher userEventPublisher;
@@ -41,10 +44,11 @@ public class UserService {
 	public User loadUserByUsername(String username) {
 		User user;
 		try {
-			user = userDAO.findName(username);
-		} catch (NoResultException e) {
-			user = null;
-		}
+			user = userDAO.findUserByAppUserID(appUserService.findByUsername(username).getId());
+		} catch (Exception e) {
+            user = null;
+        }
+
 		return user;
 	}
 

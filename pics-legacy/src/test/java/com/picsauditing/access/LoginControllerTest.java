@@ -53,8 +53,6 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
 	@Mock
-	private AppUserDAO appUserDAO;
-	@Mock
 	private ProfileEntityService profileEntityService;
 	@Mock
 	private AuthenticationService authenticationService;
@@ -82,6 +80,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserModeProvider userModeProvider;
     @Mock
     private AppUserService appUserService;
+    @Mock
+    private ProfileEntityService profileService;
     @Mock
     private UserDAO userDAO;
 
@@ -121,7 +121,8 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(loginService, "userService", userService);
-        Whitebox.setInternalState(loginService, "appUserDAO", appUserDAO);
+        Whitebox.setInternalState(loginService, "appUserService", appUserService);
+        Whitebox.setInternalState(loginService, "profileService", profileService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
@@ -138,13 +139,12 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userService.findById(941)).thenReturn(user);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
 		when(appUserService.findByUsername(anyString())).thenReturn(appUser);
-        when(appUserDAO.findByUserName(anyString())).thenReturn(appUser);
+        when(appUserService.findByUsername(anyString())).thenReturn(appUser);
         when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
 
 		List<AppUser> appUserList = new ArrayList<>();
 		appUserList.add(new AppUser());
 
-		when(appUserDAO.findListByUserName(anyString())).thenReturn(appUserList);
 		when(profileEntityService.findByAppUserId(anyInt())).thenReturn(new Profile());
 
 		JSONObject result = new JSONObject();
@@ -423,6 +423,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
 		when(user.getId()).thenReturn(NOT_ZERO);
 		when(user.getLocale()).thenReturn(Locale.ENGLISH);
+        when(userService.findByAppUserId(anyInt())).thenReturn(user);
 
 		loginController.setButton("reset");
 		loginController.execute();

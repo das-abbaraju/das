@@ -23,6 +23,7 @@ public final class EmployeeGUARDUrlUtils {
 	public static final String EMPLOYEE_SUMMARY = "/employee-guard/employee/dashboard";
 	public static final String EMPLOYEE_MY_FILES = "/employee-guard/employee/file";
 	public static final String EMPLOYEE_SKILLS = "/employee-guard/employee/skills";
+    public static final String EMPLOYEE_PASSWORD_RESET = "/employee-guard/password-reset?username=";
 
 	public static String buildUrl(final String url, final Object... params) {
 		return String.format(url, params);
