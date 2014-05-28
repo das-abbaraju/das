@@ -68,16 +68,32 @@ public class ContractorAssignmentProcess {
 
 	public Map<AccountModel, Map<SkillStatus, Integer>> buildSiteAssignmentStatistics(final Map<AccountModel, Set<AccountModel>> siteHierarchy,
 																					  final ContractorAssignmentData contractorAssignmentData) {
-		Map<AccountModel, Map<SkillStatus, Integer>> result = new HashMap<>();
 
 		Map<AccountModel, Map<Employee, Set<AccountSkill>>> employeeAssignments = employeeSkillsForSite(siteHierarchy,
 				contractorAssignmentData);
 
+		Map<AccountModel, Map<SkillStatus, Integer>> result = new HashMap<>();
 		for (AccountModel accountModel : employeeAssignments.keySet()) {
 			Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
 					.getEmployeeStatusRollUpForSkills(employeeAssignments.get(accountModel));
 
 			result.put(accountModel, SkillStatusCalculator.statusCountPerEntity(employeeStatuses));
+		}
+
+		return result;
+	}
+
+	public Map<AccountModel, Map<Employee, SkillStatus>> buildEmployeeSiteAssignmentStatistics(final Map<AccountModel, Set<AccountModel>> siteHierarchy,
+																							   final ContractorAssignmentData contractorAssignmentData) {
+		Map<AccountModel, Map<Employee, Set<AccountSkill>>> employeeAssignments = employeeSkillsForSite(siteHierarchy,
+				contractorAssignmentData);
+
+		Map<AccountModel, Map<Employee, SkillStatus>> result = new HashMap<>();
+		for (AccountModel accountModel : employeeAssignments.keySet()) {
+			Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
+					.getEmployeeStatusRollUpForSkills(employeeAssignments.get(accountModel));
+
+			result.put(accountModel, employeeStatuses);
 		}
 
 		return result;

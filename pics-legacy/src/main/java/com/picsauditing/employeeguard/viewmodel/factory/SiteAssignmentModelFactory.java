@@ -29,14 +29,13 @@ public class SiteAssignmentModelFactory {
 
 	public SiteAssignmentModel create(final AccountModel site,
 									  final List<AccountModel> employeeAccounts,
-									  final List<SkillUsage> skillUsages,
+									  final Set<Employee> employees,
+									  final Map<Employee, SkillStatus> employeeSkillStatusMap,
 									  final Map<RoleInfo, Integer> roleCounts) {
-		List<Employee> employees = getEmployees(skillUsages);
-		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkills(skillUsages);
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments =
-				buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
+				buildEmployeeSiteAssignmentsWithEmployeeStatusMap(employeeAccounts, employeeSkillStatusMap, employeeRoles);
 
 		return create(employeeSiteAssignments, roleCounts);
 	}
@@ -63,7 +62,7 @@ public class SiteAssignmentModelFactory {
 		});
 	}
 
-	private Map<Employee, Set<Role>> getEmployeeRoles(List<Employee> employees, int siteId) {
+	private Map<Employee, Set<Role>> getEmployeeRoles(Set<Employee> employees, int siteId) {
 		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
 
 		for (Employee employee : employees) {
@@ -85,6 +84,14 @@ public class SiteAssignmentModelFactory {
 		}
 
 		return employeeRoles;
+	}
+
+	private List<EmployeeSiteAssignmentModel> buildEmployeeSiteAssignmentsWithEmployeeStatusMap(List<AccountModel> employeeAccounts,
+																								Map<Employee, SkillStatus> employeeStatus,
+																								Map<Employee, Set<Role>> employeeRoles) {
+		Map<Integer, AccountModel> accounts = getIdToAccountModel(employeeAccounts);
+
+		return ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(employeeStatus, employeeRoles, accounts);
 	}
 
 	private List<EmployeeSiteAssignmentModel> buildEmployeeSiteAssignments(List<AccountModel> employeeAccounts,
@@ -112,7 +119,7 @@ public class SiteAssignmentModelFactory {
 			Employee employee = entry.getKey();
 
 			//List<AccountSkillProfile> employeeSkills = filterRequiredEmployeeSkills(employee, entry.getValue());
-			employeeStatus.put(employee, calculateWorstStatusOf(employee,entry.getValue()));
+			employeeStatus.put(employee, calculateWorstStatusOf(employee, entry.getValue()));
 		}
 
 		return employeeStatus;
@@ -135,7 +142,7 @@ public class SiteAssignmentModelFactory {
 		return employeeSkills;
 	}
 
-	private Map<Integer, AccountSkillProfile> prepareEmployeeDocumentationsLookup(Employee employee){
+	private Map<Integer, AccountSkillProfile> prepareEmployeeDocumentationsLookup(Employee employee) {
 		if (employee.getProfile() == null) {
 			return Collections.EMPTY_MAP;
 		}
@@ -157,9 +164,9 @@ public class SiteAssignmentModelFactory {
 
 		SkillStatus worst = SkillStatus.Completed;
 
-		for(AccountSkill employeeReqdSkill:employeeRequiredSkills){
-			int skillId=employeeReqdSkill.getId();
-			if(!employeeDocumentationLookup.containsKey(skillId)){
+		for (AccountSkill employeeReqdSkill : employeeRequiredSkills) {
+			int skillId = employeeReqdSkill.getId();
+			if (!employeeDocumentationLookup.containsKey(skillId)) {
 				return SkillStatus.Expired;
 			}
 

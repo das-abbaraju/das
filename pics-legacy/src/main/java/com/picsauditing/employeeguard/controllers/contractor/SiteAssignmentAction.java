@@ -9,7 +9,12 @@ import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.process.ContractorAssignmentData;
+import com.picsauditing.employeeguard.process.ContractorAssignmentProcess;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AssignmentService;
+import com.picsauditing.employeeguard.services.RoleService;
+import com.picsauditing.employeeguard.services.SkillUsageLocator;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
@@ -34,6 +39,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private AccountService accountService;
 	@Autowired
 	private AssignmentService assignmentService;
+	@Autowired
+	private ContractorAssignmentProcess contractorAssignmentProcess;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 	@Autowired
@@ -63,12 +70,24 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	private SiteAssignmentModel buildSiteAssignmentModel(final AccountModel site) {
 		List<Employee> employees = employeeEntityService.getEmployeesAssignedToSite(permissions.getAccountId(), site.getId());
-		List<SkillUsage> skillUsages = skillUsageLocator.getSkillUsagesForEmployees(new TreeSet<>(employees));
-
 		Map<RoleInfo, Integer> roleCounts = getRoleEmployeeCounts(employees);
 
 		AccountModel account = accountService.getAccountById(permissions.getAccountId());
-		return ViewModelFactory.getContractorSiteAssignmentModelFactory().create(site, Arrays.asList(account), skillUsages, roleCounts);
+
+		int contractorId = permissions.getAccountId();
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = accountService.getSiteParentAccounts(
+				accountService.getOperatorIdsForContractor(contractorId));
+
+		ContractorAssignmentData contractorAssignmentData = contractorAssignmentProcess
+				.buildContractorAssignmentData(contractorId,
+						new HashSet<>(accountService.getOperatorsForContractors(Arrays.asList(contractorId))),
+						siteHierarchy);
+
+		Map<AccountModel, Map<Employee, SkillStatus>> employeeAccountAssignment = contractorAssignmentProcess
+				.buildEmployeeSiteAssignmentStatistics(siteHierarchy, contractorAssignmentData);
+
+		return ViewModelFactory.getContractorSiteAssignmentModelFactory().create(site, Arrays.asList(account),
+				new HashSet<>(employees), employeeAccountAssignment.get(site), roleCounts);
 	}
 
 	private Map<RoleInfo, Integer> getRoleEmployeeCounts(final List<Employee> employees) {
