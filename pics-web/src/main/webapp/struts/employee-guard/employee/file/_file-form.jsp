@@ -7,7 +7,7 @@
     <s:param name="id">${document.id}</s:param>
 </s:url>
 
-<tw:form formName="employee_file_edit" action="${employee_file_edit_url}" method="post" class="form-horizontal js-validation" enctype="multipart/form-data">
+<tw:form formName="employee_file_edit" action="${employee_file_edit_url}" method="post" class="form-horizontal js-validation disable-on-submit" enctype="multipart/form-data">
     <tw:input type="hidden" inputName="id" value="${document.id}" />
     <fieldset>
         <div class="form-group">

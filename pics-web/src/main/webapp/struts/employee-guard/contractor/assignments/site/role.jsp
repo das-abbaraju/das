@@ -158,8 +158,16 @@
         </div>
     </s:if>
     <s:else>
-        <div class="col-md-9 no-value text-center">
-            No current assignments
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="alert alert-info">
+                        <h4>No Assignments for this Job Role</h4>
+
+                        <p>Currently, no one is assigned to this Job Role.  When employees are assigned to this Job Role, they will be displayed here.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </s:else>
 </div>

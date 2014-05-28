@@ -113,9 +113,10 @@ public class EmailHashService {
 	}
 
 	private String buildHashCode(final EmailHash emailHash) throws NoSuchAlgorithmException {
-		String hash = emailHash.toString();
+		String hashSalt = Long.toString(DateBean.today().getTime()) + emailHash.getEmailAddress()
+				+ emailHash.getEmployee().getAccountId();
 		MessageDigest msgDigest = MessageDigest.getInstance("MD5");
-		msgDigest.update(hash.getBytes());
+		msgDigest.update(hashSalt.getBytes());
 		byte[] hashed = msgDigest.digest();
 
 		BigInteger number = new BigInteger(1, hashed);

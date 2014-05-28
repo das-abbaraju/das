@@ -372,6 +372,19 @@ public class PicsCollectionUtil {
 		return copy;
 	}
 
+	public static <K, V> Map<K, List<V>> copyMapOfLists(final Map<K, List<V>> map) {
+		if (MapUtils.isEmpty(map)) {
+			return new HashMap<>();
+		}
+
+		Map<K, List<V>> copy = new HashMap<>();
+		for (K key : map.keySet()) {
+			copy.put(key, new ArrayList<>(map.get(key)));
+		}
+
+		return copy;
+	}
+
 	public static <E, V> Map<E, V> mergeMaps(final Map<E, V> map1, final Map<E, V> map2) {
 		if (MapUtils.isEmpty(map1) && MapUtils.isEmpty(map2)) {
 			return Collections.emptyMap();
@@ -526,6 +539,9 @@ public class PicsCollectionUtil {
 	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
 														   final Map<E, ? extends Collection<V>> entityValueMap) {
 		Collection<V> values = new ArrayList<>();
+		if (CollectionUtils.isEmpty(entities)) {
+			return values;
+		}
 
 		for (E entity : entities) {
 			if (entityValueMap.containsKey(entity)) {
@@ -558,6 +574,21 @@ public class PicsCollectionUtil {
 		for (K key : allKeys) {
 			if (!completeMap.containsKey(key)) {
 				completeMap.put(key, new HashSet<V>());
+			}
+		}
+
+		return completeMap;
+	}
+
+	public static <K, V> Map<K, List<V>> addKeysToMapOfLists(final Map<K, List<V>> map, final Collection<K> allKeys) {
+		Map<K, List<V>> completeMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(map)) {
+			completeMap = copyMapOfLists(map);
+		}
+
+		for (K key : allKeys) {
+			if (!completeMap.containsKey(key)) {
+				completeMap.put(key, new ArrayList<V>());
 			}
 		}
 

@@ -12,7 +12,7 @@
 </s:include>
 
 <div class="col-md-8">
-    <tw:form formName="employee_file_create" action="${employee_file_create_url}" method="post" class="form-horizontal js-validation" enctype="multipart/form-data">
+    <tw:form formName="employee_file_create" action="${employee_file_create_url}" method="post" class="form-horizontal js-validation disable-on-submit" enctype="multipart/form-data">
         <fieldset>
             <div class="form-group">
                 <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>

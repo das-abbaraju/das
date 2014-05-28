@@ -316,6 +316,13 @@ describe('An Operator Employee', function() {
 
             expect(scope.viewTitle).toEqual('Destructor The Great');
         });
+
+        it('should set the required button title', function() {
+            routeParams.roleSlug = 'destructor-the-great';
+            scope.selectViewModel();
+
+            expect(scope.requiredTitle).toEqual('Required by Site');
+        });
     });
 
     describe("Project model", function() {
@@ -382,6 +389,13 @@ describe('An Operator Employee', function() {
 
             expect(scope.viewTitle).toEqual('Blue Buffalo');
         });
+
+        it('should set the required button title', function() {
+            routeParams.projectSlug = 'blue-buffalo';
+            scope.selectViewModel();
+
+            expect(scope.requiredTitle).toEqual('Required by Site or Project');
+        });
     });
 
     describe("Default model", function() {
@@ -431,6 +445,12 @@ describe('An Operator Employee', function() {
 
         it('should set the default selected menu item', function() {
             expect(scope.selectedMenuItem).toEqual('all');
+        });
+
+        it('should set the required button title', function() {
+            scope.selectViewModel();
+
+            expect(scope.requiredTitle).toEqual('Required by Site or Projects');
         });
     });
 

@@ -83,6 +83,6 @@ public class EmailHash implements Serializable {
 	public String toString() {
 		return getId() + "-"
 				+ (getEmailAddress() != null ? getEmailAddress() : Strings.EMPTY_STRING) + "-"
-				+ (getCreatedDate() != null ? Strings.EMPTY_STRING : getCreatedDate().toString());
+				+ (getEmployee() != null ? Strings.EMPTY_STRING : Integer.toString(getEmployee().getAccountId()));
 	}
 }

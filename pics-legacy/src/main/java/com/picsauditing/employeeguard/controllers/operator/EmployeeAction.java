@@ -38,7 +38,7 @@ public class EmployeeAction extends PicsRestActionSupport {
     }
 
     private OperatorEmployeeModelFactory.OperatorEmployeeModel buildOperatorEmployeeModel(final int siteId) {
-        return operatorEmployeeModelService.buildModel(permissions.getAccountId(), getIdAsInt());
+        return operatorEmployeeModelService.buildModel(siteId, getIdAsInt());
     }
 
     private String convertToJson(final Object model) {

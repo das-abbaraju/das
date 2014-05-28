@@ -73,10 +73,11 @@
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
     <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
     <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
+    <bean id="ContractorAssignmentProcess" class="com.picsauditing.employeeguard.process.ContractorAssignmentProcess"/>
     <bean id="ProcessHelper" class="com.picsauditing.employeeguard.process.ProcessHelper"/>
 
     <!-- Skill Engine and related classes -->
-    <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine" />
+    <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine"/>
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
@@ -95,6 +96,9 @@
           scope="prototype"/>
     <bean id="EmployeeEmploymentFormValidator"
           class="com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator" scope="prototype"/>
+    <bean id="EmployeePhotoFormValidator"
+          class="com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator"
+          scope="prototype"/>
     <bean id="GroupFormValidator" class="com.picsauditing.employeeguard.validators.group.GroupFormValidator"
           scope="prototype"/>
     <bean id="LoginFormValidator" class="com.picsauditing.employeeguard.validators.login.LoginFormValidator"

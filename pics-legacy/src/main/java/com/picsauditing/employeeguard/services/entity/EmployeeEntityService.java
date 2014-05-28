@@ -356,7 +356,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
 		} else {
-			throw new IllegalArgumentException("Invalid file format");
+			// throw new IllegalArgumentException("Invalid file format");
 		}
 
 		return find(id, accountId);

@@ -17,12 +17,26 @@ angular.module('PICS.employeeguard')
 
     $scope.loadAssignmentsBySiteId = function(site_id) {
         $scope.selected_site = site_id;
-        $scope.site_assignments = SiteAssignments.get({id: site_id});
+         SiteAssignments.get({id: site_id}, function(site_data) {
+            $scope.site_assignments = site_data;
+            setTotalAssignments(site_data);
+        });
         $scope.project_assignments = ProjectAssignments.query({id: site_id});
     };
 
     $scope.loadAssignments = function() {
-        $scope.site_assignments = SiteAssignments.get();
+        SiteAssignments.get(function(site_data) {
+            $scope.site_assignments = site_data;
+            setTotalAssignments(site_data);
+        });
         $scope.project_assignments = ProjectAssignments.query();
     };
+
+    function setTotalAssignments(site_assignments) {
+        $scope.totalAssignments = site_assignments.completed + site_assignments.pending + site_assignments.expiring + site_assignments.expired;
+    }
+
+    angular.extend($scope, {
+        setTotalAssignments: setTotalAssignments
+    });
 });

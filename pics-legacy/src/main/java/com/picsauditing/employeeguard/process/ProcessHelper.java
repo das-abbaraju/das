@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.entity.*;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -69,21 +70,20 @@ public class ProcessHelper {
 														  final Map<Integer, Set<Role>> siteRoles,
 														  final Map<Project, Set<Role>> projectRoles) {
 
-		Map<Integer, Set<Role>> rolesNotInProjects = new HashMap<>();
+		Map<Integer, Set<Role>> prepareRolesNotInProjects = PicsCollectionUtil.copyMapOfSets(siteRoles);
 		for (Integer siteId : siteProjects.keySet()) {
-			Set<Role> rolesNotInProject = new HashSet<>(siteRoles.get(siteId));
+			Set<Role> prepareRolesNotInProject = prepareRolesNotInProjects.get(siteId);
 			for (Project project : siteProjects.get(siteId)) {
 				if (!projectRoles.containsKey(project)) {
 					continue;
 				}
 
-				rolesNotInProject.removeAll(projectRoles.get(project));
+				prepareRolesNotInProject.removeAll(projectRoles.get(project));
 			}
 
-			rolesNotInProjects.put(siteId, rolesNotInProject);
 		}
 
-		return rolesNotInProjects;
+		return prepareRolesNotInProjects;
 	}
 
 	public Map<Integer, Set<Role>> getRolesBySite(final Collection<Employee> employees) {
@@ -201,6 +201,7 @@ public class ProcessHelper {
 																		   final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
 		Map<Employee, Set<Integer>> employeeSiteAssignments = employeeEntityService.getEmployeeSiteAssignments(employees);
 
+		// TODO: rewrite and call siteAndCorporateRequiredSkills
 		Map<Integer, Set<AccountSkill>> siteAndCorporateRequiredSkills = new HashMap<>();
 		for (AccountModel accountModel : siteHierarchy.keySet()) {
 			if (CollectionUtils.isEmpty(siteHierarchy.get(accountModel))) {
@@ -246,5 +247,208 @@ public class ProcessHelper {
 
 	public Map<Integer, Set<Role>> siteAssignmentRoles(final Collection<Employee> employees) {
 		return roleEntityService.getSiteRolesForEmployees(employees);
+	}
+
+	public Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills(final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills = new HashMap<>();
+		for (AccountModel accountModel : siteHierarchy.keySet()) {
+			if (CollectionUtils.isEmpty(siteHierarchy.get(accountModel))) {
+				continue;
+			}
+
+			int siteId = accountModel.getId();
+			Set<AccountSkill> requiredSkills = skillEntityService.getSiteAndCorporateRequiredSkills(siteId,
+					PicsCollectionUtil.getIdsFromCollection(siteHierarchy.get(accountModel),
+							new PicsCollectionUtil.Identitifable<AccountModel, Integer>() {
+
+								@Override
+								public Integer getId(AccountModel accountModel) {
+									return accountModel.getId();
+								}
+							}));
+
+			siteAndCorporateRequiredSkills.put(accountModel, requiredSkills);
+		}
+
+		return siteAndCorporateRequiredSkills;
+	}
+
+	public Map<AccountModel, Set<Role>> siteAssignmentRoles(final Map<AccountModel, Integer> sites) {
+		Map<Integer, Set<Role>> siteRoles = roleEntityService.getSiteAssignmentRoles(sites.values());
+
+		return PicsCollectionUtil.reduceMapsForPairKeyMap(sites, siteRoles);
+	}
+
+	public Map<AccountModel, Map<Employee, Set<Role>>> siteEmployeeRoles(final Map<Integer, AccountModel> sites) {
+		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoleMap = roleEntityService.getSiteEmployeeRoles(sites.keySet());
+
+		Map<AccountModel, Map<Employee, Set<Role>>> results = new HashMap<>();
+		for (Integer siteId : siteEmployeeRoleMap.keySet()) {
+			AccountModel accountModel = sites.get(siteId);
+			results.put(accountModel, siteEmployeeRoleMap.get(siteId));
+		}
+
+		return results;
+	}
+
+	public Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills(final int contractorId,
+																				final Set<Project> allProjects,
+																				final Map<Project, Set<AccountSkill>> projectRequiredSkills,
+																				final Map<Project, Set<Role>> projectRoles,
+																				final Map<Role, Set<AccountSkill>> roleSkills,
+																				final Map<Project, Set<Employee>> employeeProjectAssignments,
+																				final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
+		if (CollectionUtils.isEmpty(allProjects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> allSkillsForProjects = aggregateAllSkillsForProjects(allProjects,
+				projectRequiredSkills, projectRoles, roleSkills, siteAndCorporateRequiredSkills);
+
+		Map<Project, Map<Employee, Set<Role>>> projectEmployeeRoles = projectEntityService.getProjectEmployeeRoles(contractorId);
+
+		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = new HashMap<>();
+		for (Project project : allProjects) {
+			if (!projectEmployeeSkills.containsKey(project)) {
+				projectEmployeeSkills.put(project, new HashMap<Employee, Set<AccountSkill>>());
+			}
+
+			if (!employeeProjectAssignments.containsKey(project)) {
+				continue;
+			}
+
+			for (Employee employee : employeeProjectAssignments.get(project)) {
+				Set<AccountSkill> skills = new HashSet<>(allSkillsForProjects.get(project));
+				skills.addAll(employeeProjectRoleSkills(employee, projectEmployeeRoles.get(project), roleSkills));
+				projectEmployeeSkills.get(project).put(employee, skills);
+			}
+		}
+
+		return projectEmployeeSkills;
+	}
+
+	public Set<AccountSkill> employeeProjectRoleSkills(final Employee employee,
+													   final Map<Employee, Set<Role>> employeeProjectRoles,
+													   final Map<Role, Set<AccountSkill>> roleSkills) {
+		if (MapUtils.isEmpty(employeeProjectRoles) || MapUtils.isEmpty(roleSkills)
+				|| CollectionUtils.isEmpty(employeeProjectRoles.get(employee))) {
+			return Collections.emptySet();
+		}
+
+		Set<AccountSkill> projectRolesSkillsForEmployee = new HashSet<>();
+		for (Role role : employeeProjectRoles.get(employee)) {
+			if (roleSkills.containsKey(role)) {
+				projectRolesSkillsForEmployee.addAll(roleSkills.get(role));
+			}
+		}
+
+		return projectRolesSkillsForEmployee;
+	}
+
+	public Map<Project, Set<AccountSkill>> aggregateAllSkillsForProjects(final Set<Project> allProjects,
+																		 final Map<Project, Set<AccountSkill>> projectRequiredSkills,
+																		 final Map<Project, Set<Role>> projectRoles,
+																		 final Map<Role, Set<AccountSkill>> roleSkills,
+																		 final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkillsMap) {
+		if (CollectionUtils.isEmpty(allProjects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Set<AccountSkill>> allSkillsForProjects = new HashMap<>();
+		for (Project project : allProjects) {
+			if (!allSkillsForProjects.containsKey(project)) {
+				allSkillsForProjects.put(project, new HashSet<AccountSkill>());
+			}
+
+			// Add project required skills
+			if (projectRequiredSkills.containsKey(project)) {
+				allSkillsForProjects.get(project).addAll(projectRequiredSkills.get(project));
+			}
+
+			// Add site and corporate required skills for project
+			Set<AccountSkill> siteAndCorporateRequiredSkills = siteAndCorporateRequiredSkillsForProject(
+					project.getAccountId(), siteAndCorporateRequiredSkillsMap);
+			if (CollectionUtils.isNotEmpty(siteAndCorporateRequiredSkills)) {
+				allSkillsForProjects.get(project).addAll(siteAndCorporateRequiredSkills);
+			}
+		}
+
+		return allSkillsForProjects;
+	}
+
+	private Set<AccountSkill> siteAndCorporateRequiredSkillsForProject(final int siteId,
+																	   final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
+		if (MapUtils.isEmpty(siteAndCorporateRequiredSkills)) {
+			return Collections.emptySet();
+		}
+
+		for (AccountModel accountModel : siteAndCorporateRequiredSkills.keySet()) {
+			if (accountModel.getId() == siteId) {
+				return siteAndCorporateRequiredSkills.get(accountModel);
+			}
+		}
+
+		return Collections.emptySet();
+	}
+
+	public Map<AccountModel, Set<Employee>> employeeSiteAssignment(final int contractorId,
+																   final Set<AccountModel> contractorSites) {
+		Map<Integer, Set<Employee>> employeeAssignments = roleEntityService.getSiteEmployeeAssignments(contractorId);
+		Map<AccountModel, Integer> accountModelToIdMap = PicsCollectionUtil.convertToMap(contractorSites,
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountModel, AccountModel, Integer>() {
+
+					@Override
+					public AccountModel getKey(AccountModel accountModel) {
+						return accountModel;
+					}
+
+					@Override
+					public Integer getValue(AccountModel accountModel) {
+						return accountModel.getId();
+					}
+				});
+
+		return PicsCollectionUtil.reduceMapsForPairKeyMap(accountModelToIdMap, employeeAssignments);
+	}
+
+	public Set<Project> allProjectsForContractor(final int contractorId) {
+		return projectEntityService.getProjectsForContractor(contractorId);
+	}
+
+	public Map<Project, Set<Employee>> projectEmployeeAssignments(final int contractorId) {
+		Set<Employee> employees = new HashSet<>(employeeEntityService.getEmployeesForAccount(contractorId));
+
+		return employeeEntityService.getAllProjectsByEmployees(employees);
+	}
+
+	public Map<Role, Set<AccountSkill>> getRoleSkills(final int contractorId) {
+		Map<Employee, Set<Role>> employeeRoles = roleEntityService
+				.getEmployeeSiteRoles(employeeEntityService.getEmployeesForAccount(contractorId));
+
+		return skillEntityService.getSkillsForRoles(PicsCollectionUtil
+				.flattenCollectionOfCollection(employeeRoles.values()));
+	}
+
+	public Map<AccountModel, Set<Project>> accountProjects(final Set<AccountModel> sites,
+														   final Set<Project> projects) {
+		if (CollectionUtils.isEmpty(sites) || CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<AccountModel, Set<Project>> accountProjects = new HashMap<>();
+		for (AccountModel accountModel : sites) {
+			for (Project project : projects) {
+				if (accountModel.getId() == project.getAccountId()) {
+					if (!accountProjects.containsKey(accountModel)) {
+						accountProjects.put(accountModel, new HashSet<Project>());
+					}
+
+					accountProjects.get(accountModel).add(project);
+				}
+			}
+		}
+
+		return accountProjects;
 	}
 }

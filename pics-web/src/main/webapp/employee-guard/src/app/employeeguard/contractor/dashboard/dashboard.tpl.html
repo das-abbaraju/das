@@ -34,10 +34,10 @@
             <div class="col-md-9">
                 <section class="employee-guard-section chart-section">
                     <h1>
-                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                        <i class="icon-map-marker icon-large"></i>Employee Assignment Status
                     </h1>
                     <div class="content">
-                        <div class="row">
+                        <div class="row" ng-show="employees">
                             <div class="col-md-4">
                                 <div class="current-assignments">
                                     <div class="row success">
@@ -78,6 +78,20 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="row" ng-show="employees.length <= 0">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="alert alert-info">
+                                    <h4>No Employees Assigned</h4>
+
+                                    <p>Once you've added your employees, assign them to Job Roles at sites and projects by going to <a href="/employee-guard/contractor/project" target="_self">Employee Assignments</a>. The status of all your employee's assignments will be shown in this section so you can monitor how they're doing.</p>
+
+                                    <p>
+                                        <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -102,7 +116,7 @@
                     <div class="col-md-8">
                         <section class="employee-guard-section">
                             <h1>
-                                <i class="icon-code icon-large"></i>Beta Updates (Thursday 2014-05-08)
+                                <i class="icon-wrench icon-large"></i>Beta Updates (Thursday 2014-05-08)
                             </h1>
                             <div class="content">
                                 <ul class="list-unstyled">
@@ -124,7 +138,7 @@
                                     </li>
                                     <li class="issue-more">
                                         <a href="/employee-guard/contractor/changelog">
-                                            <i class="icon-code"></i> View more update history in the Change Log...
+                                            <i class="icon-list"></i> View more update history in the Change Log...
                                         </a>
                                     </li>
                                 </ul>

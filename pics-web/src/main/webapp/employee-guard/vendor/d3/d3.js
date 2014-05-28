@@ -1,4 +1,8 @@
 !function() {
+  //Do not run d3 if javascript doesn't have array map
+  if (!Array.prototype.map) {
+    return;
+  }
   var d3 = {
     version: "3.4.3"
   };

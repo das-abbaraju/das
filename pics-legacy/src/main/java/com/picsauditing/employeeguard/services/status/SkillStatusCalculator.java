@@ -62,7 +62,11 @@ public class SkillStatusCalculator {
 
 		Map<E, SkillStatus> overallSkillStatusMap = new HashMap<>();
 		for (E entity : entitySkillStatusMap.keySet()) {
-			overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+			if (CollectionUtils.isEmpty(entitySkillStatusMap.get(entity))) {
+				overallSkillStatusMap.put(entity, SkillStatus.Completed);
+			} else {
+				overallSkillStatusMap.put(entity, calculateOverallStatus(entitySkillStatusMap.get(entity)));
+			}
 		}
 
 		return overallSkillStatusMap;
@@ -72,7 +76,6 @@ public class SkillStatusCalculator {
 		if (CollectionUtils.isEmpty(skillStatuses)) {
 			throw new IllegalArgumentException("skillStatuses should not be empty or null.");
 		}
-
 
 		SkillStatus worstStatus = SkillStatus.Completed;
 		for (SkillStatus skillStatus : skillStatuses) {
@@ -88,5 +91,28 @@ public class SkillStatusCalculator {
 		}
 
 		return worstStatus;
+	}
+
+	public static <E> Map<SkillStatus, Integer> statusCountPerEntity(final Map<E, SkillStatus> entityStatusMap) {
+		if (MapUtils.isEmpty(entityStatusMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<SkillStatus, Integer> statusCount = buildMapWithCountsToZero();
+		for (E entity : entityStatusMap.keySet()) {
+			SkillStatus skillStatus = entityStatusMap.get(entity);
+			statusCount.put(skillStatus, statusCount.get(skillStatus) + 1);
+		}
+
+		return statusCount;
+	}
+
+	private static Map<SkillStatus, Integer> buildMapWithCountsToZero() {
+		Map<SkillStatus, Integer> statusCount = new HashMap<>();
+		for (SkillStatus skillStatus : SkillStatus.values()) {
+			statusCount.put(skillStatus, 0);
+		}
+
+		return statusCount;
 	}
 }

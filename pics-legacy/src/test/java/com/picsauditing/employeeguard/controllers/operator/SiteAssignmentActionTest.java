@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuild
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.process.ProcessHelper;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
@@ -53,6 +54,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	private SkillService skillService;
 	@Mock
 	private StatusCalculatorService statusCalculatorService;
+	@Mock
+	private ProcessHelper processHelper;
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,6 +76,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
 		Whitebox.setInternalState(siteAssignmentAction, "skillService", skillService);
 		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
+		Whitebox.setInternalState(siteAssignmentAction, "processHelper", processHelper);
 	}
 
 	@Test

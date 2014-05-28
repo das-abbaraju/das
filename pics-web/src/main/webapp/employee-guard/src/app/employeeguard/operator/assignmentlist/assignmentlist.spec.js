@@ -84,6 +84,21 @@ describe('The Operator Assignment Page', function() {
         httpMock = $httpBackend;
     }));
 
+    it("should get the total number of assignments", function() {
+        var site_assignments = {
+            "id": 1,
+            "employees": 4,
+            "completed": 1,
+            "pending": 0,
+            "expiring": 2,
+            "expired": 1
+        };
+
+        scope.setTotalAssignments(site_assignments);
+
+        expect(scope.totalAssignments).toEqual(4);
+    });
+
     describe('request for corporate site information', function() {
         beforeEach(function() {
             httpMock.when('GET', /\employee-guard\/corporates\/sites/).respond(site_list);

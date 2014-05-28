@@ -5,9 +5,11 @@ import com.picsauditing.employeeguard.forms.PhotoForm;
 import java.io.File;
 
 public class EmployeePhotoForm implements PhotoForm {
+
 	private File photo;
 	private String photoFileName;
 	private String photoContentType;
+	private String validate_filename;
 
 	@Override
 	public File getPhoto() {
@@ -37,5 +39,13 @@ public class EmployeePhotoForm implements PhotoForm {
 	@Override
 	public void setPhotoContentType(String photoContentType) {
 		this.photoContentType = photoContentType;
+	}
+
+	public String getValidate_filename() {
+		return validate_filename;
+	}
+
+	public void setValidate_filename(String validate_filename) {
+		this.validate_filename = validate_filename;
 	}
 }

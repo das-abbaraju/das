@@ -11,6 +11,10 @@ import java.util.*;
 
 public class ProjectAssignmentBreakdownFactory {
 
+	public ProjectAssignmentBreakdown create(final Map<SkillStatus, Integer> statusCount) {
+		return new ProjectAssignmentBreakdown(statusCount);
+	}
+
 	public ProjectAssignmentBreakdown create(final Collection<ProjectRoleEmployee> projectRoleEmployees,
 											 final Collection<AccountSkillProfile> accountSkillProfiles,
 											 final Collection<Employee> employees) {

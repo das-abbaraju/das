@@ -84,6 +84,11 @@ public class StatusCalculatorService {
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
 		for (final Employee employee : employeeSkills.keySet()) {
+			if (CollectionUtils.isEmpty(employeeSkills.get(employee))) {
+				employeeStatuses.put(employee, SkillStatus.Completed);
+				continue;
+			}
+
 			SkillStatus rollUp = SkillStatus.Expired;
 
 			Set<AccountSkillProfile> accountSkillProfiles =
@@ -133,6 +138,11 @@ public class StatusCalculatorService {
 
 		Map<Employee, SkillStatus> employeeStatuses = new HashMap<>();
 		for (final Employee employee : employees) {
+			if (CollectionUtils.isEmpty(employeeRequiredSkills.get(employee))) {
+				employeeStatuses.put(employee, SkillStatus.Completed);
+				continue;
+			}
+
 			SkillStatus rollUp = SkillStatus.Expired;
 			if (CollectionUtils.isNotEmpty(employeeRequiredSkills.get(employee)) && employee.getProfile() != null) {
 				List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
@@ -239,6 +249,15 @@ public class StatusCalculatorService {
 	}
 
 	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses) {
+		return calculateOverallStatus(skillStatuses, SkillStatus.Completed);
+	}
+
+	public SkillStatus calculateOverallStatus(final Collection<SkillStatus> skillStatuses,
+											  final SkillStatus defaultStatus) {
+		if (CollectionUtils.isEmpty(skillStatuses)) {
+			return defaultStatus;
+		}
+
 		return SkillStatusCalculator.calculateOverallStatus(skillStatuses);
 	}
 
@@ -485,5 +504,38 @@ public class StatusCalculatorService {
 		}
 
 		return skillStatusPerEntityEmployee;
+	}
+
+	public <E> Map<E, List<SkillStatus>> getAllSkillStatusesForEntityNEW(final Map<E, Map<Employee, Set<AccountSkill>>> entityEmployeeSkillMap) {
+		if (MapUtils.isEmpty(entityEmployeeSkillMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<E, Map<Employee, SkillStatus>> entityEmployeeSkillStatus = new HashMap<>();
+		for (E entity : entityEmployeeSkillMap.keySet()) {
+			Map<Employee, SkillStatus> employeeStatus = getEmployeeStatusRollUpForSkills(entityEmployeeSkillMap.get(entity));
+			if (MapUtils.isEmpty(employeeStatus)) {
+				entityEmployeeSkillStatus.put(entity, new HashMap<Employee, SkillStatus>());
+			} else {
+				entityEmployeeSkillStatus.put(entity, employeeStatus);
+			}
+		}
+
+		Map<E, List<SkillStatus>> result = new HashMap<>();
+		for (E entity : entityEmployeeSkillStatus.keySet()) {
+			if (MapUtils.isEmpty(entityEmployeeSkillStatus.get(entity))) {
+				continue;
+			}
+
+			for (Employee employee : entityEmployeeSkillStatus.get(entity).keySet()) {
+				if (!result.containsKey(entity)) {
+					result.put(entity, new ArrayList<SkillStatus>());
+				}
+
+				result.get(entity).add(entityEmployeeSkillStatus.get(entity).get(employee));
+			}
+		}
+
+		return PicsCollectionUtil.addKeysToMapOfLists(result, entityEmployeeSkillMap.keySet());
 	}
 }

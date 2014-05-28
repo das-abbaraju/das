@@ -113,7 +113,7 @@
             </div>
             <div class="col-md-9">
                 <div ng-switch on="getSelectedView()">
-                    <employeeskillsection ng-show="requiredSkills" title="Required by Site or Projects" skills="requiredSkills" icon="map-marker"></employeeskillsection>
+                    <employeeskillsection ng-show="requiredSkills" title="{{ requiredTitle }}" skills="requiredSkills" icon="map-marker"></employeeskillsection>
 
                     <div ng-switch-when="role">
                         <employeeskillsection title="{{ viewTitle }}" skills="skillGroup.skills" icon="group"></employeeskillsection>
