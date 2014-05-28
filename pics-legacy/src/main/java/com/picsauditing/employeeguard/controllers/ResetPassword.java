@@ -11,6 +11,8 @@ import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE
 public class ResetPassword extends PicsRestActionSupport {
     @Autowired
     private AppUserService appUserService;
+
+    private String username;
     private String password;
 
     @Anonymous
@@ -20,8 +22,21 @@ public class ResetPassword extends PicsRestActionSupport {
 
     @Anonymous
     public String resetPassword() throws Exception {
-        appUserService.encodeAndSavePassword(permissions.getAppUserID(), password);
-        return setUrlForRedirect(EMPLOYEE_SUMMARY);
+        AppUser appUser = appUserService.findByUsername(username);
+        if (appUser != null) {
+            appUserService.encodeAndSavePassword(appUser, password);
+            return setUrlForRedirect(EMPLOYEE_SUMMARY);
+        } else {
+            return ERROR;
+        }
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
