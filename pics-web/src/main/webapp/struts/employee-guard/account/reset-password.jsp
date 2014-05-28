@@ -4,13 +4,15 @@
 <%-- URL --%>
 <s:url action="password-reset!resetPassword" var="reset_password" />
 
-<div class="notice">
+<div class="notice password-reset">
     <!--[if lte IE 8]><img class="logo" src="/v7/img/logo/logo-small.png"><!--<![endif]-->
     <!--[if gt IE 8]><!--><img class="logo" src="/v7/img/logo/logo-small.svg"><!--<![endif]-->
 
     <h1><s:text name="ProfileEdit.Password.heading" /></h1>
 
     <form action="${reset_password}" method="post">
+        <div class="alert alert-warning" style="display:none;"></div>
+
         <input type="hidden" name="username" value="${username}" />
 
         <label for="username"><s:text name="global.Password.new" /></label>
