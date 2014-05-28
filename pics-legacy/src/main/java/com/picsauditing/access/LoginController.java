@@ -333,7 +333,7 @@ public class LoginController extends PicsActionSupport {
 
 		// todo: Continue to move the rest of this method to services as needed.
         if (loginContext.getProfile() != null && loginContext.getUser() == null) {
-            return doLoginEG(authenticationService.buildLoginContext(loginContext.getAppUser()));
+            return doLoginEGforPasswordReset(authenticationService.buildLoginContext(loginContext.getAppUser()));
         } else {
 		    return doLogin(loginContext);
 	    }
