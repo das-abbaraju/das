@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
@@ -19,7 +22,7 @@ import java.util.*;
 
 public class AssignmentService {
 
-  public static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
+	public static final Logger logger = LoggerFactory.getLogger(AssignmentService.class);
 
 	@Autowired
 	private AccountService accountService;
@@ -116,7 +119,7 @@ public class AssignmentService {
 	}
 
 	private <E> Map<E, Set<AccountSkill>> appendSiteAndCorporateSkills(final Map<E, Set<AccountSkill>> entitySkillMap,
-	                                                                   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
+																	   final Collection<AccountSkill> siteAndCorporateRequiredSkills) {
 		if (CollectionUtils.isEmpty(siteAndCorporateRequiredSkills)) {
 			return entitySkillMap;
 		}
@@ -200,9 +203,9 @@ public class AssignmentService {
 	}
 
 	public void unassignEmployeeFromSite(final int siteId, final int employeeId) {
-    roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
+		roleEntityService.deleteAllEmployeeSiteAssignmentsForSite(siteId, employeeId);
 
-    projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
+		projectEntityService.unassignEmployeeFromAllProjectsOnSite(siteId, employeeId);
 	}
 
 	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {

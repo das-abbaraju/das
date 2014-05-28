@@ -12,8 +12,8 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Project: ${project.projectName}</s:param>
     <s:param name="actions">
-        <a href="${contractor_assignments_url}" class="btn btn-warning"><i class="icon-map-marker icon-large"></i>
-            Assign Employees</a>
+        <a href="${contractor_assignments_url}" class="btn btn-primary"><i class="icon-map-marker icon-large"></i>
+            Manage Project Assignments</a>
     </s:param>
     <s:param name="breadcrumb_name">${project.projectName}</s:param>
     <s:param name="breadcrumb_id">${project.projectId}</s:param>
@@ -62,67 +62,99 @@
 
             <div class="content">
                 <dl class="employee-guard-information">
-                    <s:iterator value="project.jobRoles" var="project_role">
-                        <s:url action="role" var="project_role_url">
-                            <s:param name="id">
-                                ${project_role.id}
-                            </s:param>
-                        </s:url>
-                        <dt class="col-md-3">${project_role.name}</dt>
-                        <dd class="col-md-9">
-                            <s:set var="operator_skills" value="#project_role.skills"/>
-                            <s:if test="!#project_role.skills.isEmpty()">
-                                <ul class="employee-guard-list skills">
-                                    <s:iterator value="#project_role.skills" var="operator_skill">
-                                        <li>
-                                            <span class="label label-default" data-toggle="tooltip" data-placement="right" title="" data-original-title="${operator_skill.description}" data-container="body">${operator_skill.name}</span>
-                                        </li>
-                                    </s:iterator>
-                                </ul>
-                            </s:if>
-                        </dd>
-                    </s:iterator>
+                    <s:if test="!project.jobRoles.isEmpty()">
+                        <s:iterator value="project.jobRoles" var="project_role">
+                            <s:url action="role" var="project_role_url">
+                                <s:param name="id">
+                                    ${project_role.id}
+                                </s:param>
+                            </s:url>
+                            <dt class="col-md-3">${project_role.name}</dt>
+                            <dd class="col-md-9">
+                                <s:set var="operator_skills" value="#project_role.skills"/>
+                                <s:if test="!#project_role.skills.isEmpty()">
+                                    <ul class="employee-guard-list skills">
+                                        <s:iterator value="#project_role.skills" var="operator_skill">
+                                            <li>
+                                                <span class="label label-default" data-toggle="tooltip" data-placement="right" title="" data-original-title="${operator_skill.description}" data-container="body">${operator_skill.name}</span>
+                                            </li>
+                                        </s:iterator>
+                                    </ul>
+                                </s:if>
+                            </dd>
+                        </s:iterator>
+                    </s:if>
+                    <s:else>
+                       <div class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-warning">
+                                <h4>No Project Job Roles!</h4>
+
+                                <p>You can not assign employees until the project's owner adds Job Roles for assignments.</p>
+                            </div>
+                        </div>
+                    </s:else>
                 </dl>
             </div>
         </section>
     </div>
     <div class="col-md-4">
-        <section class="employee-guard-section">
-            <h1>
-                <i class="icon-sitemap icon-large"></i> Assigned Employees
-            </h1>
+        <s:if test="(projectAssignmentBreakdown.expired <= 0) && (projectAssignmentBreakdown.expiring <= 0) && (projectAssignmentBreakdown.complete <= 0)">
+            <section class="employee-guard-section-full">
+                <h1>
+                    <i class="icon-sitemap icon-large"></i> Assigned Employees
+                </h1>
 
-            <div class="content">
-                <ul class="employee-guard-list-rollup">
-                    <li class="danger">
-                        <div class="row">
-                            <div class="col-md-1 col-xs-1">
-                                <i class="icon-minus-sign-alt"></i>
+                <div class="content">
+                    <div class="alert alert-info">
+                        <h4>No Assignments</h4>
+
+                        <p>Start assigning employees by selecting <strong><i class="icon-map-marker"></i> Manage Project Assignments</strong> at the top of the page.</p>
+
+                        <p>
+                            <a href="#"><i class="icon-question-sign"></i> Learn more about Assigning Employees</a>
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </s:if>
+        <s:else>
+            <section class="employee-guard-section">
+                <h1>
+                    <i class="icon-sitemap icon-large"></i> Assigned Employees
+                </h1>
+
+                <div class="content">
+                    <ul class="employee-guard-list-rollup">
+                        <li class="danger">
+                            <div class="row">
+                                <div class="col-md-1 col-xs-1">
+                                    <i class="icon-minus-sign-alt"></i>
+                                </div>
+                                <div class="col-md-9 col-xs-9">Expired or Incomplete</div>
+                                <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expired}</div>
                             </div>
-                            <div class="col-md-9 col-xs-9">Expired or Incomplete</div>
-                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expired}</div>
-                        </div>
-                    </li>
-                    <li class="warning">
-                        <div class="row">
-                            <div class="col-md-1 col-xs-1">
-                                <i class="icon-warning-sign"></i>
+                        </li>
+                        <li class="warning">
+                            <div class="row">
+                                <div class="col-md-1 col-xs-1">
+                                    <i class="icon-warning-sign"></i>
+                                </div>
+                                <div class="col-md-9 col-xs-9">Expiring</div>
+                                <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expiring}</div>
                             </div>
-                            <div class="col-md-9 col-xs-9">Expiring</div>
-                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expiring}</div>
-                        </div>
-                    </li>
-                    <li class="success">
-                        <div class="row">
-                            <div class="col-md-1 col-xs-1">
-                                <i class="icon-ok-sign"></i>
+                        </li>
+                        <li class="success">
+                            <div class="row">
+                                <div class="col-md-1 col-xs-1">
+                                    <i class="icon-ok-sign"></i>
+                                </div>
+                                <div class="col-md-9 col-xs-9">Complete</div>
+                                <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.complete}</div>
                             </div>
-                            <div class="col-md-9 col-xs-9">Complete</div>
-                            <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.complete}</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </section>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </s:else>
     </div>
 </div>

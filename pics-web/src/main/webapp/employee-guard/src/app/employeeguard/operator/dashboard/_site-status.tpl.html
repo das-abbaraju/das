@@ -1,9 +1,9 @@
 <section class="employee-guard-section chart-section">
     <h1>
-        <i class="icon-map-marker icon-large"></i>Current Assignments
+        <i class="icon-map-marker icon-large"></i>Assignment Status
     </h1>
     <div class="content">
-        <div class="row">
+        <div class="row" ng-show="totalAssignments > 0">
             <div class="col-md-4">
                 <div class="current-assignments">
                     <div class="row success">
@@ -44,6 +44,29 @@
                 </div>
             </div>
         </div>
+
+        <div class="row" ng-show="totalAssignments <= 0">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="alert alert-info" ng-show="userType === 'corporate'">
+                    <h4>No Assignments</h4>
+
+                    <p>Make sure that you have already created Job Roles and Skills for your sites. After that, it's up to companies to assign their employees to your sites and projects.</p>
+
+                    <p>
+                        <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                    </p>
+                </div>
+                <div class="alert alert-info" ng-show="userType === 'operator'">
+                    <h4>No Assignments</h4>
+
+                    <p>Make sure you have the proper Job Roles (your corporate account is responsible for creating these), so your companies can assign their employees to your site.</p>
+
+                    <p>
+                        <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -53,7 +76,7 @@
     </h1>
 
     <div class="content">
-        <div class="row" ng-repeat="project in project_assignments">
+        <div class="row" ng-repeat="project in project_assignments" ng-show="project_assignments.length > 0">
             <div class="col-md-6">
                 <a href="/employee-guard/operators/project/{{ project.id }}" class="name" target="_self">{{ project.name }}</a>
                 <em class="date">{{ project.startDate | date: 'MM/dd/yyyy' }} <i ng-show="project.startDate && project.endDate" class="icon-long-arrow-right" ></i> {{ project.endDate | date: 'MM/dd/yyyy' }}</em>
@@ -61,6 +84,19 @@
             </div>
             <div class="col-md-6">
                 <stackedprogressbar values="getProjectStatus(project)"></stackedprogressbar>
+            </div>
+        </div>
+        <div class="row" ng-show="project_assignments.length <= 0">
+            <div class="col-md-8 col-md-offset-2">
+                <div class="alert alert-info">
+                    <h4>No Current Projects</h4>
+
+                    <p>Projects allow for more control over your assignments. You can select what Job Roles will be needed and what companies you'd like assigning employees.</p>
+
+                    <p>
+                        <a href="#"><i class="icon-question-sign"></i> Learn more about Projects</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>

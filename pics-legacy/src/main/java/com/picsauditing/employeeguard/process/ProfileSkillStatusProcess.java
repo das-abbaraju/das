@@ -9,11 +9,14 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class ProfileSkillStatusProcess {
+	private Logger log = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private AccountService accountService;
@@ -38,6 +41,11 @@ public class ProfileSkillStatusProcess {
 		Set<Employee> employees = new HashSet<>(profile.getEmployees());
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
+/*
+		if(roles!=null && profile !=null)
+			log.debug(String.format("Profile=[%s] Found following roles [%s]", profile, roles));
+*/
+
 		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
 		Map<Role, Set<AccountSkill>> roleSkills = processHelper.getRoleSkills(roles);
 		Map<Project, Set<AccountSkill>> projectRequiredSkills = processHelper.getProjectRequiredSkills(projects);
@@ -65,7 +73,7 @@ public class ProfileSkillStatusProcess {
 										  final Collection<Employee> employees) {
 		profileSkillData.setAccountRoles(processHelper.siteRoles(employees, profileSkillData.getSiteAccounts()));
 
-		return profileSkillData;  //To change body of created methods use File | Settings | File Templates.
+		return profileSkillData;
 	}
 
 	private ProfileSkillData addContractorGroups(final ProfileSkillData profileSkillData,
@@ -78,7 +86,7 @@ public class ProfileSkillStatusProcess {
 
 	private ProfileSkillData addOverallSkillStatus(final ProfileSkillData profileSkillData) {
 		profileSkillData.setOverallStatus(statusCalculatorService
-				.calculateOverallStatus(profileSkillData.getSkillStatusMap().values()));
+				.calculateOverallStatus(profileSkillData.getSkillStatusMap().values(), SkillStatus.Completed));
 
 		return profileSkillData;
 	}
@@ -195,10 +203,12 @@ public class ProfileSkillStatusProcess {
 				.siteRolesNotInProjects(siteProjects, siteRoles, projectRoles);
 
 		Map<AccountModel, Set<AccountSkill>> roleSkillsNotForProjects = new HashMap<>();
+
 		for (Integer siteId : siteRolesNotInProjectRoles.keySet()) {
-			Set<AccountSkill> skillsForRole = roleSkills.get(siteRolesNotInProjectRoles.get(siteId));
-			if (skillsForRole == null) {
-				skillsForRole = new HashSet<>();
+
+			Set<AccountSkill> skillsForRole = new HashSet<>();
+			for(Role role:siteRolesNotInProjectRoles.get(siteId)){
+				skillsForRole.addAll(roleSkills.get(role));
 			}
 
 			roleSkillsNotForProjects.put(siteAccounts.get(siteId), skillsForRole);

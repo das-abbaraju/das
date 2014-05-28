@@ -6,10 +6,16 @@ PICS.define('employee-guard.employee.photo.PhotoController', {
         }
 
         function saveAndSubmitFileUploadForm(event) {
-            var $file_input = $(event.target),
-                $form = $file_input.closest('form');
+            var $element = $(event.target),
+                $figure = $element.closest('figure'),
+                $file_input = $figure.find('input[type="file"]'),
+                photoValidation = PICS.getClass('employee-guard.FormValidation');
 
-            $form.submit();
+            //update hidden field that holds filename for validation
+            $('#validate-filename').val($file_input[0].files[0].name);
+
+            //send for validation
+            photoValidation.submitFormForValidation(event);
         }
 
         function changeEmployeePhoto(event) {

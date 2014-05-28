@@ -35,8 +35,9 @@ public class ProjectSummaryAction extends PicsRestActionSupport {
 	private List<ProjectAssignmentModel> buildProjectAssignmentModels(final int siteId) {
 		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = assignmentService
 				.getEmployeeSkillsForProjectsUnderSite(siteId);
+
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
-				.getAllSkillStatusesForEntity(projectEmployeeSkills);
+				.getAllSkillStatusesForEntityNEW(projectEmployeeSkills);
 
 		return ModelFactory.getProjectAssignmentModelFactory().createList(projectSkillStatuses);
 	}

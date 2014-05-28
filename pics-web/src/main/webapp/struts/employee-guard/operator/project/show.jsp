@@ -99,22 +99,37 @@
             </h1>
 
             <div class="content">
-                <dl class="employee-guard-information edit-display-values">
-                    <s:iterator value="project.roles" var="project_role">
-                        <s:url action="role" var="project_role_url">
-                            <s:param name="id">
-                                ${project_role.role.id}
-                            </s:param>
-                        </s:url>
-                        <dt class="col-md-3">
-                            <a href="${project_role_url}">${project_role.role.name}</a>
-                        </dt>
-                        <dd class="col-md-9">
-                            <s:set var="operator_skills" value="#project_role.role.skills"/>
-                            <s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
-                        </dd>
-                    </s:iterator>
-                </dl>
+                <s:if test="!project.roles.isEmpty()">
+                    <dl class="employee-guard-information edit-display-values">
+                        <s:iterator value="project.roles" var="project_role">
+                            <s:url action="role" var="project_role_url">
+                                <s:param name="id">
+                                    ${project_role.role.id}
+                                </s:param>
+                            </s:url>
+                            <dt class="col-md-3">
+                                <a href="${project_role_url}">${project_role.role.name}</a>
+                            </dt>
+                            <dd class="col-md-9">
+                                <s:set var="operator_skills" value="#project_role.role.skills"/>
+                                <s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
+                            </dd>
+                        </s:iterator>
+                    </dl>
+                </s:if>
+                <s:else>
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <div class="alert alert-warning">
+                                <h4>No Project Job Roles!</h4>
+
+                                <p>Companies can not assign employees to this project until Job Roles are added.</p>
+
+                                <p>Select <strong>Edit</strong> ( <i class="icon-edit icon-large"></i> ) in the <strong>Project Job Roles</strong> bar above to add Job Roles to this project.</p>
+                            </div>
+                        </div>
+                    </div>
+                </s:else>
             </div>
         </section>
 
@@ -137,15 +152,19 @@
         </section>
     </div>
     <div class="col-md-4">
-        <section class="employee-guard-section" data-url="${operator_project_url}">
-            <h1>
-                <i class="icon-map-marker icon-large"></i> Assigned Employees
-            </h1>
+        <s:if test="project.roles.isEmpty() || projectSites.isEmpty()">
+        </s:if>
+        <s:else>
+            <section class="employee-guard-section" data-url="${operator_project_url}">
+                <h1>
+                    <i class="icon-map-marker icon-large"></i> Assigned Employees
+                </h1>
 
-            <div class="content">
-                <a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i>
-                    Current Assignments</a>
-            </div>
-        </section>
+                <div class="content">
+                    <a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i>
+                        Current Assignments</a>
+                </div>
+            </section>
+        </s:else>
     </div>
 </div>

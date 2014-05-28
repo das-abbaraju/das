@@ -88,7 +88,8 @@ PICS.define('employee-guard.FormValidation', {
         }
 
         return {
-            init: init
+            init: init,
+            submitFormForValidation: submitFormForValidation
         };
     }())
 });

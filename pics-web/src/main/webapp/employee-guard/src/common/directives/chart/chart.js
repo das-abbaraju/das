@@ -10,6 +10,10 @@ angular.module('PICS.directives')
             drawConfig: '='
         },
         link: function (scope, element, attrs) {
+            if (typeof d3 === 'undefined') {
+                return;
+            }
+
             scope.$watch('data', function(newValue) {
                 if (newValue) {
                     var chart, chartConfig,

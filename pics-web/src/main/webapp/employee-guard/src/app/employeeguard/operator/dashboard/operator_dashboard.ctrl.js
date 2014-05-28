@@ -39,6 +39,12 @@ angular.module('PICS.employeeguard')
                 site_details.expired
             ];
         }
+
+        setTotalAssignments(site_details);
+    }
+
+    function setTotalAssignments(site_details) {
+        $scope.totalAssignments = site_details.completed + site_details.pending + site_details.expiring + site_details.expired;
     }
 
     $scope.calculateStatusPercentage = function (amount, total) {
@@ -66,4 +72,9 @@ angular.module('PICS.employeeguard')
 
         return progress_bar;
     };
+
+    angular.extend($scope, {
+        setTotalAssignments: setTotalAssignments,
+        onLoadAssignmentsSuccess: onLoadAssignmentsSuccess
+    });
 });

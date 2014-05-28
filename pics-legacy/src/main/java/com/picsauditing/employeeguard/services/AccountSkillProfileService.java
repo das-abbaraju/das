@@ -9,11 +9,7 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuild
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
-import com.picsauditing.jpa.entities.Account;
 import org.apache.commons.collections.CollectionUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +53,7 @@ public class AccountSkillProfileService {
 		Profile profile = profileEntityService.findByAppUserId(appUserId);
 		AccountSkill skill = skillEntityService.find(skillId);
 
-		AccountSkillProfile accountSkillProfile= this.getAccountSkillProfileForProfileAndSkill(profile, skill);
+		AccountSkillProfile accountSkillProfile = this.getAccountSkillProfileForProfileAndSkill(profile, skill);
 
 		return this.getAccountSkillProfileDocument(accountSkillProfile);
 	}
@@ -93,18 +89,17 @@ public class AccountSkillProfileService {
 	public void update(final AccountSkill accountSkill,
 					   final Profile profile,
 					   final SkillDocumentForm skillDocumentForm) {
-		boolean satisfyingSkillFirstTime=false;
+		boolean satisfyingSkillFirstTime = false;
 		SkillType skillType = accountSkill.getSkillType();
 		AccountSkillProfile accountSkillProfile = accountSkillProfileDAO.findBySkillAndProfile(accountSkill, profile);
-		if(accountSkillProfile==null){
-			satisfyingSkillFirstTime=true;
+		if (accountSkillProfile == null) {
+			satisfyingSkillFirstTime = true;
 			accountSkillProfile = newAccountSkillProfile(accountSkill, profile);
 		}
 
 		if (skillType.isTraining()) {
 			handleTrainingSkillSatisfaction(accountSkillProfile, satisfyingSkillFirstTime, skillDocumentForm);
-		}
-		else if (skillType.isCertification()) {
+		} else if (skillType.isCertification()) {
 			handleCertificationSkillSatisfaction(accountSkillProfile, satisfyingSkillFirstTime, skillDocumentForm);
 		}
 
@@ -112,18 +107,17 @@ public class AccountSkillProfileService {
 		return;
 	}
 
-	private void handleTrainingSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm){
+	private void handleTrainingSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm) {
 		if (skillDocumentForm != null && skillDocumentForm.isVerified()) {
 			accountSkillProfile.setStartDate(DateBean.today());
 			accountSkillProfileDAO.save(accountSkillProfile);
-		}
-		else if(!satisfyingSkillFirstTime){
+		} else if (!satisfyingSkillFirstTime) {
 			accountSkillProfileDAO.delete(accountSkillProfile);
 		}
 	}
 
-	private void handleCertificationSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm){
-		if(skillDocumentForm.getDocumentId()<=0) {
+	private void handleCertificationSkillSatisfaction(AccountSkillProfile accountSkillProfile, boolean satisfyingSkillFirstTime, final SkillDocumentForm skillDocumentForm) {
+		if (skillDocumentForm.getDocumentId() <= 0) {
 			logger.warn("No document attached to Certification Skill - Returning without action");
 			return;
 		}
@@ -133,18 +127,18 @@ public class AccountSkillProfileService {
 		accountSkillProfileDAO.save(accountSkillProfile);
 	}
 
-	private AccountSkillProfile newAccountSkillProfile(final AccountSkill accountSkill, final Profile profile){
+	private AccountSkillProfile newAccountSkillProfile(final AccountSkill accountSkill, final Profile profile) {
 		return new AccountSkillProfileBuilder()
-						.profile(profile)
-						.accountSkill(accountSkill)
-						.createdBy(1)
-						.createdDate(DateBean.today())
-						.startDate(DateBean.today())
-						.build();
+				.profile(profile)
+				.accountSkill(accountSkill)
+				.createdBy(1)
+				.createdDate(DateBean.today())
+				.startDate(DateBean.today())
+				.build();
 	}
 
 	public List<AccountSkillProfile> getAccountSkillProfileForProjectAndContractor(final Project project,
-																																								 final int accountId) {
+																				   final int accountId) {
 		return accountSkillProfileDAO.findByProjectAndContractor(project, accountId);
 	}
 
@@ -212,7 +206,7 @@ public class AccountSkillProfileService {
 		for (Employee employee : employees) {
 			for (AccountSkill skill : skills) {
 				table.put(employee, skill, findAccountSkillProfileByEmployeeAndSkill(accountSkillProfiles, employee,
-								skill));
+						skill));
 			}
 		}
 
@@ -220,8 +214,8 @@ public class AccountSkillProfileService {
 	}
 
 	private AccountSkillProfile findAccountSkillProfileByEmployeeAndSkill(final List<AccountSkillProfile> accountSkillProfiles,
-																																				final Employee employee,
-																																				final AccountSkill skill) {
+																		  final Employee employee,
+																		  final AccountSkill skill) {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			if (skill.equals(accountSkillProfile.getSkill())
 					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {

@@ -31,9 +31,10 @@ public class AssignmentSummaryAction extends PicsRestActionSupport {
 	}
 
 	private StatusSummary buildStatusSummary(final int siteId) {
+
 		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSite = assignmentService.getEmployeeSkillsForSite(siteId);
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
-				.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
+				.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite);
 
 		StatusSummary summary = ModelFactory.getStatusSummaryFactory().create(employeeStatuses);
         summary.setId(siteId);

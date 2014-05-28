@@ -24,6 +24,10 @@
 
         .content {
             padding: 20px 30px;
+
+            &.no_padding {
+                padding: 0px;
+            }
         }
 
         &.info-toolbar {

@@ -47,10 +47,6 @@ public class SoftDeletedEmployee implements BaseEntity, Comparable<SoftDeletedEm
 	@Where(clause = "deletedDate IS NULL")
 	private List<GroupEmployee> groups = new ArrayList<>();
 
-//	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-//	@Where(clause = "deletedDate IS NULL")
-//	private List<AccountSkillProfile> skills = new ArrayList<>();
-
 	public SoftDeletedEmployee() {
 	}
 

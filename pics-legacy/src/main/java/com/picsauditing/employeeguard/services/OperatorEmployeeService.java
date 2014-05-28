@@ -45,6 +45,6 @@ public class OperatorEmployeeService {
 	}
 
 	public SkillStatus getEmployeeStatus(Map<AccountSkill, SkillStatus> skillStatuses) {
-		return statusCalculatorService.calculateOverallStatus(skillStatuses.values());
+		return statusCalculatorService.calculateOverallStatus(skillStatuses.values(), SkillStatus.Completed);
 	}
 }

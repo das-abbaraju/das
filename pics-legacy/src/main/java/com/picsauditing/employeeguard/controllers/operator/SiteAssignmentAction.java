@@ -2,13 +2,16 @@ package com.picsauditing.employeeguard.controllers.operator;
 
 import com.google.common.collect.Table;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.forms.EntityInfo;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.process.ProcessHelper;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -38,6 +41,8 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private SkillService skillService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
+	@Autowired
+	private ProcessHelper processHelper;
 
 	private int siteId;
 	private AccountModel site;
@@ -63,11 +68,12 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				});
 
 		List<Employee> employeesAtSite = employeeService.getEmployeesAssignedToSite(contractorIds, siteId);
-		Map<Employee, Set<AccountSkill>> employeeRequiredSkills = roleService.getEmployeeSkillsForSite(siteId, contractorIds);
+		Map<Employee, Set<AccountSkill>> employeeRequiredSkills =
+				addSiteAndCorporateRequiredSkills(siteId, roleService.getEmployeeSkillsForSite(siteId, contractorIds));
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments = ViewModelFactory
 				.getEmployeeSiteAssignmentModelFactory()
-				.create(statusCalculatorService.getEmployeeStatusRollUpForSkills(employeesAtSite, employeeRequiredSkills),
+				.create(statusCalculatorService.getEmployeeStatusRollUpForSkills(employeeRequiredSkills),
 						Collections.<Employee, Set<Role>>emptyMap(),
 						accountService.getContractorMapForSite(siteId));
 
@@ -77,6 +83,33 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 				.create(employeesAtSite.size(), employeeSiteAssignments, roleCounts, Collections.<EntityInfo>emptyList());
 
 		return "status";
+	}
+
+	private Map<Employee, Set<AccountSkill>> addSiteAndCorporateRequiredSkills(final int siteId, final Map<Employee, Set<AccountSkill>> employeeSkills) {
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = accountService.getSiteParentAccounts(Arrays.asList(siteId));
+		Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills = processHelper.siteAndCorporateRequiredSkills(siteHierarchy);
+
+		Set<AccountSkill> requiredSkills = getSkills(siteId, siteAndCorporateRequiredSkills);
+		for (Employee employee : employeeSkills.keySet()) {
+			employeeSkills.get(employee).addAll(requiredSkills);
+		}
+
+		return employeeSkills;
+	}
+
+	private Set<AccountSkill> getSkills(final int siteId,
+										final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
+		if (MapUtils.isEmpty(siteAndCorporateRequiredSkills)) {
+			return Collections.emptySet();
+		}
+
+		for (AccountModel accountModel : siteAndCorporateRequiredSkills.keySet()) {
+			if (accountModel.getId() == siteId) {
+				return siteAndCorporateRequiredSkills.get(accountModel);
+			}
+		}
+
+		return Collections.emptySet();
 	}
 
 	private int siteId() {

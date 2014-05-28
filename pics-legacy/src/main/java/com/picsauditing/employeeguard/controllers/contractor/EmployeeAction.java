@@ -28,6 +28,7 @@ import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
 import com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator;
+import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -61,6 +62,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private EmailHashService emailHashService;
 	@Autowired
 	private EmployeeFormValidator employeeFormValidator;
+	@Autowired
+	private EmployeePhotoFormValidator employeePhotoFormValidator;
+
 	@Autowired
 	private EmployeeEmploymentFormValidator employeeEmploymentFormValidator;
 	@Autowired
@@ -190,7 +194,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		emailService.sendEGWelcomeEmail(hash, permissions.getAccountName());
 
 		if (addAnother(employeeForm)) {
-			return setUrlForRedirect("/employee-guard/contractor/employee/create"); // EmployeeCreateAction,
+			return setUrlForRedirect("/employee-guard/contractor/employee/create");
 		}
 
 		return redirectToList();
@@ -274,7 +278,15 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	// For the Ajax Validation
 	public Validator getCustomValidator() {
-		return employeeFormValidator;
+		if (employeeForm != null || employeePersonalForm != null) {
+			return employeeFormValidator;
+		}
+
+		if (employeeEmploymentForm != null) {
+			return employeeEmploymentFormValidator;
+		}
+
+		return employeePhotoFormValidator;
 	}
 
 	@Override
@@ -284,11 +296,16 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		ValueStack valueStack = ActionContext.getContext().getValueStack();
 		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
 
-		if (employeeEmploymentForm == null) {
+		if (employeeForm != null || employeePersonalForm != null) {
 			employeeFormValidator.validate(valueStack, validatorContext);
-		} else {
+		}
+		if (employeeEmploymentForm != null) {
 			employeeEmploymentFormValidator.validate(valueStack, validatorContext);
 		}
+		if (employeePhotoForm != null) {
+			employeePhotoFormValidator.validate(valueStack, validatorContext);
+		}
+
 	}
 
 	private void prepareFormDataWhenValidationFails() {

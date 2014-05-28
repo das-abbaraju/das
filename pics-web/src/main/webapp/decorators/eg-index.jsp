@@ -5,7 +5,7 @@
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" xmlns:ng="http://angularjs.org"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,6 +19,16 @@
 
     <link rel="stylesheet" href="/employee-guard/build/style.css"/>
 
+    <%--Make ie8 corrections asap--%>
+    <!--[if lt IE 9]>
+        <script src="/bootstrap3/js/vendor/respond.js?v=${version}"></script>
+        <link rel="stylesheet" href="/bootstrap3/css/ie8.css?v=${version}">
+    <![endif]-->
+
+    <!--[if lt IE 8]><link rel="stylesheet" href="/bootstrap3/css/vendor/font-awesome/font-awesome-ie7.css?v=${version}"><![endif]-->
+
+
+
     <script src="/employee-guard/build/script.js"></script>
 
 </head>
@@ -27,8 +37,9 @@
         <header>
             <s:action name="Menu!bootstrap3Menu" executeResult="true" />
             <s:action name="Menu!mobileMenu" executeResult="true" />
+
         </header>
-        <div ng-app="PICSApp">
+        <div id="ng-app" ng-app="PICSApp">
             <div ng-view></div>
         </div>
     </div>
