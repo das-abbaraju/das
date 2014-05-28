@@ -2,7 +2,7 @@
 
 --changeset aananighian:10
 
-set sql_safe_updates = 1;
+set sql_safe_updates = 0;
 
 update project_account_group_employee
 	set project_account_group_employee.deletedDate = now()
@@ -27,4 +27,13 @@ update project_account_group_employee
 				and page2.deletedDate is null)
 		t2);
 
-set sql_safe_updates = 0;
+delete from account_skill_profile
+	where id in
+	(select id from
+		(select asp.* from account_skill_profile asp
+			join account_skill on account_skill.id = asp.skillid
+			where account_skill.skillType = 'Certification'
+			and asp.documentid is null)
+	t);
+
+set sql_safe_updates = 1;
