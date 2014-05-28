@@ -39,6 +39,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -413,7 +414,7 @@ public class LoginController extends PicsActionSupport {
         SessionInfoProviderFactory.getSessionInfoProvider()
                 .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
-        return setUrlForRedirect(EMPLOYEE_PASSWORD_RESET);
+        return setUrlForRedirect(EMPLOYEE_PASSWORD_RESET + URLEncoder.encode(loginContext.getAppUser().getUsername()));
     }
 
 	private String doLogin(LoginContext loginContext) throws Exception {

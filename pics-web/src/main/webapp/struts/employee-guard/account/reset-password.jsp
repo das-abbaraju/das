@@ -11,6 +11,8 @@
     <h1><s:text name="ProfileEdit.Password.heading" /></h1>
 
     <form action="${reset_password}" method="post">
+        <input type="hidden" name="username" value="${username}" />
+
         <label for="username"><s:text name="global.Password.new" /></label>
         <input type="password" name="password" />
 

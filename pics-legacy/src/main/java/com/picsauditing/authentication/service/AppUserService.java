@@ -43,6 +43,11 @@ public class AppUserService {
 		return appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
 	}
 
+    public AppUser encodeAndSavePassword(AppUser appUser, String password) {
+        return encodeAndSavePassword(appUser.getId(), password);
+    }
+
+    @Transactional
     public AppUser encodeAndSavePassword(int appUserID, String password) {
         AppUser appUser = findById(appUserID);
         String hashSalt = generateHashSalt(appUser);
