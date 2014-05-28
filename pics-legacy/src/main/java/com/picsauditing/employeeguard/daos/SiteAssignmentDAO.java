@@ -126,4 +126,14 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 
 		return query.getResultList();
 	}
+
+	public List<SiteAssignment> findByContractorId(final int contractorId) {
+		TypedQuery<SiteAssignment> query = em.createQuery("SELECT sa FROM SiteAssignment sa " +
+				"JOIN sa.employee e " +
+				"WHERE e.accountId = :contractorId", SiteAssignment.class);
+
+		query.setParameter("contractorId", contractorId);
+
+		return query.getResultList();
+	}
 }

@@ -16,10 +16,7 @@ import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.forms.binding.FormBinding;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ProjectAction extends PicsRestActionSupport {
 
@@ -55,8 +52,10 @@ public class ProjectAction extends PicsRestActionSupport {
 		Map<AccountModel, Set<AccountModel>> siteHierarchy = accountService.getSiteParentAccounts(
 				accountService.getOperatorIdsForContractor(contractorId));
 
-//		ContractorAssignmentData contractorAssignmentData = contractorAssignmentProcess
-//				.buildContractorAssignmentData(contractorId, siteHierarchy);
+		ContractorAssignmentData contractorAssignmentData = contractorAssignmentProcess
+				.buildContractorAssignmentData(contractorId,
+						new HashSet<>(accountService.getOperatorsForContractors(Arrays.asList(contractorId))),
+						siteHierarchy);
 
 		Map<Project, Map<SkillStatus, Integer>> projectStatistics = contractorAssignmentProcess
 				.buildProjectAssignmentStatistics(contractorAssignmentData);
@@ -79,8 +78,12 @@ public class ProjectAction extends PicsRestActionSupport {
 
 		Map<AccountModel, Set<AccountModel>> siteHierarchy = accountService.getSiteParentAccounts(
 				accountService.getOperatorIdsForContractor(contractorId));
-//		ContractorAssignmentData contractorAssignmentData = contractorAssignmentProcess
-//				.buildContractorAssignmentData(contractorId, siteHierarchy);
+
+		ContractorAssignmentData contractorAssignmentData = contractorAssignmentProcess
+				.buildContractorAssignmentData(contractorId,
+						new HashSet<>(accountService.getOperatorsForContractors(Arrays.asList(contractorId))),
+						siteHierarchy);
+
 		Map<Project, Map<SkillStatus, Integer>> projectStatistics = contractorAssignmentProcess
 				.buildProjectAssignmentStatistics(contractorAssignmentData);
 

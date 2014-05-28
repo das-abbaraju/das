@@ -114,6 +114,10 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.findByAccount(siteId);
 	}
 
+	public Set<Project> getProjectsForContractor(int contractorId) {
+		return new HashSet<>(projectDAO.findByContractorId(contractorId));
+	}
+
 	/* All search related methods */
 
 	@Override

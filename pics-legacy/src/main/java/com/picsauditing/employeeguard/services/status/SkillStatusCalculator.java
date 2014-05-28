@@ -93,16 +93,15 @@ public class SkillStatusCalculator {
 		return worstStatus;
 	}
 
-	public static <E> Map<SkillStatus, Integer> statusCount(final Map<E, List<SkillStatus>> entityStatusMap) {
+	public static <E> Map<SkillStatus, Integer> statusCountPerEntity(final Map<E, SkillStatus> entityStatusMap) {
 		if (MapUtils.isEmpty(entityStatusMap)) {
 			return Collections.emptyMap();
 		}
 
 		Map<SkillStatus, Integer> statusCount = buildMapWithCountsToZero();
 		for (E entity : entityStatusMap.keySet()) {
-			for (SkillStatus skillStatus : entityStatusMap.get(entity)) {
-				statusCount.put(skillStatus, statusCount.get(skillStatus) + 1);
-			}
+			SkillStatus skillStatus = entityStatusMap.get(entity);
+			statusCount.put(skillStatus, statusCount.get(skillStatus) + 1);
 		}
 
 		return statusCount;

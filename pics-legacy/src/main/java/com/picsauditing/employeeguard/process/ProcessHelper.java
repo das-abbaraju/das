@@ -377,4 +377,65 @@ public class ProcessHelper {
 
 		return Collections.emptySet();
 	}
+
+	public Map<AccountModel, Set<Employee>> employeeSiteAssignment(final int contractorId,
+																   final Set<AccountModel> contractorSites) {
+		Map<Integer, Set<Employee>> employeeAssignments = roleEntityService.getSiteEmployeeAssignments(contractorId);
+		Map<AccountModel, Integer> accountModelToIdMap = PicsCollectionUtil.convertToMap(contractorSites,
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountModel, AccountModel, Integer>() {
+
+					@Override
+					public AccountModel getKey(AccountModel accountModel) {
+						return accountModel;
+					}
+
+					@Override
+					public Integer getValue(AccountModel accountModel) {
+						return accountModel.getId();
+					}
+				});
+
+		return PicsCollectionUtil.reduceMapsForPairKeyMap(accountModelToIdMap, employeeAssignments);
+	}
+
+	public Set<Project> allProjectsForContractor(final int contractorId) {
+		return projectEntityService.getProjectsForContractor(contractorId);
+	}
+
+	public Map<Project, Set<Employee>> projectEmployeeAssignments(final int contractorId) {
+		Set<Employee> employees = new HashSet<>(employeeEntityService.getEmployeesForAccount(contractorId));
+
+		return employeeEntityService.getAllProjectsByEmployees(employees);
+	}
+
+	public Map<Role, Set<AccountSkill>> getRoleSkills(final int contractorId) {
+		Map<Employee, Set<Role>> employeeRoles = roleEntityService
+				.getEmployeeSiteRoles(employeeEntityService.getEmployeesForAccount(contractorId));
+
+		return skillEntityService.getSkillsForRoles(PicsCollectionUtil
+				.flattenCollectionOfCollection(employeeRoles.values()));
+	}
+
+	public Map<AccountModel, Set<Project>> accountProjects(final Set<AccountModel> sites,
+														   final Set<Project> projects) {
+		if (CollectionUtils.isEmpty(sites) || CollectionUtils.isEmpty(projects)) {
+			return Collections.emptyMap();
+		}
+
+		Map<AccountModel, Set<Project>> accountProjects = new HashMap<>();
+		for (AccountModel accountModel : sites) {
+			for (Project project : projects) {
+				if (accountModel.getId() == project.getAccountId()) {
+					if (!accountProjects.containsKey(accountModel)) {
+						accountProjects.put(accountModel, new HashSet<Project>());
+					}
+
+					accountProjects.get(accountModel).add(project);
+				}
+			}
+		}
+
+		return accountProjects;
+	}
 }

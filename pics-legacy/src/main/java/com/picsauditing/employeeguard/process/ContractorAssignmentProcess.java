@@ -23,27 +23,43 @@ public class ContractorAssignmentProcess {
 	private StatusCalculatorService statusCalculatorService;
 
 	public ContractorAssignmentData buildContractorAssignmentData(final int contractorId,
+																  final Set<AccountModel> contractorSites,
 																  final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
 		ContractorAssignmentData contractorAssignmentData = new ContractorAssignmentData();
 
-//		contractorAssignmentData.getAccountProjects(),
-//				contractorAssignmentData.getContractorSiteAssignments()
-//		contractorAssignmentData.getEmployeeAssignmentMap()
-//		contractorAssignmentData.getRoleSkills();
+		Set<Project> projects = processHelper.allProjectsForContractor(contractorId);
+		Map<Project, Set<AccountSkill>> projectRequiredSkills = processHelper.getProjectRequiredSkills(projects);
+		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
+		Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills = processHelper.siteAndCorporateRequiredSkills(siteHierarchy);
+		Map<Role, Set<AccountSkill>> roleSkills = processHelper.getRoleSkills(contractorId);
+		Map<Project, Set<Employee>> projectEmployeeAssignments = processHelper.projectEmployeeAssignments(contractorId);
+
+		contractorAssignmentData.setAllProjects(projects);
+		contractorAssignmentData.setContractorSiteAssignments(contractorSites);
+		contractorAssignmentData.setEmployeeAssignmentMap(processHelper.employeeSiteAssignment(contractorId, contractorSites));
+		contractorAssignmentData.setRoleSkills(roleSkills);
+		contractorAssignmentData.setProjectRoles(projectRoles);
+		contractorAssignmentData.setProjectEmployeeAssignments(projectEmployeeAssignments);
+		contractorAssignmentData.setSiteAndCorporateRequiredSkills(siteAndCorporateRequiredSkills);
+		contractorAssignmentData.setProjectRequiredSkills(projectRequiredSkills);
+		contractorAssignmentData.setAccountProjects(processHelper.accountProjects(contractorSites, projects));
 
 		return contractorAssignmentData;
 	}
 
 	public Map<Project, Map<SkillStatus, Integer>> buildProjectAssignmentStatistics(ContractorAssignmentData contractorAssignmentData) {
+		Map<Project, Map<Employee, Set<AccountSkill>>> employeeProjects = processHelper
+				.projectEmployeeSkills(contractorAssignmentData.getAllProjects(),
+						contractorAssignmentData.getProjectRequiredSkills(), contractorAssignmentData.getProjectRoles(),
+						contractorAssignmentData.getRoleSkills(), contractorAssignmentData.getProjectEmployeeAssignments(),
+						contractorAssignmentData.getSiteAndCorporateRequiredSkills());
+
 		Map<Project, Map<SkillStatus, Integer>> result = new HashMap<>();
-
-		Map<Project, Map<Employee, Set<AccountSkill>>> employeeProjects = null;
 		for (Project project : employeeProjects.keySet()) {
-			Map<Employee, List<SkillStatus>> employeeStatuses = statusCalculatorService
-					.getEmployeeSkillStatusList(employeeProjects.get(project));
-			Map<Employee, SkillStatus>
+			Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
+					.getEmployeeStatusRollUpForSkills(employeeProjects.get(project));
 
-			result.put(project, SkillStatusCalculator.statusCount(employeeStatuses));
+			result.put(project, SkillStatusCalculator.statusCountPerEntity(employeeStatuses));
 		}
 
 		return result;
@@ -55,11 +71,12 @@ public class ContractorAssignmentProcess {
 
 		Map<AccountModel, Map<Employee, Set<AccountSkill>>> employeeAssignments = employeeSkillsForSite(siteHierarchy,
 				contractorAssignmentData);
-		for (AccountModel accountModel : employeeAssignments.keySet()) {
-			Map<Employee, List<SkillStatus>> employeeStatuses = statusCalculatorService
-					.getEmployeeSkillStatusList(employeeAssignments.get(accountModel));
 
-			result.put(accountModel, SkillStatusCalculator.statusCount(employeeStatuses));
+		for (AccountModel accountModel : employeeAssignments.keySet()) {
+			Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
+					.getEmployeeStatusRollUpForSkills(employeeAssignments.get(accountModel));
+
+			result.put(accountModel, SkillStatusCalculator.statusCountPerEntity(employeeStatuses));
 		}
 
 		return result;
@@ -74,7 +91,7 @@ public class ContractorAssignmentProcess {
 		Map<AccountModel, Map<Employee, Set<Role>>> siteEmployeeRoles = processHelper
 				.siteEmployeeRoles(getIdAccountModelMap(siteHierarchy.keySet()));
 
-		Map<AccountModel, Map<Employee, Set<AccountSkill>>> result = null;
+		Map<AccountModel, Map<Employee, Set<AccountSkill>>> result = new HashMap<>();
 		for (AccountModel accountModel : employeeAssignment.keySet()) {
 			result.put(accountModel, new HashMap<Employee, Set<AccountSkill>>());
 
@@ -94,16 +111,14 @@ public class ContractorAssignmentProcess {
 					}
 				}
 			}
+
+			if (MapUtils.isNotEmpty(employeeSkillsForSite)) {
+				result.put(accountModel, employeeSkillsForSite);
+			}
 		}
 
 		return result;
 	}
-
-//	private Map<AccountModel, Integer> accountMap(final Collection<AccountModel> accountModels) {
-//		Map<Integer, AccountModel> idAccountModelMap = getIdAccountModelMap(accountModels);
-//
-//		return PicsCollectionUtil.invertMap(idAccountModelMap);
-//	}
 
 	private Map<Integer, AccountModel> getIdAccountModelMap(Collection<AccountModel> accountModels) {
 		return PicsCollectionUtil.convertToMap(accountModels,
