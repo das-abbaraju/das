@@ -133,4 +133,14 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 
 		return query.getResultList();
 	}
+
+	public List<Project> findByContractorId(final int contractorId) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"JOIN p.companies c " +
+				"WHERE c.accountId = :contractorId", Project.class);
+
+		query.setParameter("contractorId", contractorId);
+
+		return query.getResultList();
+	}
 }

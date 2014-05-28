@@ -83,6 +83,7 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 
 	private List<Role> getRoles() {
 		List<Integer> corporateIds = accountService.getTopmostCorporateAccountIds(site.getId());
+
 		return roleService.getRolesForAccounts(corporateIds);
 	}
 

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,10 @@ class AccountFilter {
 		while (iterator.hasNext()) {
 			E account = iterator.next();
 
+			if (account.isOperator() && isInPicsConsortium(account)) {
+				iterator.remove();
+			}
+
 			if (account.isOperator() && !operatorHasEmployeeGUARD(account)) {
 				iterator.remove();
 			}
@@ -28,6 +33,10 @@ class AccountFilter {
 		}
 
 		return accounts;
+	}
+
+	private <E extends Account> boolean isInPicsConsortium(final E account) {
+		return ((OperatorAccount) account).isInPicsConsortium();
 	}
 
 	private <E extends Account> boolean operatorHasEmployeeGUARD(final E account) {

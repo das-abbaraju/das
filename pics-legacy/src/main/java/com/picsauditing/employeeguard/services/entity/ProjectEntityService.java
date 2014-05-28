@@ -118,6 +118,38 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectDAO.findByAccount(siteId);
 	}
 
+	public Set<Project> getProjectsForContractor(int contractorId) {
+		return new HashSet<>(projectDAO.findByContractorId(contractorId));
+	}
+
+	public Map<Project, Map<Employee, Set<Role>>> getProjectEmployeeRoles(final int contractorId) {
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByAccountId(contractorId);
+
+		if (CollectionUtils.isEmpty(projectRoleEmployees)) {
+			return Collections.emptyMap();
+		}
+
+		Map<Project, Map<Employee, Set<Role>>> projectEmployeeRoles = new HashMap<>();
+		for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
+
+			ProjectRole projectRole = projectRoleEmployee.getProjectRole();
+
+			Project project = projectRoleEmployee.getProjectRole().getProject();
+			if (!projectEmployeeRoles.containsKey(project)) {
+				projectEmployeeRoles.put(project, new HashMap<Employee, Set<Role>>());
+			}
+
+			Employee employee = projectRoleEmployee.getEmployee();
+			if (!projectEmployeeRoles.get(project).containsKey(employee)) {
+				projectEmployeeRoles.get(project).put(employee, new HashSet<Role>());
+			}
+
+			projectEmployeeRoles.get(project).get(employee).add(projectRole.getRole());
+		}
+
+		return projectEmployeeRoles;
+	}
+
 	/* All search related methods */
 
 	@Override

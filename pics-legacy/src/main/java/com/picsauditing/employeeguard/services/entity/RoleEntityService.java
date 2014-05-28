@@ -263,6 +263,44 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Integer, Map<Employee, Set<Role>>> getSiteEmployeeRoles(final Collection<Integer> sites) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findBySiteIds(sites);
+
+		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoles = new HashMap<>();
+		for (SiteAssignment siteAssignment : siteAssignments) {
+			int siteId = siteAssignment.getSiteId();
+			if (!siteEmployeeRoles.containsKey(siteId)) {
+				siteEmployeeRoles.put(siteId, new HashMap<Employee, Set<Role>>());
+			}
+
+			Employee employee = siteAssignment.getEmployee();
+			if (!siteEmployeeRoles.get(siteId).containsKey(siteAssignment.getEmployee())) {
+				siteEmployeeRoles.get(siteId).put(employee, new HashSet<Role>());
+			}
+
+			siteEmployeeRoles.get(siteId).get(employee).add(siteAssignment.getRole());
+		}
+
+		return siteEmployeeRoles;
+	}
+
+	public Map<Integer, Set<Employee>> getSiteEmployeeAssignments(final int contractorId) {
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findByContractorId(contractorId),
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Integer, Employee>() {
+
+					@Override
+					public Integer getKey(SiteAssignment entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public Employee getValue(SiteAssignment entity) {
+						return entity.getEmployee();
+					}
+				});
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -351,26 +389,5 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 
 	public void deleteAllEmployeeSiteAssignmentsForSite(final int siteId, final int employeeId) {
 		siteAssignmentDAO.deleteByEmployeeIdAndSiteId(employeeId, siteId);
-	}
-
-	public Map<Integer, Map<Employee, Set<Role>>> getSiteEmployeeRoles(final Collection<Integer> sites) {
-		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findBySiteIds(sites);
-
-		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoles = new HashMap<>();
-		for (SiteAssignment siteAssignment : siteAssignments) {
-			int siteId = siteAssignment.getSiteId();
-			if (!siteEmployeeRoles.containsKey(siteId)) {
-				siteEmployeeRoles.put(siteId, new HashMap<Employee, Set<Role>>());
-			}
-
-			Employee employee = siteAssignment.getEmployee();
-			if (!siteEmployeeRoles.get(siteId).containsKey(siteAssignment.getEmployee())) {
-				siteEmployeeRoles.get(siteId).put(employee, new HashSet<Role>());
-			}
-
-			siteEmployeeRoles.get(siteId).get(employee).add(siteAssignment.getRole());
-		}
-
-		return siteEmployeeRoles;
 	}
 }

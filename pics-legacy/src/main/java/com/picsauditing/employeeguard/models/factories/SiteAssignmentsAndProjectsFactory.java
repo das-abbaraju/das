@@ -22,9 +22,15 @@ public class SiteAssignmentsAndProjectsFactory {
 																				   final Map<AccountModel, Map<SkillStatus, Integer>> siteAssignmentStatusMap,
 																				   final Map<AccountModel, Set<Project>> accountProjects,
 																				   final Set<AccountModel> allAccountAssignments) {
-		Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> results = new HashMap<>();
-		for (AccountModel accountModel : allAccountAssignments) {
-			SiteAssignmentStatisticsModel siteAssignmentStatisticsModel = build(accountModel, siteAssignmentStatusMap.get(accountModel));
+		Map<SiteAssignmentStatisticsModel, List<ProjectStatisticsModel>> results = new LinkedHashMap<>();
+
+		List<AccountModel> orderedSites = new ArrayList<>(allAccountAssignments);
+
+		Collections.sort(orderedSites);
+
+		for (AccountModel accountModel : orderedSites) {
+			SiteAssignmentStatisticsModel siteAssignmentStatisticsModel = build(accountModel,
+					siteAssignmentStatusMap.get(accountModel));
 			results.put(siteAssignmentStatisticsModel, build(accountProjects.get(accountModel), projectStatusMap));
 		}
 
@@ -43,11 +49,17 @@ public class SiteAssignmentsAndProjectsFactory {
 
 	private List<ProjectStatisticsModel> build(final Set<Project> projectsForSite,
 											   final Map<Project, Map<SkillStatus, Integer>> projectStatusMap) {
+		if (CollectionUtils.isEmpty(projectsForSite)) {
+			return Collections.emptyList();
+		}
+
 		List<ProjectStatisticsModel> results = new ArrayList<>();
 		for (Project project : projectsForSite) {
 			results.add(new ProjectStatisticsModel(build(project),
 					new ProjectAssignmentBreakdown(projectStatusMap.get(project))));
 		}
+
+		Collections.sort(results);
 
 		return results;
 	}
