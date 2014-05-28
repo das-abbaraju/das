@@ -70,7 +70,8 @@ angular.module('PICS.employeeguard')
             skillGroup: role,
             employeeStatusIcon: role.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getRoleNameBySlug(slugname)
+            viewTitle: skillModel.getRoleNameBySlug(slugname),
+            requiredTitle: 'Required by Site'
         };
     }
 
@@ -83,14 +84,16 @@ angular.module('PICS.employeeguard')
             skillGroup: project,
             employeeStatusIcon: project.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getProjectNameBySlug(slugname)
+            viewTitle: skillModel.getProjectNameBySlug(slugname),
+            requiredTitle: 'Required by Site or Project'
         };
     }
 
     function getDefaultModel() {
         return {
             requiredSkills: skillModel.getAllRequiredSkills(),
-            selectedMenuItem: 'all'
+            selectedMenuItem: 'all',
+            requiredTitle: 'Required by Site or Projects'
         };
     }
 
@@ -99,6 +102,7 @@ angular.module('PICS.employeeguard')
         $scope.skillGroup = model.skillGroup;
         $scope.selectedMenuItem = model.selectedMenuItem;
         $scope.viewTitle = model.viewTitle;
+        $scope.requiredTitle = model.requiredTitle;
 
         if (model.employeeStatusIcon) {
             $scope.employeeStatusIcon = model.employeeStatusIcon;
