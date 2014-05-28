@@ -111,8 +111,8 @@ public class SiteAssignmentModelFactory {
 		for (Map.Entry<Employee, Set<AccountSkill>> entry : employeeRequiredSkills.entrySet()) {
 			Employee employee = entry.getKey();
 
-			List<AccountSkillProfile> employeeSkills = filterRequiredEmployeeSkills(employee, entry.getValue());
-			employeeStatus.put(employee, calculateWorstStatusOf(employeeSkills));
+			//List<AccountSkillProfile> employeeSkills = filterRequiredEmployeeSkills(employee, entry.getValue());
+			employeeStatus.put(employee, calculateWorstStatusOf(employee,entry.getValue()));
 		}
 
 		return employeeStatus;
@@ -135,13 +135,36 @@ public class SiteAssignmentModelFactory {
 		return employeeSkills;
 	}
 
-	private SkillStatus calculateWorstStatusOf(List<AccountSkillProfile> accountSkillProfiles) {
-		//-- Default to highest severity
-		SkillStatus worst = SkillStatus.Expired;
+	private Map<Integer, AccountSkillProfile> prepareEmployeeDocumentationsLookup(Employee employee){
+		if (employee.getProfile() == null) {
+			return Collections.EMPTY_MAP;
+		}
 
-		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+		List<AccountSkillProfile> employeeDocumentations = employee.getProfile().getSkills();
+		Map<Integer, AccountSkillProfile> employeeDocumentationLookup = PicsCollectionUtil.convertToMap(employeeDocumentations, new PicsCollectionUtil.MapConvertable<Integer, AccountSkillProfile>() {
+			@Override
+			public Integer getKey(AccountSkillProfile entity) {
+				return entity.getSkill().getId();
+			}
+		});
+
+		return employeeDocumentationLookup;
+	}
+
+	private SkillStatus calculateWorstStatusOf(Employee employee, Set<AccountSkill> employeeRequiredSkills) {
+
+		Map<Integer, AccountSkillProfile> employeeDocumentationLookup = prepareEmployeeDocumentationsLookup(employee);
+
+		SkillStatus worst = SkillStatus.Completed;
+
+		for(AccountSkill employeeReqdSkill:employeeRequiredSkills){
+			int skillId=employeeReqdSkill.getId();
+			if(!employeeDocumentationLookup.containsKey(skillId)){
+				return SkillStatus.Expired;
+			}
+
+			AccountSkillProfile accountSkillProfile = employeeDocumentationLookup.get(skillId);
 			SkillStatus current = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
-
 			if (current == SkillStatus.Expired) {
 				return current;
 			}
@@ -149,8 +172,11 @@ public class SiteAssignmentModelFactory {
 			if (current.ordinal() < worst.ordinal()) {
 				worst = current;
 			}
+
 		}
 
 		return worst;
 	}
+
+
 }
