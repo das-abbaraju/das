@@ -30,125 +30,125 @@ import static org.mockito.Mockito.*;
 
 public class InvoiceDetailTest extends PicsActionTest {
 
-	InvoiceDetail invoiceDetail;
+    InvoiceDetail invoiceDetail;
 
-	@Mock
-	private Account account;
-	@Mock
-	private Invoice invoice;
+    @Mock
+    private Account account;
+    @Mock
+    private Invoice invoice;
     @Mock
     private InvoiceCreditMemo invoiceCreditMemo;
-	@Mock
-	private Country country;
-	@Mock
-	private BusinessUnit businessUnit;
-	@Mock
-	private ContractorAccount contractor;
+    @Mock
+    private Country country;
+    @Mock
+    private BusinessUnit businessUnit;
+    @Mock
+    private ContractorAccount contractor;
     @Mock
     private BillingService billingService;
     @Mock
     private FeeService feeService;
-	@Mock
-	private ContractorAccountDAO contractorAccountDAO;
-	@Mock
-	private DataObservable salesCommissionDataObservable;
-	@Mock
-	private NoteDAO noteDAO;
+    @Mock
+    private ContractorAccountDAO contractorAccountDAO;
+    @Mock
+    private DataObservable salesCommissionDataObservable;
+    @Mock
+    private NoteDAO noteDAO;
     @Mock
     private InvoiceDAO invoiceDAO;
     @Mock
     private PaymentDAO paymentDAO;
-	@Mock
-	private BillingNoteModel billingNoteModel;
-	@Mock
-	private AppPropertyDAO appPropertyDAO;
-	@Mock
-	private SapAppPropertyUtil sapAppPropertyUtil;
+    @Mock
+    private BillingNoteModel billingNoteModel;
+    @Mock
+    private AppPropertyDAO appPropertyDAO;
+    @Mock
+    private SapAppPropertyUtil sapAppPropertyUtil;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
 
-		invoiceDetail = new InvoiceDetail();
-		invoiceDetail.setContractor(contractor);
+        invoiceDetail = new InvoiceDetail();
+        invoiceDetail.setContractor(contractor);
 
-		super.setUp(invoiceDetail);
+        super.setUp(invoiceDetail);
 
-		Whitebox.setInternalState(invoiceDetail, "billingService", billingService);
+        Whitebox.setInternalState(invoiceDetail, "billingService", billingService);
         Whitebox.setInternalState(invoiceDetail, "feeService", feeService);
-		Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
-		Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
-		Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
-        Whitebox.setInternalState(invoiceDetail,"invoiceDAO",invoiceDAO);
-        Whitebox.setInternalState(invoiceDetail,"paymentDAO",paymentDAO);
-		Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
-		Whitebox.setInternalState(invoiceDetail,"appPropertyDAO",appPropertyDAO);
-		Whitebox.setInternalState(invoiceDetail,"sapAppPropertyUtil",sapAppPropertyUtil);
-		AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
-	}
+        Whitebox.setInternalState(invoiceDetail, "contractorAccountDao", contractorAccountDAO);
+        Whitebox.setInternalState(invoiceDetail, "salesCommissionDataObservable", salesCommissionDataObservable);
+        Whitebox.setInternalState(invoiceDetail, "noteDAO", noteDAO);
+        Whitebox.setInternalState(invoiceDetail, "invoiceDAO", invoiceDAO);
+        Whitebox.setInternalState(invoiceDetail, "paymentDAO", paymentDAO);
+        Whitebox.setInternalState(invoiceDetail, "billingNoteModel", billingNoteModel);
+        Whitebox.setInternalState(invoiceDetail, "appPropertyDAO", appPropertyDAO);
+        Whitebox.setInternalState(invoiceDetail, "sapAppPropertyUtil", sapAppPropertyUtil);
+        AccountingSystemSynchronization.setSapAppPropertyUtil(sapAppPropertyUtil);
+    }
 
-	// Go back and add in verification for the message
-	@Test
-	public void testExecute_NullInvoice() throws IOException, InvoiceValidationException, Exception {
-		invoiceDetail.setInvoice(null);
+    // Go back and add in verification for the message
+    @Test
+    public void testExecute_NullInvoice() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setInvoice(null);
 
-		String actionResult = invoiceDetail.execute();
+        String actionResult = invoiceDetail.execute();
 
-		assertEquals(PicsActionSupport.BLANK, actionResult);
-	}
+        assertEquals(PicsActionSupport.BLANK, actionResult);
+    }
 
-	private void commonSetupForExecuteTest() {
-		when(invoice.getAccount()).thenReturn(account);
-		invoiceDetail.setInvoice(invoice);
-		invoiceDetail.setTransaction(invoice);
-		when(permissions.getAccountId()).thenReturn(6987);
-		when(account.getCountry()).thenReturn(country);
-		when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
-		when(country.getCurrency()).thenReturn(Currency.USD);
-		when(contractor.getCountry()).thenReturn(country);
-		when(invoice.getTotalAmount()).thenReturn(BigDecimal.valueOf(199.00));
-		when(contractor.getStatus()).thenReturn(AccountStatus.Active);
+    private void commonSetupForExecuteTest() {
+        when(invoice.getAccount()).thenReturn(account);
+        invoiceDetail.setInvoice(invoice);
+        invoiceDetail.setTransaction(invoice);
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(account.getCountry()).thenReturn(country);
+        when(invoice.getStatus()).thenReturn(TransactionStatus.Unpaid);
+        when(country.getCurrency()).thenReturn(Currency.USD);
+        when(contractor.getCountry()).thenReturn(country);
+        when(invoice.getTotalAmount()).thenReturn(BigDecimal.valueOf(199.00));
+        when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Reactivation);
-		when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
+        when(contractor.getAccountLevel()).thenReturn(AccountLevel.BidOnly);
         when(country.getBusinessUnit()).thenReturn(businessUnit);
-		when(businessUnit.getId()).thenReturn(2);
+        when(businessUnit.getId()).thenReturn(2);
 
-	}
+    }
 
-	@Test(expected = NoRightsException.class)
-	public void testExecute_DoesNotHavePermissions() throws IOException, InvoiceValidationException, Exception {
-		commonSetupForExecuteTest();
-		when(account.getId()).thenReturn(4567);
-		when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(false);
+    @Test(expected = NoRightsException.class)
+    public void testExecute_DoesNotHavePermissions() throws IOException, InvoiceValidationException, Exception {
+        commonSetupForExecuteTest();
+        when(account.getId()).thenReturn(4567);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(false);
 
-		invoiceDetail.execute();
-	}
+        invoiceDetail.execute();
+    }
 
-	@Test
-	public void testExecute_WhenLoadingPage() throws Exception {
-		commonSetupForExecuteTest();
-		when(account.getId()).thenReturn(6987);
-		when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+    @Test
+    public void testExecute_WhenLoadingPage() throws Exception {
+        commonSetupForExecuteTest();
+        when(account.getId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
 
-		String actionResult = invoiceDetail.execute();
+        String actionResult = invoiceDetail.execute();
 
-		commonVerificationForExecuteTest(ActionSupport.SUCCESS, actionResult);
-	}
+        commonVerificationForExecuteTest(ActionSupport.SUCCESS, actionResult);
+    }
 
-	@Test
-	public void testExecute_CancelButton() throws IOException, InvoiceValidationException, Exception {
-		invoiceDetail.setInvoice(invoice);
-		invoiceDetail.setButton("cancel");
-		commonSetupForExecuteTest();
-		when(permissions.getAccountId()).thenReturn(6987);
-		when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
+    @Test
+    public void testExecute_CancelButton() throws IOException, InvoiceValidationException, Exception {
+        invoiceDetail.setInvoice(invoice);
+        invoiceDetail.setButton("cancel");
+        commonSetupForExecuteTest();
+        when(permissions.getAccountId()).thenReturn(6987);
+        when(permissions.hasPermission(OpPerms.AllContractors)).thenReturn(true);
 
-		String actionResult = invoiceDetail.execute();
+        String actionResult = invoiceDetail.execute();
 
-		verify(contractor, times(1)).setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
-		verify(invoice, times(1)).setStatus(TransactionStatus.Void);
-		commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
-	}
+        verify(contractor, times(1)).setReason(AccountStatusChanges.BID_ONLY_ACCOUNT_REASON);
+        verify(invoice, times(1)).setStatus(TransactionStatus.Void);
+        commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
+    }
 
     @Test
     public void testExecute_SaveButton() throws Exception {
@@ -160,7 +160,7 @@ public class InvoiceDetailTest extends PicsActionTest {
 
         String actionResult = invoiceDetail.execute();
 
-        verify(billingService,times(1)).applyFinancialCalculationsAndType(invoice);
+        verify(billingService, times(1)).applyFinancialCalculationsAndType(invoice);
         verify(billingService, times(1)).verifyAndSaveInvoice(invoice);
         commonVerificationForExecuteTest(PicsActionSupport.REDIRECT, actionResult);
     }
@@ -281,10 +281,59 @@ public class InvoiceDetailTest extends PicsActionTest {
         assertEquals(item.getRevenueStartDate(), item.getRevenueFinishDate());
     }
 
+    @Test
+    public void testGetPicsTaxIdForCHF() throws Exception {
+        Invoice invoiceObj = new Invoice();
+        invoiceObj.setCurrency(Currency.CHF);
+        invoiceDetail.setInvoice(invoiceObj);
+
+        assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
+    }
+
+    @Test
+    public void testGetPicsTaxIdForGBP() throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setCurrency(Currency.GBP);
+        invoiceDetail.setInvoice(invoice);
+
+        assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
+    }
+
+    @Test
+    public void testGetPicsTaxIdForEUR() throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setCurrency(Currency.EUR);
+        invoiceDetail.setInvoice(invoice);
+
+        assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
+    }
+
+    @Test
+    public void testGetPicsTaxIdForBrazil() throws Exception {
+        Invoice invoice = new Invoice();
+        invoice.setAccount(contractor);
+        when(contractor.getCountry()).thenReturn(new Country(Country.BRAZIL_ISO_CODE));
+        invoiceDetail.setInvoice(invoice);
+
+        assertEquals(InvoiceDetail.BRAZIL_TAXID, invoiceDetail.getPicsTaxId());
+    }
+
+    @Test
+    public void testGetPicsTaxIdForOthers() throws Exception {
+        Invoice invoiceObj = new Invoice();
+        invoiceObj.setCurrency(Currency.USD);
+        invoiceObj.setAccount(contractor);
+        invoiceDetail.setInvoice(invoiceObj);
+
+        when(contractor.getCountry()).thenReturn(new Country(Country.US_ISO_CODE));
+
+        assertEquals("", invoiceDetail.getPicsTaxId());
+    }
+
     private void commonVerificationForExecuteTest(String expectedActionResult, String actualActionResult)
-			throws Exception {
-		assertEquals(expectedActionResult, actualActionResult);
-		verify(contractor, never()).setStatus(AccountStatus.Deactivated);
-	}
+            throws Exception {
+        assertEquals(expectedActionResult, actualActionResult);
+        verify(contractor, never()).setStatus(AccountStatus.Deactivated);
+    }
 
 }

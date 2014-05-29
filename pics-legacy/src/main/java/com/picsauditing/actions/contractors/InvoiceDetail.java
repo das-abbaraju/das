@@ -52,6 +52,9 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     private static final String REFUND_BUTTON = "refund";
 	private static final String RETURN_ITEMS_BUTTON = "returnitems";
 
+    public static final String EUR_GBP_CHF_TAXID = "Company registered Number: 07660778 – VAT Number: GB126 9246 04";
+    public static final String BRAZIL_TAXID = "CNPJ #: 18.791.925/0001-63";
+
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
@@ -679,12 +682,12 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     public String getPicsTaxId() {
-        if (invoice.getCurrency().isEUR() || invoice.getCurrency().isGBP()) {
-            return "Company registered Number: 07660778 – VAT Number: GB126 9246 04";
+        if (invoice.getCurrency().isEUR() || invoice.getCurrency().isGBP() || invoice.getCurrency().isCHF()) {
+            return EUR_GBP_CHF_TAXID;
         }
 
         if (invoice.getAccount().getCountry().isBrazil()) {
-            return "CNPJ #: 18.791.925/0001-63";
+            return BRAZIL_TAXID;
         }
 
         return "";

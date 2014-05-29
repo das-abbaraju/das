@@ -1,15 +1,11 @@
 package com.intuit.developer;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
-
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
+
+import java.util.*;
 
 public class QBSession {
 
@@ -177,4 +173,8 @@ public class QBSession {
 	public boolean isEUR() {
 		return "EUR".equals(this.getCurrencyCode());
 	}
+
+    public boolean isCHF() { return "CHF".equals(this.getCurrencyCode()); }
+
+
 }

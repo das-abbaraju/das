@@ -14,7 +14,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,9 +66,9 @@ public class InsertContractors extends CustomerAdaptor {
 				 * doesn't allow for multiple currencies per account. Have to
 				 * name each account differently.
 				 **/
-				if (currentSession.isEUR()) {
-					requestID += "EU";
-				}
+
+                requestID = requestID + getCurrencyCodeSuffixForQB(currentSession) ;
+
 				customerAddRequest.setRequestID(requestID);
 
 				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(customerAddRequest);
@@ -77,10 +76,7 @@ public class InsertContractors extends CustomerAdaptor {
 				CustomerAdd customer = factory.createCustomerAdd();
 				customerAddRequest.setCustomerAdd(customer);
 
-				String customerName = contractor.getIdString();
-				if (currentSession.isEUR()) {
-					customerName += "EU";
-				}
+				String customerName = contractor.getIdString() + getCurrencyCodeSuffixForQB(currentSession);
 
 				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
@@ -145,7 +141,18 @@ public class InsertContractors extends CustomerAdaptor {
 
 	}
 
-	@Override
+    private String getCurrencyCodeSuffixForQB(QBSession qbSession) {
+        switch (qbSession.getCurrencyCode()) {
+            case "EUR":
+                return "EU";
+            case "CHF":
+                return qbSession.getCurrencyCode();
+            default:
+                return "";
+        }
+    }
+
+    @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
