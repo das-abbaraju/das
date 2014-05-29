@@ -5,6 +5,7 @@ import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
+import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.builders.UserBuilder;
@@ -28,15 +29,19 @@ public class AuthenticationServiceTest {
 
 	public static final String USERNAME = "Username";
 	public static final String PASSWORD = "Password";
+	public static final String VALID_HASH = "valid hash";
 	public static final int APPUSER_ID = 123;
 	public static final int PROFILE_ID = 451;
 	public static final int USER_ID = 810;
+	public static final String INVALID_HASH = "invalid hash";
 
 	// Class under test
 	private AuthenticationService authenticationService;
 
 	@Mock
 	private AppUserService appUserService;
+	@Mock
+	private EmailHashService emailHashService;
 	@Mock
 	private ProfileEntityService profileEntityService;
 	@Mock
@@ -51,6 +56,7 @@ public class AuthenticationServiceTest {
 		Whitebox.setInternalState(authenticationService, "appUserService", appUserService);
 		Whitebox.setInternalState(authenticationService, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(authenticationService, "userService", userService);
+		Whitebox.setInternalState(authenticationService, "emailHashService", emailHashService);
 
 		byte[] keyspec = Base64.decode("0GX83VHz1nFalBO71o059rnWbX22ayX31hgNbJoMmiYUpZZqSuIZyLQ0/Cr+nRdQCHPruikNPXV6" +
 				"IWtkYJeV7g==");
@@ -95,22 +101,27 @@ public class AuthenticationServiceTest {
 	public void testAuthenticateEmployeeGUARDUser_No_AppUser_Found() throws FailedLoginException {
 		when(appUserService.findByUsernameAndUnencodedPassword(USERNAME, PASSWORD)).thenReturn(null);
 
-		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
+		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, VALID_HASH, true);
 	}
 
 	@Test(expected = FailedLoginException.class)
-	public void testAuthenticateEmployeeGUARDUser_No_Profile_Found() throws FailedLoginException {
+	public void testAuthenticateEmployeeGUARDUser_NoProfileFound_InvalidHash() throws FailedLoginException {
+		verifyTestAuthenticateEmployeeGUARDUser_NoProfileFound_InvalidHash();
+
+		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, INVALID_HASH, true);
+	}
+
+	private void verifyTestAuthenticateEmployeeGUARDUser_NoProfileFound_InvalidHash() {
 		setupAppUserService();
 		when(profileEntityService.findByAppUserId(APPUSER_ID)).thenReturn(null);
-
-		authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
+		when(emailHashService.findByHash(INVALID_HASH)).thenReturn(null);
 	}
 
 	@Test
 	public void testAuthenticateEmployeeGUARDUser() throws FailedLoginException {
 		setupTestAuthenticateEmployeeGUARDUser();
 
-		String result = authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true);
+		String result = authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, VALID_HASH, true);
 
 		assertTrue(result.startsWith("810|"));
 		assertTrue(result.contains("|{\"rememberMe\":true}|123|"));

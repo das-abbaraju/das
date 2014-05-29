@@ -152,7 +152,7 @@ public class LoginActionTest extends PicsActionTest {
 		loginAction.setHashCode(VALID_HASH);
 		loginAction.setLoginForm(loginForm);
 
-		when(authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, true))
+		when(authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, loginForm.getHashCode(), true))
 				.thenReturn("fake cookie content");
 	}
 
