@@ -123,6 +123,10 @@ public class AccountSkillDAO extends AbstractBaseEntityDAO<AccountSkill> {
 	}
 
 	public List<AccountSkill> findRequiredByContractorIds(final Collection<Integer> contractorIds) {
+		if (CollectionUtils.isEmpty(contractorIds)) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<AccountSkill> query = em.createQuery("select s FROM AccountSkill s " +
 				"WHERE s.accountId IN (:contractorIds) " +
 				"AND s.ruleType = 'Required'", AccountSkill.class);

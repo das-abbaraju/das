@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -298,6 +299,10 @@ public class ProfileSkillStatusProcess {
 	}
 
 	private Employee getEmployee(final Profile profile) {
+		if (CollectionUtils.isEmpty(profile.getEmployees())) {
+			return null;
+		}
+
 		return profile.getEmployees().get(profile.getEmployees().size() - 1);
 	}
 }
