@@ -1,12 +1,9 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.google.common.collect.Table;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 
@@ -43,7 +40,7 @@ public class EmployeeSiteAssignmentModelFactory {
 
 	public List<EmployeeSiteAssignmentModel> create(final Collection<Employee> employees,
 	                                                final List<AccountSkill> skills,
-	                                                final Table<Employee, AccountSkill, AccountSkillEmployee> employeeSkills,
+	                                                final Table<Employee, AccountSkill, AccountSkillProfile> employeeSkills,
 	                                                final Map<Integer, AccountModel> accounts) {
 		List<EmployeeSiteAssignmentModel> models = new ArrayList<>();
 		for (Employee employee : employees) {

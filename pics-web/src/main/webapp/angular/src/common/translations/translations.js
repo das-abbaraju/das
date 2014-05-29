@@ -61,62 +61,64 @@
     angular.module('PICS.translations', [])
 
     .config(function ($provide) {
-        $provide.factory('translationsService', function ($http, $rootScope, $q, routePathToTranslationKeys) {
-            var deferred = $q.defer();
+        $provide.factory('translationsService', ['$http', '$rootScope', '$q', 'routePathToTranslationKeys',
+            function ($http, $rootScope, $q, routePathToTranslationKeys) {
+                var deferred = $q.defer();
 
-            function setDevelopmentMode(value) {
-                isDevelopmentMode = (value == 'on');
-            }
-
-            function isDevelopmentMode() {
-                return isDevelopmentMode;
-            }
-
-            function createRouteParamsFromKeys(keys) {
-                return {
-                    translationKeys: keys
-                };
-            }
-
-            function getRoutePathToTranslationKeys() {
-                return routePathToTranslationKeys;
-            }
-
-            function fetchTranslations(requestParams) {
-                return $http.post('/translations.action', requestParams);
-            }
-
-            function setTranslations(value) {
-                var translations = value;
-
-                if (isDevelopmentMode) {
-                    replaceEmptyStringValuesWithKeys(translations);
+                function setDevelopmentMode(value) {
+                    isDevelopmentMode = (value == 'on');
                 }
 
-                $rootScope.text = translations;
-                deferred.resolve(translations);
-            }
+                function isDevelopmentMode() {
+                    return isDevelopmentMode;
+                }
 
-            function replaceEmptyStringValuesWithKeys(obj) {
-                angular.forEach(obj, function (value, key) {
-                    obj[key] = value || key;
-                });
-            }
+                function createRouteParamsFromKeys(keys) {
+                    return {
+                        translationKeys: keys
+                    };
+                }
 
-            function getTranslations() {
-                return deferred.promise;
-            }
+                function getRoutePathToTranslationKeys() {
+                    return routePathToTranslationKeys;
+                }
 
-            return {
-                setDevelopmentMode: setDevelopmentMode,
-                isDevelopmentMode: isDevelopmentMode,
-                fetchTranslations: fetchTranslations,
-                createRouteParamsFromKeys: createRouteParamsFromKeys,
-                getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
-                getTranslations: getTranslations,
-                setTranslations: setTranslations
-            };
-        });
+                function fetchTranslations(requestParams) {
+                    return $http.post('/translations.action', requestParams);
+                }
+
+                function setTranslations(value) {
+                    var translations = value;
+
+                    if (isDevelopmentMode) {
+                        replaceEmptyStringValuesWithKeys(translations);
+                    }
+
+                    $rootScope.text = translations;
+                    deferred.resolve(translations);
+                }
+
+                function replaceEmptyStringValuesWithKeys(obj) {
+                    angular.forEach(obj, function (value, key) {
+                        obj[key] = value || key;
+                    });
+                }
+
+                function getTranslations() {
+                    return deferred.promise;
+                }
+
+                return {
+                    setDevelopmentMode: setDevelopmentMode,
+                    isDevelopmentMode: isDevelopmentMode,
+                    fetchTranslations: fetchTranslations,
+                    createRouteParamsFromKeys: createRouteParamsFromKeys,
+                    getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
+                    getTranslations: getTranslations,
+                    setTranslations: setTranslations
+                };
+            }
+        ]);
     })
 
     .run(function ($rootScope, $http, $q, translationsService) {    
@@ -128,6 +130,8 @@
             translationKeys = [];
 
             keys = routePathToTranslationKeys[routePath];
+
+            if (!keys) return;
 
             requestParams = translationsService.createRouteParamsFromKeys(keys);
 

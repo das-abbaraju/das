@@ -52,6 +52,26 @@ describe('translatedPage directive', function () {
         expect($log.info).toHaveBeenCalledWith('"/fakeroute":["my.first.translation.key","my.second.translation.key"]');
     });
 
+    it('should NOT make a server request for translations when translationKeys.js contains no translation keys for the page', function () {
+        var linkingFn, nextMock;
+
+        nextMock = {
+            $$route: {
+                originalPath: '/fakeroute'
+            }
+        };
+
+        spyOn(translationsService, 'getRoutePathToTranslationKeys').andReturn({
+            translationKeys: undefined
+        });
+
+        $rootScope.$broadcast('$routeChangeStart', nextMock);
+
+        spyOn($http, 'post');
+
+        expect($http.post).not.toHaveBeenCalled();
+    });
+
     it('should request an update to the translations keys file once $viewContentLoaded is fired', function () {
         setup('on');
         expect($http.post).toHaveBeenCalledWith(

@@ -1,0 +1,155 @@
+<div class="contractor-dashboard" ng-controller="contractorDashboardCtrl">
+    <div class="container">
+        <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
+
+        <div class="row">
+            <div class="col-md-3">
+                <ul class="nav nav-pills nav-stacked">
+                    <li>
+                        <a href="/employee-guard/contractor/employee" target="_self">
+                            <i class="icon-user icon-large"></i>Employees
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/contractor/project" target="_self">
+                            <i class="icon-map-marker icon-large"></i>Employee Assignments
+                        </a>
+                    </li>
+                    <li class="nav-divider"></li>
+                    <li>
+                        <span class="nav-title">Training Tracker</span>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/contractor/employee-group" target="_self">
+                            <i class="icon-group icon-large"></i>Employee Groups
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/employee-guard/contractor/skill" target="_self">
+                            <i class="icon-certificate icon-large"></i>Skills
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-9">
+                <section class="employee-guard-section chart-section">
+                    <h1>
+                        <i class="icon-map-marker icon-large"></i>Employee Assignment Status
+                    </h1>
+                    <div class="content">
+                        <div class="row" ng-show="employees">
+                            <div class="col-md-4">
+                                <div class="current-assignments">
+                                    <div class="row success">
+                                        <div class="col-xs-6 text-right">
+                                            <i class="icon-ok-sign icon-large"></i>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            {{ status.completed + status.pending }}
+                                        </div>
+                                    </div>
+                                    <div class="row warning">
+                                        <div class="col-xs-6 text-right">
+                                            <i class="icon-warning-sign icon-large"></i>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            {{ status.expiring }}
+                                        </div>
+                                    </div>
+                                    <div class="row danger">
+                                        <div class="col-xs-6 text-right">
+                                            <i class="danger icon-minus-sign-alt icon-large"></i>
+                                        </div>
+                                        <div class="col-xs-6">
+                                            {{ status.expired }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="chart-container text-center">
+                                    <chart type="arc" data="chartData"></chart>
+                                    <div class="col-xs-6 col-xs-offset-3 number-of-employees">
+                                        <i class="icon-user icon-large"></i>
+                                        <a href="#" class="employees">
+                                            {{ employees }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="employees.length <= 0">
+                            <div class="col-md-8 col-md-offset-2">
+                                <div class="alert alert-info">
+                                    <h4>No Employees Assigned</h4>
+
+                                    <p>Once you've added your employees, assign them to Job Roles at sites and projects by going to <a href="/employee-guard/contractor/project" target="_self">Employee Assignments</a>. The status of all your employee's assignments will be shown in this section so you can monitor how they're doing.</p>
+
+                                    <p>
+                                        <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="employee-guard-section contractor-dashboard">
+                    <h1>
+                        <i class="icon-exclamation icon-large"></i>Status Alerts
+                    </h1>
+                    <div class="content">
+                        <div class="row">
+                            <div class="col-md-4 text-center tile-container">
+                                <div class="tile primary">
+                                    <i class="icon-envelope"></i>
+                                    <p class="title">{{ status.requested }}</p>
+                                    <p class="subtitle">Requested Employees</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="row beta-section">
+                    <div class="col-md-8">
+                        <section class="employee-guard-section">
+                            <h1>
+                                <i class="icon-wrench icon-large"></i>Beta Updates (Thursday 2014-05-08)
+                            </h1>
+                            <div class="content">
+                                <ul class="list-unstyled">
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Updating a skill will create an error
+                                    </li>
+                                    <li class="issue-known">
+                                        <span><i class="icon-lemon"></i> Known Issue:</span>
+                                        Expiring/Incomplete and Expiring skill counts are not displaying on Employees page
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Assigned Employees is now calculating correctly
+                                    </li>
+                                    <li class="issue-fixed">
+                                        <span><i class="icon-smile"></i> Fixed:</span>
+                                        Assignment totals are correctly updated when assigning employees to a Job Role at a site
+                                    </li>
+                                    <li class="issue-more">
+                                        <a href="/employee-guard/contractor/changelog">
+                                            <i class="icon-list"></i> View more update history in the Change Log...
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-md-4">
+                        <betafeedback></betafeedback>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

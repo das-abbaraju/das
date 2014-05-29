@@ -13,6 +13,8 @@ public interface SessionInfoProvider {
 
 	int getUserId();
 
+	int getAppUserId();
+
 	int getAccountId();
 
 	int getId();

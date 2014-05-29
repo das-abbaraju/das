@@ -131,7 +131,6 @@ public class DocumentActionTest extends PicsActionTest {
 	public void testInsert() throws Exception {
 		assertEquals(PicsActionSupport.REDIRECT, documentAction.insert());
 		assertTrue(documentAction.getUrl().startsWith("/employee-guard/employee/file/"));
-//		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
 		verify(profileDocumentService).create(any(Profile.class), any(DocumentForm.class), anyString(), eq(Identifiable.SYSTEM));
 	}
 
@@ -141,7 +140,6 @@ public class DocumentActionTest extends PicsActionTest {
 		documentAction.setId(String.valueOf(ID));
 		assertEquals(PicsActionSupport.REDIRECT, documentAction.delete());
 		assertEquals("/employee-guard/employee/file", documentAction.getUrl());
-//		verify(profileService).findByAppUserId(Identifiable.SYSTEM);
-		verify(profileDocumentService).delete(ID, Identifiable.SYSTEM);
+		verify(profileDocumentService).delete(ID);
 	}
 }

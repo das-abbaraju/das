@@ -9,12 +9,10 @@ import com.picsauditing.employeeguard.forms.operator.ProjectNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.ProjectRolesForm;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.ListUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
-import com.picsauditing.util.generic.GenericPredicate;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -153,8 +151,8 @@ public class ProjectService {
 				callback
 		);
 
-    originalProject.getSkills().clear();
-    originalProject.getSkills().addAll(updatedSkills);
+		originalProject.getSkills().clear();
+		originalProject.getSkills().addAll(updatedSkills);
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getSkills(), appUserId, now);
 
@@ -247,46 +245,35 @@ public class ProjectService {
 				ProjectCompany.COMPARATOR,
 				projectCompanyCallback);
 
-    originalProject.getCompanies().clear();
-    originalProject.getCompanies().addAll(updatedCompanies);
+		originalProject.getCompanies().clear();
+		originalProject.getCompanies().addAll(updatedCompanies);
 
 		EntityHelper.setUpdateAuditFields(originalProject, appUserId, now);
 		EntityHelper.setUpdateAuditFields(originalProject.getCompanies(), appUserId, now);
 		originalProject = projectDAO.save(originalProject);
 
-		removeEmployeesNoLongerAssignedToProject(originalProject, appUserId, projectCompanyCallback);
+		removeEmployeesNoLongerAssignedToProject(originalProject,
+				PicsCollectionUtil.getIdsFromCollection(projectCompanyCallback.getRemovedEntities(),
+						new PicsCollectionUtil.Identitifable<ProjectCompany, Integer>() {
+							@Override
+							public Integer getId(ProjectCompany element) {
+								return element.getAccountId();
+							}
+						}));
 
 		return originalProject;
 	}
 
-	private void removeEmployeesNoLongerAssignedToProject(Project originalProject, int appUserId, BaseEntityCallback<ProjectCompany> projectCompanyCallback) {
-		final List<Integer> removedCompanies = getRemovedCompanyIds(projectCompanyCallback);
-		List<Employee> employeesAssignedToProject = getEmployeesAssignedToProjectFromRemovedCompanies(originalProject, removedCompanies);
-
-		for (Employee employee : employeesAssignedToProject) {
-			EntityHelper.softDelete(employee.getProjectRoles(), appUserId);
-			projectRoleEmployeeDAO.delete(employee.getProjectRoles());
+	private void removeEmployeesNoLongerAssignedToProject(final Project project,
+														  final Set<Integer> contractorIds) {
+		if (CollectionUtils.isEmpty(contractorIds)) {
+			return;
 		}
-	}
 
-	private List<Employee> getEmployeesAssignedToProjectFromRemovedCompanies(Project originalProject, final List<Integer> removedCompanies) {
-		List<Employee> employeesAssignedToProject = new ArrayList<>(employeeDAO.findByProject(originalProject));
-		CollectionUtils.filter(employeesAssignedToProject, new GenericPredicate<Employee>() {
-			@Override
-			public boolean evaluateEntity(Employee employee) {
-				return removedCompanies.contains(employee.getAccountId());
-			}
-		});
-		return employeesAssignedToProject;
-	}
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO
+				.findByProjectIdAndContractorIds(project.getId(), contractorIds);
 
-	private List<Integer> getRemovedCompanyIds(BaseEntityCallback<ProjectCompany> projectCompanyCallback) {
-		return ExtractorUtil.extractList(projectCompanyCallback.getRemovedEntities(), new Extractor<ProjectCompany, Integer>() {
-			@Override
-			public Integer extract(ProjectCompany projectCompany) {
-				return projectCompany.getAccountId();
-			}
-		});
+		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 
 	public void delete(final int id, final int accountId) {

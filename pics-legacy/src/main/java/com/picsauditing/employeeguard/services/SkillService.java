@@ -15,7 +15,6 @@ import com.picsauditing.web.SessionInfoProviderFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -34,7 +33,7 @@ public class SkillService {
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
 	@Deprecated
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired

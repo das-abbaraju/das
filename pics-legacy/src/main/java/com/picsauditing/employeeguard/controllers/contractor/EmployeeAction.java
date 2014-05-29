@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
 import com.google.common.collect.Table;
-import com.google.common.collect.TreeBasedTable;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
@@ -9,7 +8,10 @@ import com.picsauditing.access.AuthenticationAware;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.EmailHash;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
@@ -20,14 +22,13 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.process.EmployeeSkillData;
 import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
 import com.picsauditing.employeeguard.validators.employee.EmployeeFormValidator;
+import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -41,10 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @AuthenticationAware
 public class EmployeeAction extends PicsRestActionSupport implements AjaxValidator {
@@ -65,6 +63,9 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private EmployeeFormValidator employeeFormValidator;
 	@Autowired
+	private EmployeePhotoFormValidator employeePhotoFormValidator;
+
+	@Autowired
 	private EmployeeEmploymentFormValidator employeeEmploymentFormValidator;
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
@@ -78,8 +79,6 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	private ProjectRoleService projectRoleService;
 	@Autowired
 	private EmployeeSkillDataProcess employeeSkillDataProcess;
-	@Autowired
-	private AssignmentService assignmentService;
 
 	/* Forms */
 	@FormBinding("contractor_employee_create")
@@ -116,7 +115,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 		Collections.sort(employees);
 
-		loadEmployeeSkillStatuses();
+		loadEmployeeSkillStatuses(employees);
 
 		return LIST;
 	}
@@ -124,9 +123,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	public String show() throws PageNotFoundException {
 		loadEmployee();
 
-		Set<Integer> corporateAndSiteIds = employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
-		List<Integer> allSiteAndCorporateIds = accountService.getTopmostCorporateAccountIds(corporateAndSiteIds);
-		EmployeeSkillData employeeSkillData = employeeSkillDataProcess.buildEmployeeSkillData(employee, allSiteAndCorporateIds);
+		Set<Employee> employees = new HashSet<>(Arrays.asList(employee));
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = getSiteHierarchy(employees);
+		EmployeeSkillData employeeSkillData = employeeSkillDataProcess.buildEmployeeSkillData(permissions.getAccountId(),
+				employee, siteHierarchy);
 		skillInfoList = formBuilderFactory.getSkillInfoBuilder().build(employeeSkillData.getSkillStatuses());
 
 		Collections.sort(skillInfoList);
@@ -194,7 +194,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		emailService.sendEGWelcomeEmail(hash, permissions.getAccountName());
 
 		if (addAnother(employeeForm)) {
-			return setUrlForRedirect("/employee-guard/contractor/employee/create"); // EmployeeCreateAction,
+			return setUrlForRedirect("/employee-guard/contractor/employee/create");
 		}
 
 		return redirectToList();
@@ -226,8 +226,10 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		return setUrlForRedirect(url);
 	}
 
-	private void loadEmployee() {
+	private Employee loadEmployee() {
 		employee = employeeEntityService.find(getIdAsInt(), permissions.getAccountId());
+
+		return employee;
 	}
 
 	private void loadEmployeeAssignments(Employee employee) {
@@ -249,18 +251,19 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		employeeGroups = groupService.getGroupsForAccount(permissions.getAccountId());
 	}
 
-	private void loadEmployeeSkillStatuses() {
-		employeeSkillStatuses = TreeBasedTable.create();
-		for (Employee employee : employees) {
-			for (SkillStatus skillStatus : SkillStatus.values()) {
-				employeeSkillStatuses.put(employee, skillStatus.getDisplayValue(), 0);
-			}
+	private void loadEmployeeSkillStatuses(List<Employee> employees) {
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = getSiteHierarchy(employees);
 
-			for (AccountSkillEmployee accountSkillEmployee : employee.getSkills()) {
-				SkillStatus status = SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee);
-				employeeSkillStatuses.put(employee, status.getDisplayValue(), employeeSkillStatuses.get(employee, status.getDisplayValue()) + 1);
-			}
-		}
+		employeeSkillStatuses = employeeSkillDataProcess.buildEmployeeSkillStatuses(permissions.getAccountId(),
+				employees, siteHierarchy);
+	}
+
+	private Map<AccountModel, Set<AccountModel>> getSiteHierarchy(Collection<Employee> employees) {
+		Map<Employee, Set<Integer>> employeeSiteAssignments = employeeEntityService
+				.getEmployeeSiteAssignments(employees);
+
+		return accountService.getSiteParentAccounts(PicsCollectionUtil
+				.flattenCollectionOfCollection(employeeSiteAssignments.values()));
 	}
 
 	private UrlBuilder urlBuilder() {
@@ -275,7 +278,15 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 
 	// For the Ajax Validation
 	public Validator getCustomValidator() {
-		return employeeFormValidator;
+		if (employeeForm != null || employeePersonalForm != null) {
+			return employeeFormValidator;
+		}
+
+		if (employeeEmploymentForm != null) {
+			return employeeEmploymentFormValidator;
+		}
+
+		return employeePhotoFormValidator;
 	}
 
 	@Override
@@ -285,11 +296,16 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 		ValueStack valueStack = ActionContext.getContext().getValueStack();
 		DelegatingValidatorContext validatorContext = new DelegatingValidatorContext(this);
 
-		if (employeeEmploymentForm == null) {
+		if (employeeForm != null || employeePersonalForm != null) {
 			employeeFormValidator.validate(valueStack, validatorContext);
-		} else {
+		}
+		if (employeeEmploymentForm != null) {
 			employeeEmploymentFormValidator.validate(valueStack, validatorContext);
 		}
+		if (employeePhotoForm != null) {
+			employeePhotoFormValidator.validate(valueStack, validatorContext);
+		}
+
 	}
 
 	private void prepareFormDataWhenValidationFails() {

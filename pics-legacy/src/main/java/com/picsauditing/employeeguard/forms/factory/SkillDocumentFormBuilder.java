@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.forms.factory;
 
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -21,11 +21,11 @@ public class SkillDocumentFormBuilder {
 		return skillDocumentForm;
 	}
 
-	public SkillDocumentForm build(AccountSkillEmployee accountSkillEmployee) {
+	public SkillDocumentForm build(AccountSkillProfile accountSkillProfile) {
 		SkillDocumentForm skillDocumentForm = new SkillDocumentForm();
 
-		Date endDate = accountSkillEmployee.getEndDate();
-		if (accountSkillEmployee.getSkill().getSkillType().isTraining() && endDate != null) {
+		Date endDate = accountSkillProfile.getEndDate();
+		if (accountSkillProfile.getSkill().getSkillType().isTraining() && endDate != null) {
 			skillDocumentForm.setVerified(endDate.after(new Date()));
 		}
 

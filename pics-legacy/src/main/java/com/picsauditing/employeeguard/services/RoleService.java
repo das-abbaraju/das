@@ -23,19 +23,11 @@ import java.util.*;
 public class RoleService {
 
 	@Autowired
-	private AccountService accountService;
-	@Autowired
 	private AccountSkillDAO accountSkillDAO;
-	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
 	private RoleDAO roleDAO;
-	@Autowired
-	private SkillEngine skillEngine;
 	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
 	@Autowired

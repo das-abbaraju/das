@@ -2,11 +2,12 @@ package com.picsauditing.employeeguard.validators.document;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.strutsutil.AjaxUtils;
 import com.picsauditing.util.Strings;
 
-public class ProfileDocumentFormValidator extends AbstractBasicValidator<DocumentForm> {
+public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValidator<DocumentForm> {
 
 	public static final String PROFILE_DOCUMENT_FORM = "documentForm";
 
@@ -27,6 +28,9 @@ public class ProfileDocumentFormValidator extends AbstractBasicValidator<Documen
 	}
 
 	private boolean isFileValid(DocumentForm documentForm) {
+		if(documentForm.getId()>0)
+			return true;
+
 		if (AjaxUtils.isAjax(request) && Strings.isEmpty(documentForm.getValidate_filename())) {
 			return false;
 		} else if (AjaxUtils.isAjax(request) && Strings.isNotEmpty(documentForm.getValidate_filename())) {
@@ -34,5 +38,10 @@ public class ProfileDocumentFormValidator extends AbstractBasicValidator<Documen
 		}
 
 		return ProfileDocumentValidationUtil.valid(documentForm, ProfileDocumentValidationUtil.DocumentField.FILE);
+	}
+
+	@Override
+	protected String getDuplicateErrorMessage() {
+		return "Name";
 	}
 }

@@ -8,7 +8,6 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
-import com.picsauditing.employeeguard.services.AccountFilter;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -16,6 +15,7 @@ import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,6 +109,29 @@ public class AccountService {
 		}
 
 		return new ArrayList<>(corporates);
+	}
+
+	public Map<AccountModel, Set<AccountModel>> getSiteParentAccounts(final Collection<Integer> siteIds) {
+		if (CollectionUtils.isEmpty(siteIds)) {
+			return Collections.emptyMap();
+		}
+
+		List<OperatorAccount> sites = operatorDAO.findOperators(new ArrayList<>(siteIds));
+
+		Map<AccountModel, Set<AccountModel>> siteToCorporates = new HashMap<>();
+		for (OperatorAccount site : sites) {
+			ArrayList<Integer> visited = new ArrayList<>();
+			List<OperatorAccount> topmostCorporates = getTopmostCorporates(site, visited);
+
+			AccountModel siteAccountModel = mapAccountToAccountModel(site);
+			siteToCorporates.put(siteAccountModel, new HashSet<AccountModel>());
+
+			for (OperatorAccount corporate : topmostCorporates) {
+				siteToCorporates.get(siteAccountModel).add(mapAccountToAccountModel(corporate));
+			}
+		}
+
+		return siteToCorporates;
 	}
 
 	public Map<Integer, Set<Integer>> getSiteToCorporatesMap(final Collection<Integer> siteIds) {
@@ -387,7 +410,19 @@ public class AccountService {
 	}
 
 	public List<AccountModel> getOperatorsForContractors(final Collection<Integer> contractorIds) {
-		return getAccountsByIds(getOperatorIdsForContractors(contractorIds));
+		List<Account> accounts = accountDAO.findByIds(getOperatorIdsForContractors(contractorIds));
+
+		List<AccountModel> accountModels = mapAccountsToAccountModels(accountFilter.filterEmployeeGUARDAccounts(accounts));
+
+		CollectionUtils.filter(accountModels, new GenericPredicate<AccountModel>() {
+
+			@Override
+			public boolean evaluateEntity(AccountModel accountModel) {
+				return !accountModel.isCorporate();
+			}
+		});
+
+		return accountModels;
 	}
 
 	public List<Integer> getOperatorIdsForContractors(final Collection<Integer> contractorIds) {
@@ -408,10 +443,10 @@ public class AccountService {
 		return operatorDAO.findAllOperatorsForContractor(contractor);
 	}
 
-	public List<AccountModel> findContractorClientSitesNotAttachedToProjects(int contractorId, Collection<Integer> excludeClientSites){
+	public List<AccountModel> findContractorClientSitesNotAttachedToProjects(int contractorId, Collection<Integer> excludeClientSites) {
 
-		List<Account> accounts=picsorgDAO.findContractorClientSitesNotAttachedToProjects(contractorId,excludeClientSites);
-		List<AccountModel> accountModels=mapAccountsToAccountModels(accounts);
+		List<Account> accounts = picsorgDAO.findContractorClientSitesNotAttachedToProjects(contractorId, excludeClientSites);
+		List<AccountModel> accountModels = mapAccountsToAccountModels(accounts);
 		return accountModels;
 	}
 

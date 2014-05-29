@@ -3,7 +3,7 @@ package com.picsauditing.employeeguard.models.factories;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.apache.commons.collections.MapUtils;
 
 import java.util.*;

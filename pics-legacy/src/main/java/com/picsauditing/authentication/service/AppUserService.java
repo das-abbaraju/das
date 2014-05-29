@@ -43,6 +43,20 @@ public class AppUserService {
 		return appUserDAO.findByUserNameAndPassword(username, encodePassword(password, appUser.getHashSalt()));
 	}
 
+    @Transactional(propagation = Propagation.NESTED)
+    public AppUser encodeAndSavePassword(AppUser appUser, String password) {
+        return encodeAndSavePassword(appUser.getId(), password);
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public AppUser encodeAndSavePassword(int appUserID, String password) {
+        AppUser appUser = findById(appUserID);
+        String hashSalt = generateHashSalt(appUser);
+        appUser.setHashSalt(hashSalt);
+        appUser.setPassword(encodePassword(password, hashSalt));
+        return appUserDAO.save(appUser);
+    }
+
 	private String encodePassword(String password, String hashSalt) {
 		return EncodedMessage.hash(password + hashSalt);
 	}

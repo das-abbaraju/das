@@ -118,27 +118,19 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 
 
 	public List<ProjectRoleEmployee> findByEmployeeAndSiteId(final int employeeId, final int siteId) {
-//-- this style doesn't work
-/*
-		TypedQuery<ProjectRoleEmployee> query = em.createQuery("select pre FROM ProjectRoleEmployee pre " +
-				"WHERE pre.employee.id = :employeeId " +
-				"AND pre.projectRole.project.accountId = :siteId", ProjectRoleEmployee.class);
-*/
-
-    TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
-            "JOIN pre.employee e " +
-            "JOIN pre.projectRole pr " +
-            "JOIN pr.project p " +
-            "WHERE " +
-            "e.id = :employeeId " +
-            "and " +
-            "p.accountId = :siteId", ProjectRoleEmployee.class);
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.employee e " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"WHERE " +
+				"e.id = :employeeId " +
+				"and " +
+				"p.accountId = :siteId", ProjectRoleEmployee.class);
 
 		query.setParameter("employeeId", employeeId);
 		query.setParameter("siteId", siteId);
 		return query.getResultList();
 	}
-
 
 	public List<ProjectRoleEmployee> findByEmployeeAndRole(final Employee employee, final Role role) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
@@ -150,7 +142,7 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndProjects(final Collection<Employee> employees,
-	                                                            final Collection<Project> projects) {
+																final Collection<Project> projects) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -164,12 +156,12 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteId(final Collection<Employee> employees,
-	                                                          final int siteId) {
+															  final int siteId) {
 		return findByEmployeesAndSiteIds(employees, Arrays.asList(siteId));
 	}
 
 	public List<ProjectRoleEmployee> findByEmployeesAndSiteIds(final Collection<Employee> employees,
-	                                                           final Collection<Integer> siteIds) {
+															   final Collection<Integer> siteIds) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -238,8 +230,8 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 	}
 
 	public List<ProjectRoleEmployee> findProjectRoleEmployees(final int projectId,
-															 final int roleId,
-															 final int employeeId) {
+															  final int roleId,
+															  final int employeeId) {
 		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
 				"JOIN pre.projectRole pr " +
 				"JOIN pr.project p " +
@@ -252,6 +244,26 @@ public class ProjectRoleEmployeeDAO extends AbstractBaseEntityDAO<ProjectRoleEmp
 		query.setParameter("projectId", projectId);
 		query.setParameter("roleId", roleId);
 		query.setParameter("employeeId", employeeId);
+
+		return query.getResultList();
+	}
+
+	public List<ProjectRoleEmployee> findByProjectIdAndContractorIds(final int projectId,
+																	 final Collection<Integer> contractorIds) {
+		if (CollectionUtils.isEmpty(contractorIds)) {
+			return Collections.emptyList();
+		}
+
+		TypedQuery<ProjectRoleEmployee> query = em.createQuery("SELECT pre FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project p " +
+				"JOIN pr.role r " +
+				"JOIN pre.employee e " +
+				"WHERE p.id = :projectId " +
+				"AND e.accountId IN (:contractorIds)", ProjectRoleEmployee.class);
+
+		query.setParameter("projectId", projectId);
+		query.setParameter("contractorIds", contractorIds);
 
 		return query.getResultList();
 	}

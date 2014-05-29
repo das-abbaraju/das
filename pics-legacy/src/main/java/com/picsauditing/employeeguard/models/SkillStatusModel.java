@@ -1,8 +1,8 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
-public class SkillStatusModel implements IdNameComposite, SkillStatusInfo {
+public class SkillStatusModel implements IdNameComposite, SkillStatusInfo, Comparable<SkillStatusModel> {
 
 	private int id;
 	private String name;
@@ -30,6 +30,11 @@ public class SkillStatusModel implements IdNameComposite, SkillStatusInfo {
 
 	public void setStatus(SkillStatus status) {
 		this.status = status;
+	}
+
+	@Override
+	public int compareTo(SkillStatusModel that) {
+		return this.name.compareToIgnoreCase(that.name);
 	}
 
 	@Override

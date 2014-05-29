@@ -2,7 +2,8 @@
  * TODO:
  * The creation of this page was wrong because it is a form and not a notice #carey
  */
-.AccountRecovery-page
+.AccountRecovery-page,
+.password-reset-page
 {
     .notice
     {
@@ -15,12 +16,12 @@
         font-size: 25px;
         margin-top: 0px;
     }
-    
+
     .alert h4
     {
         text-align: left;
     }
-    
+
     form
     {
         text-align: left;
@@ -36,19 +37,19 @@
     {
         margin-top: 30px;
         text-align: right;
-        
+
         button
         {
             margin-left: 5px;
         }
     }
-    
+
     #username,
     #email
     {
         display: block;
     }
-    
+
     #recover_password,
     #recover_username
     {

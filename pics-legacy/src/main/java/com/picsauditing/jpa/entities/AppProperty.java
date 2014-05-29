@@ -27,6 +27,7 @@ public class AppProperty implements java.io.Serializable {
 
 	public static final String AUTH_SERVICE_HOST = "AuthServiceHost";
 	public static final String AUTH_SERVICE_HOST_PORT = "AuthServiceHostPort";
+	public static final String VALID_PHOTO_UPLOAD_EXTENSIONS = "ValidPhotoExtensions";
 
 	private String property;
 	private String value;

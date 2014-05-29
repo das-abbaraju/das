@@ -5,12 +5,12 @@ import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillInfo;
 import com.picsauditing.employeeguard.forms.employee.CompanySkillsForm;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
-import com.picsauditing.employeeguard.services.ProjectService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
+import com.picsauditing.employeeguard.services.ProjectService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
@@ -26,7 +26,7 @@ public class CompanySkillsFormBuilder {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
@@ -102,15 +102,15 @@ public class CompanySkillsFormBuilder {
 
 
 		List<AccountSkill> skills = ExtractorUtil.extractList(siteSkills, SiteSkill.SKILL_EXTRACTOR);
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByEmployeesAndSkills(profile.getEmployees(), skills);
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByEmployeesAndSkills(profile.getEmployees(), skills);
 
-		Map<AccountModel, List<AccountSkillEmployee>> accountToEmployeeSkills = new TreeMap<>();
+		Map<AccountModel, List<AccountSkillProfile>> accountToEmployeeSkills = new TreeMap<>();
 		for (Map.Entry<AccountModel, Set<AccountSkill>> entry : accountToSkill.entrySet()) {
-			List<AccountSkillEmployee> accountEmployeeSkills = filterAccountSkillEmployeesFor(accountSkillEmployees, entry.getValue());
+			List<AccountSkillProfile> accountEmployeeSkills = filterAccountSkillProfilesFor(accountSkillProfiles, entry.getValue());
 			accountToEmployeeSkills.put(entry.getKey(), accountEmployeeSkills);
 		}
 
-		for (Map.Entry<AccountModel, List<AccountSkillEmployee>> entry : accountToEmployeeSkills.entrySet()) {
+		for (Map.Entry<AccountModel, List<AccountSkillProfile>> entry : accountToEmployeeSkills.entrySet()) {
 			CompanySkillInfo companySkillInfo = new CompanySkillInfo();
 			companySkillInfo.setName(entry.getKey().getName());
 			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(entry.getValue(), SkillStatus.Completed));
@@ -130,33 +130,33 @@ public class CompanySkillsFormBuilder {
 	}
 
 	private void addProjectCompanySkillInfo(Profile profile, List<CompanySkillInfo> companySkillInfoList) {
-		Map<Project, List<AccountSkillEmployee>> projects = mapProjectEmployeeSkills(profile);
+		Map<Project, List<AccountSkillProfile>> projects = mapProjectEmployeeSkills(profile);
 		Map<Project, AccountModel> projectAccounts = mapProjectAccounts(projects.keySet());
 		for (Project project : projects.keySet()) {
-			List<AccountSkillEmployee> accountSkillEmployees = projects.get(project);
+			List<AccountSkillProfile> accountSkillProfiles = projects.get(project);
 			CompanySkillInfo companySkillInfo = new CompanySkillInfo();
 
 			companySkillInfo.setName(projectAccounts.get(project).getName() + ": " + project.getName());
-			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Completed));
-			companySkillInfo.setAboutToExpireSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Expiring));
-			companySkillInfo.setExpiredSkills(buildSkillInfoFilteredOnStatus(accountSkillEmployees, SkillStatus.Expired));
+			companySkillInfo.setCompletedSkills(buildSkillInfoFilteredOnStatus(accountSkillProfiles, SkillStatus.Completed));
+			companySkillInfo.setAboutToExpireSkills(buildSkillInfoFilteredOnStatus(accountSkillProfiles, SkillStatus.Expiring));
+			companySkillInfo.setExpiredSkills(buildSkillInfoFilteredOnStatus(accountSkillProfiles, SkillStatus.Expired));
 			companySkillInfo.sortSkills();
 
 			companySkillInfoList.add(companySkillInfo);
 		}
 	}
 
-	private Map<Project, List<AccountSkillEmployee>> mapProjectEmployeeSkills(final Profile profile) {
+	private Map<Project, List<AccountSkillProfile>> mapProjectEmployeeSkills(final Profile profile) {
 		// Find project role employee by employees
 		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByEmployees(profile.getEmployees());
 		Set<AccountSkill> allRequiredSkills = new TreeSet<>();
 		// Find skills (including required) for project
 		Map<Project, Set<AccountSkill>> projectSkills = mapProjectRequiredSkills(projectRoleEmployees, allRequiredSkills);
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByEmployeesAndSkills(profile.getEmployees(), new ArrayList<>(allRequiredSkills));
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileService.findByEmployeesAndSkills(profile.getEmployees(), new ArrayList<>(allRequiredSkills));
 
-		Map<Project, List<AccountSkillEmployee>> projectEmployeeSkills = new TreeMap<>();
+		Map<Project, List<AccountSkillProfile>> projectEmployeeSkills = new TreeMap<>();
 		for (Map.Entry<Project, Set<AccountSkill>> entrySet : projectSkills.entrySet()) {
-			projectEmployeeSkills.put(entrySet.getKey(), filterAccountSkillEmployeesFor(accountSkillEmployees, entrySet.getValue()));
+			projectEmployeeSkills.put(entrySet.getKey(), filterAccountSkillProfilesFor(accountSkillProfiles, entrySet.getValue()));
 		}
 		return projectEmployeeSkills;
 	}
@@ -181,13 +181,16 @@ public class CompanySkillsFormBuilder {
 		return projectAccounts;
 	}
 
-	private List<AccountSkillEmployee> filterAccountSkillEmployeesFor(final List<AccountSkillEmployee> accountSkillEmployees, final Set<AccountSkill> accountSkills) {
-		List<AccountSkillEmployee> filtered = new ArrayList<>(accountSkillEmployees);
-		CollectionUtils.filter(filtered, new GenericPredicate<AccountSkillEmployee>() {
+	private List<AccountSkillProfile> filterAccountSkillProfilesFor(final List<AccountSkillProfile> accountSkillProfiles,
+																	final Set<AccountSkill> accountSkills) {
+		List<AccountSkillProfile> filtered = new ArrayList<>(accountSkillProfiles);
+		CollectionUtils.filter(filtered, new GenericPredicate<AccountSkillProfile>() {
+
 			@Override
-			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-				return accountSkills.contains(accountSkillEmployee.getSkill());
+			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+				return accountSkills.contains(accountSkillProfile.getSkill());
 			}
+
 		});
 
 		return filtered;
@@ -216,20 +219,21 @@ public class CompanySkillsFormBuilder {
 		return projectSkills;
 	}
 
-	private List<SkillInfo> buildSkillInfoFilteredOnStatus(final List<AccountSkillEmployee> accountSkillEmployees, final SkillStatus status) {
-		List<AccountSkillEmployee> accountSkills = new ArrayList<>(accountSkillEmployees);
-		return filterAccountSkillEmployeesByStatus(status, accountSkills);
+	private List<SkillInfo> buildSkillInfoFilteredOnStatus(final List<AccountSkillProfile> accountSkillProfiles, final SkillStatus status) {
+		List<AccountSkillProfile> accountSkills = new ArrayList<>(accountSkillProfiles);
+		return filterAccountSkillProfilesByStatus(status, accountSkills);
 	}
 
-	private List<SkillInfo> filterAccountSkillEmployeesByStatus(final SkillStatus status, List<AccountSkillEmployee> accountSkills) {
-		CollectionUtils.filter(accountSkills, new Predicate() {
+	private List<SkillInfo> filterAccountSkillProfilesByStatus(final SkillStatus status,
+															   final List<AccountSkillProfile> accountSkillProfiles) {
+		CollectionUtils.filter(accountSkillProfiles, new Predicate() {
 			@Override
 			public boolean evaluate(Object object) {
-				return status == SkillStatusCalculator.calculateStatusFromSkill((AccountSkillEmployee) object);
+				return status == SkillStatusCalculator.calculateStatusFromSkill((AccountSkillProfile) object);
 			}
 		});
 
-		return mapAccountSkillToSkillInfo(accountSkills);
+		return mapAccountSkillToSkillInfo(accountSkillProfiles);
 	}
 
 	private List<AccountModel> getEmployeeAccounts(Profile profile) {
@@ -258,19 +262,19 @@ public class CompanySkillsFormBuilder {
 	}
 
 	private List<SkillInfo> getSkillInfoForEmployee(Employee employee, final SkillStatus status) {
-		List<AccountSkillEmployee> accountSkills = getSkillsForAccountAndEmployee(employee);
+		List<AccountSkillProfile> accountSkills = getSkillsForAccountAndEmployee(employee);
 
-		return filterAccountSkillEmployeesByStatus(status, accountSkills);
+		return filterAccountSkillProfilesByStatus(status, accountSkills);
 	}
 
-	private List<AccountSkillEmployee> getSkillsForAccountAndEmployee(Employee employee) {
-		return accountSkillEmployeeService.getSkillsForAccountAndEmployee(employee);
+	private List<AccountSkillProfile> getSkillsForAccountAndEmployee(Employee employee) {
+		return accountSkillProfileService.getSkillsForAccountAndEmployee(employee);
 	}
 
-	private List<SkillInfo> mapAccountSkillToSkillInfo(List<AccountSkillEmployee> accountSkills) {
+	private List<SkillInfo> mapAccountSkillToSkillInfo(List<AccountSkillProfile> accountSkillProfiles) {
 		List<SkillInfo> skillInfoList = new ArrayList<>();
-		for (AccountSkillEmployee accountSkill : accountSkills) {
-			skillInfoList.add(mapAccountSkillToSkillInfo(accountSkill.getSkill()));
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			skillInfoList.add(mapAccountSkillToSkillInfo(accountSkillProfile.getSkill()));
 		}
 
 		return skillInfoList;

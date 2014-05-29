@@ -1,31 +1,21 @@
 package com.picsauditing.actions.audits;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletOutputStream;
-
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.util.Strings;
+import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.struts2.ServletActionContext;
+
+import javax.servlet.ServletOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class ContractorAuditDownload extends ContractorAuditController {
@@ -148,9 +138,13 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	private int fillExcelQuestions(List<AuditQuestion> questions, int rowNum) {
 
 		for (AuditQuestion question : questions) {
-			if (question.isValidQuestion(conAudit.getValidDate())
-					&& question.isVisibleInAudit(conAudit) && satisfiesRequiredQuestion(question)
-					&& satisfiesVisibleQuestion(question)) {
+            boolean validQuestion = question.isValidQuestion(conAudit.getValidDate());
+            boolean visibleInAudit = question.isVisibleInAudit(conAudit);
+            boolean satisfiesRequiredQuestion = satisfiesRequiredQuestion(question);
+            boolean satisfiesVisibleQuestion = satisfiesVisibleQuestion(question);
+            if (validQuestion
+					&& visibleInAudit && satisfiesRequiredQuestion
+					&& satisfiesVisibleQuestion) {
 				HSSFRow row = sheet.createRow(rowNum++);
 				HSSFCell cell = row.createCell(0);
 				String cellValue = question.getExpandedNumber() + " - " + question.getName().toString();
@@ -204,7 +198,8 @@ public class ContractorAuditDownload extends ContractorAuditController {
 	private boolean satisfiesRequiredQuestion(AuditQuestion question) {
 		boolean satisfiesRequiredQuestionAnswer = true;
 		AuditQuestion requiredQuestion = question.getRequiredQuestion();
-		if (requiredQuestion != null) {
+
+        if (requiredQuestion != null && requiredQuestion.getExpirationDate().after(conAudit.getEffectiveDate())) {
 			AuditData requiredQuestionAuditData = findAnswer(requiredQuestion);
 
 			if (requiredQuestionAuditData == null

@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.models.CompanyEmployeeStatusModel;
 import com.picsauditing.employeeguard.models.EmploymentInfoModel;
 import com.picsauditing.employeeguard.models.ProjectStatusModel;
 import com.picsauditing.employeeguard.models.RoleStatusModel;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.List;
 

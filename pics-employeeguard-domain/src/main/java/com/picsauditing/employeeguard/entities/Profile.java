@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "profile")
 @Where(clause = "deletedDate IS NULL")
 @SQLDelete(sql = "UPDATE profile SET deletedDate = NOW() WHERE id = ?")
-public class Profile implements BaseEntity, Identifiable {
+public class Profile implements BaseEntity, Identifiable, Comparable<Profile> {
 
 	private static final long serialVersionUID = -757907997992359311L;
 
@@ -56,12 +56,17 @@ public class Profile implements BaseEntity, Identifiable {
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
-	@BatchSize(size = 2)
+	@BatchSize(size = 5)
 	private List<Employee> employees = new ArrayList<>();
 
 	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
+	@BatchSize(size = 10)
 	private List<ProfileDocument> documents = new ArrayList<>();
+
+	@OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 10)
+	private List<AccountSkillProfile> skills = new ArrayList<>();
 
 	public int getId() {
 		return id;
@@ -187,9 +192,34 @@ public class Profile implements BaseEntity, Identifiable {
 		this.documents = documents;
 	}
 
+	public List<AccountSkillProfile> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<AccountSkillProfile> skills) {
+		this.skills = skills;
+	}
+
 	@Transient
 	public String getName() {
 		return firstName + " " + lastName;
+	}
+
+	@Override
+	public int compareTo(Profile that) {
+		if (getLastName() == null || getFirstName() == null) {
+			return 0;
+		}
+
+		if (getFirstName().equalsIgnoreCase(that.getFirstName())) {
+			if (getLastName().equalsIgnoreCase(that.getLastName())) {
+				return getUserId() - that.getUserId();
+			}
+
+			return getLastName().compareToIgnoreCase(that.getLastName());
+		}
+
+		return getFirstName().compareToIgnoreCase(that.getFirstName());
 	}
 
 	@Override

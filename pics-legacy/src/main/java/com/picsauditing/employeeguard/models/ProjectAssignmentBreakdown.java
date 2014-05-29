@@ -1,30 +1,39 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import org.apache.commons.collections.MapUtils;
 
 import java.util.Map;
 
 public class ProjectAssignmentBreakdown {
 
-    private Map<SkillStatus, Integer> statusRollup;
+	private Map<SkillStatus, Integer> statusRollup;
 
-    public ProjectAssignmentBreakdown(Map<SkillStatus, Integer> statusRollup) {
-        this.statusRollup = statusRollup;
-    }
+	public ProjectAssignmentBreakdown(Map<SkillStatus, Integer> statusRollup) {
+		this.statusRollup = statusRollup;
+	}
 
-    public int getExpired() {
-        return statusRollup.containsKey(SkillStatus.Expired) ? statusRollup.get(SkillStatus.Expired) : 0;
-    }
+	public int getExpired() {
+		return getCount(SkillStatus.Expired);
+	}
 
-    public int getExpiring() {
-        return statusRollup.containsKey(SkillStatus.Expiring) ? statusRollup.get(SkillStatus.Expiring) : 0;
-    }
+	public int getExpiring() {
+		return getCount(SkillStatus.Expiring);
+	}
 
-    public int getPending() {
-        return statusRollup.containsKey(SkillStatus.Pending) ? statusRollup.get(SkillStatus.Pending) : 0;
-    }
+	public int getPending() {
+		return getCount(SkillStatus.Pending);
+	}
 
-    public int getComplete() {
-        return statusRollup.containsKey(SkillStatus.Completed) ? statusRollup.get(SkillStatus.Completed) : 0;
-    }
+	public int getComplete() {
+		return getCount(SkillStatus.Completed);
+	}
+
+	private int getCount(final SkillStatus skillStatus) {
+		if (MapUtils.isEmpty(statusRollup)) {
+			return 0;
+		}
+
+		return statusRollup.containsKey(skillStatus) ? statusRollup.get(skillStatus) : 0;
+	}
 }

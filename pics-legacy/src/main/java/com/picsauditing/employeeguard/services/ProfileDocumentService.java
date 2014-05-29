@@ -2,12 +2,13 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.employeeguard.daos.AccountSkillEmployeeDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.*;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
@@ -16,7 +17,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 public class ProfileDocumentService {
 
 	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
+	private AccountSkillProfileDAO accountSkillProfileDAO;
 	@Autowired
 	private ProfileDocumentDAO profileDocumentDAO;
 	@Autowired
@@ -46,7 +46,7 @@ public class ProfileDocumentService {
 								  final int appUserId, final int skillId) throws Exception {
 		ProfileDocument newProfileDocument = create(profile, documentForm, directory, appUserId);
 
-		insertEmployeeSkillsForDocument(profile, skillId, newProfileDocument);
+		addAccountSkillProfileForDocument(profile, skillId, newProfileDocument, appUserId);
 
 		return newProfileDocument;
 	}
@@ -101,49 +101,59 @@ public class ProfileDocumentService {
 			profileDocumentFromDatabase = profileDocumentDAO.save(profileDocumentFromDatabase);
 		}
 
-		updateAccountSkillEmployees(profileDocumentFromDatabase);
+		updateAccountSkillProfiles(profileDocumentFromDatabase);
 
 		return profileDocumentFromDatabase;
 	}
 
-	private void updateAccountSkillEmployees(final ProfileDocument profileDocument) {
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeDAO
-				.findByProfile(profileDocument.getProfile());
+	private void updateAccountSkillProfiles(final ProfileDocument profileDocument) {
+		List<AccountSkillProfile> accountSkillProfiles = accountSkillProfileDAO.findByProfileDocument(profileDocument);
 
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			accountSkillEmployee.setStartDate(profileDocument.getStartDate());
-			accountSkillEmployee.setEndDate(profileDocument.getEndDate());
+		if (CollectionUtils.isEmpty(accountSkillProfiles)) {
+			return;
 		}
 
-		accountSkillEmployeeDAO.save(accountSkillEmployees);
-	}
-
-	private void insertEmployeeSkillsForDocument(final Profile profile, final int skillId,
-												 final ProfileDocument profileDocument) {
-		accountSkillEmployeeDAO.delete(profileDocument);
-		accountSkillEmployeeDAO.save(buildAccountSkillEmployees(profile, skillId, profileDocument));
-	}
-
-	private List<AccountSkillEmployee> buildAccountSkillEmployees(final Profile profile, final int skillId,
-																  final ProfileDocument profileDocument) {
-		List<AccountSkillEmployee> accountSkillEmployees = new ArrayList<>();
-
-		List<Employee> employees = profile.getEmployees();
-		for (Employee employee : employees) {
-			accountSkillEmployees.add(new AccountSkillEmployeeBuilder()
-					.accountSkill(new AccountSkill(skillId))
-					.employee(employee)
-					.profileDocument(profileDocument)
-					.startDate(DateBean.today())
-					.endDate(profileDocument.getEndDate())
-					.build());
+		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
+			accountSkillProfile.setStartDate(profileDocument.getStartDate());
+			accountSkillProfile.setEndDate(profileDocument.getEndDate());
 		}
 
-		return accountSkillEmployees;
+		accountSkillProfileDAO.save(accountSkillProfiles);
 	}
 
-	public void delete(final int documentId, final int profileId) {
+	private void addAccountSkillProfileForDocument(final Profile profile,
+												   final int skillId,
+												   final ProfileDocument profileDocument,
+												   final int appUserId) {
+		AccountSkillProfile accountSkillProfile = accountSkillProfileDAO.findByProfileAndSkillId(profile, skillId);
+		if (accountSkillProfile == null) {
+			accountSkillProfile = buildAccountSkillProfile(profile, skillId, profileDocument);
+		} else {
+			accountSkillProfile.setProfileDocument(profileDocument);
+			accountSkillProfile.setUpdatedBy(appUserId);
+			accountSkillProfile.setStartDate(DateBean.today());
+			accountSkillProfile.setUpdatedDate(DateBean.today());
+		}
+
+		accountSkillProfileDAO.save(accountSkillProfile);
+	}
+
+	private AccountSkillProfile buildAccountSkillProfile(final Profile profile, final int skillId,
+														 final ProfileDocument profileDocument) {
+		return new AccountSkillProfileBuilder()
+				.accountSkill(new AccountSkill(skillId))
+				.profile(profile)
+				.createdBy(1)
+				.createdDate(DateBean.today())
+				.profileDocument(profileDocument)
+				.startDate(DateBean.today())
+				.endDate(profileDocument.getEndDate())
+				.build();
+	}
+
+	public void delete(final int documentId) {
 		ProfileDocument profileDocument = profileDocumentDAO.find(documentId);
+
 		profileDocumentDAO.delete(profileDocument);
 	}
 
@@ -155,9 +165,9 @@ public class ProfileDocumentService {
 		return Collections.emptyList();
 	}
 
-	public void update(final ProfilePhotoForm profilePhotoForm, final String directory, final Profile profile,
+	public void update(final EmployeePhotoForm employeePhotoForm, final String directory, final Profile profile,
 					   final int appUserID) throws Exception {
-		String extension = FileUtils.getExtension(profilePhotoForm.getPhotoFileName());
+		String extension = FileUtils.getExtension(employeePhotoForm.getPhotoFileName());
 		if (photoUtil.isValidExtension(extension)) {
 			Date now = new Date();
 			String filename = PICSFileType.profile_photo.filename(profile.getId());
@@ -177,12 +187,12 @@ public class ProfileDocumentService {
 
 			profileDocument.setName("Profile photo");
 			profileDocument.setFileName(filename + "." + extension);
-			profileDocument.setFileType(profilePhotoForm.getPhotoContentType());
-			profileDocument.setFileSize((int) profilePhotoForm.getPhoto().length());
+			profileDocument.setFileType(employeePhotoForm.getPhotoContentType());
+			profileDocument.setFileSize((int) employeePhotoForm.getPhoto().length());
 			profileDocument.setStartDate(now);
 			profileDocument.setEndDate(ProfileDocument.END_OF_TIME);
 
-			photoUtil.sendPhotoToFilesDirectory(profilePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
+			photoUtil.sendPhotoToFilesDirectory(employeePhotoForm.getPhoto(), directory, profile.getId(), extension, filename);
 			profileDocumentDAO.save(profileDocument);
 		}
 	}

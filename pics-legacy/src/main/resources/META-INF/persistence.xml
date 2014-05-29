@@ -78,7 +78,7 @@
 
         <class>com.picsauditing.employeeguard.entities.AccountEmployeeGuard</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkill</class>
-        <class>com.picsauditing.employeeguard.entities.AccountSkillEmployee</class>
+        <class>com.picsauditing.employeeguard.entities.AccountSkillProfile</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkillGroup</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkillRole</class>
         <class>com.picsauditing.employeeguard.entities.EmailHash</class>

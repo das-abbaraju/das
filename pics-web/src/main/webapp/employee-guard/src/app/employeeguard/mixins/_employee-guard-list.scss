@@ -1,0 +1,47 @@
+@mixin employee-guard-list {
+    .employee-guard-list {
+        list-style: none;
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 0px;
+
+        li {
+            display: inline-block;
+            padding-right: 5px;
+            padding-bottom: 5px;
+            padding-top: 5px;
+        }
+    }
+
+    .employee-guard-list-rollup {
+        list-style: none;
+        margin-bottom: 0;
+        margin-left: 0;
+        padding-left: 0px;
+
+        li {
+            line-height: 20px;
+            padding: 5px 0px;
+
+            &.danger {
+                background-color: transparent;
+                color: $danger_light;
+            }
+
+            &.warning {
+                background-color: transparent;
+                color: $warning_med;
+            }
+
+            &.success {
+                background-color: transparent;
+                color: $success_light;
+            }
+
+            .assigned-count {
+                font-size: 20px;
+                font-weight: bold;
+            }
+        }
+    }
+}

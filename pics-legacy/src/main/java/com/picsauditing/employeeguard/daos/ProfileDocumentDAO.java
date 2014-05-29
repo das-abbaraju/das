@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import java.util.Collections;
 import java.util.List;
 
 public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
@@ -67,6 +68,10 @@ public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
 	}
 
 	public List<ProfileDocument> findProfilePhotos(final Profile profile) {
+		if (profile == null) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<ProfileDocument> query = em.createQuery("SELECT pd FROM ProfileDocument pd " +
 				"JOIN pd.profile p " +
 				"WHERE p = :profile " +

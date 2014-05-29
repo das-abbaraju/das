@@ -13,7 +13,7 @@ import java.util.*;
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
 		"ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_employee SET email=concat(email ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE account_employee SET email=concat(email ,'_deleted_', now()), slug=concat(slug ,'_deleted_', now()), deletedDate = NOW() WHERE id = ?")
 public class Employee implements BaseEntity, Comparable<Employee> {
 
 	private static final long serialVersionUID = 2426185581097186606L;
@@ -56,10 +56,6 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
 	private List<SiteAssignment> siteAssignments = new ArrayList<>();
-
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
-	private List<AccountSkillEmployee> skills = new ArrayList<>();
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
@@ -238,14 +234,6 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	public void setSiteAssignments(List<SiteAssignment> siteAssignments) {
 		this.siteAssignments = siteAssignments;
-	}
-
-	public List<AccountSkillEmployee> getSkills() {
-		return skills;
-	}
-
-	public void setSkills(List<AccountSkillEmployee> skills) {
-		this.skills = skills;
 	}
 
 	public List<ProjectRoleEmployee> getProjectRoles() {

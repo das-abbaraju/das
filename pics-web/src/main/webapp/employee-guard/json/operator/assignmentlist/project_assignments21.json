@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "employees": 2,
+        "completed": 0,
+        "pending": 0,
+        "expiring": 2,
+        "expired": 0,
+        "name": "Smallville",
+        "location": "Smallville, Kansas",
+        "startDate": "03/30/2010",
+        "endDate": "07/21/2013"
+    }
+]

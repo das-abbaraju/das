@@ -1,0 +1,27 @@
+.server-info {
+    ul {
+        font-size: 36px;
+
+        li {
+            color: $default_steel;
+
+            span {
+                color: $default_silver;
+            }
+        }
+    }
+
+    dl {
+        font-size: 36px;
+
+        dt {
+            color: $default_aluminum;
+            text-align: right;
+        }
+
+        dd {
+            color: $default_steel;
+            text-align: left;
+        }
+    }
+}

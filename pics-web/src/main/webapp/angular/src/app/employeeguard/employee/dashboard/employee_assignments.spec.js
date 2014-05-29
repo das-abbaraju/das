@@ -1,6 +1,9 @@
 describe('Employee Assignments', function() {
     var scope, $http, $httpBackend, httpMock, assignments;
 
+    var employee_assignments_url = '/employee-guard/employee/summary/assignments';
+    var employee_assignments_dev_url = '/angular/json/employee/assignments.json';
+
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
     beforeEach(inject(function($rootScope, $controller, $http, $httpBackend, $routeParams, EmployeeAssignment) {
@@ -28,7 +31,8 @@ describe('Employee Assignments', function() {
         ];
 
         //Backend definition common for all tests
-        $httpBackend.when('GET', '/employee-guard/employee/summary/assignments').respond(assignments);
+        $httpBackend.when('GET', employee_assignments_url).respond(assignments);
+        $httpBackend.when('GET', employee_assignments_dev_url).respond(assignments);
 
         scope = $rootScope.$new();
 

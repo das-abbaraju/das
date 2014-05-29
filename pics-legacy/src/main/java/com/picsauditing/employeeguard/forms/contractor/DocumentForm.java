@@ -2,25 +2,28 @@ package com.picsauditing.employeeguard.forms.contractor;
 
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.entities.builders.ProfileDocumentBuilder;
+import com.picsauditing.employeeguard.entities.duplicate.UniqueIndexable;
 import com.picsauditing.employeeguard.forms.AddAnotherForm;
+import com.picsauditing.employeeguard.validators.duplicate.DuplicateInfoProvider;
+import com.picsauditing.web.SessionInfoProviderFactory;
 
 import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DocumentForm implements AddAnotherForm {
+public class DocumentForm implements AddAnotherForm, DuplicateInfoProvider {
 
 	private int id;
-    private String name;
-    private File file;
+	private String name;
+	private File file;
 	private String fileFileName;
 	private String fileContentType;
 	private String validate_filename;
 	private int expireYear;
 	private int expireMonth;
 	private int expireDay;
-    private boolean noExpiration;
-    private boolean addAnother;
+	private boolean noExpiration;
+	private boolean addAnother;
 
 	public int getId() {
 		return id;
@@ -31,20 +34,20 @@ public class DocumentForm implements AddAnotherForm {
 	}
 
 	public String getName() {
-        return name;
-    }
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public File getFile() {
-        return file;
-    }
+	public File getFile() {
+		return file;
+	}
 
-    public void setFile(File file) {
-        this.file = file;
-    }
+	public void setFile(File file) {
+		this.file = file;
+	}
 
 	public String getFileFileName() {
 		return fileFileName;
@@ -95,72 +98,83 @@ public class DocumentForm implements AddAnotherForm {
 	}
 
 	public boolean isNoExpiration() {
-        return noExpiration;
-    }
+		return noExpiration;
+	}
 
-    public void setNoExpiration(boolean noExpiration) {
-        this.noExpiration = noExpiration;
-    }
+	public void setNoExpiration(boolean noExpiration) {
+		this.noExpiration = noExpiration;
+	}
 
-    public ProfileDocument buildProfileDocument() {
-	    Calendar calendar = Calendar.getInstance();
-	    calendar.set(expireYear, expireMonth - 1, expireDay, 0, 0, 0);
-	    calendar.set(Calendar.MILLISECOND, 0);
+	public ProfileDocument buildProfileDocument() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(expireYear, expireMonth - 1, expireDay, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 
-	    Date endDate = calendar.getTime();
-	    if (noExpiration) {
-		    endDate = ProfileDocument.END_OF_TIME;
-	    }
+		Date endDate = calendar.getTime();
+		if (noExpiration) {
+			endDate = ProfileDocument.END_OF_TIME;
+		}
 
-        return new ProfileDocumentBuilder().name(name).fileName(fileFileName).fileType(fileContentType)
-                .fileSize(file == null ? 0 : (int) file.length()).endDate(endDate).build();
-    }
+		return new ProfileDocumentBuilder().name(name).fileName(fileFileName).fileType(fileContentType)
+				.fileSize(file == null ? 0 : (int) file.length()).endDate(endDate).build();
+	}
 
-    @Override
-    public boolean isAddAnother() {
-        return addAnother;
-    }
+	@Override
+	public boolean isAddAnother() {
+		return addAnother;
+	}
 
-    @Override
-    public void setAddAnother(boolean addAnother) {
-        this.addAnother = addAnother;
-    }
+	@Override
+	public void setAddAnother(boolean addAnother) {
+		this.addAnother = addAnother;
+	}
 
-    public static class Builder {
-        private ProfileDocument profileDocument;
-	    private File file;
+	@Override
+	public UniqueIndexable getUniqueIndexable() {
+		return new ProfileDocument.ProfileDocumentUniqueIndex(id,
+				SessionInfoProviderFactory.getSessionInfoProvider().getAppUserId(), name);
+	}
 
-	    public Builder profileDocument(final ProfileDocument profileDocument) {
-		    this.profileDocument = profileDocument;
-		    return this;
-	    }
+	@Override
+	public Class<?> getType() {
+		return ProfileDocument.class;
+	}
 
-        public Builder profileDocument(final ProfileDocument profileDocument, final File file) {
-            this.profileDocument = profileDocument;
-	        this.file = file;
-            return this;
-        }
+	public static class Builder {
+		private ProfileDocument profileDocument;
+		private File file;
 
-        public DocumentForm build() {
-	        Calendar calendar = Calendar.getInstance();
-	        calendar.setTime(profileDocument.getEndDate());
+		public Builder profileDocument(final ProfileDocument profileDocument) {
+			this.profileDocument = profileDocument;
+			return this;
+		}
 
-            DocumentForm documentForm = new DocumentForm();
-            documentForm.setName(profileDocument.getName());
-	        documentForm.setFile(file);
-	        documentForm.setFileFileName(profileDocument.getFileName());
-	        documentForm.setFileContentType(profileDocument.getFileType());
+		public Builder profileDocument(final ProfileDocument profileDocument, final File file) {
+			this.profileDocument = profileDocument;
+			this.file = file;
+			return this;
+		}
 
-	        if (calendar.get(Calendar.YEAR) > 3000) {
-		        documentForm.setNoExpiration(true);
-	        } else {
-		        documentForm.setNoExpiration(false);
-		        documentForm.setExpireYear(calendar.get(Calendar.YEAR));
-		        documentForm.setExpireMonth(calendar.get(Calendar.MONTH) + 1);
-		        documentForm.setExpireDay(calendar.get(Calendar.DAY_OF_MONTH));
-	        }
+		public DocumentForm build() {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(profileDocument.getEndDate());
 
-            return documentForm;
-        }
-    }
+			DocumentForm documentForm = new DocumentForm();
+			documentForm.setName(profileDocument.getName());
+			documentForm.setFile(file);
+			documentForm.setFileFileName(profileDocument.getFileName());
+			documentForm.setFileContentType(profileDocument.getFileType());
+
+			if (calendar.get(Calendar.YEAR) > 3000) {
+				documentForm.setNoExpiration(true);
+			} else {
+				documentForm.setNoExpiration(false);
+				documentForm.setExpireYear(calendar.get(Calendar.YEAR));
+				documentForm.setExpireMonth(calendar.get(Calendar.MONTH) + 1);
+				documentForm.setExpireDay(calendar.get(Calendar.DAY_OF_MONTH));
+			}
+
+			return documentForm;
+		}
+	}
 }

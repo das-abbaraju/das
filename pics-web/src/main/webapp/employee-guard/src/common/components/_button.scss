@@ -1,0 +1,169 @@
+.btn {
+  border: none;
+  min-width: 100px;
+  margin-right: 15px;
+  position: relative;
+}
+
+.btn:active {
+  @include transform(translateY(2px));
+}
+
+.btn:focus {
+  outline: 0;
+}
+
+/*pseudo element to offset translate*/
+.btn:after {
+  content: '';
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+
+.btn:active:after {
+  top: -2px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+/*end pseudo element*/
+
+.btn-default {
+  background: $default_silver;
+  @include background-image(linear-gradient(to bottom, $default_mercury, $default_silver));
+  background-image: linear-gradient(to bottom, $default_mercury, $default_silver);
+  background: -webkit-linear-gradient($default_mercury, $default_silver);
+  @include box-shadow(0px 2px 0px $default_pewter);
+  text-shadow: none;
+}
+
+.btn-default:hover {
+  background: $default_mercury;
+}
+
+.btn-default:active {
+  background: $default_silver;
+  @include box-shadow(0px 2px 0px $default_pewter inset);
+}
+
+.btn-primary {
+  background: $primary_light;
+  @include background-image(linear-gradient($primary_light, $primary_med));
+  @include box-shadow(0px 2px 0px $primary_dark);
+}
+
+.btn-primary:hover {
+  background: $primary_light;
+}
+
+.btn-primary:active {
+  background: $primary_med;
+  @include box-shadow(0px 2px 0px $primary_dark inset);
+}
+
+.btn-success {
+  background: $success_med;
+  @include background-image(linear-gradient($success_light, $success_med));
+  @include box-shadow(0px 2px 0px $success_dark);
+}
+
+.btn-success:hover {
+  background: $success_light;
+}
+
+.btn-success:active {
+  background: $success_med;
+  @include box-shadow(0px 2px 0px $success_dark inset);
+}
+
+.btn-info {
+  background: $info_med;
+  @include background-image(linear-gradient($info_light, $info_med));
+  @include box-shadow(0px 2px 0px $info_dark);
+}
+
+.btn-info:hover {
+  background: $info_light;
+}
+
+.btn-info:active {
+  background: $info_med;
+  @include box-shadow(0px 2px 0px $info_dark inset);
+}
+
+.btn-warning {
+  background: $warning_med;
+  @include background-image(linear-gradient($warning_light, $warning_med));
+  @include box-shadow(0px 2px 0px $warning_dark);
+}
+
+.btn-warning:hover {
+  background: $warning_light;
+}
+
+.btn-warning:active {
+  background: $warning_med;
+  @include box-shadow(0px 2px 0px $warning_dark inset);
+}
+
+.btn-danger {
+  background: $danger_med;
+  @include background-image(linear-gradient($danger_light, $danger_med));
+  @include box-shadow(0px 2px 0px $danger_dark);
+}
+
+.btn-danger:hover {
+  background: $danger_light;
+}
+
+.btn-danger:active {
+  background: $danger_med;
+  @include box-shadow(0px 2px 0px $danger_dark inset);
+}
+
+.btn-block {
+  margin-bottom: 10px;
+}
+
+.page-actions {
+  a,
+  button {
+    margin-left: 0px;
+  }
+
+  a:last-of-type,
+  button:last-of-type {
+    margin-right: 0px;
+  }
+
+  .btn {
+    min-width: 0px;
+    position: relative;
+  }
+}
+
+.btn-auto-width {
+    min-width: 0;
+}
+
+.btn .icon-plus-sign {
+    color: #229322;
+}
+
+.edit-btn {
+    color: $pics_warm_grey;
+    margin-left: -15px;
+    text-decoration: none;
+
+    &:hover {
+        color: $info_med;
+        text-decoration: none;
+    }
+}
+
+.btn-xs {
+    padding: 3px 8px;
+}

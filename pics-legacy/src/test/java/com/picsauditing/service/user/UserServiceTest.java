@@ -1,11 +1,14 @@
 package com.picsauditing.service.user;
 
+import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.MockPolicy;
 import org.powermock.reflect.Whitebox;
 
 import java.text.ParseException;
@@ -13,6 +16,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import static junit.framework.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -25,6 +29,10 @@ public class UserServiceTest {
 
 	@Mock
 	private UserDAO userDAO;
+    @Mock
+    private AppUserService appUserService;
+    @Mock
+    private AppUser appUser;
 	@Mock
 	private Account account;
 
@@ -35,10 +43,14 @@ public class UserServiceTest {
 		setupNormalUser();
 
 		Whitebox.setInternalState(userService, "userDAO", userDAO);
+		Whitebox.setInternalState(userService, "appUserService", appUserService);
 	}
 
 	@Test
 	public void testLoadUserByUsername() throws Exception {
+        when(appUserService.findByUsername(anyString())).thenReturn(appUser);
+        when(appUser.getId()).thenReturn(123);
+        when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
 
 		String username = "joesixpack";
 		User result = userService.loadUserByUsername(username);

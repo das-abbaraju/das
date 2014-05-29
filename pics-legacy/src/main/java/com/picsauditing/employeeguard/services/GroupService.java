@@ -26,7 +26,7 @@ public class GroupService {
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired

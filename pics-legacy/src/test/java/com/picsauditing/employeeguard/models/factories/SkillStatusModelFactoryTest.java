@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.ProjectBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.SkillStatusModel;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.junit.Before;
 import org.junit.Test;
 
