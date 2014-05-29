@@ -31,7 +31,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	// Class under test
 	private SiteAssignmentAction siteAssignmentAction;
 
-
 	@Mock
 	private AccountService accountService;
 	@Mock
@@ -44,8 +43,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	private StatusCalculatorService statusCalculatorService;
 	@Mock
 	private SkillEntityService skillEntityService;
-	@Mock
-	private SkillUsageLocator skillUsageLocator;
 
 	@Before
 	public void setUp() throws Exception {
@@ -60,7 +57,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
 		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 		Whitebox.setInternalState(siteAssignmentAction, "skillEntityService", skillEntityService);
-		Whitebox.setInternalState(siteAssignmentAction, "skillUsageLocator", skillUsageLocator);
 
 		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
 	}

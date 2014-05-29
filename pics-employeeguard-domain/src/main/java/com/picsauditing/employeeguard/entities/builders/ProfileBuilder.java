@@ -19,6 +19,11 @@ public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBu
 		return this;
 	}
 
+	public ProfileBuilder appUserId(final int appUserId) {
+		entity.setUserId(appUserId);
+		return this;
+	}
+
 	public ProfileBuilder slug(final String slug) {
 		entity.setSlug(slug);
 		return this;
@@ -36,6 +41,11 @@ public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBu
 
 	public ProfileBuilder email(final String email) {
 		entity.setEmail(email);
+		return this;
+	}
+
+	public ProfileBuilder phone(final String phone) {
+		entity.setPhone(phone);
 		return this;
 	}
 

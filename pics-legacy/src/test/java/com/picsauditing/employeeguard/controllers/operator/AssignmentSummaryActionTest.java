@@ -85,7 +85,7 @@ public class AssignmentSummaryActionTest extends PicsActionTest {
 
 		when(assignmentService.getEmployeeSkillsForSite(SITE_ID)).thenReturn(map);
 		when(map.size()).thenReturn(2);
-		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(anySetOf(Employee.class), anyMap())).thenReturn(
+		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(anyMap())).thenReturn(
 				new HashMap<Employee, SkillStatus>() {{
 					put(new EmployeeBuilder()
 							.accountId(CONTRACTOR_ID)

@@ -94,7 +94,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	public String login() throws Exception {
 		try {
 			String cookieContent = authenticationService.authenticateEmployeeGUARDUser(loginForm.getUsername(),
-					loginForm.getPassword(), true);
+					loginForm.getPassword(), loginForm.getHashCode(), true);
 
 			doSetCookie(cookieContent, 10);
 			SessionCookie cookie = SessionSecurity.parseSessionCookie(cookieContent);

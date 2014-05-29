@@ -40,6 +40,7 @@ public class AccountActionTest extends PicsActionTest {
 	private static final String USER_NAME = "username";
 	private static final String PASSWORD = "password";
 	private static final String VALID_HASH = "valid hash";
+
 	public static final String EMPLOYEE_LAST_NAME = "last name";
 	public static final String EMPLOYEE_FIRST_NAME = "first name";
 	public static final String EMPLOYEE_EMAIL = "test@test.com";
@@ -152,7 +153,7 @@ public class AccountActionTest extends PicsActionTest {
 		when(authenticationService.createNewAppUser(anyString(), anyString())).thenReturn(new AppUserBuilder()
 				.id(APP_USER_ID).build());
 
-		when(authenticationService.authenticateEmployeeGUARDUser(USER_NAME, PASSWORD, true))
+		when(authenticationService.authenticateEmployeeGUARDUser(USER_NAME, PASSWORD, VALID_HASH, true))
 				.thenReturn("fake cookie content");
 
 		setupEmailHashService();
@@ -176,7 +177,7 @@ public class AccountActionTest extends PicsActionTest {
 		verify(emailHashService).findByHash(VALID_HASH);
 		verify(employeeEntityService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 		verify(emailHashService).expire(any(EmailHash.class));
-		verify(authenticationService).authenticateEmployeeGUARDUser(USER_NAME, PASSWORD, true);
+		verify(authenticationService).authenticateEmployeeGUARDUser(USER_NAME, PASSWORD, VALID_HASH, true);
 		verify(response).addCookie(any(Cookie.class));
 	}
 

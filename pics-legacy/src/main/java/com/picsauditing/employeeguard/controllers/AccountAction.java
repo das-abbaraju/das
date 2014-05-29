@@ -96,7 +96,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 			emailHashService.expire(emailHash);
 
 			String sessionCookieContent = authenticationService.authenticateEmployeeGUARDUser(profileForm.getEmail(),
-					profileForm.getPassword(), true);
+					profileForm.getPassword(), hashCode, true);
 			doSetCookie(sessionCookieContent, 10);
 
 			return setUrlForRedirect(EMPLOYEE_SUMMARY);
