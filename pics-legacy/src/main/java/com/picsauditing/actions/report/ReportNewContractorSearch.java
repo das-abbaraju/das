@@ -13,7 +13,20 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.flagcalculator.FlagCalculator;
+import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.Account;
+import com.picsauditing.jpa.entities.AccountLevel;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditType;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.FlagCriteriaOperator;
+import com.picsauditing.jpa.entities.FlagData;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.MessagePublisherService;
@@ -428,16 +441,16 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private FlagColor getWorstColor(List<com.picsauditing.flagcalculator.FlagData> flagData) {
 		if (flagData == null)
 			return null;
-		FlagColor worst = FlagColor.Green;
+        com.picsauditing.flagcalculator.entities.FlagColor worst = com.picsauditing.flagcalculator.entities.FlagColor.Green;
 		for (com.picsauditing.flagcalculator.FlagData flagDatum : flagData) {
-            FlagData data = (FlagData)flagDatum;
-			if (data.getFlag().isRed())
-				return data.getFlag();
-			if (data.getFlag().isAmber())
+            com.picsauditing.flagcalculator.entities.FlagData data = (com.picsauditing.flagcalculator.entities.FlagData)flagDatum;
+			if (data.getFlag() == com.picsauditing.flagcalculator.entities.FlagColor.Red)
+				return FlagColor.valueOf(data.getFlag().toString());
+			if (data.getFlag() == com.picsauditing.flagcalculator.entities.FlagColor.Amber)
 				worst = data.getFlag();
 		}
 
-		return worst;
+		return FlagColor.valueOf(worst.toString());
 	}
 
 	public FlagColor getOverallFlag(int contractorID) {
