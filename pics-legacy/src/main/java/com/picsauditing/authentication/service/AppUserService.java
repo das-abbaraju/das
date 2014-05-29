@@ -65,6 +65,12 @@ public class AppUserService {
 		return Integer.toString(newAppUser.getId());
 	}
 
+    @Transactional(propagation = Propagation.NESTED)
+    public AppUser clearResetHash(AppUser appUser) {
+        appUser.setResetHash(null);
+        return appUserDAO.save(appUser);
+    }
+
 	@Transactional(propagation = Propagation.NESTED)
 	public void save(AppUser appUser) {
 		appUserDAO.save(appUser);

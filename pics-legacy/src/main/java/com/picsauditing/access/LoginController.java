@@ -414,6 +414,8 @@ public class LoginController extends PicsActionSupport {
         SessionInfoProviderFactory.getSessionInfoProvider()
                 .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
+        appUserService.clearResetHash(loginContext.getAppUser());
+
         return setUrlForRedirect(EMPLOYEE_PASSWORD_RESET + URLEncoder.encode(loginContext.getAppUser().getUsername()));
     }
 
