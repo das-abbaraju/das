@@ -386,7 +386,7 @@ public class StatusCalculatorService {
 
 	public Map<AccountSkill, SkillStatus> getSkillStatuses(final Employee employee,
 														   final Collection<AccountSkill> skills) {
-		if (CollectionUtils.isEmpty(skills)) {
+		if (CollectionUtils.isEmpty(skills) || employee == null) {
 			return Collections.emptyMap();
 		}
 
