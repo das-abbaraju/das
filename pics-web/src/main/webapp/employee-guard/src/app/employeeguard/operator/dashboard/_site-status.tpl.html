@@ -37,7 +37,10 @@
                     <chart type="arc" data="chartData"></chart>
                     <div class="col-xs-6 col-xs-offset-3 number-of-employees">
                         <i class="icon-user icon-large"></i>
-                        <a href="#" class="employees">
+                        <a ng-if="userType === 'corporate'" href="/employee-guard/operators/project/site-assignment/{{ selected_site }}" class="employees" target="_self">
+                            {{ site_assignments.employees }}
+                        </a>
+                        <a ng-if="userType === 'operator'" href="/employee-guard/operators/project/site-assignment" class="employees" target="_self">
                             {{ site_assignments.employees }}
                         </a>
                     </div>
