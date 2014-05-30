@@ -86,11 +86,11 @@ public class EmailAddressUtils {
 	}
 
 	// TODO possibly move this to I18nCache, or some other localization class
-	@Deprecated
-	public static String getBillingEmail(Currency currency) {
-       Currency currencyNullChecked = (currency==null)?Currency.USD:currency;
+    @Deprecated
+    public static String getBillingEmail(Currency currency) {
+        Currency currencyNullChecked = (currency == null) ? Currency.USD : currency;
 
-        switch(currencyNullChecked){
+        switch (currencyNullChecked) {
             case EUR:
             case GBP:
             case CHF:
@@ -99,5 +99,5 @@ public class EmailAddressUtils {
             default:
                 return PICS_BILLING_MAIL_ID_DEFAULT;
         }
-	}
+    }
 }
