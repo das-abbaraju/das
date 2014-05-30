@@ -7,20 +7,22 @@ import java.util.Set;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 
 public class GetContractorsForUpdate extends CustomerAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
-		return "a." + qbID + " IS NOT NULL and a." + qbID
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
+        return "a." + qbID + " IS NOT NULL and a." + qbID
 				+ " NOT LIKE 'NOLOAD%' AND a.qbSync = true AND a.status != 'Demo' AND a.country.currency = '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()));
+				getWhereClause(currentSession.getCurrency()));
 
 		if (contractors.size() > 0) {
 			currentSession.getPossibleUpdates().addAll(contractors);

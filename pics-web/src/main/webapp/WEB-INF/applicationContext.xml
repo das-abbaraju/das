@@ -189,6 +189,7 @@
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
     <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
     <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
+    <bean id="ReportQBService" class="com.picsauditing.report.service.ReportQBService"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>

@@ -11,6 +11,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
@@ -29,17 +30,18 @@ import com.picsauditing.util.log.PicsLogger;
 
 public class InsertPayments extends PaymentAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
-		return "p.account." + qbID + " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
+        return "p.account." + qbID + " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
 				+ "AND p.account." + qbID + " not like 'NOLOAD%' and p.account.status != 'Demo' AND p.currency like '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Payment> payments = getPaymentDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
+				getWhereClause(currentSession.getCurrency()), 10);
 
 		// no work to do
 		if (payments.size() == 0) {

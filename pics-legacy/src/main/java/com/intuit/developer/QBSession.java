@@ -1,6 +1,7 @@
 package com.intuit.developer;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
@@ -175,6 +176,10 @@ public class QBSession {
 	}
 
     public boolean isCHF() { return "CHF".equals(this.getCurrencyCode()); }
+
+    public Currency getCurrency() {
+        return Currency.valueOf(currencyCode);
+    }
 
 
 }

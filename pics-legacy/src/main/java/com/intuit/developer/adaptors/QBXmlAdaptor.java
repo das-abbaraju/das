@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
+import com.picsauditing.jpa.entities.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,10 +19,6 @@ import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Country;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
 import com.picsauditing.quickbooks.qbxml.CurrencyRef;
 import com.picsauditing.util.SpringUtils;
@@ -258,4 +255,23 @@ public class QBXmlAdaptor {
 
 		return value;
 	}
+
+
+    protected static String getQBListID(Currency currency) {
+        switch (currency) {
+            case CAD:
+                return "qbListCAID";
+
+            case GBP:
+                return "qbListUKID";
+
+            case EUR:
+            case CHF:
+                return "qbListEUID";
+
+            default:
+                return "qbListID";
+        }
+    }
+
 }

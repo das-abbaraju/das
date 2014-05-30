@@ -1,6 +1,7 @@
 package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
 
 import java.util.List;
@@ -8,21 +9,22 @@ import java.util.Map;
 
 public class GetInvoicesForUpdate extends InvoiceAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
-		return "i.account."
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
+        return "i.account."
 				+ qbID
 				+ " IS NOT NULL AND i.qbListID IS NOT NULL"
 				+ " AND i.account."
 				+ qbID
 				+ " NOT LIKE 'NOLOAD%' AND i.qbListID NOT LIKE 'NOLOAD%' AND i.account.status != 'Demo' AND i.qbSync = true AND i.currency LIKE '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
+				getWhereClause(currentSession.getCurrency()), 10);
 
 		if (invoices.size() > 0) {
 			currentSession.getPossibleInvoiceUpdates().addAll(invoices);
