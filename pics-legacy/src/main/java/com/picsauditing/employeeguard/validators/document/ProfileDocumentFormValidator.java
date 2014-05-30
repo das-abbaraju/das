@@ -25,6 +25,11 @@ public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValid
 		if (!isFileValid(documentForm)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "file"), "Upload is missing");
 		}
+
+		String errorString=ProfileDocumentValidationUtil.validateExpirationDate(documentForm);
+		if (!errorString.equals("")) {
+			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "expireYear"), errorString);
+		}
 	}
 
 	private boolean isFileValid(DocumentForm documentForm) {

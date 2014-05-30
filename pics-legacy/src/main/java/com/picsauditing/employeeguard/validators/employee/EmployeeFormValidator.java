@@ -27,7 +27,7 @@ public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<Pe
 		}
 
 		if (!EmployeeValidationUtil.valid(personalInformationForm.getEmail(), EmployeeValidationUtil.EmployeeField.EMAIL)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(formName, "email"), "Email is missing or already used");
+			addFieldErrorIfMessage(fieldKeyBuilder(formName, "email"), "Email is missing, invalid, or already used");
 		}
 	}
 
