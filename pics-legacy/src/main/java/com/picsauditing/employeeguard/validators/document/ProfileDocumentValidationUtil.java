@@ -45,7 +45,7 @@ public class ProfileDocumentValidationUtil {
 			expirationDateTime = new DateTime(year, month, day, 0, 0);
 			currentDateTime = new DateTime();
 		} catch (IllegalFieldValueException e) {
-			error = "Invalid Year/Month/Day";
+			error = "Invalid Year-Month-Day";
 			return error;
 		}
 
@@ -53,10 +53,10 @@ public class ProfileDocumentValidationUtil {
 
 		if(yearsAheadBehind>99){
 			if(expirationDateTime.isBefore(currentDateTime)){
-				error = "Expiration Date is way far behind";
+				error = "Expiration Date is too far in the past";
 			}
 			else{
-				error = "Expiration Date is way into the future";
+				error = "Expiration Date is too far in the future";
 			}
 		}
 
