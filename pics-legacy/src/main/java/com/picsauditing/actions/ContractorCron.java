@@ -39,6 +39,8 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
+	private FlagCriteriaDAO flagCriteriaDAO;
+	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
@@ -570,6 +572,7 @@ public class ContractorCron extends PicsActionSupport {
 
         FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(contractorOperator, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
+        addLabelsToChanges(changes);
         boolean needNote = flagCalculator.saveFlagData(changes);
         dao.refresh(contractorOperator);
 
@@ -606,6 +609,14 @@ public class ContractorCron extends PicsActionSupport {
             note.setCanContractorView(true);
             note.setViewableBy(contractorOperator.getOperatorAccount());
             dao.save(note);
+        }
+    }
+
+    private void addLabelsToChanges(List<com.picsauditing.flagcalculator.FlagData> changes) {
+        for (com.picsauditing.flagcalculator.FlagData flagData : changes) {
+            com.picsauditing.flagcalculator.entities.FlagData flagDatum = (com.picsauditing.flagcalculator.entities.FlagData) flagData;
+            FlagCriteria flagCriteria = flagCriteriaDAO.find(flagDatum.getCriteria().getId());
+            flagDatum.setCriteriaLabel(flagCriteria.getLabel());
         }
     }
 
