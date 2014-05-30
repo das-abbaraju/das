@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-
 public class ReportQBService {
 
+    public static final int ROW_LIMIT = 10;
     @Autowired
     private ContractorAccountDAO contractorAccountDAO;
     @Autowired
@@ -29,12 +29,12 @@ public class ReportQBService {
 
     public List<Invoice> getInvoicesToInsert(Currency currency) {
         String whereClause = InsertInvoices.getWhereClause(currency);
-        return invoiceDAO.findWhere(whereClause, 10);
+        return invoiceDAO.findWhere(whereClause, ROW_LIMIT);
     }
 
     public List<Payment> getPaymentsToInsert(Currency currency) {
         String whereClause = InsertPayments.getWhereClause(currency);
-        return paymentDAO.findWhere(whereClause, 10);
+        return paymentDAO.findWhere(whereClause, ROW_LIMIT);
     }
 
     public List<ContractorAccount> getContractorsForUpdate(Currency currency) {
@@ -44,12 +44,12 @@ public class ReportQBService {
 
     public List<Invoice> getInvoicesForUpdate(Currency currency) {
         String whereClause = GetInvoicesForUpdate.getWhereClause(currency);
-        return invoiceDAO.findWhere(whereClause, 10);
+        return invoiceDAO.findWhere(whereClause, ROW_LIMIT);
     }
 
     public List<Payment> getPaymentsForUpdate(Currency currency) {
         String whereClause = GetPaymentsForUpdate.getWhereClause(currency);
-        return paymentDAO.findWhere(whereClause, 10);
+        return paymentDAO.findWhere(whereClause, ROW_LIMIT);
     }
 
 
