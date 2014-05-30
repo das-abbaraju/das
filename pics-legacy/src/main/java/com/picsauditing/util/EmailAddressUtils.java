@@ -1,9 +1,9 @@
 package com.picsauditing.util;
 
+import com.picsauditing.jpa.entities.Currency;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import com.picsauditing.jpa.entities.Currency;
 
 // TODO pull out email addresses into their own file
 public class EmailAddressUtils {
@@ -37,8 +37,12 @@ public class EmailAddressUtils {
 	public static final String PICS_FLAG_CHANGE_EMAIL = "flagchanges@picsauditing.com";
 	
 	public static final String PICS_TECH_SERVICES = "TechServices@picsauditing.com";
-	
-	public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
+
+    public static final String PICS_BILLING_MAIL_ID_DEFAULT = "\"PICS Billing\"<billing@picsauditing.com>";
+
+    public static final String PICS_BILLING_MAIL_ID_EU = "\"PICS Billing\"<eubilling@picsauditing.com>";
+
+    public static Set<String> findUniqueEmailAddresses(String emailAddresses) {
 		Set<String> validEmail = new HashSet<String>();
 
 		if (!Strings.isEmpty(emailAddresses)) {
@@ -85,11 +89,17 @@ public class EmailAddressUtils {
 	// TODO possibly move this to I18nCache, or some other localization class
 	@Deprecated
 	public static String getBillingEmail(Currency currency) {
-		if (currency != null && (currency.isEUR() || currency.isGBP())){
-			return "\"PICS Billing\"<eubilling@picsauditing.com>";
-		} else {
-			return "\"PICS Billing\"<billing@picsauditing.com>";
-		} 
+       Currency currencyNullChecked = (currency==null)?Currency.USD:currency;
+
+        switch(currencyNullChecked){
+            case EUR:
+            case GBP:
+            case CHF:
+                return PICS_BILLING_MAIL_ID_EU;
+
+            default:
+                return PICS_BILLING_MAIL_ID_DEFAULT;
+
+        }
 	}
-	
 }
