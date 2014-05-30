@@ -11,40 +11,41 @@ public class EmailAddressUtilsTest {
     public void testGetBillingEmailForEUR() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.EUR);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
     }
 
     @Test
     public void testGetBillingEmailForGBP() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.GBP);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
     }
 
     @Test
     public void testGetBillingEmailForCHF() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.CHF);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
     }
 
     @Test
     public void testGetBillingEmailForOthers() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.USD);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
     }
 
     @Test
     public void testGetBillingEmailForAUD() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.AUD);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
     }
+
     @Test
     public void testGetBillingEmailForNullCurrency() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(null);
 
-        assertEquals(euBillingMailId,EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_DEFAULT);
     }
 }
