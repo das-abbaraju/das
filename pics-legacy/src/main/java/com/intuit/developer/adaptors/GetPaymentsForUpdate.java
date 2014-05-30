@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.xml.bind.Unmarshaller;
 
 import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.quickbooks.qbxml.QBXML;
 import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
@@ -17,17 +18,18 @@ import com.picsauditing.util.log.PicsLogger;
 
 public class GetPaymentsForUpdate extends PaymentAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
-		return "p.account." + qbID + " IS NOT NULL AND p.qbListID IS NOT NULL" + " AND p.account." + qbID
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
+        return "p.account." + qbID + " IS NOT NULL AND p.qbListID IS NOT NULL" + " AND p.account." + qbID
 				+ " NOT LIKE 'NOLOAD%' AND p.qbListID NOT LIKE 'NOLOAD%'"
-				+ " AND p.account.status != 'Demo' AND p.qbSync = true AND p.currency LIKE '" + currency + "'";
+				+ " AND p.account.status != 'Demo' AND p.qbSync = true AND p.currency LIKE '" + currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Payment> payments = getPaymentDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
+				getWhereClause(currentSession.getCurrency()), 10);
 
 		if (payments.size() > 0) {
 			currentSession.getPossiblePaymentUpdates().addAll(payments);

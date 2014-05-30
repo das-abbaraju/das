@@ -20,17 +20,18 @@ import java.util.List;
 
 public class InsertInvoices extends CustomerAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
 		return "i.account." + qbID + " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
 				+ "AND i.account." + qbID + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
+				getWhereClause(currentSession.getCurrency()), 10);
 
 		// no work to do
 		if (invoices.size() == 0) {
