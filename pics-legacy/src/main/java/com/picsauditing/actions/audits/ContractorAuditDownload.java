@@ -199,7 +199,7 @@ public class ContractorAuditDownload extends ContractorAuditController {
 		boolean satisfiesRequiredQuestionAnswer = true;
 		AuditQuestion requiredQuestion = question.getRequiredQuestion();
 
-        if (requiredQuestion != null && requiredQuestion.getExpirationDate().after(conAudit.getEffectiveDate())) {
+        if (requiredQuestion != null && requiredQuestion.getExpirationDate() != null && conAudit.getEffectiveDate() != null && requiredQuestion.getExpirationDate().after(conAudit.getEffectiveDate())) {
 			AuditData requiredQuestionAuditData = findAnswer(requiredQuestion);
 
 			if (requiredQuestionAuditData == null
