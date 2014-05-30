@@ -56,16 +56,16 @@ public class AccountRecoveryEmailService {
 
 
     public void sendRecoveryEmail(User user, String requestHost) throws IOException, EmailBuildErrorException {
-        sendRecoveryEmail(user.getAppUser(), user.getEmail(), requestHost);
+        sendRecoveryEmail(user.getAppUser(), user.getEmail(), user.getName(), requestHost);
     }
 
     public void sendRecoveryEmail(Profile profile, String requestHost) throws IOException, EmailBuildErrorException {
-        sendRecoveryEmail(appUserService.findById(profile.getUserId()), profile.getEmail(), requestHost);
+        sendRecoveryEmail(appUserService.findById(profile.getUserId()), profile.getEmail(), profile.getName(), requestHost);
     }
 
-    public void sendRecoveryEmail(AppUser appUser, String email, String requestHost) throws IOException, EmailBuildErrorException {
-
+    public void sendRecoveryEmail(AppUser appUser, String email, String name, String requestHost) throws IOException, EmailBuildErrorException {
         Map<String, Object> templateParameters = new TreeMap<>();
+        templateParameters.put("displayName", name);
         templateParameters.put("confirmLink", confirmLinkFor(appUser, requestHost));
 
         EmailTemplate passwordReset = templateDAO.find(EmailTemplate.PASSWORD_RESET);
