@@ -83,7 +83,6 @@ public class EmailAddressUtils {
 			return tempEmail;
 		else
 			return PICS_INFO_EMAIL_ADDRESS;
-
 	}
 
 	// TODO possibly move this to I18nCache, or some other localization class
@@ -99,7 +98,6 @@ public class EmailAddressUtils {
 
             default:
                 return PICS_BILLING_MAIL_ID_DEFAULT;
-
         }
 	}
 }
