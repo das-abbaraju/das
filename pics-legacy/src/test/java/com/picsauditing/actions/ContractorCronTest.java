@@ -6,10 +6,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.UserAssignmentDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.dao.FlagCalculatorDAO;
 import com.picsauditing.jpa.entities.*;
@@ -49,6 +46,8 @@ public class ContractorCronTest extends PicsActionTest {
 	private FeatureToggle featureToggleChecker;
 	@Mock
 	private ContractorAccountDAO contractorDAO;
+	@Mock
+	private FlagCriteriaDAO flagCriteriaDAO;
 	@Mock
 	private BasicDAO dao;
     @Mock
@@ -100,6 +99,7 @@ public class ContractorCronTest extends PicsActionTest {
 
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
+		Whitebox.setInternalState(contractorCron, "flagCriteriaDAO", flagCriteriaDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
 		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
@@ -225,11 +225,11 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setId(1234);
         conOp.setFlagColor(FlagColor.Green);
 
-        FlagCriteria criteria = new FlagCriteria();
+        com.picsauditing.flagcalculator.entities.FlagCriteria criteria = new com.picsauditing.flagcalculator.entities.FlagCriteria();
         criteria.setInsurance(true);
-        FlagData flagData = new FlagData();
+        com.picsauditing.flagcalculator.entities.FlagData flagData = new com.picsauditing.flagcalculator.entities.FlagData();
         flagData.setCriteria(criteria);
-        flagData.setFlag(FlagColor.Red);
+        flagData.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Red);
         List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
@@ -240,6 +240,7 @@ public class ContractorCronTest extends PicsActionTest {
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
+        when(flagCriteriaDAO.find(anyInt())).thenReturn(new FlagCriteria());
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
         verify(flagDataCalculator).saveFlagData(anyList());
@@ -256,18 +257,18 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setId(1234);
         conOp.setFlagColor(FlagColor.Green);
 
-        FlagCriteria criteria = new FlagCriteria();
+        com.picsauditing.flagcalculator.entities.FlagCriteria criteria = new com.picsauditing.flagcalculator.entities.FlagCriteria();
         criteria.setInsurance(false);
-        FlagData flagData = new FlagData();
+        com.picsauditing.flagcalculator.entities.FlagData flagData = new com.picsauditing.flagcalculator.entities.FlagData();
         flagData.setCriteria(criteria);
-        flagData.setFlag(FlagColor.Red);
+        flagData.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Red);
         List<com.picsauditing.flagcalculator.FlagData> changes = new ArrayList<>();
         changes.add(flagData);
 
         List<FlagCriteriaOperator> criteriaList = new ArrayList<>();
         criteriaList.add(flagCriteriaOperator);
         when(operator.getFlagCriteriaInherited()).thenReturn(criteriaList);
-        when(flagCriteriaOperator.getCriteria()).thenReturn(criteria);
+//        when(flagCriteriaOperator.getCriteria()).thenReturn(criteria);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
         when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
@@ -276,6 +277,7 @@ public class ContractorCronTest extends PicsActionTest {
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
+        when(flagCriteriaDAO.find(anyInt())).thenReturn(new FlagCriteria());
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
         verify(flagDataCalculator).saveFlagData(anyList());
