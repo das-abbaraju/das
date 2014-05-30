@@ -158,8 +158,8 @@ public class ContractorEmployeeProjectAssignmentFactory {
 	}
 
 	private AccountSkillProfile getAccountSkillProfileWithDefault(final Employee employee,
-																																final AccountSkill requiredSkill,
-																																final List<AccountSkillProfile> accountSkillProfiles) {
+																  final AccountSkill requiredSkill,
+																  final List<AccountSkillProfile> accountSkillProfiles) {
 		for (AccountSkillProfile accountSkillProfile : accountSkillProfiles) {
 			if (accountSkillProfile.getSkill().equals(requiredSkill)
 					&& accountSkillProfile.getProfile().getEmployees().contains(employee)) {
