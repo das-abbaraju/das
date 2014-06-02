@@ -111,14 +111,6 @@ public class ContractorAccountTest {
 	}
 
     @Test
-    public void testSetStatus() {
-        ContractorAccount contractor = new ContractorAccount();
-        contractor.setStatus(AccountStatus.Active);
-        contractor.setStatus(AccountStatus.Requested);
-        assertEquals(AccountStatus.Active, contractor.getStatus());
-    }
-
-    @Test
     public void testGetWeightedIndustryAverage_NoSelfPerformedTrades() {
         ContractorAccount contractor = new ContractorAccount();
         contractor.setTrades(new HashSet<ContractorTrade>());
