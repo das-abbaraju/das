@@ -255,13 +255,11 @@ public class ProcessHelper {
 		return roleEntityService.getSiteRolesForEmployees(employees);
 	}
 
-	public Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills(final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+	public Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills(
+			final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+
 		Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills = new HashMap<>();
 		for (AccountModel accountModel : siteHierarchy.keySet()) {
-			if (CollectionUtils.isEmpty(siteHierarchy.get(accountModel))) {
-				continue;
-			}
-
 			int siteId = accountModel.getId();
 			Set<AccountSkill> requiredSkills = skillEntityService.getSiteAndCorporateRequiredSkills(siteId,
 					PicsCollectionUtil.getIdsFromCollection(siteHierarchy.get(accountModel),
@@ -279,12 +277,6 @@ public class ProcessHelper {
 		return siteAndCorporateRequiredSkills;
 	}
 
-	public Map<AccountModel, Set<Role>> siteAssignmentRoles(final Map<AccountModel, Integer> sites) {
-		Map<Integer, Set<Role>> siteRoles = roleEntityService.getSiteAssignmentRoles(sites.values());
-
-		return PicsCollectionUtil.reduceMapsForPairKeyMap(sites, siteRoles);
-	}
-
 	public Map<AccountModel, Map<Employee, Set<Role>>> siteEmployeeRoles(final Map<Integer, AccountModel> sites) {
 		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoleMap = roleEntityService.getSiteEmployeeRoles(sites.keySet());
 
@@ -300,7 +292,6 @@ public class ProcessHelper {
 	public Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills(final int contractorId,
 																				final Set<Project> allProjects,
 																				final Map<Project, Set<AccountSkill>> projectRequiredSkills,
-																				final Map<Project, Set<Role>> projectRoles,
 																				final Map<Role, Set<AccountSkill>> roleSkills,
 																				final Map<Project, Set<Employee>> employeeProjectAssignments,
 																				final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkills) {
@@ -309,7 +300,7 @@ public class ProcessHelper {
 		}
 
 		Map<Project, Set<AccountSkill>> allSkillsForProjects = aggregateAllSkillsForProjects(allProjects,
-				projectRequiredSkills, projectRoles, roleSkills, siteAndCorporateRequiredSkills);
+				projectRequiredSkills, siteAndCorporateRequiredSkills);
 
 		Map<Project, Map<Employee, Set<Role>>> projectEmployeeRoles = projectEntityService.getProjectEmployeeRoles(contractorId);
 
@@ -353,8 +344,6 @@ public class ProcessHelper {
 
 	public Map<Project, Set<AccountSkill>> aggregateAllSkillsForProjects(final Set<Project> allProjects,
 																		 final Map<Project, Set<AccountSkill>> projectRequiredSkills,
-																		 final Map<Project, Set<Role>> projectRoles,
-																		 final Map<Role, Set<AccountSkill>> roleSkills,
 																		 final Map<AccountModel, Set<AccountSkill>> siteAndCorporateRequiredSkillsMap) {
 		if (CollectionUtils.isEmpty(allProjects)) {
 			return Collections.emptyMap();

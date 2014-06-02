@@ -6,14 +6,14 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
-import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
@@ -33,7 +33,10 @@ public class PhotoActionTest extends PicsActionTest {
 
 	private EmployeeService employeeService;
 	private PhotoUtil photoUtil;
-	private ProfileService profileService;
+
+	@Mock
+	private ProfileEntityService profileEntityService;
+
 	private ProfileDocumentService profileDocumentService;
 
 	@Before
@@ -45,12 +48,11 @@ public class PhotoActionTest extends PicsActionTest {
 
 		employeeService = EmployeeServiceFactory.getEmployeeService();
 		photoUtil = PhotoUtilFactory.getPhotoUtil();
-		profileService = ProfileServiceFactory.getProfileService();
 		profileDocumentService = ProfileDocumentServiceFactory.getProfileDocumentService();
 
 		Whitebox.setInternalState(photoAction, "employeeService", employeeService);
 		Whitebox.setInternalState(photoAction, "photoUtil", photoUtil);
-		Whitebox.setInternalState(photoAction, "profileService", profileService);
+		Whitebox.setInternalState(photoAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(photoAction, "profileDocumentService", profileDocumentService);
 	}
 
@@ -128,6 +130,6 @@ public class PhotoActionTest extends PicsActionTest {
 		verify(photoUtil).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());
 		verify(photoUtil, never()).getDefaultPhotoStream(anyString());
-		verify(profileService).findById(anyString());
+		verify(profileEntityService).find(anyInt());
 	}
 }

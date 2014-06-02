@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.process;
 
 import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.entity.*;
@@ -9,16 +10,28 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
 import static com.picsauditing.employeeguard.EGTestDataUtil.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyCollectionOf;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.when;
 
 public class ProcessHelperTest {
+
+	public static final int SITE_ID_2 = 456;
+	public static final AccountModel SITE_2_ACCOUNT_MODEL = new AccountModel.Builder().id(SITE_ID_2).build();
+	public static final AccountSkill SITE_2_REQUIRED_SKILL = new AccountSkillBuilder().accountId(SITE_ID_2).name("Skill 2").build();
+
+	public static final int SITE_ID_1 = 123;
+	public static final AccountModel SITE_1_ACCOUNT_MODEL = new AccountModel.Builder().id(SITE_ID_1).build();
+	public static final AccountSkill SITE_1_REQUIRED_SKILL = new AccountSkillBuilder().accountId(SITE_ID_1).name("Skill 1").build();
 
 	// class under test
 	private ProcessHelper processHelper;
@@ -214,5 +227,53 @@ public class ProcessHelperTest {
 				.name("SITE")
 				.accountType(AccountType.OPERATOR)
 				.build();
+	}
+
+	@Test
+	public void testSiteAndCorporateRequiredSkills() {
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = setupTestSiteAndCorporateRequiredSkills();
+
+		Map<AccountModel, Set<AccountSkill>> results = processHelper.siteAndCorporateRequiredSkills(siteHierarchy);
+
+		verifyTestSiteAndCorporateRequiredSkills(results);
+	}
+
+	private Map<AccountModel, Set<AccountModel>> setupTestSiteAndCorporateRequiredSkills() {
+		Map<AccountModel, Set<AccountModel>> siteHierarchy = new HashMap<AccountModel, Set<AccountModel>>() {{
+
+			put(SITE_1_ACCOUNT_MODEL, new HashSet<AccountModel>());
+			put(SITE_2_ACCOUNT_MODEL, new HashSet<AccountModel>());
+
+		}};
+
+		when(skillEntityService.getSiteAndCorporateRequiredSkills(anyInt(), anyCollectionOf(Integer.class)))
+				.thenAnswer(new Answer<Set<AccountSkill>>() {
+
+					@Override
+					public Set<AccountSkill> answer(InvocationOnMock invocationOnMock) throws Throwable {
+						if (SITE_ID_1 == Integer.valueOf((Integer) invocationOnMock.getArguments()[0])) {
+							return new HashSet<>(Arrays.asList(SITE_1_REQUIRED_SKILL));
+						}
+
+						if (SITE_ID_2 == Integer.valueOf((Integer) invocationOnMock.getArguments()[0])) {
+							return new HashSet<>(Arrays.asList(SITE_2_REQUIRED_SKILL));
+						}
+
+						throw new IllegalArgumentException("Invalid siteId for test "
+								+ invocationOnMock.getArguments()[0]);
+					}
+				});
+
+		return siteHierarchy;
+	}
+
+	private void verifyTestSiteAndCorporateRequiredSkills(final Map<AccountModel, Set<AccountSkill>> results) {
+		assertEquals(2, results.size());
+		assertTrue(Utilities.mapsAreEqual(new HashMap<AccountModel, Set<AccountSkill>>() {{
+
+			put(SITE_1_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(SITE_1_REQUIRED_SKILL)));
+			put(SITE_2_ACCOUNT_MODEL, new HashSet<>(Arrays.asList(SITE_2_REQUIRED_SKILL)));
+
+		}}, results));
 	}
 }

@@ -51,8 +51,9 @@ public class ContractorAssignmentProcess {
 																					final ContractorAssignmentData contractorAssignmentData) {
 		Map<Project, Map<Employee, Set<AccountSkill>>> employeeProjects = processHelper
 				.projectEmployeeSkills(contractorId, contractorAssignmentData.getAllProjects(),
-						contractorAssignmentData.getProjectRequiredSkills(), contractorAssignmentData.getProjectRoles(),
-						contractorAssignmentData.getRoleSkills(), contractorAssignmentData.getProjectEmployeeAssignments(),
+						contractorAssignmentData.getProjectRequiredSkills(),
+						contractorAssignmentData.getRoleSkills(),
+						contractorAssignmentData.getProjectEmployeeAssignments(),
 						contractorAssignmentData.getSiteAndCorporateRequiredSkills());
 
 		Map<Project, Map<SkillStatus, Integer>> result = new HashMap<>();

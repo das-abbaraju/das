@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import org.junit.Before;
@@ -29,8 +28,6 @@ public class SiteAssignmentModelFactoryTest {
 	private Employee employee;
 	@Mock
 	private Role role;
-	@Mock
-	private SkillUsage skillUsage;
 
 	@Mock
 	private SiteAssignment siteAssignment;

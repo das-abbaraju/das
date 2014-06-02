@@ -6,9 +6,8 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProjectAssignmentService;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
@@ -18,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -37,8 +38,6 @@ public class SummaryActionTest extends PicsActionTest {
 	@Mock
 	private AssignmentService assignmentService;
 	@Mock
-	private ProjectAssignmentService projectAssignmentService;
-	@Mock
 	private StatusCalculatorService statusCalculatorService;
 
 	@Before
@@ -52,7 +51,6 @@ public class SummaryActionTest extends PicsActionTest {
 		when(permissions.getAccountName()).thenReturn("Site Name");
 
 		Whitebox.setInternalState(summaryAction, "assignmentService", assignmentService);
-		Whitebox.setInternalState(summaryAction, "projectAssignmentService", projectAssignmentService);
 		Whitebox.setInternalState(summaryAction, "statusCalculatorService", statusCalculatorService);
 	}
 
@@ -70,7 +68,7 @@ public class SummaryActionTest extends PicsActionTest {
 
 		when(assignmentService.getEmployeeSkillsForSite(SITE_ID)).thenReturn(map);
 		when(map.size()).thenReturn(2);
-		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(anySetOf(Employee.class), anyMap())).thenReturn(
+		when(statusCalculatorService.getEmployeeStatusRollUpForSkills(anyMap())).thenReturn(
 				new HashMap<Employee, SkillStatus>() {{
 					put(new EmployeeBuilder()
 							.accountId(CONTRACTOR_ID)

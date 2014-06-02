@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class PhotoAction extends PicsRestActionSupport {
 	@Autowired
 	private PhotoUtil photoUtil;
 	@Autowired
-	private ProfileService profileService;
+	private ProfileEntityService profileEntityService;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
 
@@ -47,7 +47,7 @@ public class PhotoAction extends PicsRestActionSupport {
 	public String profilePhoto() throws FileNotFoundException {
 		String ftpDir = getFtpDir();
 
-		Profile profile = profileService.findById(id);
+		Profile profile = profileEntityService.find(getIdAsInt());
 		inputStream = getPhotoStreamForProfile(profile, ftpDir);
 
 		return "photo";

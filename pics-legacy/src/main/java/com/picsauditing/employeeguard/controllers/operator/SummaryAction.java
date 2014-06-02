@@ -6,15 +6,10 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.models.ModelFactory;
-import com.picsauditing.employeeguard.models.OperatorSiteAssignmentStatus;
-import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
-import com.picsauditing.employeeguard.models.UserModel;
+import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProjectAssignmentService;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
-import com.picsauditing.employeeguard.models.AccountType;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -26,8 +21,6 @@ public class SummaryAction extends PicsRestActionSupport {
 
 	@Autowired
 	private AssignmentService assignmentService;
-	@Autowired
-	private ProjectAssignmentService projectAssignmentService;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
@@ -71,9 +64,9 @@ public class SummaryAction extends PicsRestActionSupport {
 	private OperatorSiteAssignmentStatus buildOperatorSiteAssignmentStatus(int siteId) {
 		Map<Employee, Set<AccountSkill>> allEmployeeSkillsForSite = assignmentService.getEmployeeSkillsForSite(siteId);
 		Map<Employee, SkillStatus> employeeStatuses = statusCalculatorService
-				.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite.keySet(), allEmployeeSkillsForSite);
+				.getEmployeeStatusRollUpForSkills(allEmployeeSkillsForSite);
 
-		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = projectAssignmentService
+		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = assignmentService
 				.getEmployeeSkillsForProjectsUnderSite(siteId);
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
 				.getAllSkillStatusesForEntity(projectEmployeeSkills);
