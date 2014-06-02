@@ -1,0 +1,19 @@
+input[type="file"].display-file-import {
+    display: none;
+}
+
+.lt-ie9 {
+    .employee-image {
+        &:hover .overlay-container {
+            display: none;
+        }
+    }
+
+    input[type="file"].display-file-import {
+        display: block;
+        height: auto;
+        position: static;
+        visibility: visible;
+        width: auto;
+    }
+}

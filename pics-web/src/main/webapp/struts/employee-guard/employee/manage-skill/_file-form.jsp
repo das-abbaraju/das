@@ -41,7 +41,7 @@
 
             <div class="form-group">
                 <div class="col-md-4 col-md-offset-3">
-                    <tw:input inputName="file" type="file" class="hidden" />
+                    <tw:input inputName="file" type="file" class="display-file-import" />
                     <a href="${employee_file_create_url}" class="btn btn-default btn-auto-width"><i class="icon-plus-sign"></i> File</a>
                 </div>
             </div>

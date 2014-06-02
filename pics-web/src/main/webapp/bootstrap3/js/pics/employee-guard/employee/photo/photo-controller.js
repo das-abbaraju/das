@@ -9,10 +9,13 @@ PICS.define('employee-guard.employee.photo.PhotoController', {
             var $element = $(event.target),
                 $figure = $element.closest('figure'),
                 $file_input = $figure.find('input[type="file"]'),
-                photoValidation = PICS.getClass('employee-guard.FormValidation');
+                photoValidation = PICS.getClass('employee-guard.FormValidation'),
+                fileUpdateCtrl = PICS.getClass('employee-guard.FileUpload'),
+                filename = fileUpdateCtrl.getFileNameFromFileInput(event);
 
-            //update hidden field that holds filename for validation
-            $('#validate-filename').val($file_input[0].files[0].name);
+            if (filename) {
+                $('#validate-filename').val(filename);
+            }
 
             //send for validation
             photoValidation.submitFormForValidation(event);

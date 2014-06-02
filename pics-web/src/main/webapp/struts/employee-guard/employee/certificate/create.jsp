@@ -24,7 +24,7 @@
             <div class="form-group">
                 <tw:label labelName="file" class="col-md-3 control-label"><strong>Proof</strong></tw:label>
                 <div class="col-md-9">
-                    <tw:input inputName="file" type="file" class="file-import hidden" />
+                    <tw:input inputName="file" type="file" class="file-import display-file-import" />
                     <tw:button type="button" class="btn btn-default btn-import">
                         <i class="icon-upload"></i>Upload
                     </tw:button>

@@ -17,25 +17,27 @@ PICS.define('employee-guard.FileUpload', {
         function changeImportedFile(event) {
             var $element = $(event.target);
 
-            showImportFilename($element);
-            updateHiddenFilenameForValidation($element);
+            showImportFilename($element, event);
+            updateHiddenFilenameForValidation($element, event);
         }
 
-        function showImportFilename($element) {
+        function showImportFilename($element, event) {
             var $form_group = $element.closest('.form-group'),
                 $display_name = $form_group.find('.filename-display'),
-                filename = $element[0].files[0].name;
+                filename = getFileNameFromFileInput(event);
 
             if (filename) {
                 $display_name.html(filename);
             }
         }
 
-        function updateHiddenFilenameForValidation($element) {
+        function updateHiddenFilenameForValidation($element, event) {
             var $validate_filename = $('#validate-filename'),
-                filename = $element[0].files[0].name;
+                filename = getFileNameFromFileInput(event);
 
-            $validate_filename.val(filename);
+            if (filename) {
+                $validate_filename.val(filename);
+            }
         }
 
         function disableSubmitBtnAfterSubmit(event) {
@@ -45,8 +47,17 @@ PICS.define('employee-guard.FileUpload', {
             $submitBtn.attr('disabled', true);
         }
 
+        function getFileNameFromFileInput(event) {
+            var file = event.target.value,
+                lastSlash = file.lastIndexOf('\\'),
+                filename = file.substring(lastSlash + 1, file.length);
+
+            return filename;
+        }
+
         return {
-            init: init
+            init: init,
+            getFileNameFromFileInput: getFileNameFromFileInput
         };
     }())
 });
