@@ -16,4 +16,8 @@ input[type="file"].display-file-import {
         visibility: visible;
         width: auto;
     }
+
+    .btn-import {
+        display: none;
+    }
 }

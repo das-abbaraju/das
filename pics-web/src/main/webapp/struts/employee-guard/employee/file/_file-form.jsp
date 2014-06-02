@@ -20,15 +20,17 @@
         <div class="form-group">
             <tw:label labelName="file" class="col-md-3 control-label"><strong>File</strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="file" type="file" class="file-import display-file-import" />
+                <tw:input inputName="file" type="file" class="file-import display-file-import col-md-12" />
                 <tw:input id="validate-filename" inputName="validate_filename" value="${document.fileName}" type="hidden" />
 
                 <tw:button type="button" class="btn btn-default btn-import">
                     <i class="icon-upload"></i>Upload New
                 </tw:button>
-            </div>
-            <div class="col-md-4 col-md-offset-3">
-                <span class="filename-display">${document.fileName}</span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="filename-display">${document.fileName}</span>
+                    </div>
+                </div>
             </div>
         </div>
 

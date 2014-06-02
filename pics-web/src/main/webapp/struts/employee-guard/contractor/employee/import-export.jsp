@@ -31,6 +31,7 @@
 
 				<tw:form formName="contractor_employee_import" action="${contractor_employee_import_url}" method="POST"
 				         enctype="multipart/form-data" role="form">
+				    <span class="display-file-import">Import Employees</span>
 				    <tw:input type="file" name="upload" class="display-file-import" />
 					<tw:button type="button" class="btn btn-default btn-import">Import Employees</tw:button>
 				</tw:form>
@@ -44,7 +45,7 @@
 
 			<div class="content">
 				<tw:form formName="contractor_employee_export" action="${contractor_employee_export_url}" method="post">
-                <%--Commened out to resuse whem multiple download types avaiable
+                <%--Commented out to resuse whem multiple download types avaiable
                     <div class="control-group">
 						<div class="controls">
 							<tw:label class="radio">
