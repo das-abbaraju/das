@@ -13,10 +13,13 @@ import com.picsauditing.search.IndexValueType;
 import com.picsauditing.search.IndexableField;
 import com.picsauditing.util.Luhn;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.hibernate.annotations.OrderBy;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.*;
 import javax.persistence.Column;
@@ -28,7 +31,9 @@ import java.util.*;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends AbstractIndexableTable implements Comparable<Account>, JSONable {
 
-	public static int NONE = 0;
+    private static Logger logger = LoggerFactory.getLogger(Account.class);
+
+    public static int NONE = 0;
 	public static int EVERYONE = 1;
 	public static int PRIVATE = 2;
 	public static int PicsID = 1100;
@@ -389,7 +394,19 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 	}
 
 	public void setStatus(AccountStatus status) {
-		this.status = status;
+        // TODO: This is to track down a bug, do not remove until after bug is resolved.
+        if (this.status == AccountStatus.Active && status == AccountStatus.Requested) {
+            try {
+                throw new Exception("Account " + id + " set from Active to Requested at " + (new Date().toString()));
+            }
+            catch (Exception e) {
+                logger.error(e.getMessage());
+                logger.error(ExceptionUtils.getFullStackTrace(e));
+            }
+        }
+        else {
+            this.status = status;
+        }
 	}
 
 	/**
