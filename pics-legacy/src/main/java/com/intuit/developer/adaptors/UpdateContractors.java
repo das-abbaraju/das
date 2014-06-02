@@ -3,6 +3,7 @@ package com.intuit.developer.adaptors;
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.*;
@@ -98,11 +99,9 @@ public class UpdateContractors extends CustomerAdaptor {
 				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
 				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
-				customer.setBillAddress(factory.createBillAddress());
+                setBillAddress(factory, contractor, customer);
 
-				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
-
-				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
+                customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
 				customer.setEmail(EmailAddressUtils.validate(primary.getEmail()));
 
@@ -133,7 +132,14 @@ public class UpdateContractors extends CustomerAdaptor {
 
 	}
 
-	@Override
+    private void setBillAddress(ObjectFactory factory, ContractorAccount contractor, CustomerMod customer) {
+        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            customer.setBillAddress(factory.createBillAddress());
+            customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
+        }
+    }
+
+    @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Map<String, Map<String, Object>> updatePool = currentSession.getToUpdate();
