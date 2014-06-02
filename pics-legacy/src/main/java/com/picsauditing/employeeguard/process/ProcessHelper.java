@@ -139,11 +139,17 @@ public class ProcessHelper {
 
 	public Map<AccountModel, Set<AccountSkill>> allSkillsForAllSite(final Map<AccountModel, Set<Project>> accountProjects,
 																	final Map<Project, Set<AccountSkill>> allSkillsForProjects,
-																	final Map<AccountModel, Set<AccountSkill>> siteRequiredSkills) {
+																	final Map<AccountModel, Set<AccountSkill>> siteRequiredSkills,
+																	final Map<AccountModel, Set<Group>> accountGroups,
+																	final Map<Group, Set<AccountSkill>> groupSkills) {
 		Map<AccountModel, Set<AccountSkill>> projectSkillsByAccount =
 				PicsCollectionUtil.reduceMapOfCollections(accountProjects, allSkillsForProjects);
 
-		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills, projectSkillsByAccount);
+		Map<AccountModel, Set<AccountSkill>> groupsSkills = PicsCollectionUtil.reduceMapOfCollections(accountGroups,
+				groupSkills);
+
+		return PicsCollectionUtil.mergeMapOfSets(siteRequiredSkills,
+				PicsCollectionUtil.mergeMapOfSets(projectSkillsByAccount, groupsSkills));
 	}
 
 	public Map<Employee, Set<AccountSkill>> getAllSkillsForEmployees(final int contractorId,

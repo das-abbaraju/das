@@ -26,6 +26,7 @@ public class ProfileSkillData {
 	private Map<AccountModel, Set<AccountModel>> parentSites;
 	private Map<AccountModel, Set<Group>> accountGroups;
 	private Map<AccountModel, Set<Role>> accountRoles;
+	private Map<Group, Set<AccountSkill>> groupSkills;
 
 	public Map<AccountModel, Set<AccountSkill>> getAllRequiredSkills() {
 
@@ -138,5 +139,13 @@ public class ProfileSkillData {
 
 	public void setAccountRoles(Map<AccountModel, Set<Role>> accountRoles) {
 		this.accountRoles = accountRoles;
+	}
+
+	public Map<Group, Set<AccountSkill>> getGroupSkills() {
+		return groupSkills;
+	}
+
+	public void setGroupSkills(Map<Group, Set<AccountSkill>> groupSkills) {
+		this.groupSkills = groupSkills;
 	}
 }

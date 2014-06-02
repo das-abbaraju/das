@@ -33,19 +33,10 @@ public class ProfileSkillStatusProcess {
 	@Autowired
 	private ProcessHelper processHelper;
 
-	// Required Skills contains all the group skills, Site and Corporate Required Skills, Skills from Roles
-	// the person is assigned to at the Site
-
-	// Only Project required skills and skills for roles under a project show up listed under the project
-
 	public ProfileSkillData buildProfileSkillData(final Profile profile) {
 		Set<Employee> employees = new HashSet<>(profile.getEmployees());
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
-/*
-		if(roles!=null && profile !=null)
-			log.debug(String.format("Profile=[%s] Found following roles [%s]", profile, roles));
-*/
 
 		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
 		Map<Role, Set<AccountSkill>> roleSkills = processHelper.getRoleSkills(roles);
@@ -60,12 +51,22 @@ public class ProfileSkillStatusProcess {
 		profileSkillData = addAccountInformation(profileSkillData, profile);
 		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projectRoles, roleSkills);
 		profileSkillData = addSiteProjects(profileSkillData, projects);
+		profileSkillData = addSiteRoles(profileSkillData, employees);
+		profileSkillData = addContractorGroups(profileSkillData, employees);
+		profileSkillData = addGroupSkills(profileSkillData);
 		profileSkillData = addProjectStatus(profileSkillData, projects, profile);
 		profileSkillData = addAccountStatus(profileSkillData, profile);
 		profileSkillData = addAllSkillStatuses(profileSkillData, profile);
 		profileSkillData = addOverallSkillStatus(profileSkillData);
-		profileSkillData = addSiteRoles(profileSkillData, employees);
-		profileSkillData = addContractorGroups(profileSkillData, employees);
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addGroupSkills(final ProfileSkillData profileSkillData) {
+		Map<Group, Set<AccountSkill>> groupSkills = skillEntityService.getSkillsForGroups(
+				PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAccountGroups().values()));
+
+		profileSkillData.setGroupSkills(groupSkills);
 
 		return profileSkillData;
 	}
@@ -106,6 +107,7 @@ public class ProfileSkillStatusProcess {
 
 		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllProjectSkills().values()));
 		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllRequiredSkills().values()));
+		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getGroupSkills().values()));
 
 		return allSkills;
 	}
@@ -114,7 +116,8 @@ public class ProfileSkillStatusProcess {
 											  final Profile profile) {
 		Map<AccountModel, Set<AccountSkill>> allSiteSkills =
 				processHelper.allSkillsForAllSite(profileSkillData.getSiteProjects(),
-						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
+						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills(),
+						profileSkillData.getAccountGroups(), profileSkillData.getGroupSkills());
 
 		profileSkillData.setSiteStatuses(statusCalculatorService
 				.getSkillStatusPerEntity(getEmployee(profile), allSiteSkills, SkillStatus.Completed));

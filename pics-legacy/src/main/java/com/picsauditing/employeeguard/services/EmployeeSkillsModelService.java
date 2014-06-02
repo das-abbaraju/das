@@ -39,6 +39,10 @@ public class EmployeeSkillsModelService {
 
 	private Map<AccountModel, Set<SkillStatusModel>> buildAccountSkillsMap(final ProfileSkillData profileSkillData) {
 		Map<AccountModel, Set<AccountSkill>> requiredSkills = profileSkillData.getAllRequiredSkills();
+		Map<AccountModel, Set<AccountSkill>> groupSkills = PicsCollectionUtil
+				.reduceMapOfCollections(profileSkillData.getAccountGroups(), profileSkillData.getGroupSkills());
+
+		requiredSkills = PicsCollectionUtil.mergeMapOfSets(requiredSkills, groupSkills);
 
 		Map<AccountModel, Set<SkillStatusModel>> accountRequiredSkills = new HashMap<>();
 		for (AccountModel accountModel : requiredSkills.keySet()) {
