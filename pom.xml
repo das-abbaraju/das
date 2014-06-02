@@ -13,7 +13,6 @@
         <module>pics-util</module>
         <module>service-nace</module>
         <module>service-qbwc</module>
-        <module>pics-security</module>
         <module>pics-database-domain</module>
         <module>pics-database</module>
         <module>pics-dr-engine</module>
