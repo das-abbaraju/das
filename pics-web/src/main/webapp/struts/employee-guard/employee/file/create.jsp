@@ -24,7 +24,7 @@
             <div class="form-group">
                 <tw:label labelName="file" class="col-md-3 control-label"><strong>File</strong></tw:label>
                 <div class="col-md-4">
-                    <tw:input inputName="file" type="file" class="file-import display-file-import" />
+                    <tw:input inputName="file" type="file" class="file-import default-file-import" />
                     <tw:input id="validate-filename" inputName="validate_filename" type="hidden" />
 
                     <tw:button type="button" class="btn btn-default btn-import">

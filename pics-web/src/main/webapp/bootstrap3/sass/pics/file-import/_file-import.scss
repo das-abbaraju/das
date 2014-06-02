@@ -1,4 +1,4 @@
-input[type="file"].display-file-import {
+input[type="file"].default-file-import {
     display: none;
 }
 
@@ -9,7 +9,7 @@ input[type="file"].display-file-import {
         }
     }
 
-    input[type="file"].display-file-import {
+    input[type="file"].default-file-import {
         display: block;
         height: auto;
         position: static;

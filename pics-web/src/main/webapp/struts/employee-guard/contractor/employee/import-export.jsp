@@ -31,8 +31,8 @@
 
 				<tw:form formName="contractor_employee_import" action="${contractor_employee_import_url}" method="POST"
 				         enctype="multipart/form-data" role="form">
-				    <span class="display-file-import">Import Employees</span>
-				    <tw:input type="file" name="upload" class="display-file-import" />
+				    <span class="default-file-import">Import Employees</span>
+				    <tw:input type="file" name="upload" class="default-file-import" />
 					<tw:button type="button" class="btn btn-default btn-import">Import Employees</tw:button>
 				</tw:form>
 			</div>
