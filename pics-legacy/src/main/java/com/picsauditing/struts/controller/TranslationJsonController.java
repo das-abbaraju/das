@@ -1,24 +1,18 @@
 package com.picsauditing.struts.controller;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
-import com.picsauditing.actions.PicsActionSupport;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class TranslationJsonController extends PicsActionSupport {
+public class TranslationJsonController extends JsonActionSupport {
 
     private String translationKey;
+    private String language;
 
+    @Deprecated // Per Roos, not actually used by the front-end. Confirm and delete.
     public String getSingleTranslationMessage() {
         Map<String, String> translationsMap = new HashedMap();
         String translationMessage = getText(translationKey);
@@ -32,66 +26,41 @@ public class TranslationJsonController extends PicsActionSupport {
         return JSON_STRING;
     }
 
-    public String getTranslationMessages() throws IOException {
-        Translations requestTranslations = getModelFromJsonRequest();
+    public String getTranslationMessages() {
+        HashMap<String, List<String>> translationKeys;
+        try {
+            translationKeys = getModelFromJsonRequest(HashMap.class);
 
-        Map<String, String> translationsMap = new HashMap<>();
-
-        for (String translationKey : requestTranslations.getTranslationKeys()) {
-            String translationMessage = getText(translationKey);
-            translationsMap.put(translationKey, translationMessage == null ? "" : translationMessage);
+            if (translationKeys.isEmpty()) {
+                throw new UnacceptableJsonException();
+            }
+        } catch (IOException e) {
+            return badRequestResponse();
         }
 
-        Translations responseTranslations = new Translations();
-        responseTranslations.setTranslationsMap(translationsMap);
+        Map translationsMap = generateTranslationsMap(translationKeys);
 
-        jsonString = new Gson().toJson(responseTranslations);
+        jsonString = new Gson().toJson(translationsMap);
         return JSON_STRING;
     }
 
-    protected Translations getModelFromJsonRequest() throws IOException {
-        String body = getBodyFromRequest();
+    private Map<String, String> generateTranslationsMap(HashMap<String, List<String>> requestTranslations) {
+        Map<String, String> translationsMap = new HashMap<>();
 
-        Translations translations = new Translations();
-
-        try {
-            translations = new Gson().fromJson(body, Translations.class);
-        } catch (JsonSyntaxException e) {
-            throw new IOException(HttpStatus.getStatusText(HttpStatus.SC_BAD_REQUEST) + ": " + body, e);
-        }
-
-        return translations;
-    }
-
-    private String getBodyFromRequest() throws IOException {
-        HttpServletRequest request = getRequest();
-        return getBody(request);
-    }
-
-    public static String getBody(HttpServletRequest request) throws IOException {
-
-        StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = null;
-
-        try {
-            InputStream inputStream = request.getInputStream();
-            if (inputStream != null) {
-                bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-                char[] charBuffer = new char[128];
-                int bytesRead;
-                while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
-                    stringBuilder.append(charBuffer, 0, bytesRead);
-                }
-            } else {
-                stringBuilder.append("");
-            }
-        } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
+        for (List<String> translationKeys : requestTranslations.values()) {
+            for (String translationKey : translationKeys) {
+                String translationValue = getTextWithLocaleIfProvided(translationKey);
+                translationsMap.put(translationKey, translationValue == null ? "" : translationValue);
             }
         }
+        return translationsMap;
+    }
 
-        return stringBuilder.toString();
+    private String getTextWithLocaleIfProvided(String translationKey) {
+        if (StringUtils.isEmpty(language)) {
+           return getText(translationKey);
+        }
+        return getText(new Locale(language), translationKey);
     }
 
     public String getTranslationKey() {
@@ -102,7 +71,15 @@ public class TranslationJsonController extends PicsActionSupport {
         this.translationKey = translationKey;
     }
 
-    public class Translations {
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    private class Translations {
         List<String> translationKeys;
         private Map<String, String> translationsMap;
 
@@ -114,7 +91,7 @@ public class TranslationJsonController extends PicsActionSupport {
             this.translationKeys = translationKeys;
         }
 
-        public void setTranslationsMap(Map<String,String> translationsMap) {
+        public void setTranslationsMap(Map<String, String> translationsMap) {
             this.translationsMap = translationsMap;
         }
 

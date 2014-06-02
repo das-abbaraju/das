@@ -18,6 +18,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.i18n.LanguageModel;
 import com.picsauditing.security.CookieSupport;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.hierarchy.HierarchyBuilder;
@@ -52,11 +53,9 @@ public class LoginControllerTest extends PicsActionTest {
 	@Mock
 	private UserLoginLogDAO loginLogDAO;
 	@Mock
-	private AppUserDAO appUserDAO;
-	@Mock
 	private ProfileEntityService profileEntityService;
 	@Mock
-	private com.picsauditing.employeeguard.services.LoginService egLoginService;
+	private AuthenticationService authenticationService;
 	@Mock
 	private AppUser appUser;
 	@Mock
@@ -81,6 +80,8 @@ public class LoginControllerTest extends PicsActionTest {
 	private UserModeProvider userModeProvider;
     @Mock
     private AppUserService appUserService;
+    @Mock
+    private ProfileEntityService profileService;
     @Mock
     private UserDAO userDAO;
 
@@ -115,12 +116,13 @@ public class LoginControllerTest extends PicsActionTest {
 		Whitebox.setInternalState(loginController, "permissionBuilder", permissionBuilder);
 		Whitebox.setInternalState(loginController, "loginLogDAO", loginLogDAO);
 		Whitebox.setInternalState(loginController, "profileEntityService", profileEntityService);
-		Whitebox.setInternalState(loginController, "egLoginService", egLoginService);
+		Whitebox.setInternalState(loginController, "authenticationService", authenticationService);
 		Whitebox.setInternalState(loginController, "propertyDAO", propertyDAO);
 		Whitebox.setInternalState(loginController, "permissions", permissions);
 		Whitebox.setInternalState(loginController, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(loginService, "userService", userService);
-        Whitebox.setInternalState(loginService, "appUserDAO", appUserDAO);
+        Whitebox.setInternalState(loginService, "appUserService", appUserService);
+        Whitebox.setInternalState(loginService, "profileService", profileService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
 		Whitebox.setInternalState(loginController, "userService", userService);
 		Whitebox.setInternalState(loginController, "loginService", loginService);
@@ -136,20 +138,18 @@ public class LoginControllerTest extends PicsActionTest {
 		when(userService.findByName(anyString())).thenReturn(user);
 		when(userService.findById(941)).thenReturn(user);
 		when(userService.loadUserByUsername(anyString())).thenReturn(user);
-		when(appUserService.findAppUser(anyString())).thenReturn(appUser);
-        when(appUserDAO.findByUserName(anyString())).thenReturn(appUser);
+		when(appUserService.findByUsername(anyString())).thenReturn(appUser);
+        when(appUserService.findByUsername(anyString())).thenReturn(appUser);
         when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
 
 		List<AppUser> appUserList = new ArrayList<>();
 		appUserList.add(new AppUser());
 
-		when(appUserDAO.findListByUserName(anyString())).thenReturn(appUserList);
 		when(profileEntityService.findByAppUserId(anyInt())).thenReturn(new Profile());
 
 		JSONObject result = new JSONObject();
 		result.put("status", "SUCCESS");
 		result.put("cookie", "whatevz");
-		when(egLoginService.loginViaRest(anyString(), anyString())).thenReturn(result);
 	}
 
 	private void setupSpringUtils() {
@@ -423,6 +423,7 @@ public class LoginControllerTest extends PicsActionTest {
 	public void testloginForResetPassword_SetsForcePasswordReset() throws Exception {
 		when(user.getId()).thenReturn(NOT_ZERO);
 		when(user.getLocale()).thenReturn(Locale.ENGLISH);
+        when(userService.findByAppUserId(anyInt())).thenReturn(user);
 
 		loginController.setButton("reset");
 		loginController.execute();

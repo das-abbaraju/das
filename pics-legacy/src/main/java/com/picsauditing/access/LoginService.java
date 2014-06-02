@@ -1,9 +1,11 @@
 package com.picsauditing.access;
 
 import com.picsauditing.access.model.LoginContext;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
+import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
+import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
@@ -23,7 +25,9 @@ public class LoginService {
 	@Autowired
 	protected UserService userService;
     @Autowired
-    private AppUserDAO appUserDAO;
+    private AppUserService appUserService;
+    @Autowired
+    private ProfileEntityService profileService;
     @Autowired
     private UserDAO userDAO;
 
@@ -35,7 +39,7 @@ public class LoginService {
 	}
 
 	public User getUserForUserName(String username) throws LoginException {
-        AppUser appUser = appUserDAO.findByUserName(username);
+        AppUser appUser = appUserService.findByUsername(username);
         User user;
         if (appUser == null) {
             throw new AccountNotFoundException("No user with username: " + username + " found.");
@@ -60,17 +64,29 @@ public class LoginService {
 
 	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public LoginContext loginForResetPassword(String username, String key) throws LoginException {
+        AppUser appUser = appUserService.findByUsername(username);
+        User user = userService.findByAppUserId(appUser.getId());
+        Profile profile = profileService.findByAppUserId(appUser.getId());
 
-		User user = loadUserByUsername(username);
+        if (appUser == null) {
+            throw new LoginException("Could not find account");
+        }
 
-		processReset(key, user);
-
-		verifyUserExists(user, username);
-		verifyUserStatusForLogin(user);
-		verifyPasswordIsNotExpired(user);
-
+		processReset(key, appUser);
         LoginContext loginContext = new LoginContext();
-        loginContext.setUser(user);
+        loginContext.setAppUser(appUser);
+
+        if (profile != null) {
+            loginContext.setProfile(profile);
+        } else {
+            verifyUserExists(user, username);
+
+            if (user != null) {
+                verifyUserStatusForLogin(user);
+                verifyPasswordIsNotExpired(user);
+                loginContext.setUser(user);
+            }
+        }
 
 		return loginContext;
 	}
@@ -112,9 +128,9 @@ public class LoginService {
 		}
 	}
 
-	private void processReset(String key, User user) throws InvalidResetKeyException {
-		verifyResetHashIsValid(user, key);
-		prepareUserForLoginAfterReset(user);
+	private void processReset(String key, AppUser appUser) throws InvalidResetKeyException {
+		verifyResetHashIsValid(appUser, key);
+		prepareUserForLoginAfterReset(appUser);
 	}
 
 	private void verifyUserExists(User user, String username) throws AccountNotFoundException {
@@ -179,19 +195,24 @@ public class LoginService {
 		return userService.isPasswordExpired(user);
 	}
 
-	private boolean verifyResetHashIsValid(User user, String key) throws InvalidResetKeyException {
-		if (Strings.isNotEmpty(key) && user != null) {
-			if (user.getResetHash() == null || !user.getResetHash().equals(key)) {
-				throw new InvalidResetKeyException("Reset key doesn't match for user: " + user.getUsername(), user.getUsername());
+	private boolean verifyResetHashIsValid(AppUser appUser, String key) throws InvalidResetKeyException {
+		if (Strings.isNotEmpty(key) && appUser != null) {
+			if (appUser.getResetHash() == null || !appUser.getResetHash().equals(key)) {
+				throw new InvalidResetKeyException("Reset key doesn't match for user: " + appUser.getUsername(), appUser.getUsername());
 			}
 		}
 		return true;
 	}
 
-	private void prepareUserForLoginAfterReset(User user) {
-		if (user != null) {
-			user.setForcePasswordReset(true);
-			user.setResetHash("");
+	private void prepareUserForLoginAfterReset(AppUser appUser) {
+        if (appUser != null) {
+            appUser.setResetHash(null);
+        }
+
+        User user = userService.findByAppUserId(appUser.getId());
+
+        if (user != null) {
+            user.setForcePasswordReset(true);
 			user.unlockLogin();
 			user.setPasswordChanged(null);
 		}

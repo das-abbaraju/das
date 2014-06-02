@@ -343,11 +343,11 @@ public class PicsCollectionUtil {
 		return mergedValues;
 	}
 
-	public static <E, V> Map<E, Set<V>> mergeMapOfSets(final Map<E, Set<V>> map1, final Map<E, Set<V>> map2) {
-		Map<E, Set<V>> mergedValues = new HashMap<>(map1);
+	public static <K, V> Map<K, Set<V>> mergeMapOfSets(final Map<K, Set<V>> map1, final Map<K, Set<V>> map2) {
+		Map<K, Set<V>> mergedValues = copyMapOfSets(map1);
 
-		for (Map.Entry<E, Set<V>> entrySet : map2.entrySet()) {
-			E key = entrySet.getKey();
+		for (Map.Entry<K, Set<V>> entrySet : map2.entrySet()) {
+			K key = entrySet.getKey();
 
 			if (mergedValues.containsKey(key)) {
 				mergedValues.get(key).addAll(map2.get(key));
@@ -357,6 +357,32 @@ public class PicsCollectionUtil {
 		}
 
 		return mergedValues;
+	}
+
+	public static <K, V> Map<K, Set<V>> copyMapOfSets(final Map<K, Set<V>> map) {
+		if (MapUtils.isEmpty(map)) {
+			return new HashMap<>();
+		}
+
+		Map<K, Set<V>> copy = new HashMap<>();
+		for (K key : map.keySet()) {
+			copy.put(key, new HashSet<>(map.get(key)));
+		}
+
+		return copy;
+	}
+
+	public static <K, V> Map<K, List<V>> copyMapOfLists(final Map<K, List<V>> map) {
+		if (MapUtils.isEmpty(map)) {
+			return new HashMap<>();
+		}
+
+		Map<K, List<V>> copy = new HashMap<>();
+		for (K key : map.keySet()) {
+			copy.put(key, new ArrayList<>(map.get(key)));
+		}
+
+		return copy;
 	}
 
 	public static <E, V> Map<E, V> mergeMaps(final Map<E, V> map1, final Map<E, V> map2) {
@@ -381,6 +407,10 @@ public class PicsCollectionUtil {
 
 	public static <ENTITY, PROPERTY> Set<PROPERTY> extractPropertyToSet(final Collection<ENTITY> entities,
 																		final PropertyExtractor<ENTITY, PROPERTY> propertyExtractor) {
+		if (CollectionUtils.isEmpty(entities)) {
+			return Collections.emptySet();
+		}
+
 		Set<PROPERTY> properties = new HashSet<>();
 
 		for (ENTITY entity : entities) {
@@ -467,6 +497,27 @@ public class PicsCollectionUtil {
 		return result;
 	}
 
+	public static <E, K, V> Map<K, Set<V>> reduceMapsForPairKeyMap(final Map<K, E> keyEntityMap,
+																   final Map<E, ? extends Collection<V>> entityValueMap) {
+		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
+			return Collections.emptyMap();
+		}
+
+		Map<K, Set<V>> result = new HashMap<>();
+		for (K key : keyEntityMap.keySet()) {
+			if (!result.containsKey(key)) {
+				result.put(key, new HashSet<V>());
+			}
+
+			E entity = keyEntityMap.get(key);
+			if (entityValueMap.containsKey(entity)) {
+				result.get(key).addAll(entityValueMap.get(entity));
+			}
+		}
+
+		return result;
+	}
+
 	public static <E, K, V> Map<K, List<V>> reduceMap(final Map<K, E> keyEntityMap,
 													  final Map<E, V> entityValueMap) {
 		if (MapUtils.isEmpty(keyEntityMap) || MapUtils.isEmpty(entityValueMap)) {
@@ -488,6 +539,9 @@ public class PicsCollectionUtil {
 	private static <E, V> Collection<V> getAllEntityValues(final Collection<E> entities,
 														   final Map<E, ? extends Collection<V>> entityValueMap) {
 		Collection<V> values = new ArrayList<>();
+		if (CollectionUtils.isEmpty(entities)) {
+			return values;
+		}
 
 		for (E entity : entities) {
 			if (entityValueMap.containsKey(entity)) {
@@ -509,5 +563,66 @@ public class PicsCollectionUtil {
 		}
 
 		return values;
+	}
+
+	public static <K, V> Map<K, Set<V>> addKeys(final Map<K, Set<V>> map, final Collection<K> allKeys) {
+		Map<K, Set<V>> completeMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(map)) {
+			completeMap = copyMapOfSets(map);
+		}
+
+		for (K key : allKeys) {
+			if (!completeMap.containsKey(key)) {
+				completeMap.put(key, new HashSet<V>());
+			}
+		}
+
+		return completeMap;
+	}
+
+	public static <K, V> Map<K, List<V>> addKeysToMapOfLists(final Map<K, List<V>> map, final Collection<K> allKeys) {
+		Map<K, List<V>> completeMap = new HashMap<>();
+		if (MapUtils.isNotEmpty(map)) {
+			completeMap = copyMapOfLists(map);
+		}
+
+		for (K key : allKeys) {
+			if (!completeMap.containsKey(key)) {
+				completeMap.put(key, new ArrayList<V>());
+			}
+		}
+
+		return completeMap;
+	}
+
+	public interface KeyTransformable<K, N> {
+
+		N getNewKey(K key);
+
+	}
+
+	public static <K, V, N> Map<N, Set<V>> transformMap(final Map<K, Set<V>> map,
+														final KeyTransformable<K, N> keyTransformable) {
+		if (MapUtils.isEmpty(map)) {
+			return Collections.emptyMap();
+		}
+
+		Map<N, Set<V>> transformedMap = new HashMap<>();
+		for (K key : map.keySet()) {
+			transformedMap.put(keyTransformable.getNewKey(key), map.get(key));
+		}
+
+		return transformedMap;
+	}
+
+	public static <E extends Comparable> Set<E> sortSet(final Set<E> set) {
+		if (CollectionUtils.isEmpty(set)) {
+			return Collections.emptySet();
+		}
+
+		List<E> listToSort = new ArrayList<>(set);
+		Collections.sort(listToSort);
+
+		return new LinkedHashSet<>(listToSort);
 	}
 }

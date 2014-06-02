@@ -1,0 +1,42 @@
+@mixin employee-guard-section-full {
+    .employee-guard-section-full
+    {
+        > h1
+        {
+            background-color: $default_platinum;
+            color: $pics_warm_grey;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px;
+            margin-bottom: 0px;
+
+            i
+            {
+                margin-right: 5px;
+            }
+
+            a
+            {
+                float: right;
+                line-height: 40px;
+            }
+        }
+
+        .edit {
+            text-align: right;
+
+            i:hover {
+                color: $info_med;
+            }
+        }
+
+        .content {
+            padding: 20px 0px;
+        }
+    }
+
+    .employee-guard-section-full:first-child > h1
+    {
+        margin-top: 0;
+    }
+}

@@ -84,4 +84,9 @@ public class AuditTypeBuilder {
         type.setClassType(classType);
         return this;
     }
+
+    public AuditTypeBuilder slug(String slug) {
+        type.setSlug(slug);
+        return this;
+    }
 }

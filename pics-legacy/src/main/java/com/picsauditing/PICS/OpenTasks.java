@@ -452,11 +452,16 @@ public class OpenTasks extends TranslationActionSupport {
 										(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
 
 							} else {
-								text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
+                                if (conAudit.getAuditType().getId() == AuditType.ANNUAL_DOCUMENTATION_REVIEW) {
+                                    text = getTextParameterized(locale, "ContractorWidget.message.CompleteAndSubmitAudit",
+                                            conAudit.getId(), auditName, showAuditFor, auditFor);
+                                } else {
+                                    text = getTextParameterized(locale, "ContractorWidget.message.PrepareForAnUpcomingAudit",
 
-										conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
-										conAudit.getScheduledDate(), showAuditor,
-										(conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
+                                            conAudit.getId(), auditName, showAuditFor, auditFor, showScheduledDate,
+                                            conAudit.getScheduledDate(), showAuditor,
+                                            (conAudit.getAuditor() != null) ? conAudit.getAuditor().getName() : "");
+                                }
 							}
 							if (conAudit.getAuditType().isImplementation()) {
 								text += "<br/>" + getText(locale, "ContractorWidget.message.ImplementationAuditNote");

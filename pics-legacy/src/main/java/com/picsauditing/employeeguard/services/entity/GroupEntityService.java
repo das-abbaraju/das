@@ -2,9 +2,8 @@ package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.employeeguard.daos.AccountGroupDAO;
 import com.picsauditing.employeeguard.daos.AccountGroupEmployeeDAO;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.GroupEmployee;
+import com.picsauditing.employeeguard.daos.AccountSkillGroupDAO;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -20,6 +19,8 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 	private AccountGroupDAO accountGroupDAO;
 	@Autowired
 	private AccountGroupEmployeeDAO accountGroupEmployeeDAO;
+	@Autowired
+	private AccountSkillGroupDAO accountSkillGroupDAO;
 
 	/* All Find Methods */
 
@@ -121,5 +122,20 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 
 		Group group = find(id);
 		delete(group);
+	}
+
+	public Map<Group, Set<AccountSkill>> getGroupSkillsForProfile(final Profile profile) {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillGroupDAO.findByProfile(profile),
+				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+					@Override
+					public Group getKey(AccountSkillGroup accountSkillGroup) {
+						return accountSkillGroup.getGroup();
+					}
+
+					@Override
+					public AccountSkill getValue(AccountSkillGroup accountSkillGroup) {
+						return accountSkillGroup.getSkill();
+					}
+				});
 	}
 }

@@ -133,6 +133,7 @@
     <bean id="ContractorCertificateDao" class="com.picsauditing.dao.contractor.ContractorCertificateDao"/>
     <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
     <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
+    <bean id="ContractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
     <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
@@ -174,11 +175,11 @@
     <bean id="RegistrationService" class="com.picsauditing.service.registration.RegistrationService">
         <constructor-arg ref="RegistrationBillingBean" />
         <constructor-arg ref="ContractorAccountService" />
-        <constructor-arg ref="AppUserService" />
-        <constructor-arg ref="AppUserDAO" />
         <constructor-arg ref="LanguageModel" />
         <constructor-arg ref="AltUserService" />
         <constructor-arg ref="RegistrationRequestService" />
+        <constructor-arg ref="AuthenticationService" />
+        <constructor-arg ref="AppUserService" />
     </bean>
     <bean id="RequestNewContractorService" class="com.picsauditing.service.RequestNewContractorService" />
     <bean id="StreamContentProvider" class="com.picsauditing.util.URLUtils" scope="prototype"/>
@@ -186,6 +187,9 @@
     <bean id="TaxService" class="com.picsauditing.PICS.TaxService" scope="prototype"/>
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
+    <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
+    <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
+    <bean id="ReportQBService" class="com.picsauditing.report.service.ReportQBService"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
@@ -291,6 +295,7 @@
     <bean id="AccountRecoveryEmailService" class="com.picsauditing.service.email.AccountRecoveryEmailService" >
         <constructor-arg ref="EmailTemplateDAO" />
         <constructor-arg ref="EmailSender" />
+        <constructor-arg ref="AppUserService" />
     </bean>
     <bean id="ContractorAnswerDisplay" class="com.picsauditing.models.contractors.ContractorFlagAnswerDisplay"
           scope="prototype"/>

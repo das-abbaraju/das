@@ -1,0 +1,28 @@
+[{
+    "id": 4,
+    "name": "Safety Supervisor",
+    "requiredSkills": [{
+            "id": 1,
+            "name": "Bob's Burgers"
+        }
+    ]
+},{
+    "id": 28,
+    "name": "Engineer",
+    "requiredSkills": [{
+            "id": 24,
+            "name": "DB 101"
+        }
+    ]
+},{
+    "id": 5,
+    "name": "Leadman",
+    "requiredSkills": [{
+            "id": 2,
+            "name": "Agile Practices"
+        }, {
+            "id": 5,
+            "name": "How to NOT be annoying"
+        }
+    ]
+}]

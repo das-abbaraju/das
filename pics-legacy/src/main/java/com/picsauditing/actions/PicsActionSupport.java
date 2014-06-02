@@ -358,7 +358,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 				if (profile != null) {
 					AppUserDAO appUserDAO = SpringUtils.getBean("AppUserDAO");
-					AppUser appUser = appUserDAO.find(appUserID);
+					AppUser appUser = appUserDAO.findById(appUserID);
 
 					permissions = permissionBuilder.employeeUserLogin(appUser, profile);
 

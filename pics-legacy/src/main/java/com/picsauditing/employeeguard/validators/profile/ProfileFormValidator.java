@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
+import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.validator.InputValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,8 +14,8 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 
 	@Autowired
 	private AppUserService appUserService;
-    @Autowired
-    private InputValidator inputValidator;
+	@Autowired
+	private InputValidator inputValidator;
 
 	@Override
 	protected ProfileForm getFormFromValueStack(ValueStack valueStack) {
@@ -31,9 +32,9 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "lastName"), "Last name is missing");
 		}
 
-        if (!profileForm.isTos()) {
-            addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "tos"), "You must agree to the Terms of Service to Signup for EmployeeGUARD.");
-        }
+		if (!profileForm.isTos()) {
+			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "tos"), "You must agree to the Terms of Service to Signup for EmployeeGUARD.");
+		}
 
 		performValidationOnEmail(profileForm);
 
@@ -44,6 +45,7 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 
 	private void performValidationOnEmail(ProfileForm profileForm) {
 		boolean emailValidationFails = false;
+
 		if (!ProfileValidationUtil.valid(profileForm, ProfileValidationUtil.ProfileField.EMAIL)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is missing or does not match");
 			emailValidationFails = true;
@@ -54,10 +56,10 @@ public class ProfileFormValidator extends AbstractBasicValidator<ProfileForm> {
 			emailValidationFails = true;
 		}
 
-        if (!InputValidator.NO_ERROR.equals(inputValidator.validateEmail(profileForm.getEmail()))) {
-            addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Invalid email format");
-            emailValidationFails = true;
-        }
+		if (!InputValidator.NO_ERROR.equals(inputValidator.validateEmail(profileForm.getEmail()))) {
+			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Invalid email format");
+			emailValidationFails = true;
+		}
 
 		if (!emailValidationFails && !appUserService.isUserNameAvailable(profileForm.getEmail())) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_FORM, "email"), "Email is already used");

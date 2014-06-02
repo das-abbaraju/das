@@ -10,8 +10,8 @@ import com.picsauditing.employeeguard.exceptions.NoOperatorForCorporateException
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.models.ProjectAssignmentModel;
 import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -35,8 +35,9 @@ public class ProjectSummaryAction extends PicsRestActionSupport {
 	private List<ProjectAssignmentModel> buildProjectAssignmentModels(final int siteId) {
 		Map<Project, Map<Employee, Set<AccountSkill>>> projectEmployeeSkills = assignmentService
 				.getEmployeeSkillsForProjectsUnderSite(siteId);
+
 		Map<Project, List<SkillStatus>> projectSkillStatuses = statusCalculatorService
-				.getAllSkillStatusesForEntity(projectEmployeeSkills);
+				.getAllSkillStatusesForEntityNEW(projectEmployeeSkills);
 
 		return ModelFactory.getProjectAssignmentModelFactory().createList(projectSkillStatuses);
 	}

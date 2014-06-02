@@ -98,9 +98,15 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 			return Collections.emptyList();
 		}
 
+		return findByProjectId(project.getId());
+	}
+
+	public List<Employee> findByProjectId(final int projectId) {
 		TypedQuery<Employee> query = em.createQuery("SELECT DISTINCT pre.employee FROM ProjectRoleEmployee pre " +
-				"WHERE pre.projectRole.project = :project", Employee.class);
-		query.setParameter("project", project);
+				"WHERE pre.projectRole.project.id = :projectId", Employee.class);
+
+		query.setParameter("projectId", projectId);
+
 		return query.getResultList();
 	}
 

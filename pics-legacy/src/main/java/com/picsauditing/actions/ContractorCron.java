@@ -39,6 +39,8 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
+	private FlagCriteriaDAO flagCriteriaDAO;
+	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
@@ -566,28 +568,34 @@ public class ContractorCron extends PicsActionSupport {
 
 		logger.trace("ContractorCron starting Flags for {}", contractorOperator.getOperatorAccount().getName());
 
+        FlagColor previousFlagColor = contractorOperator.getFlagColor();
+
         FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(contractorOperator, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
+        addLabelsToChanges(changes);
         boolean needNote = flagCalculator.saveFlagData(changes);
         dao.refresh(contractorOperator);
 
         if (needNote) {
+            FlagColor overallColor = FlagColor.Green;
             String reason = "Contractor is no longer flagged on any criteria for this operator.";
             if (contractorOperator.getContractorAccount().getAccountLevel().isBidOnly()
                     || contractorOperator.getContractorAccount().getStatus().isPending()
                     || contractorOperator.getContractorAccount().getStatus().isDeleted()
                     || contractorOperator.getContractorAccount().getStatus().isDeclined()
                     || contractorOperator.getContractorAccount().getStatus().isDeactivated()) {
+                overallColor = FlagColor.Clear;
                 reason = "Contractor no longer tracked by flags.";
             }
 
             for (com.picsauditing.flagcalculator.FlagData change : changes) {
                 FlagColor changeFlag = FlagColor.valueOf(change.getFlagColor());
                 if (!change.isInsurance()) {
-                    FlagColor worst = FlagColor.getWorseColor(contractorOperator.getFlagColor(), changeFlag);
-                    if (worst != contractorOperator.getFlagColor()) {
+                    FlagColor worst = FlagColor.getWorseColor(overallColor, changeFlag);
+                    if (worst != overallColor) {
                         reason = getFlagDataDescription(change, contractorOperator.getOperatorAccount());
                     }
+                    overallColor = worst;
                 }
             }
 
@@ -595,12 +603,20 @@ public class ContractorCron extends PicsActionSupport {
             note.setAccount(contractorOperator.getContractorAccount());
             note.setNoteCategory(NoteCategory.Flags);
             note.setAuditColumns(new User(User.SYSTEM));
-            note.setSummary("Flag color changed from " + contractorOperator.getFlagColor() + " to " + contractorOperator.getFlagColor() + " for "
+            note.setSummary("Flag color changed from " + previousFlagColor + " to " + contractorOperator.getFlagColor() + " for "
                     + contractorOperator.getOperatorAccount().getName());
             note.setBody(reason);
             note.setCanContractorView(true);
             note.setViewableBy(contractorOperator.getOperatorAccount());
             dao.save(note);
+        }
+    }
+
+    private void addLabelsToChanges(List<com.picsauditing.flagcalculator.FlagData> changes) {
+        for (com.picsauditing.flagcalculator.FlagData flagData : changes) {
+            com.picsauditing.flagcalculator.entities.FlagData flagDatum = (com.picsauditing.flagcalculator.entities.FlagData) flagData;
+            FlagCriteria flagCriteria = flagCriteriaDAO.find(flagDatum.getCriteria().getId());
+            flagDatum.setCriteriaLabel(flagCriteria.getLabel());
         }
     }
 

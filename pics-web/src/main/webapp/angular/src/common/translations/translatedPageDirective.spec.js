@@ -3,17 +3,18 @@ describe('translatedPage directive', function () {
 
     beforeEach(angular.mock.module('PICS.translations'));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _$interpolate_, _$log_, _translationsService_) {
+    beforeEach(inject(function (_$compile_, _$rootScope_, _$interpolate_, _$log_, _$http_, _translationsService_) {
             $compile = _$compile_;
             $rootScope = _$rootScope_;
             $log = _$log_;
+            $http = _$http_;
             translationsService = _translationsService_;
     }));
 
-    function setup(setLogKeysToConsole) {
+    function setup(setDevelopmentMode) {
         var linkingFn, nextMock;
 
-        translationsService.setLogKeysToConsole(setLogKeysToConsole);
+        translationsService.setDevelopmentMode(setDevelopmentMode);
 
         translationsService.setTranslations({
             'my.first.translation.key': 'My {1} value for translation #{2}'
@@ -39,19 +40,53 @@ describe('translatedPage directive', function () {
         ].join(''));
 
         spyOn($log, 'info');
+        spyOn($http, 'post');
 
         element = linkingFn($rootScope);
 
-        $rootScope.$broadcast('$includeContentLoaded');
+        $rootScope.$broadcast('$viewContentLoaded');
     }
 
-    it('should cause a mapping of the route to associated translation keys to be logged to the console once $includedContentLoaded is fired', function () {
-        setup(true);
+    it('should cause a mapping of the route to associated translation keys to be logged to the console once $viewContentLoaded is fired', function () {
+        setup('on');
         expect($log.info).toHaveBeenCalledWith('"/fakeroute":["my.first.translation.key","my.second.translation.key"]');
     });
 
-    it('should not cause anything to be logged if setLogKeysToConsole is passed the value of false', function () {
-        setup(false);
+    it('should NOT make a server request for translations when translationKeys.js contains no translation keys for the page', function () {
+        var linkingFn, nextMock;
+
+        nextMock = {
+            $$route: {
+                originalPath: '/fakeroute'
+            }
+        };
+
+        spyOn(translationsService, 'getRoutePathToTranslationKeys').andReturn({
+            translationKeys: undefined
+        });
+
+        $rootScope.$broadcast('$routeChangeStart', nextMock);
+
+        spyOn($http, 'post');
+
+        expect($http.post).not.toHaveBeenCalled();
+    });
+
+    it('should request an update to the translations keys file once $viewContentLoaded is fired', function () {
+        setup('on');
+        expect($http.post).toHaveBeenCalledWith(
+            'http://localhost:8081',
+            { '/fakeroute': [ 'my.first.translation.key', 'my.second.translation.key' ] }
+        );
+    });
+
+    it('should not cause anything to be logged if setDevelopmentMode is passed the value of false', function () {
+        setup('off');
         expect($log.info).not.toHaveBeenCalled();
     });
+
+    it('should not request an update to the translations keys file once $viewContentLoaded is fired', function () {
+        setup('off');
+        expect($http.post).not.toHaveBeenCalled();
+    });    
 });

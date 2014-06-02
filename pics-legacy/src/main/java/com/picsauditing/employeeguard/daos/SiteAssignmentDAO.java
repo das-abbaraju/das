@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.SiteAssignment;
 import org.springframework.transaction.annotation.Propagation;
@@ -11,6 +12,7 @@ import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 
@@ -110,6 +112,27 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 				"WHERE sa.siteId IN (:siteIds)", SiteAssignment.class);
 
 		query.setParameter("siteIds", siteIds);
+
+		return query.getResultList();
+	}
+
+	public List<SiteAssignment> findByProfile(final Profile profile) {
+		TypedQuery<SiteAssignment> query = em.createQuery("SELECT sa FROM SiteAssignment sa " +
+				"JOIN sa.employee e " +
+				"JOIN e.profile p " +
+				"WHERE p = :profile", SiteAssignment.class);
+
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
+	}
+
+	public List<SiteAssignment> findByContractorId(final int contractorId) {
+		TypedQuery<SiteAssignment> query = em.createQuery("SELECT sa FROM SiteAssignment sa " +
+				"JOIN sa.employee e " +
+				"WHERE e.accountId = :contractorId", SiteAssignment.class);
+
+		query.setParameter("contractorId", contractorId);
 
 		return query.getResultList();
 	}

@@ -1,8 +1,7 @@
 package com.picsauditing.employeeguard.services.calculator;
 
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertTrue;
 
@@ -57,7 +56,6 @@ public class SkillStatusTest {
   public void testLowestStatus_ExpiringOverridesComplete() throws Exception {
     SkillStatus currentStatus = SkillStatus.Completed;
     SkillStatus calculatedStatus = SkillStatus.Expiring;
-    //System.out.printf("Completed status ordinal =[%s] and Expiring Ordinal=[%s]",currentStatus.ordinal(), calculatedStatus.ordinal());
     assertTrue(calculatedStatus.compareTo(currentStatus)<0);
   }
 

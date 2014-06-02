@@ -6,7 +6,7 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.RoleService;
 import com.picsauditing.employeeguard.services.SkillUsageLocator;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.AccountService;

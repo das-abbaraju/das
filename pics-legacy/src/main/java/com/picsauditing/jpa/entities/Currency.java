@@ -54,6 +54,11 @@ public enum Currency {
 	}
 
     @Deprecated
+    public boolean isCHF() {
+        return this.equals(CHF);
+    }
+
+    @Deprecated
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}

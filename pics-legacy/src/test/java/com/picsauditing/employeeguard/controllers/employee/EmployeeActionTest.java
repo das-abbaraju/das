@@ -6,19 +6,19 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
 import com.picsauditing.employeeguard.forms.factory.EmployeeProfileEditFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.EmployeeProfileFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
-import com.picsauditing.employeeguard.models.AccountModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -45,10 +45,10 @@ public class EmployeeActionTest extends PicsActionTest {
 	private EmployeeProfileForm employeeProfileForm;
 	@Mock
 	private EmployeeProfileFormBuilder employeeProfileFormBuilder;
-    @Mock
-    private ProjectRoleService projectRoleService;
-    @Mock
-    private AccountService accountService;
+	@Mock
+	private ProjectRoleService projectRoleService;
+	@Mock
+	private AccountService accountService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -61,19 +61,19 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		super.setUp(employeeAction);
 
-        Whitebox.setInternalState(employeeAction, "accountService", accountService);
+		Whitebox.setInternalState(employeeAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(employeeAction, "profileService", profileService);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
-        Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
+		Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
 
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileFormBuilder", employeeProfileFormBuilder);
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileEditFormBuilder", new EmployeeProfileEditFormBuilder());
 
 		when(employeeProfileFormBuilder.build(any(Profile.class))).thenReturn(employeeProfileForm);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
-        when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
-        when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
+		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
+		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 	}
 
 	@Test
@@ -115,11 +115,11 @@ public class EmployeeActionTest extends PicsActionTest {
 	@Test
 	public void testUpdate_Photo() throws Exception {
 		employeeAction.setId(ID);
-		employeeAction.setProfilePhotoForm(new ProfilePhotoForm());
+		employeeAction.setEmployeePhotoForm(new EmployeePhotoForm());
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
 		assertTrue(employeeAction.getUrl().startsWith("/employee-guard/employee/profile/"));
 		verify(profileService).findById(ID);
-		verify(profileDocumentService).update(any(ProfilePhotoForm.class), anyString(), any(Profile.class), eq(Identifiable.SYSTEM));
+		verify(profileDocumentService).update(any(EmployeePhotoForm.class), anyString(), any(Profile.class), eq(Identifiable.SYSTEM));
 	}
 
 	@Test

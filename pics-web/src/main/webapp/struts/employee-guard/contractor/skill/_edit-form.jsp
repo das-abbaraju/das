@@ -34,18 +34,11 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
-            <div class="col-md-4 col-xs-11">
-                <tw:select selectName="skillType" value="${skill.skillType}" class="form-control skillType select2Min" tabindex="3">
-                    <tw:option value="Certification" selected="${skill.skillType == 'Certification'}">Certification</tw:option>
-                    <tw:option value="Training" selected="${skill.skillType == 'Training'}">Training</tw:option>
-                </tw:select>
-            </div>
-            <div class="toolip-container col-md-1 col-xs-1">
-               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
-            </div>
-        </div>
+        <dl class="employee-guard-information non-editable-form-field">
+            <dt class="col-md-3">Skill Type</dt>
+            <dd class="col-md-4">${skill.skillType}</dd>
+        </dl>
+        <input type="hidden" name="contractor_skill_edit.skillType" value="${skill.skillType}" />
 
         <s:if test="#is_skill_of_training_type">
             <s:include value="/struts/employee-guard/contractor/skill/_training-form.jsp"/>

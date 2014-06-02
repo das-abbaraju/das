@@ -14,7 +14,7 @@ import java.util.*;
 @Table(name = "account_skill")
 @Where(clause = "deletedDate IS NULL")
 @SQLInsert(sql = "INSERT INTO account_skill (accountID, createdBy, createdDate, deletedBy, deletedDate, description, intervalPeriod, intervalType, name, ruleType, skillType, updatedBy, updatedDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
-@SQLDelete(sql = "UPDATE account_skill SET deletedDate = NOW() WHERE id = ?")
+@SQLDelete(sql = "UPDATE account_skill SET name=concat(name ,'_deleted_', now()),deletedDate = NOW() WHERE id = ?")
 public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 
 	private static final long serialVersionUID = -3528270237051318527L;
@@ -77,9 +77,8 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	private List<AccountSkillRole> roles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
-	@Where(clause = "deletedDate IS NULL")
 	@BatchSize(size = 10)
-	private List<AccountSkillEmployee> employees = new ArrayList<>();
+	private List<AccountSkillProfile> profiles = new ArrayList<>();
 
 	@OneToMany(mappedBy = "skill", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Where(clause = "deletedDate IS NULL")
@@ -118,7 +117,6 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 	public void setAccountId(int accountId) {
 		this.accountId = accountId;
 	}
-
 
 	public SkillType getSkillType() {
 		return skillType;
@@ -232,12 +230,12 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		this.roles = roles;
 	}
 
-	public List<AccountSkillEmployee> getEmployees() {
-		return employees;
+	public List<AccountSkillProfile> getProfiles() {
+		return profiles;
 	}
 
-	public void setEmployees(List<AccountSkillEmployee> employees) {
-		this.employees = employees;
+	public void setProfiles(List<AccountSkillProfile> profiles) {
+		this.profiles = profiles;
 	}
 
 	public List<ProjectSkill> getProjects() {
@@ -308,11 +306,19 @@ public class AccountSkill implements BaseEntity, Comparable<AccountSkill> {
 		}
 
 		@Override
-		public Map<String, Object> getUniqueIndexableValues() {
-			return Collections.unmodifiableMap(new HashMap<String, Object>() {{
-				put("accountId", accountId);
-				put("skillType", skillType);
-				put("name", name);
+		public Map<String, Map<String, Object>> getUniqueIndexableValues() {
+			return Collections.unmodifiableMap(new HashMap<String, Map<String, Object>>() {{
+				put("accountId", new HashMap<String, Object>() {{
+					put("accountId", accountId);
+				}});
+
+				put("skillType", new HashMap<String, Object>() {{
+					put("skillType", skillType);
+				}});
+
+				put("name", new HashMap<String, Object>() {{
+					put("name", name);
+				}});
 			}});
 		}
 

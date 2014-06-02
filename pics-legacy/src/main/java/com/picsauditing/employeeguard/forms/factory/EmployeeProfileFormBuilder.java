@@ -1,28 +1,30 @@
 package com.picsauditing.employeeguard.forms.factory;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.employee.CompanyGroupInfo;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AccountSkillEmployeeService;
-import com.picsauditing.employeeguard.services.GroupService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.process.ProfileSkillData;
+import com.picsauditing.employeeguard.process.ProfileSkillStatusProcess;
+import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.GroupService;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.model.Skill;
 import com.picsauditing.model.i18n.KeyValue;
+import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeProfileFormBuilder {
 
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private ProfileSkillStatusProcess profileSkillStatusProcess;
 	@Autowired
 	private GroupService groupService;
 
@@ -54,26 +56,31 @@ public class EmployeeProfileFormBuilder {
 	}
 
 	private List<Skill> getSkillsForProfile(Profile profile) {
-		List<AccountSkillEmployee> accountSkillEmployees = accountSkillEmployeeService.findByProfile(profile);
-		return getSkillInfo(accountSkillEmployees);
+		ProfileSkillData profileSkillData = profileSkillStatusProcess.buildProfileSkillData(profile);
+		return getSkillInfo(profileSkillData.getSkillStatusMap());
 	}
 
-	private List<Skill> getSkillInfo(List<AccountSkillEmployee> accountSkillEmployees) {
-		List<Skill> skills = new ArrayList<>(accountSkillEmployees.size());
-		for (AccountSkillEmployee accountSkillEmployee : accountSkillEmployees) {
-			skills.add(mapAccountSkillToSkillInfo(accountSkillEmployee));
+	private List<Skill> getSkillInfo(final Map<AccountSkill, SkillStatus> skillStatusMap) {
+		if (MapUtils.isEmpty(skillStatusMap)) {
+			return Collections.emptyList();
 		}
+
+		List<Skill> skills = new ArrayList<>();
+		for (AccountSkill accountSkill : skillStatusMap.keySet()) {
+			skills.add(mapAccountSkillToSkillInfo(accountSkill, skillStatusMap.get(accountSkill)));
+		}
+
+		Collections.sort(skills);
 
 		return skills;
 	}
 
-	private Skill mapAccountSkillToSkillInfo(AccountSkillEmployee accountSkillEmployee) {
-        AccountSkill accountSkill = accountSkillEmployee.getSkill();
-        return new Skill.Builder()
-                .id(accountSkill.getId())
-                .name(accountSkill.getName())
-                .skillStatus(SkillStatusCalculator.calculateStatusFromSkill(accountSkillEmployee))
-                .build();
+	private Skill mapAccountSkillToSkillInfo(final AccountSkill accountSkill, final SkillStatus skillStatus) {
+		return new Skill.Builder()
+				.id(accountSkill.getId())
+				.name(accountSkill.getName())
+				.skillStatus(skillStatus)
+				.build();
 	}
 
 	private Map<Integer, List<KeyValue<Integer, String>>> getAccountGroupMap(Profile profile) {

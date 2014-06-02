@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.models.factories;
 
 import com.picsauditing.employeeguard.models.StatusSummary;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.HashMap;
 import java.util.Map;

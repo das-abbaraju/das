@@ -144,8 +144,16 @@
                     </dl>
                 </s:if>
                 <s:else>
-                    <div class="col-md-9 col-md-offset-3 no-value">
-                        No current assignments
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="alert alert-info">
+                            <h4>No Assignments</h4>
+
+                            <p>You currently are not assigned to any sites.</p>
+
+                            <p>
+                                <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                            </p>
+                        </div>
                     </div>
                 </s:else>
             </div>

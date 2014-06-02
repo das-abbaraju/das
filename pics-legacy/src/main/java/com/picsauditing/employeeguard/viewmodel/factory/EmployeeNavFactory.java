@@ -1,6 +1,6 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.viewmodel.operator.EmployeeNav;
 import com.picsauditing.employeeguard.viewmodel.operator.NavItem;
 

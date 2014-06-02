@@ -51,4 +51,11 @@ public class ProjectCompanyDAO extends AbstractBaseEntityDAO<ProjectCompany> {
 
 		return query.getResultList();
 	}
+
+	public List<Integer> findClientSitesByContractorAccount(final int accountId) {
+		TypedQuery<Integer> query = em.createQuery("select pc.project.accountId FROM ProjectCompany pc WHERE pc.accountId = :accountId", Integer.class);
+		query.setParameter("accountId", accountId);
+		return query.getResultList();
+	}
+
 }

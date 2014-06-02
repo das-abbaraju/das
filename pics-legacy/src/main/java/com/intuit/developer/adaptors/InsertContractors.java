@@ -3,6 +3,7 @@ package com.intuit.developer.adaptors;
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.EmailAddressUtils;
@@ -14,7 +15,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,9 +22,10 @@ public class InsertContractors extends CustomerAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(InsertContractors.class);
 
-	public static String getWhereClause(String qbID, String currency) {
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
 		return "a.qbSync = true AND a." + qbID + " IS NULL AND a.status = 'Active' AND a.country.currency = '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	// FIXME This is practically identical to the same method in
@@ -33,7 +34,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()));
+				getWhereClause(currentSession.getCurrency()));
 
 		// no work to do
 		if (CollectionUtils.isEmpty(contractors)) {
@@ -67,9 +68,9 @@ public class InsertContractors extends CustomerAdaptor {
 				 * doesn't allow for multiple currencies per account. Have to
 				 * name each account differently.
 				 **/
-				if (currentSession.isEUR()) {
-					requestID += "EU";
-				}
+
+                requestID = requestID + getCurrencyCodeSuffixForQB(currentSession) ;
+
 				customerAddRequest.setRequestID(requestID);
 
 				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(customerAddRequest);
@@ -77,10 +78,7 @@ public class InsertContractors extends CustomerAdaptor {
 				CustomerAdd customer = factory.createCustomerAdd();
 				customerAddRequest.setCustomerAdd(customer);
 
-				String customerName = contractor.getIdString();
-				if (currentSession.isEUR()) {
-					customerName += "EU";
-				}
+				String customerName = contractor.getIdString() + getCurrencyCodeSuffixForQB(currentSession);
 
 				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
@@ -145,7 +143,18 @@ public class InsertContractors extends CustomerAdaptor {
 
 	}
 
-	@Override
+    private String getCurrencyCodeSuffixForQB(QBSession qbSession) {
+        switch (qbSession.getCurrencyCode()) {
+            case "EUR":
+                return "EU";
+            case "CHF":
+                return qbSession.getCurrencyCode();
+            default:
+                return "";
+        }
+    }
+
+    @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();

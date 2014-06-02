@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.forms.factory;
 
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.ProfileDocumentInfo;
-import com.picsauditing.employeeguard.services.calculator.DocumentStatusCalculator;
+import com.picsauditing.employeeguard.services.status.DocumentStatusCalculator;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;

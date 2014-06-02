@@ -1,4 +1,10 @@
 <decorators defaultdir="/decorators">
+    <excludes>
+        <pattern>/employee-guard/build/*</pattern>
+        <pattern>/employee-guard/src/*</pattern>
+        <pattern>/employee-guard/vendor/*</pattern>
+        <pattern>/employee-guard/json/*</pattern>
+    </excludes>
     <decorator name="ignoreMe">
         <pattern>/ReportApi!print.action</pattern>
         <pattern>/*Ajax.action</pattern>
@@ -29,6 +35,7 @@
         <pattern>/ManageReports!allFavoriteReportsAjax.action</pattern>
         <pattern>/Cron!run.action</pattern>
         <pattern>/ContractorCertification!ssipCertificate.action*</pattern>
+        <pattern>/translations*</pattern>
     </decorator>
     <decorator name="layout" page="layout.jsp">
         <pattern>/About.action</pattern>
@@ -42,7 +49,7 @@
         <pattern>/InvoiceRefund.action</pattern>
         <pattern>/Cron!*.action</pattern>
     </decorator>
-    <decorator name="index" page="index.jsp">
+    <decorator name="eg-index" page="eg-index.jsp">
         <pattern>/employee-guard/operators/employees/*</pattern>
         <pattern>/employee-guard/operators/dashboard</pattern>
         <pattern>/employee-guard/operators/assignments</pattern>
@@ -50,8 +57,14 @@
         <pattern>/employee-guard/operators/roles</pattern>
         <pattern>/employee-guard/contractor/dashboard</pattern>
         <pattern>/employee-guard/employee/dashboard</pattern>
-        <pattern>/employee-guard/employee/skillz*</pattern>
+        <pattern>/employee-guard/employee/skills</pattern>
+        <pattern>/employee-guard/employee/skills/sites/*</pattern>
         <pattern>/employee-guard/*/changelog</pattern>
+        <pattern>/employee-guard/info</pattern>
+    </decorator>
+    <decorator name="index" page="index.jsp">
+        <pattern>/registration/address-validation/*</pattern>
+        <pattern>/company-finder*</pattern>
     </decorator>
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>
@@ -67,13 +80,14 @@
         <pattern>/ContractorPricing.action</pattern>
     </decorator>
     <decorator name="contractor-layout" page="contractor-layout.jsp">
-    	<pattern>/Temp*.action</pattern>
+        <pattern>/Temp*.action</pattern>
     </decorator>
     <decorator name="simple-layout" page="simple-layout.jsp">
         <pattern>/AccountRecovery*.action</pattern>
         <pattern>/Deactivated.action</pattern>
         <pattern>/Login.action</pattern>
         <pattern>/Reference*.action</pattern>
+        <pattern>/employee-guard/password-reset*</pattern>
     </decorator>
     <decorator name="dynamic-report" page="dynamic-report.jsp">
         <pattern>/Report.action</pattern>

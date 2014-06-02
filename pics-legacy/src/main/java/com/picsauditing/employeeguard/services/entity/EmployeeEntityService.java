@@ -1,12 +1,15 @@
 package com.picsauditing.employeeguard.services.entity;
 
 import com.picsauditing.PICS.PICSFileType;
+import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
+import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PhotoUtil;
@@ -31,6 +34,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
+	@Autowired
+	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
 	/* All Find Methods */
 
@@ -249,6 +254,10 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return new HashSet<>(employeeDAO.findContractorsForEmployeeBySite(siteId, employeeId));
 	}
 
+	public Set<Employee> getEmployeesAssignedToProject(final int projectId) {
+		return new HashSet<>(employeeDAO.findByProjectId(projectId));
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -347,9 +356,15 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
 		} else {
-			throw new IllegalArgumentException("Invalid file format");
+			// throw new IllegalArgumentException("Invalid file format");
 		}
 
 		return find(id, accountId);
+	}
+
+	public void linkEmployeeToProfile(SoftDeletedEmployee employee, final Profile profile) {
+		employee.setProfile(profile);
+		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
+		softDeletedEmployeeDAO.save(employee);
 	}
 }

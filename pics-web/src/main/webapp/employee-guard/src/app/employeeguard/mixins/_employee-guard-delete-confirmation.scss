@@ -1,0 +1,14 @@
+@mixin employee-guard-delete-confirmation {
+	.employee-guard-delete-confirmation
+	{
+		h4
+		{
+			margin-bottom: 10px;
+		}
+		
+		a
+		{
+			margin-right: 10px;
+		}
+	}
+}

@@ -147,10 +147,11 @@ public class TradeDAO extends PicsDAO {
 
 	public List<ContractorTrade> findContractorTradeByTrade(int tradeID) {
 		Query query = em.createQuery("SELECT ct FROM ContractorTrade ct WHERE ct.trade.id = ?");
+
 		query.setParameter(1, tradeID);
 		return query.getResultList();
 	}
-	
+
 	public List<ContractorAccount> findContractorsByTrade(int tradeID) {
 		Query query = em.createQuery("SELECT ");
 		query.setParameter(1, tradeID);

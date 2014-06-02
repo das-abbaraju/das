@@ -21,6 +21,8 @@
     <constant name="struts.mapper.prefixMapping" value="/employee-guard:picsRestful,/users:picsRestful,:struts"/>
     <constant name="struts.mapper.idParameterName" value="id"/>
 
+    <constant name="struts.action.excludePattern" value="/employee-guard/src/.*?,/employee-guard/build/.*?,/employee-guard/vendor/.*?,/employee-guard/json/.*?" />
+
     <bean type="org.apache.struts2.views.util.UrlHelper" name="picsUrlHelper"
           class="com.picsauditing.strutsutil.url.UrlHelperFacade"/>
     <constant name="struts.view.urlHelper" value="picsUrlHelper"/>
@@ -340,7 +342,7 @@
         <action name="translations" class="com.picsauditing.struts.controller.TranslationJsonController" method="getTranslationMessages">
         </action>
 
-        <action name="translations/{translationKey}" class="com.picsauditing.struts.controller.TranslationJsonController" method="getSingleTranslationMessage">
+        <action name="translations/{language}" class="com.picsauditing.struts.controller.TranslationJsonController" method="getTranslationMessages">
         </action>
 
 		<action name="ContractorViewAjax"
@@ -1161,11 +1163,6 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 
-		<action name="OperatorFlagsCalculatorCSV"
-		        class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
-			<result>/struts/blank.jsp</result>
-		</action>
-
 		<action name="AuditBuilder"
 		        class="com.picsauditing.actions.audits.AuditBuilderDebugger">
 			<result>struts/audits/tester/audit_builder.jsp</result>
@@ -1346,10 +1343,26 @@
                 method="loginEulaUserInfo">
         </action>
 
+        <action name="company-finder" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="registration/address-validation/advanced-edit" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+
         <action name="eulas/login/{country}"
                 class="com.picsauditing.struts.controller.eula.EulaController"
                 method="loginEula">
                 <result>/struts/eula/login-eula.jsp</result>
+        </action>
+
+        <action name="location"
+                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                method="findLocation">
+        </action>
+
+        <action name="contractors/locations"
+                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                method="findByViewPort">
         </action>
 
 	</package>

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.daos;
 
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 
 import javax.persistence.TypedQuery;
@@ -21,6 +22,22 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 
 		query.setParameter("id", id);
 		query.setParameter("accountId", accountId);
+
+		try {
+			return query.getSingleResult();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	public Project findProjectByIdAndContractorId(final int id, final int contractorId) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"JOIN p.companies c " +
+				"WHERE p.id = :id " +
+				"AND c.accountId = :contractorId", Project.class);
+
+		query.setParameter("id", id);
+		query.setParameter("contractorId", contractorId);
 
 		try {
 			return query.getSingleResult();
@@ -102,5 +119,28 @@ public class ProjectDAO extends AbstractBaseEntityDAO<Project> {
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public List<Project> findByProfile(final Profile profile) {
+		TypedQuery<Project> query = em.createQuery("SELECT project FROM ProjectRoleEmployee pre " +
+				"JOIN pre.projectRole pr " +
+				"JOIN pr.project project " +
+				"JOIN pre.employee e " +
+				"JOIN e.profile profile " +
+				"WHERE profile = :profile", Project.class);
+
+		query.setParameter("profile", profile);
+
+		return query.getResultList();
+	}
+
+	public List<Project> findByContractorId(final int contractorId) {
+		TypedQuery<Project> query = em.createQuery("SELECT p FROM Project p " +
+				"JOIN p.companies c " +
+				"WHERE c.accountId = :contractorId", Project.class);
+
+		query.setParameter("contractorId", contractorId);
+
+		return query.getResultList();
 	}
 }

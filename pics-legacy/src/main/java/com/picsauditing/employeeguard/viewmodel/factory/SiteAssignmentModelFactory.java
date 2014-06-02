@@ -2,10 +2,10 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
-import com.picsauditing.employeeguard.services.SkillUsage;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.calculator.SkillStatusCalculator;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.SkillUsage;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -19,7 +19,7 @@ import java.util.*;
 public class SiteAssignmentModelFactory {
 
 	public SiteAssignmentModel create(final List<EmployeeSiteAssignmentModel> employeeSiteAssignmentModels,
-	                                  final Map<RoleInfo, Integer> roleCounts) {
+									  final Map<RoleInfo, Integer> roleCounts) {
 		return new SiteAssignmentModel.Builder()
 				.employeeSiteAssignmentModels(employeeSiteAssignmentModels)
 				.totalEmployeesAssignedToSite(employeeSiteAssignmentModels.size())
@@ -28,15 +28,14 @@ public class SiteAssignmentModelFactory {
 	}
 
 	public SiteAssignmentModel create(final AccountModel site,
-	                                  final List<AccountModel> employeeAccounts,
-	                                  final List<SkillUsage> skillUsages,
-	                                  final Map<RoleInfo, Integer> roleCounts) {
-		List<Employee> employees = getEmployees(skillUsages);
-		Map<Employee, Set<AccountSkill>> employeeSkills = getEmployeeSkills(skillUsages);
+									  final List<AccountModel> employeeAccounts,
+									  final Set<Employee> employees,
+									  final Map<Employee, SkillStatus> employeeSkillStatusMap,
+									  final Map<RoleInfo, Integer> roleCounts) {
 		Map<Employee, Set<Role>> employeeRoles = getEmployeeRoles(employees, site.getId());
 
 		List<EmployeeSiteAssignmentModel> employeeSiteAssignments =
-				buildEmployeeSiteAssignments(employeeAccounts, employeeSkills, employeeRoles);
+				buildEmployeeSiteAssignmentsWithEmployeeStatusMap(employeeAccounts, employeeSkillStatusMap, employeeRoles);
 
 		return create(employeeSiteAssignments, roleCounts);
 	}
@@ -63,7 +62,7 @@ public class SiteAssignmentModelFactory {
 		});
 	}
 
-	private Map<Employee, Set<Role>> getEmployeeRoles(List<Employee> employees, int siteId) {
+	private Map<Employee, Set<Role>> getEmployeeRoles(Set<Employee> employees, int siteId) {
 		Map<Employee, Set<Role>> employeeRoles = new HashMap<>();
 
 		for (Employee employee : employees) {
@@ -87,9 +86,17 @@ public class SiteAssignmentModelFactory {
 		return employeeRoles;
 	}
 
+	private List<EmployeeSiteAssignmentModel> buildEmployeeSiteAssignmentsWithEmployeeStatusMap(List<AccountModel> employeeAccounts,
+																								Map<Employee, SkillStatus> employeeStatus,
+																								Map<Employee, Set<Role>> employeeRoles) {
+		Map<Integer, AccountModel> accounts = getIdToAccountModel(employeeAccounts);
+
+		return ViewModelFactory.getEmployeeSiteAssignmentModelFactory().create(employeeStatus, employeeRoles, accounts);
+	}
+
 	private List<EmployeeSiteAssignmentModel> buildEmployeeSiteAssignments(List<AccountModel> employeeAccounts,
-	                                                                       Map<Employee, Set<AccountSkill>> employeeSkills,
-	                                                                       Map<Employee, Set<Role>> employeeRoles) {
+																		   Map<Employee, Set<AccountSkill>> employeeSkills,
+																		   Map<Employee, Set<Role>> employeeRoles) {
 		Map<Integer, AccountModel> accounts = getIdToAccountModel(employeeAccounts);
 		Map<Employee, SkillStatus> statusRollUp = calculateEmployeeSkillStatus(employeeSkills);
 
@@ -111,33 +118,60 @@ public class SiteAssignmentModelFactory {
 		for (Map.Entry<Employee, Set<AccountSkill>> entry : employeeRequiredSkills.entrySet()) {
 			Employee employee = entry.getKey();
 
-			List<AccountSkillEmployee> employeeSkills = filterRequiredEmployeeSkills(employee, entry.getValue());
-			employeeStatus.put(employee, calculateWorstStatusOf(employeeSkills));
+			//List<AccountSkillProfile> employeeSkills = filterRequiredEmployeeSkills(employee, entry.getValue());
+			employeeStatus.put(employee, calculateWorstStatusOf(employee, entry.getValue()));
 		}
 
 		return employeeStatus;
 	}
 
-	private List<AccountSkillEmployee> filterRequiredEmployeeSkills(final Employee employee, final Set<AccountSkill> requiredSkills) {
-		List<AccountSkillEmployee> employeeSkills = new ArrayList<>(employee.getSkills());
+	private List<AccountSkillProfile> filterRequiredEmployeeSkills(final Employee employee, final Set<AccountSkill> requiredSkills) {
+		if (employee.getProfile() == null) {
+			return Collections.emptyList();
+		}
 
-		CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillEmployee>() {
+		List<AccountSkillProfile> employeeSkills = new ArrayList<>(employee.getProfile().getSkills());
+
+		CollectionUtils.filter(employeeSkills, new GenericPredicate<AccountSkillProfile>() {
 			@Override
-			public boolean evaluateEntity(AccountSkillEmployee accountSkillEmployee) {
-				return requiredSkills.contains(accountSkillEmployee.getSkill());
+			public boolean evaluateEntity(AccountSkillProfile accountSkillProfile) {
+				return requiredSkills.contains(accountSkillProfile.getSkill());
 			}
 		});
 
 		return employeeSkills;
 	}
 
-	private SkillStatus calculateWorstStatusOf(List<AccountSkillEmployee> employeeSkills) {
-		//-- Default to highest severity
-    SkillStatus worst = SkillStatus.Expired;
+	private Map<Integer, AccountSkillProfile> prepareEmployeeDocumentationsLookup(Employee employee) {
+		if (employee.getProfile() == null) {
+			return Collections.EMPTY_MAP;
+		}
 
-		for (AccountSkillEmployee employeeSkill : employeeSkills) {
-			SkillStatus current = SkillStatusCalculator.calculateStatusFromSkill(employeeSkill);
+		List<AccountSkillProfile> employeeDocumentations = employee.getProfile().getSkills();
+		Map<Integer, AccountSkillProfile> employeeDocumentationLookup = PicsCollectionUtil.convertToMap(employeeDocumentations, new PicsCollectionUtil.MapConvertable<Integer, AccountSkillProfile>() {
+			@Override
+			public Integer getKey(AccountSkillProfile entity) {
+				return entity.getSkill().getId();
+			}
+		});
 
+		return employeeDocumentationLookup;
+	}
+
+	private SkillStatus calculateWorstStatusOf(Employee employee, Set<AccountSkill> employeeRequiredSkills) {
+
+		Map<Integer, AccountSkillProfile> employeeDocumentationLookup = prepareEmployeeDocumentationsLookup(employee);
+
+		SkillStatus worst = SkillStatus.Completed;
+
+		for (AccountSkill employeeReqdSkill : employeeRequiredSkills) {
+			int skillId = employeeReqdSkill.getId();
+			if (!employeeDocumentationLookup.containsKey(skillId)) {
+				return SkillStatus.Expired;
+			}
+
+			AccountSkillProfile accountSkillProfile = employeeDocumentationLookup.get(skillId);
+			SkillStatus current = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
 			if (current == SkillStatus.Expired) {
 				return current;
 			}
@@ -145,8 +179,11 @@ public class SiteAssignmentModelFactory {
 			if (current.ordinal() < worst.ordinal()) {
 				worst = current;
 			}
+
 		}
 
 		return worst;
 	}
+
+
 }

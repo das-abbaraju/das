@@ -139,12 +139,4 @@ angular.module('PICS.employeeguard')
         getProjectModel: getProjectModel,
         getDefaultModel: getDefaultModel
     });
-})
-
-.filter('removeInvalidCharactersFromUrl', function () {
-        return function (text) {
-
-            var str = text.replace(/\s+/g, '-').toLowerCase();
-            return str;
-        };
 });

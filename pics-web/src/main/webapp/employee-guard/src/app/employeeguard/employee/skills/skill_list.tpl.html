@@ -1,0 +1,77 @@
+<div ng-controller="employeeSkillListCtrl" class="employee-skills-page">
+    <div class="container">
+        <pagetitle title="Skills"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/employee/dashboard">Dashboard</a></li>
+                        <li class="active">Skills</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" ng-show="skillList">
+            <div class="col-md-3">
+                <div class="bs-sidebar">
+                    <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
+                        <ul class="nav" role="menu">
+                            <li ng-class="{active: selectedMenuItem == 'all'}">
+                                <a href="/employee-guard/employee/skills">All
+                                {{ skillModel }}
+                                    <skillstatusicon status="{{ overallStatus }}" class="pull-right"></skillstatusicon>
+                                </a>
+                            </li>
+                            <li class="nav-divider"></li>
+                            <li ng-repeat="site in sites" ng-class="{active: selectedMenuItem == site.slug}">
+                                <a href="/employee-guard/employee/skills/sites/{{ site.slug }}">
+                                    {{ site.name }}
+                                    <skillstatusicon status="{{ site.status }}" class="pull-right"></skillstatusicon>
+                                </a>
+                                <ul class="nav" role="submenu">
+                                    <li ng-repeat="project in site.projects" ng-class="{active: selectedMenuItem == site.slug + '-' + project.slug}">
+                                        <a href="/employee-guard/employee/skills/sites/{{ site.slug }}/projects/{{ project.slug }}">
+                                            {{ project.name }}
+                                            <skillstatusicon status="{{ project.status }}" class="pull-right"></skillstatusicon>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div ng-switch on="getSelectedView()">
+                    <div ng-switch-when="site">
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
+                    </div>
+                    <div ng-switch-when="project">
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillList.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
+                    </div>
+                    <div ng-switch-default>
+                        <span ng-repeat="site in sites">
+                            <employeeskillsection title="{{ site.name }}" skills="site.skills" url-prefix="/employee-guard/employee/skill/" target="_self"></employeeskillsection>
+                        </span>
+                    </div>
+               </div>
+            </div>
+        </div>
+        <div class="row" ng-show="!skillList">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="alert alert-info">
+                    <h4>No Required Skills</h4>
+
+                    <p>Right now, no one is requiring any specific skills for you. Once skills are required, they'll show up here and you can complete them.</p>
+
+                    <p>You can get a head start on your skills by adding certificates or other skill proof ahead of time. Just go to <a href="/employee-guard/employee/file" target="_self">My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+
+                    <p>
+                        <a href="#"><i class="icon-question-sign"></i> Learn more about Skills</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,11 +1,13 @@
 package com.picsauditing.employeeguard.services;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
-import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
+import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.employeeguard.services.engine.SkillEngine;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
@@ -21,21 +23,15 @@ import java.util.*;
 public class RoleService {
 
 	@Autowired
-	private AccountService accountService;
-	@Autowired
 	private AccountSkillDAO accountSkillDAO;
-	@Autowired
-	private AccountSkillEmployeeDAO accountSkillEmployeeDAO;
-	@Autowired
-	private AccountSkillEmployeeService accountSkillEmployeeService;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
 	@Autowired
 	private RoleDAO roleDAO;
 	@Autowired
-	private SkillEngine skillEngine;
-	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
+	@Autowired
+	private ProjectService projectService;
 
 	public Role getRole(final String id, final int accountId) {
 		return roleDAO.findRoleByAccount(NumberUtils.toInt(id), accountId);
@@ -49,14 +45,14 @@ public class RoleService {
 		return roleDAO.findByAccounts(accountIds);
 	}
 
-	public Role update(GroupNameSkillsForm groupNameSkillsForm, String id, int accountId, int appUserId) {
+	public Role update(RoleNameSkillsForm roleNameSkillsForm, String id, int accountId, int appUserId) {
 		Role roleInDatabase = getRole(id, accountId);
-		roleInDatabase.setName(groupNameSkillsForm.getName());
+		roleInDatabase.setName(roleNameSkillsForm.getName());
 		roleInDatabase = roleDAO.save(roleInDatabase);
 
 		List<AccountSkillRole> newAccountSkillRoles = new ArrayList<>();
-		if (ArrayUtils.isNotEmpty(groupNameSkillsForm.getSkills())) {
-			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(groupNameSkillsForm.getSkills())));
+		if (ArrayUtils.isNotEmpty(roleNameSkillsForm.getSkills())) {
+			List<AccountSkill> skills = accountSkillDAO.findByIds(Arrays.asList(ArrayUtils.toObject(roleNameSkillsForm.getSkills())));
 			for (AccountSkill accountSkill : skills) {
 				newAccountSkillRoles.add(new AccountSkillRole(roleInDatabase, accountSkill));
 			}
@@ -69,12 +65,38 @@ public class RoleService {
 				AccountSkillRole.COMPARATOR,
 				new BaseEntityCallback(appUserId, timestamp));
 
-    roleInDatabase.getSkills().clear();
-    roleInDatabase.getSkills().addAll(accountSkillGroups);
+		roleInDatabase.getSkills().clear();
+		roleInDatabase.getSkills().addAll(accountSkillGroups);
 
 		roleInDatabase = roleDAO.save(roleInDatabase);
 
 		return roleInDatabase;
+	}
+
+	public Role update(final RoleProjectsForm roleProjectsForm, Role role, final int accountId, final int appUserId) {
+		List<Integer> projectIds = Utilities.primitiveArrayToList(roleProjectsForm.getProjects());
+		List<Project> projects = projectService.getProjects(projectIds, accountId);
+
+		List<ProjectRole> newProjectRoles = new ArrayList<>();
+		Date now = new Date();
+
+		for (Project project : projects) {
+			ProjectRole projectRole = new ProjectRole(project, role);
+			EntityHelper.setCreateAuditFields(projectRole, appUserId, now);
+
+			newProjectRoles.add(projectRole);
+		}
+
+		newProjectRoles = IntersectionAndComplementProcess.intersection(
+						newProjectRoles,
+						role.getProjects(),
+						ProjectRole.COMPARATOR,
+						new BaseEntityCallback<ProjectRole>(appUserId, now));
+
+		role.getProjects().clear();
+		role.getProjects().addAll(newProjectRoles);
+
+		return roleDAO.save(role);
 	}
 
 	public List<Role> search(final String searchTerm, final int accountId) {

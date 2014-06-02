@@ -3,19 +3,18 @@ package com.picsauditing.employeeguard.controllers.operator;
 import com.google.common.collect.Table;
 import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillEmployee;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
-import com.picsauditing.employeeguard.entities.builders.AccountSkillEmployeeBuilder;
+import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.process.ProcessHelper;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -44,7 +43,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
-	private AccountSkillEmployeeService accountSkillEmployeeService;
+	private AccountSkillProfileService accountSkillProfileService;
 	@Mock
 	private EmployeeEntityService employeeEntityService;
 	@Mock
@@ -55,6 +54,8 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	private SkillService skillService;
 	@Mock
 	private StatusCalculatorService statusCalculatorService;
+	@Mock
+	private ProcessHelper processHelper;
 
 	@Before
 	public void setUp() throws Exception {
@@ -68,13 +69,14 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		when(permissions.isOperator()).thenReturn(true);
 
 		Whitebox.setInternalState(siteAssignmentAction, "accountService", accountService);
-		Whitebox.setInternalState(siteAssignmentAction, "accountSkillEmployeeService", accountSkillEmployeeService);
+		Whitebox.setInternalState(siteAssignmentAction, "accountSkillProfileService", accountSkillProfileService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(siteAssignmentAction, "employeeService", employeeService);
 		Whitebox.setInternalState(siteAssignmentAction, "permissions", permissions);
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
 		Whitebox.setInternalState(siteAssignmentAction, "skillService", skillService);
 		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
+		Whitebox.setInternalState(siteAssignmentAction, "processHelper", processHelper);
 	}
 
 	@Test
@@ -162,7 +164,7 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	@Test
 	public void testRole() throws Exception {
 		Role corporateRole = new RoleBuilder().accountId(CORPORATE_ID).name("Corporate Role").build();
-		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").build();
+		AccountSkill skill = new AccountSkillBuilder(CORPORATE_ID).name("Corporate Skill").intervalPeriod(1).skillType(SkillType.Training).intervalType(IntervalType.YEAR).build();
 		Employee employee = new EmployeeBuilder()
 				.firstName("First")
 				.lastName("Last")
@@ -173,16 +175,21 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, 15);
 
-		Table<Employee, AccountSkill, AccountSkillEmployee> table = TreeBasedTable.create();
-		AccountSkillEmployee accountSkillEmployee = new AccountSkillEmployeeBuilder().endDate(calendar.getTime()).build();
-		table.put(employee, skill, accountSkillEmployee);
+		Table<Employee, AccountSkill, AccountSkillProfile> table = TreeBasedTable.create();
+		AccountSkillProfile accountSkillProfile = new AccountSkillProfileBuilder()
+				.startDate((new DateTime().minusDays(2)).toDate())
+				.endDate(null)
+				.build();
+
+		accountSkillProfile.setSkill(skill);
+		table.put(employee, skill, accountSkillProfile);
 
 		AccountModel accountModel = new AccountModel.Builder().id(CONTRACTOR_ID_1).name("Contractor").build();
 		Map<Integer, AccountModel> accountMap = new HashMap<>();
 		accountMap.put(CONTRACTOR_ID_1, accountModel);
 
 		when(accountService.getContractorMapForSite(SITE_ID)).thenReturn(accountMap);
-		when(accountSkillEmployeeService.buildTable(anyListOf(Employee.class), anyListOf(AccountSkill.class))).thenReturn(table);
+		when(accountSkillProfileService.buildTable(anyListOf(Employee.class), anyListOf(AccountSkill.class))).thenReturn(table);
 		when(employeeService.getEmployeesAssignedToSiteRole(anyListOf(Integer.class), eq(SITE_ID), any(Role.class)))
 				.thenReturn(Arrays.asList(employee));
 		when(employeeService.getEmployeesAssignedToSite(anyListOf(Integer.class), eq(SITE_ID))).thenReturn(Arrays.asList(employee));

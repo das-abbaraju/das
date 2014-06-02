@@ -6,7 +6,9 @@ angular.module('PICS.employeeguard')
         scope: {
             title: '@',
             skills: '=',
-            icon: '@'
+            icon: '@',
+            urlPrefix: '@',
+            target:'@'
         },
         templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };

@@ -87,7 +87,7 @@
                                     ${employee_site_assignment.employeeId}
                                 </s:param>
                             </s:url>
-                            <a href="${employee_liveID}">${employee_site_assignment.employeeName}</a>
+                            <a href="${employee_liveID}/sites/${site.id}">${employee_site_assignment.employeeName}</a>
                         </td>
                         <td>${employee_site_assignment.employeeTitle}</td>
                         <s:iterator value="#employee_site_assignment.skillStatuses" var="employee_skill_status">
@@ -119,8 +119,16 @@
         </div>
     </s:if>
     <s:else>
-        <div class="col-md-9 no-value text-center">
-            No current assignments
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <div class="alert alert-info">
+                        <h4>No Assignments for this Job Role</h4>
+
+                        <p>Currently, no one is assigned to this Job Role.  When companies assign their employees to this Job Role, they will be displayed here.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </s:else>
 </div>

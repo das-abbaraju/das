@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 public class PhotoAction extends PicsRestActionSupport {
+
 	private static final Logger LOG = LoggerFactory.getLogger(PhotoAction.class);
 
 	@Autowired

@@ -1,9 +1,0 @@
-#!/bin/bash
-cd ~/PICSORG
-mvn clean
-mvn package -Dmaven.test.skip=true
-rm -Rf $CATALINA_HOME/webapps/ROOT* 
-cp pics-web/target/ROOT.war $CATALINA_HOME/webapps
-sleep 90
-echo "The application should have started by now"
-tcatLinks

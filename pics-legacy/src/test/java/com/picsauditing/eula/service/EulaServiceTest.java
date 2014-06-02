@@ -6,6 +6,7 @@ import com.picsauditing.dao.EulaDao;
 import com.picsauditing.persistence.model.Eula;
 import com.picsauditing.persistence.model.EulaAgreement;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.authentication.AuthenticationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -45,7 +46,7 @@ public class EulaServiceTest {
     @Mock
     private LoginService loginService;
     @Mock
-    private com.picsauditing.employeeguard.services.LoginService egLoginService;
+    private AuthenticationService authenticationService;
 
     private EulaService eulaService;
     private User user;
@@ -59,7 +60,7 @@ public class EulaServiceTest {
         Whitebox.setInternalState(eulaService, "eulaAgreementDao", eulaAgreementDao);
         Whitebox.setInternalState(eulaService, "eulaDao", eulaDao);
         Whitebox.setInternalState(eulaService, "loginService", loginService);
-        Whitebox.setInternalState(eulaService, "egLoginService", egLoginService);
+        Whitebox.setInternalState(eulaService, "authenticationService", authenticationService);
 
         doAnswer(FIND_EULA_BY_COUNTRY).when(eulaDao).findByCountry(anyString());
     }
@@ -119,7 +120,7 @@ public class EulaServiceTest {
         eulaService.doPreloginVerification(USER_NAME, USER_PASSWORD);
 
         verify(loginService).doPreLoginVerification(user, USER_NAME, USER_PASSWORD);
-        verify(egLoginService, never()).doPreLoginVerificationEG(anyString(), anyString());
+        verify(authenticationService, never()).doPreLoginVerificationEG(anyString(), anyString());
     }
 
     @Test
@@ -129,7 +130,7 @@ public class EulaServiceTest {
         eulaService.doPreloginVerification(USER_NAME, USER_PASSWORD);
 
         verify(loginService, never()).doPreLoginVerification(any(User.class), anyString(), anyString());
-        verify(egLoginService).doPreLoginVerificationEG(USER_NAME, USER_PASSWORD);
+        verify(authenticationService).doPreLoginVerificationEG(USER_NAME, USER_PASSWORD);
     }
 
     @Test

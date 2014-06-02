@@ -19,18 +19,23 @@
 
     <link rel="stylesheet" href="/angular/build/style.css"/>
 
+    <script src="//maps.google.com/maps/api/js?libraries=places&sensor=false"></script>
     <script src="/angular/build/script.js"></script>
-
 </head>
 <body>
-    <div id="main">
-        <header>
-            <s:action name="Menu!bootstrap3Menu" executeResult="true" />
-            <s:action name="Menu!mobileMenu" executeResult="true" />
-        </header>
-        <div ng-app="PICSApp">
-            <div ng-view translated-page></div>
-        </div>
+<div id="main">
+    <header>
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <s:action name="Menu!mobileMenu" executeResult="true" />
+    </header>
+
+    <div ng-app="PICSApp">
+        <div ng-view></div>
     </div>
+
+    <footer>
+        <s:include value="/struts/layout/_environment.jsp" />
+    </footer>
+</div>
 </body>
 </html>

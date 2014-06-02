@@ -3,41 +3,52 @@ package com.picsauditing.employeeguard.models.factories;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.ProfileAssignmentModel;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 
 import java.util.*;
 
 public class ProfileAssignmentModelFactory {
 
-	public List<ProfileAssignmentModel> create(final Map<Integer, AccountModel> accountModels,
-											   final Map<Integer, Set<Role>> accountToRoles,
-											   final Map<Integer, Set<Group>> accountToGroups,
-											   final Map<Integer, SkillStatus> accountToStatus,
-											   final Map<Project, SkillStatus> projectToStatus) {
+	public List<ProfileAssignmentModel> create(final Map<Integer, AccountModel> sites,
+											   final Map<AccountModel, SkillStatus> accountStatus,
+											   final Map<AccountModel, Set<Group>> accountGroups,
+											   final Map<AccountModel, Set<Role>> accountRoles,
+											   final Map<Project, SkillStatus> projectStatus) {
 
 		List<ProfileAssignmentModel> models = new ArrayList<>();
-		for (Map.Entry<Integer, Set<Role>> entry : accountToRoles.entrySet()) {
-			Integer accountId = entry.getKey();
-			AccountModel account = accountModels.get(accountId);
-			models.add(createModelForOperator(account, entry.getValue().size(), accountToStatus.get(account.getId())));
+		for (AccountModel accountModel : accountRoles.keySet()) {
+			models.add(createModelForOperator(accountModel, count(accountRoles, accountModel), accountStatus.get(accountModel)));
 		}
 
-		for (Map.Entry<Integer, Set<Group>> entry : accountToGroups.entrySet()) {
-			Integer accountId = entry.getKey();
-			AccountModel account = accountModels.get(accountId);
-			models.add(createModelForContractor(account, entry.getValue().size(), accountToStatus.get(account.getId())));
+		for (AccountModel accountModel : accountGroups.keySet()) {
+			models.add(createModelForContractor(accountModel, count(accountGroups, accountModel), accountStatus.get(accountModel)));
 		}
 
-		for (Map.Entry<Project, SkillStatus> entry : projectToStatus.entrySet()) {
-			Project project = entry.getKey();
-			models.add(createModelForProject(project, accountModels.get(project.getAccountId()), entry.getValue()));
+		for (Project project : projectStatus.keySet()) {
+			models.add(createModelForProject(project, sites.get(project.getAccountId()), projectStatus.get(project)));
 		}
 
 		Collections.sort(models);
 
 		return models;
+	}
+
+	private static <K, V> int count(final Map<K, ? extends Collection<V>> map, final K key) {
+		if (MapUtils.isEmpty(map)) {
+			return 0;
+		}
+
+		if (!map.containsKey(key)) {
+			return 0;
+		}
+
+		Collection<V> values = map.get(key);
+
+		return CollectionUtils.isEmpty(values) ? 0 : values.size();
 	}
 
 	private ProfileAssignmentModel createModelForOperator(final AccountModel account, final int count, final SkillStatus status) {

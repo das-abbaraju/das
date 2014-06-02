@@ -45,18 +45,17 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 		return roleDAO.findRoleByAccount(id, accountId);
 	}
 
-  public Map<String,Role> retrieveRolesByAccounts(Collection<Integer> accountIds) {
-    if (CollectionUtils.isEmpty(accountIds)) {
-      return Collections.EMPTY_MAP;
+	public Map<String, Role> retrieveRolesByAccounts(Collection<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.EMPTY_MAP;
 
-    }
-    return roleDAO.retrieveRolesByAccounts(accountIds);
-  }
+		}
+		return roleDAO.retrieveRolesByAccounts(accountIds);
+	}
 
 	public List<Role> findRolesForCorporateAccounts(final Collection<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.EMPTY_LIST;
-
 		}
 
 		return roleDAO.findByAccounts(accountIds);
@@ -210,8 +209,96 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Employee, Set<Role>> getEmployeeSiteRoles(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyMap();
+		}
+
+		return PicsCollectionUtil.convertToMapOfSets(
+				siteAssignmentDAO.findByEmployees(employees),
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Employee, Role>() {
+
+					@Override
+					public Employee getKey(SiteAssignment entity) {
+						return entity.getEmployee();
+					}
+
+					@Override
+					public Role getValue(SiteAssignment entity) {
+						return entity.getRole();
+					}
+				});
+	}
+
 	public Set<Role> getAllSiteRolesForEmployee(final Employee employee) {
 		return new HashSet<>(roleDAO.findRolesForEmployee(employee));
+	}
+
+	public Set<Role> getRolesForProfile(final Profile profile) {
+		return PicsCollectionUtil.extractPropertyToSet(siteAssignmentDAO.findByProfile(profile),
+
+				new PicsCollectionUtil.PropertyExtractor<SiteAssignment, Role>() {
+
+					@Override
+					public Role getProperty(SiteAssignment siteAssignment) {
+						return siteAssignment.getRole();
+					}
+				});
+	}
+
+	public Map<Integer, Set<Role>> getSiteAssignmentRoles(final Collection<Integer> siteIds) {
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findBySiteIds(siteIds),
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Integer, Role>() {
+
+					@Override
+					public Integer getKey(SiteAssignment entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public Role getValue(SiteAssignment entity) {
+						return entity.getRole();
+					}
+				});
+	}
+
+	public Map<Integer, Map<Employee, Set<Role>>> getSiteEmployeeRoles(final Collection<Integer> sites) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findBySiteIds(sites);
+
+		Map<Integer, Map<Employee, Set<Role>>> siteEmployeeRoles = new HashMap<>();
+		for (SiteAssignment siteAssignment : siteAssignments) {
+			int siteId = siteAssignment.getSiteId();
+			if (!siteEmployeeRoles.containsKey(siteId)) {
+				siteEmployeeRoles.put(siteId, new HashMap<Employee, Set<Role>>());
+			}
+
+			Employee employee = siteAssignment.getEmployee();
+			if (!siteEmployeeRoles.get(siteId).containsKey(siteAssignment.getEmployee())) {
+				siteEmployeeRoles.get(siteId).put(employee, new HashSet<Role>());
+			}
+
+			siteEmployeeRoles.get(siteId).get(employee).add(siteAssignment.getRole());
+		}
+
+		return siteEmployeeRoles;
+	}
+
+	public Map<Integer, Set<Employee>> getSiteEmployeeAssignments(final int contractorId) {
+		return PicsCollectionUtil.convertToMapOfSets(siteAssignmentDAO.findByContractorId(contractorId),
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<SiteAssignment, Integer, Employee>() {
+
+					@Override
+					public Integer getKey(SiteAssignment entity) {
+						return entity.getSiteId();
+					}
+
+					@Override
+					public Employee getValue(SiteAssignment entity) {
+						return entity.getEmployee();
+					}
+				});
 	}
 
 	/* All Search Methods */

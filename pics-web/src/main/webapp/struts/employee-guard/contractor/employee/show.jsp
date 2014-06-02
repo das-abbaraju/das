@@ -215,9 +215,19 @@
                     </dl>
                 </s:if>
                 <s:else>
-                    <div class="col-md-9 col-md-offset-3 no-value">
-                        No current assignments
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <div class="alert alert-info">
+                            <h4>No Assignments</h4>
+
+                            <p>This employee is not assigned to any sites or projects.</p>
+
+                            <p>
+                                <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                            </p>
+                        </div>
                     </div>
+                </div>
                 </s:else>
             </div>
         </section>

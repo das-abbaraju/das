@@ -22,8 +22,19 @@
             <result name="create">/struts/employee-guard/account/create.jsp</result>
         </action>
 
+        <action name="password-reset" class="com.picsauditing.employeeguard.controllers.ResetPassword">
+            <result name="success">/struts/employee-guard/account/reset-password.jsp</result>
+        </action>
+
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
         </action>
+
+        <action name="serverInfo" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
+        </action>
+
+        <action name="info" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
     </package>
 
     <!-- Operator -->
@@ -303,6 +314,16 @@
         </action>
 
         <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
+        </action>
+
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="skills/sites" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="profile/skills" class="com.picsauditing.employeeguard.controllers.employee.ProfileSkillsAction"
+                method="skills">
         </action>
 
         <!-- Profile -->

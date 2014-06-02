@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.controllers.contractor;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
@@ -87,7 +89,12 @@ public class EmployeeActionTest extends PicsActionTest {
 		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
 		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 		when(accountService.getAccountById(anyInt())).thenReturn(new AccountModel.Builder().name("Test Account").build());
-		when(employeeSkillDataProcess.buildEmployeeSkillData(any(Employee.class), anyCollectionOf(Integer.class))).thenReturn(new EmployeeSkillData());
+		when(employeeSkillDataProcess.buildEmployeeSkillData(anyInt(), any(Employee.class), anyMap()))
+				.thenReturn(new EmployeeSkillData());
+
+		Table<Employee, String, Integer> employeeSkillStatuses = TreeBasedTable.create();
+		when(employeeSkillDataProcess.buildEmployeeSkillStatuses(anyInt(), anyCollection(), anyMap()))
+				.thenReturn(employeeSkillStatuses);
 
 		Whitebox.setInternalState(employeeAction, "accountService", accountService);
 		Whitebox.setInternalState(employeeAction, "emailService", emailService);

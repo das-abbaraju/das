@@ -1,0 +1,17 @@
+@import 'employee-guard-delete-confirmation';
+@import 'employee-guard-information';
+@import 'employee-guard-list';
+@import 'employee-guard-pagination';
+@import 'employee-guard-section';
+@import 'employee-guard-section-full';
+@import 'employee-image';
+@import 'employee-skills';
+
+@include employee-guard-delete-confirmation;
+@include employee-guard-information;
+@include employee-guard-list;
+@include employee-guard-pagination;
+@include employee-guard-section;
+@include employee-guard-section-full;
+@include employee-image;
+@include employee-skills;

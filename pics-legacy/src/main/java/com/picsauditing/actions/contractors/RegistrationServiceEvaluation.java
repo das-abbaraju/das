@@ -246,11 +246,11 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 		calculateRiskLevels();
 		setAccountLevelByListOnlyEligibility();
 
-        runEmployeeGuardRules();
-
         billingService.syncBalance(contractor);
-		feeService.calculateContractorInvoiceFees(contractor, false);
-		contractorAccountDao.save(contractor);
+        feeService.calculateContractorInvoiceFees(contractor, false);
+        contractorAccountDao.save(contractor);
+
+        runEmployeeGuardRules();
 
 		// Free accounts should just be activated
 		if (contractor.isHasFreeMembership() && contractor.getStatus().isPendingRequestedOrDeactivated()) {

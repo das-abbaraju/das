@@ -1,7 +1,7 @@
 package com.picsauditing.employeeguard.process;
 
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
 import java.util.Map;
 import java.util.Set;

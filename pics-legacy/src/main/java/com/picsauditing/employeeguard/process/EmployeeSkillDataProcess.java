@@ -1,92 +1,68 @@
 package com.picsauditing.employeeguard.process;
 
+import com.google.common.collect.Table;
+import com.google.common.collect.TreeBasedTable;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.employeeguard.services.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.calculator.SkillStatus;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.services.entity.RoleEntityService;
-import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EmployeeSkillDataProcess {
 
 	@Autowired
-	private SkillEntityService skillEntityService;
-	@Autowired
-	private ProjectEntityService projectEntityService;
-	@Autowired
-	private RoleEntityService roleEntityService;
+	private ProcessHelper processHelper;
 	@Autowired
 	private StatusCalculatorService statusCalculatorService;
 
-	public EmployeeSkillData buildEmployeeSkillData(final Employee employee,
-													final Collection<Integer> allSiteAndCorporateIds) {
+	public Map<Employee, Set<AccountSkill>> allEmployeeSkillsForContractorAndSites(final int contractorId,
+																				   final Collection<Employee> employees,
+																				   final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		return processHelper.getAllSkillsForEmployees(contractorId, employees, siteHierarchy);
+	}
 
-		Set<AccountSkill> allEmployeeSkills = getAllSkillsForEmployee(employee, allSiteAndCorporateIds);
-		Map<AccountSkill, SkillStatus> skillStatuses = statusCalculatorService.getSkillStatuses(employee, allEmployeeSkills);
+	public Table<Employee, String, Integer> buildEmployeeSkillStatuses(final int contractorId,
+																	   final Collection<Employee> employees,
+																	   final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		Table<Employee, String, Integer> employeeSkillStatuses = TreeBasedTable.create();
+		Map<Employee, Set<AccountSkill>> allEmployeeSkills = processHelper.getAllSkillsForEmployees(contractorId, employees, siteHierarchy);
+		Map<Employee, List<SkillStatus>> employeeStatuses = statusCalculatorService
+				.getEmployeeSkillStatusList(allEmployeeSkills);
+
+		for (Employee employee : employees) {
+			for (SkillStatus skillStatus : SkillStatus.values()) {
+				employeeSkillStatuses.put(employee, skillStatus.getDisplayValue(), 0);
+			}
+
+			if (!employeeStatuses.containsKey(employee)) {
+				continue;
+			}
+
+			for (SkillStatus skillStatus : employeeStatuses.get(employee)) {
+				employeeSkillStatuses.put(employee, skillStatus.getDisplayValue(),
+						employeeSkillStatuses.get(employee, skillStatus.getDisplayValue()) + 1);
+			}
+		}
+
+		return employeeSkillStatuses;
+	}
+
+	public EmployeeSkillData buildEmployeeSkillData(final int contractorId,
+													final Employee employee,
+													final Map<AccountModel, Set<AccountModel>> siteHierarchy) {
+		Map<Employee, Set<AccountSkill>> employeeSkills = processHelper.getAllSkillsForEmployees(contractorId,
+				Arrays.asList(employee), siteHierarchy);
+		Set<AccountSkill> accountSkills = employeeSkills.get(employee);
+		Map<AccountSkill, SkillStatus> skillStatuses = statusCalculatorService.getSkillStatuses(employee, accountSkills);
 
 		EmployeeSkillData employeeSkillData = new EmployeeSkillData();
 
-		employeeSkillData.setAccountSkills(allEmployeeSkills);
+		employeeSkillData.setAccountSkills(accountSkills);
 		employeeSkillData.setSkillStatuses(skillStatuses);
 
 		return employeeSkillData;
 	}
-
-	private Set<AccountSkill> getAllSkillsForEmployee(final Employee employee,
-													  final Collection<Integer> allSiteAndCorporateIds) {
-		Set<AccountSkill> allSkills = new HashSet<>();
-
-		allSkills = addGroupSkills(allSkills, employee);
-		allSkills = addRoleSkills(allSkills, employee);
-		allSkills = addProjectRequiredSkills(allSkills, employee);
-		allSkills = addSiteAndCorporateRequiredSkills(allSkills, allSiteAndCorporateIds);
-
-		return allSkills;
-	}
-
-	private Set<AccountSkill> addGroupSkills(final Set<AccountSkill> accountSkills, final Employee employee) {
-		accountSkills.addAll(skillEntityService.getGroupSkillsForEmployee(employee));
-
-		return accountSkills;
-	}
-
-	private Set<AccountSkill> addRoleSkills(final Set<AccountSkill> accountSkills, final Employee employee) {
-		Set<Role> roles = roleEntityService.getAllSiteRolesForEmployee(employee);
-		Map<Role, Set<AccountSkill>> roleSkills = skillEntityService.getSkillsForRoles(roles);
-
-		accountSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(roleSkills.values()));
-
-		return accountSkills;
-	}
-
-	private Set<AccountSkill> addProjectRequiredSkills(final Set<AccountSkill> accountSkills, final Employee employee) {
-		Set<Project> projects = projectEntityService.getProjectsForEmployee(employee);
-		Map<Project, Set<AccountSkill>> projectRequiredSkills = skillEntityService.getRequiredSkillsForProjects(projects);
-
-		accountSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(projectRequiredSkills.values()));
-
-		return accountSkills;
-	}
-
-	private Set<AccountSkill> addSiteAndCorporateRequiredSkills(final Set<AccountSkill> accountSkills,
-																final Collection<Integer> allSiteAndCorporateIds) {
-		Map<Integer, Set<AccountSkill>> siteAndCorporateRequiredSkills = skillEntityService
-				.getSiteRequiredSkills(allSiteAndCorporateIds);
-
-		accountSkills.addAll(PicsCollectionUtil
-				.mergeCollectionOfCollections(siteAndCorporateRequiredSkills.values()));
-
-		return accountSkills;
-	}
-
 }

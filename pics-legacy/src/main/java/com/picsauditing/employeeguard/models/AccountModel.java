@@ -56,6 +56,7 @@ public final class AccountModel implements Comparable<AccountModel> {
     }
 
     public static class Builder {
+
         private int id;
         private String name;
         private AccountType accountType;

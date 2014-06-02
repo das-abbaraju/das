@@ -150,6 +150,7 @@ public class BillingService {
 		toUpdate.setAuditColumns(user);
 		toUpdate.setCurrency(updateWith.getCurrency());
 		toUpdate.setDueDate(updateWith.getDueDate());
+		toUpdate.setPayingFacilities(updateWith.getPayingFacilities());
 
 		toUpdate.getItems().addAll(updateWith.getItems());
 		updateWith.getItems().clear();
