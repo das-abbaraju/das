@@ -113,23 +113,23 @@
             </div>
             <div class="col-md-9">
                 <div ng-switch on="getSelectedView()">
-                    <employeeskillsection ng-show="requiredSkills" title="{{ requiredTitle }}" skills="requiredSkills" icon="map-marker"></employeeskillsection>
+                    <employeeskillsection ng-show="requiredSkills" title="{{ requiredTitle }}" skills="requiredSkills" icon="map-marker" url-prefix="/employee-guard/employees/{{ employee.id }}/skill/"></employeeskillsection>
 
                     <div ng-switch-when="role">
-                        <employeeskillsection title="{{ viewTitle }}" skills="skillGroup.skills" icon="group"></employeeskillsection>
+                        <employeeskillsection title="{{ viewTitle }}" skills="skillGroup.skills" icon="group" url-prefix="/employee-guard/employees/{{ employee.id }}/skill/"></employeeskillsection>
                     </div>
                     <div ng-switch-when="project">
                         <span ng-repeat="role in skillGroup.roles">
-                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group"></employeeskillsection>
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group" url-prefix="/employee-guard/employees/{{ employee.id }}/skill/"></employeeskillsection>
                         </span>
                     </div>
                     <div ng-switch-default>
                         <span ng-repeat="project in skillGroup.skills">
-                            <employeeskillsection title="{{ project.name }}" skills="project.skills" icon="group"></employeeskillsection>
+                            <employeeskillsection title="{{ project.name }}" skills="project.skills" icon="group" url-prefix="/employee-guard/employees/{{ employee.id }}/skill/"></employeeskillsection>
                         </span>
 
                         <span ng-repeat="role in roles">
-                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group"></employeeskillsection>
+                            <employeeskillsection title="{{ role.name }}" skills="role.skills" icon="group" url-prefix="/employee-guard/employees/{{ employee.id }}/skill/"></employeeskillsection>
                         </span>
                     </div>
                </div>
