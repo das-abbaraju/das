@@ -55,7 +55,7 @@
 
             <div class="form-group">
                 <tw:label labelName="password">Password</tw:label>
-                <tw:input class="form-control" inputName="password" type="password" tabindex="8" />
+                <tw:input class="form-control" inputName="password" type="password" tabindex="8" maxlength="100"/>
                 <tw:error errorName="password" />
             </div>
 

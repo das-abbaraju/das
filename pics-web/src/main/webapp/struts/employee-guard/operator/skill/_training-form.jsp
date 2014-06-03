@@ -10,7 +10,7 @@
         <div class="row">
             <fieldset class="expiration-date">
                 <div class="col-md-4 col-xs-4">
-                    <tw:input inputName="intervalPeriod" type="text" class="form-control" placeholder="1" value="${operatorSkillForm.intervalPeriod}" tabindex="4" />
+                    <tw:input inputName="intervalPeriod" type="text" class="form-control" placeholder="1" value="${operatorSkillForm.intervalPeriod}" maxlength="4" tabindex="4" />
                 </div>
                 <div class="col-md-8 col-xs-8">
                     <tw:select selectName="intervalType" class="form-control select2Min" tabindex="5">

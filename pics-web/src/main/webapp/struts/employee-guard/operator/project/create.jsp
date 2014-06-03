@@ -35,14 +35,14 @@
             <div class="form-group">
                 <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
                 <div class="col-md-4">
-                    <tw:input inputName="name" class="form-control" type="text"/>
+                    <tw:input inputName="name" class="form-control" type="text" maxlength="70" />
                 </div>
             </div>
 
             <div class="form-group">
                 <tw:label labelName="location" class="col-md-3 control-label">Location</tw:label>
                 <div class="col-md-4">
-                    <tw:input inputName="location" class="form-control" type="text"/>
+                    <tw:input inputName="location" class="form-control" type="text" maxlength="70"/>
                 </div>
             </div>
 
