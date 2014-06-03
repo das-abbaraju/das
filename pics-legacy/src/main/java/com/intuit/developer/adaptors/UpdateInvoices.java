@@ -1,37 +1,21 @@
 package com.intuit.developer.adaptors;
 
+import com.intuit.developer.QBSession;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.featuretoggle.Features;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.quickbooks.qbxml.*;
+import com.picsauditing.util.SpringUtils;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import com.intuit.developer.QBSession;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.InvoiceDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.InvoiceItem;
-import com.picsauditing.jpa.entities.TransactionStatus;
-import com.picsauditing.quickbooks.qbxml.InvoiceLineMod;
-import com.picsauditing.quickbooks.qbxml.InvoiceMod;
-import com.picsauditing.quickbooks.qbxml.InvoiceModRqType;
-import com.picsauditing.quickbooks.qbxml.InvoiceModRsType;
-import com.picsauditing.quickbooks.qbxml.InvoiceRet;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
-import com.picsauditing.quickbooks.qbxml.SalesTaxCodeRef;
-import com.picsauditing.quickbooks.qbxml.TxnVoidRqType;
-import com.picsauditing.quickbooks.qbxml.TxnVoidRsType;
-import com.picsauditing.util.SpringUtils;
 
 public class UpdateInvoices extends CustomerAdaptor {
 
@@ -119,13 +103,9 @@ public class UpdateInvoices extends CustomerAdaptor {
 
 					invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
 
-					invoice.setBillAddress(factory.createBillAddress());
+                    setBillAddress(factory, invoiceJPA, invoice);
 
-					ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-
-					invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
-
-					invoice.setIsPending("false");
+                    invoice.setIsPending("false");
 
 					invoice.setPONumber(invoiceJPA.getPoNumber());
 					invoice.setTermsRef(factory.createTermsRef());
@@ -288,7 +268,15 @@ public class UpdateInvoices extends CustomerAdaptor {
 		return writer.toString();
 	}
 
-	private boolean skipCanadianTax(Invoice invoiceJPA, InvoiceItem item) {
+    private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceMod invoice) {
+        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            invoice.setBillAddress(factory.createBillAddress());
+            ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
+            invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
+        }
+    }
+
+    private boolean skipCanadianTax(Invoice invoiceJPA, InvoiceItem item) {
 		return item.getInvoiceFee() != null && item.getInvoiceFee().isTax()
 				&& invoiceJPA.getCurrency().isCAD() && !invoiceJPA.isQbSyncWithTax();
 	}

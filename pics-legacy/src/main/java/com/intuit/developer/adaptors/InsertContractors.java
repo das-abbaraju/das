@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.User;
@@ -104,10 +105,12 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
 				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
-				customer.setBillAddress(factory.createBillAddress());
-				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
 
-				if (currentSession.isEUR()) {
+                setBillAddress(factory, contractor, customer);
+
+
+
+                if (currentSession.isEUR()) {
 					customer.setCurrencyRef(factory.createCurrencyRef());
 					customer.setCurrencyRef(updateCurrencyRef(contractor, customer.getCurrencyRef()));
 				}
@@ -142,6 +145,13 @@ public class InsertContractors extends CustomerAdaptor {
 		return writer.toString();
 
 	}
+
+    private void setBillAddress(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
+        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            customer.setBillAddress(factory.createBillAddress());
+            customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
+        }
+    }
 
     private String getCurrencyCodeSuffixForQB(QBSession qbSession) {
         switch (qbSession.getCurrencyCode()) {

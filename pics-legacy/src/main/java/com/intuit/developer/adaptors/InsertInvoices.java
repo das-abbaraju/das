@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
@@ -78,15 +79,9 @@ public class InsertInvoices extends CustomerAdaptor {
 
 				invoice.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceJPA.getCreationDate()));
 
-				invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
+                setBillAddress(factory, invoiceJPA, invoice);
 
-				invoice.setBillAddress(factory.createBillAddress());
-
-				ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-
-				invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
-
-				invoice.setIsPending("false");
+                invoice.setIsPending("false");
 
 				invoice.setPONumber(invoiceJPA.getPoNumber());
 				invoice.setTermsRef(factory.createTermsRef());
@@ -136,7 +131,16 @@ public class InsertInvoices extends CustomerAdaptor {
 
 	}
 
-	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
+    private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceAdd invoice) {
+        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
+            invoice.setBillAddress(factory.createBillAddress());
+            ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
+            invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
+        }
+    }
+
+    private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
 			InvoiceLineAdd lineItem) {
 		if (item.getInvoiceFee() == null || item.getInvoiceFee().isTax() || invoice.getCurrency() != Currency.CAD) {
 			return;

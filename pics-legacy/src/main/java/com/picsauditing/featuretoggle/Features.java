@@ -16,8 +16,10 @@ public enum Features implements Feature {
     @Label("Company Finder feature")
     COMPANY_FINDER,
     @Label("Use New Flag Calculator")
-    USE_NEW_FLAGCALCULATOR;
-    
+    USE_NEW_FLAGCALCULATOR,
+    @Label("QuickBooks: include contractor address when sending contractor information or invoices to QuickBooks Web Connector")
+    QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS;
+
     public boolean isActive() {
         return FeatureContext.getFeatureManager().isActive(this);
     }
