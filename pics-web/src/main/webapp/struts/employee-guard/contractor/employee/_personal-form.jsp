@@ -16,7 +16,7 @@
         <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First
             Name</strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="firstName" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.firstName}"/>
+            <tw:input inputName="firstName" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.firstName}" maxlength="100" />
             <tw:error errorName="firstName"/>
         </div>
     </div>
@@ -24,7 +24,7 @@
     <div class="form-group ${last_name_error_class}">
         <tw:label labelName="lastName" class="col-md-3 control-label"><strong>Last Name</strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="lastName" class="form-control" type="text" tabindex="2" value="${employee.lastName}"/>
+            <tw:input inputName="lastName" class="form-control" type="text" tabindex="2" value="${employee.lastName}" maxlength="100" />
             <tw:error errorName="lastName"/>
         </div>
     </div>
@@ -32,7 +32,7 @@
     <div class="form-group ${email_error_class}">
         <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="email" class="form-control" type="text" tabindex="3" value="${employee.email}"/>
+            <tw:input inputName="email" class="form-control" type="text" tabindex="3" value="${employee.email}" maxlength="100" />
             <tw:error errorName="email"/>
         </div>
     </div>
@@ -40,7 +40,7 @@
     <div class="form-group">
         <tw:label labelName="phoneNumber" class="col-md-3 control-label">Phone</tw:label>
         <div class="col-md-4">
-            <tw:input inputName="phoneNumber" class="form-control" tabindex="4" type="text" value="${employee.phone}"/>
+            <tw:input inputName="phoneNumber" class="form-control" tabindex="4" type="text" value="${employee.phone}" maxlength="24" />
         </div>
     </div>
 

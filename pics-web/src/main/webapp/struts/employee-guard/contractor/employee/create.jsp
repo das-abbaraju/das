@@ -27,21 +27,21 @@
                 <div class="form-group">
                     <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First Name</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="firstName" class="form-control" tabindex="1" type="text" autofocus="true"/>
+                        <tw:input inputName="firstName" class="form-control" tabindex="1" type="text" autofocus="true" maxlength="100" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <tw:label labelName="lastName" class="col-md-3 control-label"><strong>Last Name</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="lastName" class="form-control" tabindex="2" type="text"/>
+                        <tw:input inputName="lastName" class="form-control" tabindex="2" type="text" maxlength="100" />
                     </div>
                 </div>
 
                 <div class="form-group ${email_error_class}">
                     <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="email" class="form-control" tabindex="3" type="text"/>
+                        <tw:input inputName="email" class="form-control" tabindex="3" type="text" maxlength="100" />
                         <tw:error errorName="email"/>
                     </div>
                 </div>
@@ -49,21 +49,21 @@
                 <div class="form-group">
                     <tw:label labelName="phoneNumber" class="col-md-3 control-label">Phone</tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="phoneNumber" class="form-control" tabindex="4" type="text"/>
+                        <tw:input inputName="phoneNumber" class="form-control" tabindex="4" type="text" maxlength="24" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <tw:label labelName="employeeId" class="col-md-3 control-label">Employee ID</tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="employeeId" class="form-control" tabindex="5" type="text"/>
+                        <tw:input inputName="employeeId" class="form-control" tabindex="5" type="text" maxlength="100" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <tw:label labelName="title" class="col-md-3 control-label">Title</tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="title" class="form-control" tabindex="6" type="text"/>
+                        <tw:input inputName="title" class="form-control" tabindex="6" type="text" maxlength="100" />
                     </div>
                 </div>
 

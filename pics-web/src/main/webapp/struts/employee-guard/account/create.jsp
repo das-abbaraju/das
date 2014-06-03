@@ -31,25 +31,25 @@
 
             <div class="form-group">
                 <tw:label labelName="firstName">First Name</tw:label>
-                <tw:input class="form-control" inputName="firstName" type="text" tabindex="4" value="${profile.firstName}" />
+                <tw:input class="form-control" inputName="firstName" type="text" tabindex="4" value="${profile.firstName}" maxlength="100" />
                 <tw:error errorName="firstName" />
             </div>
 
             <div class="form-group">
                 <tw:label labelName="lastName">Last Name</tw:label>
-                <tw:input class="form-control" inputName="lastName" type="text" tabindex="5" value="${profile.lastName}" />
-                <tw:error errorName="lastName" />
+                <tw:input class="form-control" inputName="lastName" type="text" tabindex="5" value="${profile.lastName}" maxlength="100" />
+                <tw:error errorName="lastName"/>
             </div>
 
             <div class="form-group">
                 <tw:label labelName="email">Email</tw:label>
-                <tw:input class="form-control" inputName="email" type="email" tabindex="6" value="${profile.email}" />
-                <tw:error errorName="email" />
+                <tw:input class="form-control" inputName="email" type="email" tabindex="6" value="${profile.email}" maxlength="100" />
+                <tw:error errorName="email"/>
             </div>
 
             <div class="form-group">
                 <tw:label labelName="emailRetype">Re-Enter Email</tw:label>
-                <tw:input class="form-control" inputName="emailRetype" type="email" tabindex="7" />
+                <tw:input class="form-control" inputName="emailRetype" type="email" tabindex="7" maxlength="100" />
                 <tw:error errorName="emailRetype" />
             </div>
 
