@@ -150,7 +150,7 @@
 	<include file="./liquibase/2014/Q1/kchase24_PICS-14406_FixAuditExpiration.sql"/>
 	<include file="./liquibase/2014/Q1/kchase23_PICS-14445_IHGSubmitFix.sql"/>
 	<include file="./liquibase/2014/Q1/mdo44_PICs-14407_CorrectPaymentMethod.sql"/>
-	<include file="./liquibase/2014/Q1/lkam5_US178_Add_Suncor_Discounts.sql"/>
+	<!-- <include file="./liquibase/2014/Q1/lkam5_US178_Add_Suncor_Discounts.sql"/> -->
 	<include file="./liquibase/2014/Q1/lkam4_PICS-13060_Remove_Contractor_Cron_Failure_Subscription.sql"/>
 
 	<!-- 7.1.6 --> 
