@@ -226,4 +226,7 @@
     <include file="./liquibase/2014/Q2/rbeaini5_PICS-15271.sql"/>
     <include file="./liquibase/2014/Q2/mdo53_PICS-15315.sql"/>
 
+    <!-- 7.2.14 -->
+    <include file="./liquibase/2014/Q2/cfranks5_PICS_15355_DDL_CreateFunction_get_parent_company.sql"/>
+    <include file="./liquibase/2014/Q2/cfranks6_PICS_15355_DML_Update_Operators_Missing_ReportingIDs.sql"/>
 </databaseChangeLog>
