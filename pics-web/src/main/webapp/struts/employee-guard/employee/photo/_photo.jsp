@@ -10,5 +10,5 @@
         <span class="edit-text"><strong>Select to edit...</strong></span>
     </div>
     <tw:input inputName="photo" type="file" class="default-file-import" />
-    <input type="submit" />
+    <input type="submit" class="hidden" />
 </figure>
