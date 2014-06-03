@@ -1329,18 +1329,18 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../sass/pics/employee-guard/mixins/_employee-image.scss */
-.employee-image input[type="file"] {
+/* line 6, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+.employee-image input[type="submit"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 13, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 17, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -1350,7 +1350,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 26, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -1359,7 +1359,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -1371,7 +1371,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 
 @media (max-width: 991px) {
-  /* line 48, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+  /* line 47, ../sass/pics/employee-guard/mixins/_employee-image.scss */
   #edit_employee_photo {
     text-align: center;
   }
@@ -1581,18 +1581,18 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../sass/pics/employee-guard/mixins/_employee-image.scss */
-.employee_guard_contractor_employee-page .employee-image input[type="file"] {
+/* line 6, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+.employee_guard_contractor_employee-page .employee-image input[type="submit"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 13, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 17, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -1602,7 +1602,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 26, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -1611,7 +1611,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -1622,7 +1622,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   width: 100%;
 }
 @media (max-width: 991px) {
-  /* line 48, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+  /* line 47, ../sass/pics/employee-guard/mixins/_employee-image.scss */
   .employee_guard_contractor_employee-page #edit_employee_photo {
     text-align: center;
   }
@@ -1812,18 +1812,18 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../sass/pics/employee-guard/mixins/_employee-image.scss */
-#employee_guard_employee_profile_live_id_badge_page .employee-image input[type="file"] {
+/* line 6, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+#employee_guard_employee_profile_live_id_badge_page .employee-image input[type="submit"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 13, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 #employee_guard_employee_profile_live_id_badge_page .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 17, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 #employee_guard_employee_profile_live_id_badge_page .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -1833,7 +1833,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 26, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 #employee_guard_employee_profile_live_id_badge_page .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -1842,7 +1842,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 #employee_guard_employee_profile_live_id_badge_page .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -1853,7 +1853,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   width: 100%;
 }
 @media (max-width: 991px) {
-  /* line 48, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+  /* line 47, ../sass/pics/employee-guard/mixins/_employee-image.scss */
   #employee_guard_employee_profile_live_id_badge_page #edit_employee_photo {
     text-align: center;
   }
@@ -1966,18 +1966,18 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../sass/pics/employee-guard/mixins/_employee-image.scss */
-.employee_guard_employee_profile-page .employee-image input[type="file"] {
+/* line 6, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+.employee_guard_employee_profile-page .employee-image input[type="submit"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 13, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_employee_profile-page .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 17, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_employee_profile-page .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -1987,7 +1987,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 26, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_employee_profile-page .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -1996,7 +1996,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+/* line 34, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 .employee_guard_employee_profile-page .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -2007,7 +2007,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   width: 100%;
 }
 @media (max-width: 991px) {
-  /* line 48, ../sass/pics/employee-guard/mixins/_employee-image.scss */
+  /* line 47, ../sass/pics/employee-guard/mixins/_employee-image.scss */
   .employee_guard_employee_profile-page #edit_employee_photo {
     text-align: center;
   }
@@ -3705,4 +3705,25 @@ p {
   .Contact-page .nav-pills {
     margin-bottom: 30px;
   }
+}
+/* line 1, ../sass/pics/file-import/_file-import.scss */
+input[type="file"].default-file-import {
+  display: none;
+}
+
+/* line 7, ../sass/pics/file-import/_file-import.scss */
+.lt-ie9 .employee-image:hover .overlay-container {
+  display: none;
+}
+/* line 12, ../sass/pics/file-import/_file-import.scss */
+.lt-ie9 input[type="file"].default-file-import {
+  display: block;
+  height: auto;
+  position: static;
+  visibility: visible;
+  width: auto;
+}
+/* line 20, ../sass/pics/file-import/_file-import.scss */
+.lt-ie9 .btn-import {
+  display: none;
 }
