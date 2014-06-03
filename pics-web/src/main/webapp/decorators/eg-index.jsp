@@ -39,7 +39,7 @@
             <s:action name="Menu!mobileMenu" executeResult="true" />
 
         </header>
-        <div id="ng-app" ng-app="PICSApp">
+        <div id="ng-app" ng-app="EmployeeGUARD">
             <div ng-view></div>
         </div>
     </div>

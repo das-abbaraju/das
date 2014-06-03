@@ -32,6 +32,9 @@
         <action name="info" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="employees/{employeeId}/skill/{skillId}" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
     </package>
 
     <!-- Operator -->

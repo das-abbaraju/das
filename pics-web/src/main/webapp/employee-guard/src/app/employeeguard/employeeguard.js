@@ -14,5 +14,8 @@ angular.module('PICS.employeeguard', [
     $routeProvider
         .when('/employee-guard/info', {
             templateUrl: '/employee-guard/src/app/employeeguard/serverinfo/serverinfo.tpl.html'
+        })
+        .when('/employee-guard/employees/:id/skill/:skillId', {
+            templateUrl: '/employee-guard/src/app/employeeguard/common/skill-detail/skill_detail.tpl.html'
         });
 });

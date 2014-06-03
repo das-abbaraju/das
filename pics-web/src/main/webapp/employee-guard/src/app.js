@@ -1,4 +1,4 @@
-angular.module('PICSApp', [
+angular.module('EmployeeGUARD', [
     'PICS.employeeguard'
 ])
 .config(['$httpProvider', function($httpProvider) {
