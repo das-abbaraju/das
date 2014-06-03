@@ -60,8 +60,6 @@ public class EmployeeActionTest extends PicsActionTest {
 	@Mock
 	private UrlBuilder urlBuilder;
 	@Mock
-	private ProjectRoleService projectRoleService;
-	@Mock
 	private AccountService accountService;
 	@Mock
 	private EmployeeEntityService employeeEntityService;
@@ -86,7 +84,6 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
-		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
 		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 		when(accountService.getAccountById(anyInt())).thenReturn(new AccountModel.Builder().name("Test Account").build());
 		when(employeeSkillDataProcess.buildEmployeeSkillData(anyInt(), any(Employee.class), anyMap()))

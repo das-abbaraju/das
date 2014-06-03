@@ -1,9 +1,7 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
@@ -210,5 +208,28 @@ public class AssignmentService {
 
 	public Set<Integer> findAllEmployeeSiteAssignments(final Employee employee) {
 		return employeeEntityService.getAllSiteIdsForEmployeeAssignments(employee);
+	}
+
+	public Set<Integer> findAllEmployeeSiteAssignments(final Collection<Employee> employees) {
+		return employeeEntityService.getAllSiteIdsForEmployeeAssignments(employees);
+	}
+
+	public Map<AccountModel, Set<Employee>> getEmployeesAssignedToProjectRole(final Project project,
+																			  final Role role,
+																			  final Map<Integer, AccountModel> accountModels) {
+		List<ProjectRoleEmployee> projectRoleEmployees = projectRoleEmployeeDAO.findByProjectAndRole(project, role);
+
+		Map<AccountModel, Set<Employee>> contractorEmployees = new HashMap<>();
+		for (ProjectRoleEmployee projectRoleEmployee : projectRoleEmployees) {
+			Employee employee = projectRoleEmployee.getEmployee();
+			AccountModel accountModel = accountModels.get(employee.getAccountId());
+			if (!contractorEmployees.containsKey(accountModel)) {
+				contractorEmployees.put(accountModel, new HashSet<Employee>());
+			}
+
+			contractorEmployees.get(accountModel).add(projectRoleEmployee.getEmployee());
+		}
+
+		return contractorEmployees;
 	}
 }

@@ -14,6 +14,7 @@
     <bean id="AccountSkillProfileDAO" class="com.picsauditing.employeeguard.daos.AccountSkillProfileDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
     <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
+    <bean id="BasicDAO" class="com.picsauditing.employeeguard.daos.BasicDAO"/>
     <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
@@ -36,13 +37,11 @@
     <bean id="AccountSkillProfileService" class="com.picsauditing.employeeguard.services.AccountSkillProfileService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
-    <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
     <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
-    <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
     <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
     <bean id="RoleService" class="com.picsauditing.employeeguard.services.RoleService"/>
     <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
@@ -72,9 +71,6 @@
     <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
     <bean id="ContractorAssignmentProcess" class="com.picsauditing.employeeguard.process.ContractorAssignmentProcess"/>
     <bean id="ProcessHelper" class="com.picsauditing.employeeguard.process.ProcessHelper"/>
-
-    <!-- Skill Engine and related classes -->
-    <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine"/>
 
     <!-- Service Helpers -->
     <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>

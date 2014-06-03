@@ -15,7 +15,6 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import org.junit.Before;
@@ -50,8 +49,6 @@ public class EmployeeActionTest extends PicsActionTest {
 	private EmployeeProfileFormBuilder employeeProfileFormBuilder;
 	@Mock
 	private ProfileEntityService profileEntityService;
-	@Mock
-	private ProjectRoleService projectRoleService;
 
 	@Before
 	public void setUp() throws Exception {

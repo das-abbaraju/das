@@ -32,6 +32,7 @@ import java.util.*;
 
 @Deprecated
 public class EmployeeService {
+
 	private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
 	@Autowired
@@ -175,36 +176,36 @@ public class EmployeeService {
 			employee.setSlug("EID-" + hash.substring(0, 8).toUpperCase());
 		}
 	}
-
-	public void importEmployees(final File file, final int accountId, final String accountName,
-								final int appUserId) throws Exception {
-		EmployeeFileImportService fileImportService = new EmployeeFileImportService();
-		fileImportService.importFile(file);
-
-		List<Employee> processedEmployees = fileImportService.getEntities();
-		for (Employee employee : processedEmployees) {
-			setEmployeeAuditingFields(employee, accountId, appUserId);
-		}
-
-		employeeDAO.save(processedEmployees);
-
-		sendEmployeeEmails(processedEmployees, accountName);
-	}
-
-	private void sendEmployeeEmails(final List<Employee> processedEmployees, final String accountName) {
-		if (CollectionUtils.isEmpty(processedEmployees)) {
-			return;
-		}
-
-		try {
-			for (Employee employee : processedEmployees) {
-				EmailHash hash = emailHashService.createNewHash(employee);
-				emailService.sendEGWelcomeEmail(hash, accountName);
-			}
-		} catch (Exception e) {
-			LOG.error("Error while sending emails to uploaded employees", e);
-		}
-	}
+//
+//	public void importEmployees(final File file, final int accountId, final String accountName,
+//								final int appUserId) throws Exception {
+//		EmployeeFileImportService fileImportService = new EmployeeFileImportService();
+//		fileImportService.importFile(file);
+//
+//		List<Employee> processedEmployees = fileImportService.getEntities();
+//		for (Employee employee : processedEmployees) {
+//			setEmployeeAuditingFields(employee, accountId, appUserId);
+//		}
+//
+//		employeeDAO.save(processedEmployees);
+//
+//		sendEmployeeEmails(processedEmployees, accountName);
+//	}
+//
+//	private void sendEmployeeEmails(final List<Employee> processedEmployees, final String accountName) {
+//		if (CollectionUtils.isEmpty(processedEmployees)) {
+//			return;
+//		}
+//
+//		try {
+//			for (Employee employee : processedEmployees) {
+//				EmailHash hash = emailHashService.createNewHash(employee);
+//				emailService.sendEGWelcomeEmail(hash, accountName);
+//			}
+//		} catch (Exception e) {
+//			LOG.error("Error while sending emails to uploaded employees", e);
+//		}
+//	}
 
 	public byte[] exportEmployees(final int accountId) throws Exception {
 		CSVWriter csvWriter = null;

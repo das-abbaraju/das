@@ -29,8 +29,6 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	@Autowired
 	private PhotoUtil photoUtil;
 	@Autowired
-	private ProjectCompanyDAO projectCompanyDAO;
-	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private SiteAssignmentDAO siteAssignmentDAO;
@@ -56,8 +54,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findByAccount(accountId);
 	}
 
-	public long getNumberOfEmployeesForAccount(final int accountId) {
-		return employeeDAO.findEmployeeCount(accountId);
+	public int getNumberOfEmployeesForAccount(final int accountId) {
+		return (int) employeeDAO.findEmployeeCount(accountId);
 	}
 
 	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
@@ -235,9 +233,12 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
-
 	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Employee employee) {
-		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployee(employee);
+		return getAllSiteIdsForEmployeeAssignments(Arrays.asList(employee));
+	}
+
+	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Collection<Employee> employees) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployees(employees);
 		if (CollectionUtils.isEmpty(siteAssignments)) {
 			return Collections.emptySet();
 		}
@@ -256,6 +257,12 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 	public Set<Employee> getEmployeesAssignedToProject(final int projectId) {
 		return new HashSet<>(employeeDAO.findByProjectId(projectId));
+	}
+
+	public List<Employee> getEmployeesAssignedToSiteRole(final Set<Integer> contractorIds,
+														 final int siteId,
+														 final Role role) {
+		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, role);
 	}
 
 	/* All Search Methods */
@@ -348,7 +355,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 

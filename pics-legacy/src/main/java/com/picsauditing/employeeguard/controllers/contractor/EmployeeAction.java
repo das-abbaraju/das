@@ -8,10 +8,7 @@ import com.picsauditing.access.AuthenticationAware;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.entities.EmailHash;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
@@ -24,6 +21,7 @@ import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeeEmploymentFormValidator;
@@ -53,6 +51,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AssignmentService assignmentService;
+	@Autowired
 	private EmployeeService employeeService;
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
@@ -76,7 +76,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
 	@Autowired
-	private ProjectRoleService projectRoleService;
+	private ProjectEntityService projectEntityService;
 	@Autowired
 	private EmployeeSkillDataProcess employeeSkillDataProcess;
 
@@ -233,18 +233,12 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private void loadEmployeeAssignments(Employee employee) {
-		List<ProjectRole> projectRoles = projectRoleService.getRolesForEmployee(employee);
-		Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
+		Set<Integer> siteAssignments = assignmentService.findAllEmployeeSiteAssignments(employee);
+		Set<Project> projects = projectEntityService.getProjectsForEmployee(employee);
 
-			@Override
-			public Integer getId(ProjectRole projectRole) {
-				return projectRole.getProject().getAccountId();
-			}
-		});
+		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(siteAssignments);
 
-		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
-
-		employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+		employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projects, accountModelMap);
 	}
 
 	private void loadEmployeeGroups() {

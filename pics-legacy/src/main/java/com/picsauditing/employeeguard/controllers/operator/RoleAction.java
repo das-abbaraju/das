@@ -14,6 +14,7 @@ import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
 import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
@@ -35,9 +36,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	@Autowired
 	private AccountService accountService;
 	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private GroupService groupService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private RoleService roleService;
 	@Autowired
@@ -177,7 +176,7 @@ public class RoleAction extends PicsRestActionSupport implements AjaxValidator {
 	}
 
 	private void loadEmployees() {
-		roleEmployees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+		roleEmployees = employeeEntityService.getEmployeesForAccount(permissions.getAccountId());
 	}
 
 	private void loadProject() {
