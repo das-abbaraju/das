@@ -14,14 +14,14 @@
         <div class="form-group">
             <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
             <div class="col-md-4">
-                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}"/>
+                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}" maxlength="70" />
             </div>
         </div>
 
         <div class="form-group">
             <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
             <div class="col-md-4">
-                <tw:textarea textareaName="description" class="form-control" tabindex="2">${skillForm.description}</tw:textarea>
+                <tw:textarea textareaName="description" class="form-control" tabindex="2" maxlength="1470" >${skillForm.description}</tw:textarea>
             </div>
         </div>
 
