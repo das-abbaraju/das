@@ -12,12 +12,6 @@ public class UpdateContractorsTest {
 
     @Test
     public void testGetQbXml() throws Exception {
-       //TODO: Fixme
-    }
-
-
-    @Test
-    public void testGetQbXml() throws Exception {
         //TODO: Fixme
     }
 
