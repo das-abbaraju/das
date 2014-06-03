@@ -72,20 +72,23 @@ public class LoginService {
             throw new LoginException("Could not find account");
         }
 
+        if (profile == null && user == null) {
+            throw new AccountNotFoundException("No PicsOrg or EmployeeGUARD account found.");
+        }
+
 		processReset(key, appUser);
         LoginContext loginContext = new LoginContext();
         loginContext.setAppUser(appUser);
 
         if (profile != null) {
             loginContext.setProfile(profile);
-        } else {
-            verifyUserExists(user, username);
+        }
 
-            if (user != null) {
-                verifyUserStatusForLogin(user);
-                verifyPasswordIsNotExpired(user);
-                loginContext.setUser(user);
-            }
+        if (user != null) {
+            verifyUserExists(user, username);
+            verifyUserStatusForLogin(user);
+            verifyPasswordIsNotExpired(user);
+            loginContext.setUser(user);
         }
 
 		return loginContext;
