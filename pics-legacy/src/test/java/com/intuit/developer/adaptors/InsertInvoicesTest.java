@@ -15,12 +15,6 @@ public class InsertInvoicesTest {
        //TODO:
     }
 
-
-    @Test
-    public void testGetQbXml() throws Exception {
-        //TODO: Fixme
-    }
-
     @Test
     public void testSetBillAddress_ToggleDisabled() throws Exception {
         //TODO: Fixme
