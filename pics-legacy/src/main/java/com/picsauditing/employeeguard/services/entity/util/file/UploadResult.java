@@ -26,6 +26,10 @@ public class UploadResult<E extends BaseEntity> {
 		return errorMessage;
 	}
 
+	public List<E> getImportedEntities() {
+		return importedEntities;
+	}
+
 	public static class Builder<E> {
 
 		private boolean uploadError;

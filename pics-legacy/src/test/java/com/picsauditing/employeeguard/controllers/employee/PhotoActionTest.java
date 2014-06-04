@@ -7,7 +7,6 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
-import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
@@ -46,7 +45,6 @@ public class PhotoActionTest extends PicsActionTest {
 
 		photoAction = new PhotoAction();
 
-		employeeService = EmployeeServiceFactory.getEmployeeService();
 		photoUtil = PhotoUtilFactory.getPhotoUtil();
 		profileDocumentService = ProfileDocumentServiceFactory.getProfileDocumentService();
 

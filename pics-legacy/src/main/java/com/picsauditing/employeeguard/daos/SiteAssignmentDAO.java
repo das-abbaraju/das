@@ -4,15 +4,13 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.SiteAssignment;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 
@@ -99,6 +97,10 @@ public class SiteAssignmentDAO extends AbstractBaseEntityDAO<SiteAssignment> {
 	}
 
 	public List<SiteAssignment> findByEmployees(final Collection<Employee> employees) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return Collections.emptyList();
+		}
+
 		TypedQuery<SiteAssignment> query = em.createQuery("FROM SiteAssignment sa " +
 				"WHERE sa.employee IN (:employees)", SiteAssignment.class);
 

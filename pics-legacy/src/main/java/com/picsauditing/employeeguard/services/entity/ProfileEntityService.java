@@ -62,10 +62,6 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 				});
 	}
 
-	public Set<Project> findProjectsForProfile(final Profile profile) {
-		return new HashSet<>(projectDAO.findByProfile(profile));
-	}
-
 	/* All Save Methods */
 
 	@Override

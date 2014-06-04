@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.entity.*;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

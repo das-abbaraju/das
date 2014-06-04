@@ -11,7 +11,7 @@ import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.process.ProcessHelper;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.viewmodel.operator.SiteAssignmentModel;
 import org.joda.time.DateTime;

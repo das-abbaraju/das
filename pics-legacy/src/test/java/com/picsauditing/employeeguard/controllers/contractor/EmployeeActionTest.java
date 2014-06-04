@@ -16,7 +16,7 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.process.EmployeeSkillData;
 import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.factory.EmailHashServiceFactory;
@@ -34,7 +34,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -102,7 +101,6 @@ public class EmployeeActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeAction, "groupService", groupService);
 		Whitebox.setInternalState(employeeAction, "photoUtil", photoUtil);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
-		Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
 		Whitebox.setInternalState(employeeAction, "urlBuilder", urlBuilder);
 		Whitebox.setInternalState(employeeAction, "employeeSkillDataProcess", employeeSkillDataProcess);
 	}

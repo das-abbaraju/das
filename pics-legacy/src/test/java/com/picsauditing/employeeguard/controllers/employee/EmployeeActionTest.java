@@ -64,14 +64,12 @@ public class EmployeeActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(employeeAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
-		Whitebox.setInternalState(employeeAction, "projectRoleService", projectRoleService);
 
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileFormBuilder", employeeProfileFormBuilder);
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileEditFormBuilder", new EmployeeProfileEditFormBuilder());
 
 		when(employeeProfileFormBuilder.build(any(Profile.class))).thenReturn(employeeProfileForm);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
-		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
 		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
 		when(profileEntityService.find(anyInt())).thenReturn(new Profile());
 		when(profileEntityService.findByAppUserId(anyInt())).thenReturn(new Profile());

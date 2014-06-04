@@ -1,9 +1,8 @@
-package com.picsauditing.employeeguard.services.entity;
+package com.picsauditing.employeeguard.services.entity.employee;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
@@ -12,20 +11,31 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.entity.EntityService;
+import com.picsauditing.employeeguard.services.entity.Searchable;
+import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class EmployeeEntityService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
+	private static final Logger LOG = LoggerFactory.getLogger(EmployeeEntityService.class);
+
 	@Autowired
 	private EmployeeDAO employeeDAO;
+	@Autowired
+	private EmployeeImportExportProcess employeeImportExportProcess;
 	@Autowired
 	private PhotoUtil photoUtil;
 	@Autowired
@@ -363,7 +373,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
 		} else {
-			// throw new IllegalArgumentException("Invalid file format");
+			throw new IllegalArgumentException("Invalid file format");
 		}
 
 		return find(id, accountId);
@@ -373,5 +383,20 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		employee.setProfile(profile);
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
+	}
+
+	public byte[] employeeImportTemplate() {
+		return new EmployeeImportTemplate().template();
+	}
+
+	public UploadResult<Employee> importEmployees(final int contractorId,
+												  final File file) {
+		return employeeImportExportProcess.importEmployees(contractorId, file);
+	}
+
+	public byte[] exportEmployees(final int contractorId) throws IOException {
+		List<Employee> contractorEmployees = getEmployeesForAccount(contractorId);
+
+		return employeeImportExportProcess.exportEmployees(contractorEmployees);
 	}
 }

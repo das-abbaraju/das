@@ -136,7 +136,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private void loadProfileAssignments(Profile profile) {
-		Set<Integer> siteAssignments = assignmentService.findAllEmployeeSiteAssignments(profile);
+		Set<Integer> siteAssignments = assignmentService.findAllEmployeeSiteAssignments(profile.getEmployees());
 		Set<Project> projects = projectEntityService.getProjectsForProfile(profile);
 
 		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(siteAssignments);

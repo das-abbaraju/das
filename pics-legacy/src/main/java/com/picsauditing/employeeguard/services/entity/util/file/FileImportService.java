@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.services.entity.util.file;
 
 import com.picsauditing.employeeguard.entities.BaseEntity;
-import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,28 +8,48 @@ import java.util.List;
 
 public class FileImportService<E extends BaseEntity> {
 
-	public UploadResult importFile(final FileImportCommand<E> fileImportCommand) throws FileImportReaderException {
+	public UploadResult importFile(final FileImportCommand<E> fileImportCommand) {
 		FileImportReader fileImportReader = fileImportCommand.getFileImportReader();
 		File file = fileImportCommand.getFile();
 
-		if (file == null || !fileImportReader.isValidFileType(file)) {
+		if (!validateFileType(fileImportReader, file)) {
 			return new UploadResult.Builder<E>().uploadError(true).errorMessage("Invalid file").build();
 		}
 
+		return processFile(fileImportCommand, fileImportReader);
+	}
+
+	private UploadResult processFile(final FileImportCommand<E> fileImportCommand,
+									 final FileImportReader fileImportReader) {
+		List<E> importedEntities;
+		try {
+			importedEntities = parseEntitiesInFile(fileImportReader, fileImportCommand.getFileRowMapper());
+		} catch (Exception e) {
+			return new UploadResult.Builder<E>().uploadError(true).errorMessage(e.getMessage()).build();
+		}
+
+		return new UploadResult.Builder<E>().uploadError(false).importedEntities(importedEntities).build();
+	}
+
+	private boolean validateFileType(final FileImportReader fileImportReader, final File file) {
+		if (file == null || !fileImportReader.isValidFileType(file)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private List<E> parseEntitiesInFile(final FileImportReader fileImportReader, final FileRowMapper<E> fileRowMapper)
+			throws FileImportReaderException {
+
 		List<E> importedEntities = new ArrayList<>();
 
-		FileRowMapper<E> fileRowMapper = fileImportCommand.getFileRowMapper();
-		String[] firstLineOfFile = fileImportReader.readLine();
-
-		if (!fileRowMapper.isValid(firstLineOfFile)) {
-			return new UploadResult.Builder<E>().uploadError(true).errorMessage("Invalid file content").build();
+		String[] lineOfFile = fileImportReader.readLine();
+		if (!fileRowMapper.isHeader(lineOfFile) && !fileRowMapper.isValid(lineOfFile)) {
+			throw new FileImportReaderException("First row of the file is neither a header nor valid data format");
 		}
 
-		if (!fileRowMapper.isHeader(firstLineOfFile)) {
-			importedEntities.add(fileRowMapper.mapToEntity(firstLineOfFile));
-		}
-
-		String[] lineOfFile = null;
+		importedEntities.add(fileRowMapper.mapToEntity(lineOfFile));
 		try {
 			while ((lineOfFile = fileImportReader.readLine()) != null) {
 				if (fileRowMapper.isEmptyRow(lineOfFile)) {
@@ -38,7 +57,7 @@ public class FileImportService<E extends BaseEntity> {
 				}
 
 				if (!fileRowMapper.isValid(lineOfFile)) {
-					return new UploadResult.Builder<E>().uploadError(true).errorMessage("Invalid file content").build();
+					throw new FileImportReaderException("Row in file is in invalid format");
 				}
 
 				importedEntities.add(fileRowMapper.mapToEntity(lineOfFile));
@@ -47,9 +66,7 @@ public class FileImportService<E extends BaseEntity> {
 			fileImportReader.close();
 		}
 
-		EntityHelper.setCreateAuditFields(importedEntities, fileImportCommand.getEntityAuditInfo());
-
-		return new UploadResult.Builder<E>().uploadError(false).importedEntities(importedEntities).build();
+		return importedEntities;
 	}
 
 }

@@ -12,7 +12,6 @@ import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.jpa.entities.Account;
@@ -44,7 +43,6 @@ public class GroupActionTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 
 		groupAction = new GroupAction();
-		employeeService = EmployeeServiceFactory.getEmployeeService();
 		groupService = GroupServiceFactory.getGroupService();
 		skillService = SkillServiceFactory.getSkillService();
 

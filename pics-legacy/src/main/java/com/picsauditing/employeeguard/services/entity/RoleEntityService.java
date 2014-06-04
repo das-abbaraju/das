@@ -301,6 +301,23 @@ public class RoleEntityService implements EntityService<Role, Integer>, Searchab
 				});
 	}
 
+	public Map<Employee, Set<Role>> getEmployeeRolesForProject(final Project project) {
+		return PicsCollectionUtil.convertToMapOfSets(projectRoleEmployeeDAO.findByProject(project),
+
+				new PicsCollectionUtil.EntityKeyValueConvertable<ProjectRoleEmployee, Employee, Role>() {
+
+					@Override
+					public Employee getKey(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getEmployee();
+					}
+
+					@Override
+					public Role getValue(ProjectRoleEmployee projectRoleEmployee) {
+						return projectRoleEmployee.getProjectRole().getRole();
+					}
+				});
+	}
+
 	/* All Search Methods */
 
 	@Override
