@@ -1,8 +1,8 @@
 --liquibase formatted sql
 
---changeset cfranks:5
+--changeset cfranks:5 runOnChange:true endDelimiter:#
 DROP FUNCTION IF EXISTS get_parent_company;
-
+#
 CREATE FUNCTION get_parent_company( account_parentID INT )
   RETURNS INT
   READS SQL DATA
@@ -25,4 +25,4 @@ BEGIN
 
   RETURN account_parentID;
 END;
-
+#
