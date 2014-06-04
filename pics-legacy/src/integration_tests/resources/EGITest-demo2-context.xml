@@ -112,5 +112,9 @@
   <bean id="OperatorAccountDAO" class="com.picsauditing.dao.OperatorAccountDAO"/>
   <bean id="EmailSender" class="com.picsauditing.mail.EmailSender" scope="prototype"/>
   <bean id="EmailQueueDAO" class="com.picsauditing.dao.EmailQueueDAO"/>
+  <bean id="SpringUtils" class="com.picsauditing.util.SpringUtils"/>
+
+  <!-- Enable AOP -->
+  <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>
