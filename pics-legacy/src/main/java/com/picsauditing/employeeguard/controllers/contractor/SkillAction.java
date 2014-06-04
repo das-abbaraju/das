@@ -147,19 +147,6 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		skill = skillService.getSkill(id, permissions.getAccountId());
 	}
 
-/*
-	private void loadThumbnail(){
-		if(skill!=null){
-			try {
-				profileDocumentService.getDocumentThumbnail(1234, skill.getId());
-			} catch (DocumentViewAccessDeniedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-*/
-
-
 	private void loadGroups() {
 		skillGroups = groupService.getGroupsForAccount(permissions.getAccountId());
 	}
