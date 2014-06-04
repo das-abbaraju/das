@@ -11,7 +11,7 @@
     <div class="form-group">
         <tw:label labelName="employeeId" class="col-md-3 control-label">Employee ID</tw:label>
         <div class="col-md-4">
-            <tw:input inputName="employeeId" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.slug}" maxlength="100" />
+            <tw:input inputName="employeeId" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.slug}" maxlength="70" />
         </div>
     </div>
 

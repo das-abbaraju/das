@@ -32,7 +32,7 @@
     <div class="form-group ${email_error_class}">
         <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="email" class="form-control" type="text" tabindex="3" value="${employee.email}" maxlength="100" />
+            <tw:input inputName="email" class="form-control" type="text" tabindex="3" value="${employee.email}" maxlength="70" />
             <tw:error errorName="email"/>
         </div>
     </div>

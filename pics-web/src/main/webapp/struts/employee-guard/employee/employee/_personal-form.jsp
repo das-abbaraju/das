@@ -28,7 +28,7 @@
     <div class="form-group">
         <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="email" class="form-control" type="text" value="${personalInfo.email}" maxlength="100" />
+            <tw:input inputName="email" class="form-control" type="text" value="${personalInfo.email}" maxlength="70" />
             <tw:error errorName="email" />
         </div>
     </div>
