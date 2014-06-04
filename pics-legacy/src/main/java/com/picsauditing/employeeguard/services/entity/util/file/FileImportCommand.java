@@ -7,17 +7,23 @@ import java.io.File;
 public class FileImportCommand<E extends BaseEntity> {
 
 	private final File file;
+	private final String filename;
 	private final FileRowMapper<E> fileRowMapper;
 	private final FileImportReader fileImportReader;
 
 	public FileImportCommand(Builder<E> builder) {
 		this.file = builder.file;
+		this.filename = builder.filename;
 		this.fileRowMapper = builder.fileRowMapper;
 		this.fileImportReader = builder.fileImportReader;
 	}
 
 	public File getFile() {
 		return file;
+	}
+
+	public String getFilename() {
+		return filename;
 	}
 
 	public FileRowMapper<E> getFileRowMapper() {
@@ -31,11 +37,17 @@ public class FileImportCommand<E extends BaseEntity> {
 	public static class Builder<E extends BaseEntity> {
 
 		private File file;
+		private String filename;
 		private FileRowMapper<E> fileRowMapper;
 		private FileImportReader fileImportReader;
 
 		public Builder file(File file) {
 			this.file = file;
+			return this;
+		}
+
+		public Builder filename(String filename) {
+			this.filename = filename;
 			return this;
 		}
 

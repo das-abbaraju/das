@@ -295,6 +295,16 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public void save(final Collection<Employee> employees, final EntityAuditInfo entityAuditInfo) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return;
+		}
+
+		for (Employee employee : employees) {
+			if (Strings.isEmpty(employee.getSlug())) {
+				employee.setSlug(generateSlug(employee));
+			}
+		}
+
 		EntityHelper.setCreateAuditFields(employees, entityAuditInfo);
 		employeeDAO.save(employees);
 	}
@@ -390,8 +400,9 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public UploadResult<Employee> importEmployees(final int contractorId,
-												  final File file) {
-		return employeeImportExportProcess.importEmployees(contractorId, file);
+												  final File file,
+												  final String uploadFileName) {
+		return employeeImportExportProcess.importEmployees(contractorId, file, uploadFileName);
 	}
 
 	public byte[] exportEmployees(final int contractorId) throws IOException {

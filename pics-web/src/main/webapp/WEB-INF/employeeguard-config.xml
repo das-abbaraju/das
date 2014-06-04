@@ -14,7 +14,6 @@
     <bean id="AccountSkillProfileDAO" class="com.picsauditing.employeeguard.daos.AccountSkillProfileDAO"/>
     <bean id="AccountSkillGroupDAO" class="com.picsauditing.employeeguard.daos.AccountSkillGroupDAO"/>
     <bean id="AccountSkillRoleDAO" class="com.picsauditing.employeeguard.daos.AccountSkillRoleDAO"/>
-    <bean id="BasicDAO" class="com.picsauditing.employeeguard.daos.BasicDAO"/>
     <bean id="DuplicateEntityChecker" class="com.picsauditing.employeeguard.daos.DuplicateEntityChecker"/>
     <bean id="EmployeeDAO" class="com.picsauditing.employeeguard.daos.EmployeeDAO"/>
     <bean id="ProfileDAO" class="com.picsauditing.employeeguard.daos.ProfileDAO"/>
@@ -46,13 +45,16 @@
     <bean id="RoleService" class="com.picsauditing.employeeguard.services.RoleService"/>
     <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+    <bean id="EmployeeImportExportProcess" class="com.picsauditing.employeeguard.services.entity.employee.EmployeeImportExportProcess"/>
+    <bean id="FileImportService" class="com.picsauditing.employeeguard.services.entity.util.file.FileImportService"/>
 
     <!-- External Services -->
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
     <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.AccountFilter"/>
 
     <!-- Entity Services -->
-    <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService"/>
+    <bean id="EmployeeEntityService"
+          class="com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService"/>
     <bean id="GroupEntityService" class="com.picsauditing.employeeguard.services.entity.GroupEntityService"/>
     <bean id="ProfileEntityService" class="com.picsauditing.employeeguard.services.entity.ProfileEntityService"/>
     <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>

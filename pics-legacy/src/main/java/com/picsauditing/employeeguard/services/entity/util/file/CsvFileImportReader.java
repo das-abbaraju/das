@@ -10,8 +10,8 @@ public class CsvFileImportReader implements FileImportReader {
 	private CSVReader csvReader;
 
 	@Override
-	public boolean isValidFileType(File file) {
-		return file.getName().toLowerCase().endsWith("csv");
+	public boolean isValidFileType(String filename) {
+		return filename.toLowerCase().endsWith("csv");
 	}
 
 	@Override

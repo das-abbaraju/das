@@ -38,6 +38,7 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 	private EmailHashService emailHashService;
 
 	private File upload;
+	private String uploadFileName;
 
 	public String importExport() {
 		return "import-export";
@@ -46,7 +47,8 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 	public String upload() throws IOException {
 		AccountModel contractorAccount = accountService.getAccountById(permissions.getAccountId());
 
-		UploadResult<Employee> uploadResult = employeeEntityService.importEmployees(contractorAccount.getId(), upload);
+		UploadResult<Employee> uploadResult = employeeEntityService.importEmployees(contractorAccount.getId(), upload,
+				uploadFileName);
 		if (uploadResult.isUploadError()) {
 			addActionError(uploadResult.getErrorMessage());
 			return redirectToEmployeeImportPage();
@@ -119,5 +121,13 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 
 	public void setUpload(File upload) {
 		this.upload = upload;
+	}
+
+	public String getUploadFileName() {
+		return uploadFileName;
+	}
+
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
 	}
 }

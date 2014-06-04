@@ -22,9 +22,11 @@ class EmployeeImportExportProcess {
 	private FileImportService<Employee> fileImportService;
 
 	public UploadResult<Employee> importEmployees(final int contractorId,
-												  final File file) {
+												  final File file,
+												  final String uploadFileName) {
 		FileImportCommand<Employee> fileImportCommand = new FileImportCommand.Builder<Employee>()
 				.file(file)
+				.filename(uploadFileName)
 				.fileImportReader(new CsvFileImportReader())
 				.fileRowMapper(new EmployeeFileRowMapper(contractorId))
 				.build();

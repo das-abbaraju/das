@@ -4,7 +4,7 @@ import java.io.File;
 
 public interface FileImportReader {
 
-	boolean isValidFileType(File file);
+	boolean isValidFileType(String filename);
 
 	void open(File file) throws FileImportReaderException;
 
