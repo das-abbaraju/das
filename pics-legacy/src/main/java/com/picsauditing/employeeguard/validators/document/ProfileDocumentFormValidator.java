@@ -27,7 +27,7 @@ public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValid
 		}
 
 		String errorString=ProfileDocumentValidationUtil.validateExpirationDate(documentForm);
-		if (!errorString.equals("")) {
+		if (Strings.isNotEmpty(errorString)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "expireYear"), errorString);
 		}
 	}

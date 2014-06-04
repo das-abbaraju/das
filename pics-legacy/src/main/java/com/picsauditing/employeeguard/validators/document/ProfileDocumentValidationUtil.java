@@ -29,7 +29,7 @@ public class ProfileDocumentValidationUtil {
 	}
 
 	public static String validateExpirationDate(DocumentForm documentForm) {
-		String error="";
+		String error=Strings.EMPTY_STRING;
 
 		int year = documentForm.getExpireYear();
 		int month = documentForm.getExpireMonth();

@@ -31,7 +31,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	// Class under test
 	private SiteAssignmentAction siteAssignmentAction;
 
-
 	@Mock
 	private AccountService accountService;
 	@Mock

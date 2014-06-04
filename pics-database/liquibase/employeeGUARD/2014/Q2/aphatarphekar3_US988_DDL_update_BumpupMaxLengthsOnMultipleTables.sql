@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset aphatarphekar:1
+--changeset aphatarphekar:3
 --preConditions onFail MARK_RAN
 
 ALTER TABLE `account_skill`
@@ -19,6 +19,7 @@ ALTER TABLE `account_employee`
 CHANGE COLUMN `firstName` `firstName` VARCHAR(100) NOT NULL COMMENT 'Employee first name' ,
 CHANGE COLUMN `lastName` `lastName` VARCHAR(100) NOT NULL COMMENT 'Employee last name' ,
 CHANGE COLUMN `positionName` `positionName` VARCHAR(100) NULL COMMENT 'The position job title' ,
+CHANGE COLUMN `slug` `slug` VARCHAR(100) NULL COMMENT 'Unique employee code' ,
 CHANGE COLUMN `email` `email` VARCHAR(100) NOT NULL COMMENT 'The employee email address' ;
 
 ALTER TABLE `profiledocument`

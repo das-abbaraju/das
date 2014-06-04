@@ -75,10 +75,7 @@ public class AccountSkillProfileServiceITest {
 	@PersistenceContext
 	private EntityManager em;
 
-	//@Transactional(propagation = Propagation.NESTED)
 	public void deleteAccountSkillProfile(int id){
-		//EntityManager em=SpringUtils.getBean("entityManagerFactory");
-
 		AccountSkillProfile accountSkillProfile=em.find(AccountSkillProfile.class, id);
 		em.merge(accountSkillProfile);
 		em.remove(accountSkillProfile);
@@ -95,11 +92,7 @@ public class AccountSkillProfileServiceITest {
 		if(accountSkillProfile!=null) {
 			accountSkillProfile=accountSkillProfileDAO.find(accountSkillProfile.getId());
 			accountSkillProfileDAO.delete(accountSkillProfile);
-
-			//deleteAccountSkillProfile(accountSkillProfile.getId());
 		}
-
-		//deleteAccountSkillProfile(679);
 
 		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Completed);
 		SkillDocumentForm skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, null);
