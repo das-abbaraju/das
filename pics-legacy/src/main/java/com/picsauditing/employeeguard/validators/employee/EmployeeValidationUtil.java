@@ -8,6 +8,9 @@ import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class EmployeeValidationUtil {
 
 	public enum EmployeeField {
@@ -39,6 +42,18 @@ public class EmployeeValidationUtil {
 
 	private static boolean validateEmail(String email) {
 		if (Strings.isEmpty(email)) {
+			return false;
+		}
+
+		boolean emailAddrSyntaxIsValid;
+		try {
+			(new InternetAddress(email)).validate();
+			emailAddrSyntaxIsValid= true;
+		} catch (AddressException e) {
+			emailAddrSyntaxIsValid=false;
+		}
+
+		if(emailAddrSyntaxIsValid==false){
 			return false;
 		}
 
