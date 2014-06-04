@@ -1,14 +1,9 @@
 package com.picsauditing.PICS;
 
-import java.math.BigDecimal;
+import com.picsauditing.jpa.entities.*;
 
-import com.picsauditing.jpa.entities.Invoice;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.jpa.entities.Refund;
-import com.picsauditing.jpa.entities.User;
+import java.math.BigDecimal;
+import java.util.Date;
 
 // TODO: This should be part of a TransactionVisitor
 public class PaymentProcessor {
@@ -25,6 +20,10 @@ public class PaymentProcessor {
 		payment.updateAmountApplied();
 		invoice.getPayments().add(pa);
 		invoice.updateAmountApplied();
+
+        if (invoice.getStatus() == TransactionStatus.Paid) {
+            invoice.setPaidDate(new Date());
+        }
 
         return pa;
 	}
