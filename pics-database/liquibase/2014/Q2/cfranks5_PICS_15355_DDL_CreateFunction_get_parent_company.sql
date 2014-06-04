@@ -2,7 +2,7 @@
 
 --changeset cfranks:5
 DROP FUNCTION IF EXISTS get_parent_company;
-DELIMITER $$
+
 CREATE FUNCTION get_parent_company( account_parentID INT )
   RETURNS INT
   READS SQL DATA
@@ -25,5 +25,4 @@ BEGIN
 
   RETURN account_parentID;
 END;
-$$
-DELIMITER ;
+
