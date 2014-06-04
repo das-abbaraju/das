@@ -43,13 +43,13 @@
 
             <div class="form-group">
                 <tw:label labelName="email">Email</tw:label>
-                <tw:input class="form-control" inputName="email" type="email" tabindex="6" value="${profile.email}" maxlength="100" />
+                <tw:input class="form-control" inputName="email" type="email" tabindex="6" value="${profile.email}" maxlength="70" />
                 <tw:error errorName="email"/>
             </div>
 
             <div class="form-group">
                 <tw:label labelName="emailRetype">Re-Enter Email</tw:label>
-                <tw:input class="form-control" inputName="emailRetype" type="email" tabindex="7" maxlength="100" />
+                <tw:input class="form-control" inputName="emailRetype" type="email" tabindex="7" maxlength="70" />
                 <tw:error errorName="emailRetype" />
             </div>
 

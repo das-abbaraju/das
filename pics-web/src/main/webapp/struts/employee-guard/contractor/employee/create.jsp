@@ -41,7 +41,7 @@
                 <div class="form-group ${email_error_class}">
                     <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="email" class="form-control" tabindex="3" type="text" maxlength="100" />
+                        <tw:input inputName="email" class="form-control" tabindex="3" type="text" maxlength="70" />
                         <tw:error errorName="email"/>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                 <div class="form-group">
                     <tw:label labelName="employeeId" class="col-md-3 control-label">Employee ID</tw:label>
                     <div class="col-md-4">
-                        <tw:input inputName="employeeId" class="form-control" tabindex="5" type="text" maxlength="100" />
+                        <tw:input inputName="employeeId" class="form-control" tabindex="5" type="text" maxlength="70" />
                     </div>
                 </div>
 
