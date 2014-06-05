@@ -13,8 +13,6 @@ import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -40,6 +38,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 	public static final int CONTRACTOR_ID = 788;
 	public static final String FILE_NAME = "testfile.csv";
 	public static final String ERROR_OCCURRED_DURING_UPLOAD = "Error occurred during upload";
+	public static final int APP_USER_ID = 34123;
 
 	// Class under test
 	private EmployeeImportExportAction employeeImportExportAction;
@@ -76,8 +75,8 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeImportExportAction, "emailService", emailService);
 		Whitebox.setInternalState(employeeImportExportAction, "emailHashService", emailHashService);
 
-		when(permissions.getAccountId()).thenReturn(Account.PicsID);
-		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
+		when(permissions.getAccountId()).thenReturn(CONTRACTOR_ID);
+		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 
 		when(accountService.getAccountById(anyInt()))
 				.thenReturn(new AccountModel.Builder()
@@ -106,6 +105,22 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 	private void verifyTestUpload_FailedUpload(String result) {
 		assertEquals(PicsActionSupport.REDIRECT, result);
 		assertEquals(ERROR_OCCURRED_DURING_UPLOAD, employeeImportExportAction.getActionErrors().iterator().next());
+	}
+
+	@Test
+	public void testUpload_FailedUpload_UnexpectedException() throws IOException {
+		when(employeeEntityService.importEmployees(anyInt(), any(File.class), anyString()))
+				.thenThrow(new RuntimeException());
+
+		String result = employeeImportExportAction.upload();
+
+		verifyTestUpload_FailedUpload_UnexpectedException(result);
+	}
+
+	private void verifyTestUpload_FailedUpload_UnexpectedException(final String result) {
+		assertEquals(PicsActionSupport.REDIRECT, result);
+		assertEquals("An error occurred while importing employees.",
+				employeeImportExportAction.getActionErrors().iterator().next());
 	}
 
 	@Test
@@ -145,7 +160,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 	@Test
 	public void testDownload_Successful() throws IOException {
-		when(employeeEntityService.exportEmployees(anyInt())).thenReturn(new byte[] { 1 });
+		when(employeeEntityService.exportEmployees(anyInt())).thenReturn(new byte[]{1});
 
 		String actionResult = employeeImportExportAction.download();
 
@@ -165,7 +180,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 	@Test
 	public void testTemplate_Successful() throws Exception {
-		when(employeeEntityService.employeeImportTemplate()).thenReturn(new byte[] { 1 });
+		when(employeeEntityService.employeeImportTemplate()).thenReturn(new byte[]{1});
 
 		String actionResult = employeeImportExportAction.template();
 

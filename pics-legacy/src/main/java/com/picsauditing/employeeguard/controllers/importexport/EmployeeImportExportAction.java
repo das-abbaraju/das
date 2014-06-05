@@ -45,21 +45,37 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 	}
 
 	public String upload() throws IOException {
-		AccountModel contractorAccount = accountService.getAccountById(permissions.getAccountId());
+		try {
+			UploadResult<Employee> uploadResult = uploadEmployeesAndSendWelcomeEmails();
+			if (uploadResult.isUploadError()) {
+				addActionError(uploadResult.getErrorMessage());
+			} else {
+				addActionMessage("Successfully uploaded employees");
+			}
 
-		UploadResult<Employee> uploadResult = employeeEntityService.importEmployees(contractorAccount.getId(), upload,
-				uploadFileName);
-		if (uploadResult.isUploadError()) {
-			addActionError(uploadResult.getErrorMessage());
-			return redirectToEmployeeImportPage();
+		} catch (Exception e) {
+			LOG.error("Unexpected exception while uploading employees", e);
+			addActionError("An error occurred while importing employees.");
 		}
 
-		employeeEntityService.save(uploadResult.getImportedEntities(),
-				new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today()).build());
-
-		sendEmployeeEmails(uploadResult.getImportedEntities(), contractorAccount.getName());
-
 		return redirectToEmployeeImportPage();
+	}
+
+	private UploadResult<Employee> uploadEmployeesAndSendWelcomeEmails() throws IOException {
+		int contractorId = permissions.getAccountId();
+		UploadResult<Employee> uploadResult = employeeEntityService.importEmployees(contractorId,
+				upload, uploadFileName);
+
+		if (!uploadResult.isUploadError()) {
+			employeeEntityService.save(uploadResult.getImportedEntities(),
+					new EntityAuditInfo.Builder().appUserId(permissions.getAppUserID()).timestamp(DateBean.today())
+							.build());
+
+			AccountModel contractorAccount = accountService.getAccountById(contractorId);
+			sendEmployeeEmails(uploadResult.getImportedEntities(), contractorAccount.getName());
+		}
+
+		return uploadResult;
 	}
 
 	private String redirectToEmployeeImportPage() throws IOException {
