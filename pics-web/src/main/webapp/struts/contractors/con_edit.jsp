@@ -42,7 +42,7 @@
     </div>
 </s:if>
 
-<s:form id="save" method="POST">
+<s:form action="" id="save" method="POST"  enctype="multipart/form-data">
 <br clear="all"/>
 
 <s:hidden name="id"/>
