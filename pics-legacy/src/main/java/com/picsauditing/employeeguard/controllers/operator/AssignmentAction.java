@@ -4,7 +4,10 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.*;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.RoleEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.factory.RoleFactory;
 import com.picsauditing.employeeguard.viewmodel.factory.SkillFactory;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
@@ -23,18 +26,20 @@ public class AssignmentAction extends PicsRestActionSupport {
 
 	@Autowired
 	private AccountService accountService;
-
-	// Old services
 	@Autowired
-	private EmployeeService employeeService;
+	private AssignmentService assignmentService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private ProjectService projectService;
 	@Autowired
-	private ProjectRoleService projectRoleService;
-	@Autowired
 	private RoleService roleService;
 	@Autowired
+	private RoleEntityService roleEntityService;
+	@Autowired
 	private SkillService skillService;
+	@Autowired
+	private SkillEntityService skillEntityService;
 
 	private OperatorProjectAssignment operatorProjectAssignment;
 	private OperatorProjectRoleAssignment operatorProjectRoleAssignment;
@@ -59,10 +64,13 @@ public class AssignmentAction extends PicsRestActionSupport {
 	}
 
 	private List<EmployeeProjectAssignment> getEmployeeProjectAssignments(final Project project) {
+		Map<Employee, Set<Role>> projectRoles = roleEntityService.getEmployeeRolesForProject(project);
+
 		return ViewModelFactory.getEmployeeProjectAssignmentFactory()
 				.create(getContractorEmployeeMap(project),
-						projectRoleService.getEmployeeProjectRoleAssignment(project),
-						projectRoleService.getRolesAndSkillsForProject(project),
+						projectRoles,
+						skillEntityService.getSkillsForRoles(PicsCollectionUtil
+								.mergeCollectionOfCollections(projectRoles.values())),
 						getAccountSkillsFromProjectSkills(project.getSkills()),
 						skillService.getRequiredSkillsForSite(project.getAccountId()),
 						skillService.getParentSiteRequiredSkills(project.getAccountId()));
@@ -109,7 +117,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 																					 final List<AccountSkill> jobRoleSkills) {
 		Map<Integer, AccountModel> contractors = accountService
 				.getIdToAccountModelMap(projectService.getContractorIdsForProject(project));
-		Map<AccountModel, Set<Employee>> contractorEmployeeMap = projectRoleService
+		Map<AccountModel, Set<Employee>> contractorEmployeeMap = assignmentService
 				.getEmployeesAssignedToProjectRole(project, role, contractors);
 
 
@@ -134,7 +142,7 @@ public class AssignmentAction extends PicsRestActionSupport {
 			}
 
 			contractorEmployeeMap.get(accountModel)
-					.addAll(employeeService.getEmployeesForAccount(accountModel.getId()));
+					.addAll(employeeEntityService.getEmployeesForAccount(accountModel.getId()));
 		}
 
 		return contractorEmployeeMap;

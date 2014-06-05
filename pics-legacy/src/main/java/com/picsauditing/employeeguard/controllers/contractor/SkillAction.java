@@ -9,10 +9,11 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.IntervalType;
-import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
-import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.GroupService;
+import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.validators.skill.SkillFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.SkillModel;
@@ -34,7 +35,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 
 	/* Service + Validator */
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -59,9 +60,6 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 	/* Other */
 	private UrlBuilder urlBuilder;
 
-	@Autowired
-	private ProfileDocumentService profileDocumentService;
-
 	/* Pages */
 
 	public String index() {
@@ -74,7 +72,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 		}
 
 		skillModels = ViewModelFactory.getSkillModelFactory().create(skills,
-				(int) employeeService.getNumberOfEmployeesForAccount(accountId));
+				employeeEntityService.getNumberOfEmployeesForAccount(accountId));
 
 		Collections.sort(skillModels);
 
@@ -83,6 +81,7 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 
 	public String show() {
 		loadSkill();
+
 		return SHOW;
 	}
 

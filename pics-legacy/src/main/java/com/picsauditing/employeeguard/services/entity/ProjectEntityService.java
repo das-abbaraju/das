@@ -150,6 +150,10 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		return projectEmployeeRoles;
 	}
 
+	public Set<Project> getProjectsForProfile(final Profile profile) {
+		return new HashSet<>(projectDAO.findByProfile(profile));
+	}
+
 	/* All search related methods */
 
 	@Override

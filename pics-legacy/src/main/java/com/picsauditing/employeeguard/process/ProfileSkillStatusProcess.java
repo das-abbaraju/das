@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.process;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
@@ -23,6 +24,8 @@ public class ProfileSkillStatusProcess {
 	private AccountService accountService;
 	@Autowired
 	private ProfileEntityService profileEntityService;
+	@Autowired
+	private ProjectEntityService projectEntityService;
 	@Autowired
 	private RoleEntityService roleEntityService;
 	@Autowired
@@ -294,7 +297,7 @@ public class ProfileSkillStatusProcess {
 	}
 
 	private Set<Project> findProjects(final Profile profile) {
-		return profileEntityService.findProjectsForProfile(profile);
+		return projectEntityService.getProjectsForProfile(profile);
 	}
 
 	private Set<Role> findRoles(final Profile profile) {

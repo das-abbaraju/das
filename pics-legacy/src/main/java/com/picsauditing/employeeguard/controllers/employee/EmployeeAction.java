@@ -6,18 +6,18 @@ import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProjectRoleService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
-import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
 import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
@@ -42,6 +42,8 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private AccountService accountService;
 	@Autowired
+	private AssignmentService assignmentService;
+	@Autowired
 	private ProfileEntityService profileEntityService;
 	@Autowired
 	private ProfileDocumentService profileDocumentService;
@@ -54,7 +56,7 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	@Autowired
 	private EmployeePhotoFormValidator employeePhotoFormValidator;
 	@Autowired
-	private ProjectRoleService projectRoleService;
+	private ProjectEntityService projectEntityService;
 
 	@FormBinding("employee_profile_edit")
 	private EmployeeProfileEditForm personalInfo;
@@ -134,18 +136,12 @@ public class EmployeeAction extends PicsRestActionSupport implements AjaxValidat
 	}
 
 	private void loadProfileAssignments(Profile profile) {
-		List<ProjectRole> projectRoles = projectRoleService.getRolesForProfile(profile);
-		Set<Integer> accountIds = PicsCollectionUtil.getIdsFromCollection(projectRoles, new PicsCollectionUtil.Identitifable<ProjectRole, Integer>() {
+		Set<Integer> siteAssignments = assignmentService.findAllEmployeeSiteAssignments(profile.getEmployees());
+		Set<Project> projects = projectEntityService.getProjectsForProfile(profile);
 
-			@Override
-			public Integer getId(ProjectRole projectRole) {
-				return projectRole.getProject().getAccountId();
-			}
-		});
+		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(siteAssignments);
 
-		Map<Integer, AccountModel> accountModelMap = accountService.getIdToAccountModelMap(accountIds);
-
-		employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projectRoles, accountModelMap);
+		employeeAssignments = ViewModelFactory.getEmployeeAssignmentModelFactory().create(projects, accountModelMap);
 	}
 
     /* Validation */

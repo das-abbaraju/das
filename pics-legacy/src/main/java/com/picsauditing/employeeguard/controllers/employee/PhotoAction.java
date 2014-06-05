@@ -3,8 +3,8 @@ package com.picsauditing.employeeguard.controllers.employee;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ public class PhotoAction extends PicsRestActionSupport {
 	private static final Logger LOG = LoggerFactory.getLogger(PhotoAction.class);
 
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private PhotoUtil photoUtil;
 	@Autowired
@@ -34,7 +34,7 @@ public class PhotoAction extends PicsRestActionSupport {
 		String ftpDir = getFtpDir();
 
 		try {
-			Employee employee = employeeService.findEmployee(getIdAsInt(), contractorId);
+			Employee employee = employeeEntityService.find(getIdAsInt(), contractorId);
 			inputStream = getPhotoStreamForEmployee(employee, ftpDir);
 		} catch (Exception e) {
 			LOG.error("Exception finding employee {} under contractor {}", new Object[]{id, contractorId, e});

@@ -1,9 +1,8 @@
-package com.picsauditing.employeeguard.services.entity;
+package com.picsauditing.employeeguard.services.entity.employee;
 
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
-import com.picsauditing.employeeguard.daos.ProjectCompanyDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
@@ -12,14 +11,21 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.entity.EntityService;
+import com.picsauditing.employeeguard.services.entity.Searchable;
+import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 public class EmployeeEntityService implements EntityService<Employee, Integer>, Searchable<Employee> {
@@ -27,9 +33,9 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired
-	private PhotoUtil photoUtil;
+	private EmployeeImportExportProcess employeeImportExportProcess;
 	@Autowired
-	private ProjectCompanyDAO projectCompanyDAO;
+	private PhotoUtil photoUtil;
 	@Autowired
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
@@ -56,8 +62,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		return employeeDAO.findByAccount(accountId);
 	}
 
-	public long getNumberOfEmployeesForAccount(final int accountId) {
-		return employeeDAO.findEmployeeCount(accountId);
+	public int getNumberOfEmployeesForAccount(final int accountId) {
+		return (int) employeeDAO.findEmployeeCount(accountId);
 	}
 
 	public List<Employee> getEmployeesForAccounts(final Collection<Integer> accountIds) {
@@ -235,9 +241,12 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 				});
 	}
 
-
 	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Employee employee) {
-		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployee(employee);
+		return getAllSiteIdsForEmployeeAssignments(Arrays.asList(employee));
+	}
+
+	public Set<Integer> getAllSiteIdsForEmployeeAssignments(final Collection<Employee> employees) {
+		List<SiteAssignment> siteAssignments = siteAssignmentDAO.findByEmployees(employees);
 		if (CollectionUtils.isEmpty(siteAssignments)) {
 			return Collections.emptySet();
 		}
@@ -256,6 +265,12 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 
 	public Set<Employee> getEmployeesAssignedToProject(final int projectId) {
 		return new HashSet<>(employeeDAO.findByProjectId(projectId));
+	}
+
+	public List<Employee> getEmployeesAssignedToSiteRole(final Set<Integer> contractorIds,
+														 final int siteId,
+														 final Role role) {
+		return employeeDAO.findEmployeesAssignedToSiteRole(contractorIds, siteId, role);
 	}
 
 	/* All Search Methods */
@@ -278,6 +293,16 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	}
 
 	public void save(final Collection<Employee> employees, final EntityAuditInfo entityAuditInfo) {
+		if (CollectionUtils.isEmpty(employees)) {
+			return;
+		}
+
+		for (Employee employee : employees) {
+			if (Strings.isEmpty(employee.getSlug())) {
+				employee.setSlug(generateSlug(employee));
+			}
+		}
+
 		EntityHelper.setCreateAuditFields(employees, entityAuditInfo);
 		employeeDAO.save(employees);
 	}
@@ -348,7 +373,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 	/* Additional Methods */
 
 	public Employee updatePhoto(final PhotoForm photoForm, final String directory, final int id,
-	                            final int accountId) throws Exception {
+								final int accountId) throws Exception {
 
 		String extension = FileUtils.getExtension(photoForm.getPhotoFileName()).toLowerCase();
 
@@ -356,7 +381,7 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
 		} else {
-			// throw new IllegalArgumentException("Invalid file format");
+			throw new IllegalArgumentException("Invalid file format");
 		}
 
 		return find(id, accountId);
@@ -366,5 +391,21 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 		employee.setProfile(profile);
 		EntityHelper.setUpdateAuditFields(employee, Identifiable.SYSTEM, new Date());
 		softDeletedEmployeeDAO.save(employee);
+	}
+
+	public byte[] employeeImportTemplate() {
+		return new EmployeeImportTemplate().template();
+	}
+
+	public UploadResult<Employee> importEmployees(final int contractorId,
+												  final File file,
+												  final String uploadFileName) {
+		return employeeImportExportProcess.importEmployees(contractorId, file, uploadFileName);
+	}
+
+	public byte[] exportEmployees(final int contractorId) throws IOException {
+		List<Employee> contractorEmployees = getEmployeesForAccount(contractorId);
+
+		return employeeImportExportProcess.exportEmployees(contractorEmployees);
 	}
 }

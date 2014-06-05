@@ -32,16 +32,9 @@ public class SkillService {
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	@Deprecated
-	private AccountSkillProfileService accountSkillProfileService;
-	@Autowired
 	private AccountSkillGroupDAO accountSkillGroupDAO;
 	@Autowired
 	private AccountSkillRoleDAO accountSkillRoleDAO;
-	@Autowired
-	private EmployeeService employeeService;
-	@Autowired
-	private ProjectService projectService;
 	@Autowired
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired

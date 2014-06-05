@@ -8,13 +8,24 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.*;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeImportExportProcess;
+import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
+import com.picsauditing.util.Base64;
 import com.picsauditing.util.Strings;
+import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
@@ -23,12 +34,15 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+@UseReporter(DiffReporter.class)
 public class EmployeeEntityServiceTest {
 
 	private EmployeeEntityService employeeEntityService;
 
 	@Mock
 	private EmployeeDAO employeeDAO;
+	@Mock
+	private EmployeeImportExportProcess employeeImportExportProcess;
 	@Mock
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Mock
@@ -41,6 +55,7 @@ public class EmployeeEntityServiceTest {
 		MockitoAnnotations.initMocks(this);
 
 		Whitebox.setInternalState(employeeEntityService, "employeeDAO", employeeDAO);
+		Whitebox.setInternalState(employeeEntityService, "employeeImportExportProcess", employeeImportExportProcess);
 		Whitebox.setInternalState(employeeEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(employeeEntityService, "siteAssignmentDAO", siteAssignmentDAO);
 	}
@@ -273,4 +288,48 @@ public class EmployeeEntityServiceTest {
 				.build();
 	}
 
+	@Test
+	public void testTemplate() throws Exception {
+		String result = Base64.encodeBytes(employeeEntityService.employeeImportTemplate());
+
+		Approvals.verify(result);
+	}
+
+	@Test
+	public void testImportEmployees() {
+		setupTestImportEmployees();
+
+		UploadResult<Employee> result = employeeEntityService.importEmployees(123, Mockito.mock(File.class),
+				"File Name");
+
+		assertNotNull(result);
+	}
+
+	private void setupTestImportEmployees() {
+		when(employeeImportExportProcess.importEmployees(anyInt(), any(File.class), anyString()))
+				.thenReturn(new UploadResult.Builder<Employee>()
+						.uploadError(false)
+						.importedEntities(new ArrayList<Employee>())
+						.build());
+	}
+
+	@Test
+	public void testExportEmployees() throws IOException {
+		setupTestExportEmployees();
+
+		byte[] result = employeeEntityService.exportEmployees(90);
+
+		verifyTestExportEmployees(result);
+	}
+
+	private void setupTestExportEmployees() throws IOException {
+		when(employeeDAO.findByAccount(anyInt())).thenReturn(new ArrayList<Employee>());
+		when(employeeImportExportProcess.exportEmployees(anyCollectionOf(Employee.class))).thenReturn(new byte[] { 1 });
+	}
+
+	private void verifyTestExportEmployees(byte[] result) throws IOException {
+		assertNotNull(result);
+		verify(employeeImportExportProcess).exportEmployees(anyCollectionOf(Employee.class));
+		verify(employeeDAO).findByAccount(anyInt());
+	}
 }
