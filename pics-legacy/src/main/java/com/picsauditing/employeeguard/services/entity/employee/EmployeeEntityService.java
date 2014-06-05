@@ -30,8 +30,6 @@ import java.util.*;
 
 public class EmployeeEntityService implements EntityService<Employee, Integer>, Searchable<Employee> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(EmployeeEntityService.class);
-
 	@Autowired
 	private EmployeeDAO employeeDAO;
 	@Autowired

@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.*;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.CONTRACTOR_EMPLOYEE_IMPORT;
 
 public class EmployeeImportExportAction extends PicsRestActionSupport {
 
@@ -81,21 +81,21 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 		}
 	}
 
-	public String download() throws Exception {
+	public String download() throws IOException {
 		try {
 			fileContainer = buildFileContainer(employeeEntityService.exportEmployees(permissions.getAccountId()),
 					"EmployeeList.csv");
 
 			return FILE_DOWNLOAD;
 
-		} catch (Exception exception) {
-			LOG.error("Error exporting employees for account {}\n{}", permissions.getAccountId(), exception);
+		} catch (Exception e) {
+			LOG.error("Error exporting employees for account {}\n{}", permissions.getAccountId(), e);
 			addActionError("Could not prepare download");
 			return redirectToEmployeeImportPage();
 		}
 	}
 
-	public String template() throws Exception {
+	public String template() throws IOException {
 		byte[] employeeImportTemplate = employeeEntityService.employeeImportTemplate();
 		if (employeeImportTemplate == null) {
 			addActionError("Could not prepare download");

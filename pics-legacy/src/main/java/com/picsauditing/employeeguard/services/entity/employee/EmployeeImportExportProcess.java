@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 
-class EmployeeImportExportProcess {
+public class EmployeeImportExportProcess {
 
 	@Autowired
 	private FileImportService<Employee> fileImportService;
