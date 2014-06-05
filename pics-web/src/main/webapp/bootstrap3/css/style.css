@@ -13960,13 +13960,34 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin-top: -15px;
 }
 
+/* line 51, ../sass/pics/employee-guard/account/_account.scss */
+
+.employee_guard_welcome-page #termsModal li,
+.employee_guard_sign_up-page #termsModal li {
+  margin-top: 15px;
+}
+
+/* line 54, ../sass/pics/employee-guard/account/_account.scss */
+
+.employee_guard_welcome-page #termsModal li p,
+.employee_guard_sign_up-page #termsModal li p {
+  margin-top: 10px;
+}
+
+/* line 59, ../sass/pics/employee-guard/account/_account.scss */
+
+.employee_guard_welcome-page #termsModal p,
+.employee_guard_sign_up-page #termsModal p {
+  margin-bottom: 10px;
+}
+
 @media (max-width: 767px) {
   {
-    /* line 53, ../sass/pics/employee-guard/account/_account.scss */
+    /* line 67, ../sass/pics/employee-guard/account/_account.scss */
   
-    /* line 57, ../sass/pics/employee-guard/account/_account.scss */
+    /* line 71, ../sass/pics/employee-guard/account/_account.scss */
   
-    /* line 61, ../sass/pics/employee-guard/account/_account.scss */
+    /* line 75, ../sass/pics/employee-guard/account/_account.scss */
   
   }
   body#employee_guard_sign_up_index_page,
