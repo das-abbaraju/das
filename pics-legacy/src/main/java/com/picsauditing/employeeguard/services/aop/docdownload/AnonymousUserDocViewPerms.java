@@ -16,7 +16,7 @@ public class AnonymousUserDocViewPerms implements DocViewable {
 	private DocViewable nextDocViewable;
 
 	@Override
-	public DocViewableStatus chkPermissions(int documentId, int skillId) throws DocumentViewAccessDeniedException {
+	public DocViewableStatus chkPermissions(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
 		SkillEntityService skillEntityService = SpringUtils.getBean("SkillEntityService");
 		AccountSkill accountSkill = skillEntityService.find(skillId);
 

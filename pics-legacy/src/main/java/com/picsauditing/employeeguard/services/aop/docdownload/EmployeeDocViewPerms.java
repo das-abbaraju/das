@@ -1,8 +1,9 @@
 package com.picsauditing.employeeguard.services.aop.docdownload;
 
-import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
@@ -15,19 +16,19 @@ public class EmployeeDocViewPerms implements DocViewable {
 	private DocViewable nextDocViewable;
 
 	@Override
-	public DocViewableStatus chkPermissions(int documentId, int skillId) throws DocumentViewAccessDeniedException {
+	public DocViewableStatus chkPermissions(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
 
-		int documentOwnerAppUserId = fetchDocumentOwnerAppUserId(documentId, skillId);
+		int employeeAppUserId = fetchEmployeeAppUserId(employeeId, skillId);
 
 		SessionInfoProvider sessionInfoProvider = SessionInfoProviderFactory.getSessionInfoProvider();
 		int loggedInUserAppUserId = sessionInfoProvider.getAppUserId();
 
-		if(loggedInUserAppUserId == documentOwnerAppUserId){
-			log.debug("Owner of document requesting to view it - Allow");
+		if(isEmployeeLoggedIn(employeeAppUserId,loggedInUserAppUserId)){
+			//TODO:Currently we dont check if employee is really assigned to this skill or not.
 			return DocViewableStatus.ALLOWED;
 		}
 		else if(nextDocViewable!=null){
-			return nextDocViewable.chkPermissions(documentId, skillId);
+			return nextDocViewable.chkPermissions(employeeId, skillId);
 		}
 
 		return DocViewableStatus.UNKNOWN;
@@ -39,13 +40,24 @@ public class EmployeeDocViewPerms implements DocViewable {
 		return docViewable;
 	}
 
-	private int fetchDocumentOwnerAppUserId(int documentId, int skillId) throws DocumentViewAccessDeniedException {
-		ProfileDocumentDAO profileDocumentDAO = SpringUtils.getBean("ProfileDocumentDAO");
-		ProfileDocument profileDocument = profileDocumentDAO.find(documentId);
 
-		if(profileDocument==null)
-			throw new DocumentViewAccessDeniedException(String.format("Document not found - documentId=[%d], SkillId=[%d]",documentId, skillId));
+	private boolean isEmployeeLoggedIn(int employeeAppUserId, int loggedInUserAppUserId){
+		return employeeAppUserId==loggedInUserAppUserId;
+	}
 
-		return profileDocument.getProfile().getUserId();
+	private int fetchEmployeeAppUserId(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
+
+		EmployeeEntityService employeeEntityService = SpringUtils.getBean("EmployeeEntityService");
+		Employee employee = employeeEntityService.find(employeeId);
+
+		if(employee == null)
+			throw new DocumentViewAccessDeniedException(String.format("Employee not found - employeeId=[%d], SkillId=[%d]", employeeId, skillId));
+
+		Profile profile = employee.getProfile();
+
+		if(profile==null )
+			throw new DocumentViewAccessDeniedException(String.format("Profile not found - employeeId=[%d], SkillId=[%d]", employeeId, skillId));
+
+		return profile.getUserId();
 	}
 }

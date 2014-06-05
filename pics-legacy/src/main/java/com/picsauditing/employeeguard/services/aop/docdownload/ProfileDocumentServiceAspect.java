@@ -7,9 +7,9 @@ import org.aspectj.lang.annotation.Before;
 
 
 @Aspect
-public class DocumentDownloadServiceAspect {
+public class ProfileDocumentServiceAspect {
 
-	@Before("execution(* com.picsauditing.employeeguard.services.ProfileDocumentService.getDocumentThumbnail(..))")
+	@Before("execution(* com.picsauditing.employeeguard.services.ProfileDocumentService.getAccountSkillProfileForEmployeeAndSkill(..))")
 	public void chkPermissionsToViewDocumentThumbnail(JoinPoint joinPoint) throws DocumentViewAccessDeniedException {
 
 		Object[] methodArgs = joinPoint.getArgs();
@@ -18,7 +18,7 @@ public class DocumentDownloadServiceAspect {
 			throw new DocumentViewAccessDeniedException("Missing required information to check Document view permissions");
 		}
 
-		int documentId = (int)methodArgs[0];
+		int employeeId = (int)methodArgs[0];
 		int skillId = 	(int)methodArgs[1];
 
 		/**
@@ -28,9 +28,9 @@ public class DocumentDownloadServiceAspect {
 		 Chain of responsibility pattern.
 		 */
 		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
-		employeeDocViewPerms.attach(new CorpOpDocViewPerms()).attach(new ContractorDocViewPerms()).attach(new AnonymousUserDocViewPerms());
+		employeeDocViewPerms.attach(new CorporateDocViewPerms()).attach(new OperatorDocViewPerms()).attach(new ContractorDocViewPerms()).attach(new AnonymousUserDocViewPerms());
 
-		employeeDocViewPerms.chkPermissions(documentId, skillId);
+		employeeDocViewPerms.chkPermissions(employeeId, skillId);
 
 	}
 

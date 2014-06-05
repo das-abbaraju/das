@@ -32,26 +32,6 @@ public class SummaryAction extends PicsRestActionSupport {
 		return JSON_STRING;
 	}
 
-	public String whoAmI() throws NoRightsException {
-		if (!permissions.isOperatorCorporate()) {
-			throw new NoRightsException("Operator or Corporate");
-		}
-
-		AccountType accountType = AccountType.OPERATOR;
-		if (permissions.isCorporate()) {
-			accountType = AccountType.CORPORATE;
-		}
-
-		UserModel userModel = ModelFactory.getUserModelFactory().create(
-				permissions.getAppUserID(),
-				permissions.getAccountId(),
-				permissions.getName(),
-				accountType);
-
-		jsonString = new Gson().toJson(userModel);
-
-		return JSON_STRING;
-	}
 
 	/**
 	 * This method is deprecated in favor of having separate actions for the Project List and another

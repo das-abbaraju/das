@@ -11,6 +11,8 @@ import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedExcepti
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.ProfilePhotoForm;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
@@ -30,13 +32,15 @@ public class ProfileDocumentService {
 	private ProfileDocumentDAO profileDocumentDAO;
 	@Autowired
 	private PhotoUtil photoUtil;
+	@Autowired
+	private AccountSkillProfileService accountSkillProfileService;
 
-	public ProfileDocument getDocumentThumbnail(int documentId, int skillId) throws DocumentViewAccessDeniedException {
+	public AccountSkillProfile getAccountSkillProfileForEmployeeAndSkill(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
 
-		//TODO: To be done in another story
-		return null;
+		AccountSkillProfile accountSkillProfile = accountSkillProfileService.getAccountSkillProfileForEmployeeAndSkill(employeeId, skillId);
+
+		return accountSkillProfile;
 	}
-
 
 	public ProfileDocument getDocument(final int id) {
 		return profileDocumentDAO.find(id);

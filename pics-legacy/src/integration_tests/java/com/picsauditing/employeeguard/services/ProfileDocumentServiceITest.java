@@ -41,7 +41,7 @@ public class ProfileDocumentServiceITest {
 	@Test
 	public void testUpdate_getDocumentThumbnail_CheckEmployeePermissions() throws Exception {
 		when(sessionInfoProvider.getAppUserId()).thenReturn(APP_USER_ID);
-		profileDocumentService.getDocumentThumbnail(SKILL_ID, DOCUMENT_ID);
+		profileDocumentService.getAccountSkillProfileForEmployeeAndSkill(SKILL_ID, DOCUMENT_ID);
 	}
 
 }

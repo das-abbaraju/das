@@ -35,6 +35,16 @@
         <action name="employees/{employeeId}/skill/{skillId}" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <!-- Who Am I -->
+        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.AboutAction" method="whoAmI" />
+
+        <!-- Skill Review -->
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/info" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchSkillInfo" />
+        <action name="skillreview/employee/{employeeId}/info" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchEmployeeInfo" />
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/download" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadDocument" />
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
+        </action>
+
     </package>
 
     <!-- Operator -->
@@ -145,8 +155,6 @@
         </action>
 
         <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
-        <!-- Who Am I -->
-        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="whoAmI" />
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"

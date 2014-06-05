@@ -24,6 +24,11 @@ public final class EmployeeGUARDUrlUtils {
 	public static final String EMPLOYEE_MY_FILES = "/employee-guard/employee/file";
 	public static final String EMPLOYEE_SKILLS = "/employee-guard/employee/skills";
 
+	/* Skill Review related links */
+	public static final String DOCUMENT_THUMBNAIL_LINK = "skillreview/employee/%d/skill/%d/thumbnail";
+	public static final String DOCUMENT_DOWNLOAD_LINK = "skillreview/employee/%d/skill/%d/download";
+
+
 	public static String buildUrl(final String url, final Object... params) {
 		return String.format(url, params);
 	}

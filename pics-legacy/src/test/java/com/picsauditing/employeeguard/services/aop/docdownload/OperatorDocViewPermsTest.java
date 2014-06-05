@@ -4,7 +4,6 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.web.SessionInfoProvider;
@@ -14,7 +13,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
@@ -24,7 +22,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CorpOpDocViewPermsTest {
+public class OperatorDocViewPermsTest {
 	@Mock
 	private ApplicationContext applicationContext;
 
@@ -47,7 +45,7 @@ public class CorpOpDocViewPermsTest {
 	private AccountService accountService;
 
 	private static final int SKILL_ID = 11;
-	private static final int DOCUMENT_ID = 9;
+	private static final int EMPLOYEE_ID = 9;
 	private static final int APP_USER_ID = 131073;
 	private static final int ACCOUNT_ID = 55653;
 	private static final int ANOTHER_ACCOUNT_ID = 55654;
@@ -69,12 +67,12 @@ public class CorpOpDocViewPermsTest {
 	public void testChkPermissions_Allowed() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.isOperator()).thenReturn(true);
 		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 
-		CorpOpDocViewPerms corpOpViewPerms = new CorpOpDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 
-		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.ALLOWED.toString(), DocViewableStatus.ALLOWED.toString(), docViewableStatus.toString());
 
@@ -84,12 +82,12 @@ public class CorpOpDocViewPermsTest {
 	public void testChkPermissions_DocumentViewAccessDeniedException() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.isOperator()).thenReturn(true);
 		when(accountSkill.getAccountId()).thenReturn(ANOTHER_ACCOUNT_ID);
 
-		CorpOpDocViewPerms corpOpViewPerms = new CorpOpDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 
-		corpOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 
 	}
@@ -98,15 +96,15 @@ public class CorpOpDocViewPermsTest {
 	public void testChkPermissions_VerifyNextInChainIsCalled() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(false);
+		when(permissions.isOperator()).thenReturn(false);
 
 
-		CorpOpDocViewPerms corpOpViewPerms = new CorpOpDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 		corpOpViewPerms.attach(nextInChain);
 
-		corpOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
-		verify(nextInChain).chkPermissions(DOCUMENT_ID, SKILL_ID);
+		verify(nextInChain).chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 	}
 
@@ -115,11 +113,11 @@ public class CorpOpDocViewPermsTest {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getAppUserId()).thenReturn(-999);
 		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
-		when(permissions.isOperatorCorporate()).thenReturn(false);
+		when(permissions.isOperator()).thenReturn(false);
 
-		CorpOpDocViewPerms corpOpViewPerms = new CorpOpDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 
-		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.UNKNOWN.toString(), DocViewableStatus.UNKNOWN.toString(), docViewableStatus.toString());
 

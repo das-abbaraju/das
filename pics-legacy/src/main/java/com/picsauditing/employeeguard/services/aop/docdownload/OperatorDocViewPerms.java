@@ -13,24 +13,24 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class CorpOpDocViewPerms implements DocViewable {
+public class OperatorDocViewPerms implements DocViewable {
 	private Logger log = LoggerFactory.getLogger(getClass());
 
 	private DocViewable nextDocViewable;
 
 	@Override
-	public DocViewableStatus chkPermissions(int documentId, int skillId) throws DocumentViewAccessDeniedException {
+	public DocViewableStatus chkPermissions(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
 
-		AccountSkill accountSkill = fetchAccountSkill(documentId, skillId);
+		AccountSkill accountSkill = fetchAccountSkill(employeeId, skillId);
 
 		SessionInfoProvider sessionInfoProvider = SessionInfoProviderFactory.getSessionInfoProvider();
 		Permissions permissions = sessionInfoProvider.getPermissions();
-		if(permissions.isOperatorCorporate() ){
+		if(permissions.isOperator() ){
 			List<Integer> accountIds = fetchTopmostCorporateAccountIds(permissions);
 			return checkPermissions(accountIds, accountSkill, permissions);
 		}
 		else if(nextDocViewable!=null){
-			return nextDocViewable.chkPermissions(documentId, skillId);
+			return nextDocViewable.chkPermissions(employeeId, skillId);
 		}
 
 
@@ -44,12 +44,12 @@ public class CorpOpDocViewPerms implements DocViewable {
 		return docViewable;
 	}
 
-	private AccountSkill fetchAccountSkill(int documentId, int skillId) throws DocumentViewAccessDeniedException {
+	private AccountSkill fetchAccountSkill(int employeeId, int skillId) throws DocumentViewAccessDeniedException {
 		SkillEntityService skillEntityService = SpringUtils.getBean("SkillEntityService");
 		AccountSkill accountSkill = skillEntityService.find(skillId);
 
 		if(accountSkill==null)
-			throw new DocumentViewAccessDeniedException(String.format("Skill not found - documentId=[%d], SkillId=[%d]",documentId, skillId));
+			throw new DocumentViewAccessDeniedException(String.format("Skill not found - employeeId=[%d], SkillId=[%d]", employeeId, skillId));
 
 		return accountSkill;
 	}
@@ -63,11 +63,11 @@ public class CorpOpDocViewPerms implements DocViewable {
 
 	private DocViewableStatus checkPermissions(List<Integer> accountIds, AccountSkill accountSkill, Permissions permissions) throws DocumentViewAccessDeniedException{
 		if (accountIds.contains(accountSkill.getAccountId())) {
-			log.debug("Document tied to a Corporate/Site skill, is being requested by a Corporate/Site User - Allow");
+			log.debug("Document tied to Operator skill, is being requested by a Operator User - Allow");
 			return DocViewableStatus.ALLOWED;
 		}
 		else{
-			throw new DocumentViewAccessDeniedException(String.format("Permission Denied - Corporate/Site User is trying to view document tied to a NON Corporate/Site Skill - AccountId=[%d], SkillId=[%d], SkillAccountId=[%d]",permissions.getAccountId(), accountSkill.getId(), accountSkill.getAccountId()));
+			throw new DocumentViewAccessDeniedException(String.format("Permission Denied - Operator User is trying to view document tied to a NON Corporate/Site Skill - AccountId=[%d], SkillId=[%d], SkillAccountId=[%d]",permissions.getAccountId(), accountSkill.getId(), accountSkill.getAccountId()));
 
 		}
 	}
