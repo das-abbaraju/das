@@ -50,7 +50,7 @@ public class FileImportService<E extends BaseEntity> {
 		fileImportReader.open(file);
 		String[] lineOfFile = fileImportReader.readLine();
 		if (!fileRowMapper.isHeader(lineOfFile) && !fileRowMapper.isValid(lineOfFile)) {
-			throw new FileImportReaderException("First row of the file is neither a header nor valid data format");
+			throw new FileImportReaderException("Please use provided template file.");
 		}
 
 		if (!fileRowMapper.isHeader(lineOfFile)) {
@@ -64,7 +64,7 @@ public class FileImportService<E extends BaseEntity> {
 				}
 
 				if (!fileRowMapper.isValid(lineOfFile)) {
-					throw new FileImportReaderException("Row in file is in invalid format");
+					throw new FileImportReaderException("Please check that all required fields are in the correct format.");
 				}
 
 				importedEntities.add(fileRowMapper.mapToEntity(lineOfFile));

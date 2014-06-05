@@ -50,11 +50,11 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 			if (uploadResult.isUploadError()) {
 				addActionError(uploadResult.getErrorMessage());
 			} else {
-				addActionMessage("Successfully uploaded employees");
+				addActionMessage("Successfully uploaded employees.");
 			}
 
 		} catch (Exception e) {
-			LOG.error("Unexpected exception while uploading employees", e);
+			LOG.error("Unexpected exception while uploading employees.", e);
 			addActionError("An error occurred while importing employees.");
 		}
 
