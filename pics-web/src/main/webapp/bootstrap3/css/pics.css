@@ -1780,8 +1780,9 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 .employee_guard_contractor_employee_import_export-page .alert-info .btn-info {
   margin-top: 15px;
 }
-/* line 6, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
-.employee_guard_contractor_employee_import_export-page .alert-danger {
+/* line 7, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
+.employee_guard_contractor_employee_import_export-page .alert-danger,
+.employee_guard_contractor_employee_import_export-page .alert-success {
   margin-top: 15px;
 }
 
