@@ -1,51 +1,62 @@
 @mixin employee-image {
-	.employee-image {
-		position: relative;
-		max-width: 270px;
+    .employee-image {
+        position: relative;
+        max-width: 270px;
 
         input[type="submit"] {
-			height: 0;
-			position: absolute;
-			visibility: hidden;
-			width: 0;
-		}
+            height: 0;
+            position: absolute;
+            visibility: hidden;
+            width: 0;
+        }
 
-		.overlay-container {
-			display: none;
-		}
+        .overlay-container {
+            display: none;
+        }
 
-		&:hover .overlay-container {
-			cursor: pointer;
-			display: block;
-			height: 100%;
-			left: 0;
-			position: absolute;
-			top: 0;
-			width: 100%;
+        &:hover .overlay-container {
+            cursor: pointer;
+            display: block;
+            height: 100%;
+            left: 0;
+            position: absolute;
+            top: 0;
+            width: 100%;
 
-			.overlay {
-				background-color: #000;
-				height: 100%;
-				@include opacity(0.3);
-				position: absolute;
-				width: 100%;
-			}
+            .overlay {
+                background-color: #000;
+                height: 100%;
+                @include opacity(0.3);
+                position: absolute;
+                width: 100%;
+            }
 
-			span {
-				bottom: 20%;
-				color: #fff;
-				font-size: 24px;
-				left: 0px;
-				position: absolute;
-				text-align: center;
-				width: 100%;
-			}
-		}
-	}
+            span {
+                bottom: 20%;
+                color: #fff;
+                font-size: 24px;
+                left: 0px;
+                position: absolute;
+                text-align: center;
+                width: 100%;
+            }
+        }
+    }
 
-	@media (max-width: 991px) {
-		#edit_employee_photo {
-			text-align: center;
-		}
-	}
+    @media (max-width: 991px) {
+        #edit_employee_photo {
+            text-align: center;
+        }
+    }
+
+    .lt-ie11 {
+        .employee_guard_contractor_employee-page,
+        .employee_guard_employee_profile-page {
+            .employee-image {
+                &:hover .overlay-container {
+                    display: none;
+                }
+            }
+        }
+    }
 }

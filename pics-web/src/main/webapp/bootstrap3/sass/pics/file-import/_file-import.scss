@@ -2,22 +2,12 @@ input[type="file"].default-file-import {
     display: none;
 }
 
-.lt-ie9 {
-    .employee-image {
-        &:hover .overlay-container {
-            display: none;
-        }
-    }
-
+.lt-ie11 {
     input[type="file"].default-file-import {
         display: block;
         height: auto;
         position: static;
         visibility: visible;
         width: auto;
-    }
-
-    .btn-import {
-        display: none;
     }
 }
