@@ -66,11 +66,11 @@ public class UserGroupManager {
 
     protected User saveWithAuditColumnsAndRefresh(User user, Permissions permissions) throws Exception {
         if (user != null) {
-	        if (user.getAppUser().getId() == 0) {
-		        saveNewAppUser(user);
-	        }
             user.setAuditColumns(permissions);
             user = userDAO.save(user);
+            if (user.getAppUser().getId() == 0) {
+                saveNewAppUser(user);
+            }
             userDAO.refresh(user);
         }
         return user;
