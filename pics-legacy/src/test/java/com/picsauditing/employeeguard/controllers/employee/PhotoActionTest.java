@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.util.PhotoUtilFactory;
@@ -26,13 +27,15 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class PhotoActionTest extends PicsActionTest {
+
 	public static final String ID = Integer.toString(45);
 	public static final int CONTRACTOR_ID = 123;
 	private PhotoAction photoAction;
 
-	private EmployeeService employeeService;
 	private PhotoUtil photoUtil;
 
+	@Mock
+	private EmployeeEntityService employeeEntityService;
 	@Mock
 	private ProfileEntityService profileEntityService;
 
@@ -48,7 +51,7 @@ public class PhotoActionTest extends PicsActionTest {
 		photoUtil = PhotoUtilFactory.getPhotoUtil();
 		profileDocumentService = ProfileDocumentServiceFactory.getProfileDocumentService();
 
-		Whitebox.setInternalState(photoAction, "employeeService", employeeService);
+		Whitebox.setInternalState(photoAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(photoAction, "photoUtil", photoUtil);
 		Whitebox.setInternalState(photoAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(photoAction, "profileDocumentService", profileDocumentService);
@@ -59,6 +62,7 @@ public class PhotoActionTest extends PicsActionTest {
 		photoAction.setContractorId(CONTRACTOR_ID);
 		photoAction.setId(ID);
 
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
 		when(photoUtil.photoExistsForEmployee(any(Employee.class), anyInt(), anyString())).thenReturn(true);
 
 		String result = photoAction.employeePhoto();
@@ -66,7 +70,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyInt(), anyInt());
+		verify(employeeEntityService).find(anyInt(), anyInt());
 		verify(photoUtil).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).getPhotoStreamForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil, never()).getDefaultPhotoStream(anyString());
@@ -77,6 +81,7 @@ public class PhotoActionTest extends PicsActionTest {
 		photoAction.setContractorId(CONTRACTOR_ID);
 		photoAction.setId(ID);
 
+		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
 		when(photoUtil.photoExistsForEmployee(any(Employee.class), anyInt(), anyString())).thenReturn(false);
 		when(photoUtil.photoExistsForProfile(any(Profile.class), anyString())).thenReturn(true);
 
@@ -85,7 +90,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyInt(), anyInt());
+		verify(employeeEntityService).find(anyInt(), anyInt());
 		verify(photoUtil).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());
@@ -97,7 +102,7 @@ public class PhotoActionTest extends PicsActionTest {
 		photoAction.setContractorId(CONTRACTOR_ID);
 		photoAction.setId(ID);
 
-		when(employeeService.findEmployee(anyInt(), anyInt())).thenThrow(NoResultException.class);
+		when(employeeEntityService.find(anyInt(), anyInt())).thenThrow(NoResultException.class);
 		when(photoUtil.photoExistsForEmployee(any(Employee.class), anyInt(), anyString())).thenReturn(false);
 		when(photoUtil.photoExistsForProfile(any(Profile.class), anyString())).thenReturn(true);
 
@@ -106,7 +111,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService).findEmployee(anyInt(), anyInt());
+		verify(employeeEntityService).find(anyInt(), anyInt());
 		verify(photoUtil, never()).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil, never()).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getDefaultPhotoStream(anyString());
@@ -123,7 +128,7 @@ public class PhotoActionTest extends PicsActionTest {
 		assertEquals("photo", result);
 		assertNotNull(photoAction.getInputStream());
 
-		verify(employeeService, never()).findEmployee(anyInt(), anyInt());
+		verify(employeeEntityService, never()).find(anyInt(), anyInt());
 		verify(photoUtil, never()).photoExistsForEmployee(any(Employee.class), anyInt(), anyString());
 		verify(photoUtil).photoExistsForProfile(any(Profile.class), anyString());
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());

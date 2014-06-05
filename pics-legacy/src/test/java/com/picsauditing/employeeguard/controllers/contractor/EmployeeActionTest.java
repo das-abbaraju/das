@@ -16,6 +16,7 @@ import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.process.EmployeeSkillData;
 import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.*;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.email.EmailService;
@@ -36,6 +37,7 @@ import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -55,6 +57,8 @@ public class EmployeeActionTest extends PicsActionTest {
 	private ProfileDocumentService profileDocumentService;
 
 	@Mock
+	private AssignmentService assignmentService;
+	@Mock
 	private EmailService emailService;
 	@Mock
 	private UrlBuilder urlBuilder;
@@ -66,6 +70,8 @@ public class EmployeeActionTest extends PicsActionTest {
 	private EmployeeService employeeService;
 	@Mock
 	private EmployeeSkillDataProcess employeeSkillDataProcess;
+	@Mock
+	private ProjectEntityService projectEntityService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -93,6 +99,7 @@ public class EmployeeActionTest extends PicsActionTest {
 				.thenReturn(employeeSkillStatuses);
 
 		Whitebox.setInternalState(employeeAction, "accountService", accountService);
+		Whitebox.setInternalState(employeeAction, "assignmentService", assignmentService);
 		Whitebox.setInternalState(employeeAction, "emailService", emailService);
 		Whitebox.setInternalState(employeeAction, "emailHashService", emailHashService);
 		Whitebox.setInternalState(employeeAction, "employeeEntityService", employeeEntityService);
@@ -101,6 +108,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeAction, "groupService", groupService);
 		Whitebox.setInternalState(employeeAction, "photoUtil", photoUtil);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
+		Whitebox.setInternalState(employeeAction, "projectEntityService", projectEntityService);
 		Whitebox.setInternalState(employeeAction, "urlBuilder", urlBuilder);
 		Whitebox.setInternalState(employeeAction, "employeeSkillDataProcess", employeeSkillDataProcess);
 	}
@@ -133,6 +141,13 @@ public class EmployeeActionTest extends PicsActionTest {
 	@Test
 	public void testShow() throws Exception {
 		when(employeeEntityService.find(anyInt(), anyInt())).thenReturn(new Employee());
+		when(assignmentService.findAllEmployeeSiteAssignments(anyCollectionOf(Employee.class)))
+				.thenReturn(new HashSet<Integer>() {{
+					add(1);
+				}});
+		when(projectEntityService.getProjectsForProfile(any(Profile.class)))
+				.thenReturn(new HashSet<Project>());
+
 		employeeAction.setId(String.valueOf(ID));
 
 		assertEquals(PicsRestActionSupport.SHOW, employeeAction.show());

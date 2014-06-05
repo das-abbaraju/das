@@ -4,8 +4,9 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProjectRole;
+import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.forms.employee.EmployeeProfileForm;
@@ -14,8 +15,10 @@ import com.picsauditing.employeeguard.forms.factory.EmployeeProfileFormBuilder;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,8 +26,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
@@ -44,11 +47,15 @@ public class EmployeeActionTest extends PicsActionTest {
 	@Mock
 	private AccountService accountService;
 	@Mock
+	private AssignmentService assignmentService;
+	@Mock
 	private EmployeeProfileForm employeeProfileForm;
 	@Mock
 	private EmployeeProfileFormBuilder employeeProfileFormBuilder;
 	@Mock
 	private ProfileEntityService profileEntityService;
+	@Mock
+	private ProjectEntityService projectEntityService;
 
 	@Before
 	public void setUp() throws Exception {
@@ -61,9 +68,11 @@ public class EmployeeActionTest extends PicsActionTest {
 		super.setUp(employeeAction);
 
 		Whitebox.setInternalState(employeeAction, "accountService", accountService);
+		Whitebox.setInternalState(employeeAction, "assignmentService", assignmentService);
 		Whitebox.setInternalState(employeeAction, "formBuilderFactory", formBuilderFactory);
 		Whitebox.setInternalState(employeeAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(employeeAction, "profileDocumentService", profileDocumentService);
+		Whitebox.setInternalState(employeeAction, "projectEntityService", projectEntityService);
 
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileFormBuilder", employeeProfileFormBuilder);
 		Whitebox.setInternalState(formBuilderFactory, "employeeProfileEditFormBuilder", new EmployeeProfileEditFormBuilder());
@@ -77,10 +86,19 @@ public class EmployeeActionTest extends PicsActionTest {
 
 	@Test
 	public void testShow() throws Exception {
+		when(assignmentService.findAllEmployeeSiteAssignments(anyCollectionOf(Employee.class)))
+				.thenReturn(new HashSet<Integer>() {{
+					add(1);
+				}});
+		when(projectEntityService.getProjectsForProfile(any(Profile.class)))
+				.thenReturn(new HashSet<Project>());
+
 		employeeAction.setId(Integer.toString(ID));
+
 		assertEquals(PicsRestActionSupport.SHOW, employeeAction.show());
 		assertNotNull(employeeAction.getProfile());
 		assertNotNull(employeeAction.getEmployeeProfileForm());
+
 		verify(profileEntityService).find(ID);
 	}
 
