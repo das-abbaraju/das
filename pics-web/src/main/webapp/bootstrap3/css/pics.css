@@ -1776,8 +1776,12 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   color: #800a06;
 }
 
-/* line 1, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
-.alert-info .btn-info {
+/* line 2, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
+.employee_guard_contractor_employee_import_export-page .alert-info .btn-info {
+  margin-top: 15px;
+}
+/* line 6, ../sass/pics/employee-guard/contractor/employee/_import-export.scss */
+.employee_guard_contractor_employee_import_export-page .alert-danger {
   margin-top: 15px;
 }
 
@@ -3747,12 +3751,13 @@ p {
     margin-bottom: 30px;
   }
 }
-/* line 1, ../sass/pics/file-import/_file-import.scss */
-input[type="file"].default-file-import {
+/* line 2, ../sass/pics/file-import/_file-import.scss */
+input[type="file"].default-file-import,
+p.default-file-import {
   display: none;
 }
 
-/* line 6, ../sass/pics/file-import/_file-import.scss */
+/* line 7, ../sass/pics/file-import/_file-import.scss */
 .lt-ie11 input[type="file"].default-file-import {
   display: block;
   height: auto;
