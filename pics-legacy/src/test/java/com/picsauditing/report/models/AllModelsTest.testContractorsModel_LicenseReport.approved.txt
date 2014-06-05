@@ -90,5 +90,6 @@ ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
 DirectTradeId
 DirectTradeName
+EditRiskLevel
 TradeId
 TradeName
