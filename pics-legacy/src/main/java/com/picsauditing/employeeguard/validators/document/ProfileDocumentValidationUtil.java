@@ -29,15 +29,19 @@ public class ProfileDocumentValidationUtil {
 	}
 
 	public static String validateExpirationDate(DocumentForm documentForm) {
-		String error=Strings.EMPTY_STRING;
+		if (documentForm.isNoExpiration()) {
+			return Strings.EMPTY_STRING;
+		}
 
 		int year = documentForm.getExpireYear();
 		int month = documentForm.getExpireMonth();
 		int day = documentForm.getExpireDay();
 
-		if(year==0 && month==0 && day==0){
-			return error;
+		if (year == 0 && month == 0 && day == 0 && !documentForm.isNoExpiration()) {
+			return "Expiration date is required";
 		}
+
+		String error = Strings.EMPTY_STRING;
 
 		DateTime expirationDateTime = null;
 		DateTime currentDateTime = null;
@@ -49,13 +53,11 @@ public class ProfileDocumentValidationUtil {
 			return error;
 		}
 
-		int yearsAheadBehind=Math.abs(Years.yearsBetween(expirationDateTime, currentDateTime).getYears());
-
-		if(yearsAheadBehind>99){
-			if(expirationDateTime.isBefore(currentDateTime)){
+		int yearsAheadBehind = Math.abs(Years.yearsBetween(expirationDateTime, currentDateTime).getYears());
+		if (yearsAheadBehind > 99) {
+			if (expirationDateTime.isBefore(currentDateTime)) {
 				error = "Expiration Date is too far in the past";
-			}
-			else{
+			} else {
 				error = "Expiration Date is too far in the future";
 			}
 		}

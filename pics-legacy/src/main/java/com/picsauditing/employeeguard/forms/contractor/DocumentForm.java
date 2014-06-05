@@ -106,17 +106,21 @@ public class DocumentForm implements AddAnotherForm, DuplicateInfoProvider {
 	}
 
 	public ProfileDocument buildProfileDocument() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(expireYear, expireMonth - 1, expireDay, 0, 0, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-
-		Date endDate = calendar.getTime();
-		if (noExpiration) {
-			endDate = ProfileDocument.END_OF_TIME;
+		Date endDate = ProfileDocument.END_OF_TIME;
+		if (!noExpiration) {
+			endDate = getEndDateFromForm();
 		}
 
 		return new ProfileDocumentBuilder().name(name).fileName(fileFileName).fileType(fileContentType)
 				.fileSize(file == null ? 0 : (int) file.length()).endDate(endDate).build();
+	}
+
+	private Date getEndDateFromForm() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(expireYear, expireMonth - 1, expireDay, 0, 0, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return calendar.getTime();
 	}
 
 	@Override

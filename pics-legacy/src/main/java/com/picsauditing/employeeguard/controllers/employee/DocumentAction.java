@@ -34,9 +34,6 @@ public class DocumentAction extends PicsRestActionSupport implements AjaxValidat
 
 	private static final long serialVersionUID = -6816560877429952204L;
 
-	public static final String EMPLOYEE_SKILL_ID = "employee_skill_id";
-	public static final String EMPLOYEE_SKILL_REFERER_URL = "employee/skill/";
-
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
 	@Autowired
