@@ -113,6 +113,7 @@ public class RequestNewContractorAccount extends ContractorActionSupport impleme
 
 		id = contractor.getId();
 		account = contractor;
+        primaryContact = contractor.getPrimaryContact();
 
 		loadRelationships();
 		initializeRequest();
