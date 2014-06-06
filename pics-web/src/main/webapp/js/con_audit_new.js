@@ -117,6 +117,7 @@
 
 							if ($(window).scrollTop() > $('#auditViewArea').offset().top) {
 								$.scrollTo('#auditViewArea', 800, {
+									offset: -79,
 									axis: 'y'
 								});
 							}
