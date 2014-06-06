@@ -2,7 +2,7 @@ describe('The Operator Dashboard', function() {
     var scope, $http, httpMock, result;
 
     var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
-    var whoami_url = '/employee-guard/operators/who-am-i';
+    var whoami_url = '/employee-guard/who-am-i';
 
     var site_assignments = {
         "id": 1,

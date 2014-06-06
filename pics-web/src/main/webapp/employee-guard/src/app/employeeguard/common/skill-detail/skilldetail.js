@@ -1,9 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.controller('skillDetailCtrl', function ($scope, $routeParams, SkillDetail, EmployeeDetail) {
-    $scope.skill = SkillDetail.get();
-    $scope.employee = EmployeeDetail.get();
-
-    // $scope.skill = SkillDetail.get({id: $routeParams.skillId});
-    // $scope.employee = EmployeeDetail.get({id: $routeParams.id});
+.controller('skillDetailCtrl', function ($scope, $routeParams, SkillDetail, EmployeeService) {
+    $scope.employee = EmployeeService.getEmployee($routeParams.id);
+    $scope.skill = SkillDetail.get({id: $routeParams.id, skillId: $routeParams.skillId});
 });

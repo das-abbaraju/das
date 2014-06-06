@@ -3,7 +3,7 @@ describe('Skill Details', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller) {
+    beforeEach(inject(function($rootScope, $controller, EmployeeService) {
         scope = $rootScope.$new();
         $controller("skillDetailCtrl", {
             $scope: scope

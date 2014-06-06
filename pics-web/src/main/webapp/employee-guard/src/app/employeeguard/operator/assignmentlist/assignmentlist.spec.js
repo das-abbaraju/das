@@ -1,7 +1,7 @@
 describe('The Operator Assignment Page', function() {
     var scope, $http, httpMock, result;
     var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json',
-        whoami_url = '/employee-guard/operators/who-am-i';
+        whoami_url = '/employee-guard/who-am-i';
 
     var site_assignments = {
         "id": 1,
