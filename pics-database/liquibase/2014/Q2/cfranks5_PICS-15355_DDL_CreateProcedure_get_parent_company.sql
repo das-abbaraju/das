@@ -53,8 +53,6 @@ BEGIN
 		
 	END LOOP the_loop;
 	CLOSE get_parent_cur;
-END$$
-DELIMITER
 
 /*
 -- before run
