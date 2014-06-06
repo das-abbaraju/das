@@ -338,7 +338,8 @@ public final class MenuBuilder {
 		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
 
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
-		devMenu.addChild("PICS Style Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");
+		devMenu.addChild("PICS Style Guide", "FrontendStyleGuide.action", "front-end-style-guide");
+		devMenu.addChild("Frontend Coding Conventions", "FrontendCodingConventions.action", "front-end-coding-conventions");
 
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			devMenu.addChild("Process QB XML", "ProcessQBResponseXML.action", "process_qb_response_xml");
