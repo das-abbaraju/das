@@ -11,18 +11,18 @@ Avoid building HTML inside JavaScript code. If unavoidable, then construct it us
 
     <s:param name="example_code">
 BAD:
-var $list = $('<ul><li>' + items[0].name + '</li><li>' + items[1].name + '</li><ul>');
+var $list = $('&lt;ul&gt;&lt;li&gt;' + items[0].name + '&lt;/li&gt;&lt;li&gt;' + items[1].name + '&lt;/li&gt;&lt;ul&gt;');
 
 GOOD:
 var $list = $([
-    '<ul>',
-        '<li>',
+    '&lt;ul&gt;',
+        '&lt;li&gt;',
             items[0].name,
-        '</li>',
-        '<li>',
+        '&lt;/li&gt;',
+        '&lt;li&gt;',
             items[1].name,
-        '</li>',
-    '</ul>'
+        '&lt;/li&gt;',
+    '&lt;/ul&gt;'
 ].join(''));
     </s:param>
 </s:include>
