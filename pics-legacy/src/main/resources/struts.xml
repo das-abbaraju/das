@@ -1271,25 +1271,13 @@
 			<result>/struts/selenium/reset_selenium.jsp</result>
 		</action>
 
-		<action name="FrontendDevelopmentGuide" class="com.picsauditing.actions.FrontendDevelopmentGuide">
-			<result>/struts/frontend-development-guide/dashboard.jsp</result>
-			<result name="technology">/struts/frontend-development-guide/technology/technology.jsp</result>
-			<result name="routing">/struts/frontend-development-guide/routing/routing.jsp</result>
-			<result name="html">/struts/frontend-development-guide/html/html.jsp</result>
-			<result name="decorators">/struts/frontend-development-guide/decorator/decorators.jsp</result>
-			<result name="forms">/struts/frontend-development-guide/form/forms.jsp</result>
-			<result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
-			<result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
-			<result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
-			<result name="component">/struts/frontend-development-guide/component/components.jsp</result>
-			<result name="css-javascript-conventions">
-				/struts/frontend-development-guide/convention/css-javascript/conventions.jsp
-			</result>
-			<result name="html-conventions">/struts/frontend-development-guide/convention/html/conventions.jsp</result>
-			<result name="file-structure-conventions">
-				/struts/frontend-development-guide/convention/file-structure/conventions.jsp
-			</result>
+		<action name="FrontendStyleGuide" class="com.picsauditing.actions.FrontendStyleGuide">
+			<result>/struts/frontend-style-guide/dashboard.jsp</result>
 		</action>
+
+        <action name="FrontendCodingConventions" class="com.picsauditing.actions.FrontendCodingConventions">
+            <result>/struts/frontend-coding-conventions/dashboard.jsp</result>
+        </action>
 
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
 			<result>struts/user/login/login.jsp</result>

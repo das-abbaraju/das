@@ -1,12 +1,13 @@
 (function ($) {
-    PICS.define('frontend-guide.FrontendDevelopmentGuideController', {
+    PICS.define('frontend-guide.FrontendStyleGuideController', {
         methods: (function () {
             var primary_nav_height = $('#primary_navigation').height(), // TODO: sketchy. should probably use an external getter
                 component_section_padding_top = parseInt($('section').css('padding-top')),
                 $toggle_markup_button, $html_collapsibles;
 
             function init() {
-                if ($('.FrontendDevelopmentGuide-page').length > 0) {
+                if ($('.FrontendStyleGuide-page').length > 0 ||
+                    $('.FrontendCodingConventions-page').length > 0) {
                     initClassVars();
                     initPlugins();
                     bindEvents();

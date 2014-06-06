@@ -69,7 +69,8 @@
     <decorator name="bootstrap3-layout" page="bootstrap3-layout.jsp">
         <pattern>/employee-guard/*</pattern>
         <pattern>/ManageReports!getStarted.action</pattern>
-        <pattern>/FrontendDevelopmentGuide*.action</pattern>
+        <pattern>/FrontendStyleGuide.action</pattern>
+        <pattern>/FrontendCodingConventions.action</pattern>
         <pattern>/ContactUs*.action</pattern>
         <pattern>/ContractorCertification.action*</pattern>
         <pattern>/ContractorCertification!issueSsipCertificate.action</pattern>

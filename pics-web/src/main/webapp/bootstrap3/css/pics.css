@@ -3260,68 +3260,92 @@ ul.skill-nav a {
   /* Forces continual painting to fix Chrome bug */
 }
 
-/* line 5, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page {
+/* line 6, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page,
+.FrontendCodingConventions-page {
   /*	footer {
   		height: 500px;
   	}*/
 }
-/* line 6, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .bs-sidebar.affix {
+/* line 7, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .bs-sidebar.affix,
+.FrontendCodingConventions-page .bs-sidebar.affix {
   -webkit-transform: translateZ(0);
 }
-/* line 10, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page section {
+/* line 11, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page section,
+.FrontendCodingConventions-page section {
   padding-top: 68px;
 }
-/* line 13, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page section .heading {
+/* line 14, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page section .heading,
+.FrontendCodingConventions-page section .heading {
   margin-top: 0;
+  margin-bottom: 10px;
 }
-/* line 18, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .example {
+/* line 20, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .section-list-item,
+.FrontendCodingConventions-page .section-list-item {
+  margin-bottom: 20px;
+}
+/* line 24, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .example,
+.FrontendCodingConventions-page .example {
   margin-bottom: 15px;
   /* Maybe move to style-guide/modals.scss */
 }
-/* line 22, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .example .modal {
+/* line 28, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .example .modal,
+.FrontendCodingConventions-page .example .modal {
   position: static;
 }
-/* line 28, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel {
+/* line 33, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .book-title,
+.FrontendCodingConventions-page .book-title {
+  font-style: italic;
+}
+/* line 38, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel,
+.FrontendCodingConventions-page .implementations .panel {
   border: 0;
   cursor: pointer;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
 }
-/* line 34, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-default > .panel-heading {
+/* line 44, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-default > .panel-heading,
+.FrontendCodingConventions-page .implementations .panel-default > .panel-heading {
   background: none;
   border: 0;
   color: #226396;
   padding: 0;
 }
-/* line 40, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-default > .panel-heading a:hover {
+/* line 50, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-default > .panel-heading a:hover,
+.FrontendCodingConventions-page .implementations .panel-default > .panel-heading a:hover {
   color: #ffffff;
 }
-/* line 45, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-title {
+/* line 55, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-title,
+.FrontendCodingConventions-page .implementations .panel-title {
   font-size: 14px;
   font-weight: bold;
 }
-/* line 49, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-title > a {
+/* line 59, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-title > a,
+.FrontendCodingConventions-page .implementations .panel-title > a {
   display: block;
   padding: 10px 15px;
 }
-/* line 54, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-title > a:hover {
+/* line 64, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-title > a:hover,
+.FrontendCodingConventions-page .implementations .panel-title > a:hover {
   color: #226396;
 }
-/* line 59, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body {
+/* line 69, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body,
+.FrontendCodingConventions-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body {
   background: #454545;
   border: 0;
   -webkit-border-radius: 0 0 3px 3px;
@@ -3330,194 +3354,232 @@ ul.skill-nav a {
   -o-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
 }
-/* line 64, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre {
+/* line 74, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre,
+.FrontendCodingConventions-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre {
   background: #454545;
   padding: 9px;
   border: 0;
   margin: 0;
 }
-/* line 70, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre code {
+/* line 80, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre code,
+.FrontendCodingConventions-page .implementations .panel-group .panel-heading + .panel-collapse .panel-body pre code {
   background: #454545;
   color: #ffffff;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
   padding: 0;
 }
-/* line 81, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .implementations .panel.open .panel-heading,
-.FrontendDevelopmentGuide-page .implementations .panel-default > .panel-heading:hover {
+/* line 91, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .implementations .panel.open .panel-heading,
+.FrontendStyleGuide-page .implementations .panel-default > .panel-heading:hover,
+.FrontendCodingConventions-page .implementations .panel.open .panel-heading,
+.FrontendCodingConventions-page .implementations .panel-default > .panel-heading:hover {
   background-color: #808285;
   color: #ffffff;
 }
-/* line 87, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch {
+/* line 97, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch,
+.FrontendCodingConventions-page .swatch {
   font-size: 12px;
   padding-top: 0;
 }
-/* line 91, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch dl {
+/* line 101, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch dl,
+.FrontendCodingConventions-page .swatch dl {
   text-align: center;
   margin-bottom: 12px;
 }
-/* line 96, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .col-md-1 {
+/* line 106, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .col-md-1,
+.FrontendCodingConventions-page .swatch .col-md-1 {
   padding-left: 1px;
   padding-right: 1px;
 }
-/* line 101, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-platinum {
+/* line 111, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-platinum,
+.FrontendCodingConventions-page .swatch .default-platinum {
   background: #f1f1f2;
   color: #808285;
 }
-/* line 106, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-mercury {
+/* line 116, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-mercury,
+.FrontendCodingConventions-page .swatch .default-mercury {
   background: #e6e6e6;
   color: #666666;
 }
-/* line 111, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-silver {
+/* line 121, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-silver,
+.FrontendCodingConventions-page .swatch .default-silver {
   background: #cccccc;
   color: #454545;
 }
-/* line 116, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-pewter {
+/* line 126, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-pewter,
+.FrontendCodingConventions-page .swatch .default-pewter {
   background: #b3b3b3;
   color: #333333;
 }
-/* line 121, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-aluminum {
+/* line 131, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-aluminum,
+.FrontendCodingConventions-page .swatch .default-aluminum {
   background: #999999;
   color: #f1f1f2;
 }
-/* line 126, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-nickel {
+/* line 136, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-nickel,
+.FrontendCodingConventions-page .swatch .default-nickel {
   background: #808285;
   color: #e6e6e6;
 }
-/* line 131, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-tin {
+/* line 141, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-tin,
+.FrontendCodingConventions-page .swatch .default-tin {
   background: #666666;
   color: #cccccc;
 }
-/* line 136, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-steel {
+/* line 146, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-steel,
+.FrontendCodingConventions-page .swatch .default-steel {
   background: #454545;
   color: #b3b3b3;
 }
-/* line 141, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-iron {
+/* line 151, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-iron,
+.FrontendCodingConventions-page .swatch .default-iron {
   background: #333333;
   color: #999999;
 }
-/* line 146, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-tungsten {
+/* line 156, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-tungsten,
+.FrontendCodingConventions-page .swatch .default-tungsten {
   background: #252525;
   color: #808285;
 }
-/* line 151, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .default-lead {
+/* line 161, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .default-lead,
+.FrontendCodingConventions-page .swatch .default-lead {
   background: #1a1a1a;
   color: #666666;
 }
-/* line 156, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .primary-tint {
+/* line 166, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .primary-tint,
+.FrontendCodingConventions-page .swatch .primary-tint {
   background: #d6eaf8;
   color: #2980b9;
 }
-/* line 161, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .primary-light {
+/* line 171, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .primary-light,
+.FrontendCodingConventions-page .swatch .primary-light {
   background: #3498db;
   color: #ffffff;
 }
-/* line 166, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .primary-med {
+/* line 176, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .primary-med,
+.FrontendCodingConventions-page .swatch .primary-med {
   background: #2980b9;
   color: #ffffff;
 }
-/* line 171, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .primary-dark {
+/* line 181, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .primary-dark,
+.FrontendCodingConventions-page .swatch .primary-dark {
   background: #105093;
   color: #ffffff;
 }
-/* line 176, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .info-tint {
+/* line 186, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .info-tint,
+.FrontendCodingConventions-page .swatch .info-tint {
   background: #ebf5fe;
   color: #4496d8;
 }
-/* line 181, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .info-light {
+/* line 191, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .info-light,
+.FrontendCodingConventions-page .swatch .info-light {
   background: #9cccf9;
   color: #ffffff;
 }
-/* line 186, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .info-med {
+/* line 196, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .info-med,
+.FrontendCodingConventions-page .swatch .info-med {
   background: #73bbe8;
   color: #ffffff;
 }
-/* line 191, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .info-dark {
+/* line 201, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .info-dark,
+.FrontendCodingConventions-page .swatch .info-dark {
   background: #4496d8;
   color: #ffffff;
 }
-/* line 196, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .success-tint {
+/* line 206, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .success-tint,
+.FrontendCodingConventions-page .swatch .success-tint {
   background: #d6f0e4;
   color: #0f9d58;
 }
-/* line 201, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .success-light {
+/* line 211, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .success-light,
+.FrontendCodingConventions-page .swatch .success-light {
   background: #33b679;
   color: #ffffff;
 }
-/* line 206, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .success-med {
+/* line 216, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .success-med,
+.FrontendCodingConventions-page .swatch .success-med {
   background: #0f9d58;
   color: #ffffff;
 }
-/* line 211, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .success-dark {
+/* line 221, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .success-dark,
+.FrontendCodingConventions-page .swatch .success-dark {
   background: #05702e;
   color: #ffffff;
 }
-/* line 216, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .warning-tint {
+/* line 226, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .warning-tint,
+.FrontendCodingConventions-page .swatch .warning-tint {
   background: #fef5d9;
   color: #ec8c00;
 }
-/* line 221, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .warning-light {
+/* line 231, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .warning-light,
+.FrontendCodingConventions-page .swatch .warning-light {
   background: #fbcb43;
   color: #ffffff;
 }
-/* line 226, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .warning-med {
+/* line 236, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .warning-med,
+.FrontendCodingConventions-page .swatch .warning-med {
   background: #f4b400;
   color: #ffffff;
 }
-/* line 231, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .warning-dark {
+/* line 241, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .warning-dark,
+.FrontendCodingConventions-page .swatch .warning-dark {
   background: #ec8c00;
   color: #ffffff;
 }
-/* line 236, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .danger-tint {
+/* line 246, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .danger-tint,
+.FrontendCodingConventions-page .swatch .danger-tint {
   background: #fadbd8;
   color: #c0392b;
 }
-/* line 241, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .danger-light {
+/* line 251, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .danger-light,
+.FrontendCodingConventions-page .swatch .danger-light {
   background: #e74c3c;
   color: #ffffff;
 }
-/* line 246, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .danger-med {
+/* line 256, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .danger-med,
+.FrontendCodingConventions-page .swatch .danger-med {
   background: #c0392b;
   color: #ffffff;
 }
-/* line 251, ../sass/pics/style-guide/_style-guide.scss */
-.FrontendDevelopmentGuide-page .swatch .danger-dark {
+/* line 261, ../sass/pics/style-guide/_style-guide.scss */
+.FrontendStyleGuide-page .swatch .danger-dark,
+.FrontendCodingConventions-page .swatch .danger-dark {
   background: #800a06;
   color: #ffffff;
 }
