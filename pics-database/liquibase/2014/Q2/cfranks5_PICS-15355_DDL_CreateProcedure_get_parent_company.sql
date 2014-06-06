@@ -1,10 +1,12 @@
 --liquibase formatted SQL
 
---changeset cfranks:5
-DROP PROCEDURE IF EXISTS update_max_parent;
-
-DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE update_max_parent ()
+--sql:
+--changeset cfranks:5a splitStatements:true endDelimiter:|
+DROP PROCEDURE IF EXISTS update_max_parent
+;
+--sql:
+--changeset cfranks:5b splitStatements:false endDelimiter:|
+CREATE DEFINER=`pics_admin`@`%` PROCEDURE update_max_parent ()
 BEGIN
 	DECLARE v_id INT;
 	DECLARE v_parentID INT;
@@ -52,7 +54,7 @@ BEGIN
 	END LOOP the_loop;
 	CLOSE get_parent_cur;
 END$$
-DELIMITER ;
+DELIMITER
 
 /*
 -- before run
@@ -75,3 +77,4 @@ JOIN accounts a3 ON a3.id = o.reportingID
 WHERE o.id IN
 (id1 ,id2);
 */
+;
