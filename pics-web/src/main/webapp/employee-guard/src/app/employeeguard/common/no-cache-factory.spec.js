@@ -10,10 +10,10 @@ describe('No Cache Interceptor', function() {
     it("should add a random string to all get requests that are not templates", function () {
         var request_config = {
                 method: 'GET',
-                url: '/employee-guard/operators/who-am-i'
+                url: '/employee-guard/who-am-i'
             },
             config = noCacheInterceptor.request(request_config),
-            regex = /\/employee-guard\/operators\/who-am-i\?noCache=[0-9]+/;
+            regex = /\/employee-guard\/who-am-i\?noCache=[0-9]+/;
 
         expect(config.url).toMatch(regex);
     });
@@ -21,10 +21,10 @@ describe('No Cache Interceptor', function() {
     it("should add '&' if request param already exists", function () {
         var request_config = {
                 method: 'GET',
-                url: '/employee-guard/operators/who-am-i?param1=true'
+                url: '/employee-guard/who-am-i?param1=true'
             },
             config = noCacheInterceptor.request(request_config),
-            regex = /\/employee-guard\/operators\/who-am-i\?param1=true&noCache=[0-9]+/;
+            regex = /\/employee-guard\/who-am-i\?param1=true&noCache=[0-9]+/;
 
         expect(config.url).toMatch(regex);
     });
@@ -42,7 +42,7 @@ describe('No Cache Interceptor', function() {
     it("should NOT add a random string for POST requests", function () {
         var request_config = {
                 method: 'POST',
-                url: '/employee-guard/operators/who-am-i'
+                url: '/employee-guard/who-am-i'
             },
             config = noCacheInterceptor.request(request_config);
 

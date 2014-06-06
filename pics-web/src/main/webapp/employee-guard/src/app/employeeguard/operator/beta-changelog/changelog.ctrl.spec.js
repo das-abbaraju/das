@@ -14,7 +14,7 @@ describe('The Operator Assignment Page', function() {
                 $scope: scope
             });
 
-        $httpBackend.when('GET', '/employee-guard/operators/who-am-i').respond(corporate_user);
+        $httpBackend.when('GET', '/employee-guard/who-am-i').respond(corporate_user);
         $httpBackend.flush();
     }));
 
