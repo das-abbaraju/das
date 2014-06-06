@@ -2,7 +2,7 @@ describe('An Operator Employee', function() {
     var scope, $httpBackend, routeParams;
 
     var employe_info_dev_url = '/angular/json/operator/employee_skills/employee_info.json';
-    var whoami_url = '/employee-guard/operators/who-am-i';
+    var whoami_url = '/employee-guard/who-am-i';
     var corp_sites_dev_url = '/angular/json/operator/corporate_sites.json';
 
     var result = {
@@ -185,7 +185,7 @@ describe('An Operator Employee', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, EmployeeCompanyInfo, SkillModel, SkillList) {
+    beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, EmployeeCompanyInfo, SkillModel, SkillList, EmployeeService) {
         $routeParams.id = Math.floor((Math.random()*1000)+1);
 
         routeParams = $routeParams;
