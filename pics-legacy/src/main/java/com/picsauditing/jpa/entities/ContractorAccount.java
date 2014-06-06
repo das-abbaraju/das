@@ -1706,7 +1706,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return true;
 	}
 
-    @ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllContractors)
+    @ReportField(type = FieldType.Date)
 	public Date getLastContactedByAutomatedEmailDate() {
 		return lastContactedByAutomatedEmailDate;
 	}
@@ -1801,7 +1801,7 @@ public class ContractorAccount extends Account implements JSONable {
 		return true;
 	}
 
-    @ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllContractors)
+    @ReportField(type = FieldType.Date)
 	public Date getLastContactedByInsideSalesDate() {
 		return lastContactedByInsideSalesDate;
 	}

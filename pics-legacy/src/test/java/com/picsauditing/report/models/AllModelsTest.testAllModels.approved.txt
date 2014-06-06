@@ -286,6 +286,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -393,6 +395,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -863,6 +867,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1019,6 +1025,8 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorLastContactedByInsideSalesID
 ContractorLastContactedByInsideSalesIsActive
 ContractorLastContactedByInsideSalesName
@@ -1107,6 +1115,8 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
@@ -1141,6 +1151,7 @@ ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
 DirectTradeId
 DirectTradeName
+EditRiskLevel
 TradeId
 TradeName
 
@@ -1156,6 +1167,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOperatorFlagColor
 ContractorOperatorFlagLastUpdated
@@ -1218,6 +1231,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1252,6 +1267,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1290,6 +1307,8 @@ AccountContractorDocuGUARD
 AccountContractorDontReassign
 AccountContractorEmployeeGUARD
 AccountContractorInsureGUARD
+AccountContractorLastContactedByAutomatedEmailDate
+AccountContractorLastContactedByInsideSalesDate
 AccountContractorMembershipDate
 AccountContractorOriginalMembershipDate
 AccountContractorProductRisk
@@ -1338,6 +1357,62 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 CountryEnglish
 CountryIsoCode
+
+Model: CreditMemos
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactIsActive
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
+ContractorContractorTradeTradeName
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
+ContractorInsideSalesUserName
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorOriginalMembershipDate
+ContractorProductRisk
+ContractorSafetySensitive
+ContractorSoleProprietor
+ContractorTagTagID
+ContractorTransportationRisk
+CreditMemoAmountApplied
+CreditMemoCreationDate
+CreditMemoCurrency
+CreditMemoID
+CreditMemoSapId
+CreditMemoSapLastSync
+CreditMemoSapSync
+CreditMemoStatus
+CreditMemoTotalAmount
 
 Model: Emails
 Permission: Permissions{permissions=[]}
@@ -2010,6 +2085,8 @@ ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk

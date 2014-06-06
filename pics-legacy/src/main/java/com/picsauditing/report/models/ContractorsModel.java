@@ -110,6 +110,13 @@ public class ContractorsModel extends AbstractModel {
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
         }
 
+        Field editRiskLevel = new Field("EditRiskLevel", "'Edit Risk Level'", FieldType.String);
+        editRiskLevel.setFilterable(false);
+        editRiskLevel.setImportance(FieldImportance.Required);
+        editRiskLevel.requirePermission(OpPerms.RiskRank);
+        editRiskLevel.setUrl("ContractorEditRiskLevel.action?id={AccountID}");
+        fields.put(editRiskLevel.getName().toUpperCase(), editRiskLevel);
+
         Field contractorTrade = new Field("ContractorTrades", "(SELECT GROUP_CONCAT(tradeID ORDER BY tradeID SEPARATOR ', ') FROM contractor_trade ct " +
                 " WHERE Contractor.id = ct.conID)", FieldType.String);
         contractorTrade.setFilterable(false);

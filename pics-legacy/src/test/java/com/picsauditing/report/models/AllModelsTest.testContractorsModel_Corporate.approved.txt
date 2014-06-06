@@ -82,6 +82,8 @@ ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
@@ -116,5 +118,6 @@ ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
 DirectTradeId
 DirectTradeName
+EditRiskLevel
 TradeId
 TradeName
