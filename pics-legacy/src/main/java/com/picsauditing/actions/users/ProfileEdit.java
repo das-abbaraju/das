@@ -22,8 +22,6 @@ import java.util.*;
 public class ProfileEdit extends PicsActionSupport {
 
 	@Autowired
-	private UserDAO dao;
-	@Autowired
 	private UserSwitchDAO userSwitchDao;
 	@Autowired
 	private EmailSubscriptionDAO emailSubscriptionDAO;
@@ -69,7 +67,7 @@ public class ProfileEdit extends PicsActionSupport {
 	@Anonymous
 	public String save() throws Exception {
 		// Need to clear the user dao to prevent Hibernate from flushing the changes.
-		dao.clear();
+        userDAO.clear();
 
 		String loginResult = checkProfileEditLogin();
 		if (loginResult != null) {
@@ -109,7 +107,7 @@ public class ProfileEdit extends PicsActionSupport {
 		permissions.setLocale(u.getLocale());
 
 		u.updateDisplayNameBasedOnFirstAndLastName();
-		u = dao.save(u);
+		u = userDAO.save(u);
 		dao.refresh(u);
 
 		// We have to redirect to refresh the locale, if it has been changed
@@ -240,7 +238,7 @@ public class ProfileEdit extends PicsActionSupport {
 		 * could be modified.
 		 */
 		if (u == null) {
-			u = dao.find(permissions.getUserId());
+			u = userDAO.find(permissions.getUserId());
 		}
 
 		// If logged in as a group, you shouldn't get to this page
