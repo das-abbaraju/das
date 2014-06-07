@@ -77,14 +77,24 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		if (Strings.isNotEmpty(language)) {
-			if (Strings.isNotEmpty(dialect)) {
-				u.setLocale(new Locale(language, dialect));
+            Locale locale;
+            if (Strings.isNotEmpty(dialect)) {
+                locale = new Locale(language, dialect);
 			} else {
-				u.setLocale(new Locale(language));
+                locale = new Locale(language);
 			}
+
+            if (!supportedLanguages.getVisibleLocales().contains(locale)) {
+                addActionError(getText(u.getLocale(), "ProfileEdit.Error.LanguageDialectUnsupported"));
+                return INPUT_ERROR;
+            }
+
+            u.setLocale(locale);
 		}
 
-		validateInput();
+
+
+        validateInput();
 		if (hasFieldErrors()) {
 			return INPUT_ERROR;
 		}
