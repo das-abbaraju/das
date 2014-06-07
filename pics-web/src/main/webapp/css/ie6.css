@@ -366,16 +366,6 @@ input,button {
 	color: #39749B;
 }
 
-.registration-form .info-agreement
-{
-	margin-left: 63px;
-}
-
-.registration-form .info-agreement p {
-	position: relative;
-	right: 50px;
-}
-
 .popover {
 	position: absolute;
 	z-index: 9999;

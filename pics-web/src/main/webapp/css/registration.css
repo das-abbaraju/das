@@ -286,13 +286,6 @@ footer .footer-menu a {
 	overflow: inherit;
 }
 
-.registration-form .info-agreement {
-	height: 67px;
-	float: left;
-	margin: 20px 0px 20px 127px;
-	width: 330px;
-}
-
 .registration-form .actions p {
 	font-size: 12px;
 	line-height: 18px;
@@ -1160,10 +1153,10 @@ footer .footer-menu a {
 }
 
 .registration-form .actions input {
-	float: left;
-	left: 22px;
-	position: relative;
-	top: 35px;
+	float: right;
+	height: auto;
+	margin: 20px 0;
+	padding: 9px 20px 10px;
 }
 
 .service-evaluation-form input,
@@ -1259,8 +1252,6 @@ footer .footer-menu a {
 	width: auto;
 }
 
-.registration-form .actions input,
-.registration-form .actions button,
 .client-site-form .actions input,
 .client-site-form .actions button,
 .service-evaluation-form .actions input,
