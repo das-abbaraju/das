@@ -24,8 +24,8 @@
 		<s:hidden name="auditID" />
         <s:hidden id="conAudit_latitude" name="conAudit.latitude" />
         <s:hidden id="conAudit_longitude" name="conAudit.longitude" />
-        
-        <pics:permission perm="AuditEdit" type="Edit">
+
+        <s:if test="permissions.hasPermission(OpPerms.AuditEdit,OpType.Edit) || permissions.hasPermission(OpPerms.ClientAuditEdit,OpType.Edit)">
 	        <fieldset class="form">
 	        	<h2 class="formLegend"><s:text name="ScheduleAudit.button.EditScheduleManually" /></h2>
 	        	<ol>
@@ -36,7 +36,7 @@
 					</li>
 				</ol>
 	        </fieldset>
-        </pics:permission>
+        </s:if>
 		
 		<fieldset class="form">
 			<h2 class="formLegend"><s:text name="ScheduleAudit.label.ContactPerson" /></h2>

@@ -1,22 +1,11 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+
+import java.util.*;
 
 /**
  * Class used to edit a ContractorAudit record with virtually no restrictions
@@ -77,7 +66,12 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 			}
 
 			// Check if they have the AuditEdit permission here
-			permissions.tryPermission(OpPerms.AuditEdit);
+            if (permissions.isPicsEmployee()) {
+                permissions.tryPermission(OpPerms.AuditEdit);
+            }
+            else {
+                permissions.tryPermission(OpPerms.ClientAuditEdit);
+            }
 
 			if ("Save".equals(button)) {
 				auditDao.clear();

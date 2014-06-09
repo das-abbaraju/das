@@ -59,7 +59,7 @@
 		</a>
 	</li>
 
-	<s:if test="(permissions.admin || permissions.auditor) && conAudit.auditType.categories.size() > 1">
+	<s:if test="(permissions.admin || permissions.picsAuditor) && conAudit.auditType.categories.size() > 1">
 		<li>
 			<a class="addremove" href="AddRemoveCategories.action?auditID=<s:property value="auditID"/>">
 				<s:text name="Audit.button.AddRemoveCategories" />
@@ -161,7 +161,7 @@
 					<span class="category-name"><s:property value="#catNode.category.name" /></span>
 
 					<span class="cat-percent">
-						<s:if test="permissions.admin || permissions.auditor">
+						<s:if test="permissions.admin || permissions.picsAuditor">
 							<s:if test="#catNode.override">
 								<img src="images/add_remove.png" />
 							</s:if>
