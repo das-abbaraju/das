@@ -246,10 +246,12 @@ public class ContractorAuditController extends AuditActionSupport {
 		return SUCCESS;
 	}
 
-	private boolean isUserPermittedToAddRemoveCategory() {
+	public boolean isUserPermittedToAddRemoveCategory() {
 		if (permissions.isPicsEmployee()) {
 			return true;
-		} else if (conAudit.getAuditor() != null) {
+		} else if (conAudit.getAuditType().getEditAudit() != null && permissions.hasGroup(conAudit.getAuditType().getEditAudit().getId())) {
+            return true;
+        } else if (conAudit.getAuditor() != null) {
 			return permissions.getUserId() == conAudit.getAuditor().getId();
 		}
 		return false;
