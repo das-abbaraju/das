@@ -20,11 +20,13 @@ import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.util.DateUtil;
+import com.picsauditing.employeeguard.util.ImageHelper;
 import com.picsauditing.employeeguard.viewmodel.EmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.SkillReviewModel;
 import com.picsauditing.search.Database;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,16 +120,19 @@ public class SkillReviewAction extends PicsRestActionSupport {
 				ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
 				if(profileDocument != null) {
 						String fileType = profileDocument.getFileType();
-						if(fileType !=null && fileType.contains("image/")){
-							File documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
-							inputStream =  new FileInputStream(documentFile);
-//-- TODO - For next story
-/*
-							BufferedImage bufferedImage = ImageIO.read(documentFile);
-							int maxOfBoth = bufferedImage.getHeight()>bufferedImage.getWidth()?bufferedImage.getHeight():bufferedImage.getWidth();
+						if(fileType !=null  ){
+							File documentFile=null;
+							if(fileType.contains("image/")) {
+								documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
+							}
+							else{
+								//TODO:Get standard thumbnail for any non-image doc.
+								documentFile = null;
+							}
+							BufferedImage originalImage = ImageIO.read(documentFile);
+							ImageHelper.AspectResult aspectResult = ImageHelper.calculateThumnailSize(originalImage.getWidth(), originalImage.getHeight(), 300);
+							inputStream = ImageHelper.resizeImage(aspectResult.getWidth(), aspectResult.getHeight(), originalImage);
 
-							Image img = ImageIO.read(documentFile).getScaledInstance(100, 100, BufferedImage.SCALE_FAST);
-*/
 						}
 				}
 			}
@@ -150,21 +155,22 @@ public class SkillReviewAction extends PicsRestActionSupport {
 					byte[] output = null;
 					try {
 						String fileType = profileDocument.getFileType();
-						if(fileType !=null && fileType.contains("image/")){
+						if(fileType !=null ){
 							File documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
-							output = FileUtils.getBytesFromFile(documentFile);
+
+							if(documentFile!=null) {
+								output = FileUtils.getBytesFromFile(documentFile);
+
+								fileContainer = new FileDownloadContainer.Builder()
+												.contentType(profileDocument.getFileType())
+												.contentDisposition("attachment; filename=" + profileDocument.getFileName())
+												.fileInputStream(new ByteArrayInputStream(output)).build();
+							}
+
 						}
 					} catch (Exception exception) {
 						addActionError("Could not prepare download");
 					}
-
-					if (!hasActionErrors()) {
-						fileContainer = new FileDownloadContainer.Builder()
-										.contentType("image/jpeg")
-										.contentDisposition("attachment; filename=" + profileDocument.getFileName())
-										.fileInputStream(new ByteArrayInputStream(output)).build();
-					}
-
 				}
 			}
 		} catch (DocumentViewAccessDeniedException e) {
