@@ -539,7 +539,9 @@
                         isDuplicate = utils.some(suggestions, function(suggestion) {
                             return item.value === suggestion.value;
                         });
-                        !isDuplicate && suggestions.push(item);
+                        // Commented out because we want to display the user's name when a suggestion
+                        // is selected, and these will sometimes be duplicated by other results.
+                        /* !isDuplicate && */ suggestions.push(item);
                         return suggestions.length < that.limit;
                     });
                     cb && cb(suggestions);
