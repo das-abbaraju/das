@@ -59,6 +59,7 @@
 				var messageLoadingAllCategories = translate('JS.Audit.LoadingAllCategories');
 				var messageLoadingAnsweredQuestions = translate('JS.Audit.LoadingAnsweredQuestions');
 				var messageLoadingPreview = translate('JS.Audit.LoadingPreview');
+				var navigation_height = AUDIT.load_category.getNavigationHeight();
 
 				$(window).bind('hashchange', function () {
 					var state = $.bbq.getState();
@@ -117,7 +118,7 @@
 
 							if ($(window).scrollTop() > $('#auditViewArea').offset().top) {
 								$.scrollTo('#auditViewArea', 800, {
-									offset: -79,
+									offset: -navigation_height,
 									axis: 'y'
 								});
 							}
@@ -129,6 +130,13 @@
 					lastState = state;
 				});
 			}
+		},
+
+		getNavigationHeight: function () {
+			var primary_navigation_height = $('#primary_navigation').height() || 0,
+				secondary_navigation_height = $('#secondary_navigation').height() || 0;
+
+			return primary_navigation_height + secondary_navigation_height;
 		},
 
 		reload: function(data, msg) {
