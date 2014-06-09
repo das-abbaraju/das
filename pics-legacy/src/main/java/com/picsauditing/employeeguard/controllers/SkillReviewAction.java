@@ -75,6 +75,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 				AccountSkill skill = accountSkillProfile.getSkill();
 
+				skillReviewModel.setSkillType(skill.getSkillType().toString());
 				skillReviewModel.setName(skill.getName());
 				skillReviewModel.setDescription(skill.getDescription());
 				Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);

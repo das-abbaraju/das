@@ -7,10 +7,13 @@ public class SkillReviewModel {
 	String name;
 	String description;
 	String expiration;
+	@SerializedName("skill_type")
+	String skillType;
 	@SerializedName("file_url")
 	String fileUrl;
 	@SerializedName("image_url")
 	String imageUrl;
+
 
 	public String getName() {
 		return name;
@@ -50,5 +53,13 @@ public class SkillReviewModel {
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
+	}
+
+	public String getSkillType() {
+		return skillType;
+	}
+
+	public void setSkillType(String skillType) {
+		this.skillType = skillType;
 	}
 }
