@@ -40,8 +40,8 @@ public class InsertContractorsTest {
     }
 
     @Test
-    public void testSetBillAddress_ToggleDisabled() throws Exception {
-        togglzRule.disable(Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS);
+    public void testSetBillAddress_ToggleEnabled() throws Exception {
+        togglzRule.enable(Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS);
         ObjectFactory objectFactory = new ObjectFactory();
         ContractorAccount contractorAccount = new ContractorAccount();
         CustomerAdd customerAdd = mock(CustomerAdd.class);
@@ -52,8 +52,8 @@ public class InsertContractorsTest {
     }
 
     @Test
-    public void testSetBillAddress_ToggleEnabled() throws Exception {
-        togglzRule.enable(Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS);
+    public void testSetBillAddress_ToggleDisabled() throws Exception {
+        togglzRule.disable(Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS);
         ObjectFactory objectFactory = mock(ObjectFactory.class);
         ContractorAccount contractorAccount = mock(ContractorAccount.class);
         BillAddress billAddress = mock(BillAddress.class);

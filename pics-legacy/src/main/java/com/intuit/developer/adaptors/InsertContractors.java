@@ -147,7 +147,7 @@ public class InsertContractors extends CustomerAdaptor {
 	}
 
     private void setBillAddress(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
-        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+        if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
             customer.setBillAddress(factory.createBillAddress());
             customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
         }

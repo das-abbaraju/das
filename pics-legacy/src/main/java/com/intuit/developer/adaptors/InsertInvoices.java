@@ -132,7 +132,7 @@ public class InsertInvoices extends CustomerAdaptor {
 	}
 
     private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceAdd invoice) {
-        if (Features.QUICKBOOKS_INCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+        if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
             invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
             invoice.setBillAddress(factory.createBillAddress());
             ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
