@@ -2,8 +2,6 @@ package com.picsauditing.struts.validator;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
-import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
-
 import com.picsauditing.struts.controller.Registration;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.struts.controller.forms.RegistrationLocaleForm;
@@ -15,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import static org.apache.struts2.StrutsStatics.HTTP_REQUEST;
 
 public class RegistrationFormValidationWrapper implements Validator {
 
@@ -64,6 +64,7 @@ public class RegistrationFormValidationWrapper implements Validator {
         processor.processByField("localeForm", localeForm);
         processor.processWholeObject(regform.getPasswordPair());
         processor.processWholeObject(regform.getVATPairing());
+        processor.processWholeObject(regform.getCNPJPairing());
         processor.processWholeObject(regform.getCountrySubdivisionPairing());
     }
 
