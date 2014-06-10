@@ -479,19 +479,21 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
 	@Transient
 	public String getQbListID(String currencyCode) {
-		if ("CAD".equals(currencyCode)) {
-			return getQbListCAID();
-		}
-		if ("GBP".equals(currencyCode)) {
-			return getQbListUKID();
-		}
-		if ("EUR".equals(currencyCode)) {
-			return getQbListEUID();
-		}
+        Currency currency = Currency.valueOf(currencyCode);
 
-		// return default for other
-		return getQbListID();
-	}
+        switch(currency) {
+            case CAD:
+                return getQbListCAID();
+            case GBP:
+                return getQbListUKID();
+            case EUR:
+            case CHF:
+                return getQbListEUID();
+            default:
+                // return default for other
+                return getQbListID();
+        }
+ 	}
 
 	/**
 	 * Contractor, Operator, Admin, Corporate
