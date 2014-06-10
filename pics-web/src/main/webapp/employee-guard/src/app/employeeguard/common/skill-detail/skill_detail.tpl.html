@@ -30,7 +30,7 @@
                         <p>{{ skill.description }}</p>
 
                         <p class="text-center" ng-if="skill.file_url">
-                            <a href="/employee-guard/{{ skill.file_url }}">
+                            <a href="{{ skill.file_url }}" target="_self">
                                 <i class="icon-picture icon-5x" ng-if="skill.image_url === ''"></i>
                                 <img src="{{ skill.image_url }}" ng-if="skill.image_url !== ''" />
                             </a>
