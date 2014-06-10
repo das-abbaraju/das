@@ -1,17 +1,9 @@
 package com.picsauditing.employeeguard.util;
 
-import org.imgscalr.Scalr;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
-
-public class ImageHelper {
-
-	public static final int THUMBNAIL_DEFAULT_SCALE=300;
-	public static final String THUMBNAIL_DEFAULT_FORMAT="jpg";
+public class ImageAspectCalculator {
 
 	/**
 	 *
@@ -32,7 +24,7 @@ public class ImageHelper {
 	 * @param scale
 	 * @return
 	 */
-	public static AspectResult calculateThumnailSize(int width, int height, int scale){
+	public AspectResult calculateThumnailSize(int width, int height, int scale){
 		int newWidth=0;
 		int newHeight=0;
 
@@ -57,18 +49,7 @@ public class ImageHelper {
 		return new AspectResult(newWidth, newHeight);
 	}
 
-	public static InputStream resizeImage(int width, int height, BufferedImage originalImage, String formatName) throws IOException {
-
-		BufferedImage resizedImage = Scalr.resize(originalImage, Scalr.Method.BALANCED, width, height);
-
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(resizedImage, formatName, baos);
-		InputStream is = new ByteArrayInputStream(baos.toByteArray());
-
-		return is;
-	}
-
-	public static class AspectResult{
+	private class AspectResult{
 		private int width;
 		private int height;
 

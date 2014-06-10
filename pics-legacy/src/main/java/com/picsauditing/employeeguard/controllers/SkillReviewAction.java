@@ -63,6 +63,8 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 	private InputStream inputStream;
 
+
+
 	public String fetchSkillInfo() {
 		SkillReviewModel skillReviewModel = new SkillReviewModel();
 
@@ -73,6 +75,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 				AccountSkill skill = accountSkillProfile.getSkill();
 
+				skillReviewModel.setSkillType(skill.getSkillType().toString());
 				skillReviewModel.setName(skill.getName());
 				skillReviewModel.setDescription(skill.getDescription());
 				Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
@@ -124,15 +127,11 @@ public class SkillReviewAction extends PicsRestActionSupport {
 							File documentFile=null;
 							if(fileType.contains("image/")) {
 								documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
-							}
-							else{
-								//TODO:Get standard thumbnail for any non-image doc.
-								documentFile = null;
-							}
-							BufferedImage originalImage = ImageIO.read(documentFile);
-							ImageHelper.AspectResult aspectResult = ImageHelper.calculateThumnailSize(originalImage.getWidth(), originalImage.getHeight(), 300);
-							inputStream = ImageHelper.resizeImage(aspectResult.getWidth(), aspectResult.getHeight(), originalImage);
+								BufferedImage originalImage = ImageIO.read(documentFile);
+								ImageHelper.AspectResult aspectResult = ImageHelper.calculateThumnailSize(originalImage.getWidth(), originalImage.getHeight(), ImageHelper.THUMBNAIL_DEFAULT_SCALE);
 
+								inputStream = ImageHelper.resizeImage(aspectResult.getWidth(), aspectResult.getHeight(), originalImage, ImageHelper.THUMBNAIL_DEFAULT_FORMAT);
+							}
 						}
 				}
 			}

@@ -1033,6 +1033,15 @@
             <artifactId>gson</artifactId>
             <version>2.2.4</version>
         </dependency>
+        <!-- Scalr - Scale images - Used in EG -->
+        <dependency>
+          <groupId>org.imgscalr</groupId>
+          <artifactId>imgscalr-lib</artifactId>
+          <version>4.2</version>
+          <type>jar</type>
+          <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
