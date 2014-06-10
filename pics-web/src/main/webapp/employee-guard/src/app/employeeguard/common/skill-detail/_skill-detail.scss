@@ -8,4 +8,27 @@
     .employee-guard-information img {
         display: block;
     }
+
+    .name {
+        color: $default_steel;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+
+    li {
+        line-height: 21px;
+    }
+
+    .company {
+        color: $default_nickel;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .title {
+        color: $default_nickel;
+        font-size: 14px;
+    }
 }

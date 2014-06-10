@@ -1,61 +1,51 @@
 angular.module('PICS.employeeguard')
-.service('EmployeeService', function (EmployeeServiceFactory) {
-    var employee = {};
+.factory('EmployeeService', function (EmployeeServiceFactory) {
+    var factory = {},
+        employee = {};
 
-    return {
-        getEmployee: function (employeeId) {
-            var that = this;
-
-            if (employee.id) {
-                // console.log('employee object is present');
-                that.setTitle(employee);
-                return employee;
-            } else {
-                // console.log('no employee object');
-                var temp = EmployeeServiceFactory.get({id: employeeId}, function(employee_info) {
-                    employee = employee_info;
-                    that.setEmployee(employee);
-                    that.setTitle(employee);
-                });
-                return temp;
-            }
-        },
-        setEmployee: function (value) {
-            // console.log('setting employee');
-            // console.log(value);
-            employee = value;
-        },
-        getId: function () {
-            return employee.id;
-        },
-        setId: function(value) {
-            employee.id = value;
-        },
-        getFirstName: function () {
-            return employee.firstName;
-        },
-        setFirstName: function (value) {
-            employee.firstName = value;
-        },
-        getLastName: function () {
-            return employee.lastName;
-        },
-        setLastName: function (value) {
-            employee.lastName = value;
-        },
-        getSiteId: function () {
-            return employee.siteId;
-        },
-        setSiteId: function (value) {
-            employee.siteId = value;
-        },
-        setTitle: function (employee_info) {
-            //this gets the first company title from companies list
-            if (employee_info.companies) {
-                employee.title = employee_info.companies[0].title;
-            }
+    factory.getEmployee = function(employeeId, forceReload) {
+        if (forceReload || !employee.id) {
+            return factory.fetchEmployee(employeeId);
+        } else {
+            return employee;
         }
     };
+
+    factory.setEmployee = function(value) {
+        employee = value;
+    };
+
+    factory.getId = function() {
+            return employee.id;
+    };
+
+    factory.setId = function(value) {
+        employee.id = value;
+    };
+
+    factory.getFirstName = function() {
+        return employee.firstName;
+    };
+
+    factory.setFirstName = function(value) {
+        employee.firstName = value;
+    };
+
+    factory.getLastName = function() {
+        return employee.lastName;
+    };
+
+    factory.setLastName = function(value) {
+        employee.lastName = value;
+    };
+
+    factory.fetchEmployee = function(employeeId) {
+        return EmployeeServiceFactory.get({id: employeeId}, function(employee_info) {
+            factory.setEmployee(employee_info);
+        });
+    };
+
+    return factory;
 })
 
 .factory('EmployeeServiceFactory', function($resource) {
