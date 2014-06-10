@@ -89,14 +89,7 @@
                         </s:elseif>
 
                         <s:if test="permissions.accountId == #skill_info.accountId">
-                            <s:set var="skill_url">
-                                <s:url action="skill">
-                                    <s:param name="id">
-                                        ${skill_info.id}
-                                    </s:param>
-                                </s:url>
-                            </s:set>
-                            <a href="${skill_url}" class="list-group-item ${skill_status_class}">
+                            <a href="/employee-guard/employees/${employee.id}/skill/${skill_info.id}" class="list-group-item ${skill_status_class}">
                                 <i class="${skill_icon}"></i>${skill_info.name}
                             </a>
                         </s:if>
