@@ -1,20 +1,19 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.jpa.entities.Country;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.jpa.entities.Country;
-
 import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class TaxIdCountryJSONTest extends PicsActionTest {
     public static final String BR_ISO = "BR";
@@ -30,9 +29,9 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     private static final String REQUEST_PARAMETER = "iso_code";
     private static final String TESTING_ISO = "XX";
     private static final String UK_ISO = "GB";
-    private static final String TRUE_VAT_JSON = "{\"label\":\"VAT\",\"tax_id_required\":true}";
-    private static final String TRUE_CNPJ_JSON = "{\"label\":\"CNPJ\",\"tax_id_required\":true}";
-    private static final String FALSE_JSON = "{\"label\":\"\",\"tax_id_required\":false}";
+    private static final String TRUE_VAT_JSON = "{\"tax_type\":\"vat\",\"tax_id_required\":true}";
+    private static final String TRUE_CNPJ_JSON = "{\"tax_type\":\"cnpj\",\"tax_id_required\":true}";
+    private static final String FALSE_JSON = "{\"tax_type\":\"\",\"tax_id_required\":false}";
     private static final String RESPONSE = "json";
     private static final String REQUEST_PARAMETER_LOCALE = "locale";
     private static final String TESTING_LOCALE_STRING = "en-us";
