@@ -4,9 +4,15 @@
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb" ng-if="userType == 'corporate' || userType == 'operator'">
                         <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
-                        <li><a href="/employee-guard/operators/employees/1/sites/55654">Live ID</a></li>
+                        <li><a href="/employee-guard/operators/employees/{{ employee.id }}">{{ employee.firstName }} {{employee.lastName}}</a></li>
+                        <li class="active">{{ skill.name }}</li>
+                    </ol>
+                    <ol class="breadcrumb" ng-if="userType == 'contractor'">
+                        <li><a href="/employee-guard/contractor/dashboard">EmployeeGUARD</a></li>
+                        <li><a href="/employee-guard/contractor/employee" target="_self">Employees</a></li>
+                        <li><a href="/employee-guard/contractor/employee/{{ employee.id }}" target="_self">{{ employee.firstName }} {{employee.lastName}}</a></li>
                         <li class="active">{{ skill.name }}</li>
                     </ol>
                 </div>
@@ -23,23 +29,38 @@
                         <h2>{{ skill.name }} </h2>
                         <p>{{ skill.description }}</p>
 
+                        <p class="text-center" ng-if="skill.file_url">
+                            <a href="/employee-guard/{{ skill.file_url }}">
+                                <i class="icon-picture icon-5x" ng-if="skill.image_url === ''"></i>
+                                <img src="{{ skill.image_url }}" ng-if="skill.image_url !== ''" />
+                            </a>
+                        </p>
                         <dl class="employee-guard-information">
-                            <dt class="col-md-3">Employee</dt>
-                            <dd class="col-md-9">{{ employee.firstName }} {{employee.lastName}}</dd>
-                            <dt class="col-md-3">Title</dt>
-                            <dd class="col-md-9">{{ employee.title }}</dd>
-                            <dt class="col-md-3"></dt>
-                            <dd class="col-md-9">
-                                <img src="{{ skill.image_url }}" />
-                                <a href="#">{{ skill.file_url }}</a>
-                            </dd>
                             <dt class="col-md-3">Expires</dt>
                             <dd class="col-md-9">{{ skill.expiration | date:'yyyy-MM-dd' }}</dd>
                         </dl>
                     </div>
                 </section>
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <section class="employee-guard-section">
+                    <h1>
+                        <i class="icon-user icon-large"></i>Employee
+                    </h1>
+                    <div class="content">
+                        <p class="name">{{ employee.firstName }} {{employee.lastName}}</p>
+
+                         <ul class="list-unstyled">
+                            <li ng-if="userType !== 'contractor'" class="company" ng-repeat-start="company in employee.companies">
+                                {{ company.name }}
+                            </li>
+                            <li class="title" ng-repeat-end>
+                                {{ company.title }}
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
         </div>
     </div>
 </div>
