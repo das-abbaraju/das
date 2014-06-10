@@ -13,6 +13,9 @@ public class SkillReviewModel {
 	String fileUrl;
 	@SerializedName("image_url")
 	String imageUrl;
+	String status;
+	@SerializedName("verification_date")
+	String verificationDate;
 
 
 	public String getName() {
@@ -61,5 +64,21 @@ public class SkillReviewModel {
 
 	public void setSkillType(String skillType) {
 		this.skillType = skillType;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getVerificationDate() {
+		return verificationDate;
+	}
+
+	public void setVerificationDate(String verificationDate) {
+		this.verificationDate = verificationDate;
 	}
 }

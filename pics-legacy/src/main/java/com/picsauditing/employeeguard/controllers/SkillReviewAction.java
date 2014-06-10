@@ -92,7 +92,18 @@ public class SkillReviewAction extends PicsRestActionSupport {
 				if (accountSkillProfile != null) {
 
 					Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
-					skillReviewModel.setExpiration(DateBean.format(endDate, "YYYY-MM-dd"));
+					if(endDate!=null) {
+						skillReviewModel.setExpiration(DateBean.format(endDate, "YYYY-MM-dd"));
+					}
+
+					SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
+					skillReviewModel.setStatus(skillStatus.toString());
+
+					Date verificationDate = accountSkillProfile.getStartDate();
+					if(verificationDate!=null) {
+						skillReviewModel.setVerificationDate(DateBean.format(verificationDate, "YYYY-MM-dd"));
+					}
+
 					ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
 					if (profileDocument != null) {
 						if (profileDocument.getFileType().contains("image/")) {
