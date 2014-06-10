@@ -13,8 +13,10 @@ import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
 import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
@@ -58,6 +60,12 @@ public class SkillReviewAction extends PicsRestActionSupport {
 	@Autowired
 	private AccountService accountService;
 
+	@Autowired
+	private SkillEntityService skillEntityService;
+
+	@Autowired
+	private AccountSkillProfileService accountSkillProfileService;
+
 	private int employeeId;
 	private int skillId;
 
@@ -69,23 +77,29 @@ public class SkillReviewAction extends PicsRestActionSupport {
 		SkillReviewModel skillReviewModel = new SkillReviewModel();
 
 		try {
-			AccountSkillProfile accountSkillProfile = profileDocumentService.getAccountSkillProfileForEmployeeAndSkill(employeeId, skillId);
 
-			if(accountSkillProfile!=null) {
+			AccountSkill skill = skillEntityService.find(skillId);
 
-				AccountSkill skill = accountSkillProfile.getSkill();
 
+			if(skill !=null ) {
 				skillReviewModel.setSkillType(skill.getSkillType().toString());
 				skillReviewModel.setName(skill.getName());
 				skillReviewModel.setDescription(skill.getDescription());
-				Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
-				skillReviewModel.setExpiration(DateBean.format(endDate, "YYYY-MM-dd"));
-				ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
-				if(profileDocument!=null) {
-					if(profileDocument.getFileType().contains("image/")){
-						skillReviewModel.setImageUrl(buildUrl(DOCUMENT_THUMBNAIL_LINK, employeeId, skillId));
+
+
+				AccountSkillProfile accountSkillProfile = profileDocumentService.getAccountSkillProfileForEmployeeAndSkill(employeeId, skillId);
+
+				if (accountSkillProfile != null) {
+
+					Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
+					skillReviewModel.setExpiration(DateBean.format(endDate, "YYYY-MM-dd"));
+					ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
+					if (profileDocument != null) {
+						if (profileDocument.getFileType().contains("image/")) {
+							skillReviewModel.setImageUrl(buildUrl(DOCUMENT_THUMBNAIL_LINK, employeeId, skillId));
+						}
+						skillReviewModel.setFileUrl(buildUrl(DOCUMENT_DOWNLOAD_LINK, employeeId, skillId));
 					}
-					skillReviewModel.setFileUrl(buildUrl(DOCUMENT_DOWNLOAD_LINK, employeeId, skillId));
 				}
 			}
 		} catch (DocumentViewAccessDeniedException e) {
