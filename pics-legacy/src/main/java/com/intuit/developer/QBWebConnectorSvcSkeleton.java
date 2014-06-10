@@ -197,15 +197,21 @@ public class QBWebConnectorSvcSkeleton {
                 session.setCurrencyCode(Currency.GBP.name());
                 session.setQbID(QB_LIST_UKID);
                 break;
+            case PICSQBLOADERCHF:
+                session.setCurrencyCode(Currency.CHF.name());
+                session.setQbID(QB_LIST_EUID);
+                break;
             case PICSQBLOADEREU:
             case PICSQBLOADERDKK:
             case PICSQBLOADERNOK:
             case PICSQBLOADERZAR:
             case PICSQBLOADERSEK:
-            case PICSQBLOADERCHF:
                 session.setCurrencyCode(Currency.EUR.name());
                 session.setQbID(QB_LIST_EUID);
                 break;
+
+
+
         }
         session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
         return session;

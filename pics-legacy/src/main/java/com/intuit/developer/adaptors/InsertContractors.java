@@ -194,15 +194,24 @@ public class InsertContractors extends CustomerAdaptor {
 					int accountId = Integer.parseInt(accountNumber);
 
 					if (accountId != 0) {
-						if (currentSession.isUS()) {
-							connected.setQbListID(customer.getListID());
-						} else if (currentSession.isCanada()) {
-							connected.setQbListCAID(customer.getListID());
-						} else if (currentSession.isGBP()) {
-							connected.setQbListUKID(customer.getListID());
-						} else if (currentSession.isEUR()) {
-							connected.setQbListEUID(customer.getListID());
-						}
+
+                        Currency currentCurrency = currentSession.getCurrency();
+
+                        switch (currentCurrency) {
+                            case USD:
+                                connected.setQbListID(customer.getListID());
+                                break;
+                            case CAD:
+                                connected.setQbListCAID(customer.getListID());
+                                break;
+                            case GBP:
+                                connected.setQbListUKID(customer.getListID());
+                                break;
+                            case CHF:
+                            case EUR:
+                                connected.setQbListEUID(customer.getListID());
+                                break;
+                        }
 						connected.setQbSync(false);
 					}
 				} catch (Exception e) {

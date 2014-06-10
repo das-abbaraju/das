@@ -167,7 +167,7 @@ public class QBWebConnectorSvcSkeletonTest {
 
         assertCommonSessionFacts(session);
         String currencyCode = session.getCurrencyCode();
-        assertEquals(currencyCode, Currency.EUR.name());
+        assertEquals(currencyCode, Currency.CHF.name());
         String qbId = session.getQbID();
         assertEquals(qbId, QBWebConnectorSvcSkeleton.QB_LIST_EUID);
     }
