@@ -65,8 +65,6 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
 			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 
-//	protected static final int DELETE_COOKIE_AGE = 0;
-//	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
