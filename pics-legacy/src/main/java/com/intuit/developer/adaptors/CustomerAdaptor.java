@@ -1,24 +1,16 @@
 package com.intuit.developer.adaptors;
 
+import com.intuit.developer.QBSession;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.quickbooks.qbxml.*;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.quickbooks.qbxml.CustomerQueryRqType;
-import com.picsauditing.quickbooks.qbxml.CustomerQueryRsType;
-import com.picsauditing.quickbooks.qbxml.CustomerRet;
-import com.picsauditing.quickbooks.qbxml.ListDelRqType;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
 
 public class CustomerAdaptor extends QBXmlAdaptor {
 
@@ -155,4 +147,14 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 		}
 	}
 
+    protected String getCurrencyCodeSuffixForQB(QBSession qbSession) {
+        switch (qbSession.getCurrencyCode()) {
+            case "EUR":
+                return "EU";
+            case "CHF":
+                return qbSession.getCurrencyCode();
+            default:
+                return "";
+        }
+    }
 }

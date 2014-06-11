@@ -150,17 +150,6 @@ public class InsertContractors extends CustomerAdaptor {
         }
     }
 
-    private String getCurrencyCodeSuffixForQB(QBSession qbSession) {
-        switch (qbSession.getCurrencyCode()) {
-            case "EUR":
-                return "EU";
-            case "CHF":
-                return qbSession.getCurrencyCode();
-            default:
-                return "";
-        }
-    }
-
     @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
