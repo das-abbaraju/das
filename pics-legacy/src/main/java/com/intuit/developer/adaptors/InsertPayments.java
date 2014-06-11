@@ -178,6 +178,8 @@ public class InsertPayments extends PaymentAdaptor {
         switch (currentSession.getCurrency()){
            case EUR:
                return AMEX_MERCHANT_ACCOUNT_EURO;
+            case CHF:
+                return null;
             default:
                 return AMEX_MERCHANT_ACCOUNT;
         }
