@@ -60,4 +60,3 @@ InvoiceSapSync
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount

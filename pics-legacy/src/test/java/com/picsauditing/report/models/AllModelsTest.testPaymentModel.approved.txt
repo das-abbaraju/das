@@ -59,5 +59,4 @@ PaymentSapId
 PaymentSapLastSync
 PaymentSapSync
 PaymentStatus
-PaymentTotalAmount
 PaymentTransactionID

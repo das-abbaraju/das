@@ -1412,7 +1412,6 @@ CreditMemoSapId
 CreditMemoSapLastSync
 CreditMemoSapSync
 CreditMemoStatus
-CreditMemoTotalAmount
 
 Model: Emails
 Permission: Permissions{permissions=[]}
@@ -1567,7 +1566,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 
 Model: InvoicePaymentLog
 Permission: Permissions{permissions=[]}
@@ -1659,7 +1657,6 @@ InvoiceSapSync
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 
 Model: Operators
 Permission: Permissions{permissions=[]}
@@ -1797,7 +1794,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 OperatorID
 OperatorName
 OperatorOperatorReportingID
@@ -1809,7 +1805,6 @@ PaymentCreationDate
 PaymentCurrency
 PaymentID
 PaymentStatus
-PaymentTotalAmount
 
 Model: PaymentOperatorCommissions
 Permission: Permissions{permissions=[]}
@@ -1827,7 +1822,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 OperatorCommissionID
 OperatorCommissionName
 OperatorCommissionOperatorReportingID
@@ -1845,7 +1839,6 @@ PaymentOperatorCommissionAccountUserID
 PaymentOperatorCommissionAccountUserIsActive
 PaymentOperatorCommissionAccountUserName
 PaymentStatus
-PaymentTotalAmount
 
 Model: Payments
 Permission: Permissions{permissions=[]}
@@ -1907,7 +1900,6 @@ PaymentSapId
 PaymentSapLastSync
 PaymentSapSync
 PaymentStatus
-PaymentTotalAmount
 PaymentTransactionID
 
 Model: Reports
@@ -2060,7 +2052,6 @@ TransactionSapId
 TransactionSapLastSync
 TransactionSapSync
 TransactionStatus
-TransactionTotalAmount
 TransactionTransactionType
 
 Model: UserAssignments
@@ -2110,7 +2101,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 UserAssignmentUserDepartment
 UserAssignmentUserEmail
 UserAssignmentUserFax
