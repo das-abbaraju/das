@@ -90,11 +90,11 @@ public class UpdateInvoices extends CustomerAdaptor {
 					invoice.getClassRef().setFullName("Contractors");
 
 					invoice.setARAccountRef(factory.createARAccountRef());
-					if (currentSession.isEUR()) {
-						invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
-					} else {
-						invoice.getARAccountRef().setFullName("Accounts Receivable");
-					}
+
+                    String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                            currentSession);
+
+					invoice.getARAccountRef().setFullName(accountsReceivableAccountRef);
 
 					invoice.setTemplateRef(factory.createTemplateRef());
 					invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
@@ -187,11 +187,11 @@ public class UpdateInvoices extends CustomerAdaptor {
 						invoice.getClassRef().setFullName("Contractors");
 
 						invoice.setARAccountRef(factory.createARAccountRef());
-						if (currentSession.isEUR()) {
-							invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
-						} else {
-							invoice.getARAccountRef().setFullName("Accounts Receivable");
-						}
+
+                        String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                                currentSession);
+
+						invoice.getARAccountRef().setFullName(accountsReceivableAccountRef);
 
 						invoice.setTemplateRef(factory.createTemplateRef());
 						invoice.getTemplateRef().setFullName("PICS  Contractor Membership");

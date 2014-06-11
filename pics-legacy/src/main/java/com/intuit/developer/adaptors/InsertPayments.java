@@ -1,5 +1,17 @@
 package com.intuit.developer.adaptors;
 
+import com.intuit.developer.QBSession;
+import com.picsauditing.braintree.CreditCard;
+import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
+import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.quickbooks.qbxml.*;
+import com.picsauditing.util.Strings;
+import com.picsauditing.util.log.PicsLogger;
+
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -7,30 +19,18 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import com.intuit.developer.QBSession;
-import com.picsauditing.jpa.entities.Currency;
-import com.picsauditing.jpa.entities.Payment;
-import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
-import com.picsauditing.jpa.entities.PaymentMethod;
-import com.picsauditing.quickbooks.qbxml.AppliedToTxnAdd;
-import com.picsauditing.quickbooks.qbxml.ObjectFactory;
-import com.picsauditing.quickbooks.qbxml.QBXML;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRq;
-import com.picsauditing.quickbooks.qbxml.QBXMLMsgsRs;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRqType;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentAddRsType;
-import com.picsauditing.quickbooks.qbxml.ReceivePaymentRet;
-import com.picsauditing.util.Strings;
-import com.picsauditing.braintree.CreditCard;
-import com.picsauditing.util.log.PicsLogger;
-
 public class InsertPayments extends PaymentAdaptor {
 
-	public static String getWhereClause(Currency currency) {
+    public static final String VISA_MC_DISC_MERCHANT_ACCT_EURO = "VISA/MC/DISC Merchant Acct EURO";
+    public static final String VISA_MC_DISC_MERCHANT_ACCOUNT = "VISA/MC/DISC Merchant Account";
+    public static final String VISA_CHF = "Visa CHF";
+    public static final String AMEX_MERCHANT_ACCOUNT_EURO = "AMEX Merchant Account EURO";
+    public static final String AMEX_MERCHANT_ACCOUNT = "Amex Merchant Account";
+    public static final String UNDEPOSITED_FUNDS_EURO = "Undeposited Funds EURO";
+    public static final String UNDEPOSITED_FUNDS_CHF = "Undeposited Funds CHF";
+    public static final String UNDEPOSITED_FUNDS = "Undeposited Funds";
+
+    public static String getWhereClause(Currency currency) {
         String qbID = getQBListID(currency);
         return "p.account." + qbID + " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
 				+ "AND p.account." + qbID + " not like 'NOLOAD%' and p.account.status != 'Demo' AND p.currency like '"
@@ -81,11 +81,11 @@ public class InsertPayments extends PaymentAdaptor {
 
 			PicsLogger.log("   setARAccountRef");
 			payment.setARAccountRef(factory.createARAccountRef());
-			if (currentSession.isEUR()) {
-				payment.getARAccountRef().setFullName("Accounts Receivable EURO");
-			} else {
-				payment.getARAccountRef().setFullName("Accounts Receivable");
-			}
+
+            String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                    currentSession);
+
+			payment.getARAccountRef().setFullName(accountsReceivableAccountRef);
 
 			PicsLogger.log("   setTxnDate");
 			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
@@ -115,30 +115,30 @@ public class InsertPayments extends PaymentAdaptor {
 				payment.getPaymentMethodRef().setFullName("Check");
 				payment.setRefNumber(paymentJPA.getCheckNumber());
 
-				if (currentSession.isEUR()) {
-					payment.getDepositToAccountRef().setFullName("Undeposited Funds EURO");
-				} else {
-					payment.getDepositToAccountRef().setFullName("Undeposited Funds");
-				}
+                String unDepositedFundsAccountName = getUnDepositedFundsAccountName(
+                        currentSession);
+
+                payment.getDepositToAccountRef().setFullName(unDepositedFundsAccountName);
+
 			} else {
 				payment.getPaymentMethodRef().setFullName("Braintree Credit");
 
 				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
 					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
 
-					if (currentSession.isEUR()) {
-						payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Acct EURO");
-					} else {
-						payment.getDepositToAccountRef().setFullName("VISA/MC/DISC Merchant Account");
-					}
+                    String creditCardAccountName = getVisaMCDiscCreditCardAccountName(
+                            currentSession);
+
+                    payment.getDepositToAccountRef().setFullName(creditCardAccountName);
+
 				} else if (cardType.equals("American Express")) {
 					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
 
-					if (currentSession.isEUR()) {
-						payment.getDepositToAccountRef().setFullName("AMEX Merchant Account EURO");
-					} else {
-						payment.getDepositToAccountRef().setFullName("Amex Merchant Account");
-					}
+                    String creditCardAccountName = getAmexCreditCardAccountName(
+                            currentSession);
+
+                    payment.getDepositToAccountRef().setFullName(creditCardAccountName);
+
 				}
 				payment.setRefNumber(paymentJPA.getTransactionID());
 				// payment.setMemo("CC number: " + paymentJPA.getCcNumber());
@@ -174,7 +174,40 @@ public class InsertPayments extends PaymentAdaptor {
 
 	}
 
-	@Override
+    private String getAmexCreditCardAccountName(QBSession currentSession) throws Exception {
+        switch (currentSession.getCurrency()){
+           case EUR:
+               return AMEX_MERCHANT_ACCOUNT_EURO;
+            case CHF:
+                throw new InvalidQBCreditCardException("Session requested QB Amex Credit Card Account Name for CHF currency; this code version does not permit Amex CHF purchases");
+            default:
+                return AMEX_MERCHANT_ACCOUNT;
+        }
+    }
+
+    private String getUnDepositedFundsAccountName(QBSession currentSession) {
+
+        switch (currentSession.getCurrency()){
+            case EUR:
+                return UNDEPOSITED_FUNDS_EURO;
+            case CHF:
+                return UNDEPOSITED_FUNDS_CHF;
+            default:
+                return UNDEPOSITED_FUNDS;
+        }
+    }
+    private String getVisaMCDiscCreditCardAccountName(QBSession currentSession) {
+        switch (currentSession.getCurrency()){
+            case EUR:
+                return VISA_MC_DISC_MERCHANT_ACCT_EURO;
+            case CHF:
+                return VISA_CHF;
+            default:
+                return VISA_MC_DISC_MERCHANT_ACCOUNT;
+        }
+    }
+
+    @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();

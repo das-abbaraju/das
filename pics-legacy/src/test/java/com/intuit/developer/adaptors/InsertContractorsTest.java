@@ -67,6 +67,4 @@ public class InsertContractorsTest {
 
         verify(customerAdd, times(2)).setBillAddress(any(BillAddress.class));
     }
-
-
 }
