@@ -7,5 +7,8 @@ angular.module('PICS.employeeguard')
 
     $scope.employee = EmployeeService.getEmployee($routeParams.id);
     $scope.skill = SkillDetail.get({id: $routeParams.id, skillId: $routeParams.skillId});
-    $scope.getSkillStatusClassName = SkillStatus.getClassNameFromStatus;
+
+    $scope.getSkillStatusClassName = function(status) {
+        return SkillStatus.getClassNameFromStatus(status);
+    };
 });
