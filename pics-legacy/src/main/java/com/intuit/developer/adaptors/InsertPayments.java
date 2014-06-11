@@ -174,12 +174,12 @@ public class InsertPayments extends PaymentAdaptor {
 
 	}
 
-    private String getAmexCreditCardAccountName(QBSession currentSession) {
+    private String getAmexCreditCardAccountName(QBSession currentSession) throws Exception {
         switch (currentSession.getCurrency()){
            case EUR:
                return AMEX_MERCHANT_ACCOUNT_EURO;
             case CHF:
-                return null;
+                throw new InvalidQBCreditCardException("Session requested QB Amex Credit Card Account Name for CHF currency; this code version does not permit Amex CHF purchases");
             default:
                 return AMEX_MERCHANT_ACCOUNT;
         }

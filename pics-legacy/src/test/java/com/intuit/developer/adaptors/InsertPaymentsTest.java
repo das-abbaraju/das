@@ -23,7 +23,7 @@ public class InsertPaymentsTest {
 
     }
 
-    @Test
+    @Test(expected=InvalidQBCreditCardException.class)
     public void testGetAmexAccountName_CHF() throws Exception {
         QBSession qbSession = new QBSession();
         qbSession.setCurrencyCode(Currency.CHF.name());
