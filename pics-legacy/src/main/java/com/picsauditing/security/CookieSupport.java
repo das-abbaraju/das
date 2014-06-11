@@ -1,18 +1,21 @@
 package com.picsauditing.security;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.picsauditing.util.Strings;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import com.picsauditing.util.Strings;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CookieSupport {
+
 	public static final String SESSION_COOKIE_NAME = "PICS_ORG_SESSION";
 	public static final String TARGET_IP_COOKIE_NAME = "BIGipServerPOOL";
 	public static final String PRELOGIN_URL_COOKIE_NAME = "from";
 	public static final String USE_BETA_COOKIE_NAME = "USE_BETA";
+
+	public static final int DELETE_COOKIE_AGE = 0;
+	public static final int SESSION_COOKIE_AGE = -1;
 
 	public static Cookie cookieFromRequest(HttpServletRequest request, String cookieName) {
 		if (null == request || Strings.isEmpty(cookieName)) {
