@@ -29,16 +29,43 @@
                         <h2>{{ skill.name }} </h2>
                         <p>{{ skill.description }}</p>
 
-                        <p class="text-center" ng-if="skill.file_url">
-                            <a href="{{ skill.file_url }}" target="_self">
-                                <i class="icon-picture icon-5x" ng-if="skill.image_url === ''"></i>
-                                <img src="{{ skill.image_url }}" ng-if="skill.image_url !== ''" />
-                            </a>
-                        </p>
-                        <dl class="employee-guard-information">
-                            <dt class="col-md-3">Expires</dt>
-                            <dd class="col-md-9">{{ skill.expiration | date:'yyyy-MM-dd' }}</dd>
-                        </dl>
+                        <div ng-if="skill.skill_type === 'Certification'">
+                            <div ng-if="!skill.file_url" class="alert alert-danger">
+                                <strong>Incomplete!</strong> This required skill has not been completed.
+                            </div>
+
+                            <div ng-if="skill.file_url">
+                                <p class="text-center file-container">
+                                    <a href="{{ skill.file_url }}" target="_self">
+                                        <i class="icon-picture icon-5x" ng-if="!skill.image_url"></i>
+                                        <img src="{{ skill.image_url }}" ng-if="skill.image_url" />
+                                    </a>
+                                </p>
+                                <dl class="employee-guard-information">
+                                    <dt class="col-md-3">Verification Date</dt>
+                                    <dd class="col-md-9">{{ skill.verification_date }}</dd>
+                                    <dt ng-if="skill.status !== 'Expired'" class="col-md-3">Expires</dt>
+                                    <dt ng-if="skill.status === 'Expired'" class="col-md-3">Expired</dt>
+                                    <dd class="col-md-9">
+                                        <span class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+
+                        <div ng-if="skill.skill_type === 'Training'">
+                            <dl ng-if="skill.status" class="employee-guard-information {{ getSkillStatus(skill.status) }}">
+                                <dt class="col-md-3">Verification Date</dt>
+                                <dd class="col-md-9">{{ skill.verification_date }}</dd>
+                                <dt class="col-md-3">Expires</dt>
+                                <dd class="col-md-9">
+                                    <span class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
+                                </dd>
+                            </dl>
+                            <div ng-if="!skill.status" class="alert alert-danger">
+                                <strong>Incomplete!</strong> This required skill has not been completed.
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>

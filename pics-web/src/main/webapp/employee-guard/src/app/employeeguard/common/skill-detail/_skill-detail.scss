@@ -5,8 +5,38 @@
         margin-top: 0px;
     }
 
-    .employee-guard-information img {
-        display: block;
+    .employee-guard-section {
+        .alert,
+        .file-container {
+            margin: 20px 0px;
+        }
+    }
+
+    .employee-guard-information {
+        img {
+            display: block;
+        }
+
+        span.danger {
+            background: none;
+
+            dt {
+                color: $danger_light;
+            }
+        }
+
+        span.warning {
+            background: none;
+
+            dt {
+                color: $warning_med;
+            }
+        }
+
+        span.success {
+            background: none;
+            color: $default_steel;
+        }
     }
 
     .name {
