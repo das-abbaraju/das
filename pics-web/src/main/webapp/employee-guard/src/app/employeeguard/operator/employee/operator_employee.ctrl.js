@@ -1,6 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI) {
+.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI, EmployeeService) {
     var skillModel;
 
     var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id, siteId: $routeParams.siteId}, function(employee) {
@@ -24,7 +24,7 @@ angular.module('PICS.employeeguard')
                 }
             });
         } else {
-            loadEmployeeSkills();
+            loadEmployeeSkills($routeParams.siteId);
         }
     });
 
@@ -33,6 +33,7 @@ angular.module('PICS.employeeguard')
 
         //make sure the employee info has populated first
         employee_info.$promise.then(function(employee) {
+            setEmployeeInformation(employee, site_id);
             SkillList.get({siteId: site_id, id: employee.id}, function(result) {
                 skillModel = new SkillModel(result);
                 loadMenuItems();
@@ -44,6 +45,10 @@ angular.module('PICS.employeeguard')
     function loadMenuItems() {
         $scope.projects = skillModel.getProjects();
         $scope.roles = skillModel.getRoles();
+    }
+
+    function setEmployeeInformation(employee) {
+        EmployeeService.setEmployee(employee);
     }
 
     function selectViewModel() {

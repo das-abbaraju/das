@@ -12,7 +12,7 @@ import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedExcepti
 
 public interface DocViewable {
 
-	public DocViewableStatus chkPermissions(int documentId, int skillId) throws DocumentViewAccessDeniedException;
+	public DocViewableStatus chkPermissions(int employeeId, int skillId) throws DocumentViewAccessDeniedException;
 	public DocViewable attach(DocViewable docViewable);
 
 }

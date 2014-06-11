@@ -49,6 +49,7 @@
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
     <bean id="EmployeeImportExportProcess" class="com.picsauditing.employeeguard.services.entity.employee.EmployeeImportExportProcess"/>
     <bean id="FileImportService" class="com.picsauditing.employeeguard.services.entity.util.file.FileImportService"/>
+    <bean id="ProfileDocumentServiceAspect" class="com.picsauditing.employeeguard.services.aop.docdownload.ProfileDocumentServiceAspect"/>
 
     <!-- External Services -->
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>

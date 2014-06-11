@@ -45,7 +45,7 @@ public class ContractorDocViewPermsTest {
 	private AccountService accountService;
 
 	private static final int SKILL_ID = 11;
-	private static final int DOCUMENT_ID = 9;
+	private static final int EMPLOYEE_ID = 9;
 	private static final int APP_USER_ID = 131073;
 	private static final int ACCOUNT_ID = 55653;
 	private static final int ANOTHER_ACCOUNT_ID = 55654;
@@ -72,7 +72,7 @@ public class ContractorDocViewPermsTest {
 
 		ContractorDocViewPerms contractorOpViewPerms = new ContractorDocViewPerms();
 
-		DocViewableStatus docViewableStatus = contractorOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		DocViewableStatus docViewableStatus = contractorOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.ALLOWED.toString(), DocViewableStatus.ALLOWED.toString(), docViewableStatus.toString());
 
@@ -87,7 +87,7 @@ public class ContractorDocViewPermsTest {
 
 		ContractorDocViewPerms contractorOpViewPerms = new ContractorDocViewPerms();
 
-		contractorOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		contractorOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 	}
 
@@ -101,9 +101,9 @@ public class ContractorDocViewPermsTest {
 		ContractorDocViewPerms contractorOpViewPerms = new ContractorDocViewPerms();
 		contractorOpViewPerms.attach(nextInChain);
 
-		contractorOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		contractorOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
-		verify(nextInChain).chkPermissions(DOCUMENT_ID, SKILL_ID);
+		verify(nextInChain).chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 	}
 
@@ -116,7 +116,7 @@ public class ContractorDocViewPermsTest {
 
 		ContractorDocViewPerms contractorOpViewPerms = new ContractorDocViewPerms();
 
-		DocViewableStatus docViewableStatus = contractorOpViewPerms.chkPermissions(DOCUMENT_ID, SKILL_ID);
+		DocViewableStatus docViewableStatus = contractorOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.UNKNOWN.toString(), DocViewableStatus.UNKNOWN.toString(), docViewableStatus.toString());
 

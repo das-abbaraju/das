@@ -7,6 +7,7 @@ import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillProfileBuilder;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
+import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import org.apache.commons.collections.CollectionUtils;
@@ -28,6 +29,8 @@ public class AccountSkillProfileService {
 	private ProfileEntityService profileEntityService;
 	@Autowired
 	private SkillEntityService skillEntityService;
+	@Autowired
+	private EmployeeEntityService employeeEntityService;
 
 	public List<AccountSkillProfile> findByProfile(final Profile profile) {
 		return accountSkillProfileDAO.findByProfile(profile);
@@ -67,6 +70,13 @@ public class AccountSkillProfileService {
 		return profileDocument;
 	}
 
+	public AccountSkillProfile getAccountSkillProfileForEmployeeAndSkill(int employeeId, int skillId) {
+
+		Employee employee = employeeEntityService.find(employeeId);
+		AccountSkill skill = skillEntityService.find(skillId);
+
+		return getAccountSkillProfileForProfileAndSkill(employee.getProfile(), skill);
+	}
 
 	public AccountSkillProfile getAccountSkillProfileForProfileAndSkill(Profile profile, AccountSkill skill) {
 		return accountSkillProfileDAO.findByProfileAndSkill(profile, skill);

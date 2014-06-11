@@ -1,5 +1,7 @@
 package com.picsauditing.employeeguard.services.aop.docdownload;
 
+import com.picsauditing.access.Permissions;
+import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
@@ -23,11 +25,13 @@ import static org.mockito.Mockito.when;
 @ContextConfiguration( {"classpath:EGITest-localhost-context.xml"} )
 @WebAppConfiguration
 @Transactional
-public class EmployeeDocViewPermsITest {
-
+public class OperatorDocViewPermsITest {
 
 	@Mock
-	private OperatorDocViewPerms nextInChain;
+	private Permissions permissions;
+
+	@Mock
+	private ContractorDocViewPerms nextInChain;
 
 	@Mock
 	private SessionInfoProvider sessionInfoProvider;
@@ -38,6 +42,7 @@ public class EmployeeDocViewPermsITest {
 	private static final int SKILL_ID = 11;
 	private static final int EMPLOYEE_ID = 9;
 	private static final int APP_USER_ID = 131073;
+	private static final int ACCOUNT_ID = 55653;
 
 	@Before
 	public void setUp() throws Exception {
@@ -48,12 +53,30 @@ public class EmployeeDocViewPermsITest {
 	public void testChkPermissions_Allowed() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getAppUserId()).thenReturn(APP_USER_ID);
+		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
 
-		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 
-		DocViewableStatus docViewableStatus = employeeDocViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
+		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.ALLOWED.toString(), DocViewableStatus.ALLOWED.toString(), docViewableStatus.toString());
+
+	}
+
+	@Test(expected = DocumentViewAccessDeniedException.class)
+	public void testChkPermissions_DocumentViewAccessDeniedException() throws Exception {
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+		when(sessionInfoProvider.getAppUserId()).thenReturn(APP_USER_ID);
+		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(permissions.getAccountId()).thenReturn(ACCOUNT_ID);
+
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
+
+		int contractorSkillId = 18;
+		corpOpViewPerms.chkPermissions(EMPLOYEE_ID, contractorSkillId);
 
 	}
 
@@ -61,14 +84,16 @@ public class EmployeeDocViewPermsITest {
 	public void testChkPermissions_VerifyNextInChainIsCalled() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getAppUserId()).thenReturn(-999);
+		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		when(permissions.isOperatorCorporate()).thenReturn(false);
 
-		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
-		employeeDocViewPerms.attach(nextInChain);
 
-		int skillId=-999;
-		employeeDocViewPerms.chkPermissions(EMPLOYEE_ID, skillId);
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
+		corpOpViewPerms.attach(nextInChain);
 
-		verify(nextInChain).chkPermissions(EMPLOYEE_ID, skillId);
+		corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
+
+		verify(nextInChain).chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 	}
 
@@ -76,11 +101,12 @@ public class EmployeeDocViewPermsITest {
 	public void testChkPermissions_VerifyUNKNOWNStatusIsEvaluated() throws Exception {
 		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 		when(sessionInfoProvider.getAppUserId()).thenReturn(-999);
+		when(sessionInfoProvider.getPermissions()).thenReturn(permissions);
+		when(permissions.isOperatorCorporate()).thenReturn(false);
 
-		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
+		OperatorDocViewPerms corpOpViewPerms = new OperatorDocViewPerms();
 
-		int skillId=-999;
-		DocViewableStatus docViewableStatus = employeeDocViewPerms.chkPermissions(EMPLOYEE_ID, skillId);
+		DocViewableStatus docViewableStatus = corpOpViewPerms.chkPermissions(EMPLOYEE_ID, SKILL_ID);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.UNKNOWN.toString(), DocViewableStatus.UNKNOWN.toString(), docViewableStatus.toString());
 
