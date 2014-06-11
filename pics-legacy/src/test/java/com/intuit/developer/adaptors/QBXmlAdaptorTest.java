@@ -52,7 +52,7 @@ public class QBXmlAdaptorTest {
     }
 
     @Test
-    public void testUpdateCurrencyRef_EUR() throws Exception {
+    public void testGetCurrencyRefFullName_EUR() throws Exception {
         ContractorAccount contractorAccount =  mock(ContractorAccount.class);
         CurrencyRef currencyRefInput = new CurrencyRef();
         Country country = mock(Country.class);
@@ -66,7 +66,7 @@ public class QBXmlAdaptorTest {
     }
 
     @Test
-    public void testUpdateCurrencyRef_CHF() throws Exception {
+    public void testGetCurrencyRefFullName_CHF() throws Exception {
         ContractorAccount contractorAccount =  mock(ContractorAccount.class);
         CurrencyRef currencyRefInput = new CurrencyRef();
         Country country = mock(Country.class);
@@ -80,7 +80,7 @@ public class QBXmlAdaptorTest {
     }
 
     @Test
-    public void testUpdateCurrencyRef_Others() throws Exception {
+    public void testGetCurrencyRefFullName_Others() throws Exception {
         ContractorAccount contractorAccount =  mock(ContractorAccount.class);
         CurrencyRef currencyRefInput = new CurrencyRef();
         Country country = mock(Country.class);
