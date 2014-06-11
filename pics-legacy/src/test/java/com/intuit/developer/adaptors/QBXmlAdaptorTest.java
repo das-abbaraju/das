@@ -80,6 +80,20 @@ public class QBXmlAdaptorTest {
     }
 
     @Test
+    public void testGetCurrencyRefFullName_GBP() throws Exception {
+        ContractorAccount contractorAccount =  mock(ContractorAccount.class);
+        CurrencyRef currencyRefInput = new CurrencyRef();
+        Country country = mock(Country.class);
+
+        when(contractorAccount.getCountry()).thenReturn(country);
+        when(country.getCurrency()).thenReturn(Currency.GBP);
+
+        String currencyRefOutput = QBXmlAdaptor.getCurrencyRefFullName(contractorAccount);
+
+        assertEquals(currencyRefOutput, QBXmlAdaptor.GBP_FULL_NAME);
+    }
+
+    @Test
     public void testGetCurrencyRefFullName_Others() throws Exception {
         ContractorAccount contractorAccount =  mock(ContractorAccount.class);
         CurrencyRef currencyRefInput = new CurrencyRef();

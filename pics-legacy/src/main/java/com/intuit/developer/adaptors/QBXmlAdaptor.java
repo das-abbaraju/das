@@ -25,6 +25,7 @@ public class QBXmlAdaptor {
 
     public static final String EURO_FULL_NAME = "Euro";
     public static final String CHF_FULL_NAME = "Swiss Franc";
+    public static final String GBP_FULL_NAME = "British Pound Sterling";
     protected static JAXBContext jc = null;
 
     public static final String ACCOUNTS_RECEIVABLE_EURO = "Accounts Receivable EURO";
@@ -250,6 +251,8 @@ public class QBXmlAdaptor {
                 return EURO_FULL_NAME;
             case CHF:
                 return CHF_FULL_NAME;
+            case GBP:
+                return GBP_FULL_NAME;
             default:
                 return null;
         }
