@@ -108,12 +108,9 @@ public class InsertContractors extends CustomerAdaptor {
 
                 setBillAddress(factory, contractor, customer);
 
+                customer.setCurrencyRef(factory.createCurrencyRef());
 
-
-                if (currentSession.isEUR()) {
-					customer.setCurrencyRef(factory.createCurrencyRef());
-					customer.setCurrencyRef(updateCurrencyRef(contractor, customer.getCurrencyRef()));
-				}
+                customer.getCurrencyRef().setFullName(getCurrencyRefFullName(contractor));
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));

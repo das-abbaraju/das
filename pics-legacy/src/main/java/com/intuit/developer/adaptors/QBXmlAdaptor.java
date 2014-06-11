@@ -1,34 +1,38 @@
 package com.intuit.developer.adaptors;
 
-import java.io.StringWriter;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-
-import com.picsauditing.jpa.entities.*;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.InvoiceItemDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.quickbooks.qbxml.BillAddress;
-import com.picsauditing.quickbooks.qbxml.CurrencyRef;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import java.io.StringWriter;
+import java.util.List;
 
 public class QBXmlAdaptor {
 
-	protected static JAXBContext jc = null;
+    public static final String EURO_FULL_NAME = "Euro";
+    public static final String CHF_FULL_NAME = "Swiss Franc";
+    protected static JAXBContext jc = null;
 
-	private boolean proceed = true; // keep going with the integration
+    public static final String ACCOUNTS_RECEIVABLE_EURO = "Accounts Receivable EURO";
+    public static final String ACCOUNTS_RECEIVABLE = "Accounts Receivable";
+    public static final String ACCOUNTS_RECEIVABLE_CHF = "Accounts Receivable - CHF";
+
+
+    private boolean proceed = true; // keep going with the integration
 	private boolean repeat = false; // do this step again
 
 	private ContractorAccountDAO contractorDao;
@@ -240,12 +244,15 @@ public class QBXmlAdaptor {
 		return billAddress;
 	}
 
-	public static CurrencyRef updateCurrencyRef(ContractorAccount contractor, CurrencyRef currencyRef) {
-		if (contractor.getCountry().getCurrency().isEUR()) {
-			currencyRef.setFullName("Euro");
-		}
-
-		return currencyRef;
+	public static String getCurrencyRefFullName(ContractorAccount contractor) {
+        switch (contractor.getCountry().getCurrency()){
+            case EUR:
+                return EURO_FULL_NAME;
+            case CHF:
+                return CHF_FULL_NAME;
+            default:
+                return null;
+        }
 	}
 
 	protected static String replaceCurrencySymbols(String value) {
@@ -274,4 +281,14 @@ public class QBXmlAdaptor {
         }
     }
 
+    protected String getAccountsReceivableAccountRef(QBSession currentSession) {
+        switch (currentSession.getCurrency()){
+            case EUR:
+                return ACCOUNTS_RECEIVABLE_EURO;
+            case CHF:
+                return ACCOUNTS_RECEIVABLE_CHF;
+            default:
+                return ACCOUNTS_RECEIVABLE;
+        }
+    }
 }

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class InsertInvoices extends CustomerAdaptor {
 
-	public static String getWhereClause(Currency currency) {
+    public static String getWhereClause(Currency currency) {
         String qbID = getQBListID(currency);
 		return "i.account." + qbID + " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
 				+ "AND i.account." + qbID + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
@@ -68,13 +68,13 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.getClassRef().setFullName("Contractors");
 
 				invoice.setARAccountRef(factory.createARAccountRef());
-				if (currentSession.isEUR()) {
-					invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
-				} else {
-					invoice.getARAccountRef().setFullName("Accounts Receivable");
-				}
 
-				invoice.setTemplateRef(factory.createTemplateRef());
+                String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                        currentSession);
+
+                invoice.getARAccountRef().setFullName(accountsReceivableAccountRef);
+
+                invoice.setTemplateRef(factory.createTemplateRef());
 				invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
 
 				invoice.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceJPA.getCreationDate()));
@@ -130,6 +130,7 @@ public class InsertInvoices extends CustomerAdaptor {
 		return writer.toString();
 
 	}
+
 
     private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceAdd invoice) {
         if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
