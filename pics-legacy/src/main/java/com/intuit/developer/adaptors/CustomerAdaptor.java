@@ -14,7 +14,9 @@ import java.util.Map;
 
 public class CustomerAdaptor extends QBXmlAdaptor {
 
-	protected String getTheseContractors(QBSession currentSession, List<ContractorAccount> contractors) throws Exception {
+    public static final String EUR_CURRENCY_SUFFIX = "EU";
+
+    protected String getTheseContractors(QBSession currentSession, List<ContractorAccount> contractors) throws Exception {
 		Writer writer = makeWriter();
 
 		ObjectFactory factory = new ObjectFactory();
@@ -148,10 +150,10 @@ public class CustomerAdaptor extends QBXmlAdaptor {
 	}
 
     protected String getCurrencyCodeSuffixForQB(QBSession qbSession) {
-        switch (qbSession.getCurrencyCode()) {
-            case "EUR":
-                return "EU";
-            case "CHF":
+        switch (qbSession.getCurrency()) {
+            case EUR:
+                return EUR_CURRENCY_SUFFIX;
+            case CHF:
                 return qbSession.getCurrencyCode();
             default:
                 return "";
