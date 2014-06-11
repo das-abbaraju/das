@@ -65,8 +65,8 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
 			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 
-	protected static final int DELETE_COOKIE_AGE = 0;
-	protected static final int SESSION_COOKIE_AGE = -1;
+//	protected static final int DELETE_COOKIE_AGE = 0;
+//	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
@@ -1029,7 +1029,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected void clearPicsOrgCookie() {
 		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, "");
-		cookie.setMaxAge(DELETE_COOKIE_AGE);
+		cookie.setMaxAge(CookieSupport.DELETE_COOKIE_AGE);
 		if (!isLocalhostEnvironment()) {
 			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		}
@@ -1043,7 +1043,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
 		loadPermissions(false);
 		String sessionCookieContent = sessionCookieContent(sessionCookie);
-		int maxAge = SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_AGE;
 		if (permissions != null && isRememberMeSetInCookie()) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
@@ -1070,7 +1070,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
 		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
-		int maxAge = SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_AGE;
 		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
@@ -1081,19 +1081,15 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
-		StringBuilder cookie = new StringBuilder(CookieSupport.SESSION_COOKIE_NAME)
-				.append("=")
-				.append(sessionCookieContent)
-				.append("; ")
-				.append("Max-Age=").append(maxAge).append("; ");
+		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
+		cookie.setMaxAge(maxAge);
+		cookie.setPath("/");
 
 		if (!isLocalhostEnvironment()) {
-			cookie.append("Domain=").append(SessionSecurity.SESSION_COOKIE_DOMAIN).append("; ");
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		}
 
-		cookie.append("Path=/; ").append("HttpOnly; ");
-
-		ServletActionContext.getResponse().setHeader("Set-Cookie: ", cookie.toString());
+		ServletActionContext.getResponse().addCookie(cookie);
 	}
 
 	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
