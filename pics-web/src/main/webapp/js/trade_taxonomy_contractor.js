@@ -52,7 +52,7 @@ PICS.define('contractor.TradeTaxonomyController', {
                 modal_class: 'safety-sensitive-confirm-modal',
                 show: true,
                 width: 560,
-                title: translate("JS.TradeTaxonomy.SafetySensitiveTrade"),
+                title: 'Safety Sensitive Trade',
                 content: getModalContent(),
                 buttons: [{
                     html: '<button class="btn primary confirm">Confirm</button>'
@@ -65,11 +65,11 @@ PICS.define('contractor.TradeTaxonomyController', {
         function getModalContent() {
             return [
                 '<p>',
-                    translate("JS.TradeTaxonomy.SafetySensitiveTrade.Text1"),
-                    translate("JS.TradeTaxonomy.SafetySensitiveTrade.Text2"),
+                    'You have selected a trade that is considered a Safety Sensitive trade. ',
+                    'Adding this trade will change your account status to Safety Sensitive.',
                 '</p>',
                 '<p>',
-                    translate("JS.TradeTaxonomy.SafetySensitiveTrade.Text3"),
+                    'For assistance selecting applicable trades, please contact a PICS representative.',
                 '</p>'
             ].join('');
         }
