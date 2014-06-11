@@ -74,7 +74,9 @@ public class UpdateContractors extends CustomerAdaptor {
 				customer.setListID(thePk);
 				customer.setEditSequence((String) thisCustomerParms.get("EditSequence"));
 
-				customer.setName(contractor.getIdString());
+                String customerName = contractor.getIdString() + getCurrencyCodeSuffixForQB(currentSession);
+                customer.setName(customerName);
+
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
 						.toString());
 
