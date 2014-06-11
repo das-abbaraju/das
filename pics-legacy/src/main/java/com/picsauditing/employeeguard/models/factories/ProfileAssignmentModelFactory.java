@@ -14,17 +14,18 @@ import java.util.*;
 public class ProfileAssignmentModelFactory {
 
 	public List<ProfileAssignmentModel> create(final Map<Integer, AccountModel> sites,
+											   final Map<Integer, AccountModel> contractors,
 											   final Map<AccountModel, SkillStatus> accountStatus,
 											   final Map<AccountModel, Set<Group>> accountGroups,
 											   final Map<AccountModel, Set<Role>> accountRoles,
 											   final Map<Project, SkillStatus> projectStatus) {
 
 		List<ProfileAssignmentModel> models = new ArrayList<>();
-		for (AccountModel accountModel : accountRoles.keySet()) {
+		for (AccountModel accountModel : sites.values()) {
 			models.add(createModelForOperator(accountModel, count(accountRoles, accountModel), accountStatus.get(accountModel)));
 		}
 
-		for (AccountModel accountModel : accountGroups.keySet()) {
+		for (AccountModel accountModel : contractors.values()) {
 			models.add(createModelForContractor(accountModel, count(accountGroups, accountModel), accountStatus.get(accountModel)));
 		}
 

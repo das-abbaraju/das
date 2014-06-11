@@ -5,7 +5,7 @@ import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.web.SessionInfoProvider;
 import com.picsauditing.web.SessionInfoProviderFactory;
@@ -88,7 +88,7 @@ public class EmployeeDocViewPermsTest {
 		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
 		employeeDocViewPerms.attach(nextInChain);
 
-		int skillId=-999;
+		int skillId = -999;
 		employeeDocViewPerms.chkPermissions(EMPLOYEE_ID, skillId);
 
 		verify(nextInChain).chkPermissions(EMPLOYEE_ID, skillId);
@@ -102,7 +102,7 @@ public class EmployeeDocViewPermsTest {
 
 		EmployeeDocViewPerms employeeDocViewPerms = new EmployeeDocViewPerms();
 
-		int skillId=-999;
+		int skillId = -999;
 		DocViewableStatus docViewableStatus = employeeDocViewPerms.chkPermissions(EMPLOYEE_ID, skillId);
 
 		assertEquals("Expected Result to be " + DocViewableStatus.UNKNOWN.toString(), DocViewableStatus.UNKNOWN.toString(), docViewableStatus.toString());

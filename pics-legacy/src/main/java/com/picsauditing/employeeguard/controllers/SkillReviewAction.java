@@ -2,51 +2,38 @@ package com.picsauditing.employeeguard.controllers;
 
 import com.google.gson.Gson;
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.UserAgentParser;
 import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.daos.AccountSkillProfileDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
-import com.picsauditing.employeeguard.models.*;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.status.ExpirationCalculator;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
-import com.picsauditing.employeeguard.util.DateUtil;
 import com.picsauditing.employeeguard.util.ImageHelper;
 import com.picsauditing.employeeguard.viewmodel.EmployeeModel;
 import com.picsauditing.employeeguard.viewmodel.SkillReviewModel;
-import com.picsauditing.search.Database;
 import com.picsauditing.strutsutil.FileDownloadContainer;
 import com.picsauditing.util.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.UnknownHostException;
-import java.sql.SQLException;
 import java.util.Date;
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.DOCUMENT_DOWNLOAD_LINK;
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.DOCUMENT_THUMBNAIL_LINK;
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.buildUrl;
+
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.*;
 
 public class SkillReviewAction extends PicsRestActionSupport {
 	private static Logger log = LoggerFactory.getLogger(SkillReviewAction.class);
@@ -72,7 +59,6 @@ public class SkillReviewAction extends PicsRestActionSupport {
 	private InputStream inputStream;
 
 
-
 	public String fetchSkillInfo() {
 		SkillReviewModel skillReviewModel = new SkillReviewModel();
 
@@ -81,7 +67,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 			AccountSkill skill = skillEntityService.find(skillId);
 
 
-			if(skill !=null ) {
+			if (skill != null) {
 				skillReviewModel.setSkillType(skill.getSkillType().toString());
 				skillReviewModel.setName(skill.getName());
 				skillReviewModel.setDescription(skill.getDescription());
@@ -92,7 +78,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 				if (accountSkillProfile != null) {
 
 					Date endDate = ExpirationCalculator.calculateExpirationDate(accountSkillProfile);
-					if(endDate!=null) {
+					if (endDate != null) {
 						skillReviewModel.setExpiration(DateBean.format(endDate, "YYYY-MM-dd"));
 					}
 
@@ -100,7 +86,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 					skillReviewModel.setStatus(skillStatus.toString());
 
 					Date verificationDate = accountSkillProfile.getStartDate();
-					if(verificationDate!=null) {
+					if (verificationDate != null) {
 						skillReviewModel.setVerificationDate(DateBean.format(verificationDate, "YYYY-MM-dd"));
 					}
 
@@ -114,19 +100,19 @@ public class SkillReviewAction extends PicsRestActionSupport {
 				}
 			}
 		} catch (DocumentViewAccessDeniedException e) {
-			log.warn(String.format("Illegal Access detected AccountId=[%d], employeeId=[%d], skillId=[%d]",permissions.getAccountId(), employeeId, skillId));
+			log.warn(String.format("Illegal Access detected AccountId=[%d], employeeId=[%d], skillId=[%d]", permissions.getAccountId(), employeeId, skillId));
 		}
 
 		jsonString = new Gson().toJson(skillReviewModel);
-    return JSON_STRING;
-  }
+		return JSON_STRING;
+	}
 
 
 	public String fetchEmployeeInfo() {
 		EmployeeModel employeeModel = new EmployeeModel();
 
 		Employee employee = employeeEntityService.find(employeeId);
-		if(employee !=null) {
+		if (employee != null) {
 			AccountModel accountModel = accountService.getAccountById(employee.getAccountId());
 			employeeModel.setCompanyName(accountModel.getName());
 			employeeModel.setId(employeeId);
@@ -144,20 +130,20 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 		try {
 			AccountSkillProfile accountSkillProfile = profileDocumentService.getAccountSkillProfileForEmployeeAndSkill(employeeId, skillId);
-			if(accountSkillProfile!=null) {
+			if (accountSkillProfile != null) {
 				ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
-				if(profileDocument != null) {
-						String fileType = profileDocument.getFileType();
-						if(fileType !=null  ){
-							File documentFile=null;
-							if(fileType.contains("image/")) {
-								documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
-								BufferedImage originalImage = ImageIO.read(documentFile);
-								ImageHelper.AspectResult aspectResult = ImageHelper.calculateThumnailSize(originalImage.getWidth(), originalImage.getHeight(), ImageHelper.THUMBNAIL_DEFAULT_SCALE);
+				if (profileDocument != null) {
+					String fileType = profileDocument.getFileType();
+					if (fileType != null) {
+						File documentFile = null;
+						if (fileType.contains("image/")) {
+							documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
+							BufferedImage originalImage = ImageIO.read(documentFile);
+							ImageHelper.AspectResult aspectResult = ImageHelper.calculateThumnailSize(originalImage.getWidth(), originalImage.getHeight(), ImageHelper.THUMBNAIL_DEFAULT_SCALE);
 
-								inputStream = ImageHelper.resizeImage(aspectResult.getWidth(), aspectResult.getHeight(), originalImage, ImageHelper.THUMBNAIL_DEFAULT_FORMAT);
-							}
+							inputStream = ImageHelper.resizeImage(aspectResult.getWidth(), aspectResult.getHeight(), originalImage, ImageHelper.THUMBNAIL_DEFAULT_FORMAT);
 						}
+					}
 				}
 			}
 		} catch (DocumentViewAccessDeniedException e) {
@@ -172,23 +158,23 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 		try {
 			AccountSkillProfile accountSkillProfile = profileDocumentService.getAccountSkillProfileForEmployeeAndSkill(employeeId, skillId);
-			if(accountSkillProfile!=null) {
+			if (accountSkillProfile != null) {
 				ProfileDocument profileDocument = accountSkillProfile.getProfileDocument();
-				if(profileDocument != null) {
+				if (profileDocument != null) {
 
 					byte[] output = null;
 					try {
 						String fileType = profileDocument.getFileType();
-						if(fileType !=null ){
+						if (fileType != null) {
 							File documentFile = profileDocumentService.getDocumentFile(profileDocument, getFtpDir());
 
-							if(documentFile!=null) {
+							if (documentFile != null) {
 								output = FileUtils.getBytesFromFile(documentFile);
 
 								fileContainer = new FileDownloadContainer.Builder()
-												.contentType(profileDocument.getFileType())
-												.contentDisposition("attachment; filename=" + profileDocument.getFileName())
-												.fileInputStream(new ByteArrayInputStream(output)).build();
+										.contentType(profileDocument.getFileType())
+										.contentDisposition("attachment; filename=" + profileDocument.getFileName())
+										.fileInputStream(new ByteArrayInputStream(output)).build();
 							}
 
 						}
@@ -199,7 +185,7 @@ public class SkillReviewAction extends PicsRestActionSupport {
 			}
 		} catch (DocumentViewAccessDeniedException e) {
 			addActionError("Could not prepare download");
-			log.warn(String.format("Illegal Access detected AccountId=[%d], employeeId=[%d], skillId=[%d]",permissions.getAccountId(), employeeId, skillId));
+			log.warn(String.format("Illegal Access detected AccountId=[%d], employeeId=[%d], skillId=[%d]", permissions.getAccountId(), employeeId, skillId));
 		}
 
 		return FILE_DOWNLOAD;

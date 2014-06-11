@@ -39,9 +39,9 @@ public class SummaryAction extends PicsRestActionSupport {
 		ProfileSkillData profileSkillData = profileSkillStatusProcess.buildProfileSkillData(getProfile());
 
 		List<ProfileAssignmentModel> models = ModelFactory.getProfileAssignmentModelFactory()
-				.create(profileSkillData.getSiteAccounts(), profileSkillData.getSiteStatuses(),
-						profileSkillData.getAccountGroups(), profileSkillData.getAccountRoles(),
-						profileSkillData.getProjectStatuses());
+				.create(profileSkillData.getSiteAccounts(), profileSkillData.getContractorAccounts(),
+						profileSkillData.getSiteStatuses(), profileSkillData.getAccountGroups(),
+						profileSkillData.getAccountRoles(), profileSkillData.getProjectStatuses());
 
 		jsonString = new Gson().toJson(models);
 
