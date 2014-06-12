@@ -18,6 +18,7 @@ import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.service.authentication.AuthenticationService;
@@ -96,7 +97,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 			String cookieContent = authenticationService.authenticateEmployeeGUARDUser(loginForm.getUsername(),
 					loginForm.getPassword(), true);
 
-			doSetCookie(cookieContent, 10);
+			doSetCookieMaxAge(cookieContent);
 			SessionCookie cookie = SessionSecurity.parseSessionCookie(cookieContent);
 
 			Profile profile = profileEntityService.findByAppUserId(cookie.getAppUserID());

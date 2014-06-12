@@ -19,6 +19,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.security.CookieSupport;
 import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.validator.Validator;
 import org.slf4j.Logger;
@@ -97,7 +98,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 			String sessionCookieContent = authenticationService.authenticateEmployeeGUARDUser(profileForm.getEmail(),
 					profileForm.getPassword(), true);
-			doSetCookie(sessionCookieContent, 10);
+			doSetCookieMaxAge(sessionCookieContent);
 
 			return setUrlForRedirect(EMPLOYEE_SUMMARY);
 		} catch (Exception e) {

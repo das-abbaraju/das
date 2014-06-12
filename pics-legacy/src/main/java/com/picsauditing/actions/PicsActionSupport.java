@@ -19,7 +19,10 @@ import com.picsauditing.search.SelectUser;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
-import com.picsauditing.strutsutil.*;
+import com.picsauditing.strutsutil.AdvancedValidationAware;
+import com.picsauditing.strutsutil.AjaxUtils;
+import com.picsauditing.strutsutil.FileDownloadContainer;
+import com.picsauditing.strutsutil.HttpUtil;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.*;
 import com.picsauditing.util.system.PicsEnvironment;
@@ -55,15 +58,13 @@ import java.util.regex.Pattern;
 public class PicsActionSupport extends TranslationActionSupport implements RequestAware, SecurityAware,
 		AdvancedValidationAware, ViewNamespaceAware {
 
-    private static final String NO_SESSION = "NO SESSION";
+	private static final String NO_SESSION = "NO SESSION";
 
 	private static final String HAS_SESSION = "HAS SESSION";
 
 	private static final Pattern TARGET_IP_PATTERN = Pattern.compile("^"
-            + CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
+			+ CookieSupport.TARGET_IP_COOKIE_NAME + "-([^-]*)-81$");
 
-    protected static final int DELETE_COOKIE_AGE = 0;
-	protected static final int SESSION_COOKIE_AGE = -1;
 	protected static final int TWENTY_FOUR_HOURS = 24 * 60 * 60;
 	protected static Boolean CONFIG = null;
 
@@ -81,12 +82,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	public static final String INPUT_ERROR = "inputError";
 	public static final String HTTP_STATUS = "http-status";
 	public static final String JSON_STRING = "json-string";
-	public static final String[] DATAFEED_FORMATS = { JSON, XML };
+	public static final String[] DATAFEED_FORMATS = {JSON, XML};
 
 	private static final ViewNamespaceAware namespaceAware = new ViewNamespace();
 
-    @Autowired
-    protected SlugService slugService;
+	@Autowired
+	protected SlugService slugService;
 	@Autowired
 	protected AppPropertyDAO propertyDAO;
 	@Autowired
@@ -97,9 +98,9 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	protected UserDAO userDAO;
 	@Autowired
 	protected FeatureToggle featureToggleChecker;
-    @Autowired
-    protected UserLoginLogDAO loginLogDAO;
-    @Autowired
+	@Autowired
+	protected UserLoginLogDAO loginLogDAO;
+	@Autowired
 	private PermissionBuilder permissionBuilder;
 	@Autowired
 	protected NoteDAO noteDao;
@@ -298,10 +299,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			return;
 		}
 
-        // This happens when the server has been restarted and their HttpSession is gone, or they've moved between
-        // servers in a server cookie cluster and the session was not clustered, possibly because of being completely
-        // different application instances. We will still honor the cookie in these cases. We do not want to log
-        // this case in loginlog. See PICS-11696
+		// This happens when the server has been restarted and their HttpSession is gone, or they've moved between
+		// servers in a server cookie cluster and the session was not clustered, possibly because of being completely
+		// different application instances. We will still honor the cookie in these cases. We do not want to log
+		// this case in loginlog. See PICS-11696
 		int clientSessionUserID = getClientSessionUserID();
 		if (clientSessionUserID > 0) {
 			logger.info("Logging in user {} from a valid session cookie.", clientSessionUserID);
@@ -384,11 +385,11 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 			if (!permissions.loginRequired(ServletActionContext.getResponse(), ServletActionContext.getRequest())) {
 				return false;
 			}
-        } catch (IllegalStateException badState) {
-            logger.error("This error was part of tracking PICS-15054.  user id {}", permissions.getUserId());
-            logger.error("PicsActionSupport: Error occurred trying to login: {} {}", badState.getMessage(), badState.getStackTrace());
-            return false;
-        } catch (Exception e) {
+		} catch (IllegalStateException badState) {
+			logger.error("This error was part of tracking PICS-15054.  user id {}", permissions.getUserId());
+			logger.error("PicsActionSupport: Error occurred trying to login: {} {}", badState.getMessage(), badState.getStackTrace());
+			return false;
+		} catch (Exception e) {
 			logger.error("PicsActionSupport: Error occurred trying to login: {}", e.getMessage());
 			return false;
 		}
@@ -784,8 +785,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 * Checks to see if this value is in the parameter map. If it is and the
 	 * value is an empty string ("") then we will replace that value with a null
 	 *
-	 * @param name
-	 *            Name of the parameter you want to check in the map
+	 * @param name Name of the parameter you want to check in the map
 	 */
 	protected void parameterCleanUp(String name) {
 		String[] para = (String[]) ActionContext.getContext().getParameters().get(name);
@@ -918,10 +918,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	protected boolean isRememberMeSetInCookie() {
-        return isRememberMeSetInCookie(validSessionCookie());
-    }
+		return isRememberMeSetInCookie(validSessionCookie());
+	}
 
-    private boolean isRememberMeSetInCookie(SessionCookie sessionCookie) {
+	private boolean isRememberMeSetInCookie(SessionCookie sessionCookie) {
 		if (sessionCookie == null) {
 			return false;
 		}
@@ -944,47 +944,47 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	 */
 	@Override
 	public boolean sessionCookieIsValidAndNotExpired() {
-        SessionCookie sessionCookie = validSessionCookie();
+		SessionCookie sessionCookie = validSessionCookie();
 		if (sessionCookie == null) {
 			return false;
 		} else {
-            boolean cookieIsTimedOut = !cookieIsNotTimedOut(sessionCookie);
-            if (isRememberMeSetInCookie(sessionCookie)) {
-                if (cookieIsTimedOut) {
-                    logRememberMeLogin(getUser());
-                }
-                return true;
-            } else {
-                return !cookieIsTimedOut;
-            }
-        }
+			boolean cookieIsTimedOut = !cookieIsNotTimedOut(sessionCookie);
+			if (isRememberMeSetInCookie(sessionCookie)) {
+				if (cookieIsTimedOut) {
+					logRememberMeLogin(getUser());
+				}
+				return true;
+			} else {
+				return !cookieIsTimedOut;
+			}
+		}
 	}
 
-    private boolean cookieIsNotTimedOut(SessionCookie sessionCookie) {
-        // in case the http session was reset
-        loadPermissions();
-        long timeRemaing = calculateTimeRemaining(sessionCookie, permissions);
-        return (timeRemaing > -1);
-    }
+	private boolean cookieIsNotTimedOut(SessionCookie sessionCookie) {
+		// in case the http session was reset
+		loadPermissions();
+		long timeRemaing = calculateTimeRemaining(sessionCookie, permissions);
+		return (timeRemaing > -1);
+	}
 
-    private long calculateTimeRemaining(SessionCookie sessionCookie, Permissions permissions) {
+	private long calculateTimeRemaining(SessionCookie sessionCookie, Permissions permissions) {
 		if (permissions == null || sessionCookie == null) {
 			return -1;
 		}
 
 		long nowInSeconds = new Date().getTime() / 1000;
-        long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
+		long cookieCreatedSeconds = sessionCookie.getCookieCreationTime().getTime() / 1000;
 
-        return remainingTimeInSeconds(permissions, nowInSeconds, cookieCreatedSeconds);
+		return remainingTimeInSeconds(permissions, nowInSeconds, cookieCreatedSeconds);
 	}
 
 	private long remainingTimeInSeconds(Permissions permissions, long nowInSeconds,
-			long cookieCreatedSeconds) {
+										long cookieCreatedSeconds) {
 		long timeSinceCookieCreatedInSeconds = nowInSeconds - cookieCreatedSeconds;
 		return permissions.getSessionCookieTimeoutInSeconds() - timeSinceCookieCreatedInSeconds;
 	}
 
-    private SessionCookie validSessionCookie() {
+	private SessionCookie validSessionCookie() {
 		String sessionCookieValue = clientSessionCookieValue();
 		if (sessionCookieValue == null || !SessionSecurity.cookieIsValid(sessionCookieValue)) {
 			clearPicsOrgCookie();
@@ -1027,7 +1027,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 	protected void clearPicsOrgCookie() {
 		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, "");
-		cookie.setMaxAge(DELETE_COOKIE_AGE);
+		cookie.setMaxAge(CookieSupport.DELETE_COOKIE_AGE);
 		if (!isLocalhostEnvironment()) {
 			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
 		}
@@ -1041,7 +1041,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
 		loadPermissions(false);
 		String sessionCookieContent = sessionCookieContent(sessionCookie);
-		int maxAge = SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_MAX_AGE;
 		if (permissions != null && isRememberMeSetInCookie()) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
@@ -1066,9 +1066,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return sessionCookieContent(false, 0);
 	}
 
+	protected void doSetCookieMaxAge(String cookieContent) {
+		doSetCookie(cookieContent, CookieSupport.SESSION_COOKIE_MAX_AGE);
+	}
+
 	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
 		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
-		int maxAge = SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_MAX_AGE;
 		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
@@ -1078,17 +1082,19 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		doSetCookie(sessionCookieContent, maxAge);
 	}
 
-    private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
-        Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
-        cookie.setMaxAge(maxAge);
-	    cookie.setPath("/");
-        if (!isLocalhostEnvironment()) {
-            cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
-        }
-        ServletActionContext.getResponse().addCookie(cookie);
-    }
+	private void addClientSessionCookieToResponse(String sessionCookieContent, int maxAge) {
+		Cookie cookie = new Cookie(CookieSupport.SESSION_COOKIE_NAME, sessionCookieContent);
+		cookie.setMaxAge(maxAge);
+		cookie.setPath("/");
 
-    private String sessionCookieContent(boolean rememberMe, int switchToUser) {
+		if (!isLocalhostEnvironment()) {
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		}
+
+		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private String sessionCookieContent(boolean rememberMe, int switchToUser) {
 		SessionCookie sessionCookie = new SessionCookie();
 		Date now = new Date();
 		sessionCookie.setUserID(permissions.getUserId());
@@ -1234,7 +1240,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	}
 
 	public String getMaxFileUploadSize() {
-        // set basically as a constant
+		// set basically as a constant
 		BigDecimal value = new BigDecimal(500);
 		return value.toString();
 	}
@@ -1284,91 +1290,91 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 
 		String number = null;
 		switch (type) {
-		case FAX:
-			number = mainPage.getFaxNumber(country);
-			break;
-		case MAIN:
-			number = mainPage.getPhoneNumber(country);
-			break;
-		case SALES:
-			number = mainPage.getSalesPhoneNumber(country);
-			break;
+			case FAX:
+				number = mainPage.getFaxNumber(country);
+				break;
+			case MAIN:
+				number = mainPage.getPhoneNumber(country);
+				break;
+			case SALES:
+				number = mainPage.getSalesPhoneNumber(country);
+				break;
 		}
 
 		return number;
 	}
 
-    protected void logSwitchToAttempt(User user) {
-        UserLoginLog loginLog = new UserLoginLog();
-        loginLog.setLoginMethod(LoginMethod.SwitchTo);
-        loginLog.setUser(user);
-        logLoginAttempt(loginLog);
-    }
+	protected void logSwitchToAttempt(User user) {
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginMethod(LoginMethod.SwitchTo);
+		loginLog.setUser(user);
+		logLoginAttempt(loginLog);
+	}
 
-    protected void logCredentialLoginAttempt(User user) {
-        UserLoginLog loginLog = new UserLoginLog();
-        loginLog.setLoginMethod(LoginMethod.Credentials);
-        loginLog.setUser(user);
-        logLoginAttempt(loginLog);
-    }
+	protected void logCredentialLoginAttempt(User user) {
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginMethod(LoginMethod.Credentials);
+		loginLog.setUser(user);
+		logLoginAttempt(loginLog);
+	}
 
-    protected void logRememberMeLogin(User user) {
-        UserLoginLog loginLog = new UserLoginLog();
-        loginLog.setLoginMethod(LoginMethod.RememberMeCookie);
-        loginLog.setUser(user);
-        logLoginAttempt(loginLog);
-    }
+	protected void logRememberMeLogin(User user) {
+		UserLoginLog loginLog = new UserLoginLog();
+		loginLog.setLoginMethod(LoginMethod.RememberMeCookie);
+		loginLog.setUser(user);
+		logLoginAttempt(loginLog);
+	}
 
-    private void logLoginAttempt(UserLoginLog loginLog) {
-        if (loginLog.getUser() == null) {
-            return;
-        }
+	private void logLoginAttempt(UserLoginLog loginLog) {
+		if (loginLog.getUser() == null) {
+			return;
+		}
 
-        loginLog.setLoginDate(new Date());
-        loginLog.setRemoteAddress(getRequest().getRemoteAddr());
-        String serverName = getRequest().getLocalName();
-        UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
-        loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
-        loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
-        if (isLiveEnvironment() || isBetaEnvironment()) {
-            // Need computer name instead of www
-            try {
-                serverName = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
-                logger.error("Error determining host: {}", e);
-                serverName = "Live or Beta";
-            }
-        }
+		loginLog.setLoginDate(new Date());
+		loginLog.setRemoteAddress(getRequest().getRemoteAddr());
+		String serverName = getRequest().getLocalName();
+		UserAgentParser uap = new UserAgentParser(getRequest().getHeader("User-Agent"));
+		loginLog.setBrowser(uap.getBrowserName() + " " + uap.getBrowserVersion());
+		loginLog.setUserAgent(getRequest().getHeader("User-Agent"));
+		if (isLiveEnvironment() || isBetaEnvironment()) {
+			// Need computer name instead of www
+			try {
+				serverName = InetAddress.getLocalHost().getHostName();
+			} catch (UnknownHostException e) {
+				logger.error("Error determining host: {}", e);
+				serverName = "Live or Beta";
+			}
+		}
 
-        loginLog.setServerAddress(serverName);
+		loginLog.setServerAddress(serverName);
 
 
-        String targetIp = extractTargetIpFromCookie();
-        if (!Strings.isEmpty(targetIp)) {
-            loginLog.setTargetIP(targetIp);
-        }
+		String targetIp = extractTargetIpFromCookie();
+		if (!Strings.isEmpty(targetIp)) {
+			loginLog.setTargetIP(targetIp);
+		}
 
-        loginLog.setSuccessful((permissions == null) ? false : permissions.isLoggedIn());
-        if (permissions != null && permissions.getAdminID() > 0) {
-            loginLog.setAdmin(new User(permissions.getAdminID()));
-        }
+		loginLog.setSuccessful((permissions == null) ? false : permissions.isLoggedIn());
+		if (permissions != null && permissions.getAdminID() > 0) {
+			loginLog.setAdmin(new User(permissions.getAdminID()));
+		}
 
-        loginLogDAO.save(loginLog);
-    }
+		loginLogDAO.save(loginLog);
+	}
 
-    private String extractTargetIpFromCookie() {
-        List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
-                CookieSupport.TARGET_IP_COOKIE_NAME);
-        for (Cookie cookie : matchingCookies) {
-            Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
-            if (matcher.matches()) {
-                return matcher.group(1);
-            }
-        }
-        return "";
-    }
+	private String extractTargetIpFromCookie() {
+		List<Cookie> matchingCookies = CookieSupport.cookiesFromRequestThatStartWith(getRequest(),
+				CookieSupport.TARGET_IP_COOKIE_NAME);
+		for (Cookie cookie : matchingCookies) {
+			Matcher matcher = TARGET_IP_PATTERN.matcher(cookie.getName());
+			if (matcher.matches()) {
+				return matcher.group(1);
+			}
+		}
+		return "";
+	}
 
-    private enum PhoneNumberType {
+	private enum PhoneNumberType {
 		FAX, MAIN, SALES
 	}
 
@@ -1422,27 +1428,27 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 				.get(Permissions.SESSION_PERMISSIONS_COOKIE_KEY);
 	}
 
-    public boolean usingNewTranslationFeature() {
-        return featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) || featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE);
-    }
+	public boolean usingNewTranslationFeature() {
+		return featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_TRANSLATION_SERVICE_ADAPTER) || featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_USE_NEW_TRANSLATIONS_DATASOURCE);
+	}
 
-    public boolean isUserQuarantined() {
-        try {
-            if (!AjaxUtils.isAjax(getRequest())) {
-                User user = getUser();
-                if (user != null) {
-                    Account account = user.getAccount();
-                    if (account != null && account.isContractor() && account.getStatus() != null && account.getStatus().isPending()) {
-                        ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-                        if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName())) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            // if anything goes wrong (such as no action name for unmapped actions), we'll just let them pass
-        }
-        return false;
-    }
+	public boolean isUserQuarantined() {
+		try {
+			if (!AjaxUtils.isAjax(getRequest())) {
+				User user = getUser();
+				if (user != null) {
+					Account account = user.getAccount();
+					if (account != null && account.isContractor() && account.getStatus() != null && account.getStatus().isPending()) {
+						ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+						if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName())) {
+							return true;
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			// if anything goes wrong (such as no action name for unmapped actions), we'll just let them pass
+		}
+		return false;
+	}
 }
