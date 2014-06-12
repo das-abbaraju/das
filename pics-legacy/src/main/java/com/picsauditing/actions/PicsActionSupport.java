@@ -1066,6 +1066,10 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return sessionCookieContent(false, 0);
 	}
 
+	protected void doSetCookieMaxAge(String cookieContent) {
+		doSetCookie(cookieContent, CookieSupport.SESSION_COOKIE_MAX_AGE);
+	}
+
 	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
 		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
 		int maxAge = CookieSupport.SESSION_COOKIE_MAX_AGE;

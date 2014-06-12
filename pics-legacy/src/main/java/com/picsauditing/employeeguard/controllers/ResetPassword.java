@@ -16,55 +16,55 @@ import java.io.IOException;
 import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
 
 public class ResetPassword extends PicsRestActionSupport {
-    @Autowired
-    private AppUserService appUserService;
-    @Autowired
-    private AuthenticationService authenticationService;
-    @Autowired
-    private PermissionBuilder permissionBuilder;
+	@Autowired
+	private AppUserService appUserService;
+	@Autowired
+	private AuthenticationService authenticationService;
+	@Autowired
+	private PermissionBuilder permissionBuilder;
 
-    private String username;
-    private String password;
+	private String username;
+	private String password;
 
-    @Anonymous
-    public String index() throws Exception {
-        return SUCCESS;
-    }
+	@Anonymous
+	public String index() throws Exception {
+		return SUCCESS;
+	}
 
-    @Anonymous
-    public String resetPassword() throws Exception {
-        AppUser appUser = appUserService.findByUsername(username);
-        if (appUser != null) {
-            appUserService.encodeAndSavePassword(appUser, password);
-            LoginContext loginContext = authenticationService.doPreLoginVerificationEG(username, password);
-            return doLoginEG(loginContext);
-        } else {
-            return ERROR;
-        }
-    }
+	@Anonymous
+	public String resetPassword() throws Exception {
+		AppUser appUser = appUserService.findByUsername(username);
+		if (appUser != null) {
+			appUserService.encodeAndSavePassword(appUser, password);
+			LoginContext loginContext = authenticationService.doPreLoginVerificationEG(username, password);
+			return doLoginEG(loginContext);
+		} else {
+			return ERROR;
+		}
+	}
 
-    private String doLoginEG(LoginContext loginContext) throws IOException {
-        doSetCookie(loginContext.getCookie(), 10);
-        permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
-        SessionInfoProviderFactory.getSessionInfoProvider()
-                .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
+	private String doLoginEG(LoginContext loginContext) throws IOException {
+		doSetCookieMaxAge(loginContext.getCookie());
+		permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
+		SessionInfoProviderFactory.getSessionInfoProvider()
+				.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
-        return setUrlForRedirect(EMPLOYEE_SUMMARY);
-    }
+		return setUrlForRedirect(EMPLOYEE_SUMMARY);
+	}
 
-    public String getUsername() {
-        return username;
-    }
+	public String getUsername() {
+		return username;
+	}
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+	public void setUsername(String username) {
+		this.username = username;
+	}
 
-    public String getPassword() {
-        return password;
-    }
+	public String getPassword() {
+		return password;
+	}
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+	public void setPassword(String password) {
+		this.password = password;
+	}
 }

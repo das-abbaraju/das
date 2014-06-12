@@ -98,7 +98,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 			String sessionCookieContent = authenticationService.authenticateEmployeeGUARDUser(profileForm.getEmail(),
 					profileForm.getPassword(), hashCode, true);
-			doSetCookie(sessionCookieContent, CookieSupport.SESSION_COOKIE_MAX_AGE);
+			doSetCookieMaxAge(sessionCookieContent);
 
 			return setUrlForRedirect(EMPLOYEE_SUMMARY);
 		} catch (Exception e) {
