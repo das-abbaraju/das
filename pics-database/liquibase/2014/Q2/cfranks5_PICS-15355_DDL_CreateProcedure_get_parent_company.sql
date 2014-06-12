@@ -6,7 +6,7 @@ DROP PROCEDURE IF EXISTS update_max_parent
 ;
 --sql:
 --changeset cfranks:5b splitStatements:false endDelimiter:|
-CREATE DEFINER=`pics_admin`@`%` PROCEDURE update_max_parent ()
+CREATE PROCEDURE update_max_parent ()
 BEGIN
 	DECLARE v_id INT;
 	DECLARE v_parentID INT;
