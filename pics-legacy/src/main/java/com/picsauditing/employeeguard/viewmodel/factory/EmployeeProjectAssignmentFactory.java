@@ -1,6 +1,9 @@
 package com.picsauditing.employeeguard.viewmodel.factory;
 
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillProfile;
+import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
@@ -63,8 +66,10 @@ public class EmployeeProjectAssignmentFactory {
 		}
 
 		List<AccountSkill> skills = new ArrayList<>();
-		for (AccountGroup role : employeeRoleAssignments) {
-			skills.addAll(projectRoleSkills.get(role));
+		for (Role role : employeeRoleAssignments) {
+			if (projectRoleSkills.containsKey(role)) {
+				skills.addAll(projectRoleSkills.get(role));
+			}
 		}
 
 		return skills;
