@@ -400,7 +400,7 @@ public class LoginController extends PicsActionSupport {
 	}
 
 	private String doLoginEG(LoginContext loginContext) throws IOException {
-		doSetCookie(loginContext.getCookie(), 10);
+		doSetCookieMaxAge(loginContext.getCookie());
 		permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
 		SessionInfoProviderFactory.getSessionInfoProvider()
 				.putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
@@ -409,7 +409,7 @@ public class LoginController extends PicsActionSupport {
 	}
 
     private String doLoginEGforPasswordReset(LoginContext loginContext) throws IOException {
-        doSetCookie(loginContext.getCookie(), 10);
+		doSetCookieMaxAge(loginContext.getCookie());
         permissions = permissionBuilder.employeeUserLogin(loginContext.getAppUser(), loginContext.getProfile());
         SessionInfoProviderFactory.getSessionInfoProvider()
                 .putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
