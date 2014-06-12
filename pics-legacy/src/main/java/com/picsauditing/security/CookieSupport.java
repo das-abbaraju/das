@@ -15,7 +15,7 @@ public class CookieSupport {
 	public static final String USE_BETA_COOKIE_NAME = "USE_BETA";
 
 	public static final int DELETE_COOKIE_AGE = 0;
-	public static final int SESSION_COOKIE_AGE = -1;
+	public static final int SESSION_COOKIE_MAX_AGE = -1;
 
 	public static Cookie cookieFromRequest(HttpServletRequest request, String cookieName) {
 		if (null == request || Strings.isEmpty(cookieName)) {

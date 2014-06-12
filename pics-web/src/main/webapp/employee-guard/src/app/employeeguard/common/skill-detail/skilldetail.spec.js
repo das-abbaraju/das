@@ -34,5 +34,9 @@ describe('Skill Details', function() {
     it("skill should be defined", function() {
         expect(scope.skill).toBeDefined();
     });
-});
 
+    it("skill should have a status class if completed", function() {
+        //This is just testing the controller method only.  The service is tested elsewhere.
+        expect(scope.getSkillStatusClassName('Expired')).toEqual('danger');
+    });
+});

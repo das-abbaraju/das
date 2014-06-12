@@ -18,8 +18,6 @@ describe('Employee Service', function() {
     it("should force reloading employee object", function() {
         spyOn(EmployeeService, "fetchEmployee");
 
-        EmployeeService.setId(23);
-
         EmployeeService.getEmployee('', true);
 
         expect(EmployeeService.fetchEmployee).toHaveBeenCalled();

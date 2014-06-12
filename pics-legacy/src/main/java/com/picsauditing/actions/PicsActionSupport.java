@@ -1041,7 +1041,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 	private void addClientSessionCookieToResponse(SessionCookie sessionCookie) {
 		loadPermissions(false);
 		String sessionCookieContent = sessionCookieContent(sessionCookie);
-		int maxAge = CookieSupport.SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_MAX_AGE;
 		if (permissions != null && isRememberMeSetInCookie()) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}
@@ -1066,9 +1066,13 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return sessionCookieContent(false, 0);
 	}
 
+	protected void doSetCookieMaxAge(String cookieContent) {
+		doSetCookie(cookieContent, CookieSupport.SESSION_COOKIE_MAX_AGE);
+	}
+
 	protected void addClientSessionCookieToResponse(boolean rememberMe, int switchToUser) {
 		String sessionCookieContent = sessionCookieContent(rememberMe, switchToUser);
-		int maxAge = CookieSupport.SESSION_COOKIE_AGE;
+		int maxAge = CookieSupport.SESSION_COOKIE_MAX_AGE;
 		if (permissions != null && (rememberMe || isRememberMeSetInCookie())) {
 			maxAge = permissions.getRememberMeTimeInSeconds();
 		}

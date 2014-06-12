@@ -1,10 +1,10 @@
 angular.module('PICS.employeeguard')
 .factory('EmployeeService', function (EmployeeServiceFactory) {
     var factory = {},
-        employee = {};
+        employee;
 
     factory.getEmployee = function(employeeId, forceReload) {
-        if (forceReload || !employee.id) {
+        if (forceReload || (typeof employee === 'undefined')) {
             return factory.fetchEmployee(employeeId);
         } else {
             return employee;
