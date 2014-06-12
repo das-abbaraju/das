@@ -194,6 +194,8 @@ public class InsertContractors extends CustomerAdaptor {
                                 connected.setQbListUKID(customer.getListID());
                                 break;
                             case CHF:
+                                connected.setQbListCHFID(customer.getListID());
+                                break;
                             case EUR:
                                 connected.setQbListEUID(customer.getListID());
                                 break;
@@ -223,7 +225,9 @@ public class InsertContractors extends CustomerAdaptor {
 					connected.setQbListUKID(null);
 				} else if (currentSession.isEUR()) {
 					connected.setQbListEUID(null);
-				} else {
+				}else if (currentSession.isCHF()) {
+                    connected.setQbListCHFID(null);
+                }else {
 					connected.setQbListCAID(null);
 				}
 

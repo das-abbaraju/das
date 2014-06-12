@@ -1,15 +1,9 @@
 package com.intuit.developer;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.picsauditing.actions.converters.BooleanConverter;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.Currency;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -21,9 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.Currency;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"QBWebConnectorSvcSkeletonTest-context.xml"})
@@ -169,7 +168,7 @@ public class QBWebConnectorSvcSkeletonTest {
         String currencyCode = session.getCurrencyCode();
         assertEquals(currencyCode, Currency.CHF.name());
         String qbId = session.getQbID();
-        assertEquals(qbId, QBWebConnectorSvcSkeleton.QB_LIST_EUID);
+        assertEquals(qbId, QBWebConnectorSvcSkeleton.QB_LIST_CHFID);
     }
 
     @Test

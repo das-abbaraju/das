@@ -1,12 +1,10 @@
 package com.picsauditing.actions.report;
 
-import com.intuit.developer.adaptors.*;
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.*;
@@ -143,31 +141,36 @@ public class ReportQBSyncList extends PicsActionSupport {
 	}
 
     private void setQBData(ContractorAccount contractor, Currency currency) {
-		contractor.setQbSync(false);
-		switch (currency) {
-		case CAD:
-			if (contractor.getQbListCAID() == null) {
-				contractor.setQbListCAID("NOLOAD" + id);
-			}
-			break;
+        contractor.setQbSync(false);
+        switch (currency) {
+            case CAD:
+                if (contractor.getQbListCAID() == null) {
+                    contractor.setQbListCAID("NOLOAD" + id);
+                }
+                break;
 
-		case GBP:
-			if (contractor.getQbListUKID() == null) {
-				contractor.setQbListUKID("NOLOAD" + id);
-			}
-			break;
+            case GBP:
+                if (contractor.getQbListUKID() == null) {
+                    contractor.setQbListUKID("NOLOAD" + id);
+                }
+                break;
 
-		case EUR:
-			if (contractor.getQbListEUID() == null) {
-				contractor.setQbListEUID("NOLOAD" + id);
-			}
-			break;
+            case EUR:
+                if (contractor.getQbListEUID() == null) {
+                    contractor.setQbListEUID("NOLOAD" + id);
+                }
+                break;
+            case CHF:
+                if (contractor.getQbListCHFID() == null) {
+                    contractor.setQbListCHFID("NOLOAD" + id);
+                }
+                break;
 
-		default:
-			if (contractor.getQbListID() == null) {
-				contractor.setQbListID("NOLOAD" + id);
-			}
-			break;
-		}
-	}
+            default:
+                if (contractor.getQbListID() == null) {
+                    contractor.setQbListID("NOLOAD" + id);
+                }
+                break;
+        }
+    }
 }

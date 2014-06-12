@@ -276,8 +276,10 @@ public class QBXmlAdaptor {
                 return "qbListUKID";
 
             case EUR:
-            case CHF:
                 return "qbListEUID";
+
+            case CHF:
+                return "qbListCHFID";
 
             default:
                 return "qbListID";

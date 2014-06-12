@@ -1,16 +1,15 @@
 package com.picsauditing.actions;
 
-import java.util.List;
-
-import org.bouncycastle.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Transaction;
+import org.bouncycastle.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class QBSyncEdit extends PicsActionSupport {
@@ -80,7 +79,10 @@ public class QBSyncEdit extends PicsActionSupport {
 			contractor.setQbListCAID(null);
 			contractor.setQbListUKID(null);
 			contractor.setQbListEUID(null);
-		}
+            contractor.setQbListCHFID(null);
+
+
+        }
 		contractorAccountDAO.save(contractor);
 	}
 
