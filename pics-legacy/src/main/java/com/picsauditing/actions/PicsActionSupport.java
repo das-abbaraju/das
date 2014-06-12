@@ -1251,6 +1251,12 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 		return displayName;
 	}
 
+	public String getPicsEmail() {
+		Country country = CountryUtil.getCountryDefaultToUs(account);
+		String displayName = country.getCsrEmail();
+		return displayName;
+	}
+
 	public String getPicsPhoneNumber() {
 		return getPicsPhoneNumber(permissions.getCountry());
 	}
