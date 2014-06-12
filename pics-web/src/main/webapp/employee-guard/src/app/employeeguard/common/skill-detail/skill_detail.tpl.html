@@ -47,7 +47,8 @@
                                     <dt ng-if="skill.status !== 'Expired'" class="col-md-3">Expires</dt>
                                     <dt ng-if="skill.status === 'Expired'" class="col-md-3">Expired</dt>
                                     <dd class="col-md-9">
-                                        <span class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
+                                        <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">Never</span>
+                                        <span ng-if="!skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
                                     </dd>
                                 </dl>
                             </div>
@@ -59,7 +60,8 @@
                                 <dd class="col-md-9">{{ skill.verification_date }}</dd>
                                 <dt class="col-md-3">Expires</dt>
                                 <dd class="col-md-9">
-                                    <span class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
+                                    <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">Never</span>
+                                    <span ng-if="!skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
                                 </dd>
                             </dl>
                             <div ng-if="!skill.status" class="alert alert-danger">
