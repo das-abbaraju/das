@@ -80,8 +80,6 @@ public class QBSyncEdit extends PicsActionSupport {
 			contractor.setQbListUKID(null);
 			contractor.setQbListEUID(null);
             contractor.setQbListCHFID(null);
-
-
         }
 		contractorAccountDAO.save(contractor);
 	}
