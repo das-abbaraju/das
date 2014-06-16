@@ -237,7 +237,7 @@ public class ManageReports extends PicsActionSupport {
 
     	reportUserDAO.changeSortOrder(caseStmt.toString(),permissions.getUserId());
 
-        return SUCCESS;
+        return determineViewName("favoritesList", "favorites");
 	}
 
 
