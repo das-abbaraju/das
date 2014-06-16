@@ -53,7 +53,8 @@ BEGIN
 		
 	END LOOP the_loop;
 	CLOSE get_parent_cur;
-
+END
+;
 /*
 -- before run
 SELECT a.id, a.name, o.reportingID, o.parentID
@@ -75,4 +76,3 @@ JOIN accounts a3 ON a3.id = o.reportingID
 WHERE o.id IN
 (id1 ,id2);
 */
-;
