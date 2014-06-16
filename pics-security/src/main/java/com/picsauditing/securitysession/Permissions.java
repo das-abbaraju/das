@@ -591,7 +591,7 @@ public class Permissions implements Serializable {
 	 * @return
 	 */
 	public boolean isAuditor() {
-		return hasPermission(OpPerms.AuditEdit);
+		return hasPermission(OpPerms.AuditEdit) || hasPermission(OpPerms.ClientAuditEdit);
 	}
 
 	public boolean isMarketing() {

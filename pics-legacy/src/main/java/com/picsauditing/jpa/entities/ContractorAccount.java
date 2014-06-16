@@ -1820,7 +1820,7 @@ public class ContractorAccount extends Account implements JSONable {
 		this.followUpDate = followUpDate;
 	}
 
-    @ReportField(type = FieldType.Integer, requiredPermissions = OpPerms.AllContractors)
+    @ReportField(type = FieldType.Integer)
 	public int getContactCountByEmail() {
 		return contactCountByEmail;
 	}
@@ -1839,7 +1839,7 @@ public class ContractorAccount extends Account implements JSONable {
 		contactCountByPhone++;
 	}
 
-    @ReportField(type = FieldType.Integer, requiredPermissions = OpPerms.AllContractors)
+    @ReportField(type = FieldType.Integer)
 	public int getContactCountByPhone() {
 		return contactCountByPhone;
 	}
@@ -1864,7 +1864,7 @@ public class ContractorAccount extends Account implements JSONable {
 	}
 
 	@Enumerated(EnumType.ORDINAL)
-    @ReportField(type = FieldType.LowMedHigh, requiredPermissions = OpPerms.AllContractors)
+    @ReportField(type = FieldType.LowMedHigh)
 	public LowMedHigh getInsideSalesPriority() {
 		return insideSalesPriority;
 	}
