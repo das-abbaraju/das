@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.daos;
 
+import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.SiteSkill;
 
 import javax.persistence.TypedQuery;
@@ -29,4 +30,15 @@ public class SiteSkillDAO extends AbstractBaseEntityDAO<SiteSkill> {
 
 		return query.getResultList();
 	}
+
+	public List<AccountSkill> findReqdSkillsForCorpOp(final int siteId) {
+		TypedQuery<AccountSkill> query = em.createQuery("select skill FROM SiteSkill ss " +
+						" join ss.skill skill " +
+						" WHERE ss.siteId = :siteId", AccountSkill.class);
+
+		query.setParameter("siteId", siteId);
+
+		return query.getResultList();
+	}
+
 }

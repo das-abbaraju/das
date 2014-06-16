@@ -357,4 +357,23 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		delete(accountSkill);
 	}
 
+	public List<AccountSkill> findSkillsForCorpOp(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return accountSkillDAO.findByAccounts(accountIds);
+	}
+
+	public List<AccountSkill> findReqdSkillsForCorpOp(int siteId) {
+		return siteSkillDAO.findReqdSkillsForCorpOp(siteId);
+	}
+
+	public List<AccountSkill> filterSkillsForCorpOp(String searchTerm, final List<Integer> accountIds) {
+		if (Strings.isEmpty(searchTerm) || CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+
+		return accountSkillDAO.search(searchTerm, accountIds);
+	}
 }

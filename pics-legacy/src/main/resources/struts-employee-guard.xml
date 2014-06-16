@@ -384,4 +384,12 @@
             <result name="training">/struts/employee-guard/employee/manage-skill/_training-form.jsp</result>
         </action>
     </package>
+
+    <!-- Restful API URIs -->
+    <package name="com.picsauditing.employee-guard" extends="com.picsauditing" namespace="/employee-guard">
+    <default-interceptor-ref name="pics-rest-stack"/>
+
+      <action name="skills" class=""/>
+    </package>
+
 </struts>
