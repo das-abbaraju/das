@@ -97,7 +97,7 @@ public class GlobalAddressVerifierTest {
     @Test
     public void testVerifyAddress() throws ServiceException, RemoteException {
         doAnswer(ANSWER).when(siService).advancedVerify(anyString(), anyString(), anyString(), any(Address.class), eq(true), eq(true), eq(true),
-                eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_NO_SEPARATOR), eq(ParsedInputType.ONLY_FOR_P),
+                eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_LF), eq(ParsedInputType.ONLY_FOR_P),
                 eq(PreferredLanguageType.PFL_LANG_EN), eq(CapitalizationType.MIXED_CASE), any(SIWsOutputOfListingHolder.class), any(SISubscriptionInfoHolder.class));
         Address address = globalAddressVerifier.execute();
         assertEquals("17701 Cowan", address.getStreetAddressLines());
@@ -112,7 +112,7 @@ public class GlobalAddressVerifierTest {
     @Test
     public void testVerifyAddress_ThrowException() throws ServiceException, RemoteException {
         doThrow(ServiceException.class).when(siService).advancedVerify(anyString(), anyString(), anyString(), any(Address.class), eq(true), eq(true), eq(true),
-                eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_NO_SEPARATOR), eq(ParsedInputType.ONLY_FOR_P),
+                eq(CountryOfOriginType.COO_USA), eq(CountryType.ISO_2), eq(LineSeparatorType.LST_LF), eq(ParsedInputType.ONLY_FOR_P),
                 eq(PreferredLanguageType.PFL_LANG_EN), eq(CapitalizationType.MIXED_CASE), any(SIWsOutputOfListingHolder.class), any(SISubscriptionInfoHolder.class));
         Address address = globalAddressVerifier.execute();
         assertEquals(500, address.getStatusNbr());

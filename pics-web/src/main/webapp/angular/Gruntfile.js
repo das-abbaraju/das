@@ -6,9 +6,9 @@ module.exports = function(grunt) {
         'vendor/angular/angular-resource.js',
         'vendor/jquery/jquery-ui.js',
         'vendor/bootstrap/bootstrap.js',
-        'vendor/d3/d3.js',
         'vendor/bootstrap/bootstrap.tooltip.js',
         'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
+        'vendor/respond.js',
         'vendor/hogan-2.0.0.js',
         'vendor/typeahead.js',
         'vendor/jquery.hammer.js',
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         'vendor/angular/angular-ui-select2.js',
         'vendor/pics/core.js',
         'vendor/google-maps/markerclusterer.js',
-        'vendor/google-maps/markerwithlabel.js',
+        // 'vendor/google-maps/markerwithlabel.js',
         'vendor/angular/jasmine/angular-mocks.js'
     ];
 
@@ -27,11 +27,14 @@ module.exports = function(grunt) {
         'src/common/translations/translations.js',
         'src/common/translations/translationKeys.js',
         'src/common/directives/directives.js',
+        'src/common/services/services.js',
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
         'src/app/employeeguard/common/skills/skills.js',
         'src/app/employeeguard/employeeguard.js',
-        'src/common/services/services.js',
+        'src/app/registration/registration.js',
+        'vendor/angular/jasmine/angular-mocks.js',
+        'src/app/registration/address-confirmation/mock-backend.js',
         'src/app/company-finder/company-finder.js'
     ];
 
@@ -84,6 +87,9 @@ module.exports = function(grunt) {
                         'vendor/angular/**/*.js',
                         'src/**/*.js'
                     ]),
+                    exclude:[
+                        'vendor/google-maps/markerwithlabel.js'
+                    ],
                     plugins:[
                         'karma-junit-reporter',
                         "karma-jasmine",
@@ -117,6 +123,7 @@ module.exports = function(grunt) {
                 src: dependencies.concat([
                     'src/**/*.js',
                     '!src/**/*.spec.js',
+                    '!src/**/mock-backend.js',
                     '!src/app/my-module/**/*.js'
                 ]),
                 dest: 'build/script.js'

@@ -15011,11 +15011,23 @@ ul.skill-nav a {
 }
 
 /* line 1, ../src/common/components/_well.scss */
+.well {
+  background-color: #E6E6E6;
+  border: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+/* line 6, ../src/common/components/_well.scss */
+.well .title {
+  color: #666666;
+}
+
+/* line 11, ../src/common/components/_well.scss */
 .well-required-for {
   border: 0px;
 }
 
-/* line 5, ../src/common/components/_well.scss */
+/* line 15, ../src/common/components/_well.scss */
 .well-required-for ul {
   list-style-type: none;
   padding-left: 0px;
@@ -15024,6 +15036,44 @@ ul.skill-nav a {
 /* line 1, ../src/common/directives/autocomplete-select/_autocomplete-select.scss */
 .item p {
   margin: 0;
+}
+
+/* line 1, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu {
+  line-height: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+/* line 6, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .header-components {
+  margin-top: 5px;
+}
+/* line 9, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .header-components li {
+  float: left;
+  list-style: none;
+  margin-right: 15px;
+}
+/* line 16, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .header-components .chat a,
+#basic_menu .header-components .phone {
+  color: #73bbe8;
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+/* line 23, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .header-components .welcome-message {
+  font-weight: bold;
+  margin-right: 15px;
+}
+/* line 28, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .header-components i {
+  margin-right: 5px;
+}
+/* line 33, ../src/common/directives/basic-menu/_basic-menu.scss */
+#basic_menu .actions {
+  margin-top: 30px;
 }
 
 @-webkit-keyframes loader {
@@ -15245,20 +15295,125 @@ ul.skill-nav a {
   text-align: center;
 }
 
+/* line 2, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-select .select2-choice {
+  display: block;
+  height: auto !important;
+}
+/* line 6, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-select .select2-choice .select2-arrow {
+  top: 20px !important;
+}
+
+/* line 12, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone_input {
+  width: 300px;
+}
+
+/* line 16, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.select2-results .timezone-data {
+  height: 45px;
+}
+
+/* line 20, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-data {
+  font-size: 14px;
+}
+
+/* line 24, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-data p {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 16px;
+  margin: 5px 0px;
+  padding: 0px;
+  text-overflow: ellipsis;
+  width: 75%;
+  white-space: normal;
+}
+
+/* line 35, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-data .zone {
+  display: block;
+}
+
+/* line 39, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-data .date {
+  display: block;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+/* line 45, ../src/common/directives/time-zone-select/_time-zone-select.scss */
+.timezone-data .time {
+  text-align: right;
+  width: 25%;
+}
+
+/* line 1, ../src/common/directives/ugly-footer/_ugly-footer.scss */
+.ugly-footer {
+  background: #A5CEE9;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0), to(#94c3e2));
+  background-image: -moz-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -ms-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0), color-stop(100%, #94c3e2));
+  background-image: -webkit-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -o-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: linear-gradient(top, #badbf0, #94c3e2);
+  background-image: linear-gradient(top, #badbf0, #94c3e2);
+  border: 0px;
+  height: 115px;
+  overflow: hidden;
+  padding: 0px;
+  width: 100%;
+}
+/* line 18, ../src/common/directives/ugly-footer/_ugly-footer.scss */
+.ugly-footer div.separator {
+  border: 0px;
+  border-top: 1px solid #FFFFFF;
+  margin: 2px 0px 0px;
+  padding: 0px;
+}
+/* line 25, ../src/common/directives/ugly-footer/_ugly-footer.scss */
+.ugly-footer .footer-content {
+  color: #6c96b3;
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 30px;
+  text-shadow: #FFFFFF 1px 1px 2px;
+}
+/* line 32, ../src/common/directives/ugly-footer/_ugly-footer.scss */
+.ugly-footer .footer-content li {
+  float: none;
+  list-style: none;
+  margin-bottom: 10px;
+}
+/* line 39, ../src/common/directives/ugly-footer/_ugly-footer.scss */
+.ugly-footer.no-scrollbar {
+  bottom: 0;
+  position: fixed;
+}
+
 /* line 2, ../src/common/layout/_layout.scss */
 body {
   padding-top: 50px;
   padding-bottom: 26px;
   position: relative;
 }
+/* line 7, ../src/common/layout/_layout.scss */
+body.no-menu {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 
-/* line 9, ../src/common/layout/_layout.scss */
+/* line 14, ../src/common/layout/_layout.scss */
 [data-view="contractor"] {
   padding-top: 80px;
 }
 
 @media (max-width: 979px) and (min-width: 768px), (max-width: 767px) {
-  /* line 16, ../src/common/layout/_layout.scss */
+  /* line 21, ../src/common/layout/_layout.scss */
   body,
   [data-view="contractor"] {
     padding-top: 0;
@@ -16157,7 +16312,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   font-size: 13px;
 }
 
-/*Multi Select*/
+/* Multi Select */
 /* line 17, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   border-radius: 0px;
@@ -16170,7 +16325,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   line-height: 12px;
 }
 
-/*Styles for font awesome icons*/
+/* Styles for font awesome icons */
 /* line 28, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   background: none !important;
@@ -16206,13 +16361,13 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 9px;
 }
 
-/*From V7 Select2 Overiddes scss file*/
+/* From V7 Select2 Overiddes scss file */
 /* line 59, ../src/common/plugins/_select2-overrides.scss */
 .form-control.select2-container {
   color: #454545;
 }
 
-/*Single Select*/
+/* Single Select */
 /* line 64, ../src/common/plugins/_select2-overrides.scss */
 .select2-results .select2-highlighted {
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
@@ -16243,21 +16398,22 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 86, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice {
-  background: none;
+  background: #ffffff;
+  border-color: #cccccc;
   color: #454545;
   font-size: 14px;
   line-height: inherit;
   padding: 8px 18px 8px 12px;
   height: 34px;
 }
-/* line 94, ../src/common/plugins/_select2-overrides.scss */
+/* line 95, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   color: #999999;
   top: 7px;
 }
 
-/*Multi Select*/
-/* line 102, ../src/common/plugins/_select2-overrides.scss */
+/* Multi Select */
+/* line 103, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   background-color: #e6e6e6;
   background-image: none;
@@ -16268,18 +16424,113 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   -o-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 108, ../src/common/plugins/_select2-overrides.scss */
+/* line 109, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a {
   color: #999999;
   font-size: 12px;
 }
-/* line 112, ../src/common/plugins/_select2-overrides.scss */
+/* line 113, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
 }
-/* line 116, ../src/common/plugins/_select2-overrides.scss */
+/* line 117, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:active {
   color: #800a06;
+}
+
+/* Styling for IE8 */
+/* line 125, ../src/common/plugins/_select2-overrides.scss */
+.lt-ie9 .select2-container .select2-choice {
+  filter: none;
+}
+/* line 128, ../src/common/plugins/_select2-overrides.scss */
+.lt-ie9 .select2-container .select2-choice .select2-arrow {
+  filter: none;
+}
+
+/* line 1, ../src/app/company-finder/_company-finder.scss */
+#company-finder {
+  margin-bottom: 20px;
+}
+/* line 4, ../src/app/company-finder/_company-finder.scss */
+#company-finder .page-header.pics {
+  margin-bottom: 30px;
+}
+/* line 8, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map {
+  width: 100%;
+  height: 500px;
+}
+/* line 12, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map .marker-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+}
+/* line 20, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.search-results-section h1,
+#company-finder .employee-guard-section.map-section {
+  margin-top: 20px;
+}
+/* line 24, ../src/app/company-finder/_company-finder.scss */
+#company-finder .address-and-trade {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+/* line 31, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map,
+#company-finder .result-list .row {
+  margin-bottom: 30px;
+}
+/* line 34, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map .contractor-name,
+#company-finder .result-list .row .contractor-name {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  margin-bottom: 3px;
+}
+/* line 40, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map .primary-trade,
+#company-finder .result-list .row .primary-trade {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+/* line 46, ../src/app/company-finder/_company-finder.scss */
+#company-finder .map .list-marker,
+#company-finder .result-list .row .list-marker {
+  background: url("/angular/src/app/company-finder/img/marker.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 56, ../src/app/company-finder/_company-finder.scss */
+#company-finder .icon-map-marker {
+  color: #e74c3c;
+  font-size: 34px;
+}
+/* line 62, ../src/app/company-finder/_company-finder.scss */
+#company-finder .icon-download:hover {
+  color: #73bbe8;
+  cursor: pointer;
+}
+/* line 69, ../src/app/company-finder/_company-finder.scss */
+#company-finder fieldset h1 {
+  background-color: #f1f1f1;
+  color: #808285;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 13px 0;
+  margin: 0;
+}
+/* line 77, ../src/app/company-finder/_company-finder.scss */
+#company-finder fieldset h1 i.icon-map-marker {
+  color: #808285;
+  font-size: 14px;
+  margin-right: 5px;
 }
 
 /* line 5, ../src/app/employeeguard/mixins/_employee-guard-delete-confirmation.scss */
@@ -17314,87 +17565,119 @@ section.visible h1 {
   text-align: left;
 }
 
-/* line 1, ../src/app/company-finder/_company-finder.scss */
-#company-finder {
-  margin-bottom: 20px;
-}
-/* line 4, ../src/app/company-finder/_company-finder.scss */
-#company-finder .page-header.pics {
-  margin-bottom: 30px;
-}
-/* line 8, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map {
-  width: 100%;
-  height: 500px;
-}
-/* line 12, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .marker-label {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  color: #ffffff;
-}
-/* line 20, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.search-results-section h1,
-#company-finder .employee-guard-section.map-section {
+/* line 4, ../src/app/registration/_registration.scss */
+#main-form .autofill {
   margin-top: 20px;
 }
-/* line 24, ../src/app/company-finder/_company-finder.scss */
-#company-finder .address-and-trade {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color: #666666;
-}
-/* line 31, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map,
-#company-finder .result-list .row {
-  margin-bottom: 30px;
-}
-/* line 34, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .contractor-name,
-#company-finder .result-list .row .contractor-name {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  margin-bottom: 3px;
-}
-/* line 40, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .primary-trade,
-#company-finder .result-list .row .primary-trade {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color: #666666;
-}
-/* line 46, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .list-marker,
-#company-finder .result-list .row .list-marker {
-  background: url("/angular/src/app/company-finder/img/marker.png") center no-repeat;
+/* line 8, ../src/app/registration/_registration.scss */
+#main-form .main-heading {
+  background-color: #93c1e2;
+  background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #93c1e2), color-stop(100%, #e0eff8));
+  background-image: -webkit-linear-gradient(to top, #93c1e2, #e0eff8);
+  background-image: -moz-linear-gradient(to top, #93c1e2, #e0eff8);
+  background-image: -o-linear-gradient(to top, #93c1e2, #e0eff8);
+  background-image: linear-gradient(to top, #93c1e2, #e0eff8);
+  border-bottom: 7px solid #7daacb;
+  border-top: 2px solid #aeafb2;
   color: #ffffff;
-  font-size: 12px;
-  height: 32px;
-  padding-top: 2px;
-  width: 21px;
+  font-family: Franklin Gothic Medium, Arial;
+  font-size: 40px;
+  margin: 0 auto;
+  position: relative;
+  text-align: center;
+  text-shadow: #39749b 2px 2px 5px;
+  text-transform: uppercase;
+  padding: 20px;
 }
-/* line 56, ../src/app/company-finder/_company-finder.scss */
-#company-finder .icon-map-marker {
-  color: #e74c3c;
-  font-size: 34px;
+/* line 25, ../src/app/registration/_registration.scss */
+#main-form .call-outs p {
+  margin-top: 40px;
+  color: #002d4f;
+  font-family: Franklin Gothic Medium, Arial;
+  font-size: 20px;
+  line-height: 24px;
+  height: 109px;
+  background: url(https://alpha.picsorganizer.com/images/registration/info_arrow_bg_right1.png) no-repeat;
+  background-position: right;
+  padding-right: 35px;
+  padding-top: 15px;
 }
-/* line 62, ../src/app/company-finder/_company-finder.scss */
-#company-finder .icon-download:hover {
-  color: #73bbe8;
-  cursor: pointer;
+/* line 38, ../src/app/registration/_registration.scss */
+#main-form .call-outs dl {
+  background-color: #e3eff8;
+  background-color: rgba(145, 192, 224, 0.25);
+  padding: 10px;
+  padding: 1px 20px 20px 20px;
+  margin-top: 40px;
 }
-/* line 69, ../src/app/company-finder/_company-finder.scss */
-#company-finder fieldset h1 {
-  background-color: #f1f1f1;
-  color: #808285;
-  font-size: 14px;
+/* line 45, ../src/app/registration/_registration.scss */
+#main-form .call-outs dl:last-child {
+  margin-top: 50px;
+}
+/* line 49, ../src/app/registration/_registration.scss */
+#main-form .call-outs dl dt {
+  color: #39749b;
+  font-size: 32px;
   font-weight: bold;
-  padding: 13px 0;
-  margin: 0;
+  line-height: 33px;
+  margin: 20px 0;
 }
-/* line 77, ../src/app/company-finder/_company-finder.scss */
-#company-finder fieldset h1 i.icon-map-marker {
-  color: #808285;
-  font-size: 14px;
-  margin-right: 5px;
+/* line 57, ../src/app/registration/_registration.scss */
+#main-form .call-outs dl dd {
+  color: #76a7c9;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px;
+  text-shadow: #ffffff 1px 1px 2px;
+}
+/* line 67, ../src/app/registration/_registration.scss */
+#main-form form {
+  margin-top: 35px;
+}
+/* line 70, ../src/app/registration/_registration.scss */
+#main-form form section {
+  border: 1px solid #bbd3e3;
+  margin-top: 20px;
+}
+/* line 74, ../src/app/registration/_registration.scss */
+#main-form form section h1 {
+  position: absolute;
+  z-index: 9999;
+  background-color: #be804d;
+  background-color: rgba(168, 77, 16, 0.7);
+  color: #ffffff;
+  font-size: 25px;
+  font-weight: bold;
+  height: 50px;
+  line-height: 50px;
+  margin: 30px 0 20px 0;
+  text-shadow: #a85008 2px 2px 5px;
+}
+/* line 87, ../src/app/registration/_registration.scss */
+#main-form form section h1 span {
+  background-color: #c46600;
+  background-color: #c5621a;
+  margin: 0 10px 0 20px;
+  padding: 2px 12px;
+}
+/* line 96, ../src/app/registration/_registration.scss */
+#main-form form fieldset {
+  background: #f5f5f5;
+  margin: 2px;
+  padding: 100px 20px 30px 20px;
+}
+/* line 102, ../src/app/registration/_registration.scss */
+#main-form form button[type="submit"] {
+  margin-top: 18px;
+}
+/* line 106, ../src/app/registration/_registration.scss */
+#main-form form textarea {
+  resize: none;
+}
+
+@media (max-width: 991px) {
+  /* line 113, ../src/app/registration/_registration.scss */
+  #main-form .call-outs {
+    display: none;
+  }
 }

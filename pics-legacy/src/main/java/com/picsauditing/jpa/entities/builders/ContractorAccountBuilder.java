@@ -4,6 +4,7 @@ import com.picsauditing.jpa.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ContractorAccountBuilder {
     private ContractorAccount contractor = new ContractorAccount();
@@ -91,6 +92,46 @@ public class ContractorAccountBuilder {
 
     public ContractorAccountBuilder audits(List<ContractorAudit> contractorAudits) {
         contractor.setAudits(contractorAudits);
+        return this;
+    }
+
+    public ContractorAccountBuilder status(AccountStatus status) {
+        contractor.setStatus(status);
+        return this;
+    }
+
+    public ContractorAccountBuilder address(String address) {
+        contractor.setAddress(address);
+        return this;
+    }
+
+    public ContractorAccountBuilder address2(String address2) {
+        contractor.setAddress2(address2);
+        return this;
+    }
+
+    public ContractorAccountBuilder city(String city) {
+        contractor.setCity(city);
+        return this;
+    }
+
+    public ContractorAccountBuilder zip(String zip) {
+        contractor.setZip(zip);
+        return this;
+    }
+
+    public ContractorAccountBuilder countrySubdivision(CountrySubdivision countrySubdivision) {
+        contractor.setCountrySubdivision(countrySubdivision);
+        return this;
+    }
+
+    public ContractorAccountBuilder legalName(String legalName) {
+        contractor.setName(legalName);
+        return this;
+    }
+
+    public ContractorAccountBuilder locale(Locale locale) {
+        contractor.setLocale(locale);
         return this;
     }
 }
