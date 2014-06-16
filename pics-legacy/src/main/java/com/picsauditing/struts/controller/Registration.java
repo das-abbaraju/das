@@ -3,10 +3,7 @@ package com.picsauditing.struts.controller;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.Preparable;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.ExtractBrowserLanguage;
-import com.picsauditing.access.PermissionBuilder;
-import com.picsauditing.access.Permissions;
+import com.picsauditing.access.*;
 import com.picsauditing.actions.contractors.RegistrationAction;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.dao.UserLoginLogDAO;
@@ -16,6 +13,7 @@ import com.picsauditing.service.account.AddressService;
 import com.picsauditing.service.addressverifier.AddressRequestHolder;
 import com.picsauditing.service.addressverifier.AddressResponseHolder;
 import com.picsauditing.service.addressverifier.AddressVerificationService;
+import com.picsauditing.service.addressverifier.ResultStatus;
 import com.picsauditing.service.registration.RegistrationRequestService;
 import com.picsauditing.service.registration.RegistrationResult;
 import com.picsauditing.service.registration.RegistrationResult.RegistrationFailure;
@@ -29,6 +27,8 @@ import com.picsauditing.util.TimeZoneUtil;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +41,7 @@ import java.util.*;
 public class Registration extends RegistrationAction implements AjaxValidator, Preparable {
 
     public static final String COUNTRY_SUBDIVISION_FIELD_KEY = "registrationForm.countrySubdivision";
+    private static final Logger logger = LoggerFactory.getLogger(Registration.class);
 
     private String registrationKey;
     private RegistrationForm registrationForm = new RegistrationForm();
@@ -65,6 +66,11 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
 	@Anonymous
 	@Override
 	public String execute() throws Exception {
+        if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+            logger.warn("User navigated to the wrong registration action, perhaps via a bookmark? Redirecting...");
+            setUrlForRedirect(LoginController.REGISTRATION_ACTION_ANGULAR);
+            return REDIRECT;
+        }
 
 		if (loggedIn()) {
 			addActionError(getText("ContractorRegistration.error.LogoutBeforRegistering"));
@@ -87,6 +93,18 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             return new Locale(localeForm.getLanguage(), isoCode);
         else
             return new Locale(localeForm.getLanguage());
+    }
+
+    @Anonymous
+    @SkipValidation
+    public String confirmAddress() {
+        return "confirmAddress";
+    }
+
+    @Anonymous
+    @SkipValidation
+    public String basicEdit() {
+        return "basicEdit";
     }
 
     @Anonymous
@@ -113,12 +131,16 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             // they don't have an account yet so they won't get this as a default
             permissions.setSessionCookieTimeoutInSeconds(3600);
 
-            if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
-                AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
-                addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
-            }
+            AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
 
-            return setUrlForRedirect(getRegistrationStep().getUrl());
+
+            if (addressResponseHolder.getResultStatus() == ResultStatus.DATA_NOT_FOUND
+                    || addressResponseHolder.getResultStatus() == ResultStatus.INVALID_INPUT) {
+                return "";
+            } else {
+                addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
+                return setUrlForRedirect(getRegistrationStep().getUrl());
+            }
 
         } else {
             //FIXME: Find a better way to deal with this.

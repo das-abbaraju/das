@@ -1,0 +1,43 @@
+.ugly-footer {
+    background: #A5CEE9;
+    background-repeat: repeat-x;
+    background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0), to(#94c3e2) );
+    background-image: -moz-linear-gradient(top, #badbf0, #94c3e2);
+    background-image: -ms-linear-gradient(top, #badbf0, #94c3e2);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0), color-stop(100%, #94c3e2) );
+    background-image: -webkit-linear-gradient(top, #badbf0, #94c3e2);
+    background-image: -o-linear-gradient(top, #badbf0, #94c3e2);
+    background-image: linear-gradient(top, #badbf0, #94c3e2);
+    background-image: linear-gradient(top, #badbf0, #94c3e2);
+    border: 0px;
+    height: 115px;
+    overflow: hidden;
+    padding: 0px;
+    width: 100%;
+
+    div.separator {
+        border: 0px;
+        border-top: 1px solid #FFFFFF;
+        margin: 2px 0px 0px;
+        padding: 0px;
+    }
+
+    .footer-content {
+        color: #6c96b3;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 30px;
+        text-shadow: #FFFFFF 1px 1px 2px;
+
+        li {
+            float: none;
+            list-style: none;
+            margin-bottom: 10px;
+        }
+    }
+
+    &.no-scrollbar {
+        bottom: 0;
+        position: fixed;
+    }
+}
