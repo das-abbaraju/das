@@ -4,7 +4,7 @@ angular.module('PICS.registration')
     var registrationKey = $routeParams.registrationKey;
 
     $scope.isDevEnvironment = function () {
-        var origin = window.localhost.origin;
+        var origin = window.location.origin;
 
         return origin.indexOf('localhost') != -1 || origin.indexOf('alpha') != -1;
     };
