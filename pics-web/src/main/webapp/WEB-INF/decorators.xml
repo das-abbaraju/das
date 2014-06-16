@@ -52,11 +52,12 @@
     <decorator name="eg-index" page="eg-index.jsp">
         <pattern>/employee-guard/operators/employees/*</pattern>
         <pattern>/employee-guard/operators/dashboard</pattern>
-        <pattern>/employee-guard/operators/assignments</pattern>
         <pattern>/employee-guard/operators/projects</pattern>
-        <pattern>/employee-guard/operators/roles</pattern>
         <pattern>/employee-guard/contractor/dashboard</pattern>
         <pattern>/employee-guard/employee/dashboard</pattern>
+    </decorator>
+    <decorator name="index-simple" page="index-simple.jsp">
+        <pattern>/registration*</pattern>
         <pattern>/employee-guard/employee/skills</pattern>
         <pattern>/employee-guard/employee/skills/sites/*</pattern>
         <pattern>/employee-guard/*/changelog</pattern>
@@ -103,6 +104,8 @@
         <pattern>/RegistrationAddClientSite*.action</pattern>
         <pattern>/RegistrationServiceEvaluation.action</pattern>
         <pattern>/RegistrationMakePayment.action</pattern>
+    </decorator>
+    <decorator name="bootstrap3-registration-layout" page="bootstrap3-registration-layout.jsp">
     </decorator>
     <decorator name="print" page="print.jsp">
         <pattern>/*!print*.action</pattern>

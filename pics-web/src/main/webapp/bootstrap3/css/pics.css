@@ -3768,3 +3768,92 @@ p {
     margin-bottom: 30px;
   }
 }
+/* line 3, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .header-components,
+#Registration_basicEdit_page .header-components {
+  margin-top: 5px;
+}
+/* line 6, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .header-components li,
+#Registration_basicEdit_page .header-components li {
+  float: left;
+  list-style: none;
+  margin-right: 15px;
+}
+/* line 13, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .header-components .chat a,
+#Registration_confirmAddress_page .header-components .phone,
+#Registration_basicEdit_page .header-components .chat a,
+#Registration_basicEdit_page .header-components .phone {
+  color: #73bbe8;
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+/* line 20, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .header-components .welcome-message,
+#Registration_basicEdit_page .header-components .welcome-message {
+  font-weight: bold;
+  margin-right: 15px;
+}
+/* line 25, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .header-components i,
+#Registration_basicEdit_page .header-components i {
+  margin-right: 5px;
+}
+/* line 30, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page .actions,
+#Registration_basicEdit_page .actions {
+  margin-top: 30px;
+}
+/* line 34, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page footer,
+#Registration_basicEdit_page footer {
+  background: #A5CEE9;
+  background-repeat: repeat-x;
+  background-image: -khtml-gradient(linear, left top, left bottom, from(#badbf0), to(#94c3e2));
+  background-image: -moz-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -ms-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #badbf0), color-stop(100%, #94c3e2));
+  background-image: -webkit-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: -o-linear-gradient(top, #badbf0, #94c3e2);
+  background-image: linear-gradient(top, #badbf0, #94c3e2);
+  background-image: linear-gradient(top, #badbf0, #94c3e2);
+  border: 0px;
+  bottom: 26px;
+  height: 115px;
+  left: 0;
+  padding: 0px;
+  position: fixed;
+  right: 0;
+}
+/* line 53, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page footer div.separator,
+#Registration_basicEdit_page footer div.separator {
+  border: 0px;
+  border-top: 1px solid #FFFFFF;
+  margin: 2px 0px 0px;
+  padding: 0px;
+}
+/* line 60, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page footer .footer-menu,
+#Registration_basicEdit_page footer .footer-menu {
+  color: #6c96b3;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 30px auto;
+  text-shadow: #FFFFFF 1px 1px 2px;
+  width: 960px;
+}
+/* line 69, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page footer .footer-menu li,
+#Registration_basicEdit_page footer .footer-menu li {
+  float: none;
+  list-style: none;
+  margin-bottom: 10px;
+}
+/* line 75, ../sass/pics/registration/_registration.scss */
+#Registration_confirmAddress_page footer .footer-menu a,
+#Registration_basicEdit_page footer .footer-menu a {
+  color: #6c96b3;
+}

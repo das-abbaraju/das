@@ -1,14 +1,15 @@
 describe('translatedPage directive', function () {
-    var $compile, $rootScope, $interpolate, $log, translationsService;
+    var $compile, $rootScope, $interpolate, $log, translationsService, $timeout;
 
     beforeEach(angular.mock.module('PICS.translations'));
 
-    beforeEach(inject(function (_$compile_, _$rootScope_, _$interpolate_, _$log_, _$http_, _translationsService_) {
+    beforeEach(inject(function (_$compile_, _$rootScope_, _$interpolate_, _$log_, _$http_, _translationsService_, _$timeout_) {
             $compile = _$compile_;
             $rootScope = _$rootScope_;
             $log = _$log_;
             $http = _$http_;
             translationsService = _translationsService_;
+            $timeout = _$timeout_;
     }));
 
     function setup(setDevelopmentMode) {
@@ -44,7 +45,7 @@ describe('translatedPage directive', function () {
 
         element = linkingFn($rootScope);
 
-        $rootScope.$broadcast('$viewContentLoaded');
+        $timeout.flush();
     }
 
     it('should cause a mapping of the route to associated translation keys to be logged to the console once $viewContentLoaded is fired', function () {
