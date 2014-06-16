@@ -220,6 +220,44 @@ public class AccountTest {
 
         assertEquals(null, account.getCurrentAccountUserOfRole(UserAccountRole.PICSInsideSalesRep));
     }
+    @Test
+    public void testGetQbListID_CAD() {
+        account.setQbListCAID("qbListCAID");
+        String qbListCAID = account.getQbListID(Currency.CAD.toString());
+
+        assertEquals(qbListCAID,"qbListCAID");
+    }
+
+    @Test
+    public void testGetQbListID_GBP() {
+        account.setQbListUKID("qbListGBPID");
+        String qbListGBPID = account.getQbListID(Currency.GBP.toString());
+
+        assertEquals(qbListGBPID,"qbListGBPID");
+    }
+
+    @Test
+    public void testGetQbListID_EUR() {
+        account.setQbListEUID("qbListEURID");
+        String qbListEURID = account.getQbListID(Currency.EUR.toString());
+
+        assertEquals(qbListEURID,"qbListEURID");
+    }
+    @Test
+    public void testGetQbListID_CHF() {
+        account.setQbListCHFID("qbListCHFID");
+        String qbListCHFID = account.getQbListID(Currency.CHF.toString());
+
+        assertEquals(qbListCHFID,"qbListCHFID");
+    }
+
+    @Test
+    public void testGetQbListID_Others() {
+        account.setQbListID("qbListID");
+        String qbListID = account.getQbListID(Currency.NOK.toString());
+
+        assertEquals(qbListID,"qbListID");
+    }
 
 	private void setupTestAccount(String type, int id, String name, String city, CountrySubdivision countrySubdivision,
                                   AccountStatus status) {

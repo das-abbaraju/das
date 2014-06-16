@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.quickbooks.qbxml.CurrencyRef;
 import org.junit.Test;
+import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -14,8 +15,38 @@ import static org.mockito.Mockito.when;
 public class QBXmlAdaptorTest {
 
     @Test
-    public void testGetQBListID() throws Exception {
+    public void testGetQBListID_CHF() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.CHF);
+        assertEquals("qbListCHFID", qbListId);
+    }
 
+    @Test
+    public void testGetQBListID_CAD() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.CAD);
+        assertEquals("qbListCAID", qbListId);
+    }
+
+    @Test
+    public void testGetQBListID_GBP() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.GBP);
+        assertEquals("qbListUKID", qbListId);
+    }
+
+    @Test
+    public void testGetQBListID_EUR() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.EUR);
+        assertEquals("qbListEUID", qbListId);
+    }
+
+    @Test
+    public void testGetQBListID_default() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.USD);
+        assertEquals("qbListID", qbListId);
     }
 
     @Test

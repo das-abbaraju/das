@@ -171,7 +171,7 @@ public class InsertContractors extends CustomerAdaptor {
 			CustomerRet customer = thisQueryResponse.getCustomerRet();
 
 			int conId = new Integer(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID())).intValue();
-			ContractorAccount connected = getContractorDao().find(conId);
+			ContractorAccount contractorAccount = getContractorDao().find(conId);
 
 			if (customer != null) {
 
@@ -180,25 +180,8 @@ public class InsertContractors extends CustomerAdaptor {
 					int accountId = Integer.parseInt(accountNumber);
 
 					if (accountId != 0) {
-
-                        Currency currentCurrency = currentSession.getCurrency();
-
-                        switch (currentCurrency) {
-                            case USD:
-                                connected.setQbListID(customer.getListID());
-                                break;
-                            case CAD:
-                                connected.setQbListCAID(customer.getListID());
-                                break;
-                            case GBP:
-                                connected.setQbListUKID(customer.getListID());
-                                break;
-                            case CHF:
-                            case EUR:
-                                connected.setQbListEUID(customer.getListID());
-                                break;
-                        }
-						connected.setQbSync(false);
+                        setQBListID(currentSession, customer, contractorAccount);
+						contractorAccount.setQbSync(false);
 					}
 				} catch (Exception e) {
 				}
@@ -218,23 +201,47 @@ public class InsertContractors extends CustomerAdaptor {
 				currentSession.getErrors().add(errorMessage.toString());
 
 				if (currentSession.isUS()) {
-					connected.setQbListID(null);
+					contractorAccount.setQbListID(null);
 				} else if (currentSession.isGBP()) {
-					connected.setQbListUKID(null);
+					contractorAccount.setQbListUKID(null);
 				} else if (currentSession.isEUR()) {
-					connected.setQbListEUID(null);
-				} else {
-					connected.setQbListCAID(null);
+					contractorAccount.setQbListEUID(null);
+				}else if (currentSession.isCHF()) {
+                    contractorAccount.setQbListCHFID(null);
+                }else {
+					contractorAccount.setQbListCAID(null);
 				}
 
-				connected.setQbSync(true);
+				contractorAccount.setQbSync(true);
 			}
 
-			getContractorDao().save(connected);
+			getContractorDao().save(contractorAccount);
 
 		}
 
 		return null;
 	}
+
+    private void setQBListID(QBSession currentSession, CustomerRet customer, ContractorAccount contractorAccount) {
+        Currency currentCurrency = currentSession.getCurrency();
+
+        switch (currentCurrency) {
+            case USD:
+                contractorAccount.setQbListID(customer.getListID());
+                break;
+            case CAD:
+                contractorAccount.setQbListCAID(customer.getListID());
+                break;
+            case GBP:
+                contractorAccount.setQbListUKID(customer.getListID());
+                break;
+            case CHF:
+                contractorAccount.setQbListCHFID(customer.getListID());
+                break;
+            case EUR:
+                contractorAccount.setQbListEUID(customer.getListID());
+                break;
+        }
+    }
 
 }
