@@ -105,6 +105,11 @@ public class ContractorsModel extends AbstractModel {
 		Field accountName = fields.get("AccountName".toUpperCase());
 		accountName.setUrl("ContractorView.action?id={AccountID}");
 
+        if (permissions.hasPermission(OpPerms.AllOperators)) {
+            Field billableSites = fields.get("ContractorPayingFacilities".toUpperCase());
+            billableSites.setUrl("ContractorFacilities.action?id={AccountID}");
+        }
+
         if (permissions.isOperatorCorporate()) {
             Field flagColor = fields.get("ContractorFlagFlagColor".toUpperCase());
             flagColor.setUrl("ContractorFlag.action?id={AccountID}");
