@@ -1,28 +1,29 @@
 package com.picsauditing.service;
 
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.model.events.AuditDataSaveEvent;
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.SpringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AuditService {
 
 	@Autowired
 	private AuditDataDAO auditDataDAO;
+	@Autowired
+	private NoteDAO noteDAO;
 
-    public void checkSla(ContractorAccount contractor) {
-        setSlaManualAudit(contractor);
+    public void checkSla(ContractorAccount contractor, Permissions permissions) {
+        setSlaManualAudit(contractor, permissions);
     }
 
-    private void setSlaManualAudit(ContractorAccount contractor) {
+    private void setSlaManualAudit(ContractorAccount contractor, Permissions permissions) {
         for (ContractorAudit audit : contractor.getAudits()) {
             if (audit.getAuditType().isDesktop() &&
                     audit.hasCaoStatus(AuditStatus.Pending) && audit.getCurrentOperators().size() > 0) {
@@ -31,6 +32,14 @@ public class AuditService {
                     if (audit.getSlaDate() != null) {
                         audit.setSlaDate(null);
                         auditDataDAO.save(audit);
+
+                        Note note = new Note();
+                        note.setAccount(audit.getContractorAccount());
+                        note.setAuditColumns(permissions);
+                        note.setSummary("Manual Audit #" + audit.getId() + "'s SLA is no longer valid and has been cleared");
+                        note.setNoteCategory(NoteCategory.Audits);
+                        note.setViewableById(Account.PicsID);
+                        noteDAO.save(note);
                     }
                     return;
                 }
@@ -63,9 +72,25 @@ public class AuditService {
 
                 audit.setSlaDate(beginDate);
                 auditDataDAO.save(audit);
+
+                Note note = new Note();
+                note.setAccount(audit.getContractorAccount());
+                note.setAuditColumns(permissions);
+                note.setSummary("Manual Audit #" + audit.getId() + " has a new SLA of " + beginDate.toString());
+                note.setNoteCategory(NoteCategory.Audits);
+                note.setViewableById(Account.PicsID);
+                noteDAO.save(note);
             } else if (shouldResetSla(audit)) {
                 audit.setSlaDate(null);
                 auditDataDAO.save(audit);
+
+                Note note = new Note();
+                note.setAccount(audit.getContractorAccount());
+                note.setAuditColumns(permissions);
+                note.setSummary("Manual Audit #" + audit.getId() + " is not visible to any operators and has had its SLA cleared.");
+                note.setNoteCategory(NoteCategory.Audits);
+                note.setViewableById(Account.PicsID);
+                noteDAO.save(note);
             }
         }
     }

@@ -39,6 +39,8 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
+	private NoteDAO noteDAO;
+	@Autowired
 	private FlagCriteriaDAO flagCriteriaDAO;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
@@ -353,7 +355,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		checkLcCor(contractor);
 		cancelScheduledImplementationAudits(contractor);
-        auditService.checkSla(contractor);
+        auditService.checkSla(contractor, permissions);
 	}
 
 	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {
@@ -1087,6 +1089,14 @@ public class ContractorCron extends PicsActionSupport {
 							if (ua != null) {
 								audit.setAuditor(ua.getUser());
 								audit.setAssignedDate(new Date());
+
+                                Note note = new Note();
+                                note.setAccount(audit.getContractorAccount());
+                                note.setAuditColumns(permissions);
+                                note.setSummary("Auto assign Audit #" + audit.getId() + " was assigned to " + ua.getUser());
+                                note.setNoteCategory(NoteCategory.Audits);
+                                note.setViewableById(Account.PicsID);
+                                noteDAO.save(note);
 							}
 						}
 						if (audit.getClosingAuditor() == null && audit.getAuditor() != null
