@@ -1,6 +1,5 @@
 package com.picsauditing.struts.controller.forms;
 
-import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
@@ -44,8 +43,6 @@ public class RegistrationForm {
 
     private AccountStatus status = AccountStatus.Pending;
     private Locale locale;
-
-    private String timezoneId;
 
     @NotBlank(message = REQUIRED_KEY)
     @Length(max = MAX_STRING_LENGTH_50, message = MAX_50_CHARS_KEY)
@@ -121,7 +118,7 @@ public class RegistrationForm {
     private String zip;
 
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
-    private String vatId;
+    private String vatID;
 
     @NotBlank(message = REQUIRED_KEY)
     @NotNull(message = REQUIRED_KEY)
@@ -253,11 +250,11 @@ public class RegistrationForm {
     }
 
     public String getVatId() {
-        return vatId;
+        return vatID;
     }
 
-    public void setVatId(String vatId) {
-        this.vatId = vatId;
+    public void setVatId(String vatID) {
+        this.vatID = vatID;
     }
 
     public String getEmail() {
@@ -284,48 +281,28 @@ public class RegistrationForm {
         this.addressBlob = addressBlob;
     }
 
-    public String getTimezoneId() {
-        return timezoneId;
-    }
-
-    public void setTimezoneId(String timezoneId) {
-        this.timezoneId = timezoneId;
-    }
-
     public static RegistrationForm fromContractor(final ContractorAccount input) {
         final User user = (input.getPrimaryContact() == null) ? new User() : input.getPrimaryContact();
         final RegistrationForm form = new RegistrationForm();
 
         form.status = input.getStatus();
-
-        if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
-            String address1 = input.getAddress() == null ? "" : input.getAddress() + "\n";
-            String address2 = input.getAddress2() == null ?  "" : input.getAddress2() + "\n";
-            String city = input.getCity() == null ? "" : input.getCity() + " ";
-            String countrySubdivision = input.getCountrySubdivision() == null ?  "" :
-                    input.getCountrySubdivision().getTwoLetterIsoCode();
-            form.addressBlob = address1
-                    + address2
-                    + city + countrySubdivision;
-        } else {
-            form.address = input.getAddress();
-            form.address2 = input.getAddress2();
-            form.city = input.getCity();
-
-            form.countrySubdivision = (input.getCountrySubdivision() != null)
-                    ? input.getCountrySubdivision().getIsoCode()
-                    : null;
-        }
+        form.city = input.getCity();
+        form.address = input.getAddress();
+        form.address2 = input.getAddress2();
         form.legalName = input.getName();
-        form.zip = input.getZip();
         form.countryISOCode = (input.getCountry() != null)
                 ? input.getCountry().getIsoCode()
+                : null;
+        form.countrySubdivision = (input.getCountrySubdivision() != null)
+                ? input.getCountrySubdivision().getIsoCode()
                 : null;
         form.email = user.getEmail();
         form.firstName = user.getFirstName();
         form.lastName = user.getLastName();
-        form.locale = user.getLocale();
+        form.locale = input.getLocale();
+        form.zip = input.getZip();
         form.phone = user.getPhone();
+
 
         return form;
     }
@@ -345,7 +322,7 @@ public class RegistrationForm {
             .setZip(this.getZip())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
-            .setVatId(this.getVatId())
+            .setVatID(this.getVatId())
             .setCountrySubdivision(
                     Strings.isEmpty(this.getCountrySubdivision())
                             ? null

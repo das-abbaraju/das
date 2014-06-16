@@ -12,26 +12,12 @@ public class TaxIdCountryJSON extends PicsActionSupport {
 
     @Autowired
     private CountryDAO dao;
-    private String iso;
-    private String locale;
 
     @Anonymous
     public String execute() {
         String iso = getRequest().getParameter("iso_code");
         String locale = getRequest().getParameter("locale");
 
-        JSONObject taxIdJson = new JSONObject();
-
-        taxIdJson.put("tax_id_required", taxIdRequiredby(iso));
-        taxIdJson.put("label", getTaxIdLabel(iso, locale));
-
-        json = taxIdJson;
-
-        return JSON;
-    }
-
-    @Anonymous
-    public String taxIdInfo() {
         JSONObject taxIdJson = new JSONObject();
 
         taxIdJson.put("tax_id_required", taxIdRequiredby(iso));
@@ -63,11 +49,4 @@ public class TaxIdCountryJSON extends PicsActionSupport {
          return country.isEuropeanUnion() || country.isBrazil();
     }
 
-    public void setIso(String iso) {
-        this.iso = iso;
-    }
-
-    public void setLocale(String locale) {
-        this.locale = locale;
-    }
 }

@@ -30,7 +30,7 @@ public class UserBuilder {
         access.setViewFlag(true);
         user.getOwnedPermissions().add(access);
         return this;
-}
+    }
 
     public UserBuilder id(int i) {
         user.setId(i);
@@ -59,26 +59,6 @@ public class UserBuilder {
 
     public UserBuilder userName(String userName) {
         user.setUsername(userName);
-        return this;
-    }
-
-    public UserBuilder email(String email) {
-        user.setEmail(email);
-        return this;
-    }
-
-    public UserBuilder firstName(String firstName) {
-        user.setFirstName(firstName);
-        return this;
-    }
-
-    public UserBuilder lastName(String lastName) {
-        user.setLastName(lastName);
-        return this;
-    }
-
-    public UserBuilder phone(String phoneNumber) {
-        user.setPhone(phoneNumber);
         return this;
     }
 }

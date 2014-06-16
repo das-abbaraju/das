@@ -65,9 +65,4 @@ public class AddressResponseHolderBuilder {
         addressResponseHolder.setConfidencePercent(confidencePercentage);
         return this;
     }
-
-    public AddressResponseHolderBuilder formattedAddressLines(String formattedAddressLines) {
-        addressResponseHolder.setFormattedAddressLines(formattedAddressLines);
-        return this;
-    }
 }

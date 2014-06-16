@@ -1,8 +1,6 @@
 package com.picsauditing.struts.controller;
 
 import com.google.gson.Gson;
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.util.Strings;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,7 +11,6 @@ public class TranslationJsonController extends JsonActionSupport {
 
     private String translationKey;
     private String language;
-    private String isoCode;
 
     @Deprecated // Per Roos, not actually used by the front-end. Confirm and delete.
     public String getSingleTranslationMessage() {
@@ -29,7 +26,6 @@ public class TranslationJsonController extends JsonActionSupport {
         return JSON_STRING;
     }
 
-    @Anonymous
     public String getTranslationMessages() {
         HashMap<String, List<String>> translationKeys;
         try {
@@ -50,32 +46,21 @@ public class TranslationJsonController extends JsonActionSupport {
 
     private Map<String, String> generateTranslationsMap(HashMap<String, List<String>> requestTranslations) {
         Map<String, String> translationsMap = new HashMap<>();
-        Locale locale = createLocale(language, isoCode);
 
         for (List<String> translationKeys : requestTranslations.values()) {
             for (String translationKey : translationKeys) {
-                String translationValue = getTextWithLocaleIfProvided(translationKey, locale);
+                String translationValue = getTextWithLocaleIfProvided(translationKey);
                 translationsMap.put(translationKey, translationValue == null ? "" : translationValue);
             }
         }
         return translationsMap;
     }
 
-    private Locale createLocale(String language, String isoCode) {
-        if(Strings.isNotEmpty(language)) {
-            if (Strings.isNotEmpty(isoCode)) {
-                return new Locale(language, isoCode);
-            }
-            return new Locale(language);
-        }
-        return null;
-    }
-
-    private String getTextWithLocaleIfProvided(String translationKey, Locale locale) {
-        if (locale == null) {
+    private String getTextWithLocaleIfProvided(String translationKey) {
+        if (StringUtils.isEmpty(language)) {
            return getText(translationKey);
         }
-        return getText(locale, translationKey);
+        return getText(new Locale(language), translationKey);
     }
 
     public String getTranslationKey() {
@@ -92,14 +77,6 @@ public class TranslationJsonController extends JsonActionSupport {
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    public String getIsoCode() {
-        return isoCode;
-    }
-
-    public void setIsoCode(String isoCode) {
-        this.isoCode = isoCode;
     }
 
     private class Translations {

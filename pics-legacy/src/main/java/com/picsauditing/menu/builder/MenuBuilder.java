@@ -830,7 +830,7 @@ public final class MenuBuilder {
 		StringBuilder mibewURL = new StringBuilder("https://chat.picsorganizer.com/client.php?")
 				.append("locale=").append(URLEncoder.encode(mibew_language_code, "UTF-8"))
 				.append("&style=PICS");
-		if (permissions != null && permissions.isLoggedIn()) {
+		if (permissions.isLoggedIn()) {
 			mibewURL.append("&name=").append(URLEncoder.encode(permissions.getName(), "UTF-8"))
 					.append("&accountName=").append(URLEncoder.encode(permissions.getAccountName(), "UTF-8"))
 					.append("&accountId=").append(permissions.getAccountId())

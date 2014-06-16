@@ -38,7 +38,6 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
                 .resultStatus(parseResultCode(verifiedAddress.getStatusNbr()))
                 .statusDescription(verifiedAddress.getStatusDescription())
                 .confidencePercentage(verifiedAddress.getConfidencePercentage())
-                .formattedAddressLines(verifiedAddress.getFormattedAddressLines())
                 .build();
     }
 
