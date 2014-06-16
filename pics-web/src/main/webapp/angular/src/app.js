@@ -14,6 +14,6 @@ angular.module('PICSApp', [
 })
 
 .run(function (translationsService, titleService) {
-    translationsService.setDevelopmentMode('on');
+    translationsService.setDevelopmentMode('off');
     titleService.init();
 });
