@@ -45,32 +45,25 @@
  *        translationsService.setDevelopmentMode('on');
  *    });
  *
- * 2) Remove the text property from the resolve object of the target route.
+ * 2) In Terminal, navigate to /angular, and type: node translation.js.
  *
- * 3) In Terminal, navigate to /angular, and type: node translation.js.
+ * 3) Open your browser, and navigate to the target route path.
  *
- * 4) Open your browser, and navigate to the target route path.
+ * 4) The translation keys in translationKeys.js will be added if they were missing or updated if they existed previously.
  *
- * 5) The translation keys in translationKeys.js will be added if they were missing or updated if they existed previously.
- *
- * 6) Restore the text property from the route's resolve object.
- *
- * 7) To turn logging off (e.g., for production), remove the call to setDevelopmentMode, or pass to it any value other than 'on'.
+ * 5) To turn logging off (e.g., for production), remove the call to setDevelopmentMode, or pass to it any value other than 'on'.
  *
  */
 (function () {
-    var translationKeys,
+    var translationKeys = [],
         routePath;
 
-    angular.module('PICS.translations', ['ngRoute'])
+    angular.module('PICS.translations', [])
 
     .config(function ($provide) {
-        $provide.factory('translationsService', ['$http', '$sce', '$rootScope', '$q', 'routePathToTranslationKeys',
-            function ($http, $sce, $rootScope, $q, routePathToTranslationKeys, $routeParams) {
-                var deferred = $q.defer(),
-                    previousRoutePath;
-
-                    deferred.resolved = false;
+        $provide.factory('translationsService', ['$http', '$rootScope', '$q', 'routePathToTranslationKeys',
+            function ($http, $rootScope, $q, routePathToTranslationKeys) {
+                var deferred = $q.defer();
 
                 function setDevelopmentMode(value) {
                     isDevelopmentMode = (value == 'on');
@@ -80,17 +73,8 @@
                     return isDevelopmentMode;
                 }
 
-                function createRouteParamsFromKeys(keys, locale) {
-                    var languageParts, language, dialect;
-
-                    locale = locale || 'en_US';
-                    languageParts = locale.split('_');
-                    language = languageParts[0];
-                    dialect = languageParts[1];
-
+                function createRouteParamsFromKeys(keys) {
                     return {
-                        language: language,
-                        dialect: dialect,
                         translationKeys: keys
                     };
                 }
@@ -100,9 +84,7 @@
                 }
 
                 function fetchTranslations(requestParams) {
-                    return $http.post('/translations/' + requestParams.language + '/' + requestParams.dialect + '.action', {
-                        translationKeys: requestParams.translationKeys
-                    });
+                    return $http.post('/translations.action', requestParams);
                 }
 
                 function setTranslations(value) {
@@ -112,20 +94,8 @@
                         replaceEmptyStringValuesWithKeys(translations);
                     }
 
-                    for (var key in translations) {
-                        translations[key] = typeof translations[key] == 'string' ? $sce.trustAsHtml(translations[key]) : translations[key];
-                    }
-
                     $rootScope.text = translations;
-
-
                     deferred.resolve(translations);
-
-                    deferred.resolved = true;
-                }
-
-                function getDeferred() {
-                    return deferred;
                 }
 
                 function replaceEmptyStringValuesWithKeys(obj) {
@@ -138,38 +108,14 @@
                     return deferred.promise;
                 }
 
-                function setRoutePath(value) {
-                    routePath = value;
-                }
-
-                function updateTranslations(locale) {
-                    var routePathToTranslationKeys = getRoutePathToTranslationKeys(),
-                        keys, requestParams;
-
-                    locale = locale || 'en_US';
-
-                    keys = routePathToTranslationKeys[routePath];
-
-                    if (!keys) return;
-
-                    requestParams = createRouteParamsFromKeys(keys, locale);
-                    fetchTranslations(requestParams)
-                    .then(function (response) {
-                        setTranslations(response.data);
-                    });
-                }
-
                 return {
                     setDevelopmentMode: setDevelopmentMode,
                     isDevelopmentMode: isDevelopmentMode,
-                    getTranslations: getTranslations,
-                    updateTranslations: updateTranslations,
-                    getDeferred: getDeferred,
-
-                    setTranslations: setTranslations,
-                    getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
                     fetchTranslations: fetchTranslations,
-                    createRouteParamsFromKeys: createRouteParamsFromKeys                    
+                    createRouteParamsFromKeys: createRouteParamsFromKeys,
+                    getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
+                    getTranslations: getTranslations,
+                    setTranslations: setTranslations
                 };
             }
         ]);
@@ -177,15 +123,26 @@
 
     .run(function ($rootScope, $http, $q, translationsService) {    
         $rootScope.$on('$routeChangeStart', function (event, next) {
-            translationKeys = [];
+            var routePathToTranslationKeys = translationsService.getRoutePathToTranslationKeys(),
+                keys, requestParams;
 
             routePath = next.$$route.originalPath;
+            translationKeys = [];
 
-            translationsService.updateTranslations();
+            keys = routePathToTranslationKeys[routePath];
+
+            if (!keys) return;
+
+            requestParams = translationsService.createRouteParamsFromKeys(keys);
+
+            translationsService.fetchTranslations(requestParams)
+            .then(function (response) {
+                translationsService.setTranslations(response.data.translationsMap);
+            });
         });
     })
 
-    .directive('translatedPage', function ($rootScope, $http, $log, translationsService, $timeout) {
+    .directive('translatedPage', function ($rootScope, $http, $log, translationsService) {
         function getKeyValueJson(key, value) {
             return '"' + routePath + '":' + JSON.stringify(translationKeys);
         }
@@ -193,7 +150,7 @@
         return {
             restrict: 'A',
             link: function (scope) {
-                $timeout(function () {
+                scope.$on('$viewContentLoaded', function () {
                     if (translationsService.isDevelopmentMode()) {
                         var newKeyValuePair = {};
 
@@ -203,7 +160,7 @@
 
                         $log.info(getKeyValueJson(routePath, JSON.stringify(translationKeys)));
                     }
-                }, 5000);
+                });
             }
         };
     })
@@ -223,8 +180,6 @@
         function addKeysFromElementText(text) {
             var keys = getKeysFromText(text);
 
-            translationKeys = translationKeys || [];
-
             angular.forEach(keys, function (key, index) {
                 translationKeys.push(key);
             });
@@ -232,9 +187,9 @@
 
         return {
             restrict: 'A',
-            link: function (scope, element, attr) {
+            link: function (scope, element) {
                 if (translationsService.isDevelopmentMode()) {
-                    addKeysFromElementText(element.text() || '{{ ' + attr.ngBindHtml + ' }}');
+                    addKeysFromElementText(element.text());
                 }
             }
         };
@@ -247,7 +202,6 @@
             function replaceFn (replaceParam, replaceValueIndex) {
                 return replaceValues[replaceValueIndex];
             }
-            translationExpression = typeof translationExpression == 'string' ? translationExpression : translationExpression.toString();
 
             return translationExpression.replace(/{([0-9]+)}/g, replaceFn) || '';
         };

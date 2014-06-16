@@ -28,12 +28,6 @@ public class RegistrationFormValidationWrapper implements Validator {
         this.validator = validator;
     }
 
-    public RegistrationFormValidationWrapper(RegistrationForm regform, RegistrationLocaleForm localeForm, javax.validation.Validator validator) {
-        this.regform = regform;
-        this.localeForm = localeForm;
-        this.validator = validator;
-    }
-
     @Override
     public void validate(ValueStack valueStack, ValidatorContext validatorContext) {
         assert(validatorContext != null);
@@ -43,28 +37,15 @@ public class RegistrationFormValidationWrapper implements Validator {
 
         @SuppressWarnings("unchecked") // The docs say this is what's returned...
         final Set<String> params = request.getParameterMap().keySet();
-
-        validate(valueStack, validatorContext, params);
-    }
-
-    public void validate(ValueStack valueStack, ValidatorContext validatorContext, Set<String> params) {
-        assert(validatorContext != null);
-
-        final HttpServletRequest request = (HttpServletRequest) valueStack.getContext().get(HTTP_REQUEST);
-        if (onlyRequestingLanguage(request)) return;
-
         final Locale locale = validatorContext.getLocale();
 
-        runValidation(validatorContext, params, locale);
-    }
-
-    private void runValidation(ValidatorContext validatorContext, Set<String> params, Locale locale) {
         final DiscriminatingValidationRunner processor = new DiscriminatingValidationRunner(validatorContext, locale, params, validator);
         processor.processByField("registrationForm", regform);
-        processor.processByField("localeForm", localeForm);
+        processor.processWholeObject(localeForm);
         processor.processWholeObject(regform.getPasswordPair());
         processor.processWholeObject(regform.getVATPairing());
         processor.processWholeObject(regform.getCountrySubdivisionPairing());
+
     }
 
     private boolean onlyRequestingLanguage(HttpServletRequest request) {

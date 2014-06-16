@@ -118,7 +118,7 @@ public class RegistrationService {
         registrant.setAddress(form.getAddress());
         registrant.setAddress2(form.getAddress2());
         registrant.setCity(form.getCity());
-        registrant.setVatId(form.getVatId());
+        registrant.setVatId(form.getVatID());
         registrant.setCountry(new Country(form.getCountryISO()));
 
         if (form.getCountrySubdivision() != null)

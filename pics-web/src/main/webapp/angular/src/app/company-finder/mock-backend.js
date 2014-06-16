@@ -1,6 +1,6 @@
-// angular.module('PICS.companyFinder')
+angular.module('PICS.companyFinder')
 
-// .run(function ($httpBackend) {
+.run(function ($httpBackend) {
     // $httpBackend.whenGET('/location.action').respond({
     //     address: '555 Fake St., City, ST 55555',
     //     coordinates: {
@@ -55,5 +55,5 @@
    //     }
    // ]);
 
-  // $httpBackend.whenGET(/.*/).passThrough();
-// });
+  $httpBackend.whenGET(/.*/).passThrough();
+});

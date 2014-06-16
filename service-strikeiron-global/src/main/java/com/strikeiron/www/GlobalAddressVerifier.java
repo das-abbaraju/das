@@ -51,7 +51,7 @@ public class GlobalAddressVerifier extends HystrixCommand<Address> {
         Address requestAddress = buildRequestAddress();
 
         siService.advancedVerify(null, USER_NAME, PASSWORD, requestAddress, true, true, true,
-                CountryOfOriginType.COO_USA, CountryType.ISO_2, LineSeparatorType.LST_LF, ParsedInputType.ONLY_FOR_P,
+                CountryOfOriginType.COO_USA, CountryType.ISO_2, LineSeparatorType.LST_NO_SEPARATOR, ParsedInputType.ONLY_FOR_P,
                 PreferredLanguageType.PFL_LANG_EN, CapitalizationType.MIXED_CASE, siResponse, subInfo
         );
 
@@ -76,7 +76,6 @@ public class GlobalAddressVerifier extends HystrixCommand<Address> {
         responseAddress.setCountry(serviceResult.getCountry());
         responseAddress.setPostalCode(serviceResult.getPostalCode());
         responseAddress.setConfidencePercentage(serviceResult.getResultPercentage());
-        responseAddress.setFormattedAddressLines(serviceResult.getFormattedAddress());
 
         responseAddress.setStatusNbr(response.getServiceStatus().getStatusNbr());
         responseAddress.setStatusDescription(response.getServiceStatus().getStatusDescription());

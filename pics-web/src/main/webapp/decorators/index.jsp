@@ -23,19 +23,19 @@
     <script src="/angular/build/script.js"></script>
 </head>
 <body>
-    <div id="main">
-        <header>
-            <s:action name="Menu!bootstrap3Menu" executeResult="true" />
-            <s:action name="Menu!mobileMenu" executeResult="true" />
-        </header>
+<div id="main">
+    <header>
+        <s:action name="Menu!bootstrap3Menu" executeResult="true" />
+        <s:action name="Menu!mobileMenu" executeResult="true" />
+    </header>
 
-        <div ng-app="PICSApp">
-            <div ng-view translated-page></div>
-        </div>
-
-         <footer>
-            <s:include value="/struts/layout/_environment.jsp" />
-        </footer>
+    <div ng-app="PICSApp">
+        <div ng-view></div>
     </div>
+
+    <footer>
+        <s:include value="/struts/layout/_environment.jsp" />
+    </footer>
+</div>
 </body>
 </html>

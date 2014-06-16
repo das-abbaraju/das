@@ -64,9 +64,8 @@ function getRoutePathToTranslationKeys(callback) {
 
         dataString = data.toString();
         jsonStart = dataString.indexOf('{');
-        jsonEnd = dataString.indexOf('}') + 1;
-        json = dataString.substring(jsonStart, jsonEnd);
-        console.log(json);
+        json = dataString.substring(jsonStart, dataString.length - 2);
+
         callback(json ? JSON.parse(json) : {});
     });
 }

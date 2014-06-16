@@ -13,7 +13,7 @@
     font-size: 13px;
 }
 
-/* Multi Select */
+/*Multi Select*/
 .select2-container-multi .select2-choices .select2-search-choice {
     border-radius: 0px;
     padding: 3px 20px 3px 5px;
@@ -24,7 +24,7 @@
     line-height: 12px;
 }
 
-/* Styles for font awesome icons */
+/*Styles for font awesome icons*/
 .select2-container .select2-choice .select2-arrow {
     background: none !important;
     border: 0px;
@@ -55,12 +55,12 @@
     top: 9px;
 }
 
-/* From V7 Select2 Overiddes scss file */
+/*From V7 Select2 Overiddes scss file*/
 .form-control.select2-container {
     color: $default_steel;
 }
 
-/* Single Select */
+/*Single Select*/
 .select2-results .select2-highlighted {
     background-image: linear-gradient(to bottom, $primary_light, $primary_med);
     background: -webkit-linear-gradient($primary_light, $primary_med);
@@ -84,8 +84,7 @@
     }
 
     .select2-choice {
-        background: #ffffff;
-        border-color: $default_silver;
+        background: none;
         color: $default_steel;
         font-size: 14px;
         line-height: inherit;
@@ -99,7 +98,7 @@
     }
 }
 
-/* Multi Select */
+/*Multi Select*/
 .select2-container-multi .select2-choices .select2-search-choice {
     background-color: $default_mercury;
     background-image: none;
@@ -116,17 +115,6 @@
 
         &:active {
             color: $danger_dark;
-        }
-    }
-}
-
-/* Styling for IE8 */
-.lt-ie9 {
-    .select2-container .select2-choice {
-        filter: none;
-
-        .select2-arrow {
-            filter: none;
         }
     }
 }

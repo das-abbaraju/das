@@ -32,5 +32,5 @@
 </s:form>
 
 <small>
-    <a href="${registrationActionUrl}" class="register"><s:text name="Login.Register" /></a>
+    <a href="Registration.action" class="register"><s:text name="Login.Register" /></a>
 </small>
