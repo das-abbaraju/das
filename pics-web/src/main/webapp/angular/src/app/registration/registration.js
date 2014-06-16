@@ -11,9 +11,9 @@ angular.module('PICS.registration', [
             templateUrl: '/angular/src/app/registration/registration.tpl.html',
             title: 'ContractorRegistration.title',
             resolve: {
-                text: function (translationsService) {
+                text: ['translationsService', function (translationsService) {
                     return translationsService.getTranslations();
-                }
+                }]
             }
         })
         .when('/registration/address-confirmation.action', {
