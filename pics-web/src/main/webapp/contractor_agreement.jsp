@@ -5,5 +5,6 @@
 		<s:param>${picsPhoneNumber}</s:param>
         <s:param>${picsDisplayName}</s:param>
         <s:param>${picsAddress}</s:param>
+        <s:param>${picsEmail}</s:param>
     </s:text>
 </section>
