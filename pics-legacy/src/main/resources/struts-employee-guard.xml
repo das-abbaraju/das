@@ -48,6 +48,9 @@
         <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
         </action>
 
+        <!-- Restful API URIs -->
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkillsForCorpOp"/>
+
     </package>
 
     <!-- Operator -->
@@ -385,11 +388,5 @@
         </action>
     </package>
 
-    <!-- Restful API URIs -->
-    <package name="com.picsauditing.employee-guard" extends="com.picsauditing" namespace="/employee-guard">
-    <default-interceptor-ref name="pics-rest-stack"/>
-
-      <action name="skills" class=""/>
-    </package>
 
 </struts>
