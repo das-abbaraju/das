@@ -35,6 +35,13 @@
     <a href="QBSyncList.action?currency=EUR" class="picsbutton positive">Switch to Euro</a>
 </s:else>
 
+<s:if test="currency.display == 'CHF'">
+    <a href="JavaScript:;" class="picsbutton positive disabled">Switch to Swiss Franc</a>
+</s:if>
+<s:else>
+    <a href="QBSyncList.action?currency=CHF" class="picsbutton positive">Switch to Swiss Franc</a>
+</s:else>
+
 <div>
 Last Error: <s:date name="lastError.creationDate" nice="true" /><br />
 
