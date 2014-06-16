@@ -47,6 +47,8 @@ public class ContractorCronTest extends PicsActionTest {
 	@Mock
 	private ContractorAccountDAO contractorDAO;
 	@Mock
+	private NoteDAO noteDAO;
+	@Mock
 	private FlagCriteriaDAO flagCriteriaDAO;
 	@Mock
 	private BasicDAO dao;
@@ -99,6 +101,7 @@ public class ContractorCronTest extends PicsActionTest {
 
 		Whitebox.setInternalState(contractorCron, "featureToggleChecker", featureToggleChecker);
 		Whitebox.setInternalState(contractorCron, "contractorDAO", contractorDAO);
+		Whitebox.setInternalState(contractorCron, "noteDAO", noteDAO);
 		Whitebox.setInternalState(contractorCron, "flagCriteriaDAO", flagCriteriaDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
