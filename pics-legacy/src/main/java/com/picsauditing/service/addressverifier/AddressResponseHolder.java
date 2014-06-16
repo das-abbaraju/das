@@ -12,6 +12,7 @@ public class AddressResponseHolder {
     private ResultStatus resultStatus;
     public String statusDescription;
     private String confidencePercent;
+    private String formattedAddressLines;
 
     @Override
     public String toString() {
@@ -98,6 +99,14 @@ public class AddressResponseHolder {
 
     public String getConfidencePercent() {
         return confidencePercent;
+    }
+
+    public String getFormattedAddressLines() {
+        return formattedAddressLines;
+    }
+
+    public void setFormattedAddressLines(String formattedAddressLines) {
+        this.formattedAddressLines = formattedAddressLines;
     }
 
     public static AddressResponseHolderBuilder builder() {
