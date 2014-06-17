@@ -73,6 +73,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				contractorAudit.setAssignedDate(null);
 				contractorAudit= dao.save(contractorAudit);
 				dao.clear();
+
+                Note note = new Note();
+                note.setAccount(contractorAudit.getContractorAccount());
+                note.setAuditColumns(permissions);
+                note.setSummary("Auditor Cleared");
+                note.setNoteCategory(NoteCategory.Audits);
+                note.setViewableById(Account.PicsID);
+                noteDAO.save(note);
 			}
 			return SUCCESS;
 		}
@@ -102,6 +110,14 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 		if (permissions.hasPermission(OpPerms.AssignAudits, OpType.Edit)) {
 			contractorAudit = dao.save(contractorAudit);
 			dao.clear();
+
+            Note note = new Note();
+            note.setAccount(contractorAudit.getContractorAccount());
+            note.setAuditColumns(permissions);
+            note.setSummary("Audit #" + contractorAudit.getId() + " was assigned to " + auditor.getName());
+            note.setNoteCategory(NoteCategory.Audits);
+            note.setViewableById(Account.PicsID);
+            noteDAO.save(note);
 		}
 
 		if (contractorAudit.getAssignedDate() != null) {
