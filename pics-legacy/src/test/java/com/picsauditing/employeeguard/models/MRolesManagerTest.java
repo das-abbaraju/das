@@ -9,9 +9,11 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class MRolesManagerTest {
 	private EGTestDataUtil egTestDataUtil;
@@ -49,9 +51,16 @@ public class MRolesManagerTest {
 		assertEquals(role.getName(), mRolesManager.fetchModel(role.getId()).getName());
 	}
 
-/*	@Test
+	@Test
 	public void testExtractRoleAndCopyWithBasicInfo() throws Exception {
 		MRolesManager mRolesManager = new MRolesManager();
-		//mRolesManager.extractRoleAndCopyWithBasicInfo()
-	}*/
+		Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
+		assertTrue(mRoles.size() == 1);
+		MRolesManager.MRole mExtractedRole=null;
+		for(MRolesManager.MRole mRole :mRoles){
+			mExtractedRole=mRole;
+			break;
+		}
+		assertEquals(role.getId(), mExtractedRole.getId());
+	}
 }

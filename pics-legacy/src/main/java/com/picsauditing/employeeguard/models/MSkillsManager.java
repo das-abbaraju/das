@@ -80,6 +80,7 @@ public class MSkillsManager {
 		@Expose
 		private String description;
 		@Expose
+		@SerializedName("isRequiredSkill")
 		private boolean reqdSkill;
 		@Expose
 		Set<MRolesManager.MRole> roles;
