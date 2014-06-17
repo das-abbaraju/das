@@ -2,7 +2,7 @@
 <%@ taglib prefix="pics" uri="http://picsauditing.com/taglibs" %>
 <table class="report" style="position: static">
 	<s:set name="tagRemovable" value="false" />
-	<s:iterator value="contractor.operatorTags" var="contractorTag">
+	<s:iterator value="tagsViewableByUser" var="contractorTag">
 		<s:if test="tag.active">
 			<s:set name="tagRemovable" value="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)" />
 			<s:if test="#tagRemovable || permissions.admin || (permissions.contractor && tag.visibleToContractor)">
