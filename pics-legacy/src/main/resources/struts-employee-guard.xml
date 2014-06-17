@@ -386,7 +386,7 @@
     </package>
 
   <!-- Restful API URIs -->
-  <package name="com.picsauditing.employee-guard" extends="com.picsauditing" namespace="/employee-guard/api">
+  <package name="com.picsauditing.employee-guard.api" extends="com.picsauditing" namespace="/employee-guard/api">
     <default-interceptor-ref name="pics-rest-stack"/>
 
     <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkillsForCorpOp"/>
