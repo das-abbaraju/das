@@ -56,9 +56,6 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
   @Autowired
   private RoleEntityService roleEntityService;
 
-	@Autowired
-	CorpOpSkillService corpOpSkillService;
-
 	/* Forms */
 	@FormBinding({"operator_skill_create", "operator_skill_edit"})
 	private OperatorSkillForm operatorSkillForm;
@@ -202,51 +199,6 @@ public class SkillAction extends PicsRestActionSupport implements AjaxValidator 
 
 		operatorSkillFormValidator.validate(valueStack, validatorContext);
 	}
-
-	/* Restful URIs */
-/*
-
-	public String findSkillsForCorpOp(){
-		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
-
-		Set<MSkillsManager.MSkill> mSkills = corpOpSkillService.findSkillsForCorpOp(accountIds);
-		MCorporate mCorporate = new MCorporate();
-		mCorporate.setSkills(mSkills);
-
-		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		jsonString = jsonObject.toJson(new MDataWrapper(mCorporate));
-		return JSON_STRING;
-	}
-
-	public String findReqdSkillsForCorpOp(){
-		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
-
-		Set<MSkillsManager.MSkill> mSkills = corpOpSkillService.findReqdSkillsForCorpOp(permissions.getAccountId());
-		MCorporate mCorporate = new MCorporate();
-		mCorporate.setCorpReqdSkills(mSkills);
-
-		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		jsonString = jsonObject.toJson(new MDataWrapper(mCorporate));
-		return JSON_STRING;
-	}
-
-	public String filterSkillsForCorpOp(){
-		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(permissions.getAccountId());
-
-		if (isSearch(searchForm)==false)
-			return JSON_STRING;
-
-		String searchTerm = searchForm.getSearchTerm();
-		Set<MSkillsManager.MSkill> mSkills = corpOpSkillService.filterSkillsForCorpOp(searchTerm, accountIds);
-		MCorporate mCorporate = new MCorporate();
-		mCorporate.setSkills(mSkills);
-
-		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		jsonString = jsonObject.toJson(new MDataWrapper(mCorporate));
-		return JSON_STRING;
-	}
-
-*/
 
 	/* Form - Getters + Setters */
 

@@ -10,7 +10,7 @@ public class MSkillsManager {
 	private Map<Integer,MSkill> lookup = new HashMap<>();
 
 	public static Set<MSkill> newCollection(){
-		return new HashSet<MSkill>();
+		return new HashSet<>();
 	}
 
 	public MSkill fetchModel(int id){
@@ -81,8 +81,6 @@ public class MSkillsManager {
 		private String description;
 		@Expose
 		private boolean reqdSkill;
-
-
 		@Expose
 		Set<MRolesManager.MRole> roles;
 
@@ -162,5 +160,8 @@ public class MSkillsManager {
 			this.reqdSkill = reqdSkill;
 		}
 
+		public Set<MRolesManager.MRole> getRoles() {
+			return roles;
+		}
 	}
 }

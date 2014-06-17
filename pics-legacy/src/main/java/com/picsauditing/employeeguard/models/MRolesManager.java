@@ -11,7 +11,7 @@ public class MRolesManager {
 	private Map<Integer,MRole> lookup = new HashMap<>();
 
 	public static Set<MRole> newCollection(){
-		return new HashSet<MRole>();
+		return new HashSet<>();
 	}
 
 	public MRole fetchModel(int id){
@@ -28,7 +28,7 @@ public class MRolesManager {
 		return lookup.get(id);
 	}
 
-	public Set<MRole> copyWithBasicInfo(List<Role> roles){
+	public Set<MRole> copyBasicInfo(List<Role> roles){
 		Set<MRole> mRoles = MRolesManager.newCollection();
 		for(Role role: roles){
 			MRole mRole = this.attachWithModel(role);

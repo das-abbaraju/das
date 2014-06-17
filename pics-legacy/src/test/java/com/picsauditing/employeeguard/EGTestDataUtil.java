@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -375,6 +376,23 @@ public class EGTestDataUtil {
 						.name("Skill 3 - Doesnt expire")
 						.build()
 		);
+	}
+
+	public Map<Integer,AccountSkill>  buildNewFakeSkillsMixedBagMap() {
+		List<AccountSkill> skills = buildNewFakeSkillsMixedBag();
+
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						}
+		);
+
+		return map;
 	}
 
 	public Map<AccountModel, Set<Employee>> buildNewContractorEmployeeMap() {

@@ -48,6 +48,9 @@
         <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
         </action>
 
+      <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+      </action>
+
     </package>
 
     <!-- Operator -->
