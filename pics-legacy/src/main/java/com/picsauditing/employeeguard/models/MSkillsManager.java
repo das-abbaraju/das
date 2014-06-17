@@ -4,15 +4,12 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MSkillsManager {
 	private Map<Integer,MSkill> lookup = new HashMap<>();
 
-	public static Set<MSkill> newSkillCollection(){
+	public static Set<MSkill> newCollection(){
 		return new HashSet<MSkill>();
 	}
 
@@ -30,22 +27,65 @@ public class MSkillsManager {
 		return lookup.get(id);
 	}
 
+	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills){
+		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
+		for(AccountSkill skill: skills){
+			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
+			mSkill.copyId().copyName();
+			mSkills.add(mSkill);
+		}
+
+		return mSkills;
+	}
+
+	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills){
+		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
+		for(AccountSkill skill: skills){
+			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
+			mSkill.copyId().copyName().copyRoles();
+			mSkills.add(mSkill);
+		}
+		return mSkills;
+	}
+
+	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills, Map<Integer, AccountSkill> reqdSkills){
+		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
+		for(AccountSkill skill: skills){
+			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
+			mSkill.copyId().copyName().copyRoles();
+			if(reqdSkills.get(skill.getId())!=null) mSkill.setReqdSkill(true);
+			mSkills.add(mSkill);
+		}
+		return mSkills;
+	}
+
+	public void copyRoles(Set<MSkill> mSkills){
+		for(MSkill mSkill: mSkills){
+			mSkill.copyRoles();
+		}
+	}
+
+
 	public static class MSkill{
 		@Expose
 		private int id;
 		@Expose
 		private String name;
 		@Expose
-		@SerializedName("skill_type")
 		private String skillType;
 		@Expose
-		@SerializedName("rule_type")
 		private String ruleType;
 		@Expose
-		@SerializedName("interval_type")
 		private String intervalType;
 		@Expose
 		private String description;
+		@Expose
+		private boolean reqdSkill;
+
+
+		@Expose
+		Set<MRolesManager.MRole> roles;
+
 
 		private AccountSkill skill;
 
@@ -67,21 +107,28 @@ public class MSkillsManager {
 			description=skill.getDescription();
 			return this;
 		}
-/*
-		public MSkill copySkillType(){
-			skillType=skill.getSkillType().toString();
-			return this;
-		}
 
 		public MSkill copySkillType(){
 			skillType=skill.getSkillType().toString();
 			return this;
 		}
 
-		public MSkill copySkillType(){
-			skillType=skill.getSkillType().toString();
+		public MSkill copyRuleType(){
+			ruleType=skill.getRuleType().toString();
 			return this;
-		}*/
+		}
+
+		public MSkill copyIntervalType(){
+			intervalType=skill.getIntervalType().toString();
+			return this;
+		}
+
+		public MSkill copyRoles(){
+			MRolesManager mRolesManager = new MRolesManager();
+			Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
+			this.roles = mRoles;
+			return this;
+		}
 
 		public int getId() {
 			return id;
@@ -106,5 +153,14 @@ public class MSkillsManager {
 		public String getDescription() {
 			return description;
 		}
+
+		public boolean isReqdSkill() {
+			return reqdSkill;
+		}
+
+		public void setReqdSkill(boolean reqdSkill) {
+			this.reqdSkill = reqdSkill;
+		}
+
 	}
 }

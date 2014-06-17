@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException;
+import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
@@ -367,6 +368,22 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 	public List<AccountSkill> findReqdSkillsForCorpOp(int siteId) {
 		return siteSkillDAO.findReqdSkillsForCorpOp(siteId);
+	}
+
+	public Map<Integer,AccountSkill> findReqdSkillsForCorpOpMap(int siteId) {
+		List<AccountSkill> skills= siteSkillDAO.findReqdSkillsForCorpOp(siteId);
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						});
+
+
+		return map;
 	}
 
 	public List<AccountSkill> filterSkillsForCorpOp(String searchTerm, final List<Integer> accountIds) {

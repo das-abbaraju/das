@@ -1,15 +1,56 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillRole;
+import com.picsauditing.employeeguard.entities.Role;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MRolesManager {
 	private Map<Integer,MRole> lookup = new HashMap<>();
 
-	public static class MRole{
+	public static Set<MRole> newCollection(){
+		return new HashSet<MRole>();
+	}
+
+	public MRole fetchModel(int id){
+		return lookup.get(id);
+	}
+
+	public MRole attachWithModel(Role role){
+		int id = role.getId();
+
+		if(lookup.get(id)==null){
+			lookup.put(id, new MRole(role));
+		}
+
+		return lookup.get(id);
+	}
+
+	public Set<MRole> copyWithBasicInfo(List<Role> roles){
+		Set<MRole> mRoles = MRolesManager.newCollection();
+		for(Role role: roles){
+			MRole mRole = this.attachWithModel(role);
+			mRole.copyId().copyName();
+			mRoles.add(mRole);
+		}
+
+		return mRoles;
+	}
+
+	public Set<MRole> extractRoleAndCopyWithBasicInfo(List<AccountSkillRole> accountSkillRoles){
+		Set<MRole> mRoles = MRolesManager.newCollection();
+		for(AccountSkillRole asr: accountSkillRoles){
+			MRole mRole = this.attachWithModel(asr.getRole());
+			mRole.copyId().copyName();
+			mRoles.add(mRole);
+		}
+
+		return mRoles;
+	}
+
+	public static class MRole {
 
 		@Expose
 		private int id;
@@ -19,6 +60,22 @@ public class MRolesManager {
 		private MAssignments assignments;
 		@Expose
 		Set<MSkillsManager.MSkill> skills;
+
+		private Role role;
+
+		public MRole(Role role) {
+			this.role = role;
+		}
+
+		public MRole copyId(){
+			id=role.getId();
+			return this;
+		}
+
+		public MRole copyName(){
+			name=role.getName();
+			return this;
+		}
 
 		public int getId() {
 			return id;
