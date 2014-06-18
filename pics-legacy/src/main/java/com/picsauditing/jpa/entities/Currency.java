@@ -1,81 +1,85 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Transient;
-
-@Deprecated
 public enum Currency {
-	USD("USD", "$"),        //US Dollar             (symbol placed before amounts)
-    CAD("CAD", "$"),        //Canadian Dollar       (symbol placed before amounts)
-    GBP("GBP", "\u00a3"),   //Great Britain Pound   (symbol placed before amounts)
-    EUR("EUR", "\u20ac"),   //Euros                 (symbol placed either before or after)
-    SEK("SEK", "kr"),       //Swedish Krona         (symbol placed after amounts)
-    ZAR("ZAR", "R"),        //South African Rand    (symbol placed after amounts)
-    NOK("NOK", "kr"),       //Norwegian Krone       (symbol placed after amounts)
-    DKK("DKK", "kr"),       //Danish Krone          (symbol placed after amounts)
-    AUD("AUD", "$"),        //Australian Dollar     (symbol placed after amounts)
-    NZD("NZD", "$"),        //New Zealand Dollar     (symbol placed after amounts)
-    TRY("TRY", "TL"),       //Turkish Lira          (symbol placed after amounts)
-    CHF("CHF", "Fr");       //Swiss Franc           (symbol placed after amounts)
+    USD("USD", "$", "US Dollar", Constants.BEFORE),
+    CAD("CAD", "$", "Canadian Dollar", Constants.BEFORE),
+    GBP("GBP", "\u00a3", "British Pound", Constants.BEFORE),
+    EUR("EUR", "\u20ac", "Euro", Constants.EITHER),
+    SEK("SEK", "kr", "Swedish Krona", Constants.AFTER),
+    ZAR("ZAR", "R", "South African Rand", Constants.AFTER),
+    NOK("NOK", "kr", "Norwegian Krone", Constants.AFTER),
+    DKK("DKK", "kr", "Danish Krone", Constants.AFTER),
+    AUD("AUD", "$", "Australian Dollar", Constants.AFTER),
+    NZD("NZD", "$", "New Zealand Dollar", Constants.AFTER),
+    TRY("TRY", "TL", "Turkish Lira", Constants.AFTER),
+    CHF("CHF", "Fr", "Swiss Franc", Constants.AFTER),
+    PLN("PLN", "z\u0142", "Polish Złoty", Constants.AFTER);
 
-	private String display;
-	private String symbol;
+    private String isoCode;
+    private String symbol;
+    private String englishDescription;
+    private String symbolPlacement;
 
-    @Deprecated
-	private Currency(String display, String icon) {
-		this.display = display;
-		this.symbol = icon;
-	}
+    private Currency(String isoCode, String symbol, String englishDescription, String symbolPlacement) {
+        this.isoCode = isoCode;
+        this.symbol = symbol;
+        this.englishDescription = englishDescription;
+        this.symbolPlacement = symbolPlacement;
+    }
 
-    @Deprecated
-	public String getDisplay() {
-		return display;
-	}
+    public String getIsoCode() {
+        return isoCode;
+    }
 
-    @Deprecated
-	public boolean isCAD() {
-		return this.equals(CAD);
-	}
+    public String getSymbol() {
+        return symbol;
+    }
 
-    @Deprecated
-	public boolean isUSD() {
-		return this.equals(USD);
-	}
+    public String getEnglishDescription() {
+        return englishDescription;
+    }
+
+    public String getSymbolPlacement() {
+        return symbolPlacement;
+    }
+
+    // methods
+    public String getDisplay() {
+        return isoCode;
+    }
+
+    public boolean isCAD() {
+        return this.equals(CAD);
+    }
 
 
-    @Deprecated
-	public boolean isGBP() {
-		return this.equals(GBP);
-	}
+    public boolean isUSD() {
+        return this.equals(USD);
+    }
 
+    public boolean isGBP() {
+        return this.equals(GBP);
+    }
 
-    @Deprecated
-	public boolean isEUR() {
-		return this.equals(EUR);
-	}
+    public boolean isEUR() {
+        return this.equals(EUR);
+    }
 
-    @Deprecated
     public boolean isCHF() {
         return this.equals(CHF);
     }
 
-    @Deprecated
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+    public boolean isTaxable() {
+        return isCAD() || isGBP();
+    }
 
-    @Deprecated
-	public String getSymbol() {
-		return symbol;
-	}
-
-    @Deprecated
-    @Transient
-	public boolean isTaxable() {
-		return isCAD() || isGBP();
-	}
-
-    @Deprecated
     public com.picsauditing.currency.Currency toNewCurrency() {
         return com.picsauditing.currency.Currency.valueOf(this.name());
+    }
+
+    private static class Constants {
+        public static final String BEFORE = "before";
+        public static final String EITHER = "either";
+        public static final String AFTER = "after";
     }
 }
