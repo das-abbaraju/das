@@ -358,7 +358,7 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		delete(accountSkill);
 	}
 
-	public List<AccountSkill> findSkillsForCorpOp(final List<Integer> accountIds) {
+	public List<AccountSkill> findSkillsForCorpSite(final List<Integer> accountIds) {
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyList();
 		}
@@ -366,11 +366,11 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		return accountSkillDAO.findByAccounts(accountIds);
 	}
 
-	public List<AccountSkill> findReqdSkillsForCorpOp(int siteId) {
+	public List<AccountSkill> findReqdSkillsForCorpSite(int siteId) {
 		return siteSkillDAO.findReqdSkillsForCorpOp(siteId);
 	}
 
-	public Map<Integer,AccountSkill> findReqdSkillsForCorpOpMap(int siteId) {
+	public Map<Integer,AccountSkill> findReqdSkillsForCorpSiteMap(int siteId) {
 		List<AccountSkill> skills= siteSkillDAO.findReqdSkillsForCorpOp(siteId);
 		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
 
@@ -386,11 +386,4 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		return map;
 	}
 
-	public List<AccountSkill> filterSkillsForCorpOp(String searchTerm, final List<Integer> accountIds) {
-		if (Strings.isEmpty(searchTerm) || CollectionUtils.isEmpty(accountIds)) {
-			return Collections.emptyList();
-		}
-
-		return accountSkillDAO.search(searchTerm, accountIds);
-	}
 }

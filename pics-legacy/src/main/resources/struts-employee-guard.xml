@@ -392,7 +392,7 @@
   <package name="com.picsauditing.employee-guard.api" extends="com.picsauditing" namespace="/employee-guard/api">
     <default-interceptor-ref name="pics-rest-stack"/>
 
-    <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkillsForCorpOp"/>
+    <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkillsForCorpSite"/>
 
   </package>
 

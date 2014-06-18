@@ -1,7 +1,5 @@
 package com.picsauditing.employeeguard.controllers.operator;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
@@ -15,11 +13,7 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
 import com.picsauditing.employeeguard.forms.operator.RequiredSiteSkillForm;
-import com.picsauditing.employeeguard.models.MCorporate;
-import com.picsauditing.employeeguard.models.MDataWrapper;
-import com.picsauditing.employeeguard.models.MSkillsManager;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.CorpOpSkillService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
@@ -36,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SkillAction extends PicsRestActionSupport implements AjaxValidator {
 
