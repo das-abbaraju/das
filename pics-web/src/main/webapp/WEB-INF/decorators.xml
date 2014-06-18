@@ -61,6 +61,7 @@
         <pattern>/employee-guard/*/changelog</pattern>
         <pattern>/employee-guard/info</pattern>
         <pattern>/employee-guard/employees/*/skill/*</pattern>
+        <pattern>/employee-guard/skills</pattern>
     </decorator>
     <decorator name="index" page="index.jsp">
         <pattern>/registration/address-validation/*</pattern>

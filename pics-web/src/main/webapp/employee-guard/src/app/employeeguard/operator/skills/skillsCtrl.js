@@ -1,7 +1,7 @@
-angular.module('PICS.employeeguard')
+angular.module('PICS.skills')
 
-.controller('operatorProjectListCtrl', function ($scope, SkillList, WhoAmI) {
-    $scope.projects = SkillList.query();
+.controller('operatorSkillListCtrl', function ($scope, OperatorSkillList, WhoAmI) {
+    $scope.skills = OperatorSkillList.query();
     $scope.user = WhoAmI.get();
 
     $scope.user.$promise.then(function(user) {
