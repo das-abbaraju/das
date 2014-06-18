@@ -40,11 +40,11 @@ public class SkillAction extends PicsRestActionSupport{
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
 
 		Set<MSkillsManager.MSkill> mSkills = corpOpSkillService.findSkillsForCorpOp(accountIds, accountId);
-		MCorporate mCorporate = new MCorporate();
-		mCorporate.setSkills(mSkills);
+
+
 
 		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-		jsonString = jsonObject.toJson(mCorporate);
+		jsonString = jsonObject.toJson(mSkills);
 
 		return JSON_STRING;
 	}
@@ -62,10 +62,8 @@ public class SkillAction extends PicsRestActionSupport{
 		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
 
 		Set<MSkillsManager.MSkill> mSkills = corpOpSkillService.filterSkillsForCorpOp(searchTerm, accountIds, accountId);
-		MCorporate mCorporate = new MCorporate();
-		mCorporate.setSkills(mSkills);
 
-		jsonString = jsonObject.toJson(mCorporate);
+		jsonString = jsonObject.toJson(mSkills);
 		return JSON_STRING;
 	}
 
