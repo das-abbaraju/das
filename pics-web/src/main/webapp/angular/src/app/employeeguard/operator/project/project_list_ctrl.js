@@ -4,6 +4,8 @@ angular.module('PICS.employeeguard')
     $scope.projects = SkillList.query();
     $scope.user = WhoAmI.get();
 
+    $scope.requiredSkills = [];
+
     $scope.user.$promise.then(function(user) {
         if (user.type.toLowerCase() === 'corporate') {
             $scope.orderByField = 'site';
