@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.models.*;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.ContractorSkillService;
 import com.picsauditing.employeeguard.services.CorpSiteSkillService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -19,14 +20,20 @@ public class SkillAction extends PicsRestActionSupport{
 	@Autowired
 	CorpSiteSkillService corpSiteSkillService;
 
+	@Autowired
+	ContractorSkillService contractorSkillService;
 
-	public String findSkillsForCorpSite(){
+	public String findSkills(){
 
 		int accountId = permissions.getAccountId();
-		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
-
-		Set<MSkillsManager.MSkill> mSkills = corpSiteSkillService.findSkillsForCorpSite(accountIds, accountId);
-
+		Set<MSkillsManager.MSkill> mSkills;
+		if(permissions.isOperatorCorporate()) {
+			List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
+			mSkills = corpSiteSkillService.findSkillsForCorpSite(accountIds, accountId);
+		}
+		else{
+			mSkills = contractorSkillService.findSkillsForContractor(accountId);
+		}
 		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 		jsonString = jsonObject.toJson(mSkills);
 

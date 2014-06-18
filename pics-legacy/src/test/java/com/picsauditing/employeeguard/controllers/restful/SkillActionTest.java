@@ -44,7 +44,7 @@ public class SkillActionTest extends PicsActionTest {
 
 	@Test
 	public void testFindSkillsForCorpOp() throws Exception {
-		skillAction.findSkillsForCorpSite();
+		skillAction.findSkills();
 
 		verify(corpSiteSkillService).findSkillsForCorpSite(anyList(), anyInt());
 

@@ -19,6 +19,7 @@ public class CorpSiteSkillService {
 		Map<Integer,AccountSkill> reqdSkillsForCorpSiteMap = skillEntityService.findReqdSkillsForCorpSiteMap(accountId);
 
 		MSkillsManager skillsManager = new MSkillsManager();
+
 		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachRolesAndFlagReqdSkills(skills, reqdSkillsForCorpSiteMap);
 
 		return mSkills;

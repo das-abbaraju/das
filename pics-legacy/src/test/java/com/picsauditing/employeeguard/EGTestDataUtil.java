@@ -302,6 +302,14 @@ public class EGTestDataUtil {
 				.build();
 	}
 
+	public Group buildNewFakeGroup() {
+		int newId = sequencer++;
+		return new GroupBuilder()
+						.accountId(CONTRACTOR_ID)
+						.name("GROUP-Id-" + newId)
+						.build();
+	}
+
 	public List<Role> buildNewFakeRoles() {
 		return Arrays.asList(
 				buildNewFakeRole(),
@@ -378,8 +386,49 @@ public class EGTestDataUtil {
 		);
 	}
 
+	public List<AccountSkill> buildNewFakeContractorSkillsMixedBag() {
+		return Arrays.asList(
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Training)
+										.intervalPeriod(1)
+										.intervalType(IntervalType.DAY)
+										.name("Skill 1 Expires in one day")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Certification)
+										.name("Skill 2 - Certification")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Training)
+										.doesNotExpire(true)
+										.name("Skill 3 - Doesnt expire")
+										.build()
+		);
+	}
+
+
 	public Map<Integer,AccountSkill>  buildNewFakeSkillsMixedBagMap() {
 		List<AccountSkill> skills = buildNewFakeSkillsMixedBag();
+
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						}
+		);
+
+		return map;
+	}
+
+	public Map<Integer,AccountSkill>  buildNewFakeContractorSkillsMixedBagMap() {
+		List<AccountSkill> skills = buildNewFakeContractorSkillsMixedBag();
 
 		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
 

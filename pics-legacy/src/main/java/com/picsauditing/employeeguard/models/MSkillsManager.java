@@ -3,6 +3,10 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillGroup;
+import com.picsauditing.employeeguard.entities.GroupEmployee;
+import com.picsauditing.employeeguard.entities.RuleType;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.*;
 
@@ -59,12 +63,28 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
+	public Set<MSkillsManager.MSkill> copyBasicInfoAttachGroupsReqdSkillsEmployeeCount(List<AccountSkill> skills, MContractor mContractor){
+		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
+		for(AccountSkill skill: skills){
+			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
+			mSkill.copyId().copyName().copyGroups().copyEmployeesTiedToSkillCount(mContractor.getTotalEmployees());
+			if(skill.getRuleType()!=null && skill.getRuleType().equals(RuleType.REQUIRED)) mSkill.setReqdSkill(true);
+			mSkills.add(mSkill);
+		}
+		return mSkills;
+	}
+
 	public void copyRoles(Set<MSkill> mSkills){
 		for(MSkill mSkill: mSkills){
 			mSkill.copyRoles();
 		}
 	}
 
+	public void copyGroups(Set<MSkill> mSkills){
+		for(MSkill mSkill: mSkills){
+			mSkill.copyGroups();
+		}
+	}
 
 	public static class MSkill{
 		@Expose
@@ -84,7 +104,10 @@ public class MSkillsManager {
 		private boolean reqdSkill;
 		@Expose
 		Set<MRolesManager.MRole> roles;
-
+		@Expose
+		Set<MGroupsManager.MGroup> groups;
+		@Expose
+		int totalEmployees;
 
 		private AccountSkill skill;
 
@@ -129,6 +152,42 @@ public class MSkillsManager {
 			return this;
 		}
 
+		public MSkill copyGroups(){
+			MGroupsManager mGroupsManager = new MGroupsManager();
+			Set<MGroupsManager.MGroup> mGroups = mGroupsManager.extractGroupAndCopyWithBasicInfo(skill.getGroups());
+			this.groups = mGroups;
+			return this;
+		}
+
+		public MSkill copyEmployeesTiedToSkillCount(int totalEmployeesForAccount){
+			if (skill.getRuleType() != null && skill.getRuleType().isRequired()) {
+				totalEmployees = totalEmployeesForAccount;
+			}
+			else {
+				List<AccountSkillGroup> accountSkillGroups = skill.getGroups();
+				totalEmployees = getEmployeeCount(accountSkillGroups);
+			}
+			return this;
+		}
+
+		private int getEmployeeCount(List<AccountSkillGroup> accountSkillGroups) {
+			Set<Integer> employeeIds = new HashSet<>();
+			for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
+				employeeIds.addAll(PicsCollectionUtil.getIdsFromCollection(accountSkillGroup.getGroup().getEmployees(), new PicsCollectionUtil.Identitifable<GroupEmployee, Integer>() {
+
+					@Override
+					public Integer getId(GroupEmployee groupEmployee) {
+						return groupEmployee.getEmployee().getId();
+					}
+				}));
+			}
+
+
+			return employeeIds.size();
+		}
+
+		//-- Getters
+
 		public int getId() {
 			return id;
 		}
@@ -163,6 +222,14 @@ public class MSkillsManager {
 
 		public Set<MRolesManager.MRole> getRoles() {
 			return roles;
+		}
+
+		public int getTotalEmployees() {
+			return totalEmployees;
+		}
+
+		public Set<MGroupsManager.MGroup> getGroups() {
+			return groups;
 		}
 	}
 }

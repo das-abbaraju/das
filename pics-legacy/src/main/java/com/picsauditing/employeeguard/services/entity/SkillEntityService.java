@@ -362,8 +362,11 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		if (CollectionUtils.isEmpty(accountIds)) {
 			return Collections.emptyList();
 		}
-
 		return accountSkillDAO.findByAccounts(accountIds);
+	}
+
+	public List<AccountSkill> findSkillsForContractor(int accountId) {
+		return accountSkillDAO.findByAccount(accountId);
 	}
 
 	public List<AccountSkill> findReqdSkillsForCorpSite(int siteId) {
