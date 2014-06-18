@@ -230,7 +230,7 @@
 
         <li>
             <label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
-            <s:textfield name="contractor.naics.code"/>
+            <s:textfield name="naicsCode"/>
         </li>
         <li>
             <label><s:text name="ContractorEdit.SoleProprietor.heading"/>:</label>
