@@ -107,10 +107,7 @@ public class InsertContractors extends CustomerAdaptor {
 
 
                 setBillAddress(factory, contractor, customer);
-
-                customer.setCurrencyRef(factory.createCurrencyRef());
-
-                customer.getCurrencyRef().setFullName(getCurrencyRefFullName(contractor));
+                setCurrencyRef(factory, contractor, customer);
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
@@ -142,6 +139,14 @@ public class InsertContractors extends CustomerAdaptor {
 		return writer.toString();
 
 	}
+
+    private void setCurrencyRef(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
+        String currencyRefFullName = getCurrencyRefFullName(contractor);
+        if(currencyRefFullName != null) {
+            customer.setCurrencyRef(factory.createCurrencyRef());
+            customer.getCurrencyRef().setFullName(currencyRefFullName);
+        }
+    }
 
     private void setBillAddress(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
         if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
