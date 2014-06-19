@@ -346,7 +346,14 @@
 		</p>
 	</s:if>
 
-	<p>
+    <s:if test="contractor.naics != null">
+        <p>
+            <s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:
+            <s:text name="%{contractor.naics.code}"/>
+        </p>
+    </s:if>
+
+    <p>
 		<s:text name="ContractorView.LastLogin"/>:
 		<s:property value="getAccountLastLogin()"/>
 	</p>

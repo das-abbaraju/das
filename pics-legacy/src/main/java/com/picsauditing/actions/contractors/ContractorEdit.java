@@ -37,6 +37,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	@Autowired
 	protected CountryDAO countryDAO;
 	@Autowired
+	protected NaicsDAO naicsDAO;
+	@Autowired
 	protected OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	protected UserDAO userDAO;
@@ -61,6 +63,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 	private File logo = null;
 	private String logoFileName = null;
+	private String naicsCode;
 	private File brochure = null;
 	private String brochureFileName = null;
 	private CountrySubdivision countrySubdivision;
@@ -122,6 +125,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		if (contractor != null && !supportedLanguages.getVisibleLocales().contains(contractor.getLocale())) {
 			contractor.setLocale(supportedLanguages.getClosestVisibleLocale(contractor.getLocale()));
 		}
+
+        if (naicsCode == null) {
+            naicsCode = contractor.getNaics().getCode();
+        }
 	}
 
 	private void defaultConTypeHelpText() {
@@ -216,6 +223,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
                 }
             }
 
+            saveNaicsCode();
+
 			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
@@ -223,6 +232,32 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 
 		return SUCCESS;
 	}
+
+    private void saveNaicsCode() {
+        Naics naics = new Naics();
+        naics.setCode(guessNaicsCode(naicsCode));
+        contractor.setNaics(naics);
+    }
+
+    private boolean isValidNAICScode(String code) {
+        Naics naics = naicsDAO.find(code);
+        if (naics != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private String guessNaicsCode(String naics) {
+        if (Strings.isEmpty(naics)) {
+            return "0";
+        }
+
+        if (isValidNAICScode(naics)) {
+            return naics;
+        }
+
+        return guessNaicsCode(naics.substring(0, naics.length() - 1));
+    }
 
     private void changeCsrIfGoingActive() {
         if (contractor.getStatus().isActive() && !contractor.getStatus().equals(previousStatus))
@@ -762,4 +797,12 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 	public void setSapAppPropertyUtil(SapAppPropertyUtil sapAppPropertyUtil) {
 		this.sapAppPropertyUtil = sapAppPropertyUtil;
 	}
+
+    public String getNaicsCode() {
+        return naicsCode;
+    }
+
+    public void setNaicsCode(String naicsCode) {
+        this.naicsCode = naicsCode;
+    }
 }
