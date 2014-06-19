@@ -1,8 +1,10 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
+import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.entities.RuleType;
 
 import java.util.*;
 
@@ -38,6 +40,16 @@ public class MGroupsManager {
 		return mGroups;
 	}
 
+	public Set<MGroup> copyBasicInfoAttachSkillsAndEmployeeCount(List<Group> groups){
+		Set<MGroup> mGroups = MGroupsManager.newCollection();
+		for(Group group: groups){
+			MGroup mGroup = this.attachWithModel(group);
+			mGroup.copyId().copyName().copySkills().copyEmployeesTiedToGroupCount();
+			mGroups.add(mGroup);
+		}
+		return mGroups;
+	}
+
 	public Set<MGroupsManager.MGroup> extractGroupAndCopyWithBasicInfo(List<AccountSkillGroup> asgs){
 		Set<MGroupsManager.MGroup> mGroups = MGroupsManager.newCollection();
 		for(AccountSkillGroup asg: asgs){
@@ -59,6 +71,8 @@ public class MGroupsManager {
 		private MAssignments assignments;
 		@Expose
 		Set<MSkillsManager.MSkill> skills;
+		@Expose
+		int totalEmployees;
 
 		private Group group;
 
@@ -73,6 +87,16 @@ public class MGroupsManager {
 
 		public MGroup copyName(){
 			name=group.getName();
+			return this;
+		}
+
+		public MGroup copySkills(){
+			this.skills= new MSkillsManager().extractSkillAndCopyWithBasicInfo(group.getSkills());
+			return this;
+		}
+
+		public MGroup copyEmployeesTiedToGroupCount(){
+			totalEmployees=group.getEmployees()==null?0:group.getEmployees().size();
 			return this;
 		}
 

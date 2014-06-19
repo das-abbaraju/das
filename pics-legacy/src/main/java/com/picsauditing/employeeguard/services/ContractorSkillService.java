@@ -19,7 +19,7 @@ public class ContractorSkillService {
 	@Autowired
 	private EmployeeEntityService employeeEntityService;
 
-	public Set<MSkillsManager.MSkill> findSkillsForContractor(int accountId){
+	public Set<MSkillsManager.MSkill> findSkills(int accountId){
 		List<AccountSkill> skills = skillEntityService.findSkillsForContractor(accountId);
 
 		MSkillsManager skillsManager = new MSkillsManager();

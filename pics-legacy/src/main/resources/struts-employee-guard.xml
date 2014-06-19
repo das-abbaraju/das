@@ -393,6 +393,7 @@
     <default-interceptor-ref name="pics-rest-stack"/>
 
     <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkills"/>
+    <action name="groups" class="com.picsauditing.employeeguard.controllers.restful.GroupAction"/>
 
   </package>
 

@@ -9,18 +9,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CorpSiteSkillService {
+public class CorporateSkillService {
 
 	@Autowired
 	private SkillEntityService skillEntityService;
 
-	public Set<MSkillsManager.MSkill> findSkillsForCorpSite(final List<Integer> accountIds, int accountId){
-		List<AccountSkill> skills = skillEntityService.findSkillsForCorpSite(accountIds);
+	@Autowired
+	private AccountService accountService;
+
+	public Set<MSkillsManager.MSkill> findSkills(int accountId){
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
+		List<AccountSkill> skills = skillEntityService.findSkillsForCorporate(accountIds);
 		Map<Integer,AccountSkill> reqdSkillsForCorpSiteMap = skillEntityService.findReqdSkillsForCorpSiteMap(accountId);
 
-		MSkillsManager skillsManager = new MSkillsManager();
-
-		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachRolesAndFlagReqdSkills(skills, reqdSkillsForCorpSiteMap);
+		Set<MSkillsManager.MSkill> mSkills = new MSkillsManager().copyBasicInfoAttachRolesAndFlagReqdSkills(skills, reqdSkillsForCorpSiteMap);
 
 		return mSkills;
 	}

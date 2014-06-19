@@ -5,6 +5,8 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.SiteSkill;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.models.MSkillsManager;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +21,17 @@ public class SiteSkillService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
+	@Autowired
+	private SkillEntityService skillEntityService;
+
+	public Set<MSkillsManager.MSkill> findSkills(int accountId){
+List<AccountSkill> skills = skillEntityService.findSkillsForSite(accountId);
+		Map<Integer,AccountSkill> reqdSkillsForCorpSiteMap = skillEntityService.findReqdSkillsForCorpSiteMap(accountId);
+
+		Set<MSkillsManager.MSkill> mSkills = new MSkillsManager().copyBasicInfoAttachRolesAndFlagReqdSkills(skills, reqdSkillsForCorpSiteMap);
+
+		return mSkills;
+	}
 
 	public Map<AccountModel, Set<AccountSkill>> getRequiredSkillsForProjects(final List<ProjectCompany> projectCompanies) {
 		if (CollectionUtils.isEmpty(projectCompanies)) {

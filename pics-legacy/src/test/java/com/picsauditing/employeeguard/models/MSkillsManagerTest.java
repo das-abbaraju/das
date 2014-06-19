@@ -71,7 +71,7 @@ public class MSkillsManagerTest {
 	public void testCopyBasicInfo() throws Exception {
 		MSkillsManager mSkillsManager = new MSkillsManager();
 		mSkillsManager.copyBasicInfo(Arrays.asList(skill));
-		assertEquals(skill.getId(), mSkillsManager.fetchModel(skill.getId()).getId());
+		assertTrue(skill.getId()==mSkillsManager.fetchModel(skill.getId()).getId());
 		assertEquals(skill.getName(), mSkillsManager.fetchModel(skill.getId()).getName());
 	}
 
@@ -81,7 +81,7 @@ public class MSkillsManagerTest {
 		Set<MSkillsManager.MSkill> mSkills = mSkillsManager.copyBasicInfoAndAttachRoles(Arrays.asList(skill));
 
 		for(MSkillsManager.MSkill mSkill:mSkills){
-			assertEquals(skill.getId(), mSkill.getId());
+			assertTrue(skill.getId()==mSkill.getId());
 			assertEquals(skill.getName(), mSkill.getName());
 			for(MRolesManager.MRole mRole: mSkill.getRoles()){
 				assertEquals(role.getId(),mRole.getId());
@@ -97,7 +97,7 @@ public class MSkillsManagerTest {
 		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachRolesAndFlagReqdSkills(Arrays.asList(skill),reqdSkillsMap);
 
 		for(MSkillsManager.MSkill mSkill:mSkills){
-			assertEquals(skill.getId(), mSkill.getId());
+			assertTrue(skill.getId()== mSkill.getId());
 			assertEquals(skill.getName(), mSkill.getName());
 			for(MRolesManager.MRole mRole: mSkill.getRoles()){
 				assertEquals(role.getId(),mRole.getId());
@@ -115,14 +115,14 @@ public class MSkillsManagerTest {
 		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachGroupsReqdSkillsEmployeeCount(Arrays.asList(contractorSkill),mContractor);
 
 		for(MSkillsManager.MSkill mSkill:mSkills){
-			assertEquals(skill.getId(), mSkill.getId());
-			assertEquals(skill.getName(), mSkill.getName());
+			assertTrue(contractorSkill.getId()== mSkill.getId().intValue());
+			assertEquals(contractorSkill.getName(), mSkill.getName());
 			for(MGroupsManager.MGroup mGroup: mSkill.getGroups()){
 				assertEquals(group.getId(),mGroup.getId());
 				assertEquals(group.getName(),mGroup.getName());
 			}
 			assertTrue(mSkill.isReqdSkill());
-			assertEquals(TOTAL_EMPLOYEES, mSkill.getTotalEmployees());
+			assertTrue(TOTAL_EMPLOYEES== mSkill.getTotalEmployees());
 		}
 	}
 

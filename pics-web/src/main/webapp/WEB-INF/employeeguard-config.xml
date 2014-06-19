@@ -51,8 +51,9 @@
     <bean id="FileImportService" class="com.picsauditing.employeeguard.services.entity.util.file.FileImportService"/>
     <bean id="ProfileDocumentServiceAspect" class="com.picsauditing.employeeguard.services.aop.docdownload.ProfileDocumentServiceAspect"/>
 
-    <bean id="CorpSiteSkillService" class="com.picsauditing.employeeguard.services.CorpSiteSkillService"/>
+    <bean id="CorporateSkillService" class="com.picsauditing.employeeguard.services.CorporateSkillService"/>
     <bean id="ContractorSkillService" class="com.picsauditing.employeeguard.services.ContractorSkillService"/>
+  <bean id="ContractorGroupService" class="com.picsauditing.employeeguard.services.ContractorGroupService"/>
 
     <!-- External Services -->
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>

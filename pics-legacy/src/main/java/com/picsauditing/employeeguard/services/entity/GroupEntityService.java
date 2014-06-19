@@ -138,4 +138,8 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 					}
 				});
 	}
+
+	public List<Group> findGroupsForContractor(int accountId) {
+		return accountGroupDAO.findByAccount(accountId);
+	}
 }
