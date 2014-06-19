@@ -118,7 +118,7 @@ public class MSkillsManagerTest {
 			assertTrue(contractorSkill.getId()== mSkill.getId().intValue());
 			assertEquals(contractorSkill.getName(), mSkill.getName());
 			for(MGroupsManager.MGroup mGroup: mSkill.getGroups()){
-				assertEquals(group.getId(),mGroup.getId());
+				assertTrue(group.getId()==mGroup.getId().intValue());
 				assertEquals(group.getName(),mGroup.getName());
 			}
 			assertTrue(mSkill.isReqdSkill());

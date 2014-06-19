@@ -25,12 +25,12 @@ public class SkillAction extends PicsRestActionSupport{
 	public String findSkills(){
 
 		int accountId = permissions.getAccountId();
-		Set<MSkillsManager.MSkill> mSkills;
+		Set<MSkillsManager.MSkill> mSkills=null;
 		if(permissions.isCorporate()) {
 			mSkills = corporateSkillService.findSkills(accountId);
 		}else if(permissions.isOperator()){
 			mSkills = siteSkillService.findSkills(accountId);
-		}else{
+		}else if(permissions.isContractor()){
 			mSkills = contractorSkillService.findSkills(accountId);
 		}
 

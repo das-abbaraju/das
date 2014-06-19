@@ -46,7 +46,7 @@ public class MGroupsManagerTest {
 	public void testCopyBasicInfo() throws Exception {
 		MGroupsManager mGroupsManager = new MGroupsManager();
 		mGroupsManager.copyBasicInfo(Arrays.asList(group));
-		assertEquals(group.getId(), mGroupsManager.fetchModel(group.getId()).getId());
+		assertTrue(group.getId() == mGroupsManager.fetchModel(group.getId()).getId());
 		assertEquals(group.getName(), mGroupsManager.fetchModel(group.getId()).getName());
 
 	}
@@ -61,6 +61,6 @@ public class MGroupsManagerTest {
 			mExtractedGroup=mGroup;
 			break;
 		}
-		assertEquals(group.getId(), mExtractedGroup.getId());
+		assertTrue(group.getId()==mExtractedGroup.getId());
 	}
 }

@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.entities.RuleType;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.*;
 
@@ -64,7 +65,7 @@ public class MGroupsManager {
 	public static class MGroup {
 
 		@Expose
-		private int id;
+		private Integer id;
 		@Expose
 		private String name;
 		@Expose
@@ -96,40 +97,42 @@ public class MGroupsManager {
 		}
 
 		public MGroup copyEmployeesTiedToGroupCount(){
-			totalEmployees=group.getEmployees()==null?0:group.getEmployees().size();
+			totalEmployees= CollectionUtils.isEmpty(group.getEmployees())?0:group.getEmployees().size();
 			return this;
 		}
 
-		public int getId() {
+		public Integer getId() {
 			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
 		}
 
 		public String getName() {
 			return name;
 		}
 
-		public void setName(String name) {
-			this.name = name;
-		}
-
 		public Set<MSkillsManager.MSkill> getSkills() {
 			return skills;
-		}
-
-		public void setSkills(Set<MSkillsManager.MSkill> skills) {
-			this.skills = skills;
 		}
 
 		public MAssignments getAssignments() {
 			return assignments;
 		}
 
-		public void setAssignments(MAssignments assignments) {
-			this.assignments = assignments;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			MGroup mGroup = (MGroup) o;
+
+			if (!group.equals(mGroup.group)) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			return group.hashCode();
 		}
 	}
 

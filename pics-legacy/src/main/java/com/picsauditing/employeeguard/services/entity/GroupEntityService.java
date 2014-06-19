@@ -71,6 +71,25 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 				});
 	}
 
+	public Map<Group, Set<AccountSkill>> getGroupSkillsForProfile(final Profile profile) {
+		return PicsCollectionUtil.convertToMapOfSets(accountSkillGroupDAO.findByProfile(profile),
+						new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
+							@Override
+							public Group getKey(AccountSkillGroup accountSkillGroup) {
+								return accountSkillGroup.getGroup();
+							}
+
+							@Override
+							public AccountSkill getValue(AccountSkillGroup accountSkillGroup) {
+								return accountSkillGroup.getSkill();
+							}
+						});
+	}
+
+	public List<Group> findGroupsForContractor(int accountId) {
+		return accountGroupDAO.findByAccount(accountId);
+	}
+
 	/* All Search Methods */
 
 	@Override
@@ -124,22 +143,4 @@ public class GroupEntityService implements EntityService<Group, Integer>, Search
 		delete(group);
 	}
 
-	public Map<Group, Set<AccountSkill>> getGroupSkillsForProfile(final Profile profile) {
-		return PicsCollectionUtil.convertToMapOfSets(accountSkillGroupDAO.findByProfile(profile),
-				new PicsCollectionUtil.EntityKeyValueConvertable<AccountSkillGroup, Group, AccountSkill>() {
-					@Override
-					public Group getKey(AccountSkillGroup accountSkillGroup) {
-						return accountSkillGroup.getGroup();
-					}
-
-					@Override
-					public AccountSkill getValue(AccountSkillGroup accountSkillGroup) {
-						return accountSkillGroup.getSkill();
-					}
-				});
-	}
-
-	public List<Group> findGroupsForContractor(int accountId) {
-		return accountGroupDAO.findByAccount(accountId);
-	}
 }
