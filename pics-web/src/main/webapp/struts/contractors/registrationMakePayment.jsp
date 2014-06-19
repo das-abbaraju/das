@@ -195,9 +195,6 @@
                     <s:text name="ContractorRegistration.title" />:
                     ${contractor.country.isrPhone}
                 </p>
-                <div id="contractor_agreement">
-                    <input id="accept_contractor_agreement" type="checkbox"><s:text name="RegistrationMakePayment.AgreeToTermsAndConditions" /> <s:a href="#" cssClass="contractor-agreement modal-link" data-url="ContractorAgreement.action?id=${contractor.id}"><s:text name="RegistrationMakePayment.ContractorAgreement" /></s:a>
-                </div>
 	 		</div>
 
 	 		<div class="modal hide fade">
@@ -226,130 +223,22 @@
 			<s:text name="RegistrationMakePayment.BillingInformation" />
 		</h1>
 
-		<div id='payment-method-wrapper'>
+		<div id="payment_method_wrapper">
+			<s:if test="contractor.country.proforma">
+			    <input type="radio" name="payment_method" id="credit_card" checked />
+			    <label for="credit_card">Credit Card</label>
 
-		<!-- Credit Card Payment Method -->
-		<div id='credit-card-payment-method'>
-			<s:form action="%{paymentUrl}" cssClass="make-payment-form" theme="pics" autocomplete="off">
-				<input type="hidden" name="redirect" value="<s:property value="requestString"/>?processPayment=true"/>
-				<%-- This just adds a credit card and returns us back to the completeRegistration action method --%>
-				<%-- We must do it this way, or we are not PCI compliant --%>
-				<s:hidden name="hash"></s:hidden>
-				<s:hidden name="key_id"></s:hidden>
-				<s:hidden name="orderid"></s:hidden>
-				<s:hidden name="amount"></s:hidden>
-				<s:hidden name="time"></s:hidden>
-				<s:hidden name="company"></s:hidden>
-				<s:hidden name="customer_vault_id"></s:hidden>
+			    <input type="radio" name="payment_method" id="pro_forma" />
+			    <label for="pro_forma">Pro Forma Email</label>
 
-				<s:if test="cc == null">
-					<input type="hidden" name="customer_vault" value="add_customer"/>
-				</s:if>
-				<s:else>
-					<input type="hidden" name="customer_vault" value="update_customer"/>
-				</s:else>
+		    	<s:include value="/struts/contractors/_registrationCreditCard.jsp" />
+		    	<s:include value="/struts/contractors/_registrationProForma.jsp" />
+			</s:if>
 
-				<ul id="credit-card-inputs">
-					<li>
-						<s:select label="CreditCard.Type" list="creditCardTypes" name="ccName" />
-					</li>
-
-                    <li class="creditcard">
-                        <s:textfield label="CreditCard.Number" name="ccnumber" autocomplete="off" />
-                        <s:if test="invoice.currency.USD || invoice.currency.CAD">
-                            <img src="images/creditcard.png" class="card" />
-                        </s:if>
-                        <s:else>
-                            <img src="images/creditcardNoAmex.png" class="card" />
-                        </s:else>
-					</li>
-
-					<li class="creditcard">
-						<s:textfield label="CreditCard.CVVNumber" name="cvv" style="width:30px" maxlength="4" autocomplete="off" />
-					</li>
-
-					<li class="expiration-date">
-						<label>
-							<s:text name="RegistrationMakePayment.ExpirationDate" />
-						</label>
-
-						<s:select
-							id="expMonth"
-							headerKey=""
-							headerValue="- %{getText('ReportCsrActivity.label.Month')} -"
-							listKey="number"
-							listValue="%{getText(i18nKey)}"
-							list="@com.picsauditing.jpa.entities.Month@values()"
-							name="ccexpmonth"
-							theme="simple"
-						/>
-
-						<s:select
-							id="expYear"
-							headerKey=""
-							headerValue="- %{getText('ReportCsrActivity.label.Year')} -"
-							list="#{14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020,21:2021,22:2022}"
-							name="ccexpyear"
-							theme="simple"
-						/>
-
-						<s:textfield id="ccexp" name="ccexp" theme="simple" />
-					</li>
-
-					<li class="actions">
-						<s:submit
-                            id="submit_payment_button"
-							method="completeRegistration"
-							key="button.SubmitPayment"
-							cssClass="btn success"
-                            disabled="true"
-						/>
-
-                       	<a href="https://www.braintreegateway.com/merchants/89hr924yx28jmb8g/verified"
-                       		target="_blank"
-                       		class="brain-tree-badge">
-
-                           	<img src="https://braintree-badges.s3.amazonaws.com/05.png" border="0" />
-                       	</a>
-
-						<div class="processing">
-							<img src="images/loading.gif" />
-							<p>
-								<s:text name="RegistrationMakePayment.Processing" />
-							</p>
-						</div>
-
-						<p class="check-note">
-							<s:text name="ContractorPaymentOptions.InvoiceEmail" />
-						</p>
-					</li>
-				</ul>
-			</s:form>
+			<s:else>
+				<s:include value="/struts/contractors/_registrationCreditCard.jsp" />
+			</s:else>
 		</div>
-
-		<s:if test="contractor.country.proforma">
-
-			<!-- -OR- -->
-
-			<div id='or'>
-				- <s:text name="Registration.Payment.Or" /> -
-			</div>
-
-			<!-- Pro Forma Invoice Email Button -->
-			<s:form action="RegistrationMakePayment.action" method="POST">
-				<input type="hidden" name="button" value="email" />
-				<input type="hidden" name="invoice.id" value="<s:property value="invoice.id"/>" />
-
-				<s:submit id='pro-forma-button'
-					key="Registration.ProForma.Email.Button"
-					cssClass="btn success"
-                    disabled="true"
-				/>
-			</s:form>
-
-		</s:if>
-
-	</div>
 
 	</section>
 </div>
