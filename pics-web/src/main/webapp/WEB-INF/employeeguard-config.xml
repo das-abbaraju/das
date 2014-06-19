@@ -42,6 +42,7 @@
     <bean id="CorpRoleService" class="com.picsauditing.employeeguard.services.CorpRoleService"/>
     <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.email.EmailHashService"/>
     <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
+    <bean id="EmployeeFileService" class="com.picsauditing.employeeguard.services.EmployeeFileService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
     <bean id="FileImportService" class="com.picsauditing.employeeguard.services.entity.util.file.FileImportService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
@@ -60,6 +61,7 @@
     <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.AccountFilter"/>
 
     <!-- Entity Services -->
+    <bean id="DocumentEntityService" class="com.picsauditing.employeeguard.services.entity.DocumentEntityService"/>
     <bean id="EmployeeEntityService"
           class="com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService"/>
     <bean id="GroupEntityService" class="com.picsauditing.employeeguard.services.entity.GroupEntityService"/>

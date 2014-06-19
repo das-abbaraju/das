@@ -395,6 +395,8 @@
 
     <action name="roles" class="com.picsauditing.employeeguard.controllers.restful.RoleAction"/>
 
+    <action name="files" class="com.picsauditing.employeeguard.controllers.restful.FilesAction"/>
+
   </package>
 
 

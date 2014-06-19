@@ -64,7 +64,7 @@ public class MRolesManager {
 	public static class MRole {
 
 		@Expose
-		private int id;
+		private Integer id;
 		@Expose
 		private String name;
 		@Expose
