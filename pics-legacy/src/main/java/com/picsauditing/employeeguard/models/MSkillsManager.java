@@ -3,33 +3,35 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillRole;
 
 import java.util.*;
 
 public class MSkillsManager {
-	private Map<Integer,MSkill> lookup = new HashMap<>();
 
-	public static Set<MSkill> newCollection(){
+	private Map<Integer, MSkill> lookup = new HashMap<>();
+
+	public static Set<MSkill> newCollection() {
 		return new HashSet<>();
 	}
 
-	public MSkill fetchModel(int id){
+	public MSkill fetchModel(int id) {
 		return lookup.get(id);
 	}
 
-	public MSkill attachWithModel(AccountSkill skill){
+	public MSkill attachWithModel(AccountSkill skill) {
 		int id = skill.getId();
 
-		if(lookup.get(id)==null){
+		if (lookup.get(id) == null) {
 			lookup.put(id, new MSkill(skill));
 		}
 
 		return lookup.get(id);
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills){
+	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName();
 			mSkills.add(mSkill);
@@ -38,9 +40,9 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills){
+	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName().copyRoles();
 			mSkills.add(mSkill);
@@ -48,25 +50,37 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills, Map<Integer, AccountSkill> reqdSkills){
+	public Set<MSkill> extractSkillAndCopyWithBasicInfo(final Collection<AccountSkillRole> accountSkillRoles) {
+		Set<MSkill> mSkills = MSkillsManager.newCollection();
+		for (AccountSkillRole asr : accountSkillRoles) {
+			MSkill mSkill = this.attachWithModel(asr.getSkill());
+			mSkill.copyId().copyName();
+			mSkills.add(mSkill);
+		}
+
+		return mSkills;
+	}
+
+	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills,
+																				Map<Integer, AccountSkill> reqdSkills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName().copyRoles();
-			if(reqdSkills.get(skill.getId())!=null) mSkill.setReqdSkill(true);
+			if (reqdSkills.get(skill.getId()) != null) mSkill.setReqdSkill(true);
 			mSkills.add(mSkill);
 		}
 		return mSkills;
 	}
 
-	public void copyRoles(Set<MSkill> mSkills){
-		for(MSkill mSkill: mSkills){
+	public void copyRoles(Set<MSkill> mSkills) {
+		for (MSkill mSkill : mSkills) {
 			mSkill.copyRoles();
 		}
 	}
 
 
-	public static class MSkill{
+	public static class MSkill {
 		@Expose
 		private int id;
 		@Expose
@@ -92,37 +106,37 @@ public class MSkillsManager {
 			this.skill = skill;
 		}
 
-		public MSkill copyId(){
-			id=skill.getId();
+		public MSkill copyId() {
+			id = skill.getId();
 			return this;
 		}
 
-		public MSkill copyName(){
-			name=skill.getName();
+		public MSkill copyName() {
+			name = skill.getName();
 			return this;
 		}
 
-		public MSkill copyDescription(){
-			description=skill.getDescription();
+		public MSkill copyDescription() {
+			description = skill.getDescription();
 			return this;
 		}
 
-		public MSkill copySkillType(){
-			skillType=skill.getSkillType().toString();
+		public MSkill copySkillType() {
+			skillType = skill.getSkillType().toString();
 			return this;
 		}
 
-		public MSkill copyRuleType(){
-			ruleType=skill.getRuleType().toString();
+		public MSkill copyRuleType() {
+			ruleType = skill.getRuleType().toString();
 			return this;
 		}
 
-		public MSkill copyIntervalType(){
-			intervalType=skill.getIntervalType().toString();
+		public MSkill copyIntervalType() {
+			intervalType = skill.getIntervalType().toString();
 			return this;
 		}
 
-		public MSkill copyRoles(){
+		public MSkill copyRoles() {
 			MRolesManager mRolesManager = new MRolesManager();
 			Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
 			this.roles = mRoles;

@@ -8,7 +8,7 @@ import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
-import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.SessionCookie;

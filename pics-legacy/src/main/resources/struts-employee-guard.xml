@@ -393,6 +393,8 @@
 
     <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkillsForCorpOp"/>
 
+    <action name="roles" class="com.picsauditing.employeeguard.controllers.restful.RoleAction"/>
+
   </package>
 
 
