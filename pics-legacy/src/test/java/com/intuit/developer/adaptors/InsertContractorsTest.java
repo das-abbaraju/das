@@ -114,7 +114,7 @@ public class InsertContractorsTest {
     }
 
     @Test
-    public void testSetCurrencyRef() throws Exception {
+    public void testSetCurrencyRef_USD() throws Exception {
         ObjectFactory objectFactory = new ObjectFactory();
         ContractorAccount contractorAccount = mock(ContractorAccount.class);
         CustomerAdd customerAdd = mock(CustomerAdd.class);
@@ -124,6 +124,21 @@ public class InsertContractorsTest {
         Whitebox.invokeMethod(insertContractors, "setCurrencyRef", objectFactory, contractorAccount, customerAdd);
 
         verify(customerAdd, never()).setCurrencyRef(any(CurrencyRef.class));
+    }
+
+    @Test
+    public void testSetCurrencyRef_EURO() throws Exception {
+        ObjectFactory objectFactory = new ObjectFactory();
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+        CustomerAdd customerAdd = mock(CustomerAdd.class);
+        Country germany = new Country();
+        germany.setCurrency(Currency.EUR);
+        when(contractorAccount.getCountry()).thenReturn(germany);
+        when(customerAdd.getCurrencyRef()).thenReturn(new CurrencyRef());
+
+        Whitebox.invokeMethod(insertContractors, "setCurrencyRef", objectFactory, contractorAccount, customerAdd);
+
+        verify(customerAdd).setCurrencyRef(any(CurrencyRef.class));
     }
 
     @Test
