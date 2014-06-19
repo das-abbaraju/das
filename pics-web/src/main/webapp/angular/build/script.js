@@ -72458,9 +72458,11 @@ if(window.jasmine || window.mocha) {
 
 .filter('removeInvalidCharactersFromUrl', function () {
     return function (text) {
+        var str = text.replace(/\s+/g, '-');
+            str = str.replace(/-{2,}/g, '-');
+            str = str.replace(/[\'\",:\/#%&*{}<>?\\\+]+/g, '');
 
-        var str = text.replace(/\s+/g, '-').toLowerCase();
-        return str;
+        return str.toLowerCase();
     };
 })
 
@@ -72516,63 +72518,12 @@ if(window.jasmine || window.mocha) {
     'PICS.filters'
 ])
 
-.config(function ($routeProvider, $locationProvider) {
+.config(function ($locationProvider, $routeProvider) {
     $locationProvider.html5Mode(true);
 
     $routeProvider
-        .when('/employee-guard/operators/dashboard', {
-            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
-        })
-        .when('/employee-guard/operators/changelog', {
-            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
-        })
-        .when('/employee-guard/operators/assignments', {
-            templateUrl: '/angular/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
-        })
-        .when('/employee-guard/operators/projects', {
-            templateUrl: '/angular/src/app/employeeguard/operator/project/project_list.tpl.html'
-        })
-        .when('/employee-guard/operators/roles', {
-            templateUrl: '/angular/src/app/employeeguard/operator/role/role_list.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id/roles/:roleSlug', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id/projects/:projectSlug', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id/sites/:siteId', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id/sites/:siteId/roles/:roleSlug', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/operators/employees/:id/sites/:siteId/projects/:projectSlug', {
-            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
-        })
-        .when('/employee-guard/contractor/dashboard', {
-            templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
-        })
-        .when('/employee-guard/contractor/changelog', {
-            templateUrl: '/angular/src/app/employeeguard/contractor/beta-changelog/changelog.tpl.html'
-        })
-        .when('/employee-guard/employee/dashboard', {
-            templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
-        })
-        .when('/employee-guard/employee/changelog', {
-            templateUrl: '/angular/src/app/employeeguard/employee/beta-changelog/changelog.tpl.html'
-        })
-        .when('/employee-guard/employee/skillz', {
-            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
-        })
-        .when('/employee-guard/employee/skillz/sites/:siteSlug', {
-            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
-        })
-        .when('/employee-guard/employee/skillz/sites/:siteSlug/projects/:projectSlug', {
-            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        .when('/employee-guard/info', {
+            templateUrl: '/angular/src/app/employeeguard/serverinfo/serverinfo.tpl.html'
         });
 });
 ;angular.module('PICS.services', []);;angular.module('PICS.companyFinder', [
@@ -72594,6 +72545,7 @@ if(window.jasmine || window.mocha) {
     'ui.select2',
     'PICS.services',
     'PICS.companyFinder',
+    'PICS.skills',
     'ngMockE2E'
 ]);;angular.module('PICS.companyFinder')
 
@@ -72922,7 +72874,9 @@ if(window.jasmine || window.mocha) {
         scope: {
             title: '@',
             skills: '=',
-            icon: '@'
+            icon: '@',
+            urlPrefix: '@',
+            target:'@'
         },
         templateUrl: '/angular/src/app/employeeguard/common/employee-skill-section/_employee-skill-section.tpl.html'
     };
@@ -72992,6 +72946,16 @@ if(window.jasmine || window.mocha) {
     return $resource('/employee-guard/operators/who-am-i');
 });;angular.module('PICS.employeeguard')
 
+.config(function ($routeProvider) {
+    $routeProvider
+        .when('/employee-guard/contractor/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/contractor/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/contractor/beta-changelog/changelog.tpl.html'
+        });
+});;angular.module('PICS.employeeguard')
+
 .controller('contractorDashboardCtrl', function ($scope, ContractorStatus) {
     $scope.status = ContractorStatus.get();
 
@@ -73018,22 +72982,60 @@ if(window.jasmine || window.mocha) {
     return $resource('/employee-guard/employee/summary/assignments');
 });;angular.module('PICS.employeeguard')
 
-.controller('employeeDashboardCtrl', function ($scope, EmployeeInfo, EmployeeAssignment, SkillStatus) {
-    $scope.employee = EmployeeInfo.get();
+.controller('employeeDashboardCtrl', function ($scope, $location, $filter, EmployeeInfo, EmployeeAssignment, SkillStatus) {
+    $scope.employee = EmployeeInfo.get(function (employee) {
+        setSlug();
+    });
+
     $scope.assignments = EmployeeAssignment.query();
     $scope.getSkillClass = SkillStatus.getClassNameFromStatus;
 
-    $scope.setSlug = function() {
-        if (!$scope.employee.slug) {
-            $scope.employee.slug = $scope.employee.email;
+    $scope.viewAssignedSkills = function(assignment) {
+        var siteSlug,
+            projectSlug;
+
+        if (assignment.site) {
+            siteSlug = $filter('removeInvalidCharactersFromUrl')(assignment.site);
+            projectSlug = $filter('removeInvalidCharactersFromUrl')(assignment.name);
+            $location.path('/employee-guard/employee/skills/sites/' + siteSlug + '/projects/' + projectSlug);
+        } else {
+            siteSlug = $filter('removeInvalidCharactersFromUrl')(assignment.name);
+            $location.path('/employee-guard/employee/skills/sites/' + siteSlug);
         }
     };
 
-    $scope.employee.$promise.then($scope.setSlug);
+    function setSlug() {
+        if (!$scope.employee.slug) {
+            $scope.employee.slug = $scope.employee.email;
+        }
+    }
+
+    angular.extend($scope, {
+        setSlug: setSlug
+    });
 });;angular.module('PICS.employeeguard')
 
 .factory('EmployeeInfo', function($resource, $routeParams) {
     return $resource('/employee-guard/employee/summary/employee-info');
+});;angular.module('PICS.employeeguard')
+
+.config(function ($routeProvider) {
+    $routeProvider
+        .when('/employee-guard/employee/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/employee/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/employee/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/employee/beta-changelog/changelog.tpl.html'
+        })
+        .when('/employee-guard/employee/skills', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skills/sites/:siteSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/skills/sites/:siteSlug/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        });
 });;angular.module('PICS.employeeguard')
 
 .controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
@@ -73069,7 +73071,7 @@ if(window.jasmine || window.mocha) {
         var slugname = $routeParams.siteSlug;
 
         return {
-            skillList: skillModel.getAllSiteAndProjectSkillsBySlug(slugname),
+            skillList: skillModel.getSiteSkillsBySlug(slugname),
             selectedMenuItem: slugname,
             viewTitle: skillModel.getSiteNameBySlug(slugname)
         };
@@ -73083,7 +73085,7 @@ if(window.jasmine || window.mocha) {
 
         return {
             skillList: skillList,
-            selectedMenuItem: slugname,
+            selectedMenuItem: $routeParams.siteSlug + '-' + $routeParams.projectSlug,
             viewTitle: viewTitle
         };
     }
@@ -73126,7 +73128,7 @@ if(window.jasmine || window.mocha) {
 });;angular.module('PICS.employeeguard')
 
 .factory('EmployeeSkillList', function($resource, $routeParams) {
-    return $resource('/angular/json/employee/skills/skill_list.json');
+    return $resource('/employee-guard/employee/profile/skills');
 });;angular.module('PICS.employeeguard')
 
 .factory('EmployeeSkillModel', function ($filter) {
@@ -73189,27 +73191,19 @@ if(window.jasmine || window.mocha) {
             });
         });
 
-
         return sites;
     };
 
-    Model.prototype.getAllSiteAndProjectSkillsBySlug = function (site_slug) {
-        var site = this.getSiteBySlug(site_slug),
-            projectSkills = [],
-            allSkills,
-            filteredSkills;
+    Model.prototype.getSiteSkillsBySlug = function (site_slug) {
+        var data = this.getData();
 
-        angular.forEach(site.projects, function(project) {
-            projectSkills = projectSkills.concat(project.skills);
-        });
+        if (data.sites) {
+            sites = $filter('filter')(data.sites, { slug: site_slug})[0];
 
-        allSkills = site.required ? site.required.skills.concat(projectSkills) : projectSkills;
-
-        filteredSkills = $filter('removeDuplicateItemsFromArray')(allSkills);
-
-        site.skills = filteredSkills;
-
-        return site;
+            if (sites && sites.required) {
+                return sites.required;
+            }
+        }
     };
 
     Model.prototype.getProjectBySlug = function (project_slug) {
@@ -73228,11 +73222,14 @@ if(window.jasmine || window.mocha) {
             });
         });
 
-        filteredSkills = $filter('removeDuplicateItemsFromArray')(selected_project.skills);
+        if (selected_project) {
+            filteredSkills = $filter('removeDuplicateItemsFromArray')(selected_project.skills);
 
-        selected_project.skills = filteredSkills;
+            selected_project.skills = filteredSkills;
 
-        return selected_project;
+            return selected_project;
+        }
+
     };
 
     Model.prototype.getSiteNameByProjectSlug = function (project_slug) {
@@ -73517,14 +73514,6 @@ if(window.jasmine || window.mocha) {
         getProjectModel: getProjectModel,
         getDefaultModel: getDefaultModel
     });
-})
-
-.filter('removeInvalidCharactersFromUrl', function () {
-        return function (text) {
-
-            var str = text.replace(/\s+/g, '-').toLowerCase();
-            return str;
-        };
 });;angular.module('PICS.employeeguard')
 
 .factory('SkillList', function($resource) {
@@ -73667,6 +73656,43 @@ if(window.jasmine || window.mocha) {
     return Model;
 });;angular.module('PICS.employeeguard')
 
+.config(function ($routeProvider) {
+    $routeProvider
+        .when('/employee-guard/operators/dashboard', {
+            templateUrl: '/angular/src/app/employeeguard/operator/dashboard/dashboard.tpl.html'
+        })
+        .when('/employee-guard/operators/changelog', {
+            templateUrl: '/angular/src/app/employeeguard/operator/beta-changelog/changelog.tpl.html'
+        })
+        .when('/employee-guard/operators/assignments', {
+            templateUrl: '/angular/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
+        })
+        .when('/employee-guard/operators/projects', {
+            templateUrl: '/angular/src/app/employeeguard/operator/project/project_list.tpl.html'
+        })
+        .when('/employee-guard/operators/roles', {
+            templateUrl: '/angular/src/app/employeeguard/operator/role/role_list.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/roles/:roleSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId/roles/:roleSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        })
+        .when('/employee-guard/operators/employees/:id/sites/:siteId/projects/:projectSlug', {
+            templateUrl: '/angular/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
+        });
+});;angular.module('PICS.employeeguard')
+
 .controller('operatorProjectListCtrl', function ($scope, ProjectList, WhoAmI) {
     $scope.projects = ProjectList.query();
     $scope.user = WhoAmI.get();
@@ -73681,6 +73707,15 @@ if(window.jasmine || window.mocha) {
 .controller('operatorRoleListCtrl', function ($scope, RoleList, WhoAmI) {
     $scope.roles = RoleList.query();
     $scope.user = WhoAmI.get();
+});;angular.module('PICS.employeeguard')
+
+.controller('serverInfoCtrl', function ($scope, ServerInfo) {
+    $scope.server = ServerInfo.get();
+});;angular.module('PICS.employeeguard')
+
+.factory('ServerInfo', function($resource) {
+    // return $resource('/angular/json/serverinfo/serverinfo.json');
+    return $resource('/employee-guard/serverInfo');
 });;angular.module('PICS.directives')
 
 .directive('autocompleteSelect', function (tradeService) {

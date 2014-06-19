@@ -1,7 +1,9 @@
 package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.EGTestDataUtil;
-import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.employeeguard.entities.AccountSkill;
+import com.picsauditing.employeeguard.entities.AccountSkillGroup;
+import com.picsauditing.employeeguard.entities.Group;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,30 +11,27 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class MGroupsManagerTest {
+
 	private EGTestDataUtil egTestDataUtil;
 	private AccountSkill skill;
 	private Group group;
-	private Map<Integer,AccountSkill> reqdSkillsMap;
-
+	private Map<Integer, AccountSkill> reqdSkillsMap;
 
 	@Before
 	public void setUp() throws Exception {
 		egTestDataUtil = new EGTestDataUtil();
 
 		reqdSkillsMap = egTestDataUtil.buildNewFakeContractorSkillsMixedBagMap();
-		for(AccountSkill skill1:reqdSkillsMap.values()){
-			skill=skill1;
+		for (AccountSkill skill1 : reqdSkillsMap.values()) {
+			skill = skill1;
 			break;
 		}
 
 		group = egTestDataUtil.buildNewFakeGroup();
 		skill.setGroups(Arrays.asList(new AccountSkillGroup(group, skill)));
-
 	}
 
 	@Test
@@ -56,11 +55,11 @@ public class MGroupsManagerTest {
 		MGroupsManager mGroupsManager = new MGroupsManager();
 		Set<MGroupsManager.MGroup> mGroups = mGroupsManager.extractGroupAndCopyWithBasicInfo(skill.getGroups());
 		assertTrue(mGroups.size() == 1);
-		MGroupsManager.MGroup mExtractedGroup=null;
-		for(MGroupsManager.MGroup mGroup :mGroups){
-			mExtractedGroup=mGroup;
+		MGroupsManager.MGroup mExtractedGroup = null;
+		for (MGroupsManager.MGroup mGroup : mGroups) {
+			mExtractedGroup = mGroup;
 			break;
 		}
-		assertTrue(group.getId()==mExtractedGroup.getId());
+		assertTrue(group.getId() == mExtractedGroup.getId());
 	}
 }

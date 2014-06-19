@@ -82,4 +82,14 @@ public class ProfileDocumentDAO extends AbstractBaseEntityDAO<ProfileDocument> {
 
 		return query.getResultList();
 	}
+
+	public List<ProfileDocument> findByAppUserId(final int appUserId) {
+		TypedQuery<ProfileDocument> query = em.createQuery("SELECT pd FROM ProfileDocument pd " +
+				"JOIN pd.profile p " +
+				"WHERE p.userId = :appUserId", ProfileDocument.class);
+
+		query.setParameter("appUserId", appUserId);
+
+		return query.getResultList();
+	}
 }

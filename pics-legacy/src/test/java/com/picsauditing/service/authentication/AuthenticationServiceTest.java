@@ -5,7 +5,7 @@ import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
-import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.jpa.entities.builders.UserBuilder;

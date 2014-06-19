@@ -48,9 +48,8 @@
         <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
         </action>
 
-      <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
-      </action>
-
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
     </package>
 
     <!-- Operator -->
@@ -393,7 +392,12 @@
     <default-interceptor-ref name="pics-rest-stack"/>
 
     <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkills"/>
+
     <action name="groups" class="com.picsauditing.employeeguard.controllers.restful.GroupAction"/>
+
+    <action name="roles" class="com.picsauditing.employeeguard.controllers.restful.RoleAction"/>
+
+    <action name="files" class="com.picsauditing.employeeguard.controllers.restful.FilesAction"/>
 
   </package>
 

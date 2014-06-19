@@ -26,6 +26,10 @@ public class DocumentEntityService implements EntityService<ProfileDocument, Int
 		return documentDAO.find(id);
 	}
 
+	public List<ProfileDocument> findDocumentsForAppUser(final int appUserId) {
+		return documentDAO.findByAppUserId(appUserId);
+	}
+
 	/* All Search Methods */
 
 	@Override

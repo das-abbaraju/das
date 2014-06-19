@@ -56,7 +56,7 @@
   <bean id="AccountSkillProfileService" class="com.picsauditing.employeeguard.services.AccountSkillProfileService"/>
   <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
   <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
-  <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
+  <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.email.EmailHashService"/>
   <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
   <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
   <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>

@@ -55,6 +55,29 @@ public class EGTestDataUtil {
 	// Group Mock Data
 	public static final Group CONTRACTOR_GROUP = new GroupBuilder().accountId(CONTRACTOR_ID).name("CONTRACTOR_GROUP").build();
 
+	// ProfileDocument Mock Data
+
+	public static final Date DOCUMENT_1_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(1, 1, 2014), -1));
+	public static final ProfileDocument PROFILE_DOCUMENT_1 = new ProfileDocumentBuilder()
+			.id(1)
+			.name("Document 1")
+			.createdDate(DOCUMENT_1_CREATED_DATE)
+			.startDate(DOCUMENT_1_CREATED_DATE)
+			.endDate(DateBean.setToEndOfDay(DateBean.getEndOfTime()))
+			.build();
+
+	public static final Date DOCUMENT_2_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(2, 2, 2013), -30));
+
+	public static final ProfileDocument PROFILE_DOCUMENT_2 = new ProfileDocumentBuilder()
+			.id(2)
+			.name("Document 2")
+			.createdDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DateBean.setToStartOfDay(DateBean.addYears(DateBean.buildDate(2, 2, 2013), 2)))
+			.build();
+
 	public static final Map<Project, Set<Role>> PROJECT_ROLES_MAP = new HashMap<Project, Set<Role>>() {{
 
 		put(PROJECT_WITH_SKILLS, new HashSet<>(Arrays.asList(ROLE_WITH_SKILLS, ROLE_NO_SKILLS)));

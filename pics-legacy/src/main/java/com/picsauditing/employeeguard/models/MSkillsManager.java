@@ -7,33 +7,35 @@ import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.RuleType;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.entities.AccountSkillRole;
 
 import java.util.*;
 
 public class MSkillsManager {
-	private Map<Integer,MSkill> lookup = new HashMap<>();
 
-	public static Set<MSkill> newCollection(){
+	private Map<Integer, MSkill> lookup = new HashMap<>();
+
+	public static Set<MSkill> newCollection() {
 		return new HashSet<>();
 	}
 
-	public MSkill fetchModel(int id){
+	public MSkill fetchModel(int id) {
 		return lookup.get(id);
 	}
 
-	public MSkill attachWithModel(AccountSkill skill){
+	public MSkill attachWithModel(AccountSkill skill) {
 		int id = skill.getId();
 
-		if(lookup.get(id)==null){
+		if (lookup.get(id) == null) {
 			lookup.put(id, new MSkill(skill));
 		}
 
 		return lookup.get(id);
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills){
+	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName();
 			mSkills.add(mSkill);
@@ -42,9 +44,9 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills){
+	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName().copyRoles();
 			mSkills.add(mSkill);
@@ -52,12 +54,24 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills, Map<Integer, AccountSkill> reqdSkills){
+	public Set<MSkill> extractSkillAndCopyWithBasicInfo(final Collection<AccountSkillRole> accountSkillRoles) {
+		Set<MSkill> mSkills = MSkillsManager.newCollection();
+		for (AccountSkillRole asr : accountSkillRoles) {
+			MSkill mSkill = this.attachWithModel(asr.getSkill());
+			mSkill.copyId().copyName();
+			mSkills.add(mSkill);
+		}
+
+		return mSkills;
+	}
+
+	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills,
+																				Map<Integer, AccountSkill> reqdSkills) {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkill skill: skills){
+		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
 			mSkill.copyId().copyName().copyRoles();
-			if(reqdSkills.get(skill.getId())!=null) mSkill.setReqdSkill(true);
+			if (reqdSkills.get(skill.getId()) != null) mSkill.setReqdSkill(true);
 			mSkills.add(mSkill);
 		}
 		return mSkills;
@@ -86,8 +100,8 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public void copyRoles(Set<MSkill> mSkills){
-		for(MSkill mSkill: mSkills){
+	public void copyRoles(Set<MSkill> mSkills) {
+		for (MSkill mSkill : mSkills) {
 			mSkill.copyRoles();
 		}
 	}
@@ -98,7 +112,7 @@ public class MSkillsManager {
 		}
 	}
 
-	public static class MSkill{
+	public static class MSkill {
 		@Expose
 		private Integer id;
 		@Expose
@@ -120,6 +134,7 @@ public class MSkillsManager {
 		Set<MGroupsManager.MGroup> groups;
 		@Expose
 		Integer totalEmployees;
+
 
 		private AccountSkill skill;
 
@@ -157,8 +172,10 @@ public class MSkillsManager {
 			return this;
 		}
 
-		public MSkill copyRoles(){
-			this.roles  = new MRolesManager().extractRoleAndCopyWithBasicInfo(skill.getRoles());
+		public MSkill copyRoles() {
+			MRolesManager mRolesManager = new MRolesManager();
+			Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
+			this.roles = mRoles;
 			return this;
 		}
 
@@ -234,12 +251,29 @@ public class MSkillsManager {
 			return roles;
 		}
 
+		public Set<MGroupsManager.MGroup> getGroups() {
+			return groups;
+		}
+
 		public Integer getTotalEmployees() {
 			return totalEmployees;
 		}
 
-		public Set<MGroupsManager.MGroup> getGroups() {
-			return groups;
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			MSkill mSkill = (MSkill) o;
+
+			if (skill != null ? !skill.equals(mSkill.skill) : mSkill.skill != null) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			return skill != null ? skill.hashCode() : 0;
 		}
 	}
 }

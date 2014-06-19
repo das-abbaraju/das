@@ -12,7 +12,7 @@ import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuild
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
-import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.service.authentication.AuthenticationService;
