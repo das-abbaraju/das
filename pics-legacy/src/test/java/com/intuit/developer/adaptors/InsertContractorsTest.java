@@ -3,6 +3,7 @@ package com.intuit.developer.adaptors;
 import com.intuit.developer.QBSession;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.*;
@@ -112,6 +113,18 @@ public class InsertContractorsTest {
         verify(contractorAccount).setQbListEUID(customer.getListID());
     }
 
+    @Test
+    public void testSetCurrencyRef() throws Exception {
+        ObjectFactory objectFactory = new ObjectFactory();
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+        CustomerAdd customerAdd = mock(CustomerAdd.class);
+
+        when(contractorAccount.getCountry()).thenReturn(new Country("USD"));
+
+        Whitebox.invokeMethod(insertContractors, "setCurrencyRef", objectFactory, contractorAccount, customerAdd);
+
+        verify(customerAdd, never()).setCurrencyRef(any(CurrencyRef.class));
+    }
 
     @Test
     public void testSetBillAddress_ToggleEnabled() throws Exception {
