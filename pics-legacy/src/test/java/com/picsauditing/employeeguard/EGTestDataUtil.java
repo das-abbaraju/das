@@ -56,18 +56,26 @@ public class EGTestDataUtil {
 	public static final Group CONTRACTOR_GROUP = new GroupBuilder().accountId(CONTRACTOR_ID).name("CONTRACTOR_GROUP").build();
 
 	// ProfileDocument Mock Data
+
+	public static final Date DOCUMENT_1_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(1, 1, 2014), -1));
 	public static final ProfileDocument PROFILE_DOCUMENT_1 = new ProfileDocumentBuilder()
 			.id(1)
 			.name("Document 1")
-			.startDate(DateBean.addDays(DateBean.buildDate(1, 1, 2014), -1))
-			.endDate(DateBean.getEndOfTime())
+			.createdDate(DOCUMENT_1_CREATED_DATE)
+			.startDate(DOCUMENT_1_CREATED_DATE)
+			.endDate(DateBean.setToEndOfDay(DateBean.getEndOfTime()))
 			.build();
+
+	public static final Date DOCUMENT_2_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(2, 2, 2013), -30));
 
 	public static final ProfileDocument PROFILE_DOCUMENT_2 = new ProfileDocumentBuilder()
 			.id(2)
 			.name("Document 2")
-			.startDate(DateBean.addDays(DateBean.buildDate(2, 2, 2013), -30))
-			.endDate(DateBean.addYears(DateBean.buildDate(2, 2, 2013), 2))
+			.createdDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DateBean.setToStartOfDay(DateBean.addYears(DateBean.buildDate(2, 2, 2013), 2)))
 			.build();
 
 	public static final Map<Project, Set<Role>> PROJECT_ROLES_MAP = new HashMap<Project, Set<Role>>() {{
@@ -393,18 +401,18 @@ public class EGTestDataUtil {
 		);
 	}
 
-	public Map<Integer,AccountSkill>  buildNewFakeSkillsMixedBagMap() {
+	public Map<Integer, AccountSkill> buildNewFakeSkillsMixedBagMap() {
 		List<AccountSkill> skills = buildNewFakeSkillsMixedBag();
 
-		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+		Map<Integer, AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
 
-						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+				new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
 
-							@Override
-							public Integer getKey(AccountSkill skill) {
-								return skill.getId();
-							}
-						}
+					@Override
+					public Integer getKey(AccountSkill skill) {
+						return skill.getId();
+					}
+				}
 		);
 
 		return map;

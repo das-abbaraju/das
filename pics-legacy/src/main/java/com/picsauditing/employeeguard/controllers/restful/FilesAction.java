@@ -11,8 +11,8 @@ public class FilesAction extends PicsRestActionSupport {
 	private EmployeeFileService employeeFileService;
 
 	public String index() {
-		jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(
-				employeeFileService.findEmployeeFiles(permissions.getAppUserID()));
+		jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
+				.toJson(employeeFileService.findEmployeeFiles(permissions.getAppUserID()));
 
 		return JSON_STRING;
 	}

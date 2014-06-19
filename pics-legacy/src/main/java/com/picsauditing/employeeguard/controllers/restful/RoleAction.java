@@ -1,6 +1,5 @@
 package com.picsauditing.employeeguard.controllers.restful;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.models.MRolesManager;
@@ -27,14 +26,8 @@ public class RoleAction extends PicsRestActionSupport {
 			roles = siteRoleService.findRolesForSite(accountId);
 		}
 
-		jsonString = buildJsonResponse(roles);
+		jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(roles);
 
 		return JSON_STRING;
-	}
-
-	private String buildJsonResponse(Object object) {
-		Gson jsonObject = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-		return jsonObject.toJson(object);
 	}
 }

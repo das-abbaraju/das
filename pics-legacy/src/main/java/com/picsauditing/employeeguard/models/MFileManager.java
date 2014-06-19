@@ -1,9 +1,7 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
-import com.picsauditing.util.PicsDateFormat;
 
 import java.util.*;
 
@@ -29,7 +27,7 @@ public class MFileManager {
 		Set<MFile> mFiles = MFileManager.newCollection();
 		for (ProfileDocument profileDocument : profileDocuments) {
 			MFile mFile = this.attachWithModel(profileDocument);
-			mFile.copyId().copyName().copyCreatedDate().copyExpirationDate();
+			mFile.copyId().copyName().copyCreatedDate().copyExpirationDate().copyVerificationDate();
 			mFiles.add(mFile);
 		}
 
@@ -43,9 +41,13 @@ public class MFileManager {
 		@Expose
 		private String name;
 		@Expose
-		private String createdDate;
+		private Long createdDate;
 		@Expose
-		private String expirationDate;
+		private Long expirationDate;
+		@Expose
+		private Long verificationDate;
+		@Expose
+		private Boolean neverExpires;
 
 		private ProfileDocument profileDocument;
 
@@ -64,21 +66,32 @@ public class MFileManager {
 		}
 
 		public MFile copyCreatedDate() {
-			this.createdDate = PicsDateFormat.formatDateIsoOrBlank(profileDocument.getCreatedDate());
+			this.createdDate = profileDocument.getCreatedDate().getTime();
 			return this;
 		}
 
 		public MFile copyExpirationDate() {
-			this.expirationDate = DateBean.getEndOfTime().equals(profileDocument.getEndDate()) ? "Never" :
-					PicsDateFormat.formatDateIsoOrBlank(profileDocument.getEndDate());
+			Date expirationDate = profileDocument.getEndDate();
+
+			this.expirationDate = expirationDate != null ? expirationDate.getTime() : null;
+			this.neverExpires = profileDocument.isDoesNotExpire();
+
 			return this;
 		}
 
-		public int getId() {
+		public MFile copyVerificationDate() {
+			Date startDate = profileDocument.getStartDate();
+
+			this.verificationDate = startDate != null ? startDate.getTime() : null;
+
+			return this;
+		}
+
+		public Integer getId() {
 			return id;
 		}
 
-		public void setId(int id) {
+		public void setId(Integer id) {
 			this.id = id;
 		}
 
@@ -90,20 +103,36 @@ public class MFileManager {
 			this.name = name;
 		}
 
-		public String getCreatedDate() {
+		public Long getCreatedDate() {
 			return createdDate;
 		}
 
-		public void setCreatedDate(String createdDate) {
+		public void setCreatedDate(Long createdDate) {
 			this.createdDate = createdDate;
 		}
 
-		public String getExpirationDate() {
+		public Long getExpirationDate() {
 			return expirationDate;
 		}
 
-		public void setExpirationDate(String expirationDate) {
+		public void setExpirationDate(Long expirationDate) {
 			this.expirationDate = expirationDate;
+		}
+
+		public Long getVerificationDate() {
+			return verificationDate;
+		}
+
+		public void setVerificationDate(Long verificationDate) {
+			this.verificationDate = verificationDate;
+		}
+
+		public Boolean getNeverExpires() {
+			return neverExpires;
+		}
+
+		public void setNeverExpires(Boolean neverExpires) {
+			this.neverExpires = neverExpires;
 		}
 
 		@Override

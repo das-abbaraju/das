@@ -178,5 +178,22 @@ public class MSkillsManager {
 		public Set<MRolesManager.MRole> getRoles() {
 			return roles;
 		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			MSkill mSkill = (MSkill) o;
+
+			if (skill != null ? !skill.equals(mSkill.skill) : mSkill.skill != null) return false;
+
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			return skill != null ? skill.hashCode() : 0;
+		}
 	}
 }

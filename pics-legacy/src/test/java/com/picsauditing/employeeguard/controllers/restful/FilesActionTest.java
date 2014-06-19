@@ -54,8 +54,20 @@ public class FilesActionTest extends PicsActionTest {
 
 	private void setupTestIndex() {
 		Set<MFileManager.MFile> fakeMFiles = new HashSet<>(Arrays.asList(
-				new MFileManager.MFile(PROFILE_DOCUMENT_1).copyId().copyName().copyCreatedDate().copyExpirationDate(),
-				new MFileManager.MFile(PROFILE_DOCUMENT_2).copyId().copyName().copyCreatedDate().copyExpirationDate()));
+				new MFileManager.MFile(PROFILE_DOCUMENT_1)
+						.copyId()
+						.copyName()
+						.copyCreatedDate()
+						.copyExpirationDate()
+						.copyVerificationDate(),
+
+				new MFileManager.MFile(PROFILE_DOCUMENT_2)
+						.copyId()
+						.copyName()
+						.copyCreatedDate()
+						.copyExpirationDate()
+						.copyVerificationDate()));
+
 		when(employeeFileService.findEmployeeFiles(anyInt())).thenReturn(fakeMFiles);
 	}
 

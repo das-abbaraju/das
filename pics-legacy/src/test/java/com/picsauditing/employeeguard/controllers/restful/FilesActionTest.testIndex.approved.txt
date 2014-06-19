@@ -1,1 +1,1 @@
-[{"id":1,"name":"Document 1","createdDate":"","expirationDate":"4000-01-01"},{"id":2,"name":"Document 2","createdDate":"","expirationDate":"2015-03-02"}]
+[{"id":1,"name":"Document 1","createdDate":1391198400000,"expirationDate":64060703999000,"verificationDate":1391198400000,"neverExpires":true},{"id":2,"name":"Document 2","createdDate":1359662400000,"expirationDate":1425326400000,"neverExpires":false}]
