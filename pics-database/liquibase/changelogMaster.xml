@@ -233,5 +233,6 @@
     <!-- 7.2.16 -->
     <include file="./liquibase/2014/Q2/rbeaini20_PICS-15371v2.sql"/>
     <include file="./liquibase/2014/Q2/dabbaraju1_US1023_TA2378_Add_qbListCHFID_Column_On_Accounts.sql"/>
+    <include file="./liquibase/2014/Q2/nkishore1_US635_TA1995_Pricing_Table_And_Ref_Country_Updates_CHF.sql"/>
 
 </databaseChangeLog>
