@@ -11,7 +11,7 @@
 <body>
 <s:include value="../contractors/conHeader.jsp" />
 
-<s:if test="permissions.hasPermission(OpPerms.AuditEdit,OpType.Edit) || permissions.hasPermission(OpPerms.ClientAuditEdit,OpType.Edit)">
+<s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@AuditEdit,@com.picsauditing.access.OpType@Edit) || permissions.hasPermission(@com.picsauditing.access.OpPerms@ClientAuditEdit,@com.picsauditing.access.OpType@Edit)">
     <s:form action="ConAuditMaintain" cssStyle="width: 400px">
         <s:hidden name="auditID" />
         <fieldset class="form">
