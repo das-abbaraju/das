@@ -15,7 +15,6 @@ import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
-import com.picsauditing.search.Database;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.toggle.FeatureToggle;
@@ -260,17 +259,6 @@ public final class MenuBuilder {
 			if (permissions.has(OpPerms.DevelopmentEnvironment)) {
 				translationMenu.addChild(getText("menu.Configure.ImportExportTranslations"), "TranslationETL.action",
 						"im_ex_trans");
-
-				try {
-					String databaseName = Database.getDatabaseName();
-
-					if (databaseName.contains("alpha")) {
-						translationMenu.addChild(getText("menu.Configure.UnsyncedTranslations"),
-								"UnsyncedTranslations.action", "unsynced_translations");
-					}
-				} catch (Exception e) {
-					// Don't show menu item
-				}
 			}
 
 			translationMenu.addChild(getText("menu.Configure.ViewTracedTranslations"),
