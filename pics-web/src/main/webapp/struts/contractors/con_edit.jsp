@@ -186,8 +186,7 @@
             <label><s:text name="ContractorEdit.billingCity"/>:</label>
             <s:textfield name="contractor.billingCity" size="20"/>
         </li>
-<<<<<<< HEAD
-        <li class="country">
+        <li class="billing-country">
             <label><s:text name="ContractorEdit.billingCountry"/>:</label>
             <s:select
                     list="countryList"
@@ -197,18 +196,6 @@
                     listValue="name"
                     value="contractor.billingCountry.isoCode"
                     cssClass="select2"/>
-=======
-        <li class="billing-country">
-            <label><s:text name="ContractorEdit.billingCountry"/>:</label>
-            <s:select
-                list="countryList"
-                name="contractor.billingCountry.isoCode"
-                id="contractorBillingCountry"
-                listKey="isoCode"
-                listValue="name"
-                value="contractor.country.isoCode"
-                cssClass="select2"/>
->>>>>>> 8080a63... PICS-13378: Separated billing dropdowns
         </li>
         <li id="billing_countrySubdivision_li" data="<s:property value="#billing_country_subdivision"/>">
             <s:include value="/struts/contractors/_country_subdivision_select.jsp">
