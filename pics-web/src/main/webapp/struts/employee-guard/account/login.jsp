@@ -4,7 +4,7 @@
 
 <%-- Url --%>
 <s:url action="sign-up" var="employee_guard_account_create_url">
-    <s:param name="hashCode">%{hashCode}</s:param>
+    <s:param name="hashCode">${hashCode}</s:param>
 </s:url>
 <s:url action="welcome/submit" var="employee_guard_account_login_url" />
 <s:url action="AccountRecovery.action" namespace="/" var="account_recovery_url" />
