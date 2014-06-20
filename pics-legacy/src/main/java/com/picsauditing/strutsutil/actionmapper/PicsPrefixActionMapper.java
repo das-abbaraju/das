@@ -15,20 +15,12 @@ public final class PicsPrefixActionMapper extends PrefixBasedActionMapper {
             ActionMapper actionMapper = actionMappers.get(namespace.substring(0,lastIndex));
             if (actionMapper != null) {
                 String uri = actionMapper.getUriFromActionMapping(mapping);
-//                if (LOG.isDebugEnabled()) {
-//                    LOG.debug("Using ActionMapper "+ actionMapper);
-//                }
                 if (uri != null) {
                     return uri;
                 }
-//                else if (LOG.isDebugEnabled()) {
-//                    LOG.debug("ActionMapper " + actionMapper + " failed to return an ActionMapping (null)");
-//                }
             }
         }
-//        if (LOG.isDebugEnabled()) {
-//            LOG.debug("ActionMapper failed to return a uri");
-//        }
+
         return null;
     }
 
