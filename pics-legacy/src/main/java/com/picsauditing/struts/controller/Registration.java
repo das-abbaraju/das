@@ -133,20 +133,21 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
 
             AddressResponseHolder addressResponseHolder = addressVerificationService.verify(buildAddressRequestHolder());
 
-
-            if (addressResponseHolder.getResultStatus() == ResultStatus.DATA_NOT_FOUND
-                    || addressResponseHolder.getResultStatus() == ResultStatus.INVALID_INPUT) {
-                return "";
-            } else {
+            if (!addressVerifyFailed(addressResponseHolder)) {
                 addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
-                return setUrlForRedirect(getRegistrationStep().getUrl());
             }
+            return setUrlForRedirect(getRegistrationStep().getUrl());
 
         } else {
             //FIXME: Find a better way to deal with this.
             throw new Exception(((RegistrationFailure) result).getProblem());
         }
+    }
 
+    private boolean addressVerifyFailed(AddressResponseHolder addressResponseHolder) {
+        return addressResponseHolder.getResultStatus() == ResultStatus.DATA_NOT_FOUND
+                || addressResponseHolder.getResultStatus() == ResultStatus.INVALID_INPUT
+                || addressResponseHolder.getResultStatus() == ResultStatus.IGNORE;
     }
 
 
