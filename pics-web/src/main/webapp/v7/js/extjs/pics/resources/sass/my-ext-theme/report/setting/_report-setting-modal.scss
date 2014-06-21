@@ -11,7 +11,7 @@ $site_menu_over_background_color: #eaeaea;
 $site_menu_over_box_shadow_color: #cccccc;
 $site_menu_over_gradient_color_top: #ffffff;
 $site_menu_over_gradient_color_bottom: #eaeaea;
-$site_menu_over_text_color: #c66603;
+$site_menu_over_text_color: #3498db;
 
 // site menu - active
 $site_menu_active_background_color: #f1f1f2;
@@ -19,7 +19,7 @@ $site_menu_active_border_color: #aeaeae;
 $site_menu_active_border_color_top: #999999;
 $site_menu_active_gradient_color_top: #eaeaea;
 $site_menu_active_gradient_color_bottom: #f1f1f2;
-$site_menu_active_text_color: #c66603;
+$site_menu_active_text_color: #3498db;
 
 // site menu - separator
 $site_menu_separator_border_color_left: #e7e7e7;
@@ -32,12 +32,12 @@ $site_menu_search_icon_search_text_shadow_color: #bcbcbc;
 $site_menu_search_list_border_color: #a7a7a7;
 
 // site menu - search item
-$site_menu_search_item_background_color: #a84d10;
-$site_menu_search_item_border_color_bottom: #a84d10;
-$site_menu_search_item_border_color_top: #c66603;
+$site_menu_search_item_background_color: #2980b9;
+$site_menu_search_item_border_color_bottom: #2980b9;
+$site_menu_search_item_border_color_top: #3498db;
 $site_menu_search_item_even_background_color: #f1f1f2;
-$site_menu_search_item_gradient_color_bottom: #a84d10;
-$site_menu_search_item_gradient_color_top: #c66603;
+$site_menu_search_item_gradient_color_bottom: #2980b9;
+$site_menu_search_item_gradient_color_top: #3498db;
 $site_menu_search_item_text_color: #fff;
 
 // site menu - search list - more results
@@ -317,87 +317,87 @@ $site_menu_search_more_results_text_color: #333;
 		}
 	}
 
-	.share-searchbox-list
-	{
-		border: 1px solid $site_menu_search_list_border_color;
-		@include border-radius(5px);
-
-		li:first-child
-		{
-			@include border-top-left-radius(4px);
-			@include border-top-right-radius(4px);
-		}
-
-		li:last-child
-		{
-			@include border-bottom-left-radius(4px);
-			@include border-bottom-right-radius(4px);
-		}
-
-		.even
-		{
-		    background: $site_menu_search_item_even_background_color;
-		}
-
-		.x-boundlist-item
-		{
-			border: 1px solid transparent;
-		}
-
-		.x-boundlist-item-over
-		{
-			background: $site_menu_search_item_background_color;
-			@include background-image(linear-gradient($site_menu_search_item_gradient_color_top, $site_menu_search_item_gradient_color_bottom));
-			border: 0px;
-			border-bottom: 1px solid $site_menu_search_item_border_color_bottom;
-			border-top: 1px solid $site_menu_search_item_border_color_top;
-			color: $site_menu_search_item_text_color;
-		}
-
-		.search-item
-		{
-		    line-height: 15px;
-		    overflow: hidden;
-		    padding: 5px 15px;
-
-		    div
-		    {
-		        clear: both;
-		    }
-
-		    em
-		    {
-		        font-weight: bold;
-		    }
-
-		    .name,
-		    .location
-		    {
-		        float: left;
-		        width: 175px;
-		    }
-
-		    .id
-		    {
-		        float: right;
-		    }
-
-		    .type
-		    {
-		        float: right;
-		        font-style: italic;
-		    }
-		}
-
-		.more-results
-		{
-			color: $site_menu_search_more_results_text_color;
-			font-weight: bold;
-		}
-	}
-
 	.icon-wrench {
 		margin-right: 5px;
+	}
+}
+
+.site-menu-search-list
+{
+	border: 1px solid $site_menu_search_list_border_color;
+	@include border-radius(5px);
+
+	li:first-child
+	{
+		@include border-top-left-radius(4px);
+		@include border-top-right-radius(4px);
+	}
+
+	li:last-child
+	{
+		@include border-bottom-left-radius(4px);
+		@include border-bottom-right-radius(4px);
+	}
+
+	.even
+	{
+	    background: $site_menu_search_item_even_background_color;
+	}
+
+	.x-boundlist-item
+	{
+		border: 1px solid transparent;
+	}
+
+	.x-boundlist-item-over
+	{
+		background: $site_menu_search_item_background_color;
+		@include background-image(linear-gradient($site_menu_search_item_gradient_color_top, $site_menu_search_item_gradient_color_bottom));
+		border: 0px;
+		border-bottom: 1px solid $site_menu_search_item_border_color_bottom;
+		border-top: 1px solid $site_menu_search_item_border_color_top;
+		color: $site_menu_search_item_text_color;
+	}
+
+	.search-item
+	{
+	    line-height: 15px;
+	    overflow: hidden;
+	    padding: 5px 15px;
+
+	    div
+	    {
+	        clear: both;
+	    }
+
+	    em
+	    {
+	        font-weight: bold;
+	    }
+
+	    .name,
+	    .location
+	    {
+	        float: left;
+	        width: 175px;
+	    }
+
+	    .id
+	    {
+	        float: right;
+	    }
+
+	    .type
+	    {
+	        float: right;
+	        font-style: italic;
+	    }
+	}
+
+	.more-results
+	{
+		color: $site_menu_search_more_results_text_color;
+		font-weight: bold;
 	}
 }
 
