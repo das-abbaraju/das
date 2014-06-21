@@ -44,7 +44,7 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
 
     private AddressResponseHolder buildFeatureDisabledResponse() {
         AddressResponseHolder addressResponse = new AddressResponseHolder();
-        addressResponse.setResultStatus(ResultStatus.SUCCESS);
+        addressResponse.setResultStatus(ResultStatus.IGNORE);
         addressResponse.setStatusDescription(FEATURE_DISABLED_MESSAGE);
         return addressResponse;
     }
