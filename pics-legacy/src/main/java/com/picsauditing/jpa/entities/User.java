@@ -99,7 +99,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	private Date usingDynamicReportsDate = new Date();
 	private boolean usingVersion7Menus = true;
 	private Date usingVersion7MenusDate = new Date();
-	private int assignmentCapacity;
+	private Integer assignmentCapacity;
 	private Date reportsManagerTutorialDate;
 
 	private List<UserGroup> groups = new ArrayList<UserGroup>();
@@ -416,11 +416,11 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	}
 
     @ReportField(type = FieldType.Integer)
-	public int getAssignmentCapacity() {
+	public Integer getAssignmentCapacity() {
 		return assignmentCapacity;
 	}
 
-	public void setAssignmentCapacity(int assignmentCapacity) {
+	public void setAssignmentCapacity(Integer assignmentCapacity) {
 		this.assignmentCapacity = assignmentCapacity;
 	}
 
