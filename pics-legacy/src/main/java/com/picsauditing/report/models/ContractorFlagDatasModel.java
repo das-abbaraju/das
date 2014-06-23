@@ -1,8 +1,5 @@
 package com.picsauditing.report.models;
 
-import java.util.List;
-import java.util.Map;
-
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
@@ -12,6 +9,9 @@ import com.picsauditing.report.tables.AccountTable;
 import com.picsauditing.report.tables.ContractorOperatorTable;
 import com.picsauditing.report.tables.FieldImportance;
 import com.picsauditing.report.tables.FlagDataTable;
+
+import java.util.List;
+import java.util.Map;
 
 public class ContractorFlagDatasModel extends AbstractModel {
 
@@ -69,7 +69,7 @@ public class ContractorFlagDatasModel extends AbstractModel {
         flagCriteriaID.setImportance(FieldImportance.Required);
         fields.put(flagCriteriaID.getName().toUpperCase(), flagCriteriaID);
 
-		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
+		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.FlagCriteria);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
         flagCriteriaLabel.setDrillDownField(flagCriteriaID.getName());
 		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);

@@ -1,17 +1,14 @@
 package com.picsauditing.report.fields;
 
-import javax.persistence.EnumType;
-
 import com.picsauditing.actions.autocomplete.AbstractAutocompleteService;
 import com.picsauditing.dr.domain.fields.DisplayType;
 import com.picsauditing.dr.domain.fields.FilterType;
-import com.picsauditing.jpa.entities.UserAccountRole;
 import com.picsauditing.jpa.entities.*;
-
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
 import com.picsauditing.util.SpringUtils;
 
+import javax.persistence.EnumType;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -41,6 +38,7 @@ public enum FieldType {
     ExpirationDate(FilterType.Date, DisplayType.String, SqlFunctionProfile.Date, null, null),
 	FeeClass(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FeeClass.class, EnumType.STRING),
 	FlagColor(FilterType.Multiselect, DisplayType.Flag, SqlFunctionProfile.Boolean, FlagColor.class, EnumType.STRING),
+    FlagCriteria(FilterType.Autocomplete, DisplayType.String, SqlFunctionProfile.String, null, null),
 	FlagCriteriaOptionCode(FilterType.Multiselect, DisplayType.String, SqlFunctionProfile.String, FlagCriteriaOptionCode.class, EnumType.STRING),
 	Float(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
 	Integer(FilterType.Number, DisplayType.Number, SqlFunctionProfile.Number, null, null),
