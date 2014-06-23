@@ -577,7 +577,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 		contractorAccountDao.save(contractor);
 		addNote(contractor, "Reactivated account");
 		addActionMessage(this.getTextParameterized("ContractorEdit.message.AccountReactivated", id));
-		return SUCCESS;
+
+        messageService.getCsrAssignmentSinglePublisher().publish(contractor.getId());
+
+        return SUCCESS;
 	}
 
 	public String createImportPQF() throws Exception {
