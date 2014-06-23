@@ -1,8 +1,5 @@
 package com.picsauditing.report.models;
 
-import java.util.List;
-import java.util.Map;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
@@ -10,6 +7,9 @@ import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
 import com.picsauditing.util.Strings;
+
+import java.util.List;
+import java.util.Map;
 
 public class ContractorAuditOperatorsModel extends AbstractModel {
     public static final String CONTRACTORS_REQUIRING_ANNUAL_UPDATE_EMAIL = "ContractorsRequiringAnnualUpdateEmail";
@@ -65,11 +65,10 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
             flag.minimumImportance = FieldImportance.Average;
         }
 
-        ModelSpec fatalities = conAudit.join(ContractorAuditTable.Fatalities);
-        fatalities.alias = "Fatalities";
-
+        conAudit.join(ContractorAuditTable.UsFatalities);
         conAudit.join(ContractorAuditTable.UsTrir);
         conAudit.join(ContractorAuditTable.UsLwcr);
+        conAudit.join(ContractorAuditTable.CaFatalities);
         conAudit.join(ContractorAuditTable.CaTrir);
         conAudit.join(ContractorAuditTable.CaLwcr);
         conAudit.join(ContractorAuditTable.Afr);
@@ -115,9 +114,9 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         Field accountName = fields.get("AccountName".toUpperCase());
         accountName.setUrl("ContractorView.action?id={AccountID}");
 
-        Field fatalities = fields.get("FatalitiesAnswer".toUpperCase());
-        fatalities.setDatabaseColumnName("REPLACE(" + fatalities.getDatabaseColumnName() + ",'Audit.missingParameter','')");
-        fatalities.setType(FieldType.Number);
+        Field usFatalities = fields.get("AuditCaFatalitiesAnswer".toUpperCase());
+        usFatalities.setDatabaseColumnName("REPLACE(" + usFatalities.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        usFatalities.setType(FieldType.Number);
         Field usTrir = fields.get("AuditUsTrirAnswer".toUpperCase());
         usTrir.setDatabaseColumnName("REPLACE(" + usTrir.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         usTrir.setType(FieldType.Number);
@@ -127,6 +126,9 @@ public class ContractorAuditOperatorsModel extends AbstractModel {
         Field usLwcr = fields.get("AuditUsLwcrAnswer".toUpperCase());
         usLwcr.setDatabaseColumnName("REPLACE(" + usLwcr.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         usLwcr.setType(FieldType.Number);
+        Field caFatalities = fields.get("AuditCaFatalitiesAnswer".toUpperCase());
+        caFatalities.setDatabaseColumnName("REPLACE(" + caFatalities.getDatabaseColumnName() + ",'Audit.missingParameter','')");
+        caFatalities.setType(FieldType.Number);
         Field caTrir = fields.get("AuditCaTrirAnswer".toUpperCase());
         caTrir.setDatabaseColumnName("REPLACE(" + caTrir.getDatabaseColumnName() + ",'Audit.missingParameter','')");
         caTrir.setType(FieldType.Number);

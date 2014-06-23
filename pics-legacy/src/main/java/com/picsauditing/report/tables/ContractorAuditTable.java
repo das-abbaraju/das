@@ -28,10 +28,11 @@ public class ContractorAuditTable extends AbstractTable {
     public static final String PPLLimit = "PPLLimit";
     public static final String PROILimit = "PROILimit";
 
-    public static final String Fatalities = "Fatalities";
     public static final String Emr = "Emr";
+    public static final String UsFatalities = "UsFatalities";
     public static final String UsLwcr = "UsLwcr";
     public static final String UsTrir = "UsTrir";
+    public static final String CaFatalities = "CaFatalities";
     public static final String CaLwcr = "CaLwcr";
     public static final String CaTrir = "CaTrir";
     public static final String Air = "Air";
@@ -177,11 +178,11 @@ public class ContractorAuditTable extends AbstractTable {
 
         // Annual Updates
         {
-            addOptionalKey(new ReportForeignKey(Fatalities, new AuditDataTable(),
-                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));
-
             addOptionalKey(new ReportForeignKey(Emr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + EmrStatistics.QUESTION_ID_EMR_FOR_THE_GIVEN_YEAR)));
+
+            addOptionalKey(new ReportForeignKey(UsFatalities, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));
 
             addOptionalKey(new ReportForeignKey(UsLwcr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + OshaStatistics.QUESTION_ID_LWCR_FOR_THE_GIVEN_YEAR)));
@@ -194,6 +195,9 @@ public class ContractorAuditTable extends AbstractTable {
 
             addOptionalKey(new ReportForeignKey(Afr, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = 9060")));
+
+            addOptionalKey(new ReportForeignKey(CaFatalities, new AuditDataTable(),
+                    new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + CohsStatistics.QUESTION_ID_FATALITIES_FOR_THE_GIVEN_YEAR)));
 
             addOptionalKey(new ReportForeignKey(CaTrir, new AuditDataTable(),
                     new ReportOnClause("id", "auditID", ReportOnClause.ToAlias + ".questionID = " + CohsStatistics.QUESTION_ID_TRIR_FOR_THE_GIVEN_YEAR)));
