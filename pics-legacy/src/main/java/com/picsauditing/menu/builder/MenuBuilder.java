@@ -520,18 +520,6 @@ public final class MenuBuilder {
 					"ReportNewRequestedContractor");
 		}
 
-		if (permissions.hasPermission(OpPerms.AssignAudits)) {
-			if (permissions.isOperatorCorporate()) {
-				legacyMenu.addChild("Sched. &amp; Assign",
-						"AuditAssignments.action?filter.status=Active",
-						"AuditAssignments");
-			} else {
-				legacyMenu.addChild("Sched. &amp; Assign",
-						"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
-						"AuditAssignments");
-			}
-		}
-
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
 			legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
 					"GeneralContractorsList");
