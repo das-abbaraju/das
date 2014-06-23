@@ -2,8 +2,11 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.models.MRolesManager;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
+import com.picsauditing.web.SessionInfoProvider;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -29,6 +32,9 @@ public class CorpRoleServiceTest {
 	@Mock
 	private RoleEntityService roleEntityService;
 
+	@Mock
+	private SessionInfoProvider sessionInfoProvider;
+
 	@Before
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
@@ -36,10 +42,12 @@ public class CorpRoleServiceTest {
 		corpRoleService = new CorpRoleService();
 
 		Whitebox.setInternalState(corpRoleService, "roleEntityService", roleEntityService);
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+
 	}
 
 	@Test
-	public void testFindRolesForCorp() {
+	public void testFindRolesForCorp() throws ReqdInfoMissingException {
 		setupTestFindRolesForCorp();
 
 		Set<MRolesManager.MRole> results = corpRoleService.findRolesForCorp(CORP_ID);

@@ -2,16 +2,20 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.entities.*;
+import com.picsauditing.web.SessionInfoProvider;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.mockito.Mockito.verify;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 public class MSkillsManagerTest {
 	private EGTestDataUtil egTestDataUtil;
@@ -22,12 +26,20 @@ public class MSkillsManagerTest {
 	private AccountSkill contractorSkill;
 	private Group group;
 	private static final int TOTAL_EMPLOYEES=10;
+	@Mock
+	private SessionInfoProvider sessionInfoProvider;
+
+	Map<String, Object> requestMap= new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
 
 		prepareCorporateSkillAndRoleData();
 		prepareContractorSkillAndRoleData();
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+		when(sessionInfoProvider.getRequest()).thenReturn(requestMap);
+
 
 	}
 
@@ -69,59 +81,67 @@ public class MSkillsManagerTest {
 
 	@Test
 	public void testCopyBasicInfo() throws Exception {
-		MSkillsManager mSkillsManager = new MSkillsManager();
-		mSkillsManager.copyBasicInfo(Arrays.asList(skill));
+		requestMap.put(MModels.MMODELS, MModels.newMModels());
+
+		MSkillsManager mSkillsManager = MModels.fetchSkillsManager();
+		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
+		mSkillsManager.setmOperations(mSkillsOperations);
+
+		mSkillsManager.copySkills(Arrays.asList(skill));
+
 		assertTrue(skill.getId()==mSkillsManager.fetchModel(skill.getId()).getId());
 		assertEquals(skill.getName(), mSkillsManager.fetchModel(skill.getId()).getName());
 	}
 
 	@Test
-	public void copyBasicInfoAndAttachRoles() throws Exception {
-		MSkillsManager mSkillsManager = new MSkillsManager();
-		Set<MSkillsManager.MSkill> mSkills = mSkillsManager.copyBasicInfoAndAttachRoles(Arrays.asList(skill));
+	public void testCopyBasicInfoAttachRoles() throws Exception {
+		requestMap.put(MModels.MMODELS, MModels.newMModels());
+		MSkillsManager skillsManager = MModels.fetchSkillsManager();
+		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);mSkillsOperations.add(MOperations.ATTACH_ROLES);
+		skillsManager.setmOperations(mSkillsOperations);
 
-		for(MSkillsManager.MSkill mSkill:mSkills){
-			assertTrue(skill.getId()==mSkill.getId());
-			assertEquals(skill.getName(), mSkill.getName());
-			for(MRolesManager.MRole mRole: mSkill.getRoles()){
-				assertEquals(role.getId(),mRole.getId());
-				assertEquals(role.getName(),mRole.getName());
-			}
-		}
+		MRolesManager mRolesManager = MModels.fetchRolesManager();
+		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);
+		mRolesManager.setmOperations(mRolesOperations);
 
-	}
-
-	@Test
-	public void testCopyBasicInfoAttachRolesAndFlagReqdSkills() throws Exception {
-		MSkillsManager skillsManager = new MSkillsManager();
-		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachRolesAndFlagReqdSkills(Arrays.asList(skill),reqdSkillsMap);
+		Set<MSkillsManager.MSkill> mSkills = skillsManager.copySkills(Arrays.asList(skill));
 
 		for(MSkillsManager.MSkill mSkill:mSkills){
 			assertTrue(skill.getId()== mSkill.getId());
 			assertEquals(skill.getName(), mSkill.getName());
 			for(MRolesManager.MRole mRole: mSkill.getRoles()){
-				assertEquals(role.getId(),mRole.getId());
+				assertTrue(role.getId() == mRole.getId());
 				assertEquals(role.getName(),mRole.getName());
 			}
-			assertTrue(mSkill.isReqdSkill());
 		}
 	}
 
 	@Test
-	public void testCopyBasicInfoAttachGroupsReqdSkillsEmployeeCount() throws Exception {
-		MSkillsManager skillsManager = new MSkillsManager();
+	public void testCopyBasicInfoAttachGroupsEmployeeCount() throws Exception {
+		requestMap.put(MModels.MMODELS, MModels.newMModels());
+		MContractorSkillsManager skillsManager = MModels.fetchContractorSkillManager();
+		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);mSkillsOperations.add(MOperations.ATTACH_GROUPS);mSkillsOperations.add(MOperations.EVAL_EMPLOYEE_COUNT);
+		skillsManager.setmOperations(mSkillsOperations);
+
 		MContractor mContractor = new MContractor();
 		mContractor.setTotalEmployees(TOTAL_EMPLOYEES);
-		Set<MSkillsManager.MSkill> mSkills = skillsManager.copyBasicInfoAttachGroupsReqdSkillsEmployeeCount(Arrays.asList(contractorSkill),mContractor);
 
-		for(MSkillsManager.MSkill mSkill:mSkills){
+		MGroupsManager mGroupsManager = MModels.fetchContractorGroupsManager();
+		List<MOperations> mGroupsOperations = new ArrayList<>();mGroupsOperations.add(MOperations.COPY_ID);mGroupsOperations.add(MOperations.COPY_NAME);
+		mGroupsManager.setmOperations(mGroupsOperations);
+
+		skillsManager.setmContractor(mContractor);
+
+		Set<MContractorSkillsManager.MContractorSkill> mSkills = skillsManager.copySkills(Arrays.asList(contractorSkill));
+
+		for(MContractorSkillsManager.MContractorSkill mSkill:mSkills){
 			assertTrue(contractorSkill.getId()== mSkill.getId().intValue());
 			assertEquals(contractorSkill.getName(), mSkill.getName());
 			for(MGroupsManager.MGroup mGroup: mSkill.getGroups()){
 				assertTrue(group.getId()==mGroup.getId().intValue());
 				assertEquals(group.getName(),mGroup.getName());
 			}
-			assertTrue(mSkill.isReqdSkill());
+
 			assertTrue(TOTAL_EMPLOYEES== mSkill.getTotalEmployees());
 		}
 	}

@@ -6,18 +6,24 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.GroupEmployee;
 import com.picsauditing.employeeguard.entities.RuleType;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 
 import java.util.*;
 
-public class MSkillsManager {
+public class MSkillsManager  extends MModelManager {
 
 	private Map<Integer, MSkill> lookup = new HashMap<>();
 
 	public static Set<MSkill> newCollection() {
 		return new HashSet<>();
 	}
+
+	private Map<Integer, AccountSkill> entityMap = new HashMap<>();
+	//private Map<Integer, AccountSkill> reqdSkillsMap= new HashMap<>();
+	//private List<AccountSkill> skills;
+	//private List<AccountSkill> reqdSkills;
 
 	public MSkill fetchModel(int id) {
 		return lookup.get(id);
@@ -33,26 +39,62 @@ public class MSkillsManager {
 		return lookup.get(id);
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfo(List<AccountSkill> skills) {
+
+	private void addEntityToMap(AccountSkill skill){
+		entityMap.put(skill.getId(), skill);
+	}
+
+	public Set<MSkillsManager.MSkill> copySkills(List<AccountSkill> skills) throws ReqdInfoMissingException {
+		if(skills==null)
+			throw new ReqdInfoMissingException("No skills available to copy");
+
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for (AccountSkill skill : skills) {
-			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
-			mSkill.copyId().copyName();
+
+		for(AccountSkill skill:skills){
+			MSkillsManager.MSkill mSkill = this.copySkill(skill);
 			mSkills.add(mSkill);
 		}
 
 		return mSkills;
 	}
 
-	public Set<MSkillsManager.MSkill> copyBasicInfoAndAttachRoles(List<AccountSkill> skills) {
+	public Set<MSkillsManager.MSkill> copySkills(Collection<AccountSkillRole> accountSkillRoles) throws ReqdInfoMissingException {
+		if(accountSkillRoles==null)
+			throw new ReqdInfoMissingException("No skills available to copy");
+
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
-		for (AccountSkill skill : skills) {
-			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
-			mSkill.copyId().copyName().copyRoles();
+
+		for (AccountSkillRole asr : accountSkillRoles) {
+			MSkillsManager.MSkill mSkill = this.copySkill(asr.getSkill());
 			mSkills.add(mSkill);
 		}
+
 		return mSkills;
 	}
+
+	private MSkill copySkill(AccountSkill skill) throws ReqdInfoMissingException {
+		addEntityToMap(skill);
+		MSkillsManager.MSkill model = this.attachWithModel(skill);
+
+		for(MOperations mOperation: mOperations){
+
+			if(mOperation.equals(MOperations.COPY_ID)){
+				model.copyId();
+			}
+			else if(mOperation.equals(MOperations.COPY_NAME)){
+				model.copyName();
+			}
+			else if(mOperation.equals(MOperations.ATTACH_ROLES)){
+				model.attachRoles();
+			}
+
+		}
+
+		return model;
+	}
+
+
+/*
 
 	public Set<MSkill> extractSkillAndCopyWithBasicInfo(final Collection<AccountSkillRole> accountSkillRoles) {
 		Set<MSkill> mSkills = MSkillsManager.newCollection();
@@ -64,30 +106,36 @@ public class MSkillsManager {
 
 		return mSkills;
 	}
+*/
 
+/*
 	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills,
-																				Map<Integer, AccountSkill> reqdSkills) {
+																				Map<Integer, AccountSkill> reqdSkills) throws ReqdInfoMissingException {
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
 		for (AccountSkill skill : skills) {
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
-			mSkill.copyId().copyName().copyRoles();
+			mSkill.copyId().copyName().attachRoles();
 			if (reqdSkills.get(skill.getId()) != null) mSkill.setReqdSkill(true);
 			mSkills.add(mSkill);
 		}
 		return mSkills;
 	}
+*/
 
+/*
 	public Set<MSkillsManager.MSkill> copyBasicInfoAttachGroupsReqdSkillsEmployeeCount(List<AccountSkill> skills, MContractor mContractor){
 		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
 		for(AccountSkill skill: skills){
 			MSkillsManager.MSkill mSkill = this.attachWithModel(skill);
-			mSkill.copyId().copyName().copyGroups().copyEmployeesTiedToSkillCount(mContractor.getTotalEmployees());
+			mSkill.copyId().copyName().attachGroups().copyEmployeesTiedToSkillCount(mContractor.getTotalEmployees());
 			if(skill.getRuleType()!=null && skill.getRuleType().equals(RuleType.REQUIRED)) mSkill.setReqdSkill(true);
 			mSkills.add(mSkill);
 		}
 		return mSkills;
 	}
+*/
 
+/*
 
 	public Set<MSkill> extractSkillAndCopyWithBasicInfo(List<AccountSkillGroup> asgs){
 		Set<MSkill> mSkills = MSkillsManager.newCollection();
@@ -100,23 +148,17 @@ public class MSkillsManager {
 		return mSkills;
 	}
 
-	public void copyRoles(Set<MSkill> mSkills) {
-		for (MSkill mSkill : mSkills) {
-			mSkill.copyRoles();
-		}
+*/
+
+	public Map<Integer, AccountSkill> getEntityMap() {
+		return entityMap;
 	}
 
-	public void copyGroups(Set<MSkill> mSkills){
-		for(MSkill mSkill: mSkills){
-			mSkill.copyGroups();
-		}
+	public void setEntityMap(Map<Integer, AccountSkill> entityMap) {
+		this.entityMap = entityMap;
 	}
 
-	public static class MSkill {
-		@Expose
-		private Integer id;
-		@Expose
-		private String name;
+	public static class MSkill extends MBaseModel{
 		@Expose
 		private String skillType;
 		@Expose
@@ -124,10 +166,8 @@ public class MSkillsManager {
 		@Expose
 		private String intervalType;
 		@Expose
-		private String description;
-		@Expose
 		@SerializedName("isRequiredSkill")
-		private boolean reqdSkill;
+		private Boolean reqdSkill;
 		@Expose
 		Set<MRolesManager.MRole> roles;
 		@Expose
@@ -137,6 +177,9 @@ public class MSkillsManager {
 
 
 		private AccountSkill skill;
+
+		public MSkill() {
+		}
 
 		public MSkill(AccountSkill skill) {
 			this.skill = skill;
@@ -172,21 +215,28 @@ public class MSkillsManager {
 			return this;
 		}
 
-		public MSkill copyRoles() {
+		public MSkill attachRoles() throws ReqdInfoMissingException {
+			this.roles = MModels.fetchRolesManager().copyRoles(skill.getRoles());
+			return this;
+
+/*
 			MRolesManager mRolesManager = new MRolesManager();
 			Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
 			this.roles = mRoles;
 			return this;
+*/
 		}
 
-		public MSkill copyGroups(){
+/*
+		public MSkill attachGroups(){
 			MGroupsManager mGroupsManager = new MGroupsManager();
 			Set<MGroupsManager.MGroup> mGroups = mGroupsManager.extractGroupAndCopyWithBasicInfo(skill.getGroups());
 			this.groups = mGroups;
 			return this;
 		}
+*/
 
-		public MSkill copyEmployeesTiedToSkillCount(int totalEmployeesForAccount){
+/*		public MSkill copyEmployeesTiedToSkillCount(int totalEmployeesForAccount){
 			if (skill.getRuleType() != null && skill.getRuleType().isRequired()) {
 				totalEmployees = totalEmployeesForAccount;
 			}
@@ -211,17 +261,10 @@ public class MSkillsManager {
 
 
 			return employeeIds.size();
-		}
+		}*/
 
 		//-- Getters
 
-		public Integer getId() {
-			return id;
-		}
-
-		public String getName() {
-			return name;
-		}
 
 		public String getSkillType() {
 			return skillType;
@@ -239,11 +282,11 @@ public class MSkillsManager {
 			return description;
 		}
 
-		public boolean isReqdSkill() {
+		public Boolean isReqdSkill() {
 			return reqdSkill;
 		}
 
-		public void setReqdSkill(boolean reqdSkill) {
+		public void setReqdSkill(Boolean reqdSkill) {
 			this.reqdSkill = reqdSkill;
 		}
 

@@ -10,6 +10,7 @@ import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
@@ -24,6 +25,8 @@ import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
 import com.picsauditing.validator.Validator;
 import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 public class GroupAction extends PicsRestActionSupport {
+	private static Logger log = LoggerFactory.getLogger(GroupAction.class);
 
 	private static final long serialVersionUID = -4767047559683194585L;
 
@@ -54,8 +58,12 @@ public class GroupAction extends PicsRestActionSupport {
 
 	public String index() {
 
-		Set<MGroupsManager.MGroup> mGroups = contractorGroupService.findGroups(permissions.getAccountId());
-		jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mGroups);
+		try {
+			Set<MGroupsManager.MGroup> mGroups = contractorGroupService.findGroups(permissions.getAccountId());
+			jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mGroups);
+		} catch (ReqdInfoMissingException e) {
+			log.error("Failed to get Groups - Required information missing -  ", e);
+		}
 
 		return JSON_STRING;
 	}

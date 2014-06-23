@@ -3,16 +3,18 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 
 import java.util.*;
 
-public class MRolesManager {
-
+public class MRolesManager extends MModelManager{
 	private Map<Integer, MRole> lookup = new HashMap<>();
 
 	public static Set<MRole> newCollection() {
 		return new HashSet<>();
 	}
+
+	private Map<Integer, Role> entityMap = new HashMap<>();
 
 	public MRole fetchModel(int id) {
 		return lookup.get(id);
@@ -28,10 +30,63 @@ public class MRolesManager {
 		return lookup.get(id);
 	}
 
-	public Set<MRole> copyBasicInfo(Collection<Role> roles) {
+	private void addEntityToMap(Role role){
+		entityMap.put(role.getId(), role);
+	}
+
+	public Set<MRole> copyRoles(List<Role> roles) throws ReqdInfoMissingException {
+		if(roles==null)
+			throw new ReqdInfoMissingException("No roles available to copy");
+
+		Set<MRole> mRoles = MRolesManager.newCollection();
+
+		for(Role role:roles){
+			MRole mRole = this.copyRole(role);
+			mRoles.add(mRole);
+		}
+
+		return mRoles;
+	}
+
+	public Set<MRole> copyRoles(Collection<AccountSkillRole> asrs) throws ReqdInfoMissingException {
+		if(asrs==null)
+			throw new ReqdInfoMissingException("No roles available to copy");
+
+		Set<MRole> mRoles = MRolesManager.newCollection();
+
+		for (AccountSkillRole asr : asrs) {
+			MRole mRole = this.copyRole(asr.getRole());
+			mRoles.add(mRole);
+		}
+
+		return mRoles;
+	}
+
+	private MRole copyRole(Role role) throws ReqdInfoMissingException {
+		addEntityToMap(role);
+		MRole model = this.attachWithModel(role);
+
+		for(MOperations mOperation: mOperations){
+
+			if(mOperation.equals(MOperations.COPY_ID)){
+				model.copyId();
+			}
+			else if(mOperation.equals(MOperations.COPY_NAME)){
+				model.copyName();
+			}
+			else if(mOperation.equals(MOperations.ATTACH_SKILLS)){
+				model.attachSkills();
+			}
+
+		}
+
+		return model;
+	}
+
+/*	public Set<MRole> copyBasicInfo(Collection<Role> roles) {
 		Set<MRole> mRoles = MRolesManager.newCollection();
 		for (Role role : roles) {
-			MRole mRole = this.attachWithModel(role);
+			MRole mRole = MRole.newSerializableModel(role);
 			mRole.copyId().copyName();
 			mRoles.add(mRole);
 		}
@@ -39,40 +94,52 @@ public class MRolesManager {
 		return mRoles;
 	}
 
-	public Set<MRole> copyBasicInfoAndAttachSkills(Collection<Role> roles) {
+	public Set<MRole> copyBasicInfoAndAttachSkills(Collection<Role> roles) throws ReqdInfoMissingException {
 		Set<MRole> mRoles = MRolesManager.newCollection();
 		for (Role role : roles) {
-			MRole mRole = this.attachWithModel(role);
-			mRole.copyId().copyName().copySkills();
+			MRole mRole = MRole.newSerializableModel(role);
+			mRole.copyId().copyName().attachSkills();
 			mRoles.add(mRole);
 		}
 
 		return mRoles;
-	}
+	}*/
 
+/*
 	public Set<MRole> extractRoleAndCopyWithBasicInfo(List<AccountSkillRole> accountSkillRoles) {
 		Set<MRole> mRoles = MRolesManager.newCollection();
 		for (AccountSkillRole asr : accountSkillRoles) {
-			MRole mRole = this.attachWithModel(asr.getRole());
+			MRole mRole = new MRole(asr.getRole());
 			mRole.copyId().copyName();
 			mRoles.add(mRole);
 		}
 
 		return mRoles;
 	}
+*/
 
-	public static class MRole {
+	public static class MRole extends MBaseModel{
 
-		@Expose
-		private Integer id;
-		@Expose
-		private String name;
 		@Expose
 		private MAssignments assignments;
 		@Expose
 		Set<MSkillsManager.MSkill> skills;
 
 		private Role role;
+
+/*
+		public static MRole newFormModel(){
+			return new MRole();
+		}
+
+		public static MRole newSerializableModel(Role role){
+			return new MRole(role);
+		}
+*/
+
+		public MRole(){
+
+		}
 
 		public MRole(Role role) {
 			this.role = role;
@@ -88,25 +155,9 @@ public class MRolesManager {
 			return this;
 		}
 
-		public MRole copySkills() {
-			this.skills = new MSkillsManager().extractSkillAndCopyWithBasicInfo(role.getSkills());
+		public MRole attachSkills() throws ReqdInfoMissingException {
+			this.skills = MModels.fetchSkillsManager().copySkills(role.getSkills());
 			return this;
-		}
-
-		public int getId() {
-			return id;
-		}
-
-		public void setId(int id) {
-			this.id = id;
-		}
-
-		public String getName() {
-			return name;
-		}
-
-		public void setName(String name) {
-			this.name = name;
 		}
 
 		public Set<MSkillsManager.MSkill> getSkills() {

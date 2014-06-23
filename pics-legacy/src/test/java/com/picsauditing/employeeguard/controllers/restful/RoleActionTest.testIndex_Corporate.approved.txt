@@ -1,1 +1,1 @@
-[{"id":671,"name":"Test Role","skills":[{"id":0,"name":"Test Skill","isRequiredSkill":false}]}]
+[{"skills":[{"id":0,"name":"Test Skill"}],"id":671,"name":"Test Role"}]

@@ -3,17 +3,19 @@ package com.picsauditing.employeeguard.services;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.MModels;
 import com.picsauditing.employeeguard.models.MRolesManager;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
+import com.picsauditing.web.SessionInfoProvider;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyCollectionOf;
@@ -28,6 +30,9 @@ public class SiteRoleServiceTest {
 	private AccountService accountService;
 	@Mock
 	private RoleEntityService roleEntityService;
+	@Mock
+	private SessionInfoProvider sessionInfoProvider;
+	Map<String, Object> requestMap= new HashMap<>();
 
 	@Before
 	public void setUp() {
@@ -37,10 +42,14 @@ public class SiteRoleServiceTest {
 
 		Whitebox.setInternalState(siteRoleService, "accountService", accountService);
 		Whitebox.setInternalState(siteRoleService, "roleEntityService", roleEntityService);
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
+		when(sessionInfoProvider.getRequest()).thenReturn(requestMap);
+
 	}
 
 	@Test
-	public void testFindRolesForSite() {
+	public void testFindRolesForSite() throws ReqdInfoMissingException {
+		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		setupTestFindRolesForSite();
 
 		Set<MRolesManager.MRole> roles = siteRoleService.findRolesForSite(23);
@@ -49,6 +58,7 @@ public class SiteRoleServiceTest {
 	}
 
 	private void setupTestFindRolesForSite() {
+		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		when(accountService.getTopmostCorporateAccountIds(anyInt())).thenReturn(Arrays.asList(23));
 
 		List<Role> fakeRoles = Arrays.asList(new RoleBuilder()
