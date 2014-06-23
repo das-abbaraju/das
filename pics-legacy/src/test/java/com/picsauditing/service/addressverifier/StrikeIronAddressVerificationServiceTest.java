@@ -75,7 +75,7 @@ public class StrikeIronAddressVerificationServiceTest {
 
         AddressResponseHolder correctedAddress = strikeIronAddressVerificationService.verify(picsIrvine);
 
-        assertEquals(ResultStatus.SUCCESS, correctedAddress.getResultStatus());
+        assertEquals(ResultStatus.IGNORE, correctedAddress.getResultStatus());
         assertEquals(StrikeIronAddressVerificationService.FEATURE_DISABLED_MESSAGE, correctedAddress.getStatusDescription());
     }
 
