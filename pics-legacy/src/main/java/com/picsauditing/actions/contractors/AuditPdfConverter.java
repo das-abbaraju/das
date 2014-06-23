@@ -188,7 +188,7 @@ public class AuditPdfConverter extends AuditActionSupport {
 					if (auditData.getAnswer().length() > 0) {
 						Anchor anchor = new Anchor("View File", FontFactory.getFont(FontFactory.COURIER, 10,
 								Font.UNDERLINE, new BaseColor(0, 0, 255)));
-						anchor.setReference("http://www.picsorganizer.com/DownloadAuditData.action?auditID="
+						anchor.setReference("https://www.picsorganizer.com/DownloadAuditData.action?auditID="
 								+ auditData.getAudit().getId() + "&auditData.question.id="
 								+ auditData.getQuestion().getId());
 						anchor.setName("View File");
