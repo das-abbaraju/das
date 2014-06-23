@@ -997,10 +997,6 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 
     @ReportField(type = FieldType.Boolean)
 	public boolean isUsingVersion7Menus() {
-		if (!getFeatureToggle().isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
-			return isUsingDynamicReports();
-		}
-
 		return usingVersion7Menus;
 	}
 

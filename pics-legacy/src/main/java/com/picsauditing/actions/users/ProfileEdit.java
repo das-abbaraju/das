@@ -98,13 +98,18 @@ public class ProfileEdit extends PicsActionSupport {
 		}
 
 		u.setPhoneIndex(Strings.stripPhoneNumber(u.getPhone()));
-		u.setUsingVersion7Menus(isUsingVersion7Menus());
 		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
 			u.setUsingDynamicReports(isUsingVersion7Menus());
 		}
 
 		permissions.setTimeZone(u);
 		permissions.setLocale(u.getLocale());
+
+        if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_V7MENUS)) {
+            u.setUsingVersion7Menus(userDAO.find(u.getId()).isUsingVersion7Menus()); // from db
+        } else {
+            u.setUsingVersion7Menus(isUsingVersion7Menus()); // from form
+        }
 
 		u.updateDisplayNameBasedOnFirstAndLastName();
 		u = userDAO.save(u);
