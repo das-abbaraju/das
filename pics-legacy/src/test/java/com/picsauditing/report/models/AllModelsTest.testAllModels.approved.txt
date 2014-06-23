@@ -437,6 +437,7 @@ AuditAuditorConfirm
 AuditAuditorID
 AuditAuditorIsActive
 AuditAuditorName
+AuditCaFatalitiesAnswer
 AuditCaLwcrAnswer
 AuditCaTrirAnswer
 AuditClosingAuditorID
@@ -465,6 +466,7 @@ AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeNameString
 AuditTypeRenewable
+AuditUsFatalitiesAnswer
 AuditUsLwcrAnswer
 AuditUsTrirAnswer
 ClientSite
@@ -485,7 +487,6 @@ CustomerServiceUserID
 CustomerServiceUserIsActive
 CustomerServiceUserName
 EmrAnswer
-FatalitiesAnswer
 PQFID
 PQFTypeName
 PQFTypeNameString
