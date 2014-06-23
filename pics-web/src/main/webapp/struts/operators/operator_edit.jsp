@@ -132,6 +132,34 @@
     <fieldset class="form">
         <h2 class="formLegend"><s:text name="FacilitiesEdit.LinkedAccounts"/></h2>
         <ol>
+            <li>
+                <label>
+                    <s:text name="FacilitiesEdit.ReportingParent"/>:
+                </label>
+                <s:select
+                        name="operator.reporting"
+                        list="reportingParentList"
+                        listKey="id"
+                        listValue="name"
+                        headerKey="0"
+                        value="operator.reporting.id"
+                        headerValue="- %{getText('FacilitiesEdit.SelectParentFacility')} -"
+                        />
+
+                <s:if test="operator.reporting.id > 0">
+                    <a href="?operator=<s:property value="operator.reporting.id"/>">
+                        <s:text name="FacilitiesEdit.Go"/>
+                    </a>
+                </s:if>
+
+                <div class="fieldhelp">
+                    <h3>
+                        <s:text name="FacilitiesEdit.ReportingParent"/>
+                    </h3>
+                    <s:text name="OperatorAccount.reporting.fieldhelp"/>
+                </div>
+            </li>
+
             <s:if test="operator.corporate">
                 <li>
                     <s:checkbox name="operator.primaryCorporate" theme="formhelp"/>

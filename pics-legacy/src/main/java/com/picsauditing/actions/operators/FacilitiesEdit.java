@@ -375,6 +375,18 @@ public class FacilitiesEdit extends OperatorActionSupport {
         return tmpOperatorList;
     }
 
+    public List<OperatorAccount> getReportingParentList() throws Exception {
+        List<OperatorAccount> tmpOperatorList = new ArrayList<>();
+
+        for (Facility facility : operator.getCorporateFacilities()) {
+            tmpOperatorList.add(facility.getCorporate());
+        }
+        tmpOperatorList.add(operator);
+
+        // return the list of operators not associated with the current operator
+        return tmpOperatorList;
+    }
+
     public List<User> getUserList() throws Exception {
         return facilitiesEditModel.getAllPossibleAccountUsers();
     }
