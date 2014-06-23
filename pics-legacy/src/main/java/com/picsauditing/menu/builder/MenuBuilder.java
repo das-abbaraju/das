@@ -531,10 +531,6 @@ public final class MenuBuilder {
 			}
 		}
 
-		if (permissions.hasPermission(OpPerms.RiskRank)) {
-			legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
-		}
-
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
 			legacyMenu.addChild(getText("GeneralContractorList.title"), "GeneralContractorsList.action",
 					"GeneralContractorsList");
