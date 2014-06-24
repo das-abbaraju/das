@@ -1,80 +1,93 @@
 package com.picsauditing.jpa.entities;
 
-import javax.persistence.Transient;
+import com.picsauditing.quickbooks.model.CreditCardAccount;
+import com.picsauditing.quickbooks.model.UnDepositedFundsAccount;
 
-@Deprecated
 public enum Currency {
-	USD("USD", "$"),        //US Dollar             (symbol placed before amounts)
-    CAD("CAD", "$"),        //Canadian Dollar       (symbol placed before amounts)
-    GBP("GBP", "\u00a3"),   //Great Britain Pound   (symbol placed before amounts)
-    EUR("EUR", "\u20ac"),   //Euros                 (symbol placed either before or after)
-    SEK("SEK", "kr"),       //Swedish Krona         (symbol placed after amounts)
-    ZAR("ZAR", "R"),        //South African Rand    (symbol placed after amounts)
-    NOK("NOK", "kr"),       //Norwegian Krone       (symbol placed after amounts)
-    DKK("DKK", "kr"),       //Danish Krone          (symbol placed after amounts)
-    AUD("AUD", "$"),        //Australian Dollar     (symbol placed after amounts)
-    NZD("NZD", "$"),        //New Zealand Dollar     (symbol placed after amounts)
-    TRY("TRY", "TL"),       //Turkish Lira          (symbol placed after amounts)
-    CHF("CHF", "Fr");       //Swiss Franc           (symbol placed after amounts)
+    USD("USD", "$",         "US Dollar",            CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    CAD("CAD", "$",         "Canadian Dollar",      CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    GBP("GBP", "\u00a3",    "British Pound",        CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    EUR("EUR", "\u20ac",    "Euro",                 CreditCardAccount.AMEX_MERCHANT_ACCOUNT_EURO,   CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCT_EURO,  UnDepositedFundsAccount.UNDEPOSITED_FUNDS_EURO),
+    SEK("SEK", "kr",        "Swedish Krona",        CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    ZAR("ZAR", "R",         "South African Rand",   CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    NOK("NOK", "kr",        "Norwegian Krone",      CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    DKK("DKK", "kr",        "Danish Krone",         CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    AUD("AUD", "$",         "Australian Dollar",    CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    NZD("NZD", "$",         "New Zealand Dollar",   CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    TRY("TRY", "TL",        "Turkish Lira",         CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    CHF("CHF", "Fr",        "Swiss Franc",          CreditCardAccount.NONE,                         CreditCardAccount.VISA_CHF,                         UnDepositedFundsAccount.UNDEPOSITED_FUNDS_CHF),
+    PLN("PLN", "z\u0142",   "Polish Złoty",         CreditCardAccount.NONE,                         CreditCardAccount.VISA_PLN,                         UnDepositedFundsAccount.UNDEPOSITED_FUNDS_PLN);
 
-	private String display;
-	private String symbol;
+    private String isoCode;
+    private String symbol;
+    private String englishDescription;
+    private CreditCardAccount qbAmexAccount;
+    private CreditCardAccount qbVisaMCDiscAccount;
+    private UnDepositedFundsAccount qbUnDepositedFundsAccount;
 
-    @Deprecated
-	private Currency(String display, String icon) {
-		this.display = display;
-		this.symbol = icon;
-	}
+    private Currency(String isoCode, String symbol, String englishDescription, CreditCardAccount qbAmexAccount, CreditCardAccount qbVisaMCDiscAccount, UnDepositedFundsAccount qbUnDepositedFundsAccount) {
+        this.isoCode = isoCode;
+        this.symbol = symbol;
+        this.englishDescription = englishDescription;
+        this.qbAmexAccount = qbAmexAccount;
+        this.qbVisaMCDiscAccount = qbVisaMCDiscAccount;
+        this.qbUnDepositedFundsAccount = qbUnDepositedFundsAccount;
+    }
 
-    @Deprecated
-	public String getDisplay() {
-		return display;
-	}
+    public String getIsoCode() {
+        return isoCode;
+    }
 
-    @Deprecated
-	public boolean isCAD() {
-		return this.equals(CAD);
-	}
+    public String getSymbol() {
+        return symbol;
+    }
 
-    @Deprecated
-	public boolean isUSD() {
-		return this.equals(USD);
-	}
+    public String getEnglishDescription() {
+        return englishDescription;
+    }
+
+    public CreditCardAccount getQbAmexAccount() {
+        return qbAmexAccount;
+    }
+
+    public CreditCardAccount getQbVisaMCDiscAccount() {
+        return qbVisaMCDiscAccount;
+    }
+
+    public UnDepositedFundsAccount getQbUnDepositedFundsAccount() {
+        return qbUnDepositedFundsAccount;
+    }
+
+    // methods
+    public String getDisplay() {
+        return isoCode;
+    }
+
+    public boolean isCAD() {
+        return this.equals(CAD);
+    }
 
 
-    @Deprecated
-	public boolean isGBP() {
-		return this.equals(GBP);
-	}
+    public boolean isUSD() {
+        return this.equals(USD);
+    }
 
+    public boolean isGBP() {
+        return this.equals(GBP);
+    }
 
-    @Deprecated
-	public boolean isEUR() {
-		return this.equals(EUR);
-	}
+    public boolean isEUR() {
+        return this.equals(EUR);
+    }
 
-    @Deprecated
     public boolean isCHF() {
         return this.equals(CHF);
     }
 
-    @Deprecated
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
+    public boolean isTaxable() {
+        return isCAD() || isGBP();
+    }
 
-    @Deprecated
-	public String getSymbol() {
-		return symbol;
-	}
-
-    @Deprecated
-    @Transient
-	public boolean isTaxable() {
-		return isCAD() || isGBP();
-	}
-
-    @Deprecated
     public com.picsauditing.currency.Currency toNewCurrency() {
         return com.picsauditing.currency.Currency.valueOf(this.name());
     }

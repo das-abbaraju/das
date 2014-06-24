@@ -682,15 +682,19 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
     }
 
     public String getPicsTaxId() {
-        if (invoice.getCurrency().isEUR() || invoice.getCurrency().isGBP() || invoice.getCurrency().isCHF()) {
-            return EUR_GBP_CHF_TAXID;
-        }
-
         if (invoice.getAccount().getCountry().isBrazil()) {
             return BRAZIL_TAXID;
         }
+        switch (invoice.getCurrency()){
+            case EUR:
+            case GBP:
+            case CHF:
+            case PLN:
+                return EUR_GBP_CHF_TAXID;
 
-        return "";
+            default:
+                return "";
+        }
     }
 
     public SapAppPropertyUtil getSapAppPropertyUtil() {

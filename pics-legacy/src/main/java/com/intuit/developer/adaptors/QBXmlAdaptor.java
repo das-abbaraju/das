@@ -26,11 +26,13 @@ public class QBXmlAdaptor {
     public static final String EURO_FULL_NAME = "Euro";
     public static final String CHF_FULL_NAME = "Swiss Franc";
     public static final String GBP_FULL_NAME = "British Pound Sterling";
+    public static final String PLN_FULL_NAME = "Polish Zloty";
     protected static JAXBContext jc = null;
 
     public static final String ACCOUNTS_RECEIVABLE_EURO = "Accounts Receivable EURO";
     public static final String ACCOUNTS_RECEIVABLE = "Accounts Receivable";
     public static final String ACCOUNTS_RECEIVABLE_CHF = "Accounts Receivable - CHF";
+    public static final String ACCOUNTS_RECEIVABLE_PLN = "Accounts Receivable - PLN";
 
 
     private boolean proceed = true; // keep going with the integration
@@ -253,6 +255,8 @@ public class QBXmlAdaptor {
                 return CHF_FULL_NAME;
             case GBP:
                 return GBP_FULL_NAME;
+            case PLN:
+                return PLN_FULL_NAME;
             default:
                 return null;
         }
@@ -279,7 +283,7 @@ public class QBXmlAdaptor {
                 return "qbListEUID";
 
             case CHF:
-                return "qbListCHFID";
+                return "qbListCHID";
 
             default:
                 return "qbListID";
@@ -292,6 +296,8 @@ public class QBXmlAdaptor {
                 return ACCOUNTS_RECEIVABLE_EURO;
             case CHF:
                 return ACCOUNTS_RECEIVABLE_CHF;
+            case PLN:
+                return ACCOUNTS_RECEIVABLE_PLN;
             default:
                 return ACCOUNTS_RECEIVABLE;
         }

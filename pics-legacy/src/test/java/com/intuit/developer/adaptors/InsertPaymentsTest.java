@@ -1,13 +1,20 @@
 package com.intuit.developer.adaptors;
 
-import com.intuit.developer.QBSession;
 import com.picsauditing.jpa.entities.Currency;
+import com.picsauditing.jpa.entities.Payment;
+import com.picsauditing.quickbooks.model.CreditCard;
+import com.picsauditing.quickbooks.model.CreditCardAccount;
+import com.picsauditing.quickbooks.qbxml.DepositToAccountRef;
+import com.picsauditing.quickbooks.qbxml.PaymentMethodRef;
+import com.picsauditing.quickbooks.qbxml.ReceivePaymentAdd;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class InsertPaymentsTest {
 
@@ -24,98 +31,114 @@ public class InsertPaymentsTest {
     }
 
     @Test(expected=InvalidQBCreditCardException.class)
-    public void testGetAmexAccountName_CHF() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.CHF.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getAmexCreditCardAccountName", qbSession);
-        assertEquals(null,result);
+    public void testProcessCreditCardPayment_CHF_Amex_isNotAllowed() throws Exception {
+        Payment paymentJPA = new Payment();
+        ReceivePaymentAdd receivePaymentsAdd = mock(ReceivePaymentAdd.class);
+        when(receivePaymentsAdd.getPaymentMethodRef()).thenReturn(new PaymentMethodRef());
+
+        insertPayments.processCreditCardPayment(Currency.CHF, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
+    }
+
+    @Test(expected=InvalidQBCreditCardException.class)
+    public void testProcessCreditCardPayment_PLN_Amex_isNotAllowed() throws Exception {
+        Payment paymentJPA = new Payment();
+        paymentJPA.setTransactionID("abc123");
+        ReceivePaymentAdd receivePaymentsAdd = mock(ReceivePaymentAdd.class);
+        when(receivePaymentsAdd.getPaymentMethodRef()).thenReturn(new PaymentMethodRef());
+
+        insertPayments.processCreditCardPayment(Currency.PLN, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
     }
 
     @Test
-    public void testGetAmexAccountName_USD() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.USD.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getAmexCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.AMEX_MERCHANT_ACCOUNT,result);
+    public void testProcessCreditCardPayment_USD_Amex() throws Exception {
+        Payment paymentJPA = createPayment("hello123");
+        ReceivePaymentAdd receivePaymentsAdd = createReceivePaymentAdd();
+
+        insertPayments.processCreditCardPayment(Currency.USD, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
+
+        assertEquals("Braintree AMEX", receivePaymentsAdd.getPaymentMethodRef().getFullName());
+        assertEquals(CreditCardAccount.AMEX_MERCHANT_ACCOUNT.getAccountName(), receivePaymentsAdd.getDepositToAccountRef().getFullName());
+        assertEquals(paymentJPA.getTransactionID(), receivePaymentsAdd.getRefNumber());
     }
 
     @Test
-    public void testGetAmexAccountName_GBP() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.GBP.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getAmexCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.AMEX_MERCHANT_ACCOUNT,result);
+    public void testProcessCreditCardPayment_CAD_Amex() throws Exception {
+        Payment paymentJPA = createPayment("hello123");
+        ReceivePaymentAdd receivePaymentsAdd = createReceivePaymentAdd();
+
+        insertPayments.processCreditCardPayment(Currency.CAD, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
+
+        assertEquals("Braintree AMEX", receivePaymentsAdd.getPaymentMethodRef().getFullName());
+        assertEquals(CreditCardAccount.AMEX_MERCHANT_ACCOUNT.getAccountName(), receivePaymentsAdd.getDepositToAccountRef().getFullName());
+        assertEquals("hello123", receivePaymentsAdd.getRefNumber());
     }
 
     @Test
-    public void testGetAmexAccountName_EUR() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.EUR.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getAmexCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.AMEX_MERCHANT_ACCOUNT_EURO,result);
+    public void testProcessCreditCardPayment_GBP_Amex() throws Exception {
+        Payment paymentJPA = createPayment("hello123");
+        ReceivePaymentAdd receivePaymentsAdd = createReceivePaymentAdd();
+
+        insertPayments.processCreditCardPayment(Currency.GBP, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
+
+        assertEquals("Braintree AMEX", receivePaymentsAdd.getPaymentMethodRef().getFullName());
+        assertEquals(CreditCardAccount.AMEX_MERCHANT_ACCOUNT.getAccountName(), receivePaymentsAdd.getDepositToAccountRef().getFullName());
+        assertEquals("hello123", receivePaymentsAdd.getRefNumber());
     }
 
     @Test
-    public void testGetVisaMCDiscAccountName_CHF() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.CHF.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getVisaMCDiscCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.VISA_CHF,result);
+    public void testProcessCreditCardPayment_EUR_Amex() throws Exception {
+        Payment paymentJPA = createPayment("hello123");
+        ReceivePaymentAdd receivePaymentsAdd = createReceivePaymentAdd();
+
+        insertPayments.processCreditCardPayment(Currency.EUR, paymentJPA, receivePaymentsAdd, CreditCard.AMEX);
+
+        assertEquals("Braintree AMEX", receivePaymentsAdd.getPaymentMethodRef().getFullName());
+        assertEquals(CreditCardAccount.AMEX_MERCHANT_ACCOUNT_EURO.getAccountName(), receivePaymentsAdd.getDepositToAccountRef().getFullName());
+        assertEquals("hello123", receivePaymentsAdd.getRefNumber());
     }
 
-    @Test
-    public void testGetVisaMCDiscAccountName_USD() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.USD.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getVisaMCDiscCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.VISA_MC_DISC_MERCHANT_ACCOUNT,result);
-    }
-
-    @Test
-    public void testGetVisaMCDiscAccountName_GBP() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.GBP.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getVisaMCDiscCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.VISA_MC_DISC_MERCHANT_ACCOUNT,result);
-    }
-
-    @Test
-    public void testGetVisaMCDiscAccountName_EUR() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.EUR.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getVisaMCDiscCreditCardAccountName", qbSession);
-        assertEquals(InsertPayments.VISA_MC_DISC_MERCHANT_ACCT_EURO,result);
-    }
-
+    // todo: These will need to be converted with more refactoring like what we did for processCreditCardPayment()
     @Test
     public void testGetUndepositedFundsAccountName_CHF() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.CHF.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", qbSession);
-        assertEquals(InsertPayments.UNDEPOSITED_FUNDS_CHF,result);
+        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", Currency.CHF);
+        assertEquals(InsertPayments.UNDEPOSITED_FUNDS_CHF, result);
     }
 
     @Test
     public void testGetUndepositedFundsAccountName_USD() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.USD.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", qbSession);
-        assertEquals(InsertPayments.UNDEPOSITED_FUNDS,result);
+        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", Currency.USD);
+        assertEquals(InsertPayments.UNDEPOSITED_FUNDS, result);
     }
 
     @Test
     public void testGetUndepositedFundsAccountName_GBP() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.GBP.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", qbSession);
-        assertEquals(InsertPayments.UNDEPOSITED_FUNDS,result);
+        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", Currency.GBP);
+        assertEquals(InsertPayments.UNDEPOSITED_FUNDS, result);
     }
 
     @Test
     public void testGetUndepositedFundsAccountName_EUR() throws Exception {
-        QBSession qbSession = new QBSession();
-        qbSession.setCurrencyCode(Currency.EUR.name());
-        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", qbSession);
-        assertEquals(InsertPayments.UNDEPOSITED_FUNDS_EURO,result);
+        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", Currency.EUR);
+        assertEquals(InsertPayments.UNDEPOSITED_FUNDS_EURO, result);
+    }
+
+    @Test
+    public void testGetUndepositedFundsAccountName_PLN() throws Exception {
+        String result = (String) Whitebox.invokeMethod(insertPayments, "getUnDepositedFundsAccountName", Currency.PLN);
+        assertEquals(InsertPayments.UNDEPOSITED_FUNDS_PLN, result);
+    }
+
+    private ReceivePaymentAdd createReceivePaymentAdd() {
+        ReceivePaymentAdd receivePaymentsAdd = new ReceivePaymentAdd();
+        receivePaymentsAdd.setPaymentMethodRef(new PaymentMethodRef());
+        receivePaymentsAdd.setDepositToAccountRef(new DepositToAccountRef());
+
+        return receivePaymentsAdd;
+    }
+
+    private Payment createPayment(String transactionID) {
+        Payment payment = new Payment();
+        payment.setTransactionID(transactionID);
+        return payment;
     }
 }

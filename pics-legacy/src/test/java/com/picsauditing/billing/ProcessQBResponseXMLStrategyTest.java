@@ -88,7 +88,7 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
 
         verify(contractorAccountDAO).find(anyInt());
         String actionMessage = processor.getActionMessages().toString();
-        assertTrue(actionMessages.toString().contains("qbListCHFID"));
+        assertTrue(actionMessages.toString().contains("qbListCHID"));
     }
 
     @Test

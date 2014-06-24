@@ -94,6 +94,7 @@ public class EmailAddressUtils {
             case EUR:
             case GBP:
             case CHF:
+            case PLN:
                 return PICS_BILLING_MAIL_ID_EU;
 
             default:
