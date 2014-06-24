@@ -14,8 +14,6 @@ AccountContactName
 AccountContactPhone
 AccountContactTimezone
 AccountCountry
-AccountCountryEnglish
-AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountFax
