@@ -11,8 +11,8 @@ public enum PicsQbUser {
     PICSQBLOADERSEK("PICSQBLOADERSEK", QbListId.QB_LIST_EUID, Currency.EUR, true),
     PICSQBLOADERZAR("PICSQBLOADERZAR", QbListId.QB_LIST_EUID, Currency.EUR, true),
     PICSQBLOADERNOK("PICSQBLOADERNOK", QbListId.QB_LIST_EUID, Currency.EUR, true),
-    PICSQBLOADERCHF("PICSQBLOADERCHF", QbListId.QB_LIST_CHFID, Currency.CHF, true),
-    PICSQBLOADERPLN("PICSQBLOADERPLN", QbListId.QB_LIST_PLNID, Currency.PLN, true),
+    PICSQBLOADERCHF("PICSQBLOADERCHF", QbListId.QB_LIST_CHID, Currency.CHF, true),
+    PICSQBLOADERPLN("PICSQBLOADERPLN", QbListId.QB_LIST_PLID, Currency.PLN, true),
     PICSQBLOADEROTHERS("PICSQBLOADEROTHERS", null, null, false);
 
     private String qbUsername;
@@ -56,7 +56,7 @@ public enum PicsQbUser {
         public static final String QB_LIST_CAID = "qbListCAID";
         public static final String QB_LIST_UKID = "qbListUKID";
         public static final String QB_LIST_EUID = "qbListEUID";
-        public static final String QB_LIST_CHFID = "qbListCHFID";
-        public static final String QB_LIST_PLNID = "qbListPLNID";
+        public static final String QB_LIST_CHID = "qbListCHID";
+        public static final String QB_LIST_PLID = "qbListPLID";
     }
 }
