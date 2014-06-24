@@ -245,10 +245,18 @@ public class AccountTest {
     }
     @Test
     public void testGetQbListID_CHF() {
-        account.setQbListCHFID("qbListCHFID");
-        String qbListCHFID = account.getQbListID(Currency.CHF.toString());
+        account.setQbListCHID("qbListCHID");
+        String qbListCHID = account.getQbListID(Currency.CHF.toString());
 
-        assertEquals(qbListCHFID,"qbListCHFID");
+        assertEquals(qbListCHID,"qbListCHID");
+    }
+
+    @Test
+    public void testGetQbListID_PLN() {
+        account.setQbListPLID("qbListPLID");
+        String qbListPLID = account.getQbListID(Currency.PLN.toString());
+
+        assertEquals(qbListPLID,"qbListPLID");
     }
 
     @Test

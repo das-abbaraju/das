@@ -283,17 +283,35 @@ public class InvoiceDetailTest extends PicsActionTest {
 
     @Test
     public void testGetPicsTaxIdForCHF() throws Exception {
-        Invoice invoiceObj = new Invoice();
-        invoiceObj.setCurrency(Currency.CHF);
-        invoiceDetail.setInvoice(invoiceObj);
+        Invoice invoice = mock(Invoice.class);
+        when(invoice.getAccount()).thenReturn(contractor);
+        when(contractor.getCountry()).thenReturn(new Country(Country.UK_ISO_CODE));
+        when(invoice.getCurrency()).thenReturn(Currency.GBP);
+
+        invoiceDetail.setInvoice(invoice);
+
+        assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
+    }
+
+    @Test
+    public void testGetPicsTaxIdForPLN() throws Exception {
+        Invoice invoice = mock(Invoice.class);
+        when(invoice.getAccount()).thenReturn(contractor);
+        when(contractor.getCountry()).thenReturn(new Country(Country.UK_ISO_CODE));
+        when(invoice.getCurrency()).thenReturn(Currency.PLN);
+
+        invoiceDetail.setInvoice(invoice);
 
         assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
     }
 
     @Test
     public void testGetPicsTaxIdForGBP() throws Exception {
-        Invoice invoice = new Invoice();
-        invoice.setCurrency(Currency.GBP);
+        Invoice invoice = mock(Invoice.class);
+        when(invoice.getAccount()).thenReturn(contractor);
+        when(contractor.getCountry()).thenReturn(new Country(Country.UK_ISO_CODE));
+        when(invoice.getCurrency()).thenReturn(Currency.GBP);
+
         invoiceDetail.setInvoice(invoice);
 
         assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());
@@ -301,8 +319,11 @@ public class InvoiceDetailTest extends PicsActionTest {
 
     @Test
     public void testGetPicsTaxIdForEUR() throws Exception {
-        Invoice invoice = new Invoice();
-        invoice.setCurrency(Currency.EUR);
+        Invoice invoice = mock(Invoice.class);
+        when(invoice.getAccount()).thenReturn(contractor);
+        when(contractor.getCountry()).thenReturn(new Country(Country.UK_ISO_CODE));
+        when(invoice.getCurrency()).thenReturn(Currency.EUR);
+
         invoiceDetail.setInvoice(invoice);
 
         assertEquals(InvoiceDetail.EUR_GBP_CHF_TAXID, invoiceDetail.getPicsTaxId());

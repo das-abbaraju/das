@@ -235,8 +235,12 @@ public class ProcessQBResponseXMLStrategy {
 				qbListIDColumnName = "qbListUKID";
 				break;
             case CHF:
-                contractor.setQbListCHFID(qbListID);
-                qbListIDColumnName = "qbListCHFID";
+                contractor.setQbListCHID(qbListID);
+                qbListIDColumnName = "qbListCHID";
+                break;
+            case PLN:
+                contractor.setQbListPLID(qbListID);
+                qbListIDColumnName = "qbListPLID";
                 break;
 
         }

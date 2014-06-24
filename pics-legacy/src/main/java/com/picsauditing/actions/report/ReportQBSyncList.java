@@ -161,11 +161,15 @@ public class ReportQBSyncList extends PicsActionSupport {
                 }
                 break;
             case CHF:
-                if (contractor.getQbListCHFID() == null) {
-                    contractor.setQbListCHFID("NOLOAD" + id);
+                if (contractor.getQbListCHID() == null) {
+                    contractor.setQbListCHID("NOLOAD" + id);
                 }
                 break;
-
+            case PLN:
+                if (contractor.getQbListPLID() == null) {
+                    contractor.setQbListPLID("NOLOAD" + id);
+                }
+                break;
             default:
                 if (contractor.getQbListID() == null) {
                     contractor.setQbListID("NOLOAD" + id);

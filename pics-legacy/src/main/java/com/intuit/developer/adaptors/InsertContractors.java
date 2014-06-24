@@ -205,19 +205,9 @@ public class InsertContractors extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				if (currentSession.isUS()) {
-					contractorAccount.setQbListID(null);
-				} else if (currentSession.isGBP()) {
-					contractorAccount.setQbListUKID(null);
-				} else if (currentSession.isEUR()) {
-					contractorAccount.setQbListEUID(null);
-				}else if (currentSession.isCHF()) {
-                    contractorAccount.setQbListCHFID(null);
-                }else {
-					contractorAccount.setQbListCAID(null);
-				}
+                setNullQbListID(currentSession, contractorAccount);
 
-				contractorAccount.setQbSync(true);
+                contractorAccount.setQbSync(true);
 			}
 
 			getContractorDao().save(contractorAccount);
@@ -226,6 +216,30 @@ public class InsertContractors extends CustomerAdaptor {
 
 		return null;
 	}
+
+    private void setNullQbListID(QBSession currentSession, ContractorAccount contractorAccount) {
+        switch (currentSession.getCurrency()){
+            case USD:
+                contractorAccount.setQbListID(null);
+                break;
+            case GBP:
+                contractorAccount.setQbListUKID(null);
+                break;
+            case EUR:
+                contractorAccount.setQbListEUID(null);
+                break;
+            case CHF:
+                contractorAccount.setQbListCHID(null);
+                break;
+            case PLN:
+                contractorAccount.setQbListPLID(null);
+                break;
+
+            default:
+                contractorAccount.setQbListCAID(null);
+                break;
+        }
+    }
 
     private void setQBListID(QBSession currentSession, CustomerRet customer, ContractorAccount contractorAccount) {
         Currency currentCurrency = currentSession.getCurrency();
@@ -241,7 +255,10 @@ public class InsertContractors extends CustomerAdaptor {
                 contractorAccount.setQbListUKID(customer.getListID());
                 break;
             case CHF:
-                contractorAccount.setQbListCHFID(customer.getListID());
+                contractorAccount.setQbListCHID(customer.getListID());
+                break;
+            case PLN:
+                contractorAccount.setQbListPLID(customer.getListID());
                 break;
             case EUR:
                 contractorAccount.setQbListEUID(customer.getListID());

@@ -54,7 +54,7 @@ public class InsertContractorsTest {
 
         Whitebox.invokeMethod(insertContractors, "setQBListID", currentSession, customer, contractorAccount);
 
-        verify(contractorAccount).setQbListCHFID(customer.getListID());
+        verify(contractorAccount).setQbListCHID(customer.getListID());
     }
 
     @Test
@@ -169,5 +169,78 @@ public class InsertContractorsTest {
 
         verify(customerAdd, times(2)).setBillAddress(any(BillAddress.class));
     }
+
+    @Test
+    public void testSetNullQbListID_USD() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.USD);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListID(anyString());
+    }
+
+    @Test
+    public void testSetNullQbListID_GBP() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.GBP);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListUKID(anyString());
+    }
+
+    @Test
+    public void testSetNullQbListID_EUR() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.EUR);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListEUID(anyString());
+    }
+
+    @Test
+    public void testSetNullQbListID_CHF() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.CHF);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListCHID(anyString());
+    }
+
+    @Test
+    public void testSetNullQbListID_PLN() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.PLN);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListPLID(anyString());
+    }
+
+    @Test
+    public void testSetNullQbListID_Others() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.NOK);
+
+        Whitebox.invokeMethod(insertContractors, "setNullQbListID", currentSession, contractorAccount);
+
+        verify(contractorAccount).setQbListCAID(anyString());
+    }
+
 
 }

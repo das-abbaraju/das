@@ -75,7 +75,8 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
     protected String qbListCAID;
     protected String qbListUKID;
     protected String qbListEUID;
-    protected String qbListCHFID;
+    protected String qbListCHID;
+    protected String qbListPLID;
     protected Date sapLastSync;
     protected boolean sapSync;
 
@@ -464,12 +465,20 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
         this.qbListEUID = qbListEUID;
     }
 
-    public void setQbListCHFID(String qbListCHFID) {
-        this.qbListCHFID = qbListCHFID;
+    public void setQbListCHID(String qbListCHID) {
+        this.qbListCHID = qbListCHID;
     }
 
-    public String getQbListCHFID() {
-        return qbListCHFID;
+    public String getQbListCHID() {
+        return qbListCHID;
+    }
+
+    public String getQbListPLID() {
+        return qbListPLID;
+    }
+
+    public void setQbListPLID(String qbListPLID) {
+        this.qbListPLID = qbListPLID;
     }
 
     @Temporal(TemporalType.DATE)
@@ -501,7 +510,9 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
             case EUR:
                 return getQbListEUID();
             case CHF:
-                return getQbListCHFID();
+                return getQbListCHID();
+            case PLN:
+                return getQbListPLID();
             default:
                 // return default for other
                 return getQbListID();

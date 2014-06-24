@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Payment;
 import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentMethod;
+import com.picsauditing.quickbooks.model.CreditCardAccount;
 import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
@@ -29,6 +30,7 @@ public class InsertPayments extends PaymentAdaptor {
     public static final String UNDEPOSITED_FUNDS_EURO = "Undeposited Funds EURO";
     public static final String UNDEPOSITED_FUNDS_CHF = "Undeposited Funds CHF";
     public static final String UNDEPOSITED_FUNDS = "Undeposited Funds";
+    public static final String UNDEPOSITED_FUNDS_PLN = "Undeposited Funds PLN";
 
     public static String getWhereClause(Currency currency) {
         String qbID = getQBListID(currency);
@@ -62,104 +64,7 @@ public class InsertPayments extends PaymentAdaptor {
 
 		PicsLogger.log(" created Writer, ObjectFactory, and QBXMLMsgsRq");
 		for (Payment paymentJPA : payments) {
-			PicsLogger.log("paymentID = " + paymentJPA.getId());
-
-			ReceivePaymentAddRqType addRequest = factory.createReceivePaymentAddRqType();
-			addRequest.setRequestID("insert_payment_" + paymentJPA.getId());
-
-			request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(addRequest);
-
-			ReceivePaymentAdd payment = factory.createReceivePaymentAdd();
-
-			addRequest.setReceivePaymentAdd(payment);
-			PicsLogger.log(" added payment to request");
-
-			// Start Payment Insert/Update
-			PicsLogger.log("   setCustomerRef");
-			payment.setCustomerRef(factory.createCustomerRef());
-			payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
-
-			PicsLogger.log("   setARAccountRef");
-			payment.setARAccountRef(factory.createARAccountRef());
-
-            String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
-                    currentSession);
-
-			payment.getARAccountRef().setFullName(accountsReceivableAccountRef);
-
-			PicsLogger.log("   setTxnDate");
-			payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
-
-			payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-
-			PicsLogger.log("   setPaymentMethodRef");
-			payment.setPaymentMethodRef(factory.createPaymentMethodRef());
-			payment.setDepositToAccountRef(factory.createDepositToAccountRef());
-
-			boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
-			String cardType = null;
-			if (!isCheck) {
-				cardType = new CreditCard(paymentJPA.getCcNumber()).getCardType();
-				if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
-					isCheck = true;
-				}
-			}
-
-			PicsLogger.log("   setMemo");
-			payment.setMemo("PICS Payment# " + paymentJPA.getId());
-			/**
-			 * Special handling is needed for Euros because we stored Euros and
-			 * GBP in the same QuickBooks server.
-			 */
-			if (isCheck) {
-				payment.getPaymentMethodRef().setFullName("Check");
-				payment.setRefNumber(paymentJPA.getCheckNumber());
-
-                String unDepositedFundsAccountName = getUnDepositedFundsAccountName(
-                        currentSession);
-
-                payment.getDepositToAccountRef().setFullName(unDepositedFundsAccountName);
-
-			} else {
-				payment.getPaymentMethodRef().setFullName("Braintree Credit");
-
-				if (cardType.equals("Visa") || cardType.equals("Mastercard") || cardType.equals("Discover")) {
-					payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
-
-                    String creditCardAccountName = getVisaMCDiscCreditCardAccountName(
-                            currentSession);
-
-                    payment.getDepositToAccountRef().setFullName(creditCardAccountName);
-
-				} else if (cardType.equals("American Express")) {
-					payment.getPaymentMethodRef().setFullName("Braintree AMEX");
-
-                    String creditCardAccountName = getAmexCreditCardAccountName(
-                            currentSession);
-
-                    payment.getDepositToAccountRef().setFullName(creditCardAccountName);
-
-				}
-				payment.setRefNumber(paymentJPA.getTransactionID());
-				// payment.setMemo("CC number: " + paymentJPA.getCcNumber());
-			}
-
-			for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
-				PicsLogger.log("   add AppliedToTxnAdd for invoiceID = " + invoicePayment.getInvoice().getId());
-				AppliedToTxnAdd application = factory.createAppliedToTxnAdd();
-				payment.getAppliedToTxnAdd().add(application);
-				application.setTxnID(factory.createAppliedToTxnAddTxnID());
-				application.getTxnID().setValue(invoicePayment.getInvoice().getQbListID());
-
-				application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
-						.toString());
-			}
-
-			if (paymentJPA.getInvoices().size() == 0)
-				payment.setIsAutoApply("false");
-
-			currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
-			PicsLogger.log(" done with paymentID " + paymentJPA.getId());
+            processPayment(currentSession, factory, request, paymentJPA);
 		}
 
 		xml.setQBXMLMsgsRq(request);
@@ -174,37 +79,122 @@ public class InsertPayments extends PaymentAdaptor {
 
 	}
 
-    private String getAmexCreditCardAccountName(QBSession currentSession) throws Exception {
-        switch (currentSession.getCurrency()){
-           case EUR:
-               return AMEX_MERCHANT_ACCOUNT_EURO;
-            case CHF:
-                throw new InvalidQBCreditCardException("Session requested QB Amex Credit Card Account Name for CHF currency; this code version does not permit Amex CHF purchases");
-            default:
-                return AMEX_MERCHANT_ACCOUNT;
+    public void processPayment(QBSession currentSession, ObjectFactory factory, QBXMLMsgsRq request, Payment paymentJPA) throws Exception {
+        PicsLogger.log("paymentID = " + paymentJPA.getId());
+
+        ReceivePaymentAddRqType addRequest = factory.createReceivePaymentAddRqType();
+        addRequest.setRequestID("insert_payment_" + paymentJPA.getId());
+
+        request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(addRequest);
+
+        ReceivePaymentAdd payment = factory.createReceivePaymentAdd();
+
+        addRequest.setReceivePaymentAdd(payment);
+        PicsLogger.log(" added payment to request");
+
+        // Start Payment Insert/Update
+        PicsLogger.log("   setCustomerRef");
+        payment.setCustomerRef(factory.createCustomerRef());
+        payment.getCustomerRef().setListID(paymentJPA.getAccount().getQbListID(currentSession.getCurrencyCode()));
+
+        PicsLogger.log("   setARAccountRef");
+        payment.setARAccountRef(factory.createARAccountRef());
+
+        String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                currentSession);
+
+        payment.getARAccountRef().setFullName(accountsReceivableAccountRef);
+
+        PicsLogger.log("   setTxnDate");
+        payment.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(paymentJPA.getCreationDate()));
+
+        payment.setTotalAmount(paymentJPA.getTotalAmount().setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+
+        PicsLogger.log("   setPaymentMethodRef");
+        payment.setPaymentMethodRef(factory.createPaymentMethodRef());
+        payment.setDepositToAccountRef(factory.createDepositToAccountRef());
+
+        boolean isCheck = paymentJPA.getPaymentMethod().equals(PaymentMethod.Check);
+        String cardType = null;
+        if (!isCheck) {
+            cardType = new CreditCard(paymentJPA.getCcNumber()).getCardType();
+            if (cardType == null || cardType.equals("") || cardType.equals("Unknown")) {
+                isCheck = true;
+            }
         }
+
+        PicsLogger.log("   setMemo");
+        payment.setMemo("PICS Payment# " + paymentJPA.getId());
+        /**
+         * Special handling is needed for Euros because we stored Euros and
+         * GBP in the same QuickBooks server.
+         */
+        if (isCheck) {
+            payment.getPaymentMethodRef().setFullName("Check");
+            payment.setRefNumber(paymentJPA.getCheckNumber());
+
+            String unDepositedFundsAccountName = getUnDepositedFundsAccountName(currentSession.getCurrency());
+
+            payment.getDepositToAccountRef().setFullName(unDepositedFundsAccountName);
+
+        } else {
+            com.picsauditing.quickbooks.model.CreditCard creditCard = com.picsauditing.quickbooks.model.CreditCard.fromName(cardType);
+            processCreditCardPayment(currentSession.getCurrency(), paymentJPA, payment, creditCard);
+        }
+
+        for (PaymentAppliedToInvoice invoicePayment : paymentJPA.getInvoices()) {
+            PicsLogger.log("   add AppliedToTxnAdd for invoiceID = " + invoicePayment.getInvoice().getId());
+            AppliedToTxnAdd application = factory.createAppliedToTxnAdd();
+            payment.getAppliedToTxnAdd().add(application);
+            application.setTxnID(factory.createAppliedToTxnAddTxnID());
+            application.getTxnID().setValue(invoicePayment.getInvoice().getQbListID());
+
+            application.setPaymentAmount(invoicePayment.getAmount().setScale(2, BigDecimal.ROUND_HALF_UP)
+                    .toString());
+        }
+
+        if (paymentJPA.getInvoices().size() == 0)
+            payment.setIsAutoApply("false");
+
+        currentSession.getCurrentBatch().put(addRequest.getRequestID(), new Integer(paymentJPA.getId()).toString());
+        PicsLogger.log(" done with paymentID " + paymentJPA.getId());
     }
 
-    private String getUnDepositedFundsAccountName(QBSession currentSession) {
+    public void processCreditCardPayment(Currency currency, Payment paymentJPA, ReceivePaymentAdd payment, com.picsauditing.quickbooks.model.CreditCard creditCard) throws Exception {
+        // todo: more magic strings to clean up...
+        payment.getPaymentMethodRef().setFullName("Braintree Credit");
 
-        switch (currentSession.getCurrency()){
-            case EUR:
-                return UNDEPOSITED_FUNDS_EURO;
-            case CHF:
-                return UNDEPOSITED_FUNDS_CHF;
-            default:
-                return UNDEPOSITED_FUNDS;
+        if (creditCard.isVisaMCDiscover()) {
+            payment.getPaymentMethodRef().setFullName("Braintree VISA/MC/DISC");
+            String creditCardAccountName = getVisaMCDiscCreditCardAccountName(currency);
+            payment.getDepositToAccountRef().setFullName(creditCardAccountName);
+
+        } else if (creditCard == com.picsauditing.quickbooks.model.CreditCard.AMEX) {
+            payment.getPaymentMethodRef().setFullName("Braintree AMEX");
+
+            String creditCardAccountName = getAmexCreditCardAccountName(currency);
+
+            payment.getDepositToAccountRef().setFullName(creditCardAccountName);
+
         }
+        payment.setRefNumber(paymentJPA.getTransactionID());
+        // payment.setMemo("CC number: " + paymentJPA.getCcNumber());
     }
-    private String getVisaMCDiscCreditCardAccountName(QBSession currentSession) {
-        switch (currentSession.getCurrency()){
-            case EUR:
-                return VISA_MC_DISC_MERCHANT_ACCT_EURO;
-            case CHF:
-                return VISA_CHF;
-            default:
-                return VISA_MC_DISC_MERCHANT_ACCOUNT;
+
+    private String getAmexCreditCardAccountName(Currency currency) throws Exception {
+        CreditCardAccount creditCardAccount = currency.getQbAmexAccount();
+        if (creditCardAccount == CreditCardAccount.NONE) {
+            throw new InvalidQBCreditCardException("This currency does not allow Amex Credit Card: " + creditCardAccount);
         }
+        return creditCardAccount.getAccountName();
+    }
+
+    private String getUnDepositedFundsAccountName(Currency currency) {
+        return currency.getQbUnDepositedFundsAccount().getAccountName();
+        }
+
+    private String getVisaMCDiscCreditCardAccountName(Currency currency) {
+        return currency.getQbVisaMCDiscAccount().getAccountName();
     }
 
     @Override

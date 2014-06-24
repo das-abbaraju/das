@@ -1,30 +1,37 @@
 package com.picsauditing.jpa.entities;
 
+import com.picsauditing.quickbooks.model.CreditCardAccount;
+import com.picsauditing.quickbooks.model.UnDepositedFundsAccount;
+
 public enum Currency {
-    USD("USD", "$", "US Dollar", Constants.BEFORE),
-    CAD("CAD", "$", "Canadian Dollar", Constants.BEFORE),
-    GBP("GBP", "\u00a3", "British Pound", Constants.BEFORE),
-    EUR("EUR", "\u20ac", "Euro", Constants.EITHER),
-    SEK("SEK", "kr", "Swedish Krona", Constants.AFTER),
-    ZAR("ZAR", "R", "South African Rand", Constants.AFTER),
-    NOK("NOK", "kr", "Norwegian Krone", Constants.AFTER),
-    DKK("DKK", "kr", "Danish Krone", Constants.AFTER),
-    AUD("AUD", "$", "Australian Dollar", Constants.AFTER),
-    NZD("NZD", "$", "New Zealand Dollar", Constants.AFTER),
-    TRY("TRY", "TL", "Turkish Lira", Constants.AFTER),
-    CHF("CHF", "Fr", "Swiss Franc", Constants.AFTER),
-    PLN("PLN", "z\u0142", "Polish Złoty", Constants.AFTER);
+    USD("USD", "$",         "US Dollar",            CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    CAD("CAD", "$",         "Canadian Dollar",      CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    GBP("GBP", "\u00a3",    "British Pound",        CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    EUR("EUR", "\u20ac",    "Euro",                 CreditCardAccount.AMEX_MERCHANT_ACCOUNT_EURO,   CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCT_EURO,  UnDepositedFundsAccount.UNDEPOSITED_FUNDS_EURO),
+    SEK("SEK", "kr",        "Swedish Krona",        CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    ZAR("ZAR", "R",         "South African Rand",   CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    NOK("NOK", "kr",        "Norwegian Krone",      CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    DKK("DKK", "kr",        "Danish Krone",         CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    AUD("AUD", "$",         "Australian Dollar",    CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    NZD("NZD", "$",         "New Zealand Dollar",   CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    TRY("TRY", "TL",        "Turkish Lira",         CreditCardAccount.AMEX_MERCHANT_ACCOUNT,        CreditCardAccount.VISA_MC_DISC_MERCHANT_ACCOUNT,    UnDepositedFundsAccount.UNDEPOSITED_FUNDS),
+    CHF("CHF", "Fr",        "Swiss Franc",          CreditCardAccount.NONE,                         CreditCardAccount.VISA_CHF,                         UnDepositedFundsAccount.UNDEPOSITED_FUNDS_CHF),
+    PLN("PLN", "z\u0142",   "Polish Złoty",         CreditCardAccount.NONE,                         CreditCardAccount.VISA_PLN,                         UnDepositedFundsAccount.UNDEPOSITED_FUNDS_PLN);
 
     private String isoCode;
     private String symbol;
     private String englishDescription;
-    private String symbolPlacement;
+    private CreditCardAccount qbAmexAccount;
+    private CreditCardAccount qbVisaMCDiscAccount;
+    private UnDepositedFundsAccount qbUnDepositedFundsAccount;
 
-    private Currency(String isoCode, String symbol, String englishDescription, String symbolPlacement) {
+    private Currency(String isoCode, String symbol, String englishDescription, CreditCardAccount qbAmexAccount, CreditCardAccount qbVisaMCDiscAccount, UnDepositedFundsAccount qbUnDepositedFundsAccount) {
         this.isoCode = isoCode;
         this.symbol = symbol;
         this.englishDescription = englishDescription;
-        this.symbolPlacement = symbolPlacement;
+        this.qbAmexAccount = qbAmexAccount;
+        this.qbVisaMCDiscAccount = qbVisaMCDiscAccount;
+        this.qbUnDepositedFundsAccount = qbUnDepositedFundsAccount;
     }
 
     public String getIsoCode() {
@@ -39,8 +46,16 @@ public enum Currency {
         return englishDescription;
     }
 
-    public String getSymbolPlacement() {
-        return symbolPlacement;
+    public CreditCardAccount getQbAmexAccount() {
+        return qbAmexAccount;
+    }
+
+    public CreditCardAccount getQbVisaMCDiscAccount() {
+        return qbVisaMCDiscAccount;
+    }
+
+    public UnDepositedFundsAccount getQbUnDepositedFundsAccount() {
+        return qbUnDepositedFundsAccount;
     }
 
     // methods
@@ -75,11 +90,5 @@ public enum Currency {
 
     public com.picsauditing.currency.Currency toNewCurrency() {
         return com.picsauditing.currency.Currency.valueOf(this.name());
-    }
-
-    private static class Constants {
-        public static final String BEFORE = "before";
-        public static final String EITHER = "either";
-        public static final String AFTER = "after";
     }
 }

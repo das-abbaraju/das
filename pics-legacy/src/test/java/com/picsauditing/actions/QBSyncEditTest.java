@@ -31,10 +31,11 @@ public class QBSyncEditTest extends PicsActionTest {
 
         Whitebox.invokeMethod(qbSyncEdit, "editContractor", contractorAccount);
 
-        assertEquals( contractorAccount.getQbListCHFID(),null);
+        assertEquals( contractorAccount.getQbListCHID(),null);
         assertEquals( contractorAccount.getQbListCAID(),null);
         assertEquals( contractorAccount.getQbListEUID(),null);
         assertEquals( contractorAccount.getQbListID(),null);
         assertEquals( contractorAccount.getQbListUKID(),null);
+        assertEquals( contractorAccount.getQbListPLID(),null);
     }
 }

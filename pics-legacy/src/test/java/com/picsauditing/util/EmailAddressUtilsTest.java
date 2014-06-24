@@ -29,6 +29,13 @@ public class EmailAddressUtilsTest {
     }
 
     @Test
+    public void testGetBillingEmailForPLN() throws Exception {
+        String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.PLN);
+
+        assertEquals(euBillingMailId, EmailAddressUtils.PICS_BILLING_MAIL_ID_EU);
+    }
+
+    @Test
     public void testGetBillingEmailForOthers() throws Exception {
         String euBillingMailId = EmailAddressUtils.getBillingEmail(Currency.USD);
 

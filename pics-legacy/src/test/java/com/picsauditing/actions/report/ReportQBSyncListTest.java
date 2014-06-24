@@ -60,10 +60,10 @@ public class ReportQBSyncListTest {
 
     @Test
     public void testSetQBData_CHF() throws Exception {
-        when(mockContractor.getQbListCHFID()).thenReturn(null);
+        when(mockContractor.getQbListCHID()).thenReturn(null);
 
         Whitebox.invokeMethod(reportQBSyncList, "setQBData", mockContractor, Currency.CHF);
 
-        verify(mockContractor).setQbListCHFID("NOLOAD" + id);
+        verify(mockContractor).setQbListCHID("NOLOAD" + id);
     }
 }

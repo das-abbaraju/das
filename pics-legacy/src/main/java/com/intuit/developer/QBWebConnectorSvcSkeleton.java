@@ -41,7 +41,7 @@ public class QBWebConnectorSvcSkeleton {
     public static final String QB_LIST_CAID = "qbListCAID";
     public static final String QB_LIST_UKID = "qbListUKID";
     public static final String QB_LIST_EUID = "qbListEUID";
-    public static final String QB_LIST_CHFID = "qbListCHFID";
+    public static final String QB_LIST_CHID = "qbListCHID";
 
     protected QBSession currentSession = null;
 
@@ -200,7 +200,7 @@ public class QBWebConnectorSvcSkeleton {
                 break;
             case PICSQBLOADERCHF:
                 session.setCurrencyCode(Currency.CHF.name());
-                session.setQbID(QB_LIST_CHFID);
+                session.setQbID(QB_LIST_CHID);
                 break;
             case PICSQBLOADEREU:
             case PICSQBLOADERDKK:
