@@ -263,7 +263,7 @@
         <dependency>
             <groupId>com.picsauditing</groupId>
             <artifactId>pics-flag-calculator</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
         </dependency>
         <!-- End of PICS Dependencies -->
 
