@@ -73,7 +73,7 @@ public class ContractorFlagCriteriaDatasModel extends AbstractModel {
         flagCriteriaID.setImportance(FieldImportance.Required);
         fields.put(flagCriteriaID.getName().toUpperCase(), flagCriteriaID);
 
-		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.String);
+		Field flagCriteriaLabel = new Field(FLAG_CRITERIA_LABEL, "FlagCriteria.id", FieldType.FlagCriteria);
 		flagCriteriaLabel.setTranslationPrefixAndSuffix("FlagCriteria", "label");
         flagCriteriaLabel.setDrillDownField(flagCriteriaID.getName());
 		fields.put(FLAG_CRITERIA_LABEL.toUpperCase(), flagCriteriaLabel);

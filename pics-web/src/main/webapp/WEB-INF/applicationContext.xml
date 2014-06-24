@@ -349,6 +349,8 @@
     <bean id="ContractorAutocompleteService"
           class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
     <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
+    <bean id="FlagCriteriaAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.FlagCriteriaAutocompleteService"/>
     <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService"/>
     <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService"/>
     <bean id="OperatorTagAutocompleteService"
