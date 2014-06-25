@@ -47,7 +47,6 @@ public class Permissions implements Serializable {
 	private Set<Integer> corporateParent = new HashSet<>();
 	private Set<Integer> operatorChildren = new HashSet<>();
 	private Set<Integer> visibleAuditTypes = new HashSet<>();
-	private Set<Integer> visibleAuditTypesForReporting = new HashSet<>();
 	private Set<Integer> linkedClients = new HashSet<>();
 	private Set<Integer> linkedGeneralContractors = new HashSet<>();
 
@@ -135,7 +134,6 @@ public class Permissions implements Serializable {
 		permissions.clear();
 		allInheritedGroupIds.clear();
 		visibleAuditTypes.clear();
-		visibleAuditTypesForReporting.clear();
 		corporateParent.clear();
 		operatorChildren.clear();
 		linkedClients.clear();
@@ -231,7 +229,6 @@ public class Permissions implements Serializable {
 		if (isOperatorCorporate()) {
 			OperatorAccount operator = (OperatorAccount) user.getAccount();
 			visibleAuditTypes = operator.getVisibleAuditTypes();
-			visibleAuditTypesForReporting = operator.getVisibleAuditTypesForReporting();
 
 			approvesRelationships = !operator.isAutoApproveRelationships()
 					|| user.hasPermission(OpPerms.ViewUnApproved);
@@ -765,10 +762,6 @@ public class Permissions implements Serializable {
 	 */
 	public Set<Integer> getVisibleAuditTypes() {
 		return visibleAuditTypes;
-	}
-
-	public Set<Integer> getVisibleAuditTypesForReporting() {
-		return visibleAuditTypesForReporting;
 	}
 
 	public Set<Integer> getLinkedClients() {

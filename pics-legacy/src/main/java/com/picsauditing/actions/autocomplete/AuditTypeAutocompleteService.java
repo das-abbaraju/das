@@ -24,7 +24,7 @@ public final class AuditTypeAutocompleteService extends AbstractAutocompleteServ
 
 		if (permissions.isOperatorCorporate()) {
 			permissionWhere += "t.canOperatorView = 1 AND t.id IN ("
-					+ Strings.implode(permissions.getVisibleAuditTypesForReporting()) + ")";
+					+ Strings.implode(permissions.getVisibleAuditTypes()) + ")";
 		}
 
 		String value = "%" + Strings.escapeQuotesAndSlashes(search) + "%";

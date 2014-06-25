@@ -361,28 +361,6 @@ public class AuditDecisionTableDAO extends PicsDAO {
 		return ids;
 	}
 
-	public Set<Integer> getAuditTypesForReporting(OperatorAccount operator) {
-		String where = "WHERE effectiveDate <= NOW() AND expirationDate > NOW() AND include = 1 AND auditType.id > 0";
-
-		Set<Integer> operatorIDs = new HashSet<>();
-
-		operatorIDs.addAll(operator.getOperatorReverseHeirarchy());
-
-		where += " AND (opID IS NULL";
-		if (operatorIDs.size() > 0)
-			where += " OR opID IN (" + Strings.implode(operatorIDs, ",") + ")";
-		where += ")";
-
-		Query query = em.createQuery("SELECT DISTINCT a.auditType.id FROM AuditTypeRule a " + where
-				+ " ORDER BY priority DESC");
-
-		Set<Integer> ids = new HashSet<>();
-		for (Object id : query.getResultList()) {
-			ids.add(Integer.parseInt(id.toString()));
-		}
-		return ids;
-	}
-
 	/**
 	 * 
 	 * @param operator
