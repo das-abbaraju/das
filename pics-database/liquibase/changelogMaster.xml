@@ -237,5 +237,6 @@
     
     <!-- 7.2.17 -->
     <include file="./liquibase/2014/Q2/mdo54_PICS-10087.sql"/>
+    <include file="./liquibase/2014/Q2/dabbaraju1_US633_TA2416_Add_qbListPLNID_Column_On_Accounts.sql"/>
 
 </databaseChangeLog>
