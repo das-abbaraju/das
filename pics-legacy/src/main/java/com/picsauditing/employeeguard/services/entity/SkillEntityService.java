@@ -4,8 +4,8 @@ import com.picsauditing.employeeguard.daos.*;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException;
-import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -30,6 +30,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
+	@Autowired
+	private AccountService accountService;
 
 	/* All Find Methods */
 
@@ -373,12 +375,18 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 		return accountSkillDAO.findByAccount(accountId);
 	}
 
-	public List<AccountSkill> findReqdSkillsForCorpSite(int siteId) {
-		return siteSkillDAO.findReqdSkillsForCorpOp(siteId);
+	public List<AccountSkill> findReqdSkillsForAccount(int accountId) {
+		return siteSkillDAO.findReqdSkillsForAccount(accountId);
 	}
 
-	public Map<Integer,AccountSkill> findReqdSkillsForCorpSiteMap(int siteId) {
-		List<AccountSkill> skills= siteSkillDAO.findReqdSkillsForCorpOp(siteId);
+	public List<AccountSkill> findAllParentCorpSiteRequiredSkills(int accountId) {
+		List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
+
+		return siteSkillDAO.findAllParentCorpSiteRequiredSkills(parentIds);
+	}
+
+	public Map<Integer,AccountSkill> findReqdSkillsForAccountMap(int siteId) {
+		List<AccountSkill> skills= siteSkillDAO.findReqdSkillsForAccount(siteId);
 		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
 
 						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {

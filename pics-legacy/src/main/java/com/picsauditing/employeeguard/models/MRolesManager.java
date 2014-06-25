@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
+import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 
@@ -48,7 +49,7 @@ public class MRolesManager extends MModelManager{
 		return mRoles;
 	}
 
-	public Set<MRole> copyRoles(Collection<AccountSkillRole> asrs) throws ReqdInfoMissingException {
+	public Set<MRole> copySkillRoles(Collection<AccountSkillRole> asrs) throws ReqdInfoMissingException {
 		if(asrs==null)
 			throw new ReqdInfoMissingException("No roles available to copy");
 
@@ -62,7 +63,26 @@ public class MRolesManager extends MModelManager{
 		return mRoles;
 	}
 
-	private MRole copyRole(Role role) throws ReqdInfoMissingException {
+	public Set<MRole> copyProjectRoles(Collection<ProjectRole> collection) throws ReqdInfoMissingException {
+		if(collection==null)
+			throw new ReqdInfoMissingException("No roles available to copy");
+
+		Set<MRole> mRoles = MRolesManager.newCollection();
+
+		for (ProjectRole entity : collection) {
+			MRole mRole = this.copyRole(entity.getRole());
+			mRoles.add(mRole);
+		}
+
+		return mRoles;
+	}
+
+	public MRole copyRole(Role role) throws ReqdInfoMissingException {
+		MRole mRole = this.fetchModel(role.getId());
+		if(mRole!=null){
+			return mRole;
+		}
+
 		addEntityToMap(role);
 		MRole model = this.attachWithModel(role);
 
@@ -83,40 +103,6 @@ public class MRolesManager extends MModelManager{
 		return model;
 	}
 
-/*	public Set<MRole> copyBasicInfo(Collection<Role> roles) {
-		Set<MRole> mRoles = MRolesManager.newCollection();
-		for (Role role : roles) {
-			MRole mRole = MRole.newSerializableModel(role);
-			mRole.copyId().copyName();
-			mRoles.add(mRole);
-		}
-
-		return mRoles;
-	}
-
-	public Set<MRole> copyBasicInfoAndAttachSkills(Collection<Role> roles) throws ReqdInfoMissingException {
-		Set<MRole> mRoles = MRolesManager.newCollection();
-		for (Role role : roles) {
-			MRole mRole = MRole.newSerializableModel(role);
-			mRole.copyId().copyName().attachSkills();
-			mRoles.add(mRole);
-		}
-
-		return mRoles;
-	}*/
-
-/*
-	public Set<MRole> extractRoleAndCopyWithBasicInfo(List<AccountSkillRole> accountSkillRoles) {
-		Set<MRole> mRoles = MRolesManager.newCollection();
-		for (AccountSkillRole asr : accountSkillRoles) {
-			MRole mRole = new MRole(asr.getRole());
-			mRole.copyId().copyName();
-			mRoles.add(mRole);
-		}
-
-		return mRoles;
-	}
-*/
 
 	public static class MRole extends MBaseModel{
 
@@ -126,16 +112,6 @@ public class MRolesManager extends MModelManager{
 		Set<MSkillsManager.MSkill> skills;
 
 		private Role role;
-
-/*
-		public static MRole newFormModel(){
-			return new MRole();
-		}
-
-		public static MRole newSerializableModel(Role role){
-			return new MRole(role);
-		}
-*/
 
 		public MRole(){
 

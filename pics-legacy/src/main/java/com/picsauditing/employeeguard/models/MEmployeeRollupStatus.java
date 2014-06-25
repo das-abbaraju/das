@@ -1,68 +1,74 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
+import com.picsauditing.employeeguard.services.status.SkillStatus;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class MEmployeeRollupStatus {
 
 	@Expose
-	int completed;
+	Integer completed=0;
 	@Expose
-	int expiring;
+	Integer expiring=0;
 	@Expose
-	int expired;
+	Integer expired=0;
 
-	private Set<MEmployeesManager.MEmployee> completedSet;
-	private Set<MEmployeesManager.MEmployee> expiringSet;
-	private Set<MEmployeesManager.MEmployee> expiredSet;
+	private Set<MContractorEmployeeManager.MContractorEmployee> completedSet = new HashSet<>();
+	private Set<MContractorEmployeeManager.MContractorEmployee> expiringSet = new HashSet<>();
+	private Set<MContractorEmployeeManager.MContractorEmployee> expiredSet = new HashSet<>();
 
+	Map<SkillStatus, Set> skillStatusSetMap = new HashMap<SkillStatus, Set>(){{
+		put(SkillStatus.Completed, completedSet); put(SkillStatus.Expiring, expiringSet); put(SkillStatus.Expired, expiredSet);
+	}};
 
-	public int getCompleted() {
+	public Integer getCompleted() {
 		return completed;
 	}
-
-	public void setCompleted(int completed) {
-		this.completed = completed;
-	}
-
-	public int getExpiring() {
+	public Integer getExpiring() {
 		return expiring;
 	}
-
-	public void setExpiring(int expiring) {
-		this.expiring = expiring;
-	}
-
-	public int getExpired() {
+	public Integer getExpired() {
 		return expired;
 	}
 
-	public void setExpired(int expired) {
-		this.expired = expired;
-	}
 
-	public Set<MEmployeesManager.MEmployee> getCompletedSet() {
+	public Set<MContractorEmployeeManager.MContractorEmployee> getCompletedSet() {
 		return completedSet;
 	}
-
-	public void setCompletedSet(Set<MEmployeesManager.MEmployee> completedSet) {
-		this.completedSet = completedSet;
-	}
-
-	public Set<MEmployeesManager.MEmployee> getExpiringSet() {
+	public Set<MContractorEmployeeManager.MContractorEmployee> getExpiringSet() {
 		return expiringSet;
 	}
-
-	public void setExpiringSet(Set<MEmployeesManager.MEmployee> expiringSet) {
-		this.expiringSet = expiringSet;
-	}
-
-	public Set<MEmployeesManager.MEmployee> getExpiredSet() {
+	public Set<MContractorEmployeeManager.MContractorEmployee> getExpiredSet() {
 		return expiredSet;
 	}
 
-	public void setExpiredSet(Set<MEmployeesManager.MEmployee> expiredSet) {
-		this.expiredSet = expiredSet;
+	public void addToCompleted(MContractorEmployeeManager.MContractorEmployee mEmployee){
+		completedSet.add(mEmployee);
+	}
+
+	public void addToExpiring(MContractorEmployeeManager.MContractorEmployee mEmployee){
+		expiringSet.add(mEmployee);
+	}
+
+	public void addToExpired(MContractorEmployeeManager.MContractorEmployee mEmployee){
+		expiredSet.add(mEmployee);
+	}
+
+	public void updateCompletedCount(){
+		this.completed = completedSet.size();
+	}
+	public void updateExpiringCount(){
+		this.expiring = expiringSet.size();
+	}
+	public void updateExpiredCount(){
+		this.expired = expiredSet.size();
+	}
+
+	public Set<MContractorEmployeeManager.MContractorEmployee> getSkillStatusSet(SkillStatus skillStatus){
+		return skillStatusSetMap.get(skillStatus);
 	}
 }

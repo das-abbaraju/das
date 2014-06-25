@@ -76,7 +76,7 @@ public class MRolesManagerTest {
 		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);
 		mRolesManager.setmOperations(mRolesOperations);
 
-		Set<MRolesManager.MRole> mRoles = mRolesManager.copyRoles(skill.getRoles());
+		Set<MRolesManager.MRole> mRoles = mRolesManager.copySkillRoles(skill.getRoles());
 		assertTrue(mRoles.size() == 1);
 		MRolesManager.MRole mExtractedRole=null;
 		for(MRolesManager.MRole mRole :mRoles){

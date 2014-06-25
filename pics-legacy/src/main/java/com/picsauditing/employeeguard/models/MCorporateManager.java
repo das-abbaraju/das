@@ -6,11 +6,11 @@ import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 
 import java.util.*;
 
-public class MSitesManager extends MModelManager{
+public class MCorporateManager extends MModelManager{
 
-	private Map<Integer,MSite> lookup = new HashMap<>();
+	private Map<Integer,MCorporate> lookup = new HashMap<>();
 
-	public static Set<MSite> newCollection() {
+	public static Set<MCorporate> newCollection() {
 		return new HashSet<>();
 	}
 
@@ -25,14 +25,14 @@ public class MSitesManager extends MModelManager{
 		reqdSkillsMap.put(accountId, reqdSkills);
 	}
 
-	public MSite fetchModel(int accountId) {
+	public MCorporate fetchModel(int accountId) {
 		return lookup.get(accountId);
 	}
 
-	public MSite attachWithModel(int accountId, AccountModel accountModel) {
+	public MCorporate attachWithModel(int accountId, AccountModel accountModel) {
 
 		if (lookup.get(accountId) == null) {
-			lookup.put(accountId, new MSite(accountId, accountModel));
+			lookup.put(accountId, new MCorporate(accountId, accountModel));
 		}
 
 		return lookup.get(accountId);
@@ -42,14 +42,14 @@ public class MSitesManager extends MModelManager{
 		entityMap.put(accountId, accountModel);
 	}
 
-	public MSite copySite(int accountId, AccountModel accountModel) throws ReqdInfoMissingException {
-		MSite mSite = this.fetchModel(accountId);
-		if(mSite!=null){
-			return mSite;
+	public MCorporate copySite(int accountId, AccountModel accountModel) throws ReqdInfoMissingException {
+		MCorporate mCorporate = this.fetchModel(accountId);
+		if(mCorporate!=null){
+			return mCorporate;
 		}
 
 		addEntityToMap(accountId, accountModel);
-		MSite model = this.attachWithModel(accountId, accountModel);
+		MCorporate model = this.attachWithModel(accountId, accountModel);
 
 		for(MOperations mOperation: mOperations){
 
@@ -68,37 +68,33 @@ public class MSitesManager extends MModelManager{
 		return model;
 	}
 
-	public static class MSite extends MBaseModel {
-
+	public static class MCorporate extends MBaseModel {
 
 		@Expose
 		private Set<MSkillsManager.MSkill> reqdSkills;
 
-		@Expose
-		private MAssignments assignments;
-
 		private Integer accountId;
 		private AccountModel accountModel;
 
-		public MSite() {
+		public MCorporate() {
 		}
 
-		public MSite(Integer accountId, AccountModel accountModel) {
+		public MCorporate(Integer accountId, AccountModel accountModel) {
 			this.accountId = accountId;
 			this.accountModel = accountModel;
 		}
 
-		public MSite copyId(){
+		public MCorporate copyId(){
 			id=accountModel.getId();
 			return this;
 		}
 
-		public MSite copyName(){
+		public MCorporate copyName(){
 			name=accountModel.getName();
 			return this;
 		}
 
-		public MSite attachSkills() throws ReqdInfoMissingException {
+		public MCorporate attachSkills() throws ReqdInfoMissingException {
 			List<AccountSkill> skills = MModels.fetchSitesManager().fetchReqdSkills(accountId);
 			this.reqdSkills = MModels.fetchSkillsManager().copySkills(skills);
 			return this;
@@ -109,12 +105,6 @@ public class MSitesManager extends MModelManager{
 			return reqdSkills;
 		}
 
-		public MAssignments getAssignments() {
-			return assignments;
-		}
 
-		public void setAssignments(MAssignments assignments) {
-			this.assignments = assignments;
-		}
 	}
 }

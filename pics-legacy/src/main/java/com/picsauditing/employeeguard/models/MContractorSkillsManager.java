@@ -66,6 +66,11 @@ public class MContractorSkillsManager extends MModelManager{
 	}
 
 	private MContractorSkill copySkill(AccountSkill skill) throws ReqdInfoMissingException {
+		MContractorSkill mSkill = this.fetchModel(skill.getId());
+		if(mSkill!=null){
+			return mSkill;
+		}
+
 		addEntityToMap(skill);
 		MContractorSkillsManager.MContractorSkill model = this.attachWithModel(skill);
 
@@ -183,19 +188,6 @@ public class MContractorSkillsManager extends MModelManager{
 			}
 			return this;
 		}
-
-/*
-		public MContractorSkill copyEmployeesTiedToSkillCount(int totalEmployeesForAccount){
-			if (skill.getRuleType() != null && skill.getRuleType().isRequired()) {
-				totalEmployees = totalEmployeesForAccount;
-			}
-			else {
-				List<AccountSkillGroup> accountSkillGroups = skill.getGroups();
-				totalEmployees = getEmployeeCount(accountSkillGroups);
-			}
-			return this;
-		}
-*/
 
 		private int getEmployeeCount(List<AccountSkillGroup> accountSkillGroups) {
 			Set<Integer> employeeIds = new HashSet<>();

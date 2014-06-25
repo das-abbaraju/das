@@ -63,6 +63,11 @@ public class MGroupsManager extends MModelManager{
 	}
 
 	private MGroup copyGroup(Group group) throws ReqdInfoMissingException {
+		MGroup mGroup = this.fetchModel(group.getId());
+		if(mGroup!=null){
+			return mGroup;
+		}
+
 		addEntityToMap(group);
 		MGroup model = this.attachWithModel(group);
 
@@ -85,40 +90,6 @@ public class MGroupsManager extends MModelManager{
 
 		return model;
 	}
-/*
-
-	public Set<MGroup> copyBasicInfo(List<Group> groups){
-		Set<MGroup> mGroups = MGroupsManager.newCollection();
-		for(Group group: groups){
-			MGroup mGroup = this.attachWithModel(group);
-			mGroup.copyId().copyName();
-			mGroups.add(mGroup);
-		}
-
-		return mGroups;
-	}
-
-	public Set<MGroup> copyBasicInfoAttachSkillsAndEmployeeCount(List<Group> groups) throws ReqdInfoMissingException {
-		Set<MGroup> mGroups = MGroupsManager.newCollection();
-		for(Group group: groups){
-			MGroup mGroup = this.attachWithModel(group);
-			mGroup.copyId().copyName().attachSkills().evalEmployeeCount();
-			mGroups.add(mGroup);
-		}
-		return mGroups;
-	}
-
-	public Set<MGroupsManager.MGroup> extractGroupAndCopyWithBasicInfo(List<AccountSkillGroup> asgs){
-		Set<MGroupsManager.MGroup> mGroups = MGroupsManager.newCollection();
-		for(AccountSkillGroup asg: asgs){
-			MGroupsManager.MGroup mGroup = this.attachWithModel(asg.getGroup());
-			mGroup.copyId().copyName();
-			mGroups.add(mGroup);
-		}
-
-		return mGroups;
-	}
-*/
 
 	public static class MGroup {
 
@@ -151,7 +122,6 @@ public class MGroupsManager extends MModelManager{
 
 		public MGroup attachSkills() throws ReqdInfoMissingException {
 			this.skills = MModels.fetchContractorSkillManager().copySkills(group.getSkills());
-			//this.skills= new MSkillsManager().extractSkillAndCopyWithBasicInfo(group.getSkills());
 			return this;
 		}
 

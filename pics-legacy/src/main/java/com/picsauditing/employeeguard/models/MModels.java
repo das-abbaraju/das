@@ -13,6 +13,10 @@ public class MModels {
 	private MGroupsManager mGroupsManager = new MGroupsManager();
 	private MProjectsManager mProjectsManager = new MProjectsManager();
 	private MSitesManager mSitesManager = new MSitesManager();
+	private MCorporateManager mCorporateManager = new MCorporateManager();
+	private MContractorEmployeeManager mContractorEmployeeManager = new MContractorEmployeeManager();
+	private MContractorManager mContractorManager = new MContractorManager();
+	private MStatusManager mStatusManager = new MStatusManager();
 
 	public static MModels newMModels(){
 		MModels mModels = new MModels();
@@ -48,7 +52,48 @@ public class MModels {
 		return fetchmModels().getmGroupsManager();
 	}
 
+	public static MProjectsManager fetchProjectManager(){
+		return fetchmModels().getmProjectsManager();
+	}
+
+	public static MSitesManager fetchSitesManager(){
+		return fetchmModels().getmSitesManager();
+	}
+
+	public static MCorporateManager fetchCorporateManager(){
+		return fetchmModels().getmCorporateManager();
+	}
+
+	public static MContractorEmployeeManager fetchContractorEmployeeManager(){
+		return fetchmModels().getmContractorEmployeeManager();
+	}
+
+	public static MContractorManager fetchContractorManager(){
+		return fetchmModels().getmContractorManager();
+	}
+
+	public static MStatusManager fetchStatusManager(){
+		return fetchmModels().getmStatusManager();
+	}
+
 	//-- Getters
+
+
+	public MStatusManager getmStatusManager() {
+		return mStatusManager;
+	}
+
+	public MContractorManager getmContractorManager() {
+		return mContractorManager;
+	}
+
+	public MContractorEmployeeManager getmContractorEmployeeManager() {
+		return mContractorEmployeeManager;
+	}
+
+	public MCorporateManager getmCorporateManager() {
+		return mCorporateManager;
+	}
 
 	public MSitesManager getmSitesManager() {
 		return mSitesManager;

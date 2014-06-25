@@ -2,34 +2,47 @@ package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class MAssignments {
-	private Set<MEmployeesManager.MEmployee> totalEmployeesSet;
+	private Set<MContractorEmployeeManager.MContractorEmployee> totalEmployeesSet;
 
 	@Expose
-	private int totalEmployees;
+	private Integer totalEmployees;
 
 	@Expose
 	private MEmployeeRollupStatus employeeRollupStatus;
 
-	private Set<MEmployeesManager.MEmployee> employees;
+	@Expose
+	private Set<MContractorEmployeeManager.MContractorEmployee> employees;
 
 
-	public Set<MEmployeesManager.MEmployee> getTotalEmployeesSet() {
+	//-- Getters/Setters
+
+
+	public Set<MContractorEmployeeManager.MContractorEmployee> getTotalEmployeesSet() {
 		return totalEmployeesSet;
 	}
 
-	public void setTotalEmployeesSet(Set<MEmployeesManager.MEmployee> totalEmployeesSet) {
-		this.totalEmployeesSet = totalEmployeesSet;
+	public void addToTotalEmployees(MContractorEmployeeManager.MContractorEmployee mContractorEmployee) {
+		this.totalEmployeesSet.add(mContractorEmployee);
 	}
 
-	public int getTotalEmployees() {
+	public Set<MContractorEmployeeManager.MContractorEmployee> getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(Set<MContractorEmployeeManager.MContractorEmployee> employees) {
+		this.employees = employees;
+	}
+
+	public Integer getTotalEmployees() {
 		return totalEmployees;
 	}
 
-	public void setTotalEmployees(int totalEmployees) {
-		this.totalEmployees = totalEmployees;
+	public void updateTotalEmployeesCount(){
+		this.totalEmployees = totalEmployeesSet.size();
 	}
 
 	public MEmployeeRollupStatus getEmployeeRollupStatus() {
@@ -40,11 +53,7 @@ public class MAssignments {
 		this.employeeRollupStatus = employeeRollupStatus;
 	}
 
-	public Set<MEmployeesManager.MEmployee> getEmployees() {
-		return employees;
-	}
-
-	public void setEmployees(Set<MEmployeesManager.MEmployee> employees) {
-		this.employees = employees;
+	public void setTotalEmployeesSet(Set<MContractorEmployeeManager.MContractorEmployee> totalEmployeesSet) {
+		this.totalEmployeesSet = totalEmployeesSet;
 	}
 }

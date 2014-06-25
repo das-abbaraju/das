@@ -31,12 +31,22 @@ public class SiteSkillDAO extends AbstractBaseEntityDAO<SiteSkill> {
 		return query.getResultList();
 	}
 
-	public List<AccountSkill> findReqdSkillsForCorpOp(final int siteId) {
+	public List<AccountSkill> findReqdSkillsForAccount(int siteId) {
 		TypedQuery<AccountSkill> query = em.createQuery("select skill FROM SiteSkill ss " +
 						" join ss.skill skill " +
 						" WHERE ss.siteId = :siteId", AccountSkill.class);
 
 		query.setParameter("siteId", siteId);
+
+		return query.getResultList();
+	}
+
+	public List<AccountSkill> findAllParentCorpSiteRequiredSkills(List<Integer> parentIds) {
+		TypedQuery<AccountSkill> query = em.createQuery("select skill FROM SiteSkill ss " +
+						" join ss.skill skill " +
+						" WHERE ss.siteId IN (:parentIds)", AccountSkill.class);
+
+		query.setParameter("parentIds", parentIds);
 
 		return query.getResultList();
 	}

@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
@@ -28,6 +29,8 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
 	@Autowired
 	private ProjectRoleDAO projectRoleDAO;
+	@Autowired
+	private EmployeeDAO employeeDAO;
 
 	/* All Find Methods */
 
@@ -267,4 +270,9 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 
 		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
+
+	public List<ProjectRole> findByProjectAndRole(int projectId, int roleId) {
+		return employeeDAO.findProjectRole(projectId, roleId);
+	}
+
 }

@@ -3,11 +3,9 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.AccountSkill;
-import com.picsauditing.employeeguard.entities.AccountSkillGroup;
-import com.picsauditing.employeeguard.entities.GroupEmployee;
-import com.picsauditing.employeeguard.entities.RuleType;
+import com.picsauditing.employeeguard.entities.Project;
+import com.picsauditing.employeeguard.entities.ProjectSkill;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 
 import java.util.*;
@@ -72,7 +70,26 @@ public class MSkillsManager  extends MModelManager {
 		return mSkills;
 	}
 
-	private MSkill copySkill(AccountSkill skill) throws ReqdInfoMissingException {
+	public Set<MSkillsManager.MSkill> copyProjectReqdSkills(Project project) throws ReqdInfoMissingException {
+		if(project==null)
+			throw new ReqdInfoMissingException("No skills available to copy");
+
+		Set<MSkillsManager.MSkill> mSkills = MSkillsManager.newCollection();
+
+		for (ProjectSkill ps : project.getSkills()) {
+			MSkillsManager.MSkill mSkill = this.copySkill(ps.getSkill());
+			mSkills.add(mSkill);
+		}
+
+		return mSkills;
+	}
+
+	public MSkill copySkill(AccountSkill skill) throws ReqdInfoMissingException {
+		MSkill mSkill = this.fetchModel(skill.getId());
+		if(mSkill!=null){
+			return mSkill;
+		}
+
 		addEntityToMap(skill);
 		MSkillsManager.MSkill model = this.attachWithModel(skill);
 
@@ -94,19 +111,6 @@ public class MSkillsManager  extends MModelManager {
 	}
 
 
-/*
-
-	public Set<MSkill> extractSkillAndCopyWithBasicInfo(final Collection<AccountSkillRole> accountSkillRoles) {
-		Set<MSkill> mSkills = MSkillsManager.newCollection();
-		for (AccountSkillRole asr : accountSkillRoles) {
-			MSkill mSkill = this.attachWithModel(asr.getSkill());
-			mSkill.copyId().copyName();
-			mSkills.add(mSkill);
-		}
-
-		return mSkills;
-	}
-*/
 
 /*
 	public Set<MSkillsManager.MSkill> copyBasicInfoAttachRolesAndFlagReqdSkills(List<AccountSkill> skills,
@@ -135,20 +139,6 @@ public class MSkillsManager  extends MModelManager {
 	}
 */
 
-/*
-
-	public Set<MSkill> extractSkillAndCopyWithBasicInfo(List<AccountSkillGroup> asgs){
-		Set<MSkill> mSkills = MSkillsManager.newCollection();
-		for(AccountSkillGroup asg: asgs){
-			MSkill mSkill = this.attachWithModel(asg.getSkill());
-			mSkill.copyId().copyName();
-			mSkills.add(mSkill);
-		}
-
-		return mSkills;
-	}
-
-*/
 
 	public Map<Integer, AccountSkill> getEntityMap() {
 		return entityMap;
@@ -171,100 +161,62 @@ public class MSkillsManager  extends MModelManager {
 		@Expose
 		Set<MRolesManager.MRole> roles;
 		@Expose
-		Set<MGroupsManager.MGroup> groups;
-		@Expose
 		Integer totalEmployees;
 
 
-		private AccountSkill skill;
+		private AccountSkill skillEntity;
 
 		public MSkill() {
 		}
 
-		public MSkill(AccountSkill skill) {
-			this.skill = skill;
+		public MSkill(AccountSkill skillEntity) {
+			this.skillEntity = skillEntity;
 		}
 
 		public MSkill copyId(){
-			id=skill.getId();
+			id= skillEntity.getId();
 			return this;
 		}
 
 		public MSkill copyName(){
-			name=skill.getName();
+			name= skillEntity.getName();
 			return this;
 		}
 
 		public MSkill copyDescription(){
-			description=skill.getDescription();
+			description= skillEntity.getDescription();
 			return this;
 		}
 
 		public MSkill copySkillType(){
-			skillType=skill.getSkillType().toString();
+			skillType= skillEntity.getSkillType().toString();
 			return this;
 		}
 
 		public MSkill copyRuleType(){
-			ruleType=skill.getRuleType().toString();
+			ruleType= skillEntity.getRuleType().toString();
 			return this;
 		}
 
 		public MSkill copyIntervalType(){
-			intervalType=skill.getIntervalType().toString();
+			intervalType= skillEntity.getIntervalType().toString();
 			return this;
 		}
 
 		public MSkill attachRoles() throws ReqdInfoMissingException {
-			this.roles = MModels.fetchRolesManager().copyRoles(skill.getRoles());
-			return this;
-
-/*
-			MRolesManager mRolesManager = new MRolesManager();
-			Set<MRolesManager.MRole> mRoles = mRolesManager.extractRoleAndCopyWithBasicInfo(skill.getRoles());
-			this.roles = mRoles;
-			return this;
-*/
-		}
-
-/*
-		public MSkill attachGroups(){
-			MGroupsManager mGroupsManager = new MGroupsManager();
-			Set<MGroupsManager.MGroup> mGroups = mGroupsManager.extractGroupAndCopyWithBasicInfo(skill.getGroups());
-			this.groups = mGroups;
-			return this;
-		}
-*/
-
-/*		public MSkill copyEmployeesTiedToSkillCount(int totalEmployeesForAccount){
-			if (skill.getRuleType() != null && skill.getRuleType().isRequired()) {
-				totalEmployees = totalEmployeesForAccount;
-			}
-			else {
-				List<AccountSkillGroup> accountSkillGroups = skill.getGroups();
-				totalEmployees = getEmployeeCount(accountSkillGroups);
-			}
+			this.roles = MModels.fetchRolesManager().copySkillRoles(skillEntity.getRoles());
 			return this;
 		}
 
-		private int getEmployeeCount(List<AccountSkillGroup> accountSkillGroups) {
-			Set<Integer> employeeIds = new HashSet<>();
-			for (AccountSkillGroup accountSkillGroup : accountSkillGroups) {
-				employeeIds.addAll(PicsCollectionUtil.getIdsFromCollection(accountSkillGroup.getGroup().getEmployees(), new PicsCollectionUtil.Identitifable<GroupEmployee, Integer>() {
-
-					@Override
-					public Integer getId(GroupEmployee groupEmployee) {
-						return groupEmployee.getEmployee().getId();
-					}
-				}));
-			}
 
 
-			return employeeIds.size();
-		}*/
 
 		//-- Getters
 
+
+		public AccountSkill getSkillEntity() {
+			return skillEntity;
+		}
 
 		public String getSkillType() {
 			return skillType;
@@ -294,10 +246,6 @@ public class MSkillsManager  extends MModelManager {
 			return roles;
 		}
 
-		public Set<MGroupsManager.MGroup> getGroups() {
-			return groups;
-		}
-
 		public Integer getTotalEmployees() {
 			return totalEmployees;
 		}
@@ -309,14 +257,14 @@ public class MSkillsManager  extends MModelManager {
 
 			MSkill mSkill = (MSkill) o;
 
-			if (skill != null ? !skill.equals(mSkill.skill) : mSkill.skill != null) return false;
+			if (skillEntity != null ? !skillEntity.equals(mSkill.skillEntity) : mSkill.skillEntity != null) return false;
 
 			return true;
 		}
 
 		@Override
 		public int hashCode() {
-			return skill != null ? skill.hashCode() : 0;
+			return skillEntity != null ? skillEntity.hashCode() : 0;
 		}
 	}
 }
