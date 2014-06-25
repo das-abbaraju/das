@@ -18,11 +18,12 @@ public enum CreditCard {
     }
 
     public static CreditCard fromName(String cardName) throws Exception {
-        try {
-            return CreditCard.valueOf(cardName);
-        } catch (IllegalArgumentException e) {
-            throw new Exception("No CreditCard by this name: " + cardName, e);
+        for (CreditCard creditCard : values()) {
+            if (creditCard.cardName.equals(cardName)) {
+                return creditCard;
+            }
         }
+        throw new IllegalStateException("No CreditCard by this name: " + cardName);
     }
 
     public boolean isVisaMCDiscover() {
