@@ -78,7 +78,7 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
 
 				invoice.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceJPA.getCreationDate()));
-
+                invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
                 setBillAddress(factory, invoiceJPA, invoice);
 
                 invoice.setIsPending("false");
@@ -134,7 +134,6 @@ public class InsertInvoices extends CustomerAdaptor {
 
     private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceAdd invoice) {
         if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
-            invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
             invoice.setBillAddress(factory.createBillAddress());
             ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
             invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
