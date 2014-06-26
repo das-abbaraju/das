@@ -285,6 +285,9 @@ public class QBXmlAdaptor {
             case CHF:
                 return "qbListCHID";
 
+            case PLN:
+                return "qbListPLID";
+
             default:
                 return "qbListID";
         }
