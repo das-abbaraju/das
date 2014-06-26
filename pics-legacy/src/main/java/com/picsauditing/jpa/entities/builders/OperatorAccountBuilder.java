@@ -10,6 +10,7 @@ public class OperatorAccountBuilder {
 
 	public OperatorAccountBuilder() {
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
+		operator.setVisibleAuditTypesForReporting(new HashSet<Integer>());
 		operator.setAutoApproveRelationships(false);
 	}
 
