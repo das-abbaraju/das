@@ -125,7 +125,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 
 	@Id
 	@Column(nullable = false, length = 2)
-    @ReportField(importance = FieldImportance.Required)
+    @ReportField(importance = FieldImportance.Required, requiredPermissions = OpPerms.AllOperators)
 	public String getIsoCode() {
 		return isoCode;
 	}
@@ -185,7 +185,7 @@ public class Country implements Comparable<Country>, Serializable, Autocompletea
 		this.name = name;
 	}
 
-    @ReportField(importance = FieldImportance.Required)
+    @ReportField(importance = FieldImportance.Required, requiredPermissions = OpPerms.AllOperators)
 	public String getEnglish() {
 		return english;
 	}
