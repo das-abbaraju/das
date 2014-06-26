@@ -58,6 +58,20 @@ public class InsertContractorsTest {
     }
 
     @Test
+    public void testSetQBListID_PLN() throws Exception {
+        QBSession currentSession = mock(QBSession.class);
+        CustomerRet customer = mock(CustomerRet.class);
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+
+        when(currentSession.getCurrency()).thenReturn(Currency.PLN);
+        when(customer.getListID()).thenReturn(CUSTOMER_LIST_ID);
+
+        Whitebox.invokeMethod(insertContractors, "setQBListID", currentSession, customer, contractorAccount);
+
+        verify(contractorAccount).setQbListPLID(customer.getListID());
+    }
+
+    @Test
     public void testSetQBListID_USD() throws Exception {
         QBSession currentSession = mock(QBSession.class);
         CustomerRet customer = mock(CustomerRet.class);

@@ -92,6 +92,25 @@ public class ProcessQBResponseXMLStrategyTest extends TestCase {
     }
 
     @Test
+    public void testUpdateDatabaseTableContractor_PLN() throws Exception {
+        StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
+        ContractorAccount contractorAccount = mock(ContractorAccount.class);
+        Country country = mock(Country.class);
+        when(contractorAccount.getCountry()).thenReturn(country);
+        when(contractorAccount.getCurrency()).thenReturn(Currency.PLN);
+        when(contractorAccountDAO.find(ID)).thenReturn(contractorAccount);
+
+        ProcessQBResponseXMLInvoiceAddOrUpdate processor = ProcessQBResponseXMLInvoiceAddOrUpdate.factory(actionMessages, errorMessages, contractorAccountDAO);
+        processor.setContractorAccountDAO(contractorAccountDAO);
+
+        Whitebox.invokeMethod(processor, "updateDatabaseTableContractor", qbListId, tablePK, true);
+
+        verify(contractorAccountDAO).find(anyInt());
+        String actionMessage = processor.getActionMessages().toString();
+        assertTrue(actionMessages.toString().contains("qbListPLID"));
+    }
+
+    @Test
     public void testUpdateDatabaseTableContractor_GBP() throws Exception {
         StringBuilder actionMessages = new StringBuilder(), errorMessages = new StringBuilder();
         ContractorAccount contractorAccount = mock(ContractorAccount.class);
