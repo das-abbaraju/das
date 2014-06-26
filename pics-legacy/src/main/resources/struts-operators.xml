@@ -97,5 +97,12 @@
 		<action name="GeneralContractorsListCSV" class="com.picsauditing.actions.operators.gc.GeneralContractorsList" method="download">
 			<result>/struts/blank.jsp</result>
 		</action>
-	</package>
+
+        <action name="CopyOperatorConfig"
+                class="com.picsauditing.actions.operators.CopyOperatorConfig">
+            <result>struts/operators/copy-operator-config.jsp</result>
+            <result name="success">struts/operators/copy-operator-config.jsp</result>
+        </action>
+
+    </package>
 </struts>

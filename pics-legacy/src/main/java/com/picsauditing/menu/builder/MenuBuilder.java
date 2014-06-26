@@ -324,6 +324,7 @@ public final class MenuBuilder {
 				"flag_differences");
 
 		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
+		devMenu.addChild("Copy Client Configuration", "CopyOperatorConfig.action", "copy-operator-config");
 
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
 		devMenu.addChild("PICS Style Guide", "FrontendStyleGuide.action", "front-end-style-guide");
