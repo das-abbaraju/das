@@ -61,6 +61,7 @@ public class MContractorEmployeeManager extends MModelManager{
 
 		for (ProjectRoleEmployee pre : pres) {
 			MContractorEmployee mContractorEmployee = this.copyEmployee(pre.getEmployee());
+			mContractorEmployee.addToEmployeeRoles(pre.getProjectRole().getRole());
 			mContractorEmployees.add(mContractorEmployee);
 		}
 
@@ -105,6 +106,8 @@ public class MContractorEmployeeManager extends MModelManager{
 		private Employee employeeEntity;
 
 		private Map<Integer, AccountSkillProfile> employeeDocumentation;
+
+		private Set<Role> employeeRoles = new HashSet<>();
 
 		@Expose
 		private MContractorManager.MContractor contractor;
@@ -174,6 +177,14 @@ public class MContractorEmployeeManager extends MModelManager{
 
 		public Map<Integer, AccountSkillProfile> getEmployeeDocumentation() {
 			return employeeDocumentation;
+		}
+
+		public void addToEmployeeRoles(Role role){
+			employeeRoles.add(role);
+		}
+
+		public Set<Role> getEmployeeRoles() {
+			return employeeRoles;
 		}
 
 		@Override

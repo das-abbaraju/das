@@ -271,8 +271,13 @@ public class ProjectEntityService implements EntityService<Project, Integer>, Se
 		projectRoleEmployeeDAO.delete(projectRoleEmployees);
 	}
 
-	public List<ProjectRole> findByProjectAndRole(int projectId, int roleId) {
-		return employeeDAO.findProjectRole(projectId, roleId);
+	public ProjectRole findProjectRole(int projectId, int roleId) {
+		return projectRoleDAO.findByProjectAndRoleId(projectId, roleId);
+	}
+
+	public List<ProjectRole> findProjectRoles(int projectId) {
+		Project project = projectDAO.find(projectId);
+		return projectRoleDAO.findByProject(project);
 	}
 
 }

@@ -4,10 +4,14 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class MStatusManager extends MModelManager {
+	private static Logger log = LoggerFactory.getLogger(MStatusManager.class);
+
 	private Map<Integer,MContractorEmployeeManager.MContractorEmployee> lookup;
 
 	private MAssignments mAssignments;
@@ -49,9 +53,12 @@ public class MStatusManager extends MModelManager {
 		if(mOperations.contains(MOperations.EVAL_EMPLOYEE_COUNT)) {
 			mAssignments.addToTotalEmployees(mContractorEmployee);
 		}
-		if(mOperations.contains(MOperations.EVAL_OVERALL_STATUS_ONLY) || mOperations.contains(MOperations.EVAL_OVERALL_STATUS) ) {
+		if(mOperations.contains(MOperations.EVAL_OVERALL_STATUS_ONLY) || mOperations.contains(MOperations.EVAL_OVERALL_STATUS) || mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)  ) {
 			employeeStatus = new MEmployeeStatus();
 			mContractorEmployee.setEmployeeStatus(employeeStatus);
+			if(mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)){
+				employeeStatus.setEmployeeSkillStatus(new HashSet<MEmployeeSkillStatus>());
+			}
 		}
 
 		Map<Integer, AccountSkillProfile> employeeDocumentationLookup = mContractorEmployee.getEmployeeDocumentation();
@@ -69,6 +76,7 @@ public class MStatusManager extends MModelManager {
 			for(MSkillsManager.MSkill mSkill : mSkillSet){
 
 				if(skillCalculatedAlready.get(mSkill.getId())!=null){
+					log.debug("Skipping skill calculation; calculated already " + mSkill.getName());
 					continue;
 				}
 
@@ -84,6 +92,7 @@ public class MStatusManager extends MModelManager {
 						return mAssignments;
 					}
 
+					continue;
 				}
 
 				AccountSkillProfile accountSkillProfile = employeeDocumentationLookup.get(skillId);

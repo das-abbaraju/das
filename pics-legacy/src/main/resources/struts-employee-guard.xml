@@ -399,6 +399,14 @@
 
     <action name="files" class="com.picsauditing.employeeguard.controllers.restful.FilesAction"/>
 
+    <action name="projects/{projectId}/roles/{roleId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleEmployeeAction"/>
+
+    <action name="projects/{projectId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectEmployeeAction"/>
+
+    <action name="projects/{projectId}/roles" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleAction"/>
+
+    <action name="projects" class="com.picsauditing.employeeguard.controllers.restful.ProjectAction"/>
+
   </package>
 
 

@@ -95,7 +95,7 @@ public class MCorporateManager extends MModelManager{
 		}
 
 		public MCorporate attachSkills() throws ReqdInfoMissingException {
-			List<AccountSkill> skills = MModels.fetchSitesManager().fetchReqdSkills(accountId);
+			List<AccountSkill> skills = MModels.fetchCorporateManager().fetchReqdSkills(accountId);
 			this.reqdSkills = MModels.fetchSkillsManager().copySkills(skills);
 			return this;
 		}

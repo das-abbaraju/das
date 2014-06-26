@@ -250,14 +250,5 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 		return query.getResultList();
 	}
 
-	public List<ProjectRole> findProjectRole(int projectId, int roleId) {
-		TypedQuery<ProjectRole> query = em.createQuery("SELECT DISTINCT pr FROM ProjectRole pr " +
-						"WHERE pr.project.id=:projectId and pr.role.id=:roleId", ProjectRole.class);
-
-		query.setParameter("projectId", projectId);
-		query.setParameter("roleId", roleId);
-
-		return query.getResultList();
-	}
 
 }

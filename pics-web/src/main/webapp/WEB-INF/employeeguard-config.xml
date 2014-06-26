@@ -51,6 +51,7 @@
     <bean id="SiteRoleService" class="com.picsauditing.employeeguard.services.SiteRoleService"/>
     <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
+    <bean id="SiteProjectService" class="com.picsauditing.employeeguard.services.SiteProjectService"/>
 
     <!-- Aspects -->
     <bean id="ProfileDocumentServiceAspect" class="com.picsauditing.employeeguard.services.aop.docdownload.ProfileDocumentServiceAspect"/>

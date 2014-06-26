@@ -4,10 +4,15 @@ import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class MProjectsManager extends MModelManager{
+	private static Logger log = LoggerFactory.getLogger(MProjectsManager.class);
+
 	private Map<Integer,MProject> lookup = new HashMap<>();
 
 
@@ -50,69 +55,74 @@ public class MProjectsManager extends MModelManager{
 		return mProjects;
 	}
 
-	public MProjectsManager.MProject evalProjectAssignment(Collection<ProjectRole> projectRoles) throws ReqdInfoMissingException {
+	public MProjectsManager.MProject evalProjectAssignments(Collection<ProjectRole> projectRoles) throws ReqdInfoMissingException {
 		if(projectRoles==null)
 			throw new ReqdInfoMissingException("No project roles available to copy");
 
 		MProjectsManager.MProject mProject=null;
-		Set<MSkillsManager.MSkill> mAllRoleSkills = new HashSet<>();
 		for (ProjectRole pr : projectRoles) {
+
 			if(mProject==null) {
 				mProject = this.copyProject(pr.getProject());
+				mProject.setEmployees(new HashSet<MContractorEmployeeManager.MContractorEmployee>());
+			}
+
+			if(CollectionUtils.isEmpty(pr.getEmployees())){
+				log.debug("No employees to evaluate for this Role {}", pr.getRole().getId());
+				continue;
 			}
 
 			mProject.attachContractorEmployees(pr.getEmployees());
 
-			mAllRoleSkills.addAll(MModels.fetchRolesManager().fetchModel(pr.getRole().getId()).getSkills());
-
 		}
 
-		int accountId = mProject.getEntity().getAccountId();
-		calcAssignments(
-						mProject,
-						MModels.fetchContractorEmployeeManager().getAllEmployees(),
-						MModels.fetchCorporateManager().fetchModel(accountId).getReqdSkills(),
-						MModels.fetchSitesManager().fetchModel(accountId).getReqdSkills(),
-						mProject.getReqdSkills(),
-						mAllRoleSkills
-						);
+		calcAssignments(mProject);
 
 
 		return mProject;
 	}
 
+/*
 	public MProjectsManager.MProject evalProjectRoleAssignment(ProjectRole pr) throws ReqdInfoMissingException {
 		if(pr ==null)
 			throw new ReqdInfoMissingException("No project role available to copy");
 
 		MProjectsManager.MProject mProject = this.copyProject(pr.getProject());
+		mProject.setEmployees(new HashSet<MContractorEmployeeManager.MContractorEmployee>());
+
+		if(CollectionUtils.isEmpty(pr.getEmployees())){
+			log.debug("No employees to evaluate for this Role {}", pr.getRole().getId());
+			return mProject;
+		}
 
 		mProject.attachContractorEmployees(pr.getEmployees());
 
-		Set<MSkillsManager.MSkill> mAllRoleSkills = new HashSet<>();
-		mAllRoleSkills.addAll(MModels.fetchRolesManager().fetchModel(pr.getRole().getId()).getSkills());
-
-		int accountId = mProject.getEntity().getAccountId();
-		calcAssignments(
-						mProject,
-						MModels.fetchContractorEmployeeManager().getAllEmployees(),
-						MModels.fetchCorporateManager().fetchModel(accountId).getReqdSkills(),
-						MModels.fetchSitesManager().fetchModel(accountId).getReqdSkills(),
-						mAllRoleSkills
-		);
+		calcAssignments(mProject);
 
 		return mProject;
 	}
 
+*/
 
-	private void calcAssignments(
-					MProjectsManager.MProject mProject,
-					Collection<MContractorEmployeeManager.MContractorEmployee> mContractorEmployees,
-					Set<MSkillsManager.MSkill>... mSkillSets){
+	private void calcAssignments(MProjectsManager.MProject mProject){
+
+		int accountId = mProject.getEntity().getAccountId();
 
 		MModels.fetchStatusManager().init();
-		for(MContractorEmployeeManager.MContractorEmployee mContractorEmployee:MModels.fetchContractorEmployeeManager().getAllEmployees()){
-			MModels.fetchStatusManager().calculateStatus(mContractorEmployee, mSkillSets);
+		MContractorEmployeeManager mContractorEmployeeManager = MModels.fetchContractorEmployeeManager();
+		for(MContractorEmployeeManager.MContractorEmployee mContractorEmployee:mContractorEmployeeManager.getAllEmployees()){
+
+			Set<MSkillsManager.MSkill> mAllRoleSkills = new HashSet<>();
+			for(Role role: mContractorEmployee.getEmployeeRoles()){
+				mAllRoleSkills.addAll(MModels.fetchRolesManager().fetchModel(role.getId()).getSkills());
+			}
+
+			MModels.fetchStatusManager().calculateStatus(mContractorEmployee,
+							MModels.fetchCorporateManager().fetchModel(accountId).getReqdSkills(),
+							MModels.fetchSitesManager().fetchModel(accountId).getReqdSkills(),
+							mProject.getReqdSkills(),
+							mAllRoleSkills
+			);
 
 		}
 
@@ -207,6 +217,7 @@ public class MProjectsManager extends MModelManager{
 
 		public MProject attachContractorEmployees(List<ProjectRoleEmployee> pres) throws ReqdInfoMissingException {
 			Set<MContractorEmployeeManager.MContractorEmployee> empsAdded= MModels.fetchContractorEmployeeManager().copyProjectRoleEmployees(pres);
+
 			this.employees.addAll(empsAdded);
 			return this;
 		}
@@ -248,6 +259,10 @@ public class MProjectsManager extends MModelManager{
 
 		public void setCompanies(Set<MContractorManager.MContractor> companies) {
 			this.companies = companies;
+		}
+
+		public void setEmployees(Set<MContractorEmployeeManager.MContractorEmployee> employees) {
+			this.employees = employees;
 		}
 	}
 

@@ -27,4 +27,7 @@ public class MEmployeeStatus {
 		this.employeeSkillStatus.add(mEmployeeSkillStatus);
 	}
 
+	public void setEmployeeSkillStatus(Set<MEmployeeSkillStatus> employeeSkillStatus) {
+		this.employeeSkillStatus = employeeSkillStatus;
+	}
 }
