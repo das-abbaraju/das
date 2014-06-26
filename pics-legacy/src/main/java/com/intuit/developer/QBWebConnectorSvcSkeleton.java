@@ -18,7 +18,6 @@ import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.log.PicsLogger;
-import com.picsauditing.jpa.entities.Currency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,21 +26,6 @@ import java.text.Normalizer.Form;
 import java.util.*;
 
 public class QBWebConnectorSvcSkeleton {
-
-    public static final String PICSQBLOADER = "PICSQBLOADER";
-    public static final String PICSQBLOADERCAN = "PICSQBLOADERCAN";
-    public static final String PICSQBLOADERUK = "PICSQBLOADERUK";
-    public static final String PICSQBLOADEREU = "PICSQBLOADEREU";
-    public static final String PICSQBLOADERDKK = "PICSQBLOADERDKK";
-    public static final String PICSQBLOADERSEK = "PICSQBLOADERSEK";
-    public static final String PICSQBLOADERZAR = "PICSQBLOADERZAR";
-    public static final String PICSQBLOADERNOK = "PICSQBLOADERNOK";
-    public static final String PICSQBLOADERCHF = "PICSQBLOADERCHF";
-    public static final String QB_LIST_ID = "qbListID";
-    public static final String QB_LIST_CAID = "qbListCAID";
-    public static final String QB_LIST_UKID = "qbListUKID";
-    public static final String QB_LIST_EUID = "qbListEUID";
-    public static final String QB_LIST_CHID = "qbListCHID";
 
     protected QBSession currentSession = null;
 
@@ -96,10 +80,11 @@ public class QBWebConnectorSvcSkeleton {
                 }
             }
 
-            if (isKnownQBWCUsername(authenticate)
+            PicsQbUser picsQbUser = PicsQbUser.fromQbUsername(authenticate.getStrUserName());
+            if (isKnownQBWCUsername(picsQbUser)
                     && authenticate.getStrPassword().equals(qbPassword)) {
 
-                QBSession session = setUpSession(authenticate);
+                QBSession session = setUpSession(picsQbUser);
 
                 sessions.put(session.getSessionId(), session);
                 sessionId = session.getSessionId();
@@ -161,59 +146,18 @@ public class QBWebConnectorSvcSkeleton {
         return response;
     }
 
-    private boolean isKnownQBWCUsername(Authenticate authenticate) {
-        switch (authenticate.getStrUserName()) {
-            case PICSQBLOADER:
-            case PICSQBLOADERCAN:
-            case PICSQBLOADERUK:
-            case PICSQBLOADEREU:
-            case PICSQBLOADERDKK:
-            case PICSQBLOADERSEK:
-            case PICSQBLOADERZAR:
-            case PICSQBLOADERNOK:
-            case PICSQBLOADERCHF:
-                return true;
-
-            default:
-                return false;
+    private boolean isKnownQBWCUsername(PicsQbUser picsQbUser) {
+        return picsQbUser.isKnownQBWCUsername();
         }
-    }
 
-    private QBSession setUpSession(Authenticate authenticate) {
+    private QBSession setUpSession(PicsQbUser picsQbUser) {
         QBSession session = new QBSession();
         session.setSessionId(guid());
         session.setLastRequest(new Date());
-        // set country specific fields
 
-        switch (authenticate.getStrUserName()) {
-            case PICSQBLOADER:
-                session.setCurrencyCode(Currency.USD.name());
-                session.setQbID(QB_LIST_ID);
-                break;
-            case PICSQBLOADERCAN:
-                session.setCurrencyCode(Currency.CAD.name());
-                session.setQbID(QB_LIST_CAID);
-                break;
-            case PICSQBLOADERUK:
-                session.setCurrencyCode(Currency.GBP.name());
-                session.setQbID(QB_LIST_UKID);
-                break;
-            case PICSQBLOADERCHF:
-                session.setCurrencyCode(Currency.CHF.name());
-                session.setQbID(QB_LIST_CHID);
-                break;
-            case PICSQBLOADEREU:
-            case PICSQBLOADERDKK:
-            case PICSQBLOADERNOK:
-            case PICSQBLOADERZAR:
-            case PICSQBLOADERSEK:
-                session.setCurrencyCode(Currency.EUR.name());
-                session.setQbID(QB_LIST_EUID);
-                break;
+        session.setCurrencyCode(picsQbUser.getCurrency().getIsoCode());
+        session.setQbID(picsQbUser.getQbListId());
 
-
-
-        }
         session.setCurrentStep(QBIntegrationWorkFlow.values()[0]);
         return session;
     }
