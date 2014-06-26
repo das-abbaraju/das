@@ -17,8 +17,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class MSkillsManagerTest {
-	private EGTestDataUtil egTestDataUtil;
+public class MSkillsManagerTest extends MManagersTest  {
 	private AccountSkill skill;
 	private Role role;
 	private Map<Integer,AccountSkill> reqdSkillsMap;
@@ -26,21 +25,13 @@ public class MSkillsManagerTest {
 	private AccountSkill contractorSkill;
 	private Group group;
 	private static final int TOTAL_EMPLOYEES=10;
-	@Mock
-	private SessionInfoProvider sessionInfoProvider;
-
-	Map<String, Object> requestMap= new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+		super.setUp();
 
 		prepareCorporateSkillAndRoleData();
 		prepareContractorSkillAndRoleData();
-		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
-		when(sessionInfoProvider.getRequest()).thenReturn(requestMap);
-
-
 	}
 
 	private void prepareCorporateSkillAndRoleData(){

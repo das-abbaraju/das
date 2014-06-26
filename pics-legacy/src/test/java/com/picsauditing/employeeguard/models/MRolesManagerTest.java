@@ -19,21 +19,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-public class MRolesManagerTest {
-	private EGTestDataUtil egTestDataUtil;
+public class MRolesManagerTest extends MManagersTest {
 	private AccountSkill skill;
 	private Role role;
 	private Map<Integer,AccountSkill> reqdSkillsMap;
-	@Mock
-	private SessionInfoProvider sessionInfoProvider;
-
-	Map<String, Object> requestMap= new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
-		egTestDataUtil = new EGTestDataUtil();
+		super.setUp();
 
 		reqdSkillsMap = egTestDataUtil.buildNewFakeSkillsMixedBagMap();
 		for(AccountSkill skill1:reqdSkillsMap.values()){
@@ -43,9 +36,6 @@ public class MRolesManagerTest {
 
 		role = egTestDataUtil.buildNewFakeRole();
 		skill.setRoles(Arrays.asList(new AccountSkillRole(role, skill)));
-
-		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
-		when(sessionInfoProvider.getRequest()).thenReturn(requestMap);
 
 	}
 

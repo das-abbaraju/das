@@ -17,22 +17,15 @@ import java.util.*;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-public class MGroupsManagerTest {
+public class MGroupsManagerTest extends MManagersTest {
 
-	private EGTestDataUtil egTestDataUtil;
 	private AccountSkill skill;
 	private Group group;
 	private Map<Integer, AccountSkill> reqdSkillsMap;
-	@Mock
-	private SessionInfoProvider sessionInfoProvider;
-
-	Map<String, Object> requestMap= new HashMap<>();
 
 	@Before
 	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-
-		egTestDataUtil = new EGTestDataUtil();
+		super.setUp();
 
 		reqdSkillsMap = egTestDataUtil.buildNewFakeContractorSkillsMixedBagMap();
 		for (AccountSkill skill1 : reqdSkillsMap.values()) {
@@ -42,9 +35,6 @@ public class MGroupsManagerTest {
 
 		group = egTestDataUtil.buildNewFakeGroup();
 		skill.setGroups(Arrays.asList(new AccountSkillGroup(group, skill)));
-
-		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
-		when(sessionInfoProvider.getRequest()).thenReturn(requestMap);
 
 	}
 

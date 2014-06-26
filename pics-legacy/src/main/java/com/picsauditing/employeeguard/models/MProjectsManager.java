@@ -82,28 +82,6 @@ public class MProjectsManager extends MModelManager{
 		return mProject;
 	}
 
-/*
-	public MProjectsManager.MProject evalProjectRoleAssignment(ProjectRole pr) throws ReqdInfoMissingException {
-		if(pr ==null)
-			throw new ReqdInfoMissingException("No project role available to copy");
-
-		MProjectsManager.MProject mProject = this.copyProject(pr.getProject());
-		mProject.setEmployees(new HashSet<MContractorEmployeeManager.MContractorEmployee>());
-
-		if(CollectionUtils.isEmpty(pr.getEmployees())){
-			log.debug("No employees to evaluate for this Role {}", pr.getRole().getId());
-			return mProject;
-		}
-
-		mProject.attachContractorEmployees(pr.getEmployees());
-
-		calcAssignments(mProject);
-
-		return mProject;
-	}
-
-*/
-
 	private void calcAssignments(MProjectsManager.MProject mProject){
 
 		int accountId = mProject.getEntity().getAccountId();

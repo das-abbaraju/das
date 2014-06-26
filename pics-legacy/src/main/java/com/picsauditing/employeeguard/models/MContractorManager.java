@@ -118,5 +118,9 @@ public class MContractorManager  extends MModelManager{
 		public Set<MContractorSkillsManager.MContractorSkill> getReqdSkills() {
 			return reqdSkills;
 		}
+
+		public Integer getAccountId() {
+			return accountId;
+		}
 	}
 }

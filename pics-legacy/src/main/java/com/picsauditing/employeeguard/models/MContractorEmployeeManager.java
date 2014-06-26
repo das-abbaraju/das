@@ -62,6 +62,7 @@ public class MContractorEmployeeManager extends MModelManager{
 		for (ProjectRoleEmployee pre : pres) {
 			MContractorEmployee mContractorEmployee = this.copyEmployee(pre.getEmployee());
 			mContractorEmployee.addToEmployeeRoles(pre.getProjectRole().getRole());
+			mContractorEmployee.setHasProjectSkills(true);
 			mContractorEmployees.add(mContractorEmployee);
 		}
 
@@ -115,6 +116,8 @@ public class MContractorEmployeeManager extends MModelManager{
 		@Expose
 		private MEmployeeStatus employeeStatus;
 
+		private Boolean hasProjectSkills=false;
+
 		public MContractorEmployee(Employee employeeEntity) {
 			this.employeeEntity = employeeEntity;
 		}
@@ -158,6 +161,14 @@ public class MContractorEmployeeManager extends MModelManager{
 
 		//-- Getters
 
+
+		public Boolean hasProjectSkills() {
+			return hasProjectSkills;
+		}
+
+		public void setHasProjectSkills(Boolean hasProjectSkills) {
+			this.hasProjectSkills = hasProjectSkills;
+		}
 
 		public Employee getEmployeeEntity() {
 			return employeeEntity;
