@@ -22,16 +22,6 @@ import java.util.List;
 
 public class InsertPayments extends PaymentAdaptor {
 
-    public static final String VISA_MC_DISC_MERCHANT_ACCT_EURO = "VISA/MC/DISC Merchant Acct EURO";
-    public static final String VISA_MC_DISC_MERCHANT_ACCOUNT = "VISA/MC/DISC Merchant Account";
-    public static final String VISA_CHF = "Visa CHF";
-    public static final String AMEX_MERCHANT_ACCOUNT_EURO = "AMEX Merchant Account EURO";
-    public static final String AMEX_MERCHANT_ACCOUNT = "Amex Merchant Account";
-    public static final String UNDEPOSITED_FUNDS_EURO = "Undeposited Funds EURO";
-    public static final String UNDEPOSITED_FUNDS_CHF = "Undeposited Funds CHF";
-    public static final String UNDEPOSITED_FUNDS = "Undeposited Funds";
-    public static final String UNDEPOSITED_FUNDS_PLN = "Undeposited Funds PLN";
-
     public static String getWhereClause(Currency currency) {
         String qbID = getQBListID(currency);
         return "p.account." + qbID + " is not null AND p.status != 'Void' AND p.qbSync = true AND p.qbListID is null "
