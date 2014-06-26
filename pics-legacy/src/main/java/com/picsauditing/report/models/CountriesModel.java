@@ -1,11 +1,9 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.tables.*;
+import com.picsauditing.report.tables.CountryTable;
 
-import java.util.List;
 import java.util.Map;
 
 public class CountriesModel extends AbstractModel {
@@ -24,7 +22,8 @@ public class CountriesModel extends AbstractModel {
 	public Map<String, Field> getAvailableFields() {
 		Map<String, Field> fields = super.getAvailableFields();
 		Field countryName = fields.get("CountryEnglish".toUpperCase());
-		countryName.setUrl("ManageCountries.action?country={CountryIsoCode}");
+        if (countryName != null)
+            countryName.setUrl("ManageCountries.action?country={CountryIsoCode}");
 
         return fields;
 	}
