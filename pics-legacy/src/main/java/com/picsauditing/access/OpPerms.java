@@ -61,6 +61,7 @@ public enum OpPerms implements Translatable {
 	AllOperators("All Operators", "Can view all operators in the database", false, false, true, false, false),
 
 	// Account Management
+    ManageOperatorConfig("Manage Client Configuration", "Allow PICS employees to copy operator configurations", true, true, true, false, false),
 	ManageOperators("Manage Operator Accounts", "Allows PICS employees to view/edit/delete Operator accounts", true, true, true, false, false),
 	EmailOperators("Send Operator Emails", "Allows PICS employees to send emails to operators accounts", false, false, true, false, false),
 	ManageCorporate("Manage Corporate Accounts", "Allows PICS employees to view/edit/delete Corporate accounts", true, true, true, false, false),
