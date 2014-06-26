@@ -26,7 +26,6 @@ public class CustomerAdaptorTest {
         assertEquals(qbSession.getCurrencyCode(),customerAdaptor.getCurrencyCodeSuffixForQB(qbSession));
     }
 
-
     @Test
     public void testGetCurrencyCodeSuffixForQB_EUR() throws Exception {
         CustomerAdaptor customerAdaptor = new CustomerAdaptor();
