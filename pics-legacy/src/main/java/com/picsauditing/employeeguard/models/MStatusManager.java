@@ -34,7 +34,7 @@ public class MStatusManager extends MModelManager {
 
 		}
 
-		if(mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)) {
+		if(mOperations.contains(MOperations.EVAL_OVERALL_STATUS_ONLY) || mOperations.contains(MOperations.EVAL_OVERALL_STATUS) || mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)  ) {
 			employees = new HashSet<>();
 			mAssignments.setEmployees(employees);
 		}
@@ -53,9 +53,11 @@ public class MStatusManager extends MModelManager {
 		if(mOperations.contains(MOperations.EVAL_EMPLOYEE_COUNT)) {
 			mAssignments.addToTotalEmployees(mContractorEmployee);
 		}
+
 		if(mOperations.contains(MOperations.EVAL_OVERALL_STATUS_ONLY) || mOperations.contains(MOperations.EVAL_OVERALL_STATUS) || mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)  ) {
 			employeeStatus = new MEmployeeStatus();
 			mContractorEmployee.setEmployeeStatus(employeeStatus);
+			employees.add(mContractorEmployee);
 			if(mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)){
 				employeeStatus.setEmployeeSkillStatus(new HashSet<MEmployeeSkillStatus>());
 			}
@@ -66,10 +68,6 @@ public class MStatusManager extends MModelManager {
 		SkillStatus worstStatus = SkillStatus.Completed;
 
 		Map<Integer, MSkillsManager.MSkill> skillCalculatedAlready = new HashMap<>();
-
-		if(mOperations.contains(MOperations.EVAL_ALL_SKILLS_STATUS)) {
-			employees.add(mContractorEmployee);
-		}
 
 		for(Set<MSkillsManager.MSkill> mSkillSet :mSkillSets){
 

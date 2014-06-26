@@ -264,6 +264,18 @@ public class EGTestDataUtil {
 		}};
 	}
 
+	public Set<AccountSkill> buildFakeCorporateReqdSkills() {
+		return new HashSet<AccountSkill>() {{
+			add(CORPORATE_REQUIRED_SKILL);
+		}};
+	}
+
+	public Set<AccountSkill> buildFakeSiteReqdSkills() {
+		return new HashSet<AccountSkill>() {{
+			add(SITE_REQUIRE_SKILL);
+		}};
+	}
+
 	public Map<Project, Set<AccountSkill>> buildFakeProjectRequiredSkills() {
 		return new HashMap<Project, Set<AccountSkill>>() {{
 
