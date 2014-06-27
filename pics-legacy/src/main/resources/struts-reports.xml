@@ -565,10 +565,5 @@
 			<result>struts/reports/report_csr_assignment_stats.jsp</result>
 		</action>
 
-		<!-- Exceptions -->
-		<action name="ReportExceptions" class="com.picsauditing.actions.report.ReportExceptions">
-			<result>struts/reports/report_exceptions.jsp</result>
-		</action>
-
 	</package>
 </struts>

@@ -503,7 +503,6 @@ public class PicsMenu {
 			subMenu.addChild("Huntsman Sync", "ContractorCron.action", "HuntsmanSync");
 			subMenu.addChild("PICS Style Guide", "PicsStyleGuide.action", "PicsStyleGuide");
 			subMenu.addChild("Manage App Properties", "ManageAppProperty.action", "ManageAppProperties");
-			subMenu.addChild("Exception Log", "ReportExceptions.action", "ExceptionLog");
 			subMenu.addChild("Batch Insert Translations", "BatchTranslations.action", "BatchInsertTrans");
 			subMenu.addChild("Update Expired Translations", "ApplicableTranslations.action", "ApplicableTranslations");
 			subMenu.addChild("Dynamic Reporting", "Report.action?report=1", "DynamicReporting");

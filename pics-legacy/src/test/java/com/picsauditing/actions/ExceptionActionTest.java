@@ -1,17 +1,11 @@
 package com.picsauditing.actions;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import com.ibm.icu.util.Calendar;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.dao.BasicDAO;
+import com.picsauditing.jpa.entities.EmailQueue;
+import com.picsauditing.mail.EmailSender;
+import com.picsauditing.mail.GridSender;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,13 +13,11 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import com.ibm.icu.util.Calendar;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.ErrorLog;
-import com.picsauditing.mail.EmailSender;
-import com.picsauditing.mail.GridSender;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class ExceptionActionTest extends PicsActionTest {
 	private ExceptionAction exceptionAction;
@@ -73,7 +65,6 @@ public class ExceptionActionTest extends PicsActionTest {
 
 		assertEquals("Exception", exceptionAction.execute());
 
-		verify(dao).save(any(ErrorLog.class));
 		verify(permissions).getName();
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();
@@ -95,7 +86,6 @@ public class ExceptionActionTest extends PicsActionTest {
 
 		assertEquals("Exception", exceptionAction.execute());
 
-		verify(dao).save(any(ErrorLog.class));
 		verify(permissions).getName();
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();
@@ -114,7 +104,6 @@ public class ExceptionActionTest extends PicsActionTest {
 	public void testExecute_SessionLongerThanASecondNotLoggedIn() {
 		assertEquals("Exception", exceptionAction.execute());
 
-		verify(dao).save(any(ErrorLog.class));
 		verify(permissions, never()).getName();
 		verify(permissions, never()).getUsername();
 		verify(permissions, never()).getAccountId();
@@ -136,7 +125,6 @@ public class ExceptionActionTest extends PicsActionTest {
 
 		assertEquals("Submitted", exceptionAction.sendExceptionEmail());
 
-		verify(dao, never()).save(any(ErrorLog.class));
 		verify(permissions).getName();
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();
@@ -160,7 +148,6 @@ public class ExceptionActionTest extends PicsActionTest {
 
 		assertEquals("Submitted", exceptionAction.sendExceptionEmail());
 
-		verify(dao, never()).save(any(ErrorLog.class));
 		verify(permissions).getName();
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();

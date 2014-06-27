@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -24,18 +23,6 @@ public class ExceptionService {
 	private EmailSender emailSender;
 	@Autowired
 	protected BasicDAO dao;
-
-	public void logException(Permissions permissions, Exception exception) {
-		try {
-			ErrorLog error = new ErrorLog();
-			error.setAuditColumns(permissions);
-			error.setCategory(exception.getClass().getSimpleName());
-			error.setMessage(exception.getStackTrace().toString());
-			error.setStatus("Pending");
-			dao.save(error);
-		} catch (Exception e) {
-		}
-	}
 
 	public void sendExceptionEmail(Permissions permissions, Exception exception) {
 		sendExceptionEmail(permissions, exception, "");
