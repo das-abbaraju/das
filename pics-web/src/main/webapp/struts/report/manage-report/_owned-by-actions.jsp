@@ -33,21 +33,21 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a href="${report_favorite_url}" class="${favorite_class}" data-report-id="${report.id}">${favorite_text}</a>
+            <a href="${report_favorite_url}" id="manage-reports-owned-option-favorite" class="${favorite_class}" data-report-id="${report.id}">${favorite_text}</a>
         </li>
         
         <li>
-            <a href="${report_access_url}">
+            <a href="${report_access_url}" id="manage-reports-owned-option-access" >
                 <s:text name="ManageReports.ownedBy.dropDown.share" />&hellip;
             </a>
         </li>
         
         <li>
-            <a href="${report_public_url}" class="${public_class}" data-report-id="${report.id}">${public_text}</a>
+            <a href="${report_public_url}" id="manage-reports-owned-option-public" class="${public_class}" data-report-id="${report.id}">${public_text}</a>
         </li>
         
         <li>
-            <a href="${report_access_url}">
+            <a href="${report_access_url}" id="manage-reports-owned-option-transfer" >
                 <s:text name="ManageReports.ownedBy.dropDown.transferOwnership" />&hellip;
             </a>
         </li>
@@ -55,7 +55,7 @@
         <li class="divider"></li>
         
         <li>
-            <a href="${report_delete_url}" class="delete" data-report-id="${report.id}">
+            <a href="${report_delete_url}" id="manage-reports-owned-option-delete" class="delete" data-report-id="${report.id}">
                 <s:text name="ManageReports.ownedBy.dropDown.delete" />&hellip;
             </a>
         </li>
