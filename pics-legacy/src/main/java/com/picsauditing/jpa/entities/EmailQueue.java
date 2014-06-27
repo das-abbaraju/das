@@ -1,37 +1,25 @@
 package com.picsauditing.jpa.entities;
 
-import static javax.persistence.GenerationType.IDENTITY;
-
-import java.util.Date;
-
-import javax.mail.Address;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import com.picsauditing.access.Permissions;
+import com.ibm.icu.util.StringTokenizer;
 import com.picsauditing.jpa.entities.builders.EmailQueueBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+import com.picsauditing.util.EmailAddressUtils;
+import com.picsauditing.util.Strings;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonMethod;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.util.StringUtils;
 
-import com.ibm.icu.util.StringTokenizer;
-import com.picsauditing.util.Strings;
+import javax.mail.Address;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.Date;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 @SuppressWarnings("serial")
 @JsonAutoDetect(JsonMethod.FIELD)
@@ -92,7 +80,7 @@ public class EmailQueue implements java.io.Serializable {
 	@Transient
 	public InternetAddress getFromAddress2() throws AddressException {
 		if (Strings.isEmpty(fromAddress))
-			return null;
+			return new InternetAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
 		return new InternetAddress(fromAddress);
 	}
 
