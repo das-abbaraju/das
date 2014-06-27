@@ -132,6 +132,7 @@ public class MContractorEmployeeManager extends MModelManager{
 		private MEmployeeStatus employeeStatus;
 
 		private Boolean hasProjectSkills=false;
+
 		@Expose
 		private String firstName;
 		@Expose
@@ -141,6 +142,10 @@ public class MContractorEmployeeManager extends MModelManager{
 		@Expose
 		@SerializedName("assigned")
 		private Boolean workingAtSiteOrProject;
+
+		@Expose
+		@SerializedName("assignments")
+		private Integer totalRolesAssigned;
 
 		public MContractorEmployee(Employee employeeEntity) {
 			this.employeeEntity = employeeEntity;
@@ -207,6 +212,14 @@ public class MContractorEmployeeManager extends MModelManager{
 		//-- Getters
 
 
+		public Integer getTotalRolesAssigned() {
+			return totalRolesAssigned;
+		}
+
+		public void setTotalRolesAssigned(Integer totalRolesAssigned) {
+			this.totalRolesAssigned = totalRolesAssigned;
+		}
+
 		public Boolean hasProjectSkills() {
 			return hasProjectSkills;
 		}
@@ -237,6 +250,7 @@ public class MContractorEmployeeManager extends MModelManager{
 
 		public void addToEmployeeRoles(Role role){
 			employeeRoles.add(role);
+			totalRolesAssigned = employeeRoles.size();
 		}
 
 		public Set<Role> getEmployeeRoles() {
