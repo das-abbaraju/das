@@ -69,7 +69,7 @@ public class ExceptionActionTest extends PicsActionTest {
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();
 		// SetAuditColumns as well
-		verify(permissions, times(4)).getAdminID();
+		verify(permissions, times(2)).getAdminID();
 		verify(permissions).getAccountType();
 		verify(request).getLocalName();
 		verify(request).getRequestURI();
@@ -89,7 +89,7 @@ public class ExceptionActionTest extends PicsActionTest {
 		verify(permissions).getName();
 		verify(permissions).getUsername();
 		verify(permissions).getAccountId();
-		verify(permissions, times(2)).getAdminID();
+		verify(permissions).getAdminID();
 		verify(permissions).getAccountType();
 		verify(request).getLocalName();
 		verify(request).getRequestURI();
@@ -107,7 +107,6 @@ public class ExceptionActionTest extends PicsActionTest {
 		verify(permissions, never()).getName();
 		verify(permissions, never()).getUsername();
 		verify(permissions, never()).getAccountId();
-		verify(permissions).getAdminID();
 		verify(permissions, never()).getAccountType();
 		verify(request).getLocalName();
 		verify(request).getRequestURI();
