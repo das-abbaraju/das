@@ -141,6 +141,11 @@ public abstract class BaseTable implements JSONable, Serializable, Autocompletea
         if (permissions.getAdminID() > 0) {
             userID = permissions.getAdminID();
         }
+
+        if (userID == 0) {
+            userID = User.SYSTEM;
+        }
+
         setAuditColumns(new User(userID));
     }
 
