@@ -22,7 +22,7 @@ public class ProjectEmployeeAction extends PicsRestActionSupport {
 	public String index() {
 		try {
 			MAssignments mAssignments = siteProjectService.calculateProjectEmployeeAssignments(projectId);
-			jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mAssignments);
+			jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mAssignments.getEmployees());
 
 		} catch (ReqdInfoMissingException e) {
 			log.error("Required information missing - Failed to evaluate assignments for projectId={} ", projectId);

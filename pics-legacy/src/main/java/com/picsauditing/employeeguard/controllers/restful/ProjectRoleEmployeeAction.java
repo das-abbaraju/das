@@ -24,7 +24,8 @@ public class ProjectRoleEmployeeAction extends PicsRestActionSupport {
 
 		try {
 			MAssignments mAssignments = siteProjectService.calculateProjectRoleEmployeeAssignments(projectId, roleId);
-			jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mAssignments);
+
+			jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mAssignments.getEmployees());
 
 		} catch (ReqdInfoMissingException e) {
 			log.error("Required information missing - Failed to evaluate assignments for projectId={} roleId={}", projectId, roleId);

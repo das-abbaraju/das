@@ -1,14 +1,17 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.Set;
 
 public class MEmployeeStatus {
 	@Expose
+	@SerializedName("status")
 	private String overallStatus;
 
 	@Expose
+	@SerializedName("skills")
 	private Set<MEmployeeSkillStatus> employeeSkillStatus;
 
 	public String getOverallStatus() {

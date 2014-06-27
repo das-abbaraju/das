@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.models;
 
 import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -63,6 +64,7 @@ public class MContractorEmployeeManager extends MModelManager{
 			MContractorEmployee mContractorEmployee = this.copyEmployee(pre.getEmployee());
 			mContractorEmployee.addToEmployeeRoles(pre.getProjectRole().getRole());
 			mContractorEmployee.setHasProjectSkills(true);
+			mContractorEmployee.setWorkingAtSiteOrProject(true);
 			mContractorEmployees.add(mContractorEmployee);
 		}
 
@@ -93,7 +95,18 @@ public class MContractorEmployeeManager extends MModelManager{
 			else if(mOperation.equals(MOperations.ATTACH_DOCUMENTATION)){
 				model.attachDocumentations();
 			}
-
+			else if(mOperation.equals(MOperations.COPY_FIRST_NAME)){
+				model.copyFirstName();
+			}
+			else if(mOperation.equals(MOperations.COPY_LAST_NAME)){
+				model.copyLastName();
+			}
+			else if(mOperation.equals(MOperations.COPY_TITLE)){
+				model.copyTitle();
+			}
+			else if(mOperation.equals(MOperations.ENABLE_ASSIGNMENT_FLAG)){
+				model.enableAssignmentFlag();
+			}
 
 
 		}
@@ -111,12 +124,23 @@ public class MContractorEmployeeManager extends MModelManager{
 		private Set<Role> employeeRoles = new HashSet<>();
 
 		@Expose
+		@SerializedName("company")
 		private MContractorManager.MContractor contractor;
 
 		@Expose
+		@SerializedName("status")
 		private MEmployeeStatus employeeStatus;
 
 		private Boolean hasProjectSkills=false;
+		@Expose
+		private String firstName;
+		@Expose
+		private String lastName;
+		@Expose
+		private String title;
+		@Expose
+		@SerializedName("assigned")
+		private Boolean workingAtSiteOrProject;
 
 		public MContractorEmployee(Employee employeeEntity) {
 			this.employeeEntity = employeeEntity;
@@ -132,8 +156,30 @@ public class MContractorEmployeeManager extends MModelManager{
 			return this;
 		}
 
+		public MContractorEmployee copyFirstName(){
+			firstName = employeeEntity.getFirstName();
+			return this;
+		}
+
+		public MContractorEmployee copyLastName(){
+			lastName = employeeEntity.getLastName();
+			return this;
+		}
+
+		public MContractorEmployee copyTitle(){
+			title = employeeEntity.getPositionName();
+			return this;
+		}
+
 		public MContractorEmployee copyContractor() throws ReqdInfoMissingException {
 			contractor = MModels.fetchContractorManager().copyContractor(employeeEntity.getAccountId());
+			return this;
+		}
+
+		public MContractorEmployee enableAssignmentFlag() throws ReqdInfoMissingException {
+			if(workingAtSiteOrProject==null)
+				workingAtSiteOrProject=false;
+
 			return this;
 		}
 
@@ -141,7 +187,6 @@ public class MContractorEmployeeManager extends MModelManager{
 			employeeDocumentation = prepareEmployeeDocumentationsLookup();
 			return this;
 		}
-
 
 		private Map<Integer, AccountSkillProfile> prepareEmployeeDocumentationsLookup() {
 			if (employeeEntity.getProfile() == null) {
@@ -196,6 +241,26 @@ public class MContractorEmployeeManager extends MModelManager{
 
 		public Set<Role> getEmployeeRoles() {
 			return employeeRoles;
+		}
+
+		public String getFirstName() {
+			return firstName;
+		}
+
+		public String getLastName() {
+			return lastName;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public Boolean getWorkingAtSiteOrProject() {
+			return workingAtSiteOrProject;
+		}
+
+		public void setWorkingAtSiteOrProject(Boolean workingAtSiteOrProject) {
+			this.workingAtSiteOrProject = workingAtSiteOrProject;
 		}
 
 		@Override

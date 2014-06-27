@@ -63,6 +63,9 @@ public class SiteProjectService {
 		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_ALL_SKILLS_STATUS);mStatusOperations.add(MOperations.COPY_NAME);
 		MModels.fetchStatusManager().setmOperations(mStatusOperations);
 
+		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_FIRST_NAME);mEmployeeOperations.add(MOperations.COPY_LAST_NAME);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
+		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+
 		return findProjectRoleEmployees(projectId, Arrays.asList(projectRole));
 	}
 
@@ -71,6 +74,9 @@ public class SiteProjectService {
 
 		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_OVERALL_STATUS_ONLY);mStatusOperations.add(MOperations.COPY_NAME);
 		MModels.fetchStatusManager().setmOperations(mStatusOperations);
+
+		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_FIRST_NAME);mEmployeeOperations.add(MOperations.COPY_LAST_NAME);mEmployeeOperations.add(MOperations.COPY_TITLE);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
+		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
 
 		return findProjectRoleEmployees(projectId, projectRoles);
 	}
@@ -103,11 +109,6 @@ public class SiteProjectService {
 		MModels.fetchSitesManager().setmOperations(mSiteOperations);
 		MModels.fetchSitesManager().attachReqdSkills(siteAccountId, siteReqdSkills);
 		MModels.fetchSitesManager().copySite(siteAccountId, accountModel);
-
-
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_NAME);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
-
 
 		MProjectsManager mProjectsManager = MModels.fetchProjectManager();
 		List<MOperations> mProjectsOperations = new ArrayList<>();mProjectsOperations.add(MOperations.COPY_ID);mProjectsOperations.add(MOperations.COPY_NAME);mProjectsOperations.add(MOperations.COPY_ACCOUNT_ID);mProjectsOperations.add(MOperations.ATTACH_ROLES);mProjectsOperations.add(MOperations.ATTACH_REQD_SKILLS);
