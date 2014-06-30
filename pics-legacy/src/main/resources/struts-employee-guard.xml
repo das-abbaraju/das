@@ -218,27 +218,6 @@
                 method="template">
         </action>
 
-        <!-- Matrix -->
-        <action name="matrix/employee-groups-to-employees"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="rolesToEmployees">
-            <result name="roles-to-employees">/struts/employee-guard/contractor/matrix/roles-to-employees.jsp</result>
-        </action>
-
-        <action name="matrix/employee-to-skills"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeeToSkills">
-            <result name="employee-to-skills">/struts/employee-guard/contractor/matrix/employee-to-skills.jsp</result>
-        </action>
-
-        <action name="matrix/employees-to-skills"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeesToSkills">
-            <result name="employees-to-skills">/struts/employee-guard/contractor/matrix/employees-to-skills.jsp</result>
-        </action>
-
-        <action name="matrix/skills-to-employee-groups"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="skillsToRoles">
-            <result name="skills-to-roles">/struts/employee-guard/contractor/matrix/skills-to-roles.jsp</result>
-        </action>
-
         <!-- Group -->
         <action name="employee-group" class="com.picsauditing.employeeguard.controllers.contractor.GroupAction">
             <result name="create">/struts/employee-guard/contractor/group/create.jsp</result>
