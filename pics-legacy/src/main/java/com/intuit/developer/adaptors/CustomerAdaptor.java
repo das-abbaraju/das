@@ -154,6 +154,7 @@ public class CustomerAdaptor extends QBXmlAdaptor {
             case EUR:
                 return EUR_CURRENCY_SUFFIX;
             case CHF:
+            case PLN:
                 return qbSession.getCurrencyCode();
             default:
                 return "";

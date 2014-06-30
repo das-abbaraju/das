@@ -66,4 +66,13 @@ public class ReportQBSyncListTest {
 
         verify(mockContractor).setQbListCHID("NOLOAD" + id);
     }
+
+    @Test
+    public void testSetQBData_PLN() throws Exception {
+        when(mockContractor.getQbListPLID()).thenReturn(null);
+
+        Whitebox.invokeMethod(reportQBSyncList, "setQBData", mockContractor, Currency.PLN);
+
+        verify(mockContractor).setQbListPLID("NOLOAD" + id);
+    }
 }

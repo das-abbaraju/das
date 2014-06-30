@@ -665,8 +665,6 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 AccountCity
 AccountCountry
-AccountCountryEnglish
-AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountID
@@ -1088,8 +1086,6 @@ AccountContactName
 AccountContactPhone
 AccountContactTimezone
 AccountCountry
-AccountCountryEnglish
-AccountCountryIsoCode
 AccountCountrySubdivision
 AccountCreationDate
 AccountFax
@@ -1383,8 +1379,7 @@ UserUsingVersion7Menus
 Model: Countries
 Permission: Permissions{permissions=[]}
 ----------------------------------------
-CountryEnglish
-CountryIsoCode
+
 
 Model: CreditMemos
 Permission: Permissions{permissions=[]}

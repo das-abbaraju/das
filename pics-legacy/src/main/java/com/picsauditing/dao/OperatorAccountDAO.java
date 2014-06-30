@@ -312,4 +312,62 @@ public class OperatorAccountDAO extends PicsDAO {
 		return operators;
 	}
 
+    @Transactional(propagation = Propagation.NESTED)
+    public void copyAuditTypeRules(int sourceID, int targetID, int userID) {
+        String queryString = " INSERT INTO audit_type_rule (include,LEVEL,levelAdjustment,priority,auditTypeID,opID," +
+                "contractorType,tagID,tradeID,acceptsBids,createdBy,updatedBy,creationDate,updateDate,effectiveDate," +
+                "expirationDate,questionID,questionComparator,questionAnswer,yearToCheck,dependentAuditTypeID,dependentAuditStatus," +
+                "manuallyAdded,safetyRisk,productRisk,soleProprietor,accountLevel,safetySensitive,tradeSafetyRisk) " +
+                " SELECT include,LEVEL,levelAdjustment,priority,auditTypeID,:targetId,contractorType,tagID,tradeID,acceptsBids," +
+                ":userId,:userId,NOW(),NOW(),effectiveDate,expirationDate,questionID,questionComparator,questionAnswer," +
+                "yearToCheck,dependentAuditTypeID,dependentAuditStatus,manuallyAdded,safetyRisk,productRisk,soleProprietor," +
+                "accountLevel,safetySensitive,tradeSafetyRisk " +
+                " FROM audit_type_rule " +
+                " WHERE opID = :sourceId ";
+
+        Query query = em.createNativeQuery(queryString, OperatorAccount.class);
+        query.setParameter("userId", userID);
+        query.setParameter("sourceId", sourceID);
+        query.setParameter("targetId", targetID);
+
+        query.executeUpdate();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void copyAuditCategoryRules(int sourceID, int targetID, int userID) {
+        String queryString = " INSERT INTO audit_category_rule (include,LEVEL,levelAdjustment,priority,auditTypeID,catID," +
+                "rootCategory,opID,tagID,tradeID,effectiveDate,expirationDate,createdBy,updatedBy,creationDate,updateDate," +
+                "questionID,questionComparator,questionAnswer,yearToCheck,contractorType,acceptsBids,safetyRisk,productRisk," +
+                "soleProprietor,accountLevel,dependentAuditTypeID,dependentAuditStatus,safetySensitive,tradeSafetyRisk) " +
+                " SELECT include,LEVEL,levelAdjustment,priority,auditTypeID,catID,rootCategory,:targetId,tagID,tradeID," +
+                "effectiveDate,expirationDate,:userId,:userId,NOW(),NOW(),questionID,questionComparator,questionAnswer," +
+                "yearToCheck,contractorType,acceptsBids,safetyRisk,productRisk,soleProprietor,accountLevel," +
+                "dependentAuditTypeID,dependentAuditStatus,safetySensitive,tradeSafetyRisk " +
+                " FROM audit_category_rule " +
+                " WHERE opID = :sourceId ";
+
+        Query query = em.createNativeQuery(queryString, OperatorAccount.class);
+        query.setParameter("userId", userID);
+        query.setParameter("sourceId", sourceID);
+        query.setParameter("targetId", targetID);
+
+        query.executeUpdate();
+    }
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void copyFlagCriteriaOperators(int sourceID, int targetID, int userID) {
+        String queryString = " INSERT INTO flag_criteria_operator (createdBy,updatedBy,creationDate,updateDate,opID," +
+                "criteriaID,flag,hurdle,tagID) " +
+                " SELECT :userId,:userId,NOW(),NOW(),:targetId,criteriaID,flag,hurdle,tagID " +
+                " FROM flag_criteria_operator " +
+                " WHERE opID = :sourceId ";
+
+        Query query = em.createNativeQuery(queryString, OperatorAccount.class);
+        query.setParameter("userId", userID);
+        query.setParameter("sourceId", sourceID);
+        query.setParameter("targetId", targetID);
+
+        query.executeUpdate();
+    }
+
 }

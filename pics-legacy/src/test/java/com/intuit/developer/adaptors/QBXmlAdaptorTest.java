@@ -43,6 +43,13 @@ public class QBXmlAdaptorTest {
     }
 
     @Test
+    public void testGetQBListID_PLN() throws Exception {
+        QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
+        String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.PLN);
+        assertEquals("qbListPLID", qbListId);
+    }
+
+    @Test
     public void testGetQBListID_default() throws Exception {
         QBXmlAdaptor qBXmlAdaptor = new QBXmlAdaptor();
         String qbListId = (String) Whitebox.invokeMethod(qBXmlAdaptor, "getQBListID", Currency.USD);

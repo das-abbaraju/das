@@ -1,8 +1,6 @@
 AccountCity
 AccountCountry
 AccountCountryCurrency
-AccountCountryEnglish
-AccountCountryIsoCode
 AccountCountryProforma
 AccountCountrySubdivision
 AccountCreationDate

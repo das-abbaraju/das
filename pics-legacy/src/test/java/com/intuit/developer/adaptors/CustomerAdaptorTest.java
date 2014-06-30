@@ -18,6 +18,15 @@ public class CustomerAdaptorTest {
     }
 
     @Test
+    public void testGetCurrencyCodeSuffixForQB_PLN() throws Exception {
+        CustomerAdaptor customerAdaptor = new CustomerAdaptor();
+
+        QBSession qbSession = new QBSession();
+        qbSession.setCurrencyCode(Currency.PLN.name());
+        assertEquals(qbSession.getCurrencyCode(),customerAdaptor.getCurrencyCodeSuffixForQB(qbSession));
+    }
+
+    @Test
     public void testGetCurrencyCodeSuffixForQB_EUR() throws Exception {
         CustomerAdaptor customerAdaptor = new CustomerAdaptor();
 
