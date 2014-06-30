@@ -7,6 +7,10 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectSkill;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
+import com.picsauditing.employeeguard.models.operations.MAttachRoles;
+import com.picsauditing.employeeguard.models.operations.MCopyId;
+import com.picsauditing.employeeguard.models.operations.MCopyName;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 
 import java.util.*;
 
@@ -19,9 +23,15 @@ public class MSkillsManager  extends MModelManager {
 	}
 
 	private Map<Integer, AccountSkill> entityMap = new HashMap<>();
-	//private Map<Integer, AccountSkill> reqdSkillsMap= new HashMap<>();
-	//private List<AccountSkill> skills;
-	//private List<AccountSkill> reqdSkills;
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MSkillsManager() {
+		operations = new SupportedOperations();
+	}
 
 	public MSkill fetchModel(int id) {
 		return lookup.get(id);
@@ -148,7 +158,30 @@ public class MSkillsManager  extends MModelManager {
 		this.entityMap = entityMap;
 	}
 
-	public static class MSkill extends MBaseModel{
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachRoles{
+
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachRoles() {
+			mOperations.add(MOperations.ATTACH_ROLES);
+			return this;
+		}
+
+	}
+
+
+	public static class MSkill extends MBaseModel implements MCopyId,MCopyName,MAttachRoles {
 		@Expose
 		private String skillType;
 		@Expose
@@ -173,15 +206,25 @@ public class MSkillsManager  extends MModelManager {
 			this.skillEntity = skillEntity;
 		}
 
+		@Override
+		public MSkill copyName() {
+			name= skillEntity.getName();
+			return this;
+		}
+
+		@Override
 		public MSkill copyId(){
 			id= skillEntity.getId();
 			return this;
 		}
 
-		public MSkill copyName(){
-			name= skillEntity.getName();
+		@Override
+		public MSkill attachRoles() throws ReqdInfoMissingException {
+			this.roles = MModels.fetchRolesManager().copySkillRoles(skillEntity.getRoles());
 			return this;
 		}
+
+/*
 
 		public MSkill copyDescription(){
 			description= skillEntity.getDescription();
@@ -203,10 +246,7 @@ public class MSkillsManager  extends MModelManager {
 			return this;
 		}
 
-		public MSkill attachRoles() throws ReqdInfoMissingException {
-			this.roles = MModels.fetchRolesManager().copySkillRoles(skillEntity.getRoles());
-			return this;
-		}
+*/
 
 
 
@@ -266,5 +306,7 @@ public class MSkillsManager  extends MModelManager {
 		public int hashCode() {
 			return skillEntity != null ? skillEntity.hashCode() : 0;
 		}
+
+
 	}
 }

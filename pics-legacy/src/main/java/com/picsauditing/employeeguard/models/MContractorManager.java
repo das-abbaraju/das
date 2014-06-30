@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.util.SpringUtils;
 
@@ -17,6 +18,14 @@ public class MContractorManager  extends MModelManager{
 
 	private Map<Integer, AccountModel> entityMap = new HashMap<>();
 	private Map<Integer,List<AccountSkill>> reqdSkillsMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+	public MContractorManager() {
+		operations = new SupportedOperations();
+	}
 
 	public List<AccountSkill> fetchReqdSkills(int accountId){
 		return reqdSkillsMap.get(accountId);
@@ -71,7 +80,7 @@ public class MContractorManager  extends MModelManager{
 			else if(mOperation.equals(MOperations.COPY_NAME)){
 				model.copyName();
 			}
-			else if(mOperation.equals(MOperations.ATTACH_REQD_SKILLS)){
+			else if(mOperation.equals(MOperations.ATTACH_SKILLS)){
 				model.attachSkills();
 			}
 
@@ -80,8 +89,30 @@ public class MContractorManager  extends MModelManager{
 		return model;
 	}
 
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachSkills {
 
-	public static class MContractor  extends MBaseModel {
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+
+		@Override
+		public SupportedOperations attachSkills() {
+			mOperations.add(MOperations.ATTACH_SKILLS);
+			return this;
+		}
+	}
+
+
+	public static class MContractor  extends MBaseModel implements MCopyId, MCopyName, MAttachSkills  {
 		@Expose
 		private Set<MContractorSkillsManager.MContractorSkill> reqdSkills;
 
@@ -96,16 +127,19 @@ public class MContractorManager  extends MModelManager{
 			this.accountModel = accountModel;
 		}
 
+		@Override
 		public MContractor copyId(){
 			id=accountModel.getId();
 			return this;
 		}
 
+		@Override
 		public MContractor copyName(){
 			name=accountModel.getName();
 			return this;
 		}
 
+		@Override
 		public MContractor attachSkills() throws ReqdInfoMissingException {
 			List<AccountSkill> skills = MModels.fetchContractorManager().fetchReqdSkills(accountId);
 			this.reqdSkills = MModels.fetchContractorSkillManager().copySkills(skills);

@@ -1,21 +1,15 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillGroup;
 import com.picsauditing.employeeguard.entities.Group;
-import com.picsauditing.web.SessionInfoProvider;
-import com.picsauditing.web.SessionInfoProviderFactory;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.when;
 
 public class MGroupsManagerTest extends MManagersTest {
 
@@ -50,8 +44,7 @@ public class MGroupsManagerTest extends MManagersTest {
 	public void testCopyBasicInfo() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		MGroupsManager mGroupsManager = MModels.fetchContractorGroupsManager();
-		List<MOperations> mGroupsOperations = new ArrayList<>();mGroupsOperations.add(MOperations.COPY_ID);mGroupsOperations.add(MOperations.COPY_NAME);
-		mGroupsManager.setmOperations(mGroupsOperations);
+		mGroupsManager.operations().copyId().copyName();
 
 		mGroupsManager.copyGroups(Arrays.asList(group));
 
@@ -64,8 +57,7 @@ public class MGroupsManagerTest extends MManagersTest {
 	public void testExtractGroupAndCopyWithBasicInfo() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		MGroupsManager mGroupsManager = MModels.fetchContractorGroupsManager();
-		List<MOperations> mGroupsOperations = new ArrayList<>();mGroupsOperations.add(MOperations.COPY_ID);mGroupsOperations.add(MOperations.COPY_NAME);
-		mGroupsManager.setmOperations(mGroupsOperations);
+		mGroupsManager.operations().copyId().copyName();
 
 		Set<MGroupsManager.MGroup> mGroups = mGroupsManager.copyGroups(skill.getGroups());
 		assertTrue(mGroups.size() == 1);

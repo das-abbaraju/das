@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.*;
@@ -15,6 +16,15 @@ public class MGroupsManager extends MModelManager{
 	}
 
 	private Map<Integer, Group> entityMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MGroupsManager() {
+		operations = new SupportedOperations();
+	}
 
 	public MGroup fetchModel(int id){
 		return lookup.get(id);
@@ -91,16 +101,41 @@ public class MGroupsManager extends MModelManager{
 		return model;
 	}
 
-	public static class MGroup {
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachSkills, MEvalEmployeeCount {
 
-		@Expose
-		private Integer id;
-		@Expose
-		private String name;
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachSkills() {
+			mOperations.add(MOperations.ATTACH_SKILLS);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations evalEmployeeCount() {
+			mOperations.add(MOperations.EVAL_EMPLOYEE_COUNT);
+			return this;
+		}
+
+	}
+
+	public static class MGroup extends MBaseModel implements MCopyId, MCopyName, MAttachSkills, MEvalEmployeeCount  {
+
 		@Expose
 		private MAssignments assignments;
 		@Expose
 		Set<MContractorSkillsManager.MContractorSkill> skills;
+
 		@Expose
 		int totalEmployees;
 
@@ -110,21 +145,25 @@ public class MGroupsManager extends MModelManager{
 			this.group = group;
 		}
 
+		@Override
 		public MGroup copyId(){
 			id=group.getId();
 			return this;
 		}
 
+		@Override
 		public MGroup copyName(){
 			name=group.getName();
 			return this;
 		}
 
+		@Override
 		public MGroup attachSkills() throws ReqdInfoMissingException {
 			this.skills = MModels.fetchContractorSkillManager().copySkills(group.getSkills());
 			return this;
 		}
 
+		@Override
 		public MGroup evalEmployeeCount(){
 			totalEmployees= CollectionUtils.isEmpty(group.getEmployees())?0:group.getEmployees().size();
 			return this;

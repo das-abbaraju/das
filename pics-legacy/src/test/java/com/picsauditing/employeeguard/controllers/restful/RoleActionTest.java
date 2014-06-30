@@ -7,7 +7,7 @@ import com.picsauditing.employeeguard.entities.builders.AccountSkillBuilder;
 import com.picsauditing.employeeguard.entities.builders.RoleBuilder;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.models.MModels;
-import com.picsauditing.employeeguard.models.MOperations;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import com.picsauditing.employeeguard.models.MRolesManager;
 import com.picsauditing.employeeguard.models.MSkillsManager;
 import com.picsauditing.employeeguard.services.CorpRoleService;
@@ -101,12 +101,9 @@ public class RoleActionTest extends PicsActionTest {
 						.build();
 
 		MRolesManager mRolesManager = MModels.fetchRolesManager();
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);mRolesOperations.add(MOperations.ATTACH_SKILLS);
-		mRolesManager.setmOperations(mRolesOperations);
+		mRolesManager.operations().copyId().copyName().attachSkills();
 
-		MSkillsManager mSkillsManager = MModels.fetchSkillsManager();
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		mSkillsManager.setmOperations(mSkillsOperations);
+		MModels.fetchSkillsManager().operations().copyId().copyName();
 
 		return new HashSet<>(mRolesManager.copyRoles(Arrays.asList(role)));
 

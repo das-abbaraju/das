@@ -5,12 +5,11 @@ import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.ProjectRoleEmployee;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
@@ -51,8 +50,7 @@ public class MContractorEmployeeManagerTest extends MManagersTest {
 
 		List<ProjectRoleEmployee> pres = egTestDataUtil.buildFakeProjectRoleEmployees(employee);
 
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_NAME);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyName().attachDocumentations();
 		MModels.fetchContractorEmployeeManager().copyProjectRoleEmployees(pres);
 		MContractorEmployeeManager.MContractorEmployee mContractorEmployee = MModels.fetchContractorEmployeeManager().fetchModel(employee.getId());
 
@@ -65,12 +63,10 @@ public class MContractorEmployeeManagerTest extends MManagersTest {
 	public void testCopyEmployee_attachContractor() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 
-		List<MOperations> mContractorOperations = new ArrayList<>();mContractorOperations.add(MOperations.COPY_ID);mContractorOperations.add(MOperations.COPY_NAME);
-		MModels.fetchContractorManager().setmOperations(mContractorOperations);
+		MModels.fetchContractorManager().operations().copyId().copyName();
 
 
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_NAME);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyName().attachContractor();
 		MModels.fetchContractorEmployeeManager().copyEmployee(employee);
 		MContractorEmployeeManager.MContractorEmployee mContractorEmployee = MModels.fetchContractorEmployeeManager().fetchModel(employee.getId());
 
@@ -83,8 +79,7 @@ public class MContractorEmployeeManagerTest extends MManagersTest {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 
 
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_NAME);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyName().attachDocumentations();
 		MModels.fetchContractorEmployeeManager().copyEmployee(employee);
 		MContractorEmployeeManager.MContractorEmployee mContractorEmployee = MModels.fetchContractorEmployeeManager().fetchModel(employee.getId());
 

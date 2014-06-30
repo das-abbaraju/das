@@ -1,23 +1,17 @@
 package com.picsauditing.employeeguard.models;
 
-import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.Role;
-import com.picsauditing.web.SessionInfoProvider;
-import com.picsauditing.web.SessionInfoProviderFactory;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
 
 public class MRolesManagerTest extends MManagersTest {
 	private AccountSkill skill;
@@ -51,8 +45,8 @@ public class MRolesManagerTest extends MManagersTest {
 	public void testCopyBasicInfo() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		MRolesManager mRolesManager = MModels.fetchRolesManager();
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);
-		mRolesManager.setmOperations(mRolesOperations);
+
+		mRolesManager.operations().copyId().copyName();
 
 		mRolesManager.copyRoles(Arrays.asList(role));
 		assertTrue(role.getId() == mRolesManager.fetchModel(role.getId()).getId());
@@ -63,8 +57,7 @@ public class MRolesManagerTest extends MManagersTest {
 	public void testExtractRoleAndCopyWithBasicInfo() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 		MRolesManager mRolesManager = MModels.fetchRolesManager();
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);
-		mRolesManager.setmOperations(mRolesOperations);
+		mRolesManager.operations().copyId().copyName();
 
 		Set<MRolesManager.MRole> mRoles = mRolesManager.copySkillRoles(skill.getRoles());
 		assertTrue(mRoles.size() == 1);

@@ -5,9 +5,9 @@ import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.models.*;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,53 +30,32 @@ public class SiteProjectService {
 	
 
 	public MProjectsManager.MProject findProject(int projectId) throws ReqdInfoMissingException {
-		MProjectsManager mProjectsManager = MModels.fetchProjectManager();
-
-		List<MOperations> mProjectsOperations = new ArrayList<>();mProjectsOperations.add(MOperations.COPY_ID);mProjectsOperations.add(MOperations.COPY_NAME);
-		mProjectsManager.setmOperations(mProjectsOperations);
-
+		MModels.fetchProjectManager().operations().copyId().copyName();
 		Project project = projectEntityService.find(projectId);
-
-		return mProjectsManager.copyProject(project);
-
+		return MModels.fetchProjectManager().copyProject(project);
 	}
 
 	public MProjectsManager.MProject findProjectRoles(int projectId) throws ReqdInfoMissingException {
-		MProjectsManager mProjectsManager = MModels.fetchProjectManager();
-
-		List<MOperations> mProjectsOperations = new ArrayList<>();mProjectsOperations.add(MOperations.COPY_ID);mProjectsOperations.add(MOperations.COPY_NAME);mProjectsOperations.add(MOperations.ATTACH_ROLES);
-		mProjectsManager.setmOperations(mProjectsOperations);
-
-		MRolesManager mRolesManager = MModels.fetchRolesManager();
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);
-		mRolesManager.setmOperations(mRolesOperations);
-
+		MModels.fetchProjectManager().operations().copyId().copyName().attachRoles();
+		MModels.fetchRolesManager().operations().copyId().copyName();
 		Project project = projectEntityService.find(projectId);
 
-		return mProjectsManager.copyProject(project);
+		return MModels.fetchProjectManager().copyProject(project);
 
 	}
 
 	public MAssignments calculateProjectRoleEmployeeAssignments(int projectId, int roleId) throws ReqdInfoMissingException {
 		ProjectRole projectRole = projectEntityService.findProjectRole(projectId, roleId);
-
-		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_ALL_SKILLS_STATUS);mStatusOperations.add(MOperations.COPY_NAME);
-		MModels.fetchStatusManager().setmOperations(mStatusOperations);
-
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_FIRST_NAME);mEmployeeOperations.add(MOperations.COPY_LAST_NAME);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchStatusManager().operations().evalAllSkillsStatus();
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyFirstName().copyLastName().attachContractor().attachDocumentations();
 
 		return findProjectRoleEmployees(projectId, Arrays.asList(projectRole));
 	}
 
 	public MAssignments calculateProjectEmployeeAssignments(int projectId) throws ReqdInfoMissingException {
 		List<ProjectRole> projectRoles = projectEntityService.findProjectRoles(projectId);
-
-		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_OVERALL_STATUS_ONLY);mStatusOperations.add(MOperations.COPY_NAME);
-		MModels.fetchStatusManager().setmOperations(mStatusOperations);
-
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_FIRST_NAME);mEmployeeOperations.add(MOperations.COPY_LAST_NAME);mEmployeeOperations.add(MOperations.COPY_TITLE);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchStatusManager().operations().evalOverallStatusOnly();
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyFirstName().copyLastName().copyTitle().attachContractor().attachDocumentations();
 
 		return findProjectRoleEmployees(projectId, projectRoles);
 	}
@@ -89,35 +68,26 @@ public class SiteProjectService {
 		List<AccountSkill> corpReqdSkills = skillEntityService.findAllParentCorpSiteRequiredSkills(siteAccountId);
 		List<AccountSkill> siteReqdSkills = skillEntityService.findReqdSkillsForAccount(siteAccountId);
 
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		MModels.fetchSkillsManager().setmOperations(mSkillsOperations);
+		MModels.fetchSkillsManager().operations().copyName().copyId();
 
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);mRolesOperations.add(MOperations.ATTACH_SKILLS);
-		MModels.fetchRolesManager().setmOperations(mRolesOperations);
+		MModels.fetchRolesManager().operations().copyId().copyName().attachSkills();
 
-		List<MOperations> mContractorOperations = new ArrayList<>();mContractorOperations.add(MOperations.COPY_ID);mContractorOperations.add(MOperations.COPY_NAME);
-		MModels.fetchContractorManager().setmOperations(mContractorOperations);
+		MModels.fetchContractorManager().operations().copyId().copyName();
 
 
-		List<MOperations> mCorporateOperations = new ArrayList<>();mCorporateOperations.add(MOperations.COPY_ID);mCorporateOperations.add(MOperations.COPY_NAME);mCorporateOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchCorporateManager().setmOperations(mCorporateOperations);
+		MModels.fetchCorporateManager().operations().copyId().copyName().attachReqdSkills();
 		MModels.fetchCorporateManager().attachReqdSkills(siteAccountId, corpReqdSkills);
 		MModels.fetchCorporateManager().copySite(siteAccountId, accountModel);
 
 
-		List<MOperations> mSiteOperations = new ArrayList<>();mSiteOperations.add(MOperations.COPY_ID);mSiteOperations.add(MOperations.COPY_NAME);mSiteOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchSitesManager().setmOperations(mSiteOperations);
+		MModels.fetchSitesManager().operations().copyId().copyName().attachReqdSkills();
 		MModels.fetchSitesManager().attachReqdSkills(siteAccountId, siteReqdSkills);
 		MModels.fetchSitesManager().copySite(siteAccountId, accountModel);
 
-		MProjectsManager mProjectsManager = MModels.fetchProjectManager();
-		List<MOperations> mProjectsOperations = new ArrayList<>();mProjectsOperations.add(MOperations.COPY_ID);mProjectsOperations.add(MOperations.COPY_NAME);mProjectsOperations.add(MOperations.COPY_ACCOUNT_ID);mProjectsOperations.add(MOperations.ATTACH_ROLES);mProjectsOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchProjectManager().setmOperations(mProjectsOperations);
+		MModels.fetchProjectManager().operations().copyId().copyName().copyAccountId().attachRoles().attachReqdSkills();
+		MModels.fetchProjectManager().evalProjectAssignments(projectRoles);
 
-
-		mProjectsManager.evalProjectAssignments(projectRoles);
-
-		MAssignments mAssignments = mProjectsManager.fetchModel(project.getId()).getAssignments();
+		MAssignments mAssignments = MModels.fetchProjectManager().fetchModel(project.getId()).getAssignments();
 
 		return mAssignments;
 

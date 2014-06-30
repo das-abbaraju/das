@@ -3,6 +3,10 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.MAttachReqdSkills;
+import com.picsauditing.employeeguard.models.operations.MCopyId;
+import com.picsauditing.employeeguard.models.operations.MCopyName;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 
 import java.util.*;
 
@@ -16,6 +20,15 @@ public class MSitesManager extends MModelManager{
 
 	private Map<Integer, AccountModel> entityMap = new HashMap<>();
 	private Map<Integer,List<AccountSkill>> reqdSkillsMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MSitesManager() {
+		operations = new SupportedOperations();
+	}
 
 	public List<AccountSkill> fetchReqdSkills(int accountId){
 		return reqdSkillsMap.get(accountId);
@@ -60,7 +73,7 @@ public class MSitesManager extends MModelManager{
 				model.copyName();
 			}
 			else if(mOperation.equals(MOperations.ATTACH_REQD_SKILLS)){
-				model.attachSkills();
+				model.attachReqdSkills();
 			}
 
 		}
@@ -68,7 +81,30 @@ public class MSitesManager extends MModelManager{
 		return model;
 	}
 
-	public static class MSite extends MBaseModel {
+
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachReqdSkills {
+
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachReqdSkills() {
+			mOperations.add(MOperations.ATTACH_REQD_SKILLS);
+			return this;
+		}
+
+	}
+
+	public static class MSite extends MBaseModel implements MCopyId, MCopyName, MAttachReqdSkills {
 
 
 		@Expose
@@ -88,17 +124,20 @@ public class MSitesManager extends MModelManager{
 			this.accountModel = accountModel;
 		}
 
+		@Override
 		public MSite copyId(){
 			id=accountModel.getId();
 			return this;
 		}
 
+		@Override
 		public MSite copyName(){
 			name=accountModel.getName();
 			return this;
 		}
 
-		public MSite attachSkills() throws ReqdInfoMissingException {
+		@Override
+		public MSite attachReqdSkills() throws ReqdInfoMissingException {
 			List<AccountSkill> skills = MModels.fetchSitesManager().fetchReqdSkills(accountId);
 			this.reqdSkills = MModels.fetchSkillsManager().copySkills(skills);
 			return this;

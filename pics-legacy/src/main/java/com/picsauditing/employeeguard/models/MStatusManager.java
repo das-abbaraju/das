@@ -2,6 +2,8 @@ package com.picsauditing.employeeguard.models;
 
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import org.slf4j.Logger;
@@ -18,6 +20,15 @@ public class MStatusManager extends MModelManager {
 	private MEmployeeRollupStatus mEmployeeRollupStatus;
 	private Set<MContractorEmployeeManager.MContractorEmployee> totalEmployeesSet;
 	private Set<MContractorEmployeeManager.MContractorEmployee> employees;
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MStatusManager() {
+		operations = new SupportedOperations();
+	}
+
 
 	public void init() {
 		lookup = new HashMap<>();
@@ -45,7 +56,7 @@ public class MStatusManager extends MModelManager {
 		return lookup.get(id);
 	}
 
-	public MAssignments calculateStatus(MContractorEmployeeManager.MContractorEmployee mContractorEmployee, Set<MSkillsManager.MSkill>... mSkillSets){
+	public MAssignments calculateStatus(MContractorEmployeeManager.MContractorEmployee mContractorEmployee, Set<Set<MSkillsManager.MSkill>> mAllSkillsToEvaluate){
 		MEmployeeStatus employeeStatus=null;
 
 		lookup.put(mContractorEmployee.getId(), mContractorEmployee);
@@ -69,7 +80,7 @@ public class MStatusManager extends MModelManager {
 
 		Map<Integer, MSkillsManager.MSkill> skillCalculatedAlready = new HashMap<>();
 
-		for(Set<MSkillsManager.MSkill> mSkillSet :mSkillSets){
+		for(Set<MSkillsManager.MSkill> mSkillSet :mAllSkillsToEvaluate){
 
 			for(MSkillsManager.MSkill mSkill : mSkillSet){
 
@@ -173,5 +184,33 @@ public class MStatusManager extends MModelManager {
 	public MAssignments getmAssignments() {
 		return mAssignments;
 	}
+
+	public class SupportedOperations implements MEvalEmployeeCount, MEvalOverallStatus, MEvalOverallStatusOnly, MEvalAllSkillsStatus{
+
+		@Override
+		public SupportedOperations evalAllSkillsStatus() {
+			mOperations.add(MOperations.EVAL_ALL_SKILLS_STATUS);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations evalEmployeeCount() throws ReqdInfoMissingException {
+			mOperations.add(MOperations.EVAL_EMPLOYEE_COUNT);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations evalOverallStatus() {
+			mOperations.add(MOperations.EVAL_OVERALL_STATUS);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations evalOverallStatusOnly() {
+			mOperations.add(MOperations.EVAL_OVERALL_STATUS_ONLY);
+			return this;
+		}
+	}
+
 }
 

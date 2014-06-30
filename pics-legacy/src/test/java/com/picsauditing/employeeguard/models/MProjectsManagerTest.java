@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.models;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -54,14 +55,12 @@ public class MProjectsManagerTest extends MManagersTest {
 	private void masterInit() throws ReqdInfoMissingException {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		MModels.fetchSkillsManager().setmOperations(mSkillsOperations);
+		MModels.fetchSkillsManager().operations().copyId().copyName();
 
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);mRolesOperations.add(MOperations.ATTACH_SKILLS);
-		MModels.fetchRolesManager().setmOperations(mRolesOperations);
 
-		List<MOperations> mContractorOperations = new ArrayList<>();mContractorOperations.add(MOperations.COPY_ID);mContractorOperations.add(MOperations.COPY_NAME);
-		MModels.fetchContractorManager().setmOperations(mContractorOperations);
+		MModels.fetchRolesManager().operations().copyId().copyName().attachSkills();
+
+		MModels.fetchContractorManager().operations().copyId().copyName();
 
 		initCorpManager();
 
@@ -76,8 +75,8 @@ public class MProjectsManagerTest extends MManagersTest {
 	private void initSiteManager() throws ReqdInfoMissingException {
 		AccountModel accountModel = egTestDataUtil.buildFakeSiteAccountModel();
 		siteReqdSkills = egTestDataUtil.buildFakeSiteReqdSkillsList();
-		List<MOperations> mSiteOperations = new ArrayList<>();mSiteOperations.add(MOperations.COPY_ID);mSiteOperations.add(MOperations.COPY_NAME);mSiteOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchSitesManager().setmOperations(mSiteOperations);
+
+		MModels.fetchSitesManager().operations().copyId().copyName().attachReqdSkills();
 		MModels.fetchSitesManager().attachReqdSkills(siteAccountId, siteReqdSkills);
 		MModels.fetchSitesManager().copySite(siteAccountId, accountModel);
 
@@ -86,20 +85,17 @@ public class MProjectsManagerTest extends MManagersTest {
 	private void initCorpManager() throws ReqdInfoMissingException {
 		AccountModel accountModel = egTestDataUtil.buildFakeCorporateAccountModel();
 		corpReqdSkills = egTestDataUtil.buildFakeCorporateReqdSkillsList();
-		List<MOperations> mCorporateOperations = new ArrayList<>();mCorporateOperations.add(MOperations.COPY_ID);mCorporateOperations.add(MOperations.COPY_NAME);mCorporateOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchCorporateManager().setmOperations(mCorporateOperations);
+		MModels.fetchCorporateManager().operations().copyId().copyName().attachReqdSkills();
 		MModels.fetchCorporateManager().attachReqdSkills(siteAccountId, corpReqdSkills);
 		MModels.fetchCorporateManager().copySite(siteAccountId, accountModel);
 	}
 
 	private void initEmployeeManager() throws ReqdInfoMissingException {
-		List<MOperations> mEmployeeOperations = new ArrayList<>();mEmployeeOperations.add(MOperations.COPY_ID);mEmployeeOperations.add(MOperations.COPY_NAME);mEmployeeOperations.add(MOperations.ATTACH_CONTRACTOR);mEmployeeOperations.add(MOperations.ATTACH_DOCUMENTATION);
-		MModels.fetchContractorEmployeeManager().setmOperations(mEmployeeOperations);
+		MModels.fetchContractorEmployeeManager().operations().copyId().copyName().attachContractor().attachDocumentations();
 	}
 
 	private void initProjectManager() throws ReqdInfoMissingException {
-		List<MOperations> mProjectsOperations = new ArrayList<>();mProjectsOperations.add(MOperations.COPY_ID);mProjectsOperations.add(MOperations.COPY_NAME);mProjectsOperations.add(MOperations.COPY_ACCOUNT_ID);mProjectsOperations.add(MOperations.ATTACH_ROLES);mProjectsOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchProjectManager().setmOperations(mProjectsOperations);
+		MModels.fetchProjectManager().operations().copyId().copyName().copyAccountId().attachRoles().attachReqdSkills();
 	}
 
 	@Test
@@ -129,8 +125,7 @@ public class MProjectsManagerTest extends MManagersTest {
 	public void testEvalProjectAssignments_calculateProjectRoleEmployeeAssignments() throws Exception {
 		masterInit();
 
-		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_ALL_SKILLS_STATUS);mStatusOperations.add(MOperations.COPY_NAME);
-		MModels.fetchStatusManager().setmOperations(mStatusOperations);
+		MModels.fetchStatusManager().operations().evalAllSkillsStatus();
 
 		MProjectsManager mManager = MModels.fetchProjectManager();
 		mManager.evalProjectAssignments(Arrays.asList(projectRole));
@@ -165,8 +160,8 @@ public class MProjectsManagerTest extends MManagersTest {
 	public void testEvalProjectAssignments_calculateProjectEmployeeAssignments() throws Exception {
 		masterInit();
 
-		List<MOperations> mStatusOperations = new ArrayList<>();mStatusOperations.add(MOperations.EVAL_OVERALL_STATUS_ONLY);mStatusOperations.add(MOperations.COPY_NAME);
-		MModels.fetchStatusManager().setmOperations(mStatusOperations);
+
+		MModels.fetchStatusManager().operations().evalOverallStatusOnly();
 
 		MProjectsManager mManager = MModels.fetchProjectManager();
 		mManager.evalProjectAssignments(Arrays.asList(projectRole));

@@ -2,7 +2,7 @@ package com.picsauditing.employeeguard.services;
 
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.models.MModels;
-import com.picsauditing.employeeguard.models.MOperations;
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import com.picsauditing.employeeguard.models.MRolesManager;
 import com.picsauditing.employeeguard.models.MSkillsManager;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
@@ -20,19 +20,14 @@ public class CorpRoleService {
 
 	public Set<MRolesManager.MRole> findRolesForCorp(final int corpId) throws ReqdInfoMissingException {
 		MRolesManager mRolesManager = MModels.fetchRolesManager();
-		List<MOperations> mRolesOperations = new ArrayList<>();mRolesOperations.add(MOperations.COPY_ID);mRolesOperations.add(MOperations.COPY_NAME);mRolesOperations.add(MOperations.ATTACH_SKILLS);
-		mRolesManager.setmOperations(mRolesOperations);
+		mRolesManager.operations().copyId().copyName().attachSkills();
 
 		MSkillsManager mSkillsManager = MModels.fetchSkillsManager();
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		mSkillsManager.setmOperations(mSkillsOperations);
+		mSkillsManager.operations().copyName().copyId();
 
 
 		return mRolesManager.copyRoles(roleEntityService.findRolesForCorporateAccounts(Arrays.asList(corpId)));
-/*
-		return new MRolesManager().copyBasicInfoAndAttachSkills(
-				roleEntityService.findRolesForCorporateAccounts(Arrays.asList(corpId)));
-*/
+
 
 	}
 }

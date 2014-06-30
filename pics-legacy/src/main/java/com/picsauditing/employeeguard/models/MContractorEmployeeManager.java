@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.*;
@@ -17,6 +18,14 @@ public class MContractorEmployeeManager extends MModelManager{
 	}
 
 	private Map<Integer, Employee> entityMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+	public MContractorEmployeeManager() {
+		operations = new SupportedOperations();
+	}
 
 	public MContractorEmployee fetchModel(int id) {
 		return lookup.get(id);
@@ -90,7 +99,7 @@ public class MContractorEmployeeManager extends MModelManager{
 				model.copyName();
 			}
 			else if(mOperation.equals(MOperations.ATTACH_CONTRACTOR)){
-				model.copyContractor();
+				model.attachContractor();
 			}
 			else if(mOperation.equals(MOperations.ATTACH_DOCUMENTATION)){
 				model.attachDocumentations();
@@ -115,7 +124,59 @@ public class MContractorEmployeeManager extends MModelManager{
 	}
 
 
-	public static class MContractorEmployee extends MBaseModel{
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachContractor, MAttachDocumentations, MCopyFirstName, MCopyLastName, MCopyTitle,MEnableAssignmentFlag {
+
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+
+		@Override
+		public SupportedOperations attachContractor() {
+			mOperations.add(MOperations.ATTACH_CONTRACTOR);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachDocumentations() {
+			mOperations.add(MOperations.ATTACH_DOCUMENTATION);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyFirstName() {
+			mOperations.add(MOperations.COPY_FIRST_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyLastName() {
+			mOperations.add(MOperations.COPY_LAST_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyTitle() {
+			mOperations.add(MOperations.COPY_TITLE);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations enableAssignmentFlag() {
+			mOperations.add(MOperations.ENABLE_ASSIGNMENT_FLAG);
+			return this;
+		}
+	}
+
+	public static class MContractorEmployee extends MBaseModel  implements MCopyId, MCopyName, MAttachContractor, MAttachDocumentations, MCopyFirstName, MCopyLastName, MCopyTitle,MEnableAssignmentFlag {
 
 		private Employee employeeEntity;
 
@@ -151,36 +212,43 @@ public class MContractorEmployeeManager extends MModelManager{
 			this.employeeEntity = employeeEntity;
 		}
 
+		@Override
 		public MContractorEmployee copyId(){
 			id= employeeEntity.getId();
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee copyName(){
 			name= employeeEntity.getName();
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee copyFirstName(){
 			firstName = employeeEntity.getFirstName();
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee copyLastName(){
 			lastName = employeeEntity.getLastName();
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee copyTitle(){
 			title = employeeEntity.getPositionName();
 			return this;
 		}
 
-		public MContractorEmployee copyContractor() throws ReqdInfoMissingException {
+		@Override
+		public MContractorEmployee attachContractor() throws ReqdInfoMissingException {
 			contractor = MModels.fetchContractorManager().copyContractor(employeeEntity.getAccountId());
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee enableAssignmentFlag() throws ReqdInfoMissingException {
 			if(workingAtSiteOrProject==null)
 				workingAtSiteOrProject=false;
@@ -188,6 +256,7 @@ public class MContractorEmployeeManager extends MModelManager{
 			return this;
 		}
 
+		@Override
 		public MContractorEmployee attachDocumentations() throws ReqdInfoMissingException {
 			employeeDocumentation = prepareEmployeeDocumentationsLookup();
 			return this;

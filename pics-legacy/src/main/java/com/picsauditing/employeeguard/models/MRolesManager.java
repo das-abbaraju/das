@@ -5,10 +5,12 @@ import com.picsauditing.employeeguard.entities.AccountSkillRole;
 import com.picsauditing.employeeguard.entities.ProjectRole;
 import com.picsauditing.employeeguard.entities.Role;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 
 import java.util.*;
 
 public class MRolesManager extends MModelManager{
+
 	private Map<Integer, MRole> lookup = new HashMap<>();
 
 	public static Set<MRole> newCollection() {
@@ -16,6 +18,14 @@ public class MRolesManager extends MModelManager{
 	}
 
 	private Map<Integer, Role> entityMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+	public MRolesManager() {
+		this.operations = new SupportedOperations();
+	}
 
 	public MRole fetchModel(int id) {
 		return lookup.get(id);
@@ -103,8 +113,29 @@ public class MRolesManager extends MModelManager{
 		return model;
 	}
 
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachSkills {
 
-	public static class MRole extends MBaseModel{
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachSkills() {
+			mOperations.add(MOperations.ATTACH_SKILLS);
+			return this;
+		}
+	}
+
+
+	public static class MRole extends MBaseModel implements MCopyId, MCopyName, MAttachSkills{
 
 		@Expose
 		private MAssignments assignments;
@@ -121,16 +152,19 @@ public class MRolesManager extends MModelManager{
 			this.role = role;
 		}
 
+		@Override
 		public MRole copyId() {
 			id = role.getId();
 			return this;
 		}
 
+		@Override
 		public MRole copyName() {
 			name = role.getName();
 			return this;
 		}
 
+		@Override
 		public MRole attachSkills() throws ReqdInfoMissingException {
 			this.skills = MModels.fetchSkillsManager().copySkills(role.getSkills());
 			return this;

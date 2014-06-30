@@ -1,16 +1,23 @@
 package com.picsauditing.employeeguard.models;
 
+import com.picsauditing.employeeguard.models.operations.MOperations;
+
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class MModelManager {
 
-	List<MOperations> mOperations;
+	protected Set<MOperations> mOperations = new LinkedHashSet();
 
-	public List<MOperations> getmOperations() {
-		return mOperations;
-	}
+/*
+	protected List<MOperations> mOldOperations;
 
-	public void setmOperations(List<MOperations> mOperations) {
-		this.mOperations = mOperations;
+	public void setmOldOperations(List<MOperations> mOldOperations) {
+		this.mOldOperations = mOldOperations;
 	}
+*/
+
 }
+
+

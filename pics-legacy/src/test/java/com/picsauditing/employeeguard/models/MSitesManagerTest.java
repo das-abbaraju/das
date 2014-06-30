@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -30,11 +31,10 @@ public class MSitesManagerTest extends MManagersTest {
 	public void testCopySite() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		MModels.fetchSkillsManager().setmOperations(mSkillsOperations);
+		MModels.fetchSkillsManager().operations().copyId().copyName();
 
-		List<MOperations> mSiteOperations = new ArrayList<>();mSiteOperations.add(MOperations.COPY_ID);mSiteOperations.add(MOperations.COPY_NAME);mSiteOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchSitesManager().setmOperations(mSiteOperations);
+
+		MModels.fetchSitesManager().operations().copyId().copyName().attachReqdSkills();
 		MModels.fetchSitesManager().attachReqdSkills(siteAccountId, egTestDataUtil.buildFakeSiteReqdSkillsList());
 		MModels.fetchSitesManager().copySite(siteAccountId, accountModel);
 

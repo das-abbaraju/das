@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,15 @@ public class MProjectsManager extends MModelManager{
 	}
 
 	private Map<Integer, Project> entityMap = new HashMap<>();
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MProjectsManager() {
+		operations = new SupportedOperations();
+	}
 
 	public MProject fetchModel(int id) {
 		return lookup.get(id);
@@ -90,18 +100,16 @@ public class MProjectsManager extends MModelManager{
 		MContractorEmployeeManager mContractorEmployeeManager = MModels.fetchContractorEmployeeManager();
 		for(MContractorEmployeeManager.MContractorEmployee mContractorEmployee:mContractorEmployeeManager.getAllEmployees()){
 
-			Set<MSkillsManager.MSkill> mAllRoleSkills = new HashSet<>();
+			Set<Set<MSkillsManager.MSkill>> mAllSkillsToEvaluate = new LinkedHashSet<>();
+			mAllSkillsToEvaluate.add(MModels.fetchCorporateManager().fetchModel(accountId).getReqdSkills());
+			mAllSkillsToEvaluate.add(MModels.fetchSitesManager().fetchModel(accountId).getReqdSkills());
+			mAllSkillsToEvaluate.add(mProject.getReqdSkills());
+
 			for(Role role: mContractorEmployee.getEmployeeRoles()){
-				mAllRoleSkills.addAll(MModels.fetchRolesManager().fetchModel(role.getId()).getSkills());
+				mAllSkillsToEvaluate.add(MModels.fetchRolesManager().fetchModel(role.getId()).getSkills());
 			}
 
-			MModels.fetchStatusManager().calculateStatus(mContractorEmployee,
-							MModels.fetchCorporateManager().fetchModel(accountId).getReqdSkills(),
-							MModels.fetchSitesManager().fetchModel(accountId).getReqdSkills(),
-							mProject.getReqdSkills(),
-							mAllRoleSkills
-			);
-
+			MModels.fetchStatusManager().calculateStatus(mContractorEmployee,mAllSkillsToEvaluate);
 		}
 
 		MAssignments mAssignments = MModels.fetchStatusManager().getmAssignments();
@@ -134,7 +142,7 @@ public class MProjectsManager extends MModelManager{
 				model.attachRoles();
 			}
 			else if(mOperation.equals(MOperations.ATTACH_REQD_SKILLS)){
-				model.attachSkills();
+				model.attachReqdSkills();
 			}
 
 		}
@@ -143,9 +151,40 @@ public class MProjectsManager extends MModelManager{
 	}
 
 
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachRoles, MAttachReqdSkills, MCopyAccountId {
 
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
 
-	public static class MProject extends MBaseModel{
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachRoles() {
+			mOperations.add(MOperations.ATTACH_ROLES);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachReqdSkills() {
+			mOperations.add(MOperations.ATTACH_REQD_SKILLS);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyAccountId() {
+			mOperations.add(MOperations.COPY_ACCOUNT_ID);
+			return this;
+		}
+	}
+
+	public static class MProject extends MBaseModel  implements MCopyId, MCopyName, MAttachRoles, MAttachReqdSkills, MCopyAccountId {
 		private Integer accountId;
 
 		@Expose
@@ -168,27 +207,32 @@ public class MProjectsManager extends MModelManager{
 			this.entity = entity;
 		}
 
+		@Override
 		public MProject copyId(){
 			id=entity.getId();
 			return this;
 		}
 
+		@Override
 		public MProject copyName(){
 			name=entity.getName();
 			return this;
 		}
 
+		@Override
 		public MProject copyAccountId(){
 			accountId=entity.getAccountId();
 			return this;
 		}
 
+		@Override
 		public MProject attachRoles() throws ReqdInfoMissingException {
 			this.roles = MModels.fetchRolesManager().copyProjectRoles(entity.getRoles());
 			return this;
 		}
 
-		public MProject attachSkills() throws ReqdInfoMissingException {
+		@Override
+		public MProject attachReqdSkills() throws ReqdInfoMissingException {
 			this.reqdSkills = MModels.fetchSkillsManager().copyProjectReqdSkills(entity);
 			return this;
 		}

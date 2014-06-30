@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.operations.*;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 
 import java.util.*;
@@ -18,6 +19,15 @@ public class MContractorSkillsManager extends MModelManager{
 
 	private Map<Integer, AccountSkill> entityMap = new HashMap<>();
 	private MContractor mContractor;
+
+	private final SupportedOperations operations;
+	public SupportedOperations operations() {
+		return operations;
+	}
+
+	public MContractorSkillsManager() {
+		operations = new SupportedOperations();
+	}
 
 	public MContractorSkill fetchModel(int id) {
 		return lookup.get(id);
@@ -115,7 +125,35 @@ public class MContractorSkillsManager extends MModelManager{
 		this.mContractor = mContractor;
 	}
 
-	public static class MContractorSkill extends MBaseModel{
+	public class SupportedOperations implements MCopyId, MCopyName, MAttachGroups, MEvalEmployeeCount {
+
+		@Override
+		public SupportedOperations copyId() {
+			mOperations.add(MOperations.COPY_ID);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations copyName() {
+			mOperations.add(MOperations.COPY_NAME);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations attachGroups() {
+			mOperations.add(MOperations.ATTACH_GROUPS);
+			return this;
+		}
+
+		@Override
+		public SupportedOperations evalEmployeeCount() {
+			mOperations.add(MOperations.EVAL_EMPLOYEE_COUNT);
+			return this;
+		}
+	}
+
+
+	public static class MContractorSkill extends MBaseModel  implements MCopyId, MCopyName, MAttachGroups, MEvalEmployeeCount {
 		@Expose
 		private String skillType;
 		@Expose
@@ -138,15 +176,18 @@ public class MContractorSkillsManager extends MModelManager{
 			this.skill = skill;
 		}
 
+		@Override
 		public MContractorSkill copyId(){
 			id=skill.getId();
 			return this;
 		}
 
+		@Override
 		public MContractorSkill copyName(){
 			name=skill.getName();
 			return this;
 		}
+/*
 
 		public MContractorSkill copyDescription(){
 			description=skill.getDescription();
@@ -167,13 +208,16 @@ public class MContractorSkillsManager extends MModelManager{
 			intervalType=skill.getIntervalType().toString();
 			return this;
 		}
+*/
 
+		@Override
 		public MContractorSkill attachGroups() throws ReqdInfoMissingException {
 			Set<MGroupsManager.MGroup> mGroups = MModels.fetchContractorGroupsManager().copyGroups(skill.getGroups());
 			this.groups = mGroups;
 			return this;
 		}
 
+		@Override
 		public MContractorSkill evalEmployeeCount() throws ReqdInfoMissingException {
 			MContractorSkillsManager mContractorSkillsManager = MModels.fetchContractorSkillManager();
 			MContractor mContractor = mContractorSkillsManager.getmContractor();

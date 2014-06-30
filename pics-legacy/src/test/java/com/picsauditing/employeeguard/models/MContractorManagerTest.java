@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.models;
 
+import com.picsauditing.employeeguard.models.operations.MOperations;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,12 +33,9 @@ public class MContractorManagerTest extends MManagersTest {
 	public void testCopyContractor() throws Exception {
 		requestMap.put(MModels.MMODELS, MModels.newMModels());
 
-		List<MOperations> mSkillsOperations = new ArrayList<>();mSkillsOperations.add(MOperations.COPY_ID);mSkillsOperations.add(MOperations.COPY_NAME);
-		MModels.fetchContractorSkillManager().setmOperations(mSkillsOperations);
+		MModels.fetchContractorSkillManager().operations().copyId().copyName();
 
-
-		List<MOperations> mContractorOperations = new ArrayList<>();mContractorOperations.add(MOperations.COPY_ID);mContractorOperations.add(MOperations.COPY_NAME);mContractorOperations.add(MOperations.ATTACH_REQD_SKILLS);
-		MModels.fetchContractorManager().setmOperations(mContractorOperations);
+		MModels.fetchContractorManager().operations().copyId().copyName().attachSkills();
 
 		MModels.fetchContractorManager().attachReqdSkills(contractorAccountId, egTestDataUtil.buildNewFakeContractorSkillsMixedBag());
 		MModels.fetchContractorManager().copyContractor(contractorAccountId, accountModel);
