@@ -14,10 +14,6 @@
     </s:param>
 </s:include>
 
-
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
-
 <tw:form formName="employee_skill_search" action="${employee_skill_list_url}" class="search-query" role="form">
     <fieldset>
         <div class="search-wrapper col-md-4">

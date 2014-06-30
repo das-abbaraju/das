@@ -15,9 +15,6 @@
     </s:param>
 </s:include>
 
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
-
 <s:if test="!groups.isEmpty()">
     <tw:form formName="contractor_group_search" action="${contractor_group_list_url}" class="search-query" role="form">
     <fieldset>

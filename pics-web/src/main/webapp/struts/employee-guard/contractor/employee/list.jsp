@@ -16,9 +16,6 @@
     </s:param>
 </s:include>
 
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
-
 <s:if test="employees.size() > 0">
     <tw:form formName="contractor_employee_search" action="${contractor_employee_list_url}" class="search-query"
              role="form">

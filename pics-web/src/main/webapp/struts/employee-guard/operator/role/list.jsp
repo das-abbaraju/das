@@ -21,8 +21,6 @@
     </s:include>
 </s:else>
 
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
     <s:if test="!roles.isEmpty()">
         <tw:form formName="operator_role_search" action="${operator_role_list_url}" class="search-query" role="form">
             <fieldset>

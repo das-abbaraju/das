@@ -104,9 +104,6 @@
     </section>
 </s:else>
 
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
-
 <s:if test="!skills.isEmpty()">
     <tw:form formName="operator_skill_search" action="${operator_skill_list_url}" class="search-query" role="form">
         <fieldset>
