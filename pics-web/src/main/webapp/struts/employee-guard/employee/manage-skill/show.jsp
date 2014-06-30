@@ -60,17 +60,4 @@
             </div>
         </div>
     </div>
-        <%-- if training --%>
-<%--         <s:if test="skillDocumentForm.skillInfo.skillType.training">
-            <s:include value="/struts/employee-guard/employee/manage-skill/_training-form.jsp" />
-        </s:if>
-        <s:else>
-            <s:include value="/struts/employee-guard/employee/manage-skill/_certification-form.jsp" />
-        </s:else> --%>
-
-    <%--<div class="col-md-4 well well-required-for">Required For:
-        <ul>
-            <li>PICS</li>
-        </ul>
-    </div>--%>
 </div>
