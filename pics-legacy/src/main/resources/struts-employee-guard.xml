@@ -82,7 +82,6 @@
             <result name="name-skills-form">/struts/employee-guard/operator/project/_name-skills-form.jsp</result>
             <result name="job-roles-form">/struts/employee-guard/operator/project/_job-roles-form.jsp</result>
             <result name="companies-form">/struts/employee-guard/operator/project/_companies-requested-form.jsp</result>
-            <result name="list">/struts/employee-guard/operator/project/list.jsp</result>
             <result name="show">/struts/employee-guard/operator/project/show.jsp</result>
         </action>
 
