@@ -887,7 +887,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 						&& !permissions.getCorporateParent().contains(id)) {
 					iterator.remove();
 				}
-                if (contractor.getOperator(id) == null) {
+                else if (contractor.getOperator(id) == null) {
                     iterator.remove();
                 }
 			}
