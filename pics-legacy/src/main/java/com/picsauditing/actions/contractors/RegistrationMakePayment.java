@@ -180,6 +180,9 @@ public class RegistrationMakePayment extends RegistrationAction {
 			if (contractor.getBalance() == null) {
 				contractor.setBalance(BigDecimal.ZERO);
 			}
+
+            addNote(contractor, "Free Membership Activation", NoteCategory.Billing, 1100);
+
 			contractorAccountDao.save(contractor);
 		} else {
 			if (invoice != null && invoice.getTotalAmount().compareTo(BigDecimal.ZERO) > 0) {
@@ -284,11 +287,6 @@ public class RegistrationMakePayment extends RegistrationAction {
         contractorAccountDao.save(contractor);
 
 		closeRelatedRegistrationRequests();
-		if (contractor.getStatus().equals(AccountStatus.Requested)) {
-			contractor.setStatus(AccountStatus.Active);
-			contractorAccountDao.save(contractor);
-		}
-
         updateWorkStatusForAutoApproveRelationships();
 
 		// Reload permissions for this user so they view just their country
