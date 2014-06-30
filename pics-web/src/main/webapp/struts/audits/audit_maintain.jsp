@@ -52,7 +52,7 @@
         <fieldset class="form submit">
             <div>
                 <input type="submit" class="picsbutton positive" name="button" value="Save"/>
-                <s:if test="permissions.hasPermission(OpPerms.AuditEdit,OpType.Delete) || permissions.hasPermission(OpPerms.ClientAuditEdit,OpType.Delete)">
+                <s:if test="permissions.hasPermission(@com.picsauditing.access.OpPerms@AuditEdit,@com.picsauditing.access.OpType@Delete) || permissions.hasPermission(@com.picsauditing.access.OpPerms@ClientAuditEdit,@com.picsauditing.access.OpType@Delete)">
                     <input type="submit" class="picsbutton negative" name="button" value="Delete" onclick="return confirm('Are you sure you want to permanently remove this audit?');"/>
                 </s:if>
             </div>
