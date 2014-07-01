@@ -9175,78 +9175,79 @@ body {
   border-radius: 15px;
   height: 25px !important;
   padding: 0px 7px; }
-/* line 321, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_share .share-searchbox-list {
+/* line 320, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+#report_share .icon-wrench {
+  margin-right: 5px; }
+
+/* line 326, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+.site-menu-search-list {
   border: 1px solid #a7a7a7;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
   -o-border-radius: 5px;
   border-radius: 5px; }
-  /* line 326, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list li:first-child {
+  /* line 331, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .site-menu-search-list li:first-child {
     -moz-border-radius-topleft: 4px;
     -webkit-border-top-left-radius: 4px;
     border-top-left-radius: 4px;
     -moz-border-radius-topright: 4px;
     -webkit-border-top-right-radius: 4px;
     border-top-right-radius: 4px; }
-  /* line 332, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list li:last-child {
+  /* line 337, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .site-menu-search-list li:last-child {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-bottom-left-radius: 4px;
     border-bottom-left-radius: 4px;
     -moz-border-radius-bottomright: 4px;
     -webkit-border-bottom-right-radius: 4px;
     border-bottom-right-radius: 4px; }
-  /* line 338, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list .even {
-    background: #f1f1f2; }
   /* line 343, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list .x-boundlist-item {
-    border: 1px solid transparent; }
+  .site-menu-search-list .even {
+    background: #f1f1f2; }
   /* line 348, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list .x-boundlist-item-over {
-    background: #a84d10;
-    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #c66603), color-stop(100%, #a84d10));
-    background-image: -webkit-linear-gradient(#c66603, #a84d10);
-    background-image: -moz-linear-gradient(#c66603, #a84d10);
-    background-image: -o-linear-gradient(#c66603, #a84d10);
-    background-image: linear-gradient(#c66603, #a84d10);
+  .site-menu-search-list .x-boundlist-item {
+    border: 1px solid transparent; }
+  /* line 353, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .site-menu-search-list .x-boundlist-item-over {
+    background: #2980b9;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #3498db), color-stop(100%, #2980b9));
+    background-image: -webkit-linear-gradient(#3498db, #2980b9);
+    background-image: -moz-linear-gradient(#3498db, #2980b9);
+    background-image: -o-linear-gradient(#3498db, #2980b9);
+    background-image: linear-gradient(#3498db, #2980b9);
     border: 0px;
-    border-bottom: 1px solid #a84d10;
-    border-top: 1px solid #c66603;
+    border-bottom: 1px solid #2980b9;
+    border-top: 1px solid #3498db;
     color: white; }
-  /* line 358, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list .search-item {
+  /* line 363, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .site-menu-search-list .search-item {
     line-height: 15px;
     overflow: hidden;
     padding: 5px 15px; }
-    /* line 364, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-    #report_share .share-searchbox-list .search-item div {
-      clear: both; }
     /* line 369, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-    #report_share .share-searchbox-list .search-item em {
+    .site-menu-search-list .search-item div {
+      clear: both; }
+    /* line 374, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    .site-menu-search-list .search-item em {
       font-weight: bold; }
-    /* line 375, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-    #report_share .share-searchbox-list .search-item .name,
-    #report_share .share-searchbox-list .search-item .location {
+    /* line 380, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    .site-menu-search-list .search-item .name,
+    .site-menu-search-list .search-item .location {
       float: left;
       width: 175px; }
-    /* line 381, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-    #report_share .share-searchbox-list .search-item .id {
-      float: right; }
     /* line 386, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-    #report_share .share-searchbox-list .search-item .type {
+    .site-menu-search-list .search-item .id {
+      float: right; }
+    /* line 391, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+    .site-menu-search-list .search-item .type {
       float: right;
       font-style: italic; }
-  /* line 393, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-  #report_share .share-searchbox-list .more-results {
+  /* line 398, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
+  .site-menu-search-list .more-results {
     color: #333333;
     font-weight: bold; }
-/* line 399, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
-#report_share .icon-wrench {
-  margin-right: 5px; }
 
 /* line 407, ../sass/my-ext-theme/report/setting/_report-setting-modal.scss */
 #report_share_no_permission p {
