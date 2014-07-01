@@ -174,23 +174,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
         return REDIRECT;
     }
 
-<<<<<<< HEAD
     public String save() {
-=======
-    public String save() throws Exception {
-        if (operator.isCorporate()) {
-            if (!isCanEditCorp()) {
-                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageCorporate"));
-                return REDIRECT;
-            }
-        } else {
-            if (!isCanEditOp()) {
-                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageOperator"));
-                return REDIRECT;
-            }
-        }
-
->>>>>>> aac8d7d... PICS-15365 Changed error type to do a rollback
         if (operator.getId() == 0) {
             operator.setType(getCreateType());
         }
