@@ -262,6 +262,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 				contractor.setBalance(BigDecimal.ZERO);
 			}
 
+            addNote(contractor, "Free Membership Activation", NoteCategory.Billing, 1100);
+
 			contractorAccountDao.save(contractor);
 		}
 
