@@ -404,7 +404,7 @@ footer .footer-menu a {
 .registration-form label,
 .client-site-form label,
 .service-evaluation-form label,
-.make-payment-form label,
+#payment_method_wrapper,
 .provide-ssip-details-later-message
 	{
 	color: #5d5d5d;
@@ -863,10 +863,6 @@ footer .footer-menu a {
 }
 
 /* make payment specific */
-.make-payment .membership {
-	margin-bottom: 30px;
-}
-
 .make-payment .membership,.make-payment .membership-help {
 	float: left;
 }
@@ -942,23 +938,6 @@ footer .footer-menu a {
 	text-decoration: none;
 }
 
-.make-payment .policy #contractor_agreement {
-    border: 1px solid #cccccc;
-    margin: 20px 0;
-    padding: 20px;
-    text-align: left;
-    font-size: 16px;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
-
-.make-payment .policy #contractor_agreement input {
-    margin-right: 5px;
-}
-
-.make-payment .policy #contractor_agreement a {
-    font-size: 16px;
-}
-
 .make-payment .membership-help {
 	background: #eef6fb;
 	width: 330px;
@@ -1018,11 +997,6 @@ footer .footer-menu a {
 	position: relative;
 }
 
-.make-payment-form .actions
-{
-	padding-left: 110px;
-}
-
 .make-payment-form .actions input.btn {
 	float: left;
 	padding: 10px 20px 12px;
@@ -1077,24 +1051,36 @@ footer .footer-menu a {
 	margin: -250px 0 0 -250px !important;
 }
 
-#credit-card-payment-method {
-	float: left;
+.make-payment #payment_method_wrapper {
+	font-size: 14px;
+	height: 400px;
 }
 
-#credit-card-payment-method #submit_payment_button,
-#credit-card-payment-method .brain-tree-badge{
-    margin: 20px 10px 30px 0;
+.make-payment input#pro_forma {
+	margin-left: 30px;
 }
 
-#or {
-	float: left;
-	line-height: 200px;
-	margin: 0px 50px 0px 50px;
+.make-payment  #credit_card_form,
+.make-payment  #pro_forma_form {
+	margin-top: 20px;
+	width: 560px;
 }
 
-#pro-forma-button {
-	float: left;
-	margin-top: 88px;
+.make-payment #pro_forma_form {
+	display: none;
+}
+
+.make-payment #contractor_agreement {
+	margin: 40px 0 20px;
+}
+
+.make-payment #contractor_agreement input {
+	height: auto;
+	margin-right: 5px;
+}
+
+.make-payment #contractor_agreement a {
+	color: #7f96a7;
 }
 
 #ccexp {

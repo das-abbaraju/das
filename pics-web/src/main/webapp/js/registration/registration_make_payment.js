@@ -6,7 +6,9 @@
 
                     addFieldHelp();
 
-                    $('#accept_contractor_agreement').on('change', togglePaymentButtons);
+                    $('.accept_contractor_agreement').on('change', togglePaymentButtons);
+
+                    $('input[name=payment_method]').on('change', changePaymentMethod);
                 }
             }
 
@@ -19,6 +21,16 @@
                     enableButtons();
                 } else {
                     disableButtons();
+                }
+            }
+
+            function changePaymentMethod (event) {
+                var selected_method = $(event.target).attr('id');
+
+                if (selected_method == 'credit_card') {
+                    showCreditCardForm();
+                } else if (selected_method == 'pro_forma') {
+                    showProFormaForm();
                 }
             }
 
@@ -50,13 +62,25 @@
             }
 
             function enableButtons() {
+                $('.accept_contractor_agreement').attr('checked', true);
                 $('#submit_payment_button').removeAttr('disabled');
-                $('#pro-forma-button').removeAttr('disabled');
+                $('#pro_forma_button').removeAttr('disabled');
             }
 
             function disableButtons() {
+                $('.accept_contractor_agreement').attr('checked', false);
                 $('#submit_payment_button').attr('disabled', 'disabled');
-                $('#pro-forma-button').attr('disabled', 'disabled');
+                $('#pro_forma_button').attr('disabled', 'disabled');
+            }
+
+            function showCreditCardForm() {
+                $('#credit_card_form').show();
+                $('#pro_forma_form').hide();
+            }
+
+            function showProFormaForm() {
+                $('#pro_forma_form').show();
+                $('#credit_card_form').hide();
             }
 
             return {
