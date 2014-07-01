@@ -44,8 +44,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
-	private NoteDAO noteDAO;
-	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private FeatureToggle featureToggle;
@@ -747,7 +745,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		note.setSummary("set PQF status to resubmit to revisit " + eventType.toString() + " section");
 		note.setNoteCategory(NoteCategory.Audits);
 		note.setViewableById(Account.PicsID);
-		noteDAO.save(note);
+		noteDao.save(note);
 	}
 
 	private void changeCAOStatuses(EventType eventType, ContractorAudit pqf) {
