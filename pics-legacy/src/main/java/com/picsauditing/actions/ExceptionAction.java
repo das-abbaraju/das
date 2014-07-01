@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.ErrorLog;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.GridSender;
 import com.picsauditing.util.EmailAddressUtils;
@@ -40,8 +39,6 @@ public class ExceptionAction extends PicsActionSupport {
 	public String execute() {
 		try {
 			loadPermissions();
-
-			tryToSaveExceptionToDatabase();
 
 			String email = buildEmail(false);
 			sendEmail(email);
@@ -229,18 +226,5 @@ public class ExceptionAction extends PicsActionSupport {
 				message = exception.toString();
 		}
 		return message;
-	}
-
-	private void tryToSaveExceptionToDatabase() {
-		try {
-			ErrorLog error = new ErrorLog();
-			error.setAuditColumns(permissions);
-			error.setCategory(getException().getClass().getSimpleName());
-			error.setMessage(getExceptionStack());
-			error.setPriority(getPriority());
-			error.setStatus("Pending");
-			dao.save(error);
-		} catch (Exception e) {
-		}
 	}
 }

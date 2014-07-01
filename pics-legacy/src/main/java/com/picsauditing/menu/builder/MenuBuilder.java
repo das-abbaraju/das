@@ -311,7 +311,6 @@ public final class MenuBuilder {
 		MenuComponent loggingSubmenu = devMenu.addChild(getText("menu.Dev.Logging"));
 		loggingSubmenu.addChild(getText("menu.Dev.SystemLogging"), "LoggerConfig.action", "system_logging");
 		loggingSubmenu.addChild(getText("menu.Dev.PageLogging"), "PageLogger.action", "page_logging");
-		loggingSubmenu.addChild(getText("menu.Exceptions"), "ReportExceptions.action", "report_exceptions");
 
 		MenuComponent cacheSubmenu = devMenu.addChild(getText("menu.Dev.Caching"));
 		cacheSubmenu.addChild(getText("menu.Clear"), "ClearCache.action", "clear_cache");
@@ -791,7 +790,6 @@ public final class MenuBuilder {
 		}
 
 		// From dev menu
-		menu.addChild("Exception Log", "ReportExceptions.action", "exception_log");
 		menu.addChild("Batch Insert Translations", "BatchTranslations.action", "batch_insert_trans");
 
 		// From user menu
