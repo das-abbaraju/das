@@ -177,11 +177,13 @@ public class FacilitiesEdit extends OperatorActionSupport {
     public String save() throws Exception {
         if (operator.isCorporate()) {
             if (!isCanEditCorp()) {
-                throw new NoRightsException(OpPerms.ManageCorporate, OpType.Edit);
+                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageCorporate"));
+                return REDIRECT;
             }
         } else {
             if (!isCanEditOp()) {
-                throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageOperator"));
+                return REDIRECT;
             }
         }
 
