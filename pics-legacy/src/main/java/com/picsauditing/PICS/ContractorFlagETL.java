@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+@Deprecated
 public class ContractorFlagETL {
 	@Autowired
 	private FlagCriteriaDAO flagCriteriaDao;
@@ -21,6 +22,7 @@ public class ContractorFlagETL {
 
 	private static final Logger logger = LoggerFactory.getLogger(ContractorFlagETL.class);
 
+    @Deprecated
 	public void calculate(ContractorAccount contractor) {
 		// get the information necessary to perform the flagging calculations
 		Set<FlagCriteria> distinctFlagCriteria = flagCriteriaDao.getDistinctOperatorFlagCriteria();

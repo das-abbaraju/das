@@ -51,8 +51,6 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private AuditBuilder auditBuilder;
 	@Autowired
-	private ContractorFlagETL contractorFlagETL;
-	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private UserAssignmentDAO userAssignmentDAO;
@@ -550,7 +548,7 @@ public class ContractorCron extends PicsActionSupport {
 			return;
 		}
 		logger.trace("ContractorCron starting ContractorETL");
-		contractorFlagETL.calculate(contractor);
+        flagCalculatorFactory.runContractorFlagETL(contractor);
 	}
 
 	private void runContractorScore(ContractorAccount contractor) {
