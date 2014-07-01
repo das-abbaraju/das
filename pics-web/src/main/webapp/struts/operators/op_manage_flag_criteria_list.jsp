@@ -87,7 +87,7 @@
 										<span class="editable">
 											<s:radio
 												list="#{'Yes':getTextNullSafe('YesNo.Yes'),'No':getTextNullSafe('YesNo.No')}"
-												value="criteriaValue()"
+                                                key="criteriaValue()"
 												onkeyup="wait(this.parentNode.parentNode.id, this.value, 500);"
 												theme="pics"
 												cssClass="inline"
