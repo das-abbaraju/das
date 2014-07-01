@@ -242,5 +242,6 @@
     <!-- 7.2.18 -->
     <include file="./liquibase/2014/Q2/mdo55_PICS-14135_bulk_approval_suncor_policies.sql"/>
     <include file="./liquibase/2014/Q2/mdo56_PICS-15512.sql"/>
+    <include file="./liquibase/2014/Q2dabbaraju1_US1023_TA2378_Add_qbListCHFID_Column_On_Accounts.sql"/>
 
 </databaseChangeLog>
