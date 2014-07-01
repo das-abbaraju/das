@@ -1,14 +1,13 @@
 package com.picsauditing.actions.chart;
 
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.picsauditing.PICS.DateBean;
+import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.util.chart.Category;
 import com.picsauditing.util.comparators.CalendarMonthAsStringComparator;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.Map;
+import java.util.TreeMap;
 
 
 public class OperatorFlagYearHistory extends OperatorFlagHistory {
@@ -17,12 +16,17 @@ public class OperatorFlagYearHistory extends OperatorFlagHistory {
 	
 	@Override
 	protected String buildSql() throws Exception {
+        String statusWhereClause = "";
+        if (permissions.getAccountStatus() != AccountStatus.Demo) {
+            statusWhereClause = "and a.status <> 'Demo'\n";
+        }
+
         return "select DATE_FORMAT(tmp.maxDate, '%b') as 'label', tmp.flag as 'series', count(tmp.conID) as 'value'\n" +
                 "from (select fa.conID, fa.flag, DATE_FORMAT(fa.creationDate, '%b') as 'label', max(fa.creationDate) as maxDate\n" +
                 "from flag_archive fa\n" +
                 "join accounts a on a.id = fa.conID\n" +
                 "where fa.opID = " + permissions.getAccountId() + "\n" +
-                "and a.status <> 'Demo'\n" +
+                statusWhereClause +
                 "and fa.flag in ('Green', 'Amber', 'Red')\n" +
                 "group by fa.conID, label\n" +
                 ") as tmp\n" +
