@@ -1,32 +1,32 @@
 <div class="contractor-dashboard" ng-controller="contractorDashboardCtrl">
     <div class="container">
-        <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
+        <pagetitle title="EmployeeGUARD" subtitle="{{ 'CONTRACTOR.DASHBOARD.PAGE_SUBTITLE' | translate }}"></pagetitle>
 
         <div class="row">
             <div class="col-md-3">
                 <ul class="nav nav-pills nav-stacked">
                     <li>
                         <a href="/employee-guard/contractor/employee" target="_self">
-                            <i class="icon-user icon-large"></i>Employees
+                            <i class="icon-user icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEES' | translate }}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/contractor/project" target="_self">
-                            <i class="icon-map-marker icon-large"></i>Employee Assignments
+                            <i class="icon-map-marker icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEE_ASSIGNMENTS' | translate }}
                         </a>
                     </li>
                     <li class="nav-divider"></li>
                     <li>
-                        <span class="nav-title">Training Tracker</span>
+                        <span class="nav-title" translate>{{ 'CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.TRAINING_TRACKER'}}</span>
                     </li>
                     <li>
                         <a href="/employee-guard/contractor/employee-group" target="_self">
-                            <i class="icon-group icon-large"></i>Employee Groups
+                            <i class="icon-group icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEE_GROUPS' | translate }}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/contractor/skill" target="_self">
-                            <i class="icon-certificate icon-large"></i>Skills
+                            <i class="icon-certificate icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.SKILLS' | translate }}
                         </a>
                     </li>
                 </ul>
@@ -34,10 +34,10 @@
             <div class="col-md-9">
                 <section class="employee-guard-section chart-section">
                     <h1>
-                        <i class="icon-map-marker icon-large"></i>Employee Assignment Status
+                        <i class="icon-map-marker icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.TITLE' | translate }}
                     </h1>
                     <div class="content">
-                        <div class="row" ng-show="employees">
+                        <div class="row" ng-if="employees > 0">
                             <div class="col-md-4">
                                 <div class="current-assignments">
                                     <div class="row success">
@@ -78,16 +78,17 @@
                                 </div>
                             </div>
                         </div>
-
-                        <div class="row" ng-show="employees.length <= 0">
+                        <div class="row" ng-if="employees <= 0">
                             <div class="col-md-8 col-md-offset-2">
                                 <div class="alert alert-info">
-                                    <h4>No Employees Assigned</h4>
-
-                                    <p>Once you've added your employees, assign them to Job Roles at sites and projects by going to <a href="/employee-guard/contractor/project" target="_self">Employee Assignments</a>. The status of all your employee's assignments will be shown in this section so you can monitor how they're doing.</p>
-
+                                    <h4 translate>{{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.TITLE' }}</h4>
                                     <p>
-                                        <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                                        {{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.MESSAGE' | translate }}
+                                        <a href="/employee-guard/contractor/project" target="_self" translate>{{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.LINK' }}</a>.
+                                        {{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.MESSAGE2' | translate}}
+                                    </p>
+                                    <p>
+                                        <a href="#"><i class="icon-question-sign"></i> {{ 'CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.LEARN_MORE' | translate}}</a>
                                     </p>
                                 </div>
                             </div>
@@ -97,7 +98,7 @@
 
                 <section class="employee-guard-section contractor-dashboard">
                     <h1>
-                        <i class="icon-exclamation icon-large"></i>Status Alerts
+                        <i class="icon-exclamation icon-large"></i>{{ 'CONTRACTOR.DASHBOARD.STATUS_ALERTS.TITLE' | translate }}
                     </h1>
                     <div class="content">
                         <div class="row">
@@ -105,7 +106,7 @@
                                 <div class="tile primary">
                                     <i class="icon-envelope"></i>
                                     <p class="title">{{ status.requested }}</p>
-                                    <p class="subtitle">Requested Employees</p>
+                                    <p class="subtitle" translate>{{ 'CONTRACTOR.DASHBOARD.STATUS_ALERTS.REQUESTED_EMPLOYEES' }}</p>
                                 </div>
                             </div>
                         </div>

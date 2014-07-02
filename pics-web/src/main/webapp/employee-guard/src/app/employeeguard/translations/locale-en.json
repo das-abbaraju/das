@@ -1,3 +1,36 @@
 {
-    "EMPLOYEE_ASSIGNMENT_STATUS": "Hi there"
+    "CONTRACTOR": {
+        "DASHBOARD": {
+            "PAGE_TITLE": "EmployeeGUARD",
+            "PAGE_SUBTITLE": "Summary",
+            "SECONDARY_NAV_MENU": {
+                "TRAINING_TRACKER": "TRAINING TRACKER",
+                "EMPLOYEES": "Employees",
+                "EMPLOYEE_ASSIGNMENTS": "Employeee Assignments",
+                "EMPLOYEE_GROUPS": "Employee Groups",
+                "SKILLS": "Skills"
+            },
+            "EMPLOYEE_ASSIGNMENT_STATUS": {
+                "TITLE": "Employee Assignment Status",
+                "NO_EMPLOYEES": {
+                    "TITLE": "No Employees Assigned",
+                    "MESSAGE": "Once you've added your employees, assign them to Job Roles at sites and projects by going to",
+                    "MESSAGE2": "The status of all your employee's assignments will be shown in this seciton so you can monitor how they're doing.",
+                    "LINK": "Employee Assignments",
+                    "LEARN_MORE": "Learn more about Employee Assignments"
+                }
+            },
+            "STATUS_ALERTS": {
+                "TITLE": "Status Alerts",
+                "REQUESTED_EMPLOYEES": "Requested Employees"
+            }
+        }
+    },
+    "FEEDBACK": {
+        "TITLE": "Tell us what you think!",
+        "PLACEHOLDER": "Let us know what you think or what issues you've found.",
+        "SEND_FEEDBACK": "Send Feedback",
+        "SENT": "Feedback Sent",
+        "MESSAGE": "Thanks for the heads up! We really appreciate the feedback."
+    }
 }
