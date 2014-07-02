@@ -5,9 +5,12 @@
 
 -- First let's correct the name of the qbListCHFID column to use the two-letter country code (not the three-letter code)
 -- and then move the column to be immediately after the other qbList___ columns
-ALTER TABLE accounts
-CHANGE COLUMN qbListCHFID qbListCHID VARCHAR(25) NULL AFTER qbListEUID;
 
+-- Chris Franks commented out this because old name needed due to shared DB between beta and live envs
+-- ALTER TABLE accounts
+-- CHANGE COLUMN qbListCHFID qbListCHID VARCHAR(25) NULL AFTER qbListEUID;
+alter table accounts
+add column qbListCHID  VARCHAR(25) NULL AFTER qbListEUID;
 
 --  Now, add new column qbListPLID on Accounts table for new PLN currency, after qbListCHID
 alter table accounts
