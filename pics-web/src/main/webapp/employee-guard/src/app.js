@@ -13,6 +13,8 @@ angular.module('EmployeeGUARD', [
         suffix: '.json'
     });
 
+    $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
+
     // load 'en' table on startup
-    $translateProvider.preferredLanguage('de');
+    $translateProvider.preferredLanguage('en');
 });
