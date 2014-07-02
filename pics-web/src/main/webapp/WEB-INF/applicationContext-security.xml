@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:security="http://www.springframework.org/schema/security"
+             xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             
+             xsi:schemaLocation="http://www.springframework.org/schema/beans
+                                 http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+                                 http://www.springframework.org/schema/security
+                                 http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+
+    <!-- LDAP server details -->
+    <security:authentication-manager>
+        <security:authentication-provider ref="ldapActiveDirectoryAuthProvider" />
+    </security:authentication-manager>
+
+    <!--
+     <beans:bean id="grantedAuthoritiesMapper" class="com.picsauditing.security.ActiveDirectoryGrantedAuthoritiesMapper"/>
+     -->
+
+    <beans:bean id="ldapActiveDirectoryAuthProvider" class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
+        <beans:constructor-arg value="pics.corp" />
+        <beans:constructor-arg value="ldap://gold.pics.corp:389/" />
+     <!--   <beans:property name="authoritiesMapper" ref="grantedAuthoritiesMapper" /> -->
+        <beans:property name="useAuthenticationRequestCredentials" value="true" />
+        <beans:property name="convertSubErrorCodesToExceptions" value="true" />
+    </beans:bean>
+
+</beans:beans>

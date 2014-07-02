@@ -31,6 +31,9 @@ import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -45,7 +48,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.*;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_PASSWORD_RESET;
+import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
 
 /**
  * Populate the permissions object in session with appropriate login credentials
@@ -77,6 +81,9 @@ public class LoginController extends PicsActionSupport {
 	private ProfileEntityService profileEntityService;
 	@Autowired
 	private UserService userService;
+
+    @Autowired
+    private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
 	private User user;
 	private String email;
@@ -358,6 +365,8 @@ public class LoginController extends PicsActionSupport {
 			return ERROR;
 		}
 
+
+
 		try {
 			AppUser appUser = appUserService.findByUsername(username);
 			if (appUser == null) {
@@ -422,26 +431,45 @@ public class LoginController extends PicsActionSupport {
     }
 
 	private String doLogin(LoginContext loginContext) throws Exception {
-		user = loginContext.getUser();
-		permissions = permissionBuilder.login(user);
-		ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
-		addClientSessionCookieToResponse(rememberMe, switchToUser);
+        boolean result = adLDAPLoginAuthentication();
+        if(result){
+            return setRedirectUrlPostLogin();
+        }
+        else {
+            user = loginContext.getUser();
+            permissions = permissionBuilder.login(user);
+            ActionContext.getContext().getSession().put(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 
-		userService.updateUserForSuccessfulLogin(user);
+            addClientSessionCookieToResponse(rememberMe, switchToUser);
 
-		setBetaTestingCookie();
-		logCredentialLoginAttempt(user);
+            userService.updateUserForSuccessfulLogin(user);
 
-		if (permissions.belongsToGroups() || permissions.isContractor()) {
-			return setRedirectUrlPostLogin();
-		} else {
-			addActionMessage(getText("Login.NoGroupOrPermission"));
-			return super.setUrlForRedirect(LOGIN_ACTION_BUTTON_LOGOUT);
-		}
+            setBetaTestingCookie();
+            logCredentialLoginAttempt(user);
+
+            if (permissions.belongsToGroups() || permissions.isContractor()) {
+                return setRedirectUrlPostLogin();
+            } else {
+                addActionMessage(getText("Login.NoGroupOrPermission"));
+                return super.setUrlForRedirect(LOGIN_ACTION_BUTTON_LOGOUT);
+            }
+        }
 	}
 
-	private boolean logAndMessageError(String error) throws Exception {
+    private boolean adLDAPLoginAuthentication() {
+        ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
+        String ldapUser = username + "@PICS.CORP";
+        Authentication result = ldapActiveDirectoryAuthProvider.authenticate(
+                new UsernamePasswordAuthenticationToken(ldapUser, password));
+
+        if(result.getAuthorities().size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean logAndMessageError(String error) throws Exception {
 		if (StringUtils.isNotEmpty(error)) {
 			logCredentialLoginAttempt(user);
 			addActionError(error);

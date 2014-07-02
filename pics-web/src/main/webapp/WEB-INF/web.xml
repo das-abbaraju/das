@@ -11,6 +11,14 @@
         <param-name>FTP_DIR</param-name>
         <param-value>P:/Development/ftp_dir</param-value>
     </context-param>
+    <context-param>
+        <param-name>contextconfigLocation</param-name>
+        <param-value>classpath:application-Context.xml,
+            classpath:applicationContext-security.xml
+        </param-value>
+
+    </context-param>
+
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
@@ -57,6 +65,22 @@
             org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter
         </filter-class>
     </filter>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--<filter>-->
+        <!--<filter-name>springSecurityFilterChain</filter-name>-->
+        <!--<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>-->
+    <!--</filter>-->
+    <!--<filter-mapping>-->
+        <!--<filter-name>springSecurityFilterChain</filter-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</filter-mapping>-->
     <filter-mapping>
         <filter-name>picsMetrics</filter-name>
         <url-pattern>/*</url-pattern>
@@ -97,6 +121,7 @@
         <filter-name>struts-execute</filter-name>
         <url-pattern>/users/*</url-pattern>
     </filter-mapping>
+
 
     <error-page>
         <error-code>404</error-code>
