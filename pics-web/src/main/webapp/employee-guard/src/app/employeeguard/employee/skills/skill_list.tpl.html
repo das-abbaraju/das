@@ -1,12 +1,12 @@
 <div ng-controller="employeeSkillListCtrl" class="employee-skills-page">
     <div class="container">
-        <pagetitle title="Skills"></pagetitle>
+        <pagetitle title="{{ 'EMPLOYEE.SKILLS.PAGE_TITLE' | translate }}"></pagetitle>
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/employee/dashboard">Dashboard</a></li>
-                        <li class="active">Skills</li>
+                        <li><a href="/employee-guard/employee/dashboard" translate="EMPLOYEE.SKILLS.BREADCRUMB.DASHBOARD"></a></li>
+                        <li class="active" translate="EMPLOYEE.SKILLS.BREADCRUMB.SKILLS"></li>
                     </ol>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation">
                         <ul class="nav" role="menu">
                             <li ng-class="{active: selectedMenuItem == 'all'}">
-                                <a href="/employee-guard/employee/skills">All
+                                <a href="/employee-guard/employee/skills" translate="EMPLOYEE.SKILLS.SECONDARY_NAV_MENU.ALL">
                                 {{ skillModel }}
                                     <skillstatusicon status="{{ overallStatus }}" class="pull-right"></skillstatusicon>
                                 </a>

@@ -26,6 +26,38 @@
             }
         }
     },
+    "EMPLOYEE": {
+        "DASHBOARD": {
+            "SECONDARY_NAV_MENU": {
+                "PROFILE": "Profile",
+                "SKILLS": "Skills",
+                "MY_FILES": "My Files"
+            },
+            "ASSIGNMENT_STATUS": {
+                "TITLE": "Assignment Status",
+                "JOB_ROLE": "Job {NUMBER, select, 1{Role} other{Roles}}",
+                "EMPLOYEE_GROUP": "Employee {NUMBER, select, 1{Group} other{Groups}}",
+                "NO_ASSIGNMENTS": {
+                    "TITLE": "No Assignments",
+                    "MESSAGE": "Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.",
+                    "MESSAGE2": "You can get a head start by adding certificates or other skill proof ahead of time. Just go to",
+                    "LINK": "My Files",
+                    "MESSAGE3": "and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!",
+                    "LEARN_MORE": "Learn more about Assignments"
+                }
+            }
+        },
+        "SKILLS": {
+            "PAGE_TITLE": "Skills",
+            "BREADCRUMB": {
+                "DASHBOARD": "Dashboard",
+                "SKILLS": "Skills"
+            },
+            "SECONDARY_NAV_MENU": {
+                "ALL": "All"
+            }
+        }
+    },
     "FEEDBACK": {
         "TITLE": "Tell us what you think!",
         "PLACEHOLDER": "Let us know what you think or what issues you've found.",

@@ -7,17 +7,17 @@
                 <ul class="nav nav-pills nav-stacked">
                     <li>
                         <a href="/employee-guard/employee/profile/{{ employee.id }}" target="_self">
-                            <i class="icon-user icon-large"></i>Profile
+                            <i class="icon-user icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.PROFILE' | translate }}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/employee/skills" target="_self">
-                            <i class="icon-certificate icon-large"></i>Skills
+                            <i class="icon-certificate icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.SKILLS' | translate }}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/employee/file" target="_self">
-                            <i class="icon-picture icon-large"></i>My Files
+                            <i class="icon-picture icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.MY_FILES' | translate }}
                         </a>
                     </li>
                 </ul>
@@ -25,34 +25,37 @@
             <div class="col-md-9">
                 <section class="employee-guard-section">
                     <h1>
-                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                        <i class="icon-map-marker icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.TITLE' | translate }}
                     </h1>
 
                     <div class="content clearfix">
-                        <div ng-show="assignments" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
+                        <div ng-if="assignments.length" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
                             <div class="tile" ng-class="getSkillClass(assignment.status)">
                                 <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
                                 <p class="title">{{ assignment.name }}</p>
-
-
-                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }} Employee
-                                    <ng-pluralize count="assignment.groups" when="{'1': 'Group','other': 'Groups'}" />
+                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }}
+                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUP' | translate:"{ NUMBER: assignment.groups}":"messageformat" }}
                                 </p>
-                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
+                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }}
+                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLE' | translate:"{ NUMBER: assignment.roles}":"messageformat" }}
+                                </p>
                                 <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
                             </div>
                         </div>
 
-                        <div ng-show="!assignments.length" class="col-md-8 col-md-offset-2">
+                        <div ng-if="!assignments.length" class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Assignments</h4>
+                                <h4 translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE"></h4>
 
-                                <p>Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.</p>
-
-                                <p>You can get a head start by adding certificates or other skill proof ahead of time. Just go to <a href="/employee-guard/employee/file" target="_self">My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
+                                <p translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
 
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE2' | translate }}
+                                    <a translate href="/employee-guard/employee/file" target="_self">{{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LINK' }}</a>
+                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE3' | translate }}
+                                </p>
+                                <p>
+                                    <a href="#"><i class="icon-question-sign"></i> {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE' | translate }}</a>
                                 </p>
                             </div>
                         </div>
