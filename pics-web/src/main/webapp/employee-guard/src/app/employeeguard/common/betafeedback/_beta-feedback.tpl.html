@@ -1,18 +1,18 @@
 <section class="employee-guard-section-full" ng-controller="betaFeedbackCtrl">
     <h1>
-        <i class="icon-bullhorn icon-large"></i>Tell us what you think!
+        <i class="icon-bullhorn icon-large"></i>{{ 'FEEDBACK.TITLE' | translate }}
     </h1>
     <div class="content">
         <form name="feedBackForm" class="form-horizontal" ng-hide="feedbackSent" ng-init="feedbackSent == false">
-            <textarea class="form-control" ng-model="feedback" name="message" rows="3" placeholder="Let us know what you think or what issues you've found." required maxlength="1470"></textarea>
+            <textarea class="form-control" ng-model="feedback" name="message" rows="3" placeholder="{{ 'FEEDBACK.PLACEHOLDER' | translate }}" required maxlength="1470"></textarea>
             <button class="btn btn-primary pull-right" ng-disabled="feedBackForm.message.$invalid" ng-click="submitFeedback()">
-                <i class="icon-bullhorn"></i> Send Feedback
+                <i class="icon-bullhorn"></i>{{ 'FEEDBACK.SEND_FEEDBACK' | translate }}
             </button>
         </form>
 
         <div ng-show="feedbackSent" class="alert alert-success">
-            <h1>Feedback Sent</h1>
-            <p>Thanks for the heads up! We really appreciate the feedback.</p>
+            <h1 translate>{{ 'FEEDBACK.SENT' }}</h1>
+            <p translate>{{ 'FEEDBACK.MESSAGE' }}</p>
         </div>
     </div>
 </section>
