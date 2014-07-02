@@ -34,10 +34,12 @@
                                 <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
                                 <p class="title">{{ assignment.name }}</p>
                                 <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }}
-                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUP' | translate:"{ NUMBER: assignment.groups}":"messageformat" }}
+                                    <span ng-if="assignment.groups <= 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUP"></span>
+                                    <span ng-if="assignment.groups > 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUPS"></span>
                                 </p>
                                 <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }}
-                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLE' | translate:"{ NUMBER: assignment.roles}":"messageformat" }}
+                                    <span ng-if="assignment.roles <= 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLE"></span>
+                                    <span ng-if="assignment.roles > 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLES"></span>
                                 </p>
                                 <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
                             </div>

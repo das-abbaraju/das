@@ -35,8 +35,10 @@
             },
             "ASSIGNMENT_STATUS": {
                 "TITLE": "Assignment Status",
-                "JOB_ROLE": "Job {NUMBER, select, 1{Role} other{Roles}}",
-                "EMPLOYEE_GROUP": "Employee {NUMBER, select, 1{Group} other{Groups}}",
+                "JOB_ROLE": "Job Role",
+                "JOB_ROLES": "Job Roles",
+                "EMPLOYEE_GROUPS": "Employee Groups",
+                "EMPLOYEE_GROUP": "Employee Group",
                 "NO_ASSIGNMENTS": {
                     "TITLE": "No Assignments",
                     "MESSAGE": "Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.",
