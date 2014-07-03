@@ -20,6 +20,12 @@
             </div>
         </div>
         <div class="control-group">
+            <label class="control-label" for="report_form_report_slug">Report Slug:</label>
+            <div class="controls">
+                <s:textfield name="report.slug" />
+            </div>
+        </div>
+        <div class="control-group">
             <label class="control-label" for="report_form_report_modelType">Model:</label>
             <div class="controls">
             	<s:select list="@com.picsauditing.report.models.ModelType@values()" name="report.modelType"></s:select>

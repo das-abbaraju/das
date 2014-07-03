@@ -25,7 +25,10 @@ public class Report extends BaseTable {
 	private ModelType modelType;
 	private User owner;
 	private String name;
+    private String nameText;
+	private String slug;
 	private String description;
+	private String descriptionText;
 	private String filterExpression;
 	private String sql;
 	private boolean deleted;
@@ -212,4 +215,31 @@ public class Report extends BaseTable {
 	public void setPublic(boolean isPublic) {
 		this.isPublic = isPublic;
 	}
+
+    @ReportField(type = FieldType.String)
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    @Transient
+    public String getNameText() {
+        return nameText;
+    }
+
+    public void setNameText(String nameText) {
+        this.nameText = nameText;
+    }
+
+    @Transient
+    public String getDescriptionText() {
+        return descriptionText;
+    }
+
+    public void setDescriptionText(String descriptionText) {
+        this.descriptionText = descriptionText;
+    }
 }
