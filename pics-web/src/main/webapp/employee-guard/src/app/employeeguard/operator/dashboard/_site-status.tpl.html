@@ -47,19 +47,18 @@
                 </div>
             </div>
         </div>
-
         <div class="row" ng-show="totalAssignments <= 0">
             <div class="col-md-8 col-md-offset-2">
                 <div class="alert alert-info" ng-show="userType === 'corporate'">
                     <h4 translate="OPERATOR.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE"></h4>
-                    <p translate="OPERATOR.CORPORATE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
+                    <p translate="OPERATOR.DASHBOARD.CORPORATE.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
                     <p>
                         <a href="#"><i class="icon-question-sign"></i> {{ 'OPERATOR.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE' | translate }}</a>
                     </p>
                 </div>
                 <div class="alert alert-info" ng-show="userType === 'operator'">
                     <h4 translate="OPERATOR.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE"></h4>
-                    <p translate="OPERATOR.SITE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
+                    <p translate="OPERATOR.DASHBOARD.SITE.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
                     <p>
                         <a href="#"><i class="icon-question-sign"></i> {{ 'OPERATOR.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE' | translate }}</a>
                     </p>
