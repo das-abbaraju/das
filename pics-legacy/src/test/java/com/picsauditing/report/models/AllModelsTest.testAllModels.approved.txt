@@ -1938,6 +1938,7 @@ ReportOwnerID
 ReportOwnerIsActive
 ReportOwnerName
 ReportPublic
+ReportSlug
 ReportUpdateDate
 
 Model: ReportColumns
@@ -1977,6 +1978,7 @@ ReportID
 ReportModelType
 ReportName
 ReportPublic
+ReportSlug
 ReportUpdateDate
 
 Model: ReportUsers
