@@ -6,13 +6,13 @@
         <form name="feedBackForm" class="form-horizontal" ng-hide="feedbackSent" ng-init="feedbackSent == false">
             <textarea class="form-control" ng-model="feedback" name="message" rows="3" placeholder="{{ 'FEEDBACK.PLACEHOLDER' | translate }}" required maxlength="1470"></textarea>
             <button class="btn btn-primary pull-right" ng-disabled="feedBackForm.message.$invalid" ng-click="submitFeedback()">
-                <i class="icon-bullhorn"></i>{{ 'FEEDBACK.SEND_FEEDBACK' | translate }}
+                <i class="icon-bullhorn"></i>{{ 'FEEDBACK.BUTTON.SEND_FEEDBACK' | translate }}
             </button>
         </form>
 
         <div ng-show="feedbackSent" class="alert alert-success">
-            <h1 translate>{{ 'FEEDBACK.SENT' }}</h1>
-            <p translate>{{ 'FEEDBACK.MESSAGE' }}</p>
+            <h1 translate="FEEDBACK.ALERT.TITLE"></h1>
+            <p translate="FEEDBACK.ALERT.MESSAGE"></p>
         </div>
     </div>
 </section>

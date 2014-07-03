@@ -11,7 +11,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/employee-guard/employee/skills" target="_self">
+                        <a href="/employee-guard/employee/skills">
                             <i class="icon-certificate icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.SKILLS' | translate }}
                         </a>
                     </li>
@@ -27,7 +27,6 @@
                     <h1>
                         <i class="icon-map-marker icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.TITLE' | translate }}
                     </h1>
-
                     <div class="content clearfix">
                         <div ng-if="assignments.length" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
                             <div class="tile" ng-class="getSkillClass(assignment.status)">
