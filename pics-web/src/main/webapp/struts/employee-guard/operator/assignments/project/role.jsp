@@ -14,7 +14,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title"><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_PAGE_HEADER"/> ${project.name}</s:param>
+    <s:param name="title"><s:text name="OPERATOR_ASSIGNMENT_SITE_PAGE_HEADER"/> ${project.name}</s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
     <s:param name="breadcrumb_id">${project.id}</s:param>
 </s:include>

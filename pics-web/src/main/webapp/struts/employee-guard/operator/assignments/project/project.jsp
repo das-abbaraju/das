@@ -14,7 +14,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${project.name}</s:param>
+    <s:param name="title"><s:text name="OPERATOR_ASSIGNMENT_PROJECT_PAGE_HEADER"/> ${project.name}</s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
     <s:param name="breadcrumb_id">${project.id}</s:param>
 </s:include>
@@ -22,7 +22,9 @@
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
         <li class="active">
-            <a href="${operator_project_assignments}">Project Status</a>
+            <s:set var="app_title" value="getText('app.title')" />
+
+            <a href="${operator_project_assignments}"><s:text name="OPERATOR_ASSIGNMENT_PROJECT_STATUS"/> </a>
         </li>
         <s:iterator value="operatorProjectAssignment.roles" var="operator_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="operator_project_role_url">
@@ -47,9 +49,9 @@
             <table class="table table-striped table-condensed table-hover">
                 <thead>
                 <tr>
-                    <th>Company</th>
-                    <th>Employee</th>
-                    <th class="text-center">Status</th>
+                    <th><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_HEADING_COMPANY"/></th>
+                    <th><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_HEADING_EMPLOYEE"/></th>
+                    <th class="text-center"><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_HEADING_STATUS"/></th>
                 </tr>
                 </thead>
 
@@ -96,18 +98,18 @@
         <div class="col-md-9">
             <section class="employee-guard-section">
                 <h1>
-                    <i class="icon-map-marker icon-large"></i>Project Status
+                    <i class="icon-map-marker icon-large"></i><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_MSG_HEADER_1"/>
                 </h1>
                 <div class="content">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Project Assignments</h4>
+                                <h4><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_MSG_HEADER_4"/></h4>
 
-                                <p>Make sure you've requested all the companies you'd like on this project and have added Job Roles for companies to assign their employees to. If the correct Job Roles are all there, it's up to the companies doing work for you to assign their employees to the proper roles.</p>
+                                <p><s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_MSG_P1"/></p>
 
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Project Assignments</a>
+                                    <a href="#"><i class="icon-question-sign"></i> <s:text name="OPERATOR_ASSIGNMENT_PROJECT_TABLE_MSG_P2"/></a>
                                 </p>
                             </div>
                         </div>
