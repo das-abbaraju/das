@@ -17,6 +17,10 @@ public class FlagCalculatorFactory {
     private com.picsauditing.flagcalculator.FlagDataCalculator newFlagDataCalculator;
     @Autowired
     private FeatureToggle featureToggleChecker;
+    @Autowired
+    private ContractorFlagETL contractorFlagETL;
+    @Autowired
+    private com.picsauditing.flagcalculator.etl.ContractorFlagETL newContractorFlagETL;
 
     public FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) throws Exception {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
@@ -46,22 +50,6 @@ public class FlagCalculatorFactory {
         }
     }
 
-//    public static FlagCalculator flagCalculator(ContractorOperator co, Map<FlagCriteria, List<FlagDataOverride>> overrides) {
-//        if (newFlagCalculatorIsEnabled()) {
-//
-//            com.picsauditing.flagcalculator.FlagDataCalculator.setEntityManager(entityManager());
-//            com.picsauditing.flagcalculator.FlagDataCalculator flagCalculator = new com.picsauditing.flagcalculator.FlagDataCalculator(co.getId());
-//            flagCalculator.setOverrides(overrides);
-//            return flagCalculator;
-//        } else {
-//            FlagDataCalculator flagDataCalculator=  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria());
-//            flagDataCalculator.setOperator(co.getOperatorAccount());
-//            flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-//            flagDataCalculator.setOverrides(overrides);
-//            return flagDataCalculator;
-//        }
-//    }
-//
     private static Map<Integer, List<Integer>> convertOverridesToIDMap(Map<FlagCriteria, List<FlagDataOverride>> overrides) {
         Map<Integer, List<Integer>> overrideIDMap = new HashMap<>();
         for (FlagCriteria flagCriteria : overrides.keySet()) {
@@ -113,4 +101,21 @@ public class FlagCalculatorFactory {
     public void setCorrespondingMultiscopeCriteriaIds(Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds) {
         this.correspondingMultiscopeCriteriaIds = correspondingMultiscopeCriteriaIds;
     }
+
+    public void runContractorFlagETL(ContractorAccount contractorAccount) {
+        if (newContractorETLIsEnabled()) {
+            newContractorFlagETL.calculate(contractorAccount.getId());
+        } else {
+            contractorFlagETL.calculate(contractorAccount);
+        }
+    }
+
+    private static boolean newContractorETLIsEnabled() {
+        try {
+            return Features.USE_NEW_CONTRACTOR_ETL.isActive();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
 }
