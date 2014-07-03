@@ -5,7 +5,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;

@@ -9,7 +9,7 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.billing.PaymentService;
 import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.braintree.BrainTreeHash;

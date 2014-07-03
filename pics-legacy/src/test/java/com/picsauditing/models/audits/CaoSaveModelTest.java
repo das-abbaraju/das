@@ -1,16 +1,9 @@
 package com.picsauditing.models.audits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
@@ -19,11 +12,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class CaoSaveModelTest extends PicsTest {
 

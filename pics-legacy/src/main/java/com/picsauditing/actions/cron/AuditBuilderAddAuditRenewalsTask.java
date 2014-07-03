@@ -1,9 +1,8 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Invoice;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;

@@ -7,8 +7,8 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.auditBuilder.AuditTypesBuilder;
+import com.picsauditing.audits.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditTypesBuilder;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.OperatorAccount;
