@@ -1,5 +1,5 @@
 describe('An Operator Employee', function() {
-    var scope, $httpBackend, routeParams;
+    var scope, $httpBackend, routeParams, $translate;
 
     var employe_info_dev_url = '/angular/json/operator/employee_skills/employee_info.json';
     var whoami_url = '/employee-guard/who-am-i';
@@ -185,7 +185,9 @@ describe('An Operator Employee', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, EmployeeCompanyInfo, SkillModel, SkillList, EmployeeService) {
+    beforeEach(inject(function($rootScope, $controller, $httpBackend, $routeParams, _$translate_, EmployeeCompanyInfo, SkillModel, SkillList, EmployeeService) {
+        $translate = _$translate_;
+
         $routeParams.id = Math.floor((Math.random()*1000)+1);
 
         routeParams = $routeParams;
@@ -203,9 +205,6 @@ describe('An Operator Employee', function() {
         $httpBackend.when('GET', /\employee-guard\/operators\/[0-9]+\/skills\/employees\/[0-9]+/).respond(result);
         $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list[0-9]+.json/).respond(result);
         $httpBackend.when('GET', /\angular\/json\/operator\/employee_skills\/skill_list.json/).respond(result);
-
-
-
 
         scope = $rootScope.$new();
         $controller("operatorEmployeeCtrl", {
@@ -321,7 +320,10 @@ describe('An Operator Employee', function() {
             routeParams.roleSlug = 'destructor-the-great';
             scope.selectViewModel();
 
-            expect(scope.requiredTitle).toEqual('Required by Site');
+            $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE').then(function (translation) {
+                expect(scope.requiredTitle).toEqual('Required by Site');
+            });
+
         });
     });
 
@@ -394,7 +396,9 @@ describe('An Operator Employee', function() {
             routeParams.projectSlug = 'blue-buffalo';
             scope.selectViewModel();
 
-            expect(scope.requiredTitle).toEqual('Required by Site or Project');
+            $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECT').then(function (translation) {
+                expect(scope.requiredTitle).toEqual('Required by Site or Project');
+            });
         });
     });
 
@@ -450,7 +454,9 @@ describe('An Operator Employee', function() {
         it('should set the required button title', function() {
             scope.selectViewModel();
 
-            expect(scope.requiredTitle).toEqual('Required by Site or Projects');
+            $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECTS').then(function (translation) {
+                expect(scope.requiredTitle).toEqual('Required by Site or Projects');
+            });
         });
     });
 

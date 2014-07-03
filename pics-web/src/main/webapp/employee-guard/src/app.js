@@ -1,5 +1,4 @@
 angular.module('EmployeeGUARD', [
-    'pascalprecht.translate',
     'PICS.employeeguard'
 ])
 .config(['$httpProvider', function($httpProvider) {

@@ -1,11 +1,11 @@
 <div ng-controller="operatorEmployeeCtrl" class="operator-employee-page">
     <div class="container">
-        <pagetitle title="Live ID"></pagetitle>
+        <pagetitle title="{{ 'OPERATOR.LIVEID.TITLE' | translate}}"></pagetitle>
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li><a href="/employee-guard/operators/dashboard" translate="OPERATOR.LIVEID.BREADCRUMB.EMPLOYEEGUARD"></a></li>
                         <li class="active">{{ employee.firstName }} {{employee.lastName}}</li>
                     </ol>
                 </div>
@@ -42,7 +42,7 @@
             <div class="col-md-3">
                 <div class="panel panel-primary" ng-show="user === 'corporate'">
                     <div class="panel-heading ">
-                        <h3 class="panel-title">Site Selection</h3>
+                        <h3 class="panel-title" translate="OPERATOR.LIVEID.CORPORATE.SITE_SELECTION"></h3>
                     </div>
                     <div class="panel-body">
                         <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadSelectedSiteData(selected_site)">
@@ -54,13 +54,13 @@
                     <nav id="side-navigation" class="navbar bs-sidenav" role="navigation" ng-switch="user">
                         <ul class="nav" role="menu" ng-switch-when="corporate">
                             <li ng-class="{active: selectedMenuItem == 'all'}">
-                                <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}">All
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}">{{ 'OPERATOR.LIVEID.SECONDARY_NAV_MENU.ALL' | translate}}
                                     <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
                             <li class="nav-divider"></li>
                             <li ng-show="roles">
-                                <span class="nav-title">Job Roles</span>
+                                <span class="nav-title" translate="OPERATOR.LIVEID.SECONDARY_NAV_MENU.JOB_ROLES"></span>
                             </li>
                             <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
                                 <a href="/employee-guard/operators/employees/{{ employee.id }}/sites/{{ selected_site }}/roles/{{ role.slug }}">
@@ -70,7 +70,7 @@
                             </li>
                             <li class="nav-divider" ng-show="roles"></li>
                             <li ng-show="projects">
-                                <span class="nav-title">Projects</span>
+                                <span class="nav-title" translate="OPERATOR.LIVEID.SECONDARY_NAV_MENU.PROJECTS"></span>
                             </li>
 
                             <li ng-repeat="project in projects" ng-class="{active: selectedMenuItem == project.slug}">
@@ -82,13 +82,13 @@
                         </ul>
                         <ul class="nav" role="menu" ng-switch-default>
                             <li ng-class="{active: selectedMenuItem == 'all'}">
-                                <a href="/employee-guard/operators/employees/{{ employee.id }}/">All
+                                <a href="/employee-guard/operators/employees/{{ employee.id }}/">{{ 'OPERATOR.LIVEID.SECONDARY_NAV_MENU.ALL' | translate}}
                                     <skillstatusicon status="{{ employee.status }}" class="pull-right"></skillstatusicon>
                                 </a>
                             </li>
                             <li class="nav-divider"></li>
                             <li ng-show="roles">
-                                <span class="nav-title">Job Roles</span>
+                                <span class="nav-title" translate="OPERATOR.LIVEID.SECONDARY_NAV_MENU.JOB_ROLES"></span>
                             </li>
                             <li ng-repeat="role in roles" ng-class="{active: selectedMenuItem == role.slug}">
                                 <a href="/employee-guard/operators/employees/{{ employee.id }}/roles/{{ role.slug }}">
@@ -98,7 +98,7 @@
                             </li>
                             <li class="nav-divider" ng-show="roles"></li>
                             <li ng-show="projects">
-                                <span class="nav-title">Projects</span>
+                                <span class="nav-title" translate="OPERATOR.LIVEID.SECONDARY_NAV_MENU.PROJECTS"></span>
                             </li>
 
                             <li ng-repeat="project in projects" ng-class="{active: selectedMenuItem == project.slug}">

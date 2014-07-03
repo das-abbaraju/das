@@ -1,6 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI, EmployeeService) {
+.controller('operatorEmployeeCtrl', function ($scope, $location, $translate, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI, EmployeeService) {
     var skillModel;
 
     var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id, siteId: $routeParams.siteId}, function(employee) {
@@ -70,13 +70,16 @@ angular.module('PICS.employeeguard')
         var slugname = $routeParams.roleSlug,
             role = skillModel.getRoleBySlug(slugname);
 
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
             skillGroup: role,
             employeeStatusIcon: role.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getRoleNameBySlug(slugname),
-            requiredTitle: 'Required by Site'
+            viewTitle: skillModel.getRoleNameBySlug(slugname)
         };
     }
 
@@ -84,21 +87,27 @@ angular.module('PICS.employeeguard')
         var slugname = $routeParams.projectSlug,
             project = skillModel.getProjectBySlug(slugname);
 
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECT').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
             skillGroup: project,
             employeeStatusIcon: project.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getProjectNameBySlug(slugname),
-            requiredTitle: 'Required by Site or Project'
+            viewTitle: skillModel.getProjectNameBySlug(slugname)
         };
     }
 
     function getDefaultModel() {
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECTS').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getAllRequiredSkills(),
-            selectedMenuItem: 'all',
-            requiredTitle: 'Required by Site or Projects'
+            selectedMenuItem: 'all'
         };
     }
 

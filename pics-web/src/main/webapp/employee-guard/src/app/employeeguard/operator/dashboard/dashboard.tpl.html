@@ -1,32 +1,32 @@
 <div class="operator-dashboard" ng-controller="operatorDashboardCtrl">
     <div class="container">
-        <pagetitle title="EmployeeGUARD" subtitle="Summary"></pagetitle>
+        <pagetitle title="{{ 'OPERATOR.DASHBOARD.PAGE_TITLE' | translate }}" subtitle="{{ 'OPERATOR.DASHBOARD.PAGE_SUBTITLE' | translate}}"></pagetitle>
 
         <div class="row">
             <div class="col-md-3">
                 <ul class="nav nav-pills nav-stacked">
                     <li>
                         <a href="/employee-guard/operators/assignments">
-                            <i class="icon-map-marker icon-large"></i>Assignments
+                            <i class="icon-map-marker icon-large"></i>{{ 'OPERATOR.DASHBOARD.SECONDARY_NAV_MENU.ASSIGNMENTS' | translate}}
                         </a>
                     </li>
                     <li class="nav-divider"></li>
                     <li>
-                        <span class="nav-title">Manage</span>
+                        <span class="nav-title">{{ 'OPERATOR.DASHBOARD.SECONDARY_NAV_MENU.MANAGE' | translate}}</span>
                     </li>
                     <li>
                         <a href="/employee-guard/operators/projects">
-                            <i class="icon-sitemap icon-large"></i>Projects
+                            <i class="icon-sitemap icon-large"></i>{{ 'OPERATOR.DASHBOARD.SECONDARY_NAV_MENU.PROJECTS' | translate}}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/operators/role" target="_self">
-                            <i class="icon-group icon-large"></i>Job Roles
+                            <i class="icon-group icon-large"></i>{{ 'OPERATOR.DASHBOARD.SECONDARY_NAV_MENU.JOB_ROLES' | translate}}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/operators/skill" target="_self">
-                            <i class="icon-certificate icon-large"></i>Skills
+                            <i class="icon-certificate icon-large"></i>{{ 'OPERATOR.DASHBOARD.SECONDARY_NAV_MENU.SKILLS' | translate}}
                         </a>
                     </li>
                 </ul>
@@ -36,7 +36,7 @@
                     <div class="col-md-4 col-md-offset-4">
                         <div class="panel panel-primary">
                             <div class="panel-heading ">
-                                <h3 class="panel-title">Site Selection</h3>
+                                <h3 class="panel-title" translate="OPERATOR.CORPORATE.DASHBOARD.SITE_SELECTION"></h3>
                             </div>
                             <div class="panel-body">
                                 <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadAssignmentsBySiteId(selected_site)">

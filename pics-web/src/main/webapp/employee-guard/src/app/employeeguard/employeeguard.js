@@ -1,4 +1,5 @@
 angular.module('PICS.employeeguard', [
+    'pascalprecht.translate',
     'ngRoute',
     'ngResource',
     'PICS.directives',
