@@ -1,7 +1,6 @@
 package com.picsauditing.report.models;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
@@ -52,6 +51,7 @@ public class ContractorRequestsModel extends AbstractModel {
         String whereClause = permissionQueryBuilder.buildWhereClause();
         String statusClause = "Account.status IN ('Requested','Declined','Pending','Active')";
         whereClause = StringUtils.replace(whereClause, "Account.status IN ('Active')", statusClause + " AND " + picsCorporateClause);
+        whereClause = StringUtils.replace(whereClause, " AND co.workStatus = 'Y'", "");
         return whereClause;
 	}
 
