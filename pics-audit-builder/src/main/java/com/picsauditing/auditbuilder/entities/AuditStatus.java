@@ -34,17 +34,10 @@ public enum AuditStatus /*implements Translatable*/ {
 //		return values;
 //	}
 //
-//	/**
-//	 * Pending, Incomplete, Submitted, Resubmitted, Complete, Approved,
-//	 * NotApplicable
-//	 *
-//	 * @param o
-//	 * @return
-//	 */
-//	public boolean before(AuditStatus o) {
-//		return this.ordinal() < o.ordinal();
-//	}
-//
+	public boolean before(AuditStatus o) {
+		return this.ordinal() < o.ordinal();
+	}
+
 	public boolean after(AuditStatus o) {
 		return this.ordinal() > o.ordinal();
 	}
@@ -60,22 +53,22 @@ public enum AuditStatus /*implements Translatable*/ {
 //		return start.ordinal() <= this.ordinal() && this.ordinal() <= end.ordinal();
 //	}
 //
-//	public boolean isApproved() {
-//		return this.equals(Approved);
-//	}
-//
+	public boolean isApproved() {
+		return this.equals(Approved);
+	}
+
 //	public boolean isNotApplicable() {
 //		return this.equals(NotApplicable);
 //	}
 //
-//	public boolean isPending() {
-//		return this.equals(Pending);
-//	}
-//
-//	public boolean isSubmitted() {
-//		return this.equals(Submitted);
-//	}
-//
+	public boolean isPending() {
+		return this.equals(Pending);
+	}
+
+	public boolean isSubmitted() {
+		return this.equals(Submitted);
+	}
+
 //	public boolean isResubmitted() {
 //		return this.equals(Resubmitted);
 //	}
@@ -84,14 +77,14 @@ public enum AuditStatus /*implements Translatable*/ {
 //		return isSubmitted() || isResubmitted();
 //	}
 //
-//	public boolean isIncomplete() {
-//		return this.equals(Incomplete);
-//	}
-//
-//	public boolean isComplete() {
-//		return this.equals(Complete);
-//	}
-//
+	public boolean isIncomplete() {
+		return this.equals(Incomplete);
+	}
+
+	public boolean isComplete() {
+		return this.equals(Complete);
+	}
+
 //	public boolean isPendingClientApproval() {
 //		return this.equals(PendingClientApproval);
 //	}
@@ -134,12 +127,12 @@ public enum AuditStatus /*implements Translatable*/ {
 //		return false;
 //	}
 //
-//	public boolean isResubmit() {
-//		if(this.equals(Resubmit))
-//			return true;
-//		return false;
-//	}
-//
+	public boolean isResubmit() {
+		if(this.equals(Resubmit))
+			return true;
+		return false;
+	}
+
 //	static public AuditStatus[] activeStatusesBeyondPending() {
 //		AuditStatus[] statuses = new AuditStatus[AuditStatus.values().length - 3];
 //		int i = 0;

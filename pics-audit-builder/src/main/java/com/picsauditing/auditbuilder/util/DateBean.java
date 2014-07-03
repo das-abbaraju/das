@@ -8,7 +8,7 @@ import java.util.Date;
 
 public class DateBean {
 //	public static String NULL_DATE = "0/0/00";
-//	public static String NULL_DATE_DB = "0000-00-00";
+	public static String NULL_DATE_DB = "0000-00-00";
 //	public static SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 //	public static SimpleDateFormat DBFormat = new SimpleDateFormat(PicsDateFormat.Iso);
 //	ArrayList<Integer> nextMonths;
@@ -177,97 +177,80 @@ public class DateBean {
 //		return temp;
 //	}
 //
-//	/**
-//	 * WCB year starts November 1 the next year e.g. Sep.1, 2012 would be 2013
-//	 * e.g. Aug 31, 2012 would be 2012
-//	 */
-//	public static String getWCBYear(Date date) {
-//		Calendar wcbYearStart = Calendar.getInstance();
-//		if (date != null) {
-//			wcbYearStart.setTime(date);
-//		}
-//
-//		wcbYearStart.set(Calendar.MONTH, Calendar.NOVEMBER);
-//		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
-//
-//		Calendar now = Calendar.getInstance();
-//		if (date != null) {
-//			now.setTime(date);
-//		}
-//
-//		if (daysBetween(wcbYearStart.getTime(), now.getTime()) < 0) {
-//			return Strings.EMPTY_STRING + wcbYearStart.get(Calendar.YEAR);
-//		}
-//
-//		return Strings.EMPTY_STRING + (wcbYearStart.get(Calendar.YEAR) + 1);
-//	}
-//
-//	public static String getWCBYear() {
-//		return getWCBYear(null);
-//	}
-//
-//	public static int getPreviousWCBYear() {
-//		return getEffectiveWCBYear(today());
-//	}
-//
-//	/**
-//	 * Called when it's already been determined that the current year WCB is
-//	 * incomplete and we are trying to see if it's okay to look back to last
-//	 * year's WCB, or if they are stuck with this year's
-//	 */
-//	private static int getEffectiveWCBYear(Date now) {
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(now);
-//
-//		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
-//			return calendar.get(Calendar.YEAR) - 1;
-//		}
-//
-//		return calendar.get(Calendar.YEAR);
-//	}
-//
-//	/**
-//	 * The Grace Period is from November 1 - January 31 of next year.
-//	 *
-//	 * @return
-//	 */
-//	public static boolean isGracePeriodForWCB() {
-//		return isGracePeriodForWCB(today());
-//	}
-//
-//	private static boolean isGracePeriodForWCB(Date now) {
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(now);
-//
-//		int month = calendar.get(Calendar.MONTH);
-//		if (month >= Calendar.NOVEMBER && month <= Calendar.DECEMBER) {
-//			return true;
-//		}
-//
-//		if (month == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
-//			return true;
-//		}
-//
-//		return false;
-//	}
-//
-//	/**
-//	 * expiration date is January 31st.
-//	 */
-//	public static Date getWCBExpirationDate(String year) {
-//		Calendar expirationDate = Calendar.getInstance();
-//
-//		try {
-//			expirationDate.set(Calendar.MONTH, Calendar.JANUARY);
-//			expirationDate.set(Calendar.DAY_OF_MONTH, 31);
-//			expirationDate.set(Calendar.YEAR, Integer.parseInt(year) + 1);
-//		} catch (Exception e) {
-//			return null;
-//		}
-//
-//		return expirationDate.getTime();
-//	}
-//
+	public static String getWCBYear(Date date) {
+		Calendar wcbYearStart = Calendar.getInstance();
+		if (date != null) {
+			wcbYearStart.setTime(date);
+		}
+
+		wcbYearStart.set(Calendar.MONTH, Calendar.NOVEMBER);
+		wcbYearStart.set(Calendar.DAY_OF_MONTH, 1);
+
+		Calendar now = Calendar.getInstance();
+		if (date != null) {
+			now.setTime(date);
+		}
+
+		if (daysBetween(wcbYearStart.getTime(), now.getTime()) < 0) {
+			return Strings.EMPTY_STRING + wcbYearStart.get(Calendar.YEAR);
+		}
+
+		return Strings.EMPTY_STRING + (wcbYearStart.get(Calendar.YEAR) + 1);
+	}
+
+	public static String getWCBYear() {
+		return getWCBYear(null);
+	}
+
+	public static int getPreviousWCBYear() {
+		return getEffectiveWCBYear(today());
+	}
+
+	private static int getEffectiveWCBYear(Date now) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(now);
+
+		if (calendar.get(Calendar.MONTH) == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
+			return calendar.get(Calendar.YEAR) - 1;
+		}
+
+		return calendar.get(Calendar.YEAR);
+	}
+
+	public static boolean isGracePeriodForWCB() {
+		return isGracePeriodForWCB(today());
+	}
+
+	private static boolean isGracePeriodForWCB(Date now) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(now);
+
+		int month = calendar.get(Calendar.MONTH);
+		if (month >= Calendar.NOVEMBER && month <= Calendar.DECEMBER) {
+			return true;
+		}
+
+		if (month == Calendar.JANUARY && calendar.get(Calendar.DATE) <= 31) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public static Date getWCBExpirationDate(String year) {
+		Calendar expirationDate = Calendar.getInstance();
+
+		try {
+			expirationDate.set(Calendar.MONTH, Calendar.JANUARY);
+			expirationDate.set(Calendar.DAY_OF_MONTH, 31);
+			expirationDate.set(Calendar.YEAR, Integer.parseInt(year) + 1);
+		} catch (Exception e) {
+			return null;
+		}
+
+		return expirationDate.getTime();
+	}
+
 //	public static String getThreeYearsAheadDate(String fromDate) throws Exception {
 //		SimpleDateFormat showFormat = new SimpleDateFormat("M/d/yy");
 //		Date tempDate = showFormat.parse(fromDate);
@@ -670,17 +653,17 @@ public class DateBean {
 //		return calendar;
 //	}
 //
-//	public static Date setToEndOfDay(Date date) {
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(date);
-//		calendar.set(Calendar.HOUR_OF_DAY, 23);
-//		calendar.set(Calendar.MINUTE, 59);
-//		calendar.set(Calendar.SECOND, 59);
-//		calendar.set(Calendar.MILLISECOND, 0);
-//
-//		return calendar.getTime();
-//	}
-//
+	public static Date setToEndOfDay(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		calendar.set(Calendar.MILLISECOND, 0);
+
+		return calendar.getTime();
+	}
+
 //	public static Date setToStartOfDay(Date date) {
 //		Calendar calendar = Calendar.getInstance();
 //		calendar.setTime(date);
@@ -845,10 +828,10 @@ public class DateBean {
 //		return checkDate.compareTo(date) < 0;
 //	}
 //
-//	public static Date today() {
-//		return new Date();
-//	}
-//
+	public static Date today() {
+		return new Date();
+	}
+
 //    public enum Interval {
 //        Days, Months
 //    }

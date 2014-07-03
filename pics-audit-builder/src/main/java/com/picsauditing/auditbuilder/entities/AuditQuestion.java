@@ -1,6 +1,8 @@
 package com.picsauditing.auditbuilder.entities;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -9,11 +11,11 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //
 //	public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 //	static public final int EMR = 2034;
-//	static public final int MANUAL_PQF = 1331;
+	static public final int MANUAL_PQF = 1331;
 //	static public final int MANUAL_PQF_SIGNATURE = 10217;
 //	static public final int OQ_EMPLOYEES = 894;
-//	static public final int COR = 2954;
-//	static public final int IEC = 10330;
+	static public final int COR = 2954;
+	static public final int IEC = 10330;
 //	static public final int CITATIONS = 3546;
 //	static public final int EXCESS_EACH = 2161;
 //	static public final int EXCESS_AGGREGATE = 2165;
@@ -51,20 +53,20 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //			"License", "Money", TYPE_NUMBER, "ESignature", "Tagit", "MultiSelect", "Percent" };
 //
 //	private int number;
-//	private int scoreWeight;
-//	private boolean hasRequirement;
-//	private boolean required;
+	private int scoreWeight;
+	private boolean hasRequirement;
+	private boolean required;
 //	private boolean groupedWithPrevious;
 //	private boolean showComment;
-//	private String requiredAnswer;
+	private String requiredAnswer;
 	private String visibleAnswer;
 //
 //	private String name;
 //    private String slug;
 //
 	private String questionType;
-//	private AuditOptionGroup option;
-//	private String okAnswer;
+	private AuditOptionGroup option;
+	private String okAnswer;
 //	private String columnHeader;
 //	private String uniqueCode;
 //	private String title;
@@ -74,7 +76,7 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //
 //	private String criteria;
 //	private String criteriaAnswer;
-//	private AuditQuestion requiredQuestion;
+	private AuditQuestion requiredQuestion;
 	private AuditQuestion visibleQuestion;
 	private AuditCategory category;
 //	private LowMedHigh riskLevel = null;
@@ -88,7 +90,7 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //	protected List<AuditOptionValue> options;
 //	private List<AuditCategoryRule> auditCategoryRules;
 //	private List<AuditTypeRule> auditTypeRules;
-//	private List<AuditQuestionFunction> functions = new ArrayList<>();
+	private List<AuditQuestionFunction> functions = new ArrayList<>();
 //	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<>();
 //
 //	private List<AuditTransformOption> transformOptions;
@@ -183,62 +185,60 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 		this.questionType = questionType;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "optionID")
-//	public AuditOptionGroup getOption() {
-//		return option;
-//	}
-//
-//	public void setOption(AuditOptionGroup option) {
-//		this.option = option;
-//	}
-//
-//	@Column(nullable = false)
-//	@ReportField(type = FieldType.Boolean, importance = FieldImportance.Average)
-//	public boolean isHasRequirement() {
-//		return hasRequirement;
-//	}
-//
-//	public void setHasRequirement(boolean hasRequirement) {
-//		this.hasRequirement = hasRequirement;
-//	}
-//
-//	public String getOkAnswer() {
-//		return this.okAnswer;
-//	}
-//
-//	public void setOkAnswer(String okAnswer) {
-//		this.okAnswer = okAnswer;
-//	}
-//
-//	@Column(nullable = false)
-//	@ReportField(type = FieldType.Boolean)
-//	public boolean isRequired() {
-//		return required;
-//	}
-//
-//	public void setRequired(boolean required) {
-//		this.required = required;
-//	}
-//
-//	@ManyToOne
-//	@JoinColumn(name = "requiredQuestion")
-//	public AuditQuestion getRequiredQuestion() {
-//		return requiredQuestion;
-//	}
-//
-//	public void setRequiredQuestion(AuditQuestion requiredQuestion) {
-//		this.requiredQuestion = requiredQuestion;
-//	}
-//
-//	public String getRequiredAnswer() {
-//		return requiredAnswer;
-//	}
-//
-//	public void setRequiredAnswer(String requiredAnswer) {
-//		this.requiredAnswer = requiredAnswer;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "optionID")
+	public AuditOptionGroup getOption() {
+		return option;
+	}
+
+	public void setOption(AuditOptionGroup option) {
+		this.option = option;
+	}
+
+	@Column(nullable = false)
+	public boolean isHasRequirement() {
+		return hasRequirement;
+	}
+
+	public void setHasRequirement(boolean hasRequirement) {
+		this.hasRequirement = hasRequirement;
+	}
+
+	public String getOkAnswer() {
+		return this.okAnswer;
+	}
+
+	public void setOkAnswer(String okAnswer) {
+		this.okAnswer = okAnswer;
+	}
+
+	@Column(nullable = false)
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "requiredQuestion")
+	public AuditQuestion getRequiredQuestion() {
+		return requiredQuestion;
+	}
+
+	public void setRequiredQuestion(AuditQuestion requiredQuestion) {
+		this.requiredQuestion = requiredQuestion;
+	}
+
+	public String getRequiredAnswer() {
+		return requiredAnswer;
+	}
+
+	public void setRequiredAnswer(String requiredAnswer) {
+		this.requiredAnswer = requiredAnswer;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "visibleQuestion")
 	public AuditQuestion getVisibleQuestion() {
@@ -473,23 +473,15 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //		this.auditTypeRules = auditTypeRules;
 //	}
 //
-//	/**
-//	 * The list of {@link AuditQuestionFunction}s that apply to this
-//	 * {@link AuditQuestion}.
-//	 *
-//	 * Note: Only the first {@link AuditQuestionFunction} with a
-//	 * {@link QuestionFunctionType} of "Calculation" will take effect.
-//	 *
-//	 */
-//	@OneToMany(mappedBy = "question")
-//	public List<AuditQuestionFunction> getFunctions() {
-//		return functions;
-//	}
-//
-//	public void setFunctions(List<AuditQuestionFunction> functions) {
-//		this.functions = functions;
-//	}
-//
+	@OneToMany(mappedBy = "question")
+	public List<AuditQuestionFunction> getFunctions() {
+		return functions;
+	}
+
+	public void setFunctions(List<AuditQuestionFunction> functions) {
+		this.functions = functions;
+	}
+
 //	/**
 //	 * This is a reference to the {@link AuditQuestionFunction}s that this
 //	 * {@link AuditQuestion} is required for calcualtion.
@@ -687,81 +679,14 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //		return getExpandedNumber() + ": " + columnText;
 //	}
 //
-//	/**
-//	 * @return int showing the weight to adjust the score by for this question
-//	 *         when scoring an audit
-//	 */
-//	public int getScoreWeight() {
-//		return scoreWeight;
-//	}
-//
-//	public void setScoreWeight(int scoreWeight) {
-//		this.scoreWeight = scoreWeight;
-//	}
-//
-//	@Transient
-//	public boolean isValidQuestion(Date validDate) {
-//		if (validDate.after(effectiveDate) && validDate.before(expirationDate)) {
-//			return true;
-//		} else {
-//			return false;
-//		}
-//	}
-//
-//	@Transient
-//	public boolean isVisible(AnswerMap answerMap) {
-//		if (visibleQuestion != null) {
-//			boolean questionIsVisible = isVisible(answerMap.get(visibleQuestion.getId()));
-//			AuditQuestion q = visibleQuestion;
-//
-//			while (q != null && questionIsVisible) {
-//				if (q.getVisibleQuestion() != null) {
-//					questionIsVisible = q.isVisible(answerMap.get(q.getVisibleQuestion().getId()));
-//				}
-//
-//				q = q.getVisibleQuestion();
-//			}
-//			return questionIsVisible;
-//		}
-//		return true;
-//	}
-//
-//	@Transient
-//	public boolean isVisible(AuditData data) {
-//		if (visibleQuestion != null && visibleAnswer != null) {
-//			String answer = null;
-//			if (data != null) {
-//				answer = data.getAnswer();
-//			}
-//			return testVisibility(answer, visibleAnswer);
-//		}
-//		return true;
-//	}
-//
-//	private boolean testVisibility(String answer, String comparisonAnswer) {
-//		if (comparisonAnswer.equals("NULL") && Strings.isEmpty(answer)) {
-//			return true;
-//		}
-//		if (comparisonAnswer.equals("NOTNULL") && !Strings.isEmpty(answer)) {
-//			return true;
-//		}
-//		if (comparisonAnswer.equals(answer)) {
-//			return true;
-//		}
-//		return false;
-//	}
-//
-//	@Transient
-//	public boolean isVisibleInAudit(ContractorAudit audit) {
-//		for (AuditCatData category : audit.getCategories()) {
-//			if (category.getCategory().getId() == this.getCategory().getId()) {
-//				return category.isApplies();
-//			}
-//		}
-//
-//		return false;
-//	}
-//
+	public int getScoreWeight() {
+		return scoreWeight;
+	}
+
+	public void setScoreWeight(int scoreWeight) {
+		this.scoreWeight = scoreWeight;
+	}
+
 //	@Transient
 //	public boolean isAffectsAudit() {
 //		return required || requiredQuestion != null || dependentRequired.size() > 0;

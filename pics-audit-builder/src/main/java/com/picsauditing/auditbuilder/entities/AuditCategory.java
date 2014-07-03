@@ -4,6 +4,8 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -59,7 +61,7 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //	protected Date expirationDate;
 //
 //	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
-//	private List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	private List<AuditQuestion> questions = new ArrayList<>();
 //
 //	public AuditCategory() {
 //
@@ -104,15 +106,6 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 		this.parent = parent;
 	}
 
-//	@Transient
-//	public AuditCategory getTopParent() {
-//		if (parent != null) {
-//			return parent.getTopParent();
-//		}
-//
-//		return this;
-//	}
-//
 //	@Transient
 //	public String getName() {
 //		if (name != null) {
@@ -288,16 +281,16 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //		this.subCategories = subCategories;
 //	}
 //
-//	@OneToMany(mappedBy = "category")
-//	@OrderBy("number")
-//	public List<AuditQuestion> getQuestions() {
-//		return questions;
-//	}
-//
-//	public void setQuestions(List<AuditQuestion> questions) {
-//		this.questions = questions;
-//	}
-//
+	@OneToMany(mappedBy = "category")
+	@OrderBy("number")
+	public List<AuditQuestion> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<AuditQuestion> questions) {
+		this.questions = questions;
+	}
+
 //	@Transient
 //	public List<AuditQuestion> getEffectiveQuestions(Date date) {
 //		final Date comparison;

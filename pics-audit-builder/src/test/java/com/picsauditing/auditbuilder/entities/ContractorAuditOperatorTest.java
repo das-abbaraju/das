@@ -2,6 +2,7 @@ package com.picsauditing.auditbuilder.entities;
 
 
 import com.picsauditing.access.Permissions;
+import com.picsauditing.auditbuilder.permissions.Permissions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,7 +19,8 @@ public class ContractorAuditOperatorTest {
 
 	ContractorAuditOperator cao;
 	
-	@Mock Permissions permissions;
+	@Mock
+    Permissions permissions;
 	@Mock ContractorAudit audit;
 	@Mock User user;
 	@Mock OperatorAccount operator;

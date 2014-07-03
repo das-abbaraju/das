@@ -1,5 +1,6 @@
 package com.picsauditing.auditbuilder.dao;
 
+import com.picsauditing.auditbuilder.entities.AuditType;
 import com.picsauditing.auditbuilder.entities.ContractorAudit;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -463,17 +464,17 @@ public class ContractorAuditDAO extends PicsDAO {
 //		return (ContractorAudit) em.createQuery(hql).getSingleResult();
 //	}
 //
-//	public ContractorAudit findMostRecentAuditByContractorAuditType(int conId, int auditTypeId) {
-//		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + conId
-//				+ " AND ca.auditType.id = " + auditTypeId + " order by ca.expiresDate DESC";
-//
-//		List<ContractorAudit> audits = em.createQuery(hql).getResultList();
-//		if (audits.size() > 0) {
-//			return audits.get(0);
-//		}
-//		return null;
-//	}
-//
+	public ContractorAudit findMostRecentAuditByContractorAuditType(int conId, int auditTypeId) {
+		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + conId
+				+ " AND ca.auditType.id = " + auditTypeId + " order by ca.expiresDate DESC";
+
+		List<ContractorAudit> audits = em.createQuery(hql).getResultList();
+		if (audits.size() > 0) {
+			return audits.get(0);
+		}
+		return null;
+	}
+
 //	public List<ContractorAudit> findAuditsAboutToExpire(int contractorId) {
 //		String hql = "SELECT ca FROM ContractorAudit ca " +
 //				"WHERE ca.contractorAccount.id = :contractorId " +
@@ -494,31 +495,31 @@ public class ContractorAuditDAO extends PicsDAO {
 //		return Collections.emptyList();
 //	}
 //
-//	public ContractorAudit findPreviousAudit(ContractorAudit audit) {
-//		ContractorAudit previousAudit = null;
-//
-//		if (audit.getAuditType().isRenewable()) {
-//			return null;
-//		}
-//
-//		if (audit.getAuditType().isHasMultiple() && audit.getAuditType().getId() != AuditType.ANNUALADDENDUM) {
-//			return null;
-//		}
-//
-//		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = :conId "
-//				+ " AND t.auditType.id = :auditTypeId AND t.creationDate < :creationDate "
-//				+ " ORDER BY t.creationDate DESC");
-//		query.setParameter("conId", audit.getContractorAccount().getId());
-//		query.setParameter("auditTypeId", audit.getAuditType().getId());
-//		query.setParameter("creationDate", audit.getCreationDate());
-//		List<ContractorAudit> list = query.getResultList();
-//
-//		if (list.size() > 0)
-//			previousAudit = list.get(0);
-//
-//		return previousAudit;
-//	}
-//
+	public ContractorAudit findPreviousAudit(ContractorAudit audit) {
+		ContractorAudit previousAudit = null;
+
+		if (audit.getAuditType().isRenewable()) {
+			return null;
+		}
+
+		if (audit.getAuditType().isHasMultiple() && audit.getAuditType().getId() != AuditType.ANNUALADDENDUM) {
+			return null;
+		}
+
+		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = :conId "
+				+ " AND t.auditType.id = :auditTypeId AND t.creationDate < :creationDate "
+				+ " ORDER BY t.creationDate DESC");
+		query.setParameter("conId", audit.getContractorAccount().getId());
+		query.setParameter("auditTypeId", audit.getAuditType().getId());
+		query.setParameter("creationDate", audit.getCreationDate());
+		List<ContractorAudit> list = query.getResultList();
+
+		if (list.size() > 0)
+			previousAudit = list.get(0);
+
+		return previousAudit;
+	}
+
 	public List<ContractorAudit> findSubsequentAudits(ContractorAudit conAudit) {
 		Query query = em.createQuery("SELECT ca FROM ContractorAudit ca WHERE ca.previousAudit = :conAudit " +
 				"ORDER BY ca.creationDate DESC");

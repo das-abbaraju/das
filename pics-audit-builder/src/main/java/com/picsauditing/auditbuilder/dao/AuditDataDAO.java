@@ -3,9 +3,13 @@ package com.picsauditing.auditbuilder.dao;
 import com.picsauditing.auditbuilder.entities.AuditData;
 import com.picsauditing.auditbuilder.entities.AuditQuestion;
 import com.picsauditing.auditbuilder.entities.ContractorAccount;
+import com.picsauditing.auditbuilder.entities.ContractorAudit;
+import com.picsauditing.auditbuilder.util.AnswerMap;
 
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -195,18 +199,18 @@ public class AuditDataDAO extends PicsDAO {
 //		return mapData(query.getResultList());
 //	}
 //
-//	public AnswerMap findAnswersByAuditAndQuestions(ContractorAudit audit, Collection<Integer> questionIds) {
-//		if (questionIds.size() == 0) {
-//			return new AnswerMap(Collections.<AuditData> emptyList());
-//		}
-//
-//		Query query = em.createQuery("SELECT d FROM AuditData d"
-//				+ " WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
-//		query.setParameter("auditID", audit.getId());
-//		query.setParameter("questionList", questionIds);
-//		return mapData(query.getResultList());
-//	}
-//
+	public AnswerMap findAnswersByAuditAndQuestions(ContractorAudit audit, Collection<Integer> questionIds) {
+		if (questionIds.size() == 0) {
+			return new AnswerMap(Collections.<AuditData> emptyList());
+		}
+
+		Query query = em.createQuery("SELECT d FROM AuditData d"
+				+ " WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
+		query.setParameter("auditID", audit.getId());
+		query.setParameter("questionList", questionIds);
+		return mapData(query.getResultList());
+	}
+
 //	public List<AuditData> findAnswerByConQuestions(int conID, Collection<Integer> questionIds) {
 //		Query query = em
 //				.createQuery("SELECT d FROM AuditData d WHERE d.audit.contractorAccount.id = ? "
@@ -258,15 +262,10 @@ public class AuditDataDAO extends PicsDAO {
 //		return query.getResultList();
 //	}
 //
-//	/**
-//	 * Convert a ResultList into an AnswerMap
-//	 *
-//	 * @return
-//	 */
-//	static private AnswerMap mapData(List<AuditData> result) {
-//		return new AnswerMap(result);
-//	}
-//
+	static private AnswerMap mapData(List<AuditData> result) {
+		return new AnswerMap(result);
+	}
+
 //	public AuditData findAnswerByConQuestion(int conID, int questionID) {
 //		Query query = em
 //				.createQuery("SELECT d FROM AuditData d "
@@ -282,18 +281,18 @@ public class AuditDataDAO extends PicsDAO {
 //		}
 //	}
 //
-//	public AuditData findAnswerByAuditQuestion(int auditID, int questionID) {
-//		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.id = ? "
-//				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
-//		query.setParameter(1, auditID);
-//		query.setParameter(2, questionID);
-//		try {
-//			return (AuditData) query.getSingleResult();
-//		} catch (NoResultException nre) {
-//			return null;
-//		}
-//	}
-//
+	public AuditData findAnswerByAuditQuestion(int auditID, int questionID) {
+		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.id = ? "
+				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
+		query.setParameter(1, auditID);
+		query.setParameter(2, questionID);
+		try {
+			return (AuditData) query.getSingleResult();
+		} catch (NoResultException nre) {
+			return null;
+		}
+	}
+
 //	public List<AuditData> findByOptionGroupID(int optionGroupID) {
 //		Query query = em.createQuery("FROM AuditData d WHERE d.question.option.id = ?");
 //		query.setParameter(1, optionGroupID);

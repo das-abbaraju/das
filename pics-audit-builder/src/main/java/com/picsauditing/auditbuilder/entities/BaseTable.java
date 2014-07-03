@@ -1,5 +1,7 @@
 package com.picsauditing.auditbuilder.entities;
 
+import com.picsauditing.auditbuilder.permissions.Permissions;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -9,11 +11,11 @@ import java.util.Date;
 public abstract class BaseTable implements Serializable/*, JSONable, Autocompleteable, JSONAware, Translatable, RowsIdentifiableByKey*/ {
 
     protected int id;
-//    protected User createdBy;
-//    protected User updatedBy;
+    protected User createdBy;
+    protected User updatedBy;
     protected Date creationDate;
-//    protected Date updateDate;
-//
+    protected Date updateDate;
+
 //    public BaseTable() {
 //    }
 //
@@ -48,26 +50,26 @@ public abstract class BaseTable implements Serializable/*, JSONable, Autocomplet
 //        return getI18nKey() + "." + property;
 //    }
 //
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "createdBy", nullable = true)
-//    public User getCreatedBy() {
-//        return createdBy;
-//    }
-//
-//    public void setCreatedBy(User createdBy) {
-//        this.createdBy = createdBy;
-//    }
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "updatedBy", nullable = true)
-//    public User getUpdatedBy() {
-//        return updatedBy;
-//    }
-//
-//    public void setUpdatedBy(User updatedBy) {
-//        this.updatedBy = updatedBy;
-//    }
-//
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "createdBy", nullable = true)
+    public User getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "updatedBy", nullable = true)
+    public User getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(User updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
 //    @Transient
 //    public User getUpdatedBy2() {
 //        if (getUpdatedBy() == null) {
@@ -93,51 +95,51 @@ public abstract class BaseTable implements Serializable/*, JSONable, Autocomplet
         this.creationDate = creationDate;
     }
 
-//    @Temporal(TemporalType.TIMESTAMP)
-//    public Date getUpdateDate() {
-//        return updateDate;
-//    }
-//
-//    public void setUpdateDate(Date updateDate) {
-//        this.updateDate = updateDate;
-//    }
-//
-//    public void setAuditColumns() {
-//        updateDate = new Date();
-//
-//        if (createdBy == null) {
-//            createdBy = updatedBy;
-//        }
-//        if (creationDate == null) {
-//            creationDate = updateDate;
-//        }
-//    }
-//
-//    public void setAuditColumns(User user) {
-//        if (user != null) {
-//            updatedBy = user;
-//        }
-//
-//        setAuditColumns();
-//    }
-//
-//    public void setAuditColumns(Permissions permissions) {
-//        if (permissions == null) {
-//            setAuditColumns();
-//            return;
-//        }
-//        int userID = permissions.getUserId();
-//        if (permissions.getAdminID() > 0) {
-//            userID = permissions.getAdminID();
-//        }
-//
-//        if (userID == 0) {
-//            userID = User.SYSTEM;
-//        }
-//
-//        setAuditColumns(new User(userID));
-//    }
-//
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public void setAuditColumns() {
+        updateDate = new Date();
+
+        if (createdBy == null) {
+            createdBy = updatedBy;
+        }
+        if (creationDate == null) {
+            creationDate = updateDate;
+        }
+    }
+
+    public void setAuditColumns(User user) {
+        if (user != null) {
+            updatedBy = user;
+        }
+
+        setAuditColumns();
+    }
+
+    public void setAuditColumns(Permissions permissions) {
+        if (permissions == null) {
+            setAuditColumns();
+            return;
+        }
+        int userID = permissions.getUserId();
+        if (permissions.getAdminID() > 0) {
+            userID = permissions.getAdminID();
+        }
+
+        if (userID == 0) {
+            userID = User.SYSTEM;
+        }
+
+        setAuditColumns(new User(userID));
+    }
+
 //    @Transient
 //    public JSONObject toJSON() {
 //        return toJSON(false);

@@ -20,7 +20,7 @@ public class ContractorAudit extends BaseTable {
 //	private Logger logger = LoggerFactory.getLogger(ContractorAudit.class);
 //
 	private AuditType auditType;
-//	private ContractorAccount contractorAccount;
+	private ContractorAccount contractorAccount;
 //	private Employee employee;
 	private Date expiresDate;
 	private Date effectiveDate;
@@ -29,12 +29,12 @@ public class ContractorAudit extends BaseTable {
 //	private Date assignedDate;
 //	private Date paidDate;
 	private OperatorAccount requestingOpAccount;
-//	private int score;
+	private int score;
 	private boolean manuallyAdded;
 //	private boolean needsIndexing = true;
 	private String auditFor;
-//	private Date lastRecalculation;
-//
+	private Date lastRecalculation;
+
 //	private Date contractorConfirm;
 //	private Date auditorConfirm;
 	private Date scheduledDate;
@@ -57,8 +57,8 @@ public class ContractorAudit extends BaseTable {
 	private List<AuditData> data = new ArrayList<>();
 	private List<ContractorAuditOperator> operators = new ArrayList<>();
 //	private Map<AuditStatus, Integer> caoStats = null;
-//	private ContractorAudit previousAudit;
-//
+	private ContractorAudit previousAudit;
+
 	@ManyToOne
 	@JoinColumn(name = "auditTypeID")
 	public AuditType getAuditType() {
@@ -69,16 +69,16 @@ public class ContractorAudit extends BaseTable {
 		this.auditType = auditType;
 	}
 
-//	@ManyToOne
-//	@JoinColumn(name = "conID")
-//	public ContractorAccount getContractorAccount() {
-//		return contractorAccount;
-//	}
-//
-//	public void setContractorAccount(ContractorAccount contractor) {
-//		this.contractorAccount = contractor;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "conID")
+	public ContractorAccount getContractorAccount() {
+		return contractorAccount;
+	}
+
+	public void setContractorAccount(ContractorAccount contractor) {
+		this.contractorAccount = contractor;
+	}
+
 //	@ManyToOne
 //	@NotFound(action = NotFoundAction.IGNORE)
 //	@JoinColumn(name = "employeeID")
@@ -157,16 +157,16 @@ public class ContractorAudit extends BaseTable {
 //		this.closingAuditor = closingAuditor;
 //	}
 //
-//	@ManyToOne
-//	@JoinColumn(name = "previousAuditID")
-//	public ContractorAudit getPreviousAudit() {
-//		return previousAudit;
-//	}
-//
-//	public void setPreviousAudit(ContractorAudit previousAudit) {
-//		this.previousAudit = previousAudit;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "previousAuditID")
+	public ContractorAudit getPreviousAudit() {
+		return previousAudit;
+	}
+
+	public void setPreviousAudit(ContractorAudit previousAudit) {
+		this.previousAudit = previousAudit;
+	}
+
 //	@Temporal(TemporalType.TIMESTAMP)
 //	@ReportField(type = FieldType.Date)
 //	public Date getAssignedDate() {
@@ -233,20 +233,14 @@ public class ContractorAudit extends BaseTable {
 //		this.auditLocation = auditLocation;
 //	}
 //
-//	/**
-//	 * We may need to move this over to CAO someday
-//	 *
-//	 * @return
-//	 */
-//	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
-//	public int getScore() {
-//		return score;
-//	}
-//
-//	public void setScore(int score) {
-//		this.score = score;
-//	}
-//
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 //	// Child tables
 //
 	@OneToMany(mappedBy = "audit", cascade = { CascadeType.ALL })
@@ -284,19 +278,6 @@ public class ContractorAudit extends BaseTable {
 //			return true;
 //
 //		return false;
-//	}
-//
-//	@Transient
-//	public Date getValidDate() {
-//		if (auditType.isAnnualAddendum())
-//			return effectiveDate;
-//		if (hasCaoStatusAfter(AuditStatus.Incomplete)) {
-//			if (effectiveDate == null)
-//				return new Date();
-//			else
-//				return effectiveDate;
-//		} else
-//			return new Date();
 //	}
 //
 //	@Transient
@@ -401,14 +382,14 @@ public class ContractorAudit extends BaseTable {
 		this.auditFor = auditFor;
 	}
 
-//	public Date getLastRecalculation() {
-//		return lastRecalculation;
-//	}
-//
-//	public void setLastRecalculation(Date lastRecalculation) {
-//		this.lastRecalculation = lastRecalculation;
-//	}
-//
+	public Date getLastRecalculation() {
+		return lastRecalculation;
+	}
+
+	public void setLastRecalculation(Date lastRecalculation) {
+		this.lastRecalculation = lastRecalculation;
+	}
+
 //	@Transient
 //	public String getFullAddress() {
 //		if (Strings.isEmpty(address))
@@ -611,15 +592,6 @@ public class ContractorAudit extends BaseTable {
 //	}
 //
 //	@Transient
-//	public boolean hasCaoStatusBefore(AuditStatus auditStatus) {
-//		for (ContractorAuditOperator cao : this.operators) {
-//			if (cao.isVisible() && cao.getStatus().before(auditStatus))
-//				return true;
-//		}
-//		return false;
-//	}
-//
-//	@Transient
 //	public boolean isVisibleTo(Permissions permissions) {
 //		if (permissions.isContractor())
 //			return getAuditType().isCanContractorView();
@@ -804,19 +776,6 @@ public class ContractorAudit extends BaseTable {
 //			return true;
 //		}
 //
-//		return false;
-//	}
-//
-//	@Transient
-//	public boolean pqfIsOkayToChangeCaoStatus(ContractorAuditOperator cao) {
-//		if (auditType.isPicsPqf() && cao.getPercentVerified() == 100) {
-//			for (AuditData data : getData()) {
-//				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF && data.isUnverified()) {
-//					return false;
-//				}
-//			}
-//			return true;
-//		}
 //		return false;
 //	}
 //

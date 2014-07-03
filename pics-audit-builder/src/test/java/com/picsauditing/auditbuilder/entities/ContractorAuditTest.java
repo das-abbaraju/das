@@ -3,6 +3,7 @@ package com.picsauditing.auditbuilder.entities;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.auditbuilder.permissions.Permissions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,7 +17,7 @@ public class ContractorAuditTest {
 	private ContractorAudit contractorAudit;
 
 	@Mock
-	Permissions permissions;
+    Permissions permissions;
 
 	@Before
 	public void setUp() throws Exception {

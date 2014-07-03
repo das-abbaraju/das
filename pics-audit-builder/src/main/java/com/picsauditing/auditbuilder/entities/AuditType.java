@@ -24,10 +24,10 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 	public static final int WELCOME = 9;
 	public static final int ANNUALADDENDUM = 11;
 //    public static final int EXCESS_LIABILITY = 16;
-//
-//	// AKA Competency Review
-//	public static final int INTEGRITYMANAGEMENT = 17;
-//
+
+	// AKA Competency Review
+	public static final int INTEGRITYMANAGEMENT = 17;
+
 //	// AKA Training Verification
 //	public static final int IMPLEMENTATIONAUDITPLUS = 29;
 //
@@ -38,7 +38,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //	public static final int BPIISNCASEMGMT = 96;
 //	public static final int HSE_COMPETENCY = 99;
 //	public static final int HSE_COMPETENCY_REVIEW = 100;
-//	public static final int SHELL_COMPETENCY_REVIEW = 100;
+	public static final int SHELL_COMPETENCY_REVIEW = 100;
 //	public static final int WA_STATE_VERIFICATION = 176;
 //	public static final int PQF_SUNCOR = 195;
 	public static final int IMPORT_PQF = 232;
@@ -46,7 +46,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //	public static final int ISN_CAN_QUAL_PQF = 270;
 //	public static final int COMPLYWORKS_PQF = 271;
 //	public static final int ISN_US_PQF = 281;
-//	public static final int IEC_AUDIT = 313;
+	public static final int IEC_AUDIT = 313;
 //	public static final int IHG_INSURANCE_QUESTIONAIRE = 509;
 	public static final int SSIP = 514;
 //
@@ -59,7 +59,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 //	protected int displayOrder = 100;
 //	protected String description;
-//	protected boolean hasMultiple;
+	protected boolean hasMultiple;
 //	protected boolean isScheduled;
 //	protected boolean hasAuditor;
 //	protected boolean canContractorView;
@@ -67,11 +67,11 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //	protected boolean canOperatorView;
 	protected boolean renewable = true;
 //	protected boolean scoreable = false;
-//	protected Integer monthsToExpire;
+	protected Integer monthsToExpire;
 //	protected Account account;
 //	protected OpPerms editPermission;
-//	protected Workflow workFlow;
-//	protected ScoreType scoreType;
+	protected Workflow workFlow;
+	protected ScoreType scoreType;
 //	protected User assignAudit;
 //	protected User editAudit;
 //	protected String assigneeLabel;
@@ -164,19 +164,14 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //		this.description = description;
 //	}
 //
-//	/**
-//	 * More than one audit of this type can be active for a contractor at a time
-//	 *
-//	 * @return
-//	 */
-//	public boolean isHasMultiple() {
-//		return hasMultiple;
-//	}
-//
-//	public void setHasMultiple(boolean hasMultiple) {
-//		this.hasMultiple = hasMultiple;
-//	}
-//
+	public boolean isHasMultiple() {
+		return hasMultiple;
+	}
+
+	public void setHasMultiple(boolean hasMultiple) {
+		this.hasMultiple = hasMultiple;
+	}
+
 //	@Column(name = "isScheduled")
 //	@ReportField(type = FieldType.Boolean)
 //	public boolean isScheduled() {
@@ -220,15 +215,14 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //		this.canOperatorView = canOperatorView;
 //	}
 //
-//	@ReportField(type = FieldType.Integer, importance = FieldImportance.Average)
-//	public Integer getMonthsToExpire() {
-//		return monthsToExpire;
-//	}
-//
-//	public void setMonthsToExpire(Integer monthsToExpire) {
-//		this.monthsToExpire = monthsToExpire;
-//	}
-//
+	public Integer getMonthsToExpire() {
+		return monthsToExpire;
+	}
+
+	public void setMonthsToExpire(Integer monthsToExpire) {
+		this.monthsToExpire = monthsToExpire;
+	}
+
 	public boolean isRenewable() {
 		return renewable;
 	}
@@ -427,35 +421,25 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //		return getName() + "(" + id + ")";
 //	}
 //
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "workflowID")
-//	public Workflow getWorkFlow() {
-//		return workFlow;
-//	}
-//
-//	public void setWorkFlow(Workflow workFlow) {
-//		this.workFlow = workFlow;
-//	}
-//
-//	@Enumerated(EnumType.STRING)
-//	public ScoreType getScoreType() {
-//		return scoreType;
-//	}
-//
-//	public void setScoreType(ScoreType scoreType) {
-//		this.scoreType = scoreType;
-//	}
-//
-//	/**
-//	 * @return boolean indicating whether or not this Audit Type can be scored.
-//	 *         Used for implementing audit score.
-//	 */
-//	@Transient
-//	@ReportField(type = FieldType.Boolean)
-//	public boolean isScoreable() {
-//		return scoreType != null;
-//	}
-//
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "workflowID")
+	public Workflow getWorkFlow() {
+		return workFlow;
+	}
+
+	public void setWorkFlow(Workflow workFlow) {
+		this.workFlow = workFlow;
+	}
+
+	@Enumerated(EnumType.STRING)
+	public ScoreType getScoreType() {
+		return scoreType;
+	}
+
+	public void setScoreType(ScoreType scoreType) {
+		this.scoreType = scoreType;
+	}
+
 //	@Override
 //	@Transient
 //	public String getAutocompleteItem() {

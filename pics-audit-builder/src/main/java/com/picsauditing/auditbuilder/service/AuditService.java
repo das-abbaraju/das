@@ -1,8 +1,11 @@
 package com.picsauditing.auditbuilder.service;
 
 import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.entities.QuestionFunction.FunctionInput;
+import com.picsauditing.auditbuilder.permissions.Permissions;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
+import com.picsauditing.auditbuilder.util.AnswerMap;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -80,7 +83,11 @@ public class AuditService {
 		return auditRule.getQuestionAnswer().equals(answer);
 	}
 
-	public static boolean isVerified(AuditData auditData) {
+    public static boolean isUnverified(AuditData auditData) {
+        return auditData.getDateVerified() == null;
+    }
+
+    public static boolean isVerified(AuditData auditData) {
 		return auditData.getDateVerified() != null;
 	}
 
@@ -211,4 +218,232 @@ public class AuditService {
 		return false;
 	}
 
+	public static boolean hasCaoStatusBefore(ContractorAudit contractorAudit, AuditStatus auditStatus) {
+		for (ContractorAuditOperator cao : contractorAudit.getOperators()) {
+			if (cao.isVisible() && cao.getStatus().before(auditStatus))
+				return true;
+		}
+		return false;
+	}
+
+	public static ContractorAuditOperatorWorkflow changeStatus(ContractorAuditOperator contractorAuditOperator, AuditStatus auditStatus, Permissions permissions) {
+		if (auditStatus.equals(contractorAuditOperator.getStatus()))
+			return null;
+
+		ContractorAuditOperatorWorkflow caow = new ContractorAuditOperatorWorkflow();
+		caow.setCao(contractorAuditOperator);
+		caow.setPreviousStatus(contractorAuditOperator.getStatus());
+		caow.setStatus(auditStatus);
+		caow.setAuditColumns(permissions);
+
+        contractorAuditOperator.setAuditColumns(permissions);
+        contractorAuditOperator.setStatusChangedDate(new Date());
+		contractorAuditOperator.setStatus(auditStatus);
+
+		if (contractorAuditOperator.getStatus() != AuditStatus.Incomplete) {
+            contractorAuditOperator.setAuditSubStatus(null);
+		}
+
+		if (contractorAuditOperator.getAudit().getAuditType().getId() == AuditType.PQF || contractorAuditOperator.getAudit().getAuditType().getId() == AuditType.ANNUALADDENDUM)
+			return caow;
+
+		if (auditStatus == AuditStatus.Pending)
+			return caow;
+
+		if (contractorAuditOperator.getAudit().getEffectiveDate() == null)
+            contractorAuditOperator.getAudit().setEffectiveDate(new Date());
+
+		return caow;
+	}
+
+	public static boolean isVisibleInAudit(AuditQuestion auditQuestion, ContractorAudit audit) {
+		for (AuditCatData category : audit.getCategories()) {
+			if (category.getCategory().getId() == auditQuestion.getCategory().getId()) {
+				return category.isApplies();
+			}
+		}
+
+		return false;
+	}
+
+    public static WorkflowStep getFirstStep(Workflow workflow) {
+        for (WorkflowStep step : workflow.getSteps()) {
+            if (step.getOldStatus() == null)
+                return step;
+        }
+        return null;
+    }
+
+	public static boolean pqfIsOkayToChangeCaoStatus(ContractorAudit contractorAudit, ContractorAuditOperator cao) {
+		if (contractorAudit.getAuditType().getId() == AuditType.PQF && cao.getPercentVerified() == 100) {
+			for (AuditData data : contractorAudit.getData()) {
+				if (data.getQuestion().getId() == AuditQuestion.MANUAL_PQF && isUnverified(data)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+    public static AuditCategory getTopParent(AuditCategory auditCategory) {
+        if (auditCategory.getParent() != null) {
+            return getTopParent(auditCategory.getParent());
+        }
+
+        return auditCategory;
+    }
+
+	public static Date getValidDate(ContractorAudit contractorAudit) {
+		if (contractorAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM)
+			return contractorAudit.getEffectiveDate();
+		if (hasCaoStatusAfter(contractorAudit, AuditStatus.Incomplete)) {
+			if (contractorAudit.getEffectiveDate() == null)
+				return new Date();
+			else
+				return contractorAudit.getEffectiveDate();
+		} else
+			return new Date();
+	}
+
+	public static boolean isValidQuestion(AuditQuestion auditQuestion, Date validDate) {
+		if (validDate.after(auditQuestion.getEffectiveDate()) && validDate.before(auditQuestion.getExpirationDate())) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isVisible(AuditQuestion auditQuestion, AnswerMap answerMap) {
+		if (auditQuestion.getVisibleQuestion() != null) {
+			boolean questionIsVisible = isVisible(auditQuestion, answerMap.get(auditQuestion.getVisibleQuestion().getId()));
+			AuditQuestion q = auditQuestion.getVisibleQuestion();
+
+			while (q != null && questionIsVisible) {
+				if (q.getVisibleQuestion() != null) {
+					questionIsVisible = isVisible(q, answerMap.get(q.getVisibleQuestion().getId()));
+				}
+
+				q = q.getVisibleQuestion();
+			}
+			return questionIsVisible;
+		}
+		return true;
+	}
+
+	public static boolean isVisible(AuditQuestion auditQuestion, AuditData data) {
+		if (auditQuestion.getVisibleQuestion() != null && auditQuestion.getVisibleAnswer() != null) {
+			String answer = null;
+			if (data != null) {
+				answer = data.getAnswer();
+			}
+			return testVisibility(answer, auditQuestion.getVisibleAnswer());
+		}
+		return true;
+	}
+
+    private static boolean testVisibility(String answer, String comparisonAnswer) {
+        if (comparisonAnswer.equals("NULL") && Strings.isEmpty(answer)) {
+            return true;
+        }
+        if (comparisonAnswer.equals("NOTNULL") && !Strings.isEmpty(answer)) {
+            return true;
+        }
+        if (comparisonAnswer.equals(answer)) {
+            return true;
+        }
+        return false;
+    }
+
+	public static boolean isAnswered(AuditData auditData) {
+		if (auditData.getAnswer() != null && auditData.getAnswer().length() > 0 && !auditData.getAnswer().equals(DateBean.NULL_DATE_DB)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isScoreable(AuditType auditType) {
+		return auditType.getScoreType() != null;
+	}
+
+	public static boolean isScoreApplies(AuditData auditData) {
+		return getScorePercentage(auditData) >= 0;
+	}
+
+	public static float getScorePercentage(AuditData auditData) {
+		float scorePercentage = 0f;
+		if (auditData.getAnswer() != null && isMultipleChoice(auditData)) {
+			for (AuditOptionValue value : auditData.getQuestion().getOption().getValues()) {
+				if (auditData.getAnswer().equals(getIdentifier(value))) {
+					scorePercentage = getScorePercent(value);
+					break;
+				}
+			}
+		}
+		return scorePercentage;
+	}
+
+	public static boolean isMultipleChoice(AuditData auditData) {
+		return auditData.getQuestion() != null && auditData.getQuestion().getQuestionType().equals("MultipleChoice") && auditData.getQuestion().getOption() != null;
+	}
+
+    public static String getIdentifier(AuditOptionValue auditOptionValue) {
+        if (!Strings.isEmpty(auditOptionValue.getUniqueCode())) {
+            return auditOptionValue.getUniqueCode();
+        }
+        return auditOptionValue.getId() + "";
+    }
+
+	public static float getScorePercent(AuditOptionValue auditOptionValue) {
+		if (getMaxScore(auditOptionValue.getGroup()) == 0) {
+			return 0;
+		}
+		return (((float) auditOptionValue.getScore()) / getMaxScore(auditOptionValue.getGroup()));
+	}
+
+	public static int getMaxScore(AuditOptionGroup auditOptionGroup) {
+        int maxScore = 0;
+
+        for (AuditOptionValue value : auditOptionGroup.getValues()) {
+            if (maxScore < value.getScore())
+                maxScore = value.getScore();
+        }
+
+		return maxScore;
+	}
+
+	public static float getScoreValue(AuditData auditData) {
+		return Math.round(getScorePercentage(auditData) * auditData.getQuestion().getScoreWeight());
+	}
+
+    public static boolean isOK(AuditData auditData) {
+        if (!auditData.getQuestion().isHasRequirement())
+            return true;
+
+        if (auditData.getAnswer() == null || auditData.getQuestion().getOkAnswer() == null)
+            return false;
+
+        if (auditData.getQuestion().getOkAnswer().contains(auditData.getAnswer()))
+            return true;
+
+        return false;
+    }
+
+    public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap) {
+        return calculate(auditQuestionFunction, answerMap, null);
+    }
+
+	public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, String currentAnswer) {
+            Object result;
+		try {
+            FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(auditQuestionFunction.getWatchers()).build();
+            input.setCurrentAnswer(currentAnswer);
+            input.setExpression(auditQuestionFunction.getExpression());
+			result = auditQuestionFunction.getFunction().calculate(input);
+		}
+		catch (NumberFormatException e) {
+			result = "Audit.missingParameter";
+		}
+		return result;
+	}
 }

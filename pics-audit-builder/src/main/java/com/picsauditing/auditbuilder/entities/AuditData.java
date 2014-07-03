@@ -88,38 +88,8 @@ public class AuditData extends BaseTable implements java.io.Serializable/*, Comp
 		this.dateVerified = dateVerified;
 	}
 
-//	@Transient
-//	public boolean isUnverified() {
-//		return getDateVerified() == null;
-//	}
-//
 //	public void setVerified(boolean inValue) {
 //		this.setDateVerified(inValue ? new Date() : null);
-//	}
-//
-//	@Transient
-//	/**
-//	 * Is the answer filled in with data or not?
-//	 */
-//	public boolean isAnswered() {
-//		if (getAnswer() != null && getAnswer().length() > 0 && !getAnswer().equals(DateBean.NULL_DATE_DB)) {
-//			return true;
-//		}
-//		return false;
-//	}
-//
-//	@Transient
-//	public boolean isOK() {
-//		if (!question.isHasRequirement())
-//			return true;
-//
-//		if (answer == null || question.getOkAnswer() == null)
-//			return false;
-//
-//		if (question.getOkAnswer().contains(answer))
-//			return true;
-//
-//		return false;
 //	}
 //
 //	@Enumerated(EnumType.STRING)
@@ -193,11 +163,6 @@ public class AuditData extends BaseTable implements java.io.Serializable/*, Comp
 //		return "" + getQuestion().getId();
 //	}
 //
-//	@Transient
-//	public boolean isMultipleChoice() {
-//		return question != null && question.getQuestionType().equals("MultipleChoice") && question.getOption() != null;
-//	}
-//
 //	@Override
 //	public int hashCode() {
 //		final int PRIME = 31;
@@ -213,20 +178,6 @@ public class AuditData extends BaseTable implements java.io.Serializable/*, Comp
 //		return 0;
 //	}
 //
-//	@Transient
-//	public float getScorePercentage() {
-//		float scorePercentage = 0f;
-//		if (answer != null && isMultipleChoice()) {
-//			for (AuditOptionValue value : question.getOption().getValues()) {
-//				if (answer.equals(value.getIdentifier())) {
-//					scorePercentage = value.getScorePercent();
-//					break;
-//				}
-//			}
-//		}
-//		return scorePercentage;
-//	}
-//
 //    @Transient
 //    public float getStraightScoreValue() {
 //        float straightScoreValue = 0f;
@@ -240,16 +191,6 @@ public class AuditData extends BaseTable implements java.io.Serializable/*, Comp
 //        }
 //        return straightScoreValue;
 //    }
-//
-//	@Transient
-//	public float getScoreValue() {
-//		return Math.round(getScorePercentage() * question.getScoreWeight());
-//	}
-//
-//	@Transient
-//	public boolean isScoreApplies() {
-//		return getScorePercentage() >= 0;
-//	}
 //
 //	@Transient
 //	public List<String> getTaggitList() {
