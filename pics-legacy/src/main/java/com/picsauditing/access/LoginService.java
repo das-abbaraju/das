@@ -10,6 +10,10 @@ import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -20,9 +24,10 @@ import java.util.Calendar;
 @SuppressWarnings("serial")
 public class LoginService {
 
-	protected static final int MAX_FAILED_ATTEMPTS = 6;
+    protected static final int MAX_FAILED_ATTEMPTS = 6;
+    public static final String PICS_CORP = "@PICS.CORP";
 
-	@Autowired
+    @Autowired
 	protected UserService userService;
     @Autowired
     private AppUserService appUserService;
@@ -30,6 +35,9 @@ public class LoginService {
     private ProfileEntityService profileService;
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
     // todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public User loginNormally(String username, String password) throws LoginException {
@@ -51,16 +59,33 @@ public class LoginService {
 	}
 
 	public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
-		verifyUserExists(user, username);
-		verifyUserStatusForLogin(user);
-		verifyPasswordIsCorrect(user, password);
-		verifyPasswordIsNotExpired(user);
+        boolean result = adLDAPLoginAuthentication(username, password);
+        if(!result) {
+            verifyUserExists(user, username);
+            verifyUserStatusForLogin(user);
+            verifyPasswordIsCorrect(user, password);
+            verifyPasswordIsNotExpired(user);
+        }
 
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
 
 		return loginContext;
 	}
+
+    private boolean adLDAPLoginAuthentication(String username, String password) throws FailedLoginException{
+        ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
+        String ldapUser = username + PICS_CORP;
+        try {
+            Authentication result = ldapActiveDirectoryAuthProvider.authenticate(
+                    new UsernamePasswordAuthenticationToken(ldapUser, password));
+            return result.isAuthenticated();
+        }
+        catch(AuthenticationException ace){
+            throw new FailedLoginException("Bad Credentials for user: " + username);
+        }
+    }
+
 
 	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public LoginContext loginForResetPassword(String username, String key) throws LoginException {

@@ -17,6 +17,14 @@
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
 
+    <bean id="ldapActiveDirectoryAuthProvider" class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
+        <constructor-arg value="pics.corp" />
+        <constructor-arg value="ldap://gold.pics.corp:389/" />
+        <!--   <beans:property name="authoritiesMapper" ref="grantedAuthoritiesMapper" /> -->
+        <property name="useAuthenticationRequestCredentials" value="true" />
+        <property name="convertSubErrorCodesToExceptions" value="true" />
+    </bean>
+
     <bean id="AsyncTaskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="10"/>
