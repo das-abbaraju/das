@@ -44,18 +44,11 @@
                                 <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
                             </div>
                         </div>
-
                         <div ng-if="!assignments.length" class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
                                 <h4 translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE"></h4>
-
                                 <p translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
-
-                                <p>
-                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE2' | translate }}
-                                    <a translate href="/employee-guard/employee/file" target="_self">{{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LINK' }}</a>
-                                    {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE3' | translate }}
-                                </p>
+                                <p translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE2" translate-values="{ url: '/employee-guard/employee/file', target:'_self'}"></p>
                                 <p>
                                     <a href="#"><i class="icon-question-sign"></i> {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE' | translate }}</a>
                                 </p>

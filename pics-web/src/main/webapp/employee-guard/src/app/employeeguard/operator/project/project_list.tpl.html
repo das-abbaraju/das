@@ -36,7 +36,6 @@
                     </div>
                 </div>
             </header>
-
             <div class="content" ng-class="{no_padding: projects.length > 0}">
                 <div class="table-responsive" ng-if="projects.length > 0">
                     <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
@@ -75,11 +74,8 @@
                     <div class="col-md-8 col-md-offset-2">
                         <div class="alert alert-info">
                             <h4 translate="OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.TITLE"></h4>
-
                             <p translate="OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE"></p>
-
-                            <p>{{ 'OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE2' | translate }} <strong><i class="icon-plus-sign"></i> {{ 'OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE3' | translate }}</strong> {{ 'OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE4' | translate }}</p>
-
+                            <p translate="OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE2" translate-values="{ classname: 'icon-plus-sign'} "></p>
                             <p>
                                 <a href="#"><i class="icon-question-sign"></i> {{ 'OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.LEARN_MORE' | translate }}</a>
                             </p>
