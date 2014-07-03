@@ -3,15 +3,20 @@
         methods: (function () {
             function init() {
                 var $contractor_page = $('.ContractorEdit-page'),
-                    $country_select = $('.country select');
+                    $country_select = $('.country select'),
+                    $billing_country_select = $('.billing-country select'),
+                    selected_country_iso = $country_select.val();
 
                 if ($contractor_page.length) {
                     $contractor_page.on('change', '#save_contractor_hasVatId', toggleVatField);
 
                     $country_select.on('change', updateCountryFields);
 
+                    $billing_country_select.on('change', updateBillingCountryFields);
+
                     (hasVat()) ? showVat() : hideVat();
-                    displayAppropriateFields($country_select.val());
+                    displayAppropriateGeneralFields(selected_country_iso);
+                    displayAppropriateBillingFields(selected_country_iso);
 
                     $('.datepicker').datepicker();
                 }
@@ -34,11 +39,16 @@
                 var $country = $('.country select'),
                     selected_country = $country.val() || '';
 
-                displayAppropriateFields(selected_country);
-                updateBillingCountry();
-                updateCountrySubdivision();
-                updateCountryBillingSubdivision();
-                updateZipcode(selected_country);
+                displayAppropriateGeneralFields(selected_country);
+                updateCountrySubdivision(selected_country);
+            }
+
+            function updateBillingCountryFields() {
+                var $billing_country = $('.billing-country select'),
+                    selected_country = $billing_country.val() || '';
+
+                displayAppropriateBillingFields(selected_country);
+                updateBillingCountrySubdivision(selected_country);
             }
 
             // Other Methods
@@ -68,12 +78,14 @@
                 vat.wrapper.hide();
             }
 
-            function displayAppropriateFields(selected_country) {
+            function displayAppropriateGeneralFields(selected_country) {
                 if (selected_country == 'AE') {
                     $('#tax_li').hide();
+                    $('#taxIdItem').hide();
                     $('#zip_li').hide();
                 } else {
                     $('#tax_li').show();
+                    $('#taxIdItem').show();
                     $('#zip_li').show();
 
                     if (selected_country == 'US'){
@@ -89,50 +101,48 @@
                 }
             }
 
-            function updateBillingCountry() {
-                $('#billing_country').val($('.country select option:selected').text());
+            function displayAppropriateBillingFields(selected_country) {
+                if (selected_country == 'AE') {
+                    $('#billing_zip_li').hide();
+                } else {
+                    $('#billing_zip_li').show();
+                }
             }
 
-            function updateCountrySubdivision() {
+            function updateCountrySubdivision(countryIsoCode) {
                 var countrySubdivisionString = $('#countrySubdivision_li').attr('data'),
                     prefix = '',
                     element = '#countrySubdivision_li';
 
-                updateCountrySubdivisionFor(countrySubdivisionString, prefix, element);
+                updateCountrySubdivisionFor(countryIsoCode, countrySubdivisionString, prefix, element);
             }
 
-            function updateCountryBillingSubdivision() {
+            function updateBillingCountrySubdivision(countryIsoCode) {
                 var countrySubdivisionString = $('#billing_countrySubdivision_li').attr('data'),
                     prefix = 'contractor.billingCountrySubdivision',
                     element = '#billing_countrySubdivision_li';
 
-                updateCountrySubdivisionFor(countrySubdivisionString, prefix, element);
+                updateCountrySubdivisionFor(countryIsoCode, countrySubdivisionString, prefix, element);
             }
 
-            function updateCountrySubdivisionFor(countrySubdivisionString, prefix, element) {
-                var $country = $('.country select'),
-                    selected_country = $country.val() || '';
-
-                if (selected_country) {
+            function updateCountrySubdivisionFor(countryIsoCode, countrySubdivisionString, prefix, element) {
+                if (countryIsoCode) {
                     PICS.ajax({
                         url: 'CountrySubdivisionListAjax.action',
                         data: {
-                            countryString: selected_country,
+                            countryString: countryIsoCode,
                             countrySubdivisionString: countrySubdivisionString,
                             needsSuffix: false,
                             prefix: prefix
                         },
                         success: function(data, textStatus, XMLHttpRequest) {
                             $(element).html(data);
+                            $(element).find('select').select2({
+                                width: 'resolve'
+                            });
                         }
                     });
                 }
-            }
-
-            function updateZipcode(selected_country) {
-                var Country = PICS.getClass('country.Country');
-
-                Country.modifyZipcodeDisplay(selected_country);
             }
 
             return {
