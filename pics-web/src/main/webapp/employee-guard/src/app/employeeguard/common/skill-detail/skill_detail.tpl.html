@@ -1,18 +1,24 @@
 <div ng-controller="skillDetailCtrl" class="skill-detail-page">
     <div class="container">
-        <pagetitle title="Skill: {{ skill.name }}"></pagetitle>
+        <pagetitle title="{{ 'EMPLOYEE_SKILL.TITLE' | translate }} {{ skill.name }}"></pagetitle>
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb" ng-if="userType == 'corporate' || userType == 'operator'">
-                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li><a href="/employee-guard/operators/dashboard" translate="EMPLOYEE_SKILL.BREADCRUMB.EMPLOYEEGUARD"></a></li>
                         <li><a href="/employee-guard/operators/employees/{{ employee.id }}">{{ employee.firstName }} {{employee.lastName}}</a></li>
                         <li class="active">{{ skill.name }}</li>
                     </ol>
                     <ol class="breadcrumb" ng-if="userType == 'contractor'">
-                        <li><a href="/employee-guard/contractor/dashboard">EmployeeGUARD</a></li>
-                        <li><a href="/employee-guard/contractor/employee" target="_self">Employees</a></li>
-                        <li><a href="/employee-guard/contractor/employee/{{ employee.id }}" target="_self">{{ employee.firstName }} {{employee.lastName}}</a></li>
+                        <li>
+                            <a href="/employee-guard/contractor/dashboard" translate="EMPLOYEE_SKILL.BREADCRUMB.EMPLOYEEGUARD"></a>
+                        </li>
+                        <li>
+                            <a href="/employee-guard/contractor/employee" target="_self" translate="EMPLOYEE_SKILL.BREADCRUMB.EMPLOYEES"></a>
+                        </li>
+                        <li>
+                            <a href="/employee-guard/contractor/employee/{{ employee.id }}" target="_self">{{ employee.firstName }} {{employee.lastName}}</a>
+                        </li>
                         <li class="active">{{ skill.name }}</li>
                     </ol>
                 </div>
@@ -23,15 +29,14 @@
             <div class="col-md-9">
                 <section class="employee-guard-section">
                     <h1>
-                        <i class="icon-certificate icon-large"></i>Skill
+                        <i class="icon-certificate icon-large"></i>{{ 'EMPLOYEE_SKILL.SKILL.TITLE' | translate}}
                     </h1>
                     <div class="content">
                         <h2>{{ skill.name }} </h2>
                         <p>{{ skill.description }}</p>
 
                         <div ng-if="skill.skill_type === 'Certification'">
-                            <div ng-if="!skill.file_url" class="alert alert-danger">
-                                <strong>Incomplete!</strong> This required skill has not been completed.
+                            <div ng-if="!skill.file_url" class="alert alert-danger" translate="{{ 'EMPLOYEE.SKILL.SKILL.ALERT' | translate }}">
                             </div>
 
                             <div ng-if="skill.file_url">
@@ -42,12 +47,12 @@
                                     </a>
                                 </p>
                                 <dl class="employee-guard-information">
-                                    <dt class="col-md-3">Verification Date</dt>
+                                    <dt class="col-md-3" translate="EMPLOYEE_SKILL.SKILL.VERIFICATION_DATE"></dt>
                                     <dd class="col-md-9">{{ skill.verification_date }}</dd>
-                                    <dt ng-if="skill.status !== 'Expired'" class="col-md-3">Expires</dt>
-                                    <dt ng-if="skill.status === 'Expired'" class="col-md-3">Expired</dt>
+                                    <dt ng-if="skill.status !== 'Expired'" class="col-md-3" translate="EMPLOYEE_SKILL.SKILL.EXPIRES"></dt>
+                                    <dt ng-if="skill.status === 'Expired'" class="col-md-3" translate="EMPLOYEE_SKILL.SKILL.EXPIRED"></dt>
                                     <dd class="col-md-9">
-                                        <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">Never</span>
+                                        <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}" translate="EMPLOYEE_SKILL.SKILL.NEVER"></span>
                                         <span ng-if="!skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
                                     </dd>
                                 </dl>
@@ -56,16 +61,15 @@
 
                         <div ng-if="skill.skill_type === 'Training'">
                             <dl ng-if="skill.status" class="employee-guard-information">
-                                <dt class="col-md-3">Verification Date</dt>
+                                <dt class="col-md-3" translate="EMPLOYEE_SKILL.SKILL.VERIFICATION_DATE"></dt>
                                 <dd class="col-md-9">{{ skill.verification_date }}</dd>
-                                <dt class="col-md-3">Expires</dt>
+                                <dt class="col-md-3" translate="EMPLOYEE_SKILL.SKILL.EXPIRES"></dt>
                                 <dd class="col-md-9">
-                                    <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">Never</span>
+                                    <span ng-if="skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}" translate="EMPLOYEE_SKILL.SKILL.NEVER"></span>
                                     <span ng-if="!skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
                                 </dd>
                             </dl>
-                            <div ng-if="!skill.status" class="alert alert-danger">
-                                <strong>Incomplete!</strong> This required skill has not been completed.
+                            <div ng-if="!skill.status" class="alert alert-danger" translate="{{ 'EMPLOYEE.SKILL.SKILL.ALERT' | translate }}">
                             </div>
                         </div>
                     </div>
@@ -74,7 +78,7 @@
             <div class="col-md-3">
                 <section class="employee-guard-section">
                     <h1>
-                        <i class="icon-user icon-large"></i>Employee
+                        <i class="icon-user icon-large"></i>{{ 'EMPLOYEE_SKILL.EMPLOYEE.TITLE' | translate }}
                     </h1>
                     <div class="content">
                         <p class="name">{{ employee.firstName }} {{employee.lastName}}</p>
