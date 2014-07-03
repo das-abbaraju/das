@@ -54,9 +54,7 @@
     "OPERATOR.PROJECTS.PROJECTS.END_DATE": "End Date",
     "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.TITLE": "No Projects",
     "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE": "Projects allow for more control over your assignments. You can select what Job Roles will be needed and what companies you'd like assigning employees.",
-    "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE2": "Get started with Projects by selecting",
-    "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE3": "Project",
-    "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE4": "at the top of the page.",
+    "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.MESSAGE2": "Get started with Projects by selecting <strong><i class='{{ classname }}'></i> Project</strong> at the top of the page.",
     "OPERATOR.PROJECTS.PROJECTS.NO_PROJECTS.LEARN_MORE": "Learn more about Projects",
     "OPERATOR.PROJECTS.CORPORATE.PROJECTS.SITE": "Site",
 
@@ -81,72 +79,45 @@
     "EMPLOYEE_SKILL.SKILL.NEVER": "Never",
     "EMPLOYEE_SKILL.EMPLOYEE.TITLE": "Employee",
 
-    "CONTRACTOR": {
-        "DASHBOARD": {
-            "PAGE_TITLE": "EmployeeGUARD",
-            "PAGE_SUBTITLE": "Summary",
-            "SECONDARY_NAV_MENU": {
-                "TRAINING_TRACKER": "TRAINING TRACKER",
-                "EMPLOYEES": "Employees",
-                "EMPLOYEE_ASSIGNMENTS": "Employeee Assignments",
-                "EMPLOYEE_GROUPS": "Employee Groups",
-                "SKILLS": "Skills"
-            },
-            "EMPLOYEE_ASSIGNMENT_STATUS": {
-                "TITLE": "Employee Assignment Status",
-                "NO_EMPLOYEES": {
-                    "TITLE": "No Employees Assigned",
-                    "MESSAGE": "Once you've added your employees, assign them to Job Roles at sites and projects by going to",
-                    "MESSAGE2": "The status of all your employee's assignments will be shown in this seciton so you can monitor how they're doing.",
-                    "LINK": "Employee Assignments",
-                    "LEARN_MORE": "Learn more about Employee Assignments"
-                }
-            },
-            "STATUS_ALERTS": {
-                "TITLE": "Status Alerts",
-                "REQUESTED_EMPLOYEES": "Requested Employees"
-            }
-        }
-    },
-    "EMPLOYEE": {
-        "DASHBOARD": {
-            "SECONDARY_NAV_MENU": {
-                "PROFILE": "Profile",
-                "SKILLS": "Skills",
-                "MY_FILES": "My Files"
-            },
-            "ASSIGNMENT_STATUS": {
-                "TITLE": "Assignment Status",
-                "JOB_ROLE": "Job Role",
-                "JOB_ROLES": "Job Roles",
-                "EMPLOYEE_GROUPS": "Employee Groups",
-                "EMPLOYEE_GROUP": "Employee Group",
-                "NO_ASSIGNMENTS": {
-                    "TITLE": "No Assignments",
-                    "MESSAGE": "Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.",
-                    "MESSAGE2": "You can get a head start by adding certificates or other skill proof ahead of time. Just go to",
-                    "LINK": "My Files",
-                    "MESSAGE3": "and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!",
-                    "LEARN_MORE": "Learn more about Assignments"
-                }
-            }
-        },
-        "SKILLS": {
-            "PAGE_TITLE": "Skills",
-            "BREADCRUMB": {
-                "DASHBOARD": "Dashboard",
-                "SKILLS": "Skills"
-            },
-            "SECONDARY_NAV_MENU": {
-                "ALL": "All"
-            }
-        }
-    },
-    "FEEDBACK": {
-        "TITLE": "Tell us what you think!",
-        "PLACEHOLDER": "Let us know what you think or what issues you've found.",
-        "SEND_FEEDBACK": "Send Feedback",
-        "SENT": "Feedback Sent",
-        "MESSAGE": "Thanks for the heads up! We really appreciate the feedback."
-    }
+    "CONTRACTOR.DASHBOARD.PAGE_TITLE": "EmployeeGUARD",
+    "CONTRACTOR.DASHBOARD.PAGE_SUBTITLE": "Summary",
+    "CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.TRAINING_TRACKER": "Training Tracker",
+    "CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEES": "Employees",
+    "CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEE_ASSIGNMENTS": "Employeee Assignments",
+    "CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.EMPLOYEE_GROUPS": "Employee Groups",
+    "CONTRACTOR.DASHBOARD.SECONDARY_NAV_MENU.SKILLS": "Skills",
+    "CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.TITLE": "Employee Assignment Status",
+    "CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.TITLE": "No Employees Assigned",
+    "CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.MESSAGE": "Once you've added your employees, assign them to Job Roles at sites and projects by going to <a href='{{ url }} ' target='{{ target }}'>Employee Assignments</a>. The status of all your employee's assignments will be shown in this section so you can monitor how they're doing.",
+    "CONTRACTOR.DASHBOARD.EMPLOYEE_ASSIGNMENT_STATUS.NO_EMPLOYEES.LEARN_MORE": "Learn more about Employee Assignments",
+    "CONTRACTOR.DASHBOARD.STATUS_ALERTS.TITLE": "Status Alerts",
+    "CONTRACTOR.DASHBOARD.STATUS_ALERTS.REQUESTED_EMPLOYEES": "Requested Employees",
+
+    "EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.PROFILE": "Profile",
+    "EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.SKILLS": "Skills",
+    "EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.MY_FILES": "My Files",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.TITLE": "Assignment Status",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLE": "Job Role",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLES": "Job Roles",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUPS": "Employee Groups",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUP": "Employee Group",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE": "No Assignments",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE": "Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE2": "You can get a head start by adding certificates or other skill proof ahead of time. Just go to <a href='{{ url }}' target='{{ target }}'>My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!",
+    "EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE": "Learn more about Assignments",
+
+    "EMPLOYEE.SKILLS.PAGE_TITLE": "Skills",
+    "EMPLOYEE.SKILLS.BREADCRUMB.DASHBOARD": "Dashboard",
+    "EMPLOYEE.SKILLS.BREADCRUMB.SKILLS": "Skills",
+    "EMPLOYEE.SKILLS.SECONDARY_NAV_MENU.ALL": "All",
+    "EMPLOYEE.SKILLS.NO_SKILLS.TITLE": "No Required Skills",
+    "EMPLOYEE.SKILLS.NO_SKILLS.MESSAGE": "Right now, no one is requiring any specific skills for you. Once skills are required, they'll show up here and you can complete them.",
+    "EMPLOYEE.SKILLS.NO_SKILLS.MESSAGE2": "You can get a head start on your skills by adding certificates or other skill proof ahead of time. Just go to <a href='{{ url }}' target='{{ target }}'>My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!",
+    "EMPLOYEE.SKILLS.NO_SKILLS.LEARN_MORE": "Learn more about Skills",
+
+    "FEEDBACK.TITLE": "Tell us what you think!",
+    "FEEDBACK.PLACEHOLDER": "Let us know what you think or what issues you've found.",
+    "FEEDBACK.BUTTON.SEND_FEEDBACK": "Send Feedback",
+    "FEEDBACK.ALERT.TITLE": "Feedback Sent",
+    "FEEDBACK.ALERT.MESSAGE": "Thanks for the heads up! We really appreciate the feedback."
 }
