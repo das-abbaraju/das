@@ -14,7 +14,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${project.name}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PAGE_TITLE" /> ${project.name}</s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
     <s:param name="breadcrumb_id">${project.id}</s:param>
 </s:include>
@@ -23,7 +23,7 @@
     <ul class="nav nav-pills nav-stacked col-md-3">
 
         <li class="active">
-            <a href="${contractor_project_assignments}">Project</a>
+            <a href="${contractor_project_assignments}"><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.SECONDARY_NAV_MENU.PROJECT" /></a>
         </li>
         <s:iterator value="contractorProjectAssignmentMatrix.roles" var="contractor_project_role">
             <s:url action="project/{projectId}/assignments/{assignmentId}/role/{id}" var="contractor_project_role_url">
@@ -48,8 +48,8 @@
             <table class="table table-striped table-condensed table-hover">
                 <thead>
                     <tr>
-                        <th>Employee</th>
-                        <th>Title</th>
+                        <th><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.TABLE.EMPLOYEE" /></th>
+                        <th><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.TABLE.TITLE" /></th>
                         <s:iterator value="contractorProjectAssignmentMatrix.skillNames" var="skill_name">
                             <th class="text-center">${skill_name}</th>
                         </s:iterator>
@@ -100,18 +100,18 @@
         <div class="col-md-9">
             <section class="employee-guard-section">
                 <h1>
-                    <i class="icon-map-marker icon-large"></i>Project Status
+                    <i class="icon-map-marker icon-large"></i><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.OVERALL_STATUS" />
                 </h1>
                 <div class="content">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Employees Assigned</h4>
+                                <h4><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES" /></h4>
 
-                                <p>Assign employees by first selecting a Job Role, and then click on the assign icon ( <i class='icon-map-marker'></i> ).  Once an employee is assigned, they'll see the assignment and the required skills that they'll need to complete.</p>
+                                <p><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES_DESC" /></p>
 
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assigning Employees</a>
+                                    <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES_LEARN_MORE" /></a>
                                 </p>
                             </div>
                         </div>

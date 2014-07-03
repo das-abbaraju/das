@@ -10,8 +10,8 @@
 <tw:form formName="contractor_employee_edit" action="${contractor_employee_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3 form-actions">
-            <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success"><s:text name="EMPLOYEE.ASSIGN.CONFIRMATION.SAVE" /></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="EMPLOYEE.ASSIGN.CONFIRMATION.CANCEL" /></tw:button>
         </div>
     </div>
 </tw:form>
