@@ -1,6 +1,5 @@
 package com.picsauditing.access;
 
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
@@ -15,6 +14,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -34,10 +34,12 @@ import static org.mockito.Mockito.*;
 public class LoginServiceTest {
     private LoginService loginService;
 
-	private String username = "joesixpack";
-	private String password = "8675309";
+	private String username = "PICSQA";
+	private String password = "MakeItWork1";
 	private String key = "abc123";
 
+    private static final String LDAP_DOMAIN ="pics.corp" ;
+    private static final String LDAP_URL = "ldap://gold.pics.corp:389/" ;
 	@Mock
 	private UserService userService;
 	@Mock
@@ -59,6 +61,10 @@ public class LoginServiceTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		loginService = new LoginService();
+
+        ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider=
+                new ActiveDirectoryLdapAuthenticationProvider(LDAP_DOMAIN,LDAP_URL);
+        loginService.setLdapActiveDirectoryAuthProvider(ldapActiveDirectoryAuthProvider);
 
 		loginService.userService = userService;
 		setupNormalUser();
@@ -159,11 +165,12 @@ public class LoginServiceTest {
 		loginService.loginNormally(username, password);
 	}
 
-	@Test(expected = AccountNotFoundException.class)
+	@Test(expected = LoginException.class)
 	public void testLoginNormally_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
-		when(userService.loadUserByUsername(username)).thenReturn(null);
+        String INVALID_USERNAME = username + "test";
+        when(userService.loadUserByUsername(INVALID_USERNAME)).thenReturn(null);
 
-		loginService.loginNormally(username, password);
+		loginService.loginNormally(INVALID_USERNAME, password);
 	}
 
 	@Test(expected = AccountLockedException.class)

@@ -77,9 +77,9 @@ public class LoginService {
         ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
         String ldapUser = username + PICS_CORP;
         try {
-            Authentication result = ldapActiveDirectoryAuthProvider.authenticate(
-                    new UsernamePasswordAuthenticationToken(ldapUser, password));
-            return result.isAuthenticated();
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(ldapUser, password);
+            Authentication result = ldapActiveDirectoryAuthProvider.authenticate(authentication);
+            return result!=null?result.isAuthenticated():false;
         }
         catch(AuthenticationException ace){
             throw new FailedLoginException("Bad Credentials for user: " + username);
@@ -245,5 +245,11 @@ public class LoginService {
 			user.setPasswordChanged(null);
 		}
 	}
+
+    public void setLdapActiveDirectoryAuthProvider(ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider) {
+        this.ldapActiveDirectoryAuthProvider = ldapActiveDirectoryAuthProvider;
+    }
+
+
 
 }
