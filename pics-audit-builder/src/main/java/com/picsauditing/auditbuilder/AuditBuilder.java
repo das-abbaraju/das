@@ -587,7 +587,7 @@ public class AuditBuilder {
 		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
 					.getContractorAccount().getId());
-			categoriesNeeded = new HashSet<AuditCategory>();
+			categoriesNeeded = new HashSet<>();
 			if (AuditService.hasCaoStatus(conAudit, AuditStatus.Pending)) {
 				for (AuditCategory ac : conAudit.getAuditType().getCategories()) {
 					if (requiredCompetencies.contains(AuditService.getTopParent(ac))) {
