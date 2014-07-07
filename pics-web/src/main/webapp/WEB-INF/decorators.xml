@@ -55,9 +55,6 @@
         <pattern>/employee-guard/operators/projects</pattern>
         <pattern>/employee-guard/contractor/dashboard</pattern>
         <pattern>/employee-guard/employee/dashboard</pattern>
-    </decorator>
-    <decorator name="index-simple" page="index-simple.jsp">
-        <pattern>/registration*</pattern>
         <pattern>/employee-guard/employee/skills</pattern>
         <pattern>/employee-guard/employee/skills/sites/*</pattern>
         <pattern>/employee-guard/*/changelog</pattern>
