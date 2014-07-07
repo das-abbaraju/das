@@ -58735,6 +58735,9 @@ window.Modernizr = (function( window, document, undefined ) {
         .when('/employee-guard/operators/projects', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/project/project_list.tpl.html'
         })
+        .when('/employee-guard/operators/assignments', {
+            templateUrl: '/employee-guard/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
+        })
         .when('/employee-guard/operators/roles', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/role/role_list.tpl.html'
         })
