@@ -130,43 +130,33 @@ public class AuditDataDAO extends PicsDAO {
 		}
 	}
 
-//	/**
-//	 * Get a list of questions that must be verified for this audit.
-//	 *
-//	 * This queries questions that have been answered where one or more of the
-//	 * operators attached to this contractor require validation for the given
-//	 * question
-//	 *
-//	 * @param auditId
-//	 * @return
-//	 */
-//	public List<AuditData> findCustomPQFVerifications(int auditID) {
-//		// Get the contractor for this audit
-//		String sqlContractor = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.id = :auditID";
-//		// tryQuery(sqlContractor, auditID);
-//
-//		// Get the list of operators attached to this contractor
-//		String sqlOperators = "SELECT t.operatorAccount FROM ContractorOperator t " + "WHERE t.contractorAccount IN ("
-//				+ sqlContractor + ")";
-//		// tryQuery(sqlOperators, auditID);
-//
-//		// Get the list of questions that these operators require
-//		String sqlQuestions = "SELECT f.question FROM FlagCriteria f "
-//				+ "WHERE f.requiredStatus = 'Complete' AND f.question IS NOT NULL AND f.id IN "
-//				+ "(SELECT fo.criteria.id FROM FlagCriteriaOperator fo WHERE fo.operator IN  (" + sqlOperators + ")) ";
-//		// tryQuery(sqlQuestions, auditID);
-//
-//		// For each question (including the safetyManual), get the ones answered
-//		// in this audit
-//		String sql = "SELECT d FROM AuditData d " + "WHERE d.audit.id = :auditID "
-//				+ " AND (d.question.id = :safetyManual " + "	OR d.question IN (" + sqlQuestions + ")" + " )";
-//		Query query = em.createQuery(sql);
-//		query.setParameter("auditID", auditID);
-//		query.setParameter("safetyManual", AuditQuestion.MANUAL_PQF);
-//
-//		return query.getResultList();
-//	}
-//
+	public List<AuditData> findCustomPQFVerifications(int auditID) {
+		// Get the contractor for this audit
+		String sqlContractor = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.id = :auditID";
+		// tryQuery(sqlContractor, auditID);
+
+		// Get the list of operators attached to this contractor
+		String sqlOperators = "SELECT t.operatorAccount FROM ContractorOperator t " + "WHERE t.contractorAccount IN ("
+				+ sqlContractor + ")";
+		// tryQuery(sqlOperators, auditID);
+
+		// Get the list of questions that these operators require
+		String sqlQuestions = "SELECT f.question FROM FlagCriteria f "
+				+ "WHERE f.requiredStatus = 'Complete' AND f.question IS NOT NULL AND f.id IN "
+				+ "(SELECT fo.criteria.id FROM FlagCriteriaOperator fo WHERE fo.operator IN  (" + sqlOperators + ")) ";
+		// tryQuery(sqlQuestions, auditID);
+
+		// For each question (including the safetyManual), get the ones answered
+		// in this audit
+		String sql = "SELECT d FROM AuditData d " + "WHERE d.audit.id = :auditID "
+				+ " AND (d.question.id = :safetyManual " + "	OR d.question IN (" + sqlQuestions + ")" + " )";
+		Query query = em.createQuery(sql);
+		query.setParameter("auditID", auditID);
+		query.setParameter("safetyManual", AuditQuestion.MANUAL_PQF);
+
+		return query.getResultList();
+	}
+
 //	public AnswerMap findAnswers(int auditID) {
 //		Query query = em.createQuery("SELECT d FROM AuditData d WHERE audit.id = ? ORDER BY d.creationDate");
 //		query.setParameter(1, auditID);

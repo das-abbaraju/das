@@ -2,13 +2,14 @@ package com.picsauditing.auditbuilder.service;
 
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.entities.QuestionFunction.FunctionInput;
-import com.picsauditing.auditbuilder.permissions.Permissions;
+import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
-import com.picsauditing.auditbuilder.util.AnswerMap;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class AuditService {
 	public static AuditType getAuditType(AuditQuestion auditQuestion) {
@@ -446,4 +447,66 @@ public class AuditService {
 		}
 		return result;
 	}
+
+    public static float getStraightScoreValue(AuditData auditData) {
+        float straightScoreValue = 0f;
+        if (auditData.getAnswer() != null && isMultipleChoice(auditData)) {
+            for (AuditOptionValue value : auditData.getQuestion().getOption().getValues()) {
+                if (auditData.getAnswer().equals(getIdentifier(value))) {
+                    straightScoreValue = value.getScore();
+                    break;
+                }
+            }
+        }
+        return straightScoreValue;
+    }
+
+	public static List<AuditCategory> getTopCategories(AuditType auditType) {
+        List<AuditCategory> topCategories = new ArrayList<>();
+
+		if (topCategories == null) {
+			topCategories = new ArrayList<>();
+			for (AuditCategory cat : auditType.getCategories()) {
+				if (cat.getParent() == null) {
+					topCategories.add(cat);
+				}
+			}
+		}
+
+		return topCategories;
+	}
+
+	public static boolean requiresViewFullPQFPermission(AuditCategory auditCategory) {
+		if (auditCategory.getId() == AuditCategory.WORK_HISTORY) {
+			return true;
+		}
+		if (auditCategory.getId() == AuditCategory.FINANCIAL_HISTORY) {
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isCurrent(AuditCategory auditCategory) {
+		Date now = new Date();
+		return isCurrent(auditCategory, now);
+	}
+
+	public static boolean isCurrent(AuditCategory auditCategory, Date now) {
+		if (auditCategory.getEffectiveDate() != null && auditCategory.getEffectiveDate().after(now)) {
+			return false;
+		}
+		if (auditCategory.getExpirationDate() != null && auditCategory.getExpirationDate().before(now)) {
+			return false;
+		}
+		return true;
+	}
+
+    public static boolean isHasSubmittedStep(Workflow workflow) {
+        for (WorkflowStep step : workflow.getSteps()) {
+            if (step.getNewStatus().isSubmitted())
+                return true;
+        }
+        return false;
+    }
+
 }

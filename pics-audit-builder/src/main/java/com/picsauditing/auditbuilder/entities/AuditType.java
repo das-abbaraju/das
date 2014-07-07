@@ -64,7 +64,7 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //	protected boolean hasAuditor;
 //	protected boolean canContractorView;
 //	protected boolean canContractorEdit;
-//	protected boolean canOperatorView;
+	protected boolean canOperatorView;
 	protected boolean renewable = true;
 //	protected boolean scoreable = false;
 	protected Integer monthsToExpire;
@@ -85,8 +85,6 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 
 	protected List<AuditCategory> categories = new ArrayList<AuditCategory>();
 
-//	protected List<AuditCategory> topCategories;
-//
 	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<>(Arrays.asList(new Integer[]{145, 146,
         143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
@@ -207,14 +205,14 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //		this.canContractorEdit = canContractorEdit;
 //	}
 //
-//	public boolean isCanOperatorView() {
-//		return canOperatorView;
-//	}
-//
-//	public void setCanOperatorView(boolean canOperatorView) {
-//		this.canOperatorView = canOperatorView;
-//	}
-//
+	public boolean isCanOperatorView() {
+		return canOperatorView;
+	}
+
+	public void setCanOperatorView(boolean canOperatorView) {
+		this.canOperatorView = canOperatorView;
+	}
+
 	public Integer getMonthsToExpire() {
 		return monthsToExpire;
 	}
@@ -279,20 +277,6 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 		this.categories = categories;
 	}
 
-//	@Transient
-//	public List<AuditCategory> getTopCategories() {
-//		if (topCategories == null) {
-//			topCategories = new ArrayList<AuditCategory>();
-//			for (AuditCategory cat : categories) {
-//				if (cat.getParent() == null) {
-//					topCategories.add(cat);
-//				}
-//			}
-//		}
-//
-//		return topCategories;
-//	}
-//
 //	@Enumerated(EnumType.STRING)
 //	public OpPerms getEditPermission() {
 //		return editPermission;
@@ -469,10 +453,6 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //	public static AuditTypeBuilder builder() {
 //		return new AuditTypeBuilder();
 //	}
-//
-//    public void setTopCategories(ArrayList<AuditCategory> topCategories) {
-//        this.topCategories = topCategories;
-//    }
 //
     public int getAdvanceDays() {
         return advanceDays;

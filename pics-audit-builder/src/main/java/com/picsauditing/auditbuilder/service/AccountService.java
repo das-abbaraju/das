@@ -84,4 +84,44 @@ public class AccountService {
 		return 5;
 	}
 
+	public static List<Integer> getOperatorHeirarchy(OperatorAccount operatorAccount) {
+        return getOperatorHeirarchy(operatorAccount, true);
+    }
+
+	public static List<Integer> getOperatorHeirarchy(OperatorAccount operatorAccount, boolean includePicsConsortium) {
+		List<Integer> list = new ArrayList<>();
+		// Add myself
+		list.add(operatorAccount.getId());
+
+		OperatorAccount topAccount = getTopAccount(operatorAccount);
+		for (Facility facility : operatorAccount.getCorporateFacilities()) {
+			if (!facility.getCorporate().equals(topAccount)) {
+				// Add parent's that aren't my primary parent
+                if (includePicsConsortium || !facility.getCorporate().isInPicsConsortium()) {
+				    list.add(facility.getCorporate().getId());
+                }
+			}
+		}
+		if (!topAccount.equals(operatorAccount)) {
+			// Add my parent
+			list.add(topAccount.getId());
+		}
+		return list;
+	}
+
+	public static OperatorAccount getTopAccount(OperatorAccount operatorAccount) {
+		OperatorAccount topAccount = operatorAccount;
+		if (operatorAccount.getParent() != null) {
+			topAccount = operatorAccount.getParent();
+		}
+
+		for (Facility facility : operatorAccount.getCorporateFacilities()) {
+			if (facility.getCorporate().isPrimaryCorporate()) {
+				topAccount = facility.getCorporate();
+				break;
+			}
+		}
+		return topAccount;
+	}
+
 }

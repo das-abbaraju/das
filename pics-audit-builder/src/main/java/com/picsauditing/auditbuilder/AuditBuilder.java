@@ -3,6 +3,7 @@ package com.picsauditing.auditbuilder;
 import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.service.AccountService;
 import com.picsauditing.auditbuilder.service.AuditPeriodService;
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.util.DateBean;
@@ -702,15 +703,14 @@ public class AuditBuilder {
 	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null
 				&& cao.isVisible()
-				&& cao.getAudit().getRequestingOpAccount()
-						.getOperatorHeirarchy()
+				&& AccountService.getOperatorHeirarchy(cao.getAudit().getRequestingOpAccount())
 						.contains(cao.getOperator().getId())) {
 			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
-		} else if (cao.getAudit().getAuditType().isDesktop() && cao.getAudit().hasCaoStatus(AuditStatus.Complete)) {
+		} else if (cao.getAudit().getAuditType().getId() == AuditType.MANUAL_AUDIT && AuditService.hasCaoStatus(cao.getAudit(), AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
 				if (cao.isVisible()
-						&& co.getOperatorAccount().getOperatorHeirarchy().contains(cao.getOperator().getId())) {
+						&& AccountService.getOperatorHeirarchy(co.getOperatorAccount()).contains(cao.getOperator().getId())) {
 					// Once the Manual Audit has at least one status that's Complete, then show it to all the
 					// contractor's operators
 					caopOperators.add(co.getOperatorAccount());
@@ -734,7 +734,7 @@ public class AuditBuilder {
 			} else {
 				// Delete the caop and remove from cao.getCaoPermissions()
 				caopIter.remove();
-				this.contractorAuditOperatorDAO.remove(caop);
+				contractorAuditOperatorDAO.remove(caop);
 			}
 		}
 		for (OperatorAccount operator : caopOperators) {
@@ -753,7 +753,7 @@ public class AuditBuilder {
 
 	private void addAnnualUpdate(ContractorAccount contractor, int year, AuditType auditType) {
 		for (ContractorAudit cAudit : contractor.getAudits()) {
-			if (cAudit.getAuditType().isAnnualAddendum() && year == Integer.parseInt(cAudit.getAuditFor())) {
+			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM && year == Integer.parseInt(cAudit.getAuditFor())) {
 				// Do nothing. It's already here
 				return;
 			}

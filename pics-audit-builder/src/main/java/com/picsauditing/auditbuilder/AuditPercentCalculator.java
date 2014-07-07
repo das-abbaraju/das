@@ -1,10 +1,14 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.auditbuilder.dao.AuditDataDAO;
+import com.picsauditing.auditbuilder.dao.ContractorAuditDAO;
+import com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO;
 import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.service.AuditPeriodService;
 import com.picsauditing.auditbuilder.service.AuditService;
-import com.picsauditing.auditbuilder.util.Strings;
+import com.picsauditing.auditbuilder.service.CaoAutoAdvancer;
 import com.picsauditing.auditbuilder.util.AnswerMap;
+import com.picsauditing.auditbuilder.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,24 +16,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 public class AuditPercentCalculator {
-//	@Autowired
-//	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	private AuditCategoryRuleCache auditCategoryRuleCache;
 //	@Autowired
 //	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
-//	@Autowired
-//	protected ContractorAuditOperatorDAO caoDAO;
+	@Autowired
+	protected ContractorAuditOperatorDAO caoDAO;
 //	@Autowired
 //	protected AuditQuestionDAO auditQuestionDAO;
 //	@Autowired
 //	protected AuditCategoryDataDAO auditCategoryDataDAO;
-//    @Autowired
-//    protected AuditPeriodService auditPeriodService;
-//    @Autowired
-//    protected ContractorAuditDAO contractorAuditDAO;
-//
-//	protected float subScorePossible;
+    @Autowired
+    protected AuditPeriodService auditPeriodService;
+    @Autowired
+    protected ContractorAuditDAO contractorAuditDAO;
+
+	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
 
 	public void updatePercentageCompleted(AuditCatData catData) {
@@ -257,7 +261,7 @@ public class AuditPercentCalculator {
 
     private void runRollupFunctions(AuditCatData catData, Date validDate) {
         for (AuditQuestion question : catData.getCategory().getQuestions())
-            if (question.isValidQuestion(validDate) && question.getFunctions().size() > 0) {
+            if (AuditService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
                 AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
                 boolean newTarget = false;
 
@@ -284,56 +288,56 @@ public class AuditPercentCalculator {
             }
     }
 
-//    private String calculateRollup(int conId, AuditQuestionFunction function, String parentAuditFor) {
-//        if (function.getWatchers().size() == 0)
-//            return null;
-//        int questionId = function.getWatchers().get(0).getQuestion().getId();
-//        int auditTypeId = function.getWatchers().get(0).getQuestion().getAuditType().getId();
-//
-//        List<String> auditFors = auditPeriodService.getChildPeriodAuditFors(parentAuditFor);
-//        List<ContractorAudit> sourceAudits = contractorAuditDAO.findAuditsByContractorAuditTypeAuditFors(conId, auditTypeId, auditFors);
-//
-//        int sum = 0;
-//        boolean foundOne = false;
-//        for (ContractorAudit audit:sourceAudits) {
-//            if (audit.hasCaoStatus(AuditStatus.Complete)) {
-//                AuditData data = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), questionId);
-//                if (data != null) {
-//                    try {
-//                        sum += Integer.parseInt(data.getAnswer());
-//                        foundOne = true;
-//                    } catch (Exception e) {
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (foundOne) {
-//            return "" + sum;
-//        }
-//
-//        return QuestionFunction.MISSING_PARAMETER;
-//    }
-//
-//    private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
-//		for (AuditCatData catData:audit.getCategories()) {
-//			if (catData.getCategory().getId() == category.getId()) {
-//				return catData;
-//			}
-//		}
-//		return null;
-//	}
-//
+    private String calculateRollup(int conId, AuditQuestionFunction function, String parentAuditFor) {
+        if (function.getWatchers().size() == 0)
+            return null;
+        int questionId = function.getWatchers().get(0).getQuestion().getId();
+        int auditTypeId = AuditService.getAuditType(function.getWatchers().get(0).getQuestion()).getId();
+
+        List<String> auditFors = auditPeriodService.getChildPeriodAuditFors(parentAuditFor);
+        List<ContractorAudit> sourceAudits = contractorAuditDAO.findAuditsByContractorAuditTypeAuditFors(conId, auditTypeId, auditFors);
+
+        int sum = 0;
+        boolean foundOne = false;
+        for (ContractorAudit audit:sourceAudits) {
+            if (AuditService.hasCaoStatus(audit, AuditStatus.Complete)) {
+                AuditData data = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), questionId);
+                if (data != null) {
+                    try {
+                        sum += Integer.parseInt(data.getAnswer());
+                        foundOne = true;
+                    } catch (Exception e) {
+
+                    }
+                }
+            }
+        }
+
+        if (foundOne) {
+            return "" + sum;
+        }
+
+        return QuestionFunction.MISSING_PARAMETER;
+    }
+
+    private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
+		for (AuditCatData catData:audit.getCategories()) {
+			if (catData.getCategory().getId() == category.getId()) {
+				return catData;
+			}
+		}
+		return null;
+	}
+
 	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {
 		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
-		Date validDate = catData.getAudit().getValidDate();
+		Date validDate = AuditService.getValidDate(catData.getAudit());
 
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
-			if (question.isValidQuestion(validDate)) {
+			if (AuditService.isValidQuestion(question, validDate)) {
 				for (AuditQuestionFunction aqf : question.getFunctions())
 					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
-						if (aqfw.getQuestion().isValidQuestion(validDate))
+						if (AuditService.isValidQuestion(aqfw.getQuestion(), validDate))
 							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
 			}
 		}
@@ -358,38 +362,38 @@ public class AuditPercentCalculator {
 		return questionIDs;
 	}
 
-//	private Set<Integer> collectChainOfRequiredQuestionIds(AuditQuestion question) {
-//		Set<Integer> questionIDs = new HashSet<Integer>();
-//		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<Integer>();
-//		AuditQuestion q = question.getRequiredQuestion();
-//		while (q != null) {
-//			questionIDs.add(q.getId());
-//			if (requiredQuestionIdsSeen.contains(q.getId())) {
-//				logger.warn("Circular required questions detected with question id {}", q.getId());
-//				return questionIDs;
-//			}
-//			requiredQuestionIdsSeen.add(q.getId());
-//			q = q.getRequiredQuestion();
-//		}
-//		return questionIDs;
-//	}
-//
-//	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
-//		Set<Integer> questionIDs = new HashSet<Integer>();
-//		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<Integer>();
-//		AuditQuestion q = question.getVisibleQuestion();
-//		while (q != null) {
-//			questionIDs.add(q.getId());
-//			if (visibleQuestionIdsSeen.contains(q.getId())) {
-//				logger.warn("Circular visible questions detected with question id {}", q.getId());
-//				return questionIDs;
-//			}
-//			visibleQuestionIdsSeen.add(q.getId());
-//			q = q.getVisibleQuestion();
-//		}
-//		return questionIDs;
-//	}
-//
+	private Set<Integer> collectChainOfRequiredQuestionIds(AuditQuestion question) {
+		Set<Integer> questionIDs = new HashSet<Integer>();
+		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<Integer>();
+		AuditQuestion q = question.getRequiredQuestion();
+		while (q != null) {
+			questionIDs.add(q.getId());
+			if (requiredQuestionIdsSeen.contains(q.getId())) {
+				logger.warn("Circular required questions detected with question id {}", q.getId());
+				return questionIDs;
+			}
+			requiredQuestionIdsSeen.add(q.getId());
+			q = q.getRequiredQuestion();
+		}
+		return questionIDs;
+	}
+
+	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
+		Set<Integer> questionIDs = new HashSet<Integer>();
+		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<Integer>();
+		AuditQuestion q = question.getVisibleQuestion();
+		while (q != null) {
+			questionIDs.add(q.getId());
+			if (visibleQuestionIdsSeen.contains(q.getId())) {
+				logger.warn("Circular visible questions detected with question id {}", q.getId());
+				return questionIDs;
+			}
+			visibleQuestionIdsSeen.add(q.getId());
+			q = q.getVisibleQuestion();
+		}
+		return questionIDs;
+	}
+
 	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
 		AuditQuestion question = answer.getQuestion();
 		// Anything that requires verification, should be
@@ -397,7 +401,7 @@ public class AuditPercentCalculator {
 		// If we don't then it's possible that the verified
 		// count will be higher than the required total,
 		// resulting in a > 100% verified
-		if (answer.isVerified())
+		if (AuditService.isVerified(answer))
 			verifiedCount++;
 		// This is used for manual/implementation audits
 		// with questions with no requirements, so we need
@@ -407,7 +411,7 @@ public class AuditPercentCalculator {
 		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217
 				|| question.getId() == 15353 || question.getId() == 15354) {
 			verifiedCount++;
-		} else if (catData.getAudit().getAuditType().isPicsPqf()) {
+		} else if (catData.getAudit().getAuditType().getId() == AuditType.PQF) {
 			boolean needsVerification = false;
 			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
 				if (auditData.getQuestion().equals(answer.getQuestion())) {
@@ -423,7 +427,7 @@ public class AuditPercentCalculator {
 			// verification but still required then we
 			// should increase the verifiedCount so we can
 			// close it
-		} else if (!catData.getAudit().getAuditType().getWorkFlow().isHasSubmittedStep()) {
+		} else if (!AuditService.isHasSubmittedStep(catData.getAudit().getAuditType().getWorkFlow())) {
 			// For audits without the submitted step we
 			// don't have to verify the questions
 			verifiedCount++;
@@ -535,138 +539,138 @@ public class AuditPercentCalculator {
         }
     }
 
-//    private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
-//        boolean applies = false;
-//        if (data.isOverride())
-//            applies = data.isApplies();
-//        else {
-//            if (data.isApplies()) {
-//                if (conAudit.getAuditType().isDesktop() && cao.getStatus().after(AuditStatus.Incomplete))
-//                    applies = true;
-//                else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
-//                    // Import PQF and Welcome Call don't have any
-//                    // operators, so just always assume the
-//                    // categories apply
-//                    applies = true;
-//                else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
-//                    applies = true;
-//                else {
-//                    applies = builder.isCategoryApplicable(data.getCategory(), cao);
-//                    AuditCategory parent = data.getCategory().getParent();
-//                    while (parent != null && applies) {
-//                        applies = builder.isCategoryApplicable(parent, cao);
-//                        parent = parent.getParent();
-//                    }
-//                }
-//            }
-//        }
-//        return applies;
-//    }
-//
-//    private boolean shouldAdjustAuditScore(ContractorAudit conAudit, ContractorAuditOperator cao) {
-//        if (!cao.isVisible())
-//            return false;
-//        if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
-//            return true;
-//        if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-//            return true;
-//        return false;
-//    }
-//
-//    private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorAudit conAudit, ContractorAuditOperator cao) {
-//        if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy) {
-//            return true;
-//        }
-//
-//        if (cao.getStatus().after(AuditStatus.Incomplete)) {
-//            return false;
-//        }
-//
-//        return true;
-//    }
-//
-//    private void calculateStraightAggregate(ContractorAudit scoredAudit) {
-//		float runningTotal = 0;
-//		for (AuditData auditData : scoredAudit.getData()) {
-//			runningTotal += auditData.getStraightScoreValue();
-//		}
-//		int score = Math.round(runningTotal);
-//		scoredAudit.setScore(score);
-//	}
-//
-//	private void calculateWeightedScore(ContractorAudit ca) {
-//		float cumulativeScore = 0f;
-//
-//		/*
-//		 * Gather the category data to use in the recursive calculation.
-//		 */
-//		Map<AuditCategory, AuditCatData> catDatas = new HashMap<AuditCategory, AuditCatData>();
-//		for (AuditCatData data : ca.getCategories()) {
-//			catDatas.put(data.getCategory(), data);
-//		}
-//
-//		/*
-//		 * Iterate over the top level categories and calculate the score based
-//		 * on their weights
-//		 */
-//		for (AuditCategory category : ca.getAuditType().getTopCategories()) {
-//			subScorePossible = 0f;
-//			float score = calculateWeightedScore(category, catDatas);
-//			if (subScorePossible > 0)
-//				cumulativeScore += category.getScoreWeight() * score;
-//			else
-//				cumulativeScore += category.getScoreWeight();
-//		}
-//
-//		ca.setScore(Math.min(Math.round(cumulativeScore), 100));
-//	}
-//
-//	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
-//		float subScore = 0f;
-//		float scorePossible = 0f;
-//		/*
-//		 * We either collect the questions (i.e. catData.score and
-//		 * catData.scorePossible) or the subcategories. We cannot do both
-//		 * currently, as it is comparing apples and oranges.
-//		 */
-//		if (category.getSubCategories().size() > 0) {
-//			for (AuditCategory subCategory : category.getSubCategories()) {
-//				float runningScore = calculateWeightedScore(subCategory, catDatas);
-//				/*
-//				 * Handle the N/A Categories. Categories without a possible
-//				 * score should not affect the total weight.
-//				 */
-//				if (catDatas.get(subCategory).getScorePossible() > 0) {
-//					subScore += runningScore;
-//					scorePossible += subCategory.getScoreWeight();
-//				}
-//			}
-//			/*
-//			 * Prevent a divide by 0. This will likely never happen
-//			 */
-//			if (scorePossible > 0) {
-//				subScore = subScore / scorePossible;
-//			}
-//		} else {
-//			if (catDatas.get(category).getScorePossible() > 0)
-//				subScore += catDatas.get(category).getScore() / catDatas.get(category).getScorePossible();
-//			scorePossible = catDatas.get(category).getScorePossible();
-//		}
-//
-//		if (category.getParent() == null) {
-//			subScorePossible = scorePossible;
-//		}
-//		return subScore;
-//	}
-//
+    private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
+        boolean applies = false;
+        if (data.isOverride())
+            applies = data.isApplies();
+        else {
+            if (data.isApplies()) {
+                if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT && cao.getStatus().after(AuditStatus.Incomplete))
+                    applies = true;
+                else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
+                    // Import PQF and Welcome Call don't have any
+                    // operators, so just always assume the
+                    // categories apply
+                    applies = true;
+                else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
+                    applies = true;
+                else {
+                    applies = builder.isCategoryApplicable(data.getCategory(), cao);
+                    AuditCategory parent = data.getCategory().getParent();
+                    while (parent != null && applies) {
+                        applies = builder.isCategoryApplicable(parent, cao);
+                        parent = parent.getParent();
+                    }
+                }
+            }
+        }
+        return applies;
+    }
+
+    private boolean shouldAdjustAuditScore(ContractorAudit conAudit, ContractorAuditOperator cao) {
+        if (!cao.isVisible())
+            return false;
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
+            return true;
+        if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
+            return true;
+        return false;
+    }
+
+    private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorAudit conAudit, ContractorAuditOperator cao) {
+        if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy) {
+            return true;
+        }
+
+        if (cao.getStatus().after(AuditStatus.Incomplete)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void calculateStraightAggregate(ContractorAudit scoredAudit) {
+		float runningTotal = 0;
+		for (AuditData auditData : scoredAudit.getData()) {
+			runningTotal += AuditService.getStraightScoreValue(auditData);
+		}
+		int score = Math.round(runningTotal);
+		scoredAudit.setScore(score);
+	}
+
+	private void calculateWeightedScore(ContractorAudit ca) {
+		float cumulativeScore = 0f;
+
+		/*
+		 * Gather the category data to use in the recursive calculation.
+		 */
+		Map<AuditCategory, AuditCatData> catDatas = new HashMap<AuditCategory, AuditCatData>();
+		for (AuditCatData data : ca.getCategories()) {
+			catDatas.put(data.getCategory(), data);
+		}
+
+		/*
+		 * Iterate over the top level categories and calculate the score based
+		 * on their weights
+		 */
+		for (AuditCategory category : AuditService.getTopCategories(ca.getAuditType())) {
+			subScorePossible = 0f;
+			float score = calculateWeightedScore(category, catDatas);
+			if (subScorePossible > 0)
+				cumulativeScore += category.getScoreWeight() * score;
+			else
+				cumulativeScore += category.getScoreWeight();
+		}
+
+		ca.setScore(Math.min(Math.round(cumulativeScore), 100));
+	}
+
+	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
+		float subScore = 0f;
+		float scorePossible = 0f;
+		/*
+		 * We either collect the questions (i.e. catData.score and
+		 * catData.scorePossible) or the subcategories. We cannot do both
+		 * currently, as it is comparing apples and oranges.
+		 */
+		if (category.getSubCategories().size() > 0) {
+			for (AuditCategory subCategory : category.getSubCategories()) {
+				float runningScore = calculateWeightedScore(subCategory, catDatas);
+				/*
+				 * Handle the N/A Categories. Categories without a possible
+				 * score should not affect the total weight.
+				 */
+				if (catDatas.get(subCategory).getScorePossible() > 0) {
+					subScore += runningScore;
+					scorePossible += subCategory.getScoreWeight();
+				}
+			}
+			/*
+			 * Prevent a divide by 0. This will likely never happen
+			 */
+			if (scorePossible > 0) {
+				subScore = subScore / scorePossible;
+			}
+		} else {
+			if (catDatas.get(category).getScorePossible() > 0)
+				subScore += catDatas.get(category).getScore() / catDatas.get(category).getScorePossible();
+			scorePossible = catDatas.get(category).getScorePossible();
+		}
+
+		if (category.getParent() == null) {
+			subScorePossible = scorePossible;
+		}
+		return subScore;
+	}
+
 	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
 			updatePercentageCompleted(data);
 		}
 	}
 
-//	public List<AuditData> getVerifiedPqfData(int auditID) {
-//		return auditDataDAO.findCustomPQFVerifications(auditID);
-//	}
-//
+	public List<AuditData> getVerifiedPqfData(int auditID) {
+		return auditDataDAO.findCustomPQFVerifications(auditID);
+	}
+
 }

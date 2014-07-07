@@ -20,21 +20,21 @@ import javax.persistence.Table;
 @Table(name = "audit_question_function_watcher")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public final class AuditQuestionFunctionWatcher extends BaseTable {
-//
-//	private AuditQuestionFunction function;
+
+	private AuditQuestionFunction function;
 	private AuditQuestion question;
 	private String uniqueCode;
 
-//	@ManyToOne
-//	@JoinColumn(name = "functionID", nullable = false)
-//	public AuditQuestionFunction getFunction() {
-//		return function;
-//	}
-//
-//	public void setFunction(AuditQuestionFunction function) {
-//		this.function = function;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "functionID", nullable = false)
+	public AuditQuestionFunction getFunction() {
+		return function;
+	}
+
+	public void setFunction(AuditQuestionFunction function) {
+		this.function = function;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "questionID", nullable = false)
 	public AuditQuestion getQuestion() {

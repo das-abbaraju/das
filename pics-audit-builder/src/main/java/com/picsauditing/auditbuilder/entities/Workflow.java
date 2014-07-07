@@ -18,7 +18,7 @@ public class Workflow extends BaseTable {
 //	public static final int MANUAL_AUDIT_WORKFLOW = 7;
 //
 //	private String name;
-//	private boolean hasRequirements;
+	private boolean hasRequirements;
 //	private boolean useStateForEdit;
 	private List<WorkflowStep> steps = new ArrayList<>();
 //	private List<WorkflowState> states = new ArrayList<WorkflowState>();
@@ -60,15 +60,6 @@ public class Workflow extends BaseTable {
 //	}
 //
 //	@Transient
-//	public boolean isHasSubmittedStep() {
-//		for (WorkflowStep step : steps) {
-//			if (step.getNewStatus().isSubmitted())
-//				return true;
-//		}
-//		return false;
-//	}
-//
-//	@Transient
 //	public boolean isHasState(AuditStatus status) {
 //		for (WorkflowState state : states) {
 //			if (state.getStatus().equals(status))
@@ -87,14 +78,14 @@ public class Workflow extends BaseTable {
 //		return false;
 //	}
 //
-//	public boolean isHasRequirements() {
-//		return hasRequirements;
-//	}
-//
-//	public void setHasRequirements(boolean hasRequirements) {
-//		this.hasRequirements = hasRequirements;
-//	}
-//
+	public boolean isHasRequirements() {
+		return hasRequirements;
+	}
+
+	public void setHasRequirements(boolean hasRequirements) {
+		this.hasRequirements = hasRequirements;
+	}
+
 //	public boolean isUseStateForEdit() {
 //		return useStateForEdit;
 //	}

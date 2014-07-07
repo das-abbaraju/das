@@ -69,14 +69,14 @@ public enum AuditStatus /*implements Translatable*/ {
 		return this.equals(Submitted);
 	}
 
-//	public boolean isResubmitted() {
-//		return this.equals(Resubmitted);
-//	}
-//
-//	public boolean isSubmittedResubmitted() {
-//		return isSubmitted() || isResubmitted();
-//	}
-//
+	public boolean isResubmitted() {
+		return this.equals(Resubmitted);
+	}
+
+	public boolean isSubmittedResubmitted() {
+		return isSubmitted() || isResubmitted();
+	}
+
 	public boolean isIncomplete() {
 		return this.equals(Incomplete);
 	}

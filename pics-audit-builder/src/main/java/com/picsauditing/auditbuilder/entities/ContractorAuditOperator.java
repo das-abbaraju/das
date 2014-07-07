@@ -20,7 +20,7 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 	private boolean visible = true;
 //	private FlagColor flag = null;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<>();
-//	private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<ContractorAuditOperatorWorkflow>();
+	private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<>();
 	private AuditSubStatus auditSubStatus;
 
 	@ManyToOne
@@ -148,15 +148,15 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 		this.caoPermissions = caoPermissions;
 	}
 
-//	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
-//	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
-//		return caoWorkflow;
-//	}
-//
-//	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
-//		this.caoWorkflow = caoWorkflow;
-//	}
-//
+	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
+	public List<ContractorAuditOperatorWorkflow> getCaoWorkflow() {
+		return caoWorkflow;
+	}
+
+	public void setCaoWorkflow(List<ContractorAuditOperatorWorkflow> caoWorkflow) {
+		this.caoWorkflow = caoWorkflow;
+	}
+
 	@Enumerated(EnumType.STRING)
 	public AuditSubStatus getAuditSubStatus() {
 		return auditSubStatus;

@@ -4,9 +4,7 @@ import com.picsauditing.auditbuilder.service.AccountService;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +28,7 @@ public class OperatorAccount extends Account {
 //	public static final int TESORO = 1436;
 //	public static final int VALSPAR_GARLAND = 23335;
 //
-//	private OperatorAccount parent;
+	private OperatorAccount parent;
 //	private OperatorAccount reporting;
 //
 //	private OperatorAccount inheritFlagCriteria;
@@ -49,7 +47,7 @@ public class OperatorAccount extends Account {
 //	private BigDecimal activationFee;
 //	private BigDecimal discountPercent = BigDecimal.ZERO;
 //	private Date discountExpiration;
-//	private boolean inPicsConsortium = false;
+	private boolean inPicsConsortium = false;
 //	private String salesForceID;
 //    private boolean requiresEmployeeGuard;
 //
@@ -418,16 +416,16 @@ public class OperatorAccount extends Account {
 //		this.operatorChildren = operatorChildren;
 //	}
 //
-//	@ManyToOne(fetch = FetchType.LAZY)
-//	@JoinColumn(name = "parentID", nullable = true)
-//	public OperatorAccount getParent() {
-//		return parent;
-//	}
-//
-//	public void setParent(OperatorAccount parent) {
-//		this.parent = parent;
-//	}
-//
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "parentID", nullable = true)
+	public OperatorAccount getParent() {
+		return parent;
+	}
+
+	public void setParent(OperatorAccount parent) {
+		this.parent = parent;
+	}
+
 //	@ManyToOne(fetch = FetchType.LAZY)
 //	@JoinColumn(name = "reportingID", nullable = true)
 //	public OperatorAccount getReporting() {
@@ -607,51 +605,8 @@ public class OperatorAccount extends Account {
 //	}
 //
 //	@Transient
-//	public OperatorAccount getTopAccount() {
-//		OperatorAccount topAccount = this;
-//		if (this.getParent() != null) {
-//			topAccount = this.getParent();
-//		}
-//
-//		for (Facility facility : getCorporateFacilities()) {
-//			if (facility.getCorporate().isPrimaryCorporate()) {
-//				topAccount = facility.getCorporate();
-//				break;
-//			}
-//		}
-//		return topAccount;
-//	}
-//
-//	@Transient
 //	public boolean isInsureguardSubscriber() {
 //		return canSeeInsurance.equals(YesNo.Yes);
-//	}
-//
-//	@Transient
-//	public List<Integer> getOperatorHeirarchy() {
-//        return getOperatorHeirarchy(true);
-//    }
-//
-//	@Transient
-//	public List<Integer> getOperatorHeirarchy(boolean includePicsConsortium) {
-//		List<Integer> list = new ArrayList<Integer>();
-//		// Add myself
-//		list.add(this.id);
-//
-//		OperatorAccount topAccount = getTopAccount();
-//		for (Facility facility : getCorporateFacilities()) {
-//			if (!facility.getCorporate().equals(topAccount)) {
-//				// Add parent's that aren't my primary parent
-//                if (includePicsConsortium || !facility.getCorporate().inPicsConsortium) {
-//				    list.add(facility.getCorporate().getId());
-//                }
-//			}
-//		}
-//		if (!topAccount.equals(this)) {
-//			// Add my parent
-//			list.add(topAccount.getId());
-//		}
-//		return list;
 //	}
 //
 //	@Transient
@@ -701,14 +656,14 @@ public class OperatorAccount extends Account {
 //		this.visibleAuditTypesForReporting = visibleAuditTypesForReporting;
 //	}
 //
-//	public boolean isInPicsConsortium() {
-//		return inPicsConsortium;
-//	}
-//
-//	public void setInPicsConsortium(boolean inPicsConsortium) {
-//		this.inPicsConsortium = inPicsConsortium;
-//	}
-//
+	public boolean isInPicsConsortium() {
+		return inPicsConsortium;
+	}
+
+	public void setInPicsConsortium(boolean inPicsConsortium) {
+		this.inPicsConsortium = inPicsConsortium;
+	}
+
 //	@ReportField()
 //	public String getSalesForceID() {
 //		return salesForceID;

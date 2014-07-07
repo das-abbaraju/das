@@ -11,18 +11,18 @@ import java.util.List;
 @Entity
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
-public class AuditCategory extends BaseTable /*implements Comparable<AuditCategory>*/ {
+public class AuditCategory extends BaseHistory /*implements Comparable<AuditCategory>*/ {
 //
 //	public static final int COMPANY_INFORMATION = 2;
 //	public static final int GENERAL_SAFETY_INFORMATION = 8;
-//	public static final int WORK_HISTORY = 6;
+	public static final int WORK_HISTORY = 6;
 //	public static final int SAFETY_POLICIES = 7;
 //	public static final int TRAINING = 25;
 //	public static final int EMR = 152;
 //	public static final int GENERAL_INFORMATION = 155;
 //	public static final int LOSS_RUN = 159;
 //	public static final int SUPPLIER_DIVERSITY = 184;
-//	public static final int FINANCIAL_HISTORY = 200;
+	public static final int FINANCIAL_HISTORY = 200;
 //	public static final int WCB = 210;
 //	public static final int CITATIONS = 278;
 //	public static final int BUSINESS_INTERRUPTION_EVAL = 1682;
@@ -50,17 +50,17 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 	private AuditCategory parent;
 //	private String name;
 //	private int number;
-//	private int numRequired;
+	private int numRequired;
 //	private int numQuestions;
 //	private String helpText;
 //	private boolean hasHelpText;
 //	private String uniqueCode;
-//	private float scoreWeight = 0f;
+	private float scoreWeight = 0f;
 //	private int columns = 1;
 //	protected Date effectiveDate;
 //	protected Date expirationDate;
 //
-//	private List<AuditCategory> subCategories = new ArrayList<AuditCategory>();
+	private List<AuditCategory> subCategories = new ArrayList<>();
 	private List<AuditQuestion> questions = new ArrayList<>();
 //
 //	public AuditCategory() {
@@ -163,16 +163,15 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //		return parent.getFullyQualifiedName() + " : " + getName();
 //	}
 //
-//	@Column(nullable = false)
-//	@ReportField(type = FieldType.Integer)
-//	public int getNumRequired() {
-//		return this.numRequired;
-//	}
-//
-//	public void setNumRequired(int numRequired) {
-//		this.numRequired = numRequired;
-//	}
-//
+	@Column(nullable = false)
+	public int getNumRequired() {
+		return numRequired;
+	}
+
+	public void setNumRequired(int numRequired) {
+		this.numRequired = numRequired;
+	}
+
 //	@Column(length = 50)
 //	@ReportField(type = FieldType.String)
 //	public String getUniqueCode() {
@@ -183,15 +182,14 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //		this.uniqueCode = uniqueCode;
 //	}
 //
-//	@ReportField(type = FieldType.Float)
-//	public float getScoreWeight() {
-//		return scoreWeight;
-//	}
-//
-//	public void setScoreWeight(float scoreWeight) {
-//		this.scoreWeight = scoreWeight;
-//	}
-//
+	public float getScoreWeight() {
+		return scoreWeight;
+	}
+
+	public void setScoreWeight(float scoreWeight) {
+		this.scoreWeight = scoreWeight;
+	}
+
 //	public int getColumns() {
 //		return columns;
 //	}
@@ -254,33 +252,16 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //		this.expirationDate = expirationDate;
 //	}
 //
-//	@Transient
-//	public boolean isCurrent() {
-//		Date now = new Date();
-//		return isCurrent(now);
-//	}
-//
-//	@Transient
-//	public boolean isCurrent(Date now) {
-//		if (effectiveDate != null && effectiveDate.after(now)) {
-//			return false;
-//		}
-//		if (expirationDate != null && expirationDate.before(now)) {
-//			return false;
-//		}
-//		return true;
-//	}
-//
-//	@OneToMany(mappedBy = "parent")
-//	@OrderBy("number")
-//	public List<AuditCategory> getSubCategories() {
-//		return subCategories;
-//	}
-//
-//	public void setSubCategories(List<AuditCategory> subCategories) {
-//		this.subCategories = subCategories;
-//	}
-//
+	@OneToMany(mappedBy = "parent")
+	@OrderBy("number")
+	public List<AuditCategory> getSubCategories() {
+		return subCategories;
+	}
+
+	public void setSubCategories(List<AuditCategory> subCategories) {
+		this.subCategories = subCategories;
+	}
+
 	@OneToMany(mappedBy = "category")
 	@OrderBy("number")
 	public List<AuditQuestion> getQuestions() {
@@ -463,17 +444,6 @@ public class AuditCategory extends BaseTable /*implements Comparable<AuditCatego
 //		}
 //
 //		return hasMissingChild || getLanguages().isEmpty();
-//	}
-//
-//	@Transient
-//	public boolean requiresViewFullPQFPermission() {
-//		if (id == WORK_HISTORY) {
-//			return true;
-//		}
-//		if (id == FINANCIAL_HISTORY) {
-//			return true;
-//		}
-//		return false;
 //	}
 //
 //    public static AuditCategoryBuilder builder() {

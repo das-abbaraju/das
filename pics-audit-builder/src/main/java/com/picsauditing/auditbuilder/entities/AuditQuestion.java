@@ -91,7 +91,7 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 //	private List<AuditCategoryRule> auditCategoryRules;
 //	private List<AuditTypeRule> auditTypeRules;
 	private List<AuditQuestionFunction> functions = new ArrayList<>();
-//	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<>();
+	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<>();
 //
 //	private List<AuditTransformOption> transformOptions;
 //
@@ -482,20 +482,15 @@ public class AuditQuestion extends BaseHistory /*implements Comparable<AuditQues
 		this.functions = functions;
 	}
 
-//	/**
-//	 * This is a reference to the {@link AuditQuestionFunction}s that this
-//	 * {@link AuditQuestion} is required for calcualtion.
-//	 *
-//	 */
-//	@OneToMany(mappedBy = "question")
-//	public List<AuditQuestionFunctionWatcher> getFunctionWatchers() {
-//		return functionWatchers;
-//	}
-//
-//	public void setFunctionWatchers(List<AuditQuestionFunctionWatcher> functionWatchers) {
-//		this.functionWatchers = functionWatchers;
-//	}
-//
+	@OneToMany(mappedBy = "question")
+	public List<AuditQuestionFunctionWatcher> getFunctionWatchers() {
+		return functionWatchers;
+	}
+
+	public void setFunctionWatchers(List<AuditQuestionFunctionWatcher> functionWatchers) {
+		this.functionWatchers = functionWatchers;
+	}
+
 //	/**
 //	 * This method runs all {@link AuditQuestionFunction} of a specific
 //	 * {@link QuestionFunctionType} "runType".

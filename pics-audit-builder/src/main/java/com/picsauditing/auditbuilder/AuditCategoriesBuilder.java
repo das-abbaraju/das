@@ -22,19 +22,19 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		this.ruleCache = auditCategoryRuleCache;
 	}
 
-//	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
-//		Collection<OperatorAccount> operators = new HashSet<OperatorAccount>();
-//		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-//			if (cao.isVisible()) {
-//				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-//					operators.add(caop.getOperator());
-//				}
-//			}
-//		}
-//		return calculate(conAudit, operators);
-//
-//	}
-//
+	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
+		Collection<OperatorAccount> operators = new HashSet<>();
+		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+			if (cao.isVisible()) {
+				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+					operators.add(caop.getOperator());
+				}
+			}
+		}
+		return calculate(conAudit, operators);
+
+	}
+
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
 		Set<AuditCategory> categories = new HashSet<>();
 
@@ -231,13 +231,13 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return null;
 	}
 
-//	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
-//		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-//			Set<AuditCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
-//			if (operatorCategories != null && operatorCategories.contains(category) && ContractorAuditCategories.isCategoryEffective(category, cao.getAudit().getEffectiveDate()))
-//				return true;
-//		}
-//
-//		return false;
-//	}
+	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
+		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			Set<AuditCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
+			if (operatorCategories != null && operatorCategories.contains(category) && ContractorAuditCategories.isCategoryEffective(category, cao.getAudit().getEffectiveDate()))
+				return true;
+		}
+
+		return false;
+	}
 }

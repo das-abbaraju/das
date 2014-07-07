@@ -20,7 +20,7 @@ public class DateBean {
 //
 //	private static final Logger logger = LoggerFactory.getLogger(DateBean.class);
 //
-//	public static final int ADD_OPERATION = 1;
+	public static final int ADD_OPERATION = 1;
 //	public static final int SUBTRACT_OPERATION = -1;
 //
 //	static {
@@ -543,10 +543,10 @@ public class DateBean {
 //		return d;
 //	}
 //
-//	public static Date addMonths(Date startDate, int months) {
-//		return adjustDate(startDate,months,Calendar.MONTH,ADD_OPERATION);
-//	}
-//
+	public static Date addMonths(Date startDate, int months) {
+		return adjustDate(startDate,months,Calendar.MONTH,ADD_OPERATION);
+	}
+
 //	public static Date addYears(Date startDate, int years) {
 //		return adjustDate(startDate,years,Calendar.YEAR,ADD_OPERATION);
 //	}
@@ -559,18 +559,16 @@ public class DateBean {
 //		return adjustDate(startDate,days,Calendar.DATE,SUBTRACT_OPERATION);
 //	}
 //
-//	public static Date adjustDate(Date startDate, int qty, int typeOfAdjustment, int operation) {
-//		if (startDate == null || qty == 0) {
-//			return null;
-//		}
-//
-//		Calendar cal = initializeCalendarWithOffset(startDate, typeOfAdjustment, qty*operation);
-//
-//		return cal.getTime();
-//	}
-//
-//
-//
+	public static Date adjustDate(Date startDate, int qty, int typeOfAdjustment, int operation) {
+		if (startDate == null || qty == 0) {
+			return null;
+		}
+
+		Calendar cal = initializeCalendarWithOffset(startDate, typeOfAdjustment, qty*operation);
+
+		return cal.getTime();
+	}
+
 //	public static Date addField(Date startDate, int field, int amount) {
 //		if (startDate == null || amount == 0) {
 //			return null;
@@ -634,14 +632,14 @@ public class DateBean {
 //		return calendar.getTime();
 //	}
 //
-//	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
-//		Calendar calendar = Calendar.getInstance();
-//		calendar.setTime(date);
-//		calendar.add(field, amount);
-//
-//		return calendar;
-//	}
-//
+	protected static Calendar initializeCalendarWithOffset(Date date, int field, int amount) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(field, amount);
+
+		return calendar;
+	}
+
 //	protected static Calendar setDefaultsForMonth(Calendar calendar, int month, int dayOfMonth) {
 //		calendar.set(Calendar.MONTH, month);
 //		calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);

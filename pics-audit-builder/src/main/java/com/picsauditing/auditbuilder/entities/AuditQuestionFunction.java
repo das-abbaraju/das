@@ -19,8 +19,8 @@ import java.util.List;
 @Table(name = "audit_question_function")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public final class AuditQuestionFunction extends BaseTable {
-//
-//	private AuditQuestion question;
+
+	private AuditQuestion question;
 	private QuestionFunctionType type;
 	private QuestionFunction function;
 	private String expression;
@@ -28,16 +28,16 @@ public final class AuditQuestionFunction extends BaseTable {
 
 	private List<AuditQuestionFunctionWatcher> watchers = new ArrayList<>();
 
-//	@ManyToOne
-//	@JoinColumn(name = "questionID", nullable = false)
-//	public AuditQuestion getQuestion() {
-//		return question;
-//	}
-//
-//	public void setQuestion(AuditQuestion question) {
-//		this.question = question;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "questionID", nullable = false)
+	public AuditQuestion getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(AuditQuestion question) {
+		this.question = question;
+	}
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	public QuestionFunctionType getType() {

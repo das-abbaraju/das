@@ -1,7 +1,5 @@
 package com.picsauditing.auditbuilder.entities;
 
-import com.picsauditing.auditbuilder.permissions.Permissions;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;

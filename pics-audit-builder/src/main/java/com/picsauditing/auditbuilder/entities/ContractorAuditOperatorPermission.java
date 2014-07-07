@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class ContractorAuditOperatorPermission implements Serializable {
 //
 //	private int id;
-//	private ContractorAuditOperator cao;
+	private ContractorAuditOperator cao;
 	private OperatorAccount operator;
 	private ContractorAuditOperator previousCao;
 
@@ -24,16 +24,16 @@ public class ContractorAuditOperatorPermission implements Serializable {
 //		this.id = id;
 //	}
 //
-//	@ManyToOne
-//	@JoinColumn(name = "caoID")
-//	public ContractorAuditOperator getCao() {
-//		return cao;
-//	}
-//
-//	public void setCao(ContractorAuditOperator cao) {
-//		this.cao = cao;
-//	}
-//
+	@ManyToOne
+	@JoinColumn(name = "caoID")
+	public ContractorAuditOperator getCao() {
+		return cao;
+	}
+
+	public void setCao(ContractorAuditOperator cao) {
+		this.cao = cao;
+	}
+
 	@ManyToOne
 	@JoinColumn(name = "opID")
 	public OperatorAccount getOperator() {

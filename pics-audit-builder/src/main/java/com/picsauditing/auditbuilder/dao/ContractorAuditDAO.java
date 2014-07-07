@@ -192,23 +192,23 @@ public class ContractorAuditDAO extends PicsDAO {
 //		return query.getResultList();
 //	}
 //
-//    public List<ContractorAudit> findAuditsByContractorAuditTypeAuditFors(int conID, int auditTypeID, List<String> auditFors) {
-//        String sql = "SELECT t FROM ContractorAudit t "
-//                + " WHERE t.contractorAccount.id = " + conID
-//                + " AND t.auditType.id = " + auditTypeID
-//                + " AND t.auditFor in (";
-//        boolean addComma = false;
-//        for (String auditFor:auditFors) {
-//            if (addComma)
-//                sql +=",";
-//            sql += "'" + auditFor + "'";
-//            addComma = true;
-//        }
-//        sql += ")";
-//        Query query = em.createQuery(sql);
-//        return query.getResultList();
-//    }
-//
+    public List<ContractorAudit> findAuditsByContractorAuditTypeAuditFors(int conID, int auditTypeID, List<String> auditFors) {
+        String sql = "SELECT t FROM ContractorAudit t "
+                + " WHERE t.contractorAccount.id = " + conID
+                + " AND t.auditType.id = " + auditTypeID
+                + " AND t.auditFor in (";
+        boolean addComma = false;
+        for (String auditFor:auditFors) {
+            if (addComma)
+                sql +=",";
+            sql += "'" + auditFor + "'";
+            addComma = true;
+        }
+        sql += ")";
+        Query query = em.createQuery(sql);
+        return query.getResultList();
+    }
+
 //	public List<ContractorAudit> findWhere(int limit, String where, String orderBy) {
 //		String hql = "FROM ContractorAudit";
 //		if (where.length() > 0) {

@@ -2,11 +2,11 @@ package com.picsauditing.auditbuilder.entities;
 
 public enum AuditTypeClass /*implements Translatable*/ {
 	PQF, Audit, Policy, IM, Employee, Review;
-//
-//	public boolean isPolicy() {
-//		return Policy == this;
-//	}
-//
+
+	public boolean isPolicy() {
+		return Policy == this;
+	}
+
 //	public boolean isPqf() {
 //		return PQF == this;
 //	}

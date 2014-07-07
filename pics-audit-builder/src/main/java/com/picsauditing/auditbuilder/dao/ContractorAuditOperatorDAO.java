@@ -1,6 +1,7 @@
 package com.picsauditing.auditbuilder.dao;
 
 import com.picsauditing.auditbuilder.entities.ContractorAuditOperator;
+import com.picsauditing.auditbuilder.entities.ContractorAuditOperatorPermission;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +22,11 @@ public class ContractorAuditOperatorDAO extends PicsDAO {
 //		em.persist(caop);
 //	}
 //
-//	/**
-//	 * CAOPs don't extend BaseTable, so we have to have a custom remove method here.
-//	 *
-//	 * @param caop
-//	 */
-//	@Transactional(propagation = Propagation.NESTED)
-//	public void remove(ContractorAuditOperatorPermission caop) {
-//		em.remove(caop);
-//	}
-//
+	@Transactional(propagation = Propagation.NESTED)
+	public void remove(ContractorAuditOperatorPermission caop) {
+		em.remove(caop);
+	}
+
 //	public ContractorAuditOperator find(int id) {
 //		return em.find(ContractorAuditOperator.class, id);
 //	}

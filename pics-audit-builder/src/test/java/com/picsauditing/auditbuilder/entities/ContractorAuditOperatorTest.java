@@ -2,7 +2,6 @@ package com.picsauditing.auditbuilder.entities;
 
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.auditbuilder.permissions.Permissions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
