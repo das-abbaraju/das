@@ -476,7 +476,7 @@ public class AuditBuilder {
 			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
-				if (cao2.getOperator().equals(governingBody)) {
+				if (cao2.getOperator().getId() == governingBody.getId()) {
 					cao = cao2;
 					break;
 				}
@@ -490,10 +490,11 @@ public class AuditBuilder {
 				// This is almost always Pending
 				AuditStatus firstStatus = conAudit.getAuditType().getWorkFlow().getFirstStep().getNewStatus();
 				cao.changeStatus(firstStatus, null);
-				conAudit.getOperators().add(cao);
 				conAudit.setLastRecalculation(null);
-				contractorAuditOperatorDAO.save(cao);
-			}
+
+                cao = contractorAuditOperatorDAO.save(cao);
+                conAudit.getOperators().add(cao);
+            }
 
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}

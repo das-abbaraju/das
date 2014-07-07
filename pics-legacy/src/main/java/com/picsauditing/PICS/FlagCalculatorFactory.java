@@ -22,7 +22,13 @@ public class FlagCalculatorFactory {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
 
         if (newFlagCalculatorIsEnabled()) {
-            newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
+            if (co.getId() > 0) {
+                newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
+            }
+            else {
+                newFlagDataCalculator.initialize(co.getContractorAccount().getId(), co.getOperatorAccount().getId(), convertOverridesToIDMap(overrides));
+            }
+
             if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PUBLISH_FLAG_CHANGES)) {
                 newFlagDataCalculator.setShouldPublishChanges(true);
             } else {

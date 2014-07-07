@@ -189,6 +189,7 @@
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
     <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
     <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
+    <bean id="ReportQBService" class="com.picsauditing.report.service.ReportQBService"/>
 
     <!-- CronTasks -->
     <bean id="AddLateFees" class="com.picsauditing.actions.cron.AddLateFees" scope="prototype"/>
@@ -348,6 +349,8 @@
     <bean id="ContractorAutocompleteService"
           class="com.picsauditing.actions.autocomplete.ContractorAutocompleteService"/>
     <bean id="CountryAutocompleteService" class="com.picsauditing.actions.autocomplete.CountryAutocompleteService"/>
+    <bean id="FlagCriteriaAutocompleteService"
+          class="com.picsauditing.actions.autocomplete.FlagCriteriaAutocompleteService"/>
     <bean id="LocationAutocompleteService" class="com.picsauditing.actions.autocomplete.LocationAutocompleteService"/>
     <bean id="OperatorAutocompleteService" class="com.picsauditing.actions.autocomplete.OperatorAutocompleteService"/>
     <bean id="OperatorTagAutocompleteService"

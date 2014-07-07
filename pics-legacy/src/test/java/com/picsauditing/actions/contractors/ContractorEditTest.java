@@ -6,10 +6,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.dao.BasicDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.NoteDAO;
-import com.picsauditing.dao.UserDAO;
+import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.messaging.Publisher;
@@ -41,8 +38,8 @@ public class ContractorEditTest extends PicsActionTest {
 	private ContractorAccount mockContractor;
 	@Mock
 	private Country mockCountry;
-	// @Mock
-	// private CountrySubdivision countrySubdivision;
+	@Mock
+	private NaicsDAO naicsDAO;
 	// @Mock
 	// private CountrySubdivisionDAO countrySubdivisionDAO;
 	// @Mock
@@ -88,6 +85,7 @@ public class ContractorEditTest extends PicsActionTest {
 		classUnderTest.userDAO = mockUserDao;
 
 		setInternalState(classUnderTest, "noteDao", mockNoteDao);
+		setInternalState(classUnderTest, "naicsDAO", naicsDAO);
 		setInternalState(classUnderTest, "accountStatusChanges", accountStatusChanges);
         setInternalState(classUnderTest, "messageService", messageService);
 
@@ -511,5 +509,17 @@ public class ContractorEditTest extends PicsActionTest {
 		verify(mockContractorAccountDao, times(1)).save(mockContractor);
 		verify(mockContractor, times(1)).setRenew(false);
 	}
+
+    @Test
+    public void testSave_NewNaicsCode() throws Exception {
+        setInternalState(classUnderTest, "naicsCode", "12345");
+
+        when(permissions.isContractor()).thenReturn(true);
+        when(mockConValidator.validateContractor(mockContractor)).thenReturn(new Vector<String>());
+
+        assertEquals(ActionSupport.SUCCESS, classUnderTest.save());
+        verify(mockContractor, times(1)).setNaics(any(Naics.class));
+        verify(mockContractorAccountDao, times(1)).save(mockContractor);
+    }
 
 }

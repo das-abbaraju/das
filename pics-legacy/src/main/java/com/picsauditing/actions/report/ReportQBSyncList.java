@@ -1,15 +1,15 @@
 package com.picsauditing.actions.report;
 
-import com.intuit.developer.adaptors.*;
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.InvoiceValidationException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.EmailQueueDAO;
 import com.picsauditing.dao.InvoiceDAO;
 import com.picsauditing.dao.PaymentDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.service.ReportQBService;
+import com.picsauditing.service.email.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -19,13 +19,15 @@ public class ReportQBSyncList extends PicsActionSupport {
 	@Autowired
 	private BillingService billingService;
 	@Autowired
+	private ReportQBService reportQBService;
+	@Autowired
+	private EmailService emailService;
+	@Autowired
 	private ContractorAccountDAO contractorAccountDAO;
 	@Autowired
 	private InvoiceDAO invoiceDAO;
 	@Autowired
 	private PaymentDAO paymentDAO;
-	@Autowired
-	private EmailQueueDAO emailQueueDAO;
 
 	private int id = 0;
 	private String type = null;
@@ -42,7 +44,8 @@ public class ReportQBSyncList extends PicsActionSupport {
 
 	private EmailQueue lastError;
 
-	public String execute() throws Exception, InvoiceValidationException {
+	// todo: Continue to move this stuff to ReportQBService
+    public String execute() throws Exception, InvoiceValidationException {
 		if (!forceLogin()) {
 			return LOGIN;
 		}
@@ -76,36 +79,24 @@ public class ReportQBSyncList extends PicsActionSupport {
 			}
 		}
 
-		// see InsertContractors
-		contractorInsert = contractorAccountDAO.findWhere(InsertContractors.getWhereClause(getQBListID(currency),
-				currency.toString()));
+        contractorInsert = reportQBService.getContractorsToInsert(currency);
 
-		// see InsertInvoices
-		invoiceInsert = invoiceDAO.findWhere(InsertInvoices.getWhereClause(getQBListID(currency), currency.toString()),
-				10);
+        invoiceInsert = reportQBService.getInvoicesToInsert(currency);
 
-		// see InsertPayments
-		paymentInsert = paymentDAO.findWhere(InsertPayments.getWhereClause(getQBListID(currency), currency.toString()),
-				10);
+        paymentInsert = reportQBService.getPaymentsToInsert(currency);
 
-		// see GetContractorsForUpdate
-		contractorUpdate = contractorAccountDAO.findWhere(GetContractorsForUpdate.getWhereClause(getQBListID(currency),
-				currency.toString()));
+        contractorUpdate = reportQBService.getContractorsForUpdate(currency);
 
-		// see GetInvoicesForUpdate
-		invoiceUpdate = invoiceDAO.findWhere(
-				GetInvoicesForUpdate.getWhereClause(getQBListID(currency), currency.toString()), 10);
+        invoiceUpdate = reportQBService.getInvoicesForUpdate(currency);
 
-		// see GetPaymentsForUpdate
-		paymentUpdate = paymentDAO.findWhere(
-				GetPaymentsForUpdate.getWhereClause(getQBListID(currency), currency.toString()), 10);
+        paymentUpdate = reportQBService.getPaymentsForUpdate(currency);
 
-		lastError = emailQueueDAO.getQuickbooksError();
+        lastError = emailService.getQuickbooksError();
 
 		return SUCCESS;
 	}
 
-	public List<ContractorAccount> getContractorInsert() {
+    public List<ContractorAccount> getContractorInsert() {
 		return contractorInsert;
 	}
 
@@ -149,55 +140,41 @@ public class ReportQBSyncList extends PicsActionSupport {
 		return lastError;
 	}
 
-	/**
-	 * TODO: Need to fix how we store qbListIDs and break them into another
-	 * table or store them more intelligently.
-	 *
-	 * @param currency
-	 * @return
-	 */
-	private String getQBListID(Currency currency) {
-		switch (currency) {
-		case CAD:
-			return "qbListCAID";
+    private void setQBData(ContractorAccount contractor, Currency currency) {
+        contractor.setQbSync(false);
+        switch (currency) {
+            case CAD:
+                if (contractor.getQbListCAID() == null) {
+                    contractor.setQbListCAID("NOLOAD" + id);
+                }
+                break;
 
-		case GBP:
-			return "qbListUKID";
+            case GBP:
+                if (contractor.getQbListUKID() == null) {
+                    contractor.setQbListUKID("NOLOAD" + id);
+                }
+                break;
 
-		case EUR:
-			return "qbListEUID";
-
-		default:
-			return "qbListID";
-		}
-	}
-
-	private void setQBData(ContractorAccount contractor, Currency currency) {
-		contractor.setQbSync(false);
-		switch (currency) {
-		case CAD:
-			if (contractor.getQbListCAID() == null) {
-				contractor.setQbListCAID("NOLOAD" + id);
-			}
-			break;
-
-		case GBP:
-			if (contractor.getQbListUKID() == null) {
-				contractor.setQbListUKID("NOLOAD" + id);
-			}
-			break;
-
-		case EUR:
-			if (contractor.getQbListEUID() == null) {
-				contractor.setQbListEUID("NOLOAD" + id);
-			}
-			break;
-
-		default:
-			if (contractor.getQbListID() == null) {
-				contractor.setQbListID("NOLOAD" + id);
-			}
-			break;
-		}
-	}
+            case EUR:
+                if (contractor.getQbListEUID() == null) {
+                    contractor.setQbListEUID("NOLOAD" + id);
+                }
+                break;
+            case CHF:
+                if (contractor.getQbListCHID() == null) {
+                    contractor.setQbListCHID("NOLOAD" + id);
+                }
+                break;
+            case PLN:
+                if (contractor.getQbListPLID() == null) {
+                    contractor.setQbListPLID("NOLOAD" + id);
+                }
+                break;
+            default:
+                if (contractor.getQbListID() == null) {
+                    contractor.setQbListID("NOLOAD" + id);
+                }
+                break;
+        }
+    }
 }

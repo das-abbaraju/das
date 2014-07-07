@@ -486,7 +486,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public boolean isCanSystemEdit() {
-		if (permissions.hasPermission(OpPerms.AuditEdit) && permissions.isAdmin()) {
+		if (permissions.isAuditor() && permissions.isAdmin()) {
 			return true;
 		}
 

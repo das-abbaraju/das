@@ -1,6 +1,7 @@
 package com.picsauditing.struts.validator.constraints;
 
 import com.picsauditing.dao.CountryDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.util.DataScrubber;
@@ -31,9 +32,14 @@ public class CountryZipCodeValidator implements ConstraintValidator<ValidateZipC
     }
 
     private boolean validZipCode(Country country, String zipCode) {
-        if (Strings.isEmpty(zipCode)) return false;
-
-        if (country.isUK()) {
+        // just trying to minimize impact on existing registration.
+        if (zipCode == null && Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+            return true;
+        }
+        else if (Strings.isEmpty(zipCode))  {
+            return false;
+        }
+        else if (country.isUK()) {
             zipCode = DataScrubber.cleanUKPostcode(zipCode).toUpperCase();
             return zipCode.matches(UK_POST_CODE_REGEX) && ! zipCode.matches(SPECIAL_CHAR_REGEX);
         } else {

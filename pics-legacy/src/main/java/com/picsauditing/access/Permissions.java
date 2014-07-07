@@ -591,11 +591,18 @@ public class Permissions implements Serializable {
 		return hasPermission(OpPerms.DevelopmentEnvironment);
 	}
 
-	/**
+    /**
+     * @return
+     */
+    public boolean isPicsAuditor() {
+        return hasPermission(OpPerms.AuditEdit);
+    }
+
+    /**
 	 * @return
 	 */
 	public boolean isAuditor() {
-		return hasPermission(OpPerms.AuditEdit);
+		return hasPermission(OpPerms.AuditEdit) || hasPermission(OpPerms.ClientAuditEdit);
 	}
 
 	public boolean isMarketing() {

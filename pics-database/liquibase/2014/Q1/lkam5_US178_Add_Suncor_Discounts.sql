@@ -3,7 +3,7 @@
 --changeset lkam:5
 --preConditions onFail MARK_RAN
 
--- ALTER TABLE invoice_fee ADD COLUMN discountOperatorID INT(11) DEFAULT 0 NULL AFTER commissionEligible;
+-- ALTER TABLE  invoice_fee ADD COLUMN discountOperatorID INT(11) DEFAULT 0 NULL AFTER commissionEligible;
 
 INSERT INTO invoice_fee(fee, defaultAmount, visible, feeClass, minFacilities, maxFacilities, qbFullName,createdBy,updatedBy,creationDate,updateDate, discountOperatorID)
 VALUES

@@ -35,7 +35,7 @@
         <a href="#" data-title="${version_detail_tooltip}">Version ${version}</a>
     </div>
     <div class="copyright">
-        Copyright &copy; 2013 PICS Auditing, LLC
+        <s:text name="global.PICSCopyright"/>
     </div>
 
     <button class="btn show-privacy-policy"><s:text name="Footer.Privacy" /></button>

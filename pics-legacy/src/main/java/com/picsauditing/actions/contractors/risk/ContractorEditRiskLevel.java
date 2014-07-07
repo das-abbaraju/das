@@ -186,7 +186,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
             note.setAccount(contractor);
             note.setAuditColumns(permissions);
             note.setSummary(userName + " " + Strings.implode(noteSummary, " and "));
-            note.setNoteCategory(NoteCategory.General);
+            note.setNoteCategory(noteCategory);
             note.setCanContractorView(false);
             note.setViewableById(Account.EVERYONE);
             noteDAO.save(note);

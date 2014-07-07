@@ -42,7 +42,7 @@
     </div>
 </s:if>
 
-<s:form id="save" method="POST">
+<s:form action="" id="save" method="POST"  enctype="multipart/form-data">
 <br clear="all"/>
 
 <s:hidden name="id"/>
@@ -230,7 +230,7 @@
 
         <li>
             <label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
-            <s:property value="contractor.topTradesNaicsCode"/>
+            <s:textfield name="naicsCode"/>
         </li>
         <li>
             <label><s:text name="ContractorEdit.SoleProprietor.heading"/>:</label>

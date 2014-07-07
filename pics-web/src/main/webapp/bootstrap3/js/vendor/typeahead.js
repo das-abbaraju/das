@@ -322,8 +322,8 @@
                 function done(resp) {
                     var data = that.filter ? that.filter(resp) : resp;
                     cb && cb(data);
-                    /* Had to comment this out to prevent Typeahead from maintaining an internal cache,
-                    which was causing the footer "no results" rendering to break */
+                    // Had to comment this out to prevent Typeahead from maintaining an internal cache,
+                    // which was causing the footer "no results" rendering to break
                     //requestCache.set(url, resp);
                 }
             },
@@ -539,7 +539,9 @@
                         isDuplicate = utils.some(suggestions, function(suggestion) {
                             return item.value === suggestion.value;
                         });
-                        !isDuplicate && suggestions.push(item);
+                        // Commented out because we want to display the user's name when a suggestion
+                        // is selected, and these will sometimes be duplicated by other results.
+                        /* !isDuplicate && */ suggestions.push(item);
                         return suggestions.length < that.limit;
                     });
                     cb && cb(suggestions);

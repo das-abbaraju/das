@@ -13,7 +13,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 OperatorCommissionID
 OperatorCommissionName
 OperatorCommissionOperatorReportingID
@@ -33,4 +32,3 @@ PaymentOperatorCommissionAccountUserName
 PaymentOperatorCommissionPaymentAmount
 PaymentOperatorCommissionPoints
 PaymentStatus
-PaymentTotalAmount

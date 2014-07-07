@@ -40,6 +40,8 @@ AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorAutoLiabilityALCombinedSingleAnswer
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserIsActive
 ContractorCustomerServiceUserName
@@ -78,10 +80,13 @@ ContractorFlagWaitingOn
 ContractorFlagWorkStatus
 ContractorGeneralLiabilityGLEachOccurrenceAnswer
 ContractorGeneralLiabilityGLGeneralAggregateAnswer
+ContractorInsideSalesPriority
 ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
@@ -116,5 +121,6 @@ ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
 DirectTradeId
 DirectTradeName
+EditRiskLevel
 TradeId
 TradeName

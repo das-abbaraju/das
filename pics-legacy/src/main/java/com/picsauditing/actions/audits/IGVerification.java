@@ -3,6 +3,7 @@ package com.picsauditing.actions.audits;
 import java.util.*;
 
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.interceptor.annotations.Before;
@@ -97,14 +98,19 @@ public class IGVerification extends ContractorActionSupport {
         if (phone == null)
             phone = contractor.getCountry().getCsrPhone();
 
-		emailBuilder.setTemplate(template);
-        emailBuilder.addToken("contactPhone", phone);
-		emailBuilder.addToken("auditList", policies);
-		emailBuilder.addToken("caowList", caowList);
-		emailBuilder.setPermissions(permissions);
-		emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
-		emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
-		previewEmail = emailBuilder.build();
+        try {
+            emailBuilder.setTemplate(template);
+            emailBuilder.addToken("contactPhone", phone);
+            emailBuilder.addToken("auditList", policies);
+            emailBuilder.addToken("caowList", caowList);
+            emailBuilder.setPermissions(permissions);
+            emailBuilder.setFromAddress("\"" + permissions.getName() + "\"<" + permissions.getEmail() + ">");
+            emailBuilder.setContractor(contractor, OpPerms.ContractorInsurance);
+            previewEmail = emailBuilder.build();
+        }
+        catch (EmailException ee) {
+            addActionError("Could not build preview email for " + contractor.getName());
+        }
 	}
 	
 	@RequiredPermission(value = OpPerms.AuditVerification)

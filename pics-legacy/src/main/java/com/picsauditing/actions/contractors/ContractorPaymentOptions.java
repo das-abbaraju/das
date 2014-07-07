@@ -466,7 +466,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		types.add("Visa");
 		types.add("Mastercard");
 		types.add("Discover Card");
-		types.add("American Express");
+        if (contractor.getCountry().getCurrency().isUSD() || contractor.getCountry().getCurrency().isCAD())
+            types.add("American Express");
 		return types;
 	}
 

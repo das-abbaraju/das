@@ -154,6 +154,12 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
 
     @Override
     @Transient
+    public void setCriteriaLabel(String label) {
+        criteria.setLabel(label);
+    }
+
+    @Override
+    @Transient
     public String getFlagColor() {
         return flag.toString();
     }

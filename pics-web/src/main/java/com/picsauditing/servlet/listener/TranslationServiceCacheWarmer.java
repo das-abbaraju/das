@@ -17,7 +17,9 @@ import org.springframework.scheduling.SchedulingTaskExecutor;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.util.*;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
 public class TranslationServiceCacheWarmer implements ServletContextListener, Runnable {
     private static final Logger logger = LoggerFactory.getLogger(TranslationServiceCacheWarmer.class);

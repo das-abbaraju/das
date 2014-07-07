@@ -18,7 +18,7 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
 
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
-		Map<String, Object> tokens = new HashMap<String, Object>();
+		Map<String, Object> tokens = new HashMap<>();
 
         Report report = subscription.getReport();
 
@@ -42,8 +42,7 @@ public class DynamicReportsSubscription extends SubscriptionBuilder {
             return tokens;
         }
 
-        reportApi.html();
-        String output = reportApi.getOutput();
+        String output = reportApi.html(report.getId());
 
         boolean reportExceedsColumnMax = HtmlWriter.MAX_COLUMNS < report.getColumns().size();
         boolean reportExceedsRowMax = HtmlWriter.MAX_ROWS < totalRowCount;

@@ -24,6 +24,11 @@ public class VATValidationConstraint implements ConstraintValidator<VatValidatio
 
     @Override
     public boolean isValid(RegistrationForm.VATPair value, ConstraintValidatorContext context) {
+
+        if (value.getCountry() == null || value.getVatCode() == null) {
+            return true;
+        }
+
         if (Strings.isEmpty(value.getCountry())) return false;
 
         try {

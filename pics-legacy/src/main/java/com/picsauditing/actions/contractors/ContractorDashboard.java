@@ -887,12 +887,29 @@ public class ContractorDashboard extends ContractorActionSupport {
 						&& !permissions.getCorporateParent().contains(id)) {
 					iterator.remove();
 				}
+                if (contractor.getOperator(id) == null) {
+                    iterator.remove();
+                }
 			}
 
 			return tags;
 		}
 
-		return contractor.getOperatorTags();
+        if (permissions.isContractor()) {
+            List<ContractorTag> tags = new ArrayList<ContractorTag>(
+                    contractor.getOperatorTags());
+            Iterator<ContractorTag> iterator = tags.iterator();
+            while (iterator.hasNext()) {
+                int id = iterator.next().getTag().getOperator().getId();
+                if (contractor.getOperator(id) == null) {
+                    iterator.remove();
+                }
+            }
+
+            return tags;
+        }
+
+        return contractor.getOperatorTags();
 	}
 
 	public String getCommaSeparatedContractorTypes() {

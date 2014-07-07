@@ -1,35 +1,24 @@
 package com.picsauditing.mail;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import com.picsauditing.i18n.service.TranslationService;
-import com.picsauditing.util.TemplateParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.TokenDAO;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.EmailQueue;
-import com.picsauditing.jpa.entities.EmailTemplate;
-import com.picsauditing.jpa.entities.Token;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.TranslatableString;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
+import com.picsauditing.util.TemplateParseException;
 import com.picsauditing.util.VelocityAdaptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Merges an email template with a map of token data and creates an email
@@ -42,6 +31,8 @@ public class EmailBuilder {
 	public static final String USER = "user";
 	public static final String PRIMARY_CONTACT = "primaryContact";
 	public static final String LOCALE = "locale";
+    public static final String COPYRIGHT = "copyright";
+    public static final String COPYRIGHT_TRANSLATION_KEY = "global.PICSCopyright";
 
 	private String fromAddress = null;
 	private String password = null;
@@ -110,6 +101,7 @@ public class EmailBuilder {
 		Locale userLocale = getUserLocale();
 		String templateBody = template.getBody();
 		String templateSubject = template.getSubject();
+        addToken(COPYRIGHT,new TranslatableString(COPYRIGHT_TRANSLATION_KEY).toTranslatedString(userLocale));
 
 		// Include i18nCache for every email
 		if (!tokens.containsKey("i18nCache")) {

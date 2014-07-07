@@ -24,6 +24,7 @@ EmployeeStatus	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min
 ExpirationDate	Date	String	Count,CountDistinct,Year,WeekDay,Hour,YearMonth,GroupConcat,Month,Date,DaysFromNow,Max,Min,LowerCase,UpperCase
 FeeClass	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 FlagColor	Multiselect	Flag	Count,CountDistinct,Max,Min
+FlagCriteria	Autocomplete	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 FlagCriteriaOptionCode	Multiselect	String	Count,CountDistinct,Length,GroupConcat,Max,Min,LowerCase,UpperCase
 Float	Number	Number	Count,CountDistinct,Average,Round,Sum,StdDev,Max,Min
 Integer	Number	Number	Count,CountDistinct,Average,Sum,StdDev,Max,Min

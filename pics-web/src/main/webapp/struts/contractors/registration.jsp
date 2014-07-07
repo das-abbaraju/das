@@ -249,9 +249,6 @@
 		</div>
 
 		<div class="actions">
-			<div class="info-agreement">
-			</div>
-
 			<s:submit
 				method="createAccount"
 				key="button.GetStarted"

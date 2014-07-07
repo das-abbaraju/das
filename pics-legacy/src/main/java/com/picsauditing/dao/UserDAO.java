@@ -95,7 +95,7 @@ public class UserDAO extends PicsDAO {
 				+ "JOIN usergroup member ON member.userID = u.id "
 				+ "JOIN users grp ON grp.id = member.groupID "
 				+ "JOIN useraccess ua ON ua.userID = grp.id "
-				+ "WHERE ua.accessType='AuditEdit' "
+				+ "WHERE ua.accessType IN ('AuditEdit','ClientAuditEdit') "
 				+ "AND ua.viewFlag = 1 "
 				+ "AND u.isActive = 1 "
 				+ "AND grp.accountID=" + corporateId, User.class);

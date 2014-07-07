@@ -342,7 +342,7 @@
         <action name="translations" class="com.picsauditing.struts.controller.TranslationJsonController" method="getTranslationMessages">
         </action>
 
-        <action name="translations/{translationKey}" class="com.picsauditing.struts.controller.TranslationJsonController" method="getSingleTranslationMessage">
+        <action name="translations/{language}/{isoCode}" class="com.picsauditing.struts.controller.TranslationJsonController" method="getTranslationMessages">
         </action>
 
 		<action name="ContractorViewAjax"
@@ -1163,6 +1163,11 @@
 			<result>struts/operators/op_manage_flag_criteria.jsp</result>
 		</action>
 
+		<action name="OperatorFlagsCalculatorCSV"
+		        class="com.picsauditing.actions.operators.OperatorFlagsCalculator">
+			<result>/struts/blank.jsp</result>
+		</action>
+
 		<action name="AuditBuilder"
 		        class="com.picsauditing.actions.audits.AuditBuilderDebugger">
 			<result>struts/audits/tester/audit_builder.jsp</result>
@@ -1185,6 +1190,8 @@
 			<result>/struts/blank.jsp</result>
 		</action>
 
+		<action name="tax-id-info/{iso}/{locale}" class="com.picsauditing.actions.TaxIdCountryJSON" method="taxIdInfo">
+		</action>
 
 		<!-- Flags -->
 		<action name="ManageFlagCriteria"
@@ -1271,25 +1278,13 @@
 			<result>/struts/selenium/reset_selenium.jsp</result>
 		</action>
 
-		<action name="FrontendDevelopmentGuide" class="com.picsauditing.actions.FrontendDevelopmentGuide">
-			<result>/struts/frontend-development-guide/dashboard.jsp</result>
-			<result name="technology">/struts/frontend-development-guide/technology/technology.jsp</result>
-			<result name="routing">/struts/frontend-development-guide/routing/routing.jsp</result>
-			<result name="html">/struts/frontend-development-guide/html/html.jsp</result>
-			<result name="decorators">/struts/frontend-development-guide/decorator/decorators.jsp</result>
-			<result name="forms">/struts/frontend-development-guide/form/forms.jsp</result>
-			<result name="file-structure">/struts/frontend-development-guide/file-structure/file-structure.jsp</result>
-			<result name="style-guide">/struts/frontend-development-guide/style-guide/style-guide.jsp</result>
-			<result name="page-layout">/struts/frontend-development-guide/page-layout/page-layout.jsp</result>
-			<result name="component">/struts/frontend-development-guide/component/components.jsp</result>
-			<result name="css-javascript-conventions">
-				/struts/frontend-development-guide/convention/css-javascript/conventions.jsp
-			</result>
-			<result name="html-conventions">/struts/frontend-development-guide/convention/html/conventions.jsp</result>
-			<result name="file-structure-conventions">
-				/struts/frontend-development-guide/convention/file-structure/conventions.jsp
-			</result>
+		<action name="FrontendStyleGuide" class="com.picsauditing.actions.FrontendStyleGuide">
+			<result>/struts/frontend-style-guide/dashboard.jsp</result>
 		</action>
+
+        <action name="FrontendCodingConventions" class="com.picsauditing.actions.FrontendCodingConventions">
+            <result>/struts/frontend-coding-conventions/dashboard.jsp</result>
+        </action>
 
 		<action name="EmailOptOut" class="com.picsauditing.mail.EmailOptOut">
 			<result>struts/user/login/login.jsp</result>
@@ -1319,6 +1314,9 @@
             <result type="json"></result>
         </action>
 
+        <action name="time-zones/{countryCode}" class="com.picsauditing.actions.TimeZoneRetriever">
+        </action>
+
 		<action name="Temp" class="com.picsauditing.actions.Temp">
 			<result>/struts/temp/test.jsp</result>
 			<result name="contractor-menu">/struts/temp/contractor-menu.jsp</result>
@@ -1346,13 +1344,20 @@
         <action name="company-finder" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
         </action>
 
-        <action name="registration/address-validation/advanced-edit" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
-        </action>
-
         <action name="eulas/login/{country}"
                 class="com.picsauditing.struts.controller.eula.EulaController"
                 method="loginEula">
-                <result>/struts/eula/login-eula.jsp</result>
+            <result>/struts/eula/login-eula.jsp</result>
+        </action>
+
+
+        <action name="registration/address-validation/advanced-edit" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+        <action name="registration" class="com.picsauditing.angular.controller.AngularLoader" method="load"></action>
+        <action name="registration/address-confirmation" class="com.picsauditing.angular.controller.AngularLoader" method="load"></action>
+        <action name="registration/address-editor" class="com.picsauditing.angular.controller.AngularLoader" method="load"></action>
+
+        <action name="AngularResult.action" class="com.picsauditing.actions.Temp" method="result">
         </action>
 
         <action name="location"
@@ -1365,7 +1370,7 @@
                 method="findByViewPort">
         </action>
 
-	</package>
+    </package>
 
 	<!-- Reports & API -->
 	<include file="struts-reports.xml"/>

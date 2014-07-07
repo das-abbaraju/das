@@ -2,6 +2,7 @@ package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.PICS.DateBean;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.Invoice;
@@ -20,17 +21,18 @@ import java.util.List;
 
 public class InsertInvoices extends CustomerAdaptor {
 
-	public static String getWhereClause(String qbID, String currency) {
+    public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
 		return "i.account." + qbID + " is not null AND i.status != 'Void' AND i.qbSync = true AND i.qbListID is null "
 				+ "AND i.account." + qbID + " not like 'NOLOAD%'  and i.account.status != 'Demo' AND i.currency like '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	@Override
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<Invoice> invoices = getInvoiceDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()), 10);
+				getWhereClause(currentSession.getCurrency()), 10);
 
 		// no work to do
 		if (invoices.size() == 0) {
@@ -66,26 +68,20 @@ public class InsertInvoices extends CustomerAdaptor {
 				invoice.getClassRef().setFullName("Contractors");
 
 				invoice.setARAccountRef(factory.createARAccountRef());
-				if (currentSession.isEUR()) {
-					invoice.getARAccountRef().setFullName("Accounts Receivable EURO");
-				} else {
-					invoice.getARAccountRef().setFullName("Accounts Receivable");
-				}
 
-				invoice.setTemplateRef(factory.createTemplateRef());
+                String accountsReceivableAccountRef = getAccountsReceivableAccountRef(
+                        currentSession);
+
+                invoice.getARAccountRef().setFullName(accountsReceivableAccountRef);
+
+                invoice.setTemplateRef(factory.createTemplateRef());
 				invoice.getTemplateRef().setFullName("PICS  Contractor Membership");
 
 				invoice.setTxnDate(new SimpleDateFormat("yyyy-MM-dd").format(invoiceJPA.getCreationDate()));
+                invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
+                setBillAddress(factory, invoiceJPA, invoice);
 
-				invoice.setRefNumber(new Integer(invoiceJPA.getId()).toString());
-
-				invoice.setBillAddress(factory.createBillAddress());
-
-				ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
-
-				invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
-
-				invoice.setIsPending("false");
+                invoice.setIsPending("false");
 
 				invoice.setPONumber(invoiceJPA.getPoNumber());
 				invoice.setTermsRef(factory.createTermsRef());
@@ -135,7 +131,16 @@ public class InsertInvoices extends CustomerAdaptor {
 
 	}
 
-	private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
+
+    private void setBillAddress(ObjectFactory factory, Invoice invoiceJPA, InvoiceAdd invoice) {
+        if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            invoice.setBillAddress(factory.createBillAddress());
+            ContractorAccount contractor = (ContractorAccount) invoiceJPA.getAccount();
+            invoice.setBillAddress(updateBillAddress(contractor, invoice.getBillAddress()));
+        }
+    }
+
+    private void setTaxExemptionBecauseQuickBooksDoesNotCalculateCanadianTaxesProperly(ObjectFactory factory, Invoice invoice, InvoiceItem item,
 			InvoiceLineAdd lineItem) {
 		if (item.getInvoiceFee() == null || item.getInvoiceFee().isTax() || invoice.getCurrency() != Currency.CAD) {
 			return;

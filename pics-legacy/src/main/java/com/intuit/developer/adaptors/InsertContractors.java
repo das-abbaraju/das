@@ -2,7 +2,9 @@ package com.intuit.developer.adaptors;
 
 import com.intuit.developer.QBSession;
 import com.picsauditing.access.OpPerms;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Currency;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.quickbooks.qbxml.*;
 import com.picsauditing.util.EmailAddressUtils;
@@ -14,7 +16,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.Writer;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,9 +23,10 @@ public class InsertContractors extends CustomerAdaptor {
 
 	private static final Logger logger = LoggerFactory.getLogger(InsertContractors.class);
 
-	public static String getWhereClause(String qbID, String currency) {
+	public static String getWhereClause(Currency currency) {
+        String qbID = getQBListID(currency);
 		return "a.qbSync = true AND a." + qbID + " IS NULL AND a.status = 'Active' AND a.country.currency = '"
-				+ currency + "'";
+				+ currency.name() + "'";
 	}
 
 	// FIXME This is practically identical to the same method in
@@ -33,7 +35,7 @@ public class InsertContractors extends CustomerAdaptor {
 	public String getQbXml(QBSession currentSession) throws Exception {
 
 		List<ContractorAccount> contractors = getContractorDao().findWhere(
-				getWhereClause(currentSession.getQbID(), currentSession.getCurrencyCode()));
+				getWhereClause(currentSession.getCurrency()));
 
 		// no work to do
 		if (CollectionUtils.isEmpty(contractors)) {
@@ -67,9 +69,9 @@ public class InsertContractors extends CustomerAdaptor {
 				 * doesn't allow for multiple currencies per account. Have to
 				 * name each account differently.
 				 **/
-				if (currentSession.isEUR()) {
-					requestID += "EU";
-				}
+
+                requestID = requestID + getCurrencyCodeSuffixForQB(currentSession) ;
+
 				customerAddRequest.setRequestID(requestID);
 
 				request.getHostQueryRqOrCompanyQueryRqOrCompanyActivityQueryRq().add(customerAddRequest);
@@ -77,10 +79,7 @@ public class InsertContractors extends CustomerAdaptor {
 				CustomerAdd customer = factory.createCustomerAdd();
 				customerAddRequest.setCustomerAdd(customer);
 
-				String customerName = contractor.getIdString();
-				if (currentSession.isEUR()) {
-					customerName += "EU";
-				}
+				String customerName = contractor.getIdString() + getCurrencyCodeSuffixForQB(currentSession);
 
 				customer.setName(customerName);
 				customer.setIsActive(new Boolean((contractor.getStatus().isActive() || contractor.isRenew()))
@@ -106,13 +105,9 @@ public class InsertContractors extends CustomerAdaptor {
 				customer.setFirstName(nullSafeSubString(getFirstName(primary.getName()), 0, 25));
 				customer.setLastName(nullSafeSubString(getLastName(primary.getName()), 0, 25));
 
-				customer.setBillAddress(factory.createBillAddress());
-				customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
 
-				if (currentSession.isEUR()) {
-					customer.setCurrencyRef(factory.createCurrencyRef());
-					customer.setCurrencyRef(updateCurrencyRef(contractor, customer.getCurrencyRef()));
-				}
+                setBillAddress(factory, contractor, customer);
+                setCurrencyRef(factory, contractor, customer);
 
 				customer.setPhone(nullSafePhoneFormat(contractor.getPhone()));
 				customer.setFax(nullSafeSubString(contractor.getFax(), 0, 19));
@@ -145,7 +140,22 @@ public class InsertContractors extends CustomerAdaptor {
 
 	}
 
-	@Override
+    private void setCurrencyRef(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
+        String currencyRefFullName = getCurrencyRefFullName(contractor);
+        if(currencyRefFullName != null) {
+            customer.setCurrencyRef(factory.createCurrencyRef());
+            customer.getCurrencyRef().setFullName(currencyRefFullName);
+        }
+    }
+
+    private void setBillAddress(ObjectFactory factory, ContractorAccount contractor, CustomerAdd customer) {
+        if (!Features.QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS.isActive()) {
+            customer.setBillAddress(factory.createBillAddress());
+            customer.setBillAddress(updateBillAddress(contractor, customer.getBillAddress()));
+        }
+    }
+
+    @Override
 	public Object parseQbXml(QBSession currentSession, String qbXml) throws Exception {
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
@@ -166,7 +176,7 @@ public class InsertContractors extends CustomerAdaptor {
 			CustomerRet customer = thisQueryResponse.getCustomerRet();
 
 			int conId = new Integer(currentSession.getCurrentBatch().get(thisQueryResponse.getRequestID())).intValue();
-			ContractorAccount connected = getContractorDao().find(conId);
+			ContractorAccount contractorAccount = getContractorDao().find(conId);
 
 			if (customer != null) {
 
@@ -175,16 +185,8 @@ public class InsertContractors extends CustomerAdaptor {
 					int accountId = Integer.parseInt(accountNumber);
 
 					if (accountId != 0) {
-						if (currentSession.isUS()) {
-							connected.setQbListID(customer.getListID());
-						} else if (currentSession.isCanada()) {
-							connected.setQbListCAID(customer.getListID());
-						} else if (currentSession.isGBP()) {
-							connected.setQbListUKID(customer.getListID());
-						} else if (currentSession.isEUR()) {
-							connected.setQbListEUID(customer.getListID());
-						}
-						connected.setQbSync(false);
+                        setQBListID(currentSession, customer, contractorAccount);
+						contractorAccount.setQbSync(false);
 					}
 				} catch (Exception e) {
 				}
@@ -203,24 +205,65 @@ public class InsertContractors extends CustomerAdaptor {
 
 				currentSession.getErrors().add(errorMessage.toString());
 
-				if (currentSession.isUS()) {
-					connected.setQbListID(null);
-				} else if (currentSession.isGBP()) {
-					connected.setQbListUKID(null);
-				} else if (currentSession.isEUR()) {
-					connected.setQbListEUID(null);
-				} else {
-					connected.setQbListCAID(null);
-				}
+                setNullQbListID(currentSession, contractorAccount);
 
-				connected.setQbSync(true);
+                contractorAccount.setQbSync(true);
 			}
 
-			getContractorDao().save(connected);
+			getContractorDao().save(contractorAccount);
 
 		}
 
 		return null;
 	}
+
+    private void setNullQbListID(QBSession currentSession, ContractorAccount contractorAccount) {
+        switch (currentSession.getCurrency()){
+            case USD:
+                contractorAccount.setQbListID(null);
+                break;
+            case GBP:
+                contractorAccount.setQbListUKID(null);
+                break;
+            case EUR:
+                contractorAccount.setQbListEUID(null);
+                break;
+            case CHF:
+                contractorAccount.setQbListCHID(null);
+                break;
+            case PLN:
+                contractorAccount.setQbListPLID(null);
+                break;
+
+            default:
+                contractorAccount.setQbListCAID(null);
+                break;
+        }
+    }
+
+    private void setQBListID(QBSession currentSession, CustomerRet customer, ContractorAccount contractorAccount) {
+        Currency currentCurrency = currentSession.getCurrency();
+
+        switch (currentCurrency) {
+            case USD:
+                contractorAccount.setQbListID(customer.getListID());
+                break;
+            case CAD:
+                contractorAccount.setQbListCAID(customer.getListID());
+                break;
+            case GBP:
+                contractorAccount.setQbListUKID(customer.getListID());
+                break;
+            case CHF:
+                contractorAccount.setQbListCHID(customer.getListID());
+                break;
+            case PLN:
+                contractorAccount.setQbListPLID(customer.getListID());
+                break;
+            case EUR:
+                contractorAccount.setQbListEUID(customer.getListID());
+                break;
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,8 @@ public class AuditServiceTest extends PicsActionTest {
     @Mock
     private AuditDataDAO auditDataDAO;
     @Mock
+    private NoteDAO noteDAO;
+    @Mock
     private ContractorAccount contractor;
     @Mock
     private ContractorAudit contractorAudit;
@@ -39,6 +42,7 @@ public class AuditServiceTest extends PicsActionTest {
         auditService = new AuditService();
 
         Whitebox.setInternalState(auditService, "auditDataDAO", auditDataDAO);
+        Whitebox.setInternalState(auditService, "noteDAO", noteDAO);
     }
 
     @Test
@@ -51,7 +55,7 @@ public class AuditServiceTest extends PicsActionTest {
         when(contractorAudit.hasCaoStatus(AuditStatus.Pending)).thenReturn(true);
         when(contractorAudit.getCurrentOperators()).thenReturn(caos);
 
-        Whitebox.invokeMethod(auditService, "setSlaManualAudit", contractor);
+        Whitebox.invokeMethod(auditService, "setSlaManualAudit", contractor, permissions);
         Mockito.verify(contractorAudit).setSlaDate(null);
         assertNull(contractorAudit.getSlaDate());
     }
@@ -74,7 +78,7 @@ public class AuditServiceTest extends PicsActionTest {
 
         // pqf & safety manual not complete, reset any existing SLA date
         audit.setSlaDate(new Date());
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() == null);
 
     }
@@ -97,7 +101,7 @@ public class AuditServiceTest extends PicsActionTest {
 
         audit.setSlaDate(new Date());
         needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() == null);
     }
 
@@ -122,7 +126,7 @@ public class AuditServiceTest extends PicsActionTest {
         noNeedManualAuditCao.changeStatus(AuditStatus.Complete, null);
         data.setAnswer("doc");
         data.setDateVerified(new Date());
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() == null);
     }
 
@@ -136,7 +140,7 @@ public class AuditServiceTest extends PicsActionTest {
         data.getQuestion().setId(AuditQuestion.MANUAL_PQF);
 
         audit.setSlaDate(new Date());
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() == null);
     }
 
@@ -165,7 +169,7 @@ public class AuditServiceTest extends PicsActionTest {
         data.setAnswer("doc");
         data.setDateVerified(new Date());
         needManualAuditCao1.changeStatus(AuditStatus.Complete, null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(currentSlaDate.before(audit.getSlaDate()));
     }
 
@@ -191,7 +195,7 @@ public class AuditServiceTest extends PicsActionTest {
         needManualAuditCao1.changeStatus(AuditStatus.Pending, null);
         data.setAnswer("doc");
         data.setDateVerified(new Date());
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() == null);
     }
 
@@ -223,7 +227,7 @@ public class AuditServiceTest extends PicsActionTest {
         cal.add(Calendar.DATE, 30);
         Date currentSlaData = cal.getTime();
         audit.setSlaDate(currentSlaData);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate().equals(currentSlaData));
 
         Calendar date = Calendar.getInstance();
@@ -238,7 +242,7 @@ public class AuditServiceTest extends PicsActionTest {
         needManualAuditCao1.setStatusChangedDate(mostRecent);
         data.setDateVerified(lestRecent);
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
 
@@ -246,7 +250,7 @@ public class AuditServiceTest extends PicsActionTest {
         needManualAuditCao1.setStatusChangedDate(lestRecent);
         data.setDateVerified(mostRecent);
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
 
@@ -258,7 +262,7 @@ public class AuditServiceTest extends PicsActionTest {
         needManualAuditCao1.setStatusChangedDate(DateBean.setToEndOfDay(date.getTime()));
         data.setDateVerified(DateBean.setToEndOfDay(date.getTime()));
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
     }
@@ -303,7 +307,7 @@ public class AuditServiceTest extends PicsActionTest {
         data.setDateVerified(completionDate);
         previousAudit.setExpiresDate(expirationDate);
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
 
@@ -320,7 +324,7 @@ public class AuditServiceTest extends PicsActionTest {
         data.setDateVerified(completionDate);
         previousAudit.setExpiresDate(expirationDate);
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
 
@@ -337,7 +341,7 @@ public class AuditServiceTest extends PicsActionTest {
         data.setDateVerified(completionDate);
         previousAudit.setExpiresDate(expirationDate);
         audit.setSlaDate(null);
-        Whitebox.invokeMethod(auditService, "checkSla", contractor);
+        Whitebox.invokeMethod(auditService, "checkSla", contractor, permissions);
         assertTrue(audit.getSlaDate() != null);
         assertTrue(dateMatches(targetDate, audit.getSlaDate()));
     }

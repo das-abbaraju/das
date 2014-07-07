@@ -282,10 +282,15 @@ ContractorAccountTransportationServices
 ContractorAccountWebUrl
 ContractorAccountZip
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -389,10 +394,15 @@ ContractorCemexPostEvalSiteAnswer
 ContractorCemexPostEvalTitleAnswer
 ContractorCemexPostEvalTypeName
 ContractorCemexPostEvalTypeNameString
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -427,6 +437,7 @@ AuditAuditorConfirm
 AuditAuditorID
 AuditAuditorIsActive
 AuditAuditorName
+AuditCaFatalitiesAnswer
 AuditCaLwcrAnswer
 AuditCaTrirAnswer
 AuditClosingAuditorID
@@ -455,6 +466,7 @@ AuditTypeMonthsToExpire
 AuditTypeName
 AuditTypeNameString
 AuditTypeRenewable
+AuditUsFatalitiesAnswer
 AuditUsLwcrAnswer
 AuditUsTrirAnswer
 ClientSite
@@ -475,7 +487,6 @@ CustomerServiceUserID
 CustomerServiceUserIsActive
 CustomerServiceUserName
 EmrAnswer
-FatalitiesAnswer
 PQFID
 PQFTypeName
 PQFTypeNameString
@@ -856,13 +867,18 @@ AccountWebUrl
 AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorCustomerServiceEndDate
 ContractorCustomerServiceRole
 ContractorCustomerServiceStartDate
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1012,13 +1028,18 @@ AccountWebUrl
 AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorLastContactedByInsideSalesID
 ContractorLastContactedByInsideSalesIsActive
 ContractorLastContactedByInsideSalesName
@@ -1093,6 +1114,8 @@ AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
 ContractorAutoLiabilityALCombinedSingleAnswer
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorCustomerServiceUserID
 ContractorCustomerServiceUserIsActive
 ContractorCustomerServiceUserName
@@ -1103,10 +1126,13 @@ ContractorEmployerLiabilityELLimitAnswer
 ContractorExcessLiabilityEXEachOccurrenceAnswer
 ContractorGeneralLiabilityGLEachOccurrenceAnswer
 ContractorGeneralLiabilityGLGeneralAggregateAnswer
+ContractorInsideSalesPriority
 ContractorInsideSalesUserID
 ContractorInsideSalesUserIsActive
 ContractorInsideSalesUserName
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorNumberOfEmployees
 ContractorOfficeIn
@@ -1141,6 +1167,7 @@ ContractorWorksPeriodicIn
 ContractorWorksPermanentIn
 DirectTradeId
 DirectTradeName
+EditRiskLevel
 TradeId
 TradeName
 
@@ -1152,10 +1179,15 @@ AccountName
 AccountStatus
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOperatorFlagColor
 ContractorOperatorFlagLastUpdated
@@ -1211,13 +1243,18 @@ AccountWebUrl
 AccountZip
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorCustomerServiceEndDate
 ContractorCustomerServiceRole
 ContractorCustomerServiceStartDate
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1248,10 +1285,15 @@ ContractorAccountStatus
 ContractorAccountTimezone
 ContractorAccountTransportationServices
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -1286,10 +1328,15 @@ Permission: Permissions{permissions=[]}
 AccountCity
 AccountContractorAccountLevel
 AccountContractorAuditGUARD
+AccountContractorContactCountByEmail
+AccountContractorContactCountByPhone
 AccountContractorDocuGUARD
 AccountContractorDontReassign
 AccountContractorEmployeeGUARD
+AccountContractorInsideSalesPriority
 AccountContractorInsureGUARD
+AccountContractorLastContactedByAutomatedEmailDate
+AccountContractorLastContactedByInsideSalesDate
 AccountContractorMembershipDate
 AccountContractorOriginalMembershipDate
 AccountContractorProductRisk
@@ -1338,6 +1385,61 @@ Permission: Permissions{permissions=[]}
 ----------------------------------------
 CountryEnglish
 CountryIsoCode
+
+Model: CreditMemos
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactIsActive
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
+ContractorContractorTradeTradeName
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
+ContractorInsideSalesUserName
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorOriginalMembershipDate
+ContractorProductRisk
+ContractorSafetySensitive
+ContractorSoleProprietor
+ContractorTagTagID
+ContractorTransportationRisk
+CreditMemoAmountApplied
+CreditMemoCreationDate
+CreditMemoCurrency
+CreditMemoID
+CreditMemoSapId
+CreditMemoSapLastSync
+CreditMemoSapSync
+CreditMemoStatus
 
 Model: Emails
 Permission: Permissions{permissions=[]}
@@ -1492,7 +1594,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 
 Model: InvoicePaymentLog
 Permission: Permissions{permissions=[]}
@@ -1584,7 +1685,6 @@ InvoiceSapSync
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 
 Model: Operators
 Permission: Permissions{permissions=[]}
@@ -1722,7 +1822,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 OperatorID
 OperatorName
 OperatorOperatorReportingID
@@ -1734,7 +1833,6 @@ PaymentCreationDate
 PaymentCurrency
 PaymentID
 PaymentStatus
-PaymentTotalAmount
 
 Model: PaymentOperatorCommissions
 Permission: Permissions{permissions=[]}
@@ -1752,7 +1850,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 OperatorCommissionID
 OperatorCommissionName
 OperatorCommissionOperatorReportingID
@@ -1770,7 +1867,6 @@ PaymentOperatorCommissionAccountUserID
 PaymentOperatorCommissionAccountUserIsActive
 PaymentOperatorCommissionAccountUserName
 PaymentStatus
-PaymentTotalAmount
 
 Model: Payments
 Permission: Permissions{permissions=[]}
@@ -1832,7 +1928,6 @@ PaymentSapId
 PaymentSapLastSync
 PaymentSapSync
 PaymentStatus
-PaymentTotalAmount
 PaymentTransactionID
 
 Model: Reports
@@ -1985,7 +2080,6 @@ TransactionSapId
 TransactionSapLastSync
 TransactionSapSync
 TransactionStatus
-TransactionTotalAmount
 TransactionTransactionType
 
 Model: UserAssignments
@@ -2006,10 +2100,15 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
+ContractorContactCountByEmail
+ContractorContactCountByPhone
 ContractorDocuGUARD
 ContractorDontReassign
 ContractorEmployeeGUARD
+ContractorInsideSalesPriority
 ContractorInsureGUARD
+ContractorLastContactedByAutomatedEmailDate
+ContractorLastContactedByInsideSalesDate
 ContractorMembershipDate
 ContractorOriginalMembershipDate
 ContractorProductRisk
@@ -2033,7 +2132,6 @@ InvoicePaidDate
 InvoiceStatus
 InvoiceTax
 InvoiceTaxlessTotalAmount
-InvoiceTotalAmount
 UserAssignmentUserDepartment
 UserAssignmentUserEmail
 UserAssignmentUserFax

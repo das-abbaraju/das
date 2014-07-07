@@ -7,6 +7,16 @@ public class Temp extends PicsActionSupport {
 		return SUCCESS;
 	}
 
+    public String blank() throws Exception {
+        return BLANK;
+    }
+
+    public String result() {
+        jsonString = "[{\"id\":12345,\"name\":\"Hello World\"}]";
+
+        return JSON_STRING;
+    }
+
 	public String contractorMenu() throws Exception {
 		return "contractor-menu";
 	}

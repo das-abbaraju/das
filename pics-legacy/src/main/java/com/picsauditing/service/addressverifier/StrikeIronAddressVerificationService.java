@@ -38,12 +38,13 @@ public class StrikeIronAddressVerificationService extends AddressVerificationSer
                 .resultStatus(parseResultCode(verifiedAddress.getStatusNbr()))
                 .statusDescription(verifiedAddress.getStatusDescription())
                 .confidencePercentage(verifiedAddress.getConfidencePercentage())
+                .formattedAddressLines(verifiedAddress.getFormattedAddressLines())
                 .build();
     }
 
     private AddressResponseHolder buildFeatureDisabledResponse() {
         AddressResponseHolder addressResponse = new AddressResponseHolder();
-        addressResponse.setResultStatus(ResultStatus.SUCCESS);
+        addressResponse.setResultStatus(ResultStatus.IGNORE);
         addressResponse.setStatusDescription(FEATURE_DISABLED_MESSAGE);
         return addressResponse;
     }

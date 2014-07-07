@@ -15,7 +15,6 @@ import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.provisioning.ProductSubscriptionService;
-import com.picsauditing.search.Database;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.toggle.FeatureToggle;
@@ -260,17 +259,6 @@ public final class MenuBuilder {
 			if (permissions.has(OpPerms.DevelopmentEnvironment)) {
 				translationMenu.addChild(getText("menu.Configure.ImportExportTranslations"), "TranslationETL.action",
 						"im_ex_trans");
-
-				try {
-					String databaseName = Database.getDatabaseName();
-
-					if (databaseName.contains("alpha")) {
-						translationMenu.addChild(getText("menu.Configure.UnsyncedTranslations"),
-								"UnsyncedTranslations.action", "unsynced_translations");
-					}
-				} catch (Exception e) {
-					// Don't show menu item
-				}
 			}
 
 			translationMenu.addChild(getText("menu.Configure.ViewTracedTranslations"),
@@ -338,7 +326,8 @@ public final class MenuBuilder {
 		devMenu.addChild(getText("menu.Dev.ConfigChanges"), "ConfigChanges.action", "config_changes");
 
 		devMenu.addChild(getText("menu.Dev.Debug"), "#", "debug-menu");
-		devMenu.addChild("PICS Style Guide", "FrontendDevelopmentGuide.action", "front-end-dev-guide");
+		devMenu.addChild("PICS Style Guide", "FrontendStyleGuide.action", "front-end-style-guide");
+		devMenu.addChild("Frontend Coding Conventions", "FrontendCodingConventions.action", "front-end-coding-conventions");
 
 		if (permissions.hasPermission(OpPerms.Billing)) {
 			devMenu.addChild("Process QB XML", "ProcessQBResponseXML.action", "process_qb_response_xml");
@@ -353,6 +342,7 @@ public final class MenuBuilder {
 	private static void buildCronSubmenu(MenuComponent devMenu) {
 		MenuComponent cronSubmenu = devMenu.addChild(getText("menu.Dev.Crons"));
 		cronSubmenu.addChild(getText("global.Contractor"), "ContractorCron.action", "contractor_cron");
+		cronSubmenu.addChild("Daily", "Cron!list.action", "daily_cron");
 		cronSubmenu.addChild(getText("menu.Mail"), "MailCron.action", "mail_cron");
 		cronSubmenu.addChild(getText("menu.Dev.AuditScheduleBuilder"), "AuditScheduleBuilderCron.action",
 				"audit_schedule_builder");
@@ -528,22 +518,6 @@ public final class MenuBuilder {
 		} else {
 			legacyMenu.addChild(getText("ReportNewRequestedContractor.title"), "ReportNewRequestedContractor.action",
 					"ReportNewRequestedContractor");
-		}
-
-		if (permissions.hasPermission(OpPerms.AssignAudits)) {
-			if (permissions.isOperatorCorporate()) {
-				legacyMenu.addChild("Sched. &amp; Assign",
-						"AuditAssignments.action?filter.status=Active",
-						"AuditAssignments");
-			} else {
-				legacyMenu.addChild("Sched. &amp; Assign",
-						"AuditAssignments.action?filter.status=Active&filter.auditTypeID=2&filter.auditTypeID=17",
-						"AuditAssignments");
-			}
-		}
-
-		if (permissions.hasPermission(OpPerms.RiskRank)) {
-			legacyMenu.addChild("Contractor Risk Assessment", "ReportContractorRiskLevel.action", "ContractorRiskLevel");
 		}
 
 		if (permissions.isOperatorCorporate() && permissions.getLinkedGeneralContractors().size() > 0) {
@@ -829,7 +803,7 @@ public final class MenuBuilder {
 		StringBuilder mibewURL = new StringBuilder("https://chat.picsorganizer.com/client.php?")
 				.append("locale=").append(URLEncoder.encode(mibew_language_code, "UTF-8"))
 				.append("&style=PICS");
-		if (permissions.isLoggedIn()) {
+		if (permissions != null && permissions.isLoggedIn()) {
 			mibewURL.append("&name=").append(URLEncoder.encode(permissions.getName(), "UTF-8"))
 					.append("&accountName=").append(URLEncoder.encode(permissions.getAccountName(), "UTF-8"))
 					.append("&accountId=").append(permissions.getAccountId())

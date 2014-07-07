@@ -82,8 +82,7 @@
                         // save result length before adding display text
                         results = items.length;
 
-                        // if the results are the same as the default
-                        if (results === that.options.items) {
+                        if (total_results > items.length) {
                             items.push($('<li class="more-results"><a href="#">More Results...</a></li>').get(0));
                         }
 

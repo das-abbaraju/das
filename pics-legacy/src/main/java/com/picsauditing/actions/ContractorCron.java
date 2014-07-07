@@ -39,6 +39,10 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private ContractorAccountDAO contractorDAO;
 	@Autowired
+	private NoteDAO noteDAO;
+	@Autowired
+	private FlagCriteriaDAO flagCriteriaDAO;
+	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
@@ -351,7 +355,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		checkLcCor(contractor);
 		cancelScheduledImplementationAudits(contractor);
-        auditService.checkSla(contractor);
+        auditService.checkSla(contractor, permissions);
 	}
 
 	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {
@@ -570,6 +574,7 @@ public class ContractorCron extends PicsActionSupport {
 
         FlagCalculator flagCalculator = flagCalculatorFactory.flagCalculator(contractorOperator, messageService);
 		List<com.picsauditing.flagcalculator.FlagData> changes = flagCalculator.calculate();
+        addLabelsToChanges(changes);
         boolean needNote = flagCalculator.saveFlagData(changes);
         dao.refresh(contractorOperator);
 
@@ -606,6 +611,14 @@ public class ContractorCron extends PicsActionSupport {
             note.setCanContractorView(true);
             note.setViewableBy(contractorOperator.getOperatorAccount());
             dao.save(note);
+        }
+    }
+
+    private void addLabelsToChanges(List<com.picsauditing.flagcalculator.FlagData> changes) {
+        for (com.picsauditing.flagcalculator.FlagData flagData : changes) {
+            com.picsauditing.flagcalculator.entities.FlagData flagDatum = (com.picsauditing.flagcalculator.entities.FlagData) flagData;
+            FlagCriteria flagCriteria = flagCriteriaDAO.find(flagDatum.getCriteria().getId());
+            flagDatum.setCriteriaLabel(flagCriteria.getLabel());
         }
     }
 
@@ -1076,6 +1089,14 @@ public class ContractorCron extends PicsActionSupport {
 							if (ua != null) {
 								audit.setAuditor(ua.getUser());
 								audit.setAssignedDate(new Date());
+
+                                Note note = new Note();
+                                note.setAccount(audit.getContractorAccount());
+                                note.setAuditColumns(permissions);
+                                note.setSummary("Auto assign Audit #" + audit.getId() + " was assigned to " + ua.getUser());
+                                note.setNoteCategory(NoteCategory.Audits);
+                                note.setViewableById(Account.PicsID);
+                                noteDAO.save(note);
 							}
 						}
 						if (audit.getClosingAuditor() == null && audit.getAuditor() != null

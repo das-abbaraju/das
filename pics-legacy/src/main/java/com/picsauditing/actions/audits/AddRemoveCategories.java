@@ -1,11 +1,12 @@
 package com.picsauditing.actions.audits;
 
-import java.util.Collections;
-
+import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
+
+import java.util.Collections;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -14,8 +15,11 @@ import com.picsauditing.jpa.entities.AuditCategory;
 @SuppressWarnings("serial")
 public class AddRemoveCategories extends AuditActionSupport {
 
-	@RequiredPermission(value = OpPerms.AuditEdit)
 	public String execute() throws Exception {
+        if (!permissions.isAuditor()) {
+            throw new NoRightsException(OpPerms.AuditEdit, OpType.View);
+        }
+
 		this.findConAudit();
 		Collections.sort(conAudit.getCategories());
 

@@ -29,7 +29,8 @@ public class AuditOverride extends ContractorDocuments {
 			throw new NoRightsException("Cannot Manually Add Audits");
 		}
 
-		employeesLeftList = new ArrayList<Employee>();
+        employeesRightList = new ArrayList<>();
+		employeesLeftList = new ArrayList<>();
 		for (Employee e : contractor.getEmployees()) {
 			if (e.isActive())
 				employeesLeftList.add(e);
@@ -38,7 +39,7 @@ public class AuditOverride extends ContractorDocuments {
 		if (button != null) {
 			ContractorAudit conAudit = null;
 			AuditType auditType = null;
-			List<Employee> employees = new ArrayList<Employee>();
+			List<Employee> employees = new ArrayList<>();
 
 			if (selectedAudit != null)
 				auditType = auditTypeDAO.find(selectedAudit);

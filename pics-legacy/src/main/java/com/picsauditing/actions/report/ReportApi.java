@@ -1,17 +1,25 @@
 package com.picsauditing.actions.report;
 
-import static com.picsauditing.report.ReportJson.REPORT_ID;
-import static com.picsauditing.report.ReportJson.writeJsonException;
-import static com.picsauditing.report.ReportJson.writeJsonSuccess;
-
-import javax.persistence.NoResultException;
-
+import com.picsauditing.access.NoRightsException;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.actions.PicsApiSupport;
 import com.picsauditing.dao.EmailSubscriptionDAO;
+import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.EmailSubscription;
+import com.picsauditing.jpa.entities.Report;
+import com.picsauditing.jpa.entities.ReportUser;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.mail.Subscription;
 import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.report.PicsSqlException;
+import com.picsauditing.report.ReportContext;
+import com.picsauditing.report.ReportValidationException;
+import com.picsauditing.report.data.ReportResults;
+import com.picsauditing.report.models.ModelType;
 import com.picsauditing.service.PermissionService;
+import com.picsauditing.service.ReportPreferencesService;
+import com.picsauditing.service.ReportService;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -20,21 +28,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.actions.PicsApiSupport;
-import com.picsauditing.dao.ReportDAO;
-import com.picsauditing.jpa.entities.Report;
-import com.picsauditing.jpa.entities.ReportUser;
-import com.picsauditing.report.PicsSqlException;
-import com.picsauditing.report.ReportContext;
-import com.picsauditing.report.ReportValidationException;
-import com.picsauditing.report.data.ReportResults;
-import com.picsauditing.report.models.ModelType;
-import com.picsauditing.service.ReportPreferencesService;
-import com.picsauditing.service.ReportService;
-
+import javax.persistence.NoResultException;
 import java.util.List;
+
+import static com.picsauditing.report.ReportJson.*;
 
 @SuppressWarnings("serial")
 public class ReportApi extends PicsApiSupport {
@@ -203,17 +200,19 @@ public class ReportApi extends PicsApiSupport {
 		return BLANK;
 	}
 
-    public String html() {
+    public String html(int reportId) {
+        String result = null;
         ReportContext reportContext = buildReportContext(null);
 
         try {
             report = reportDao.findById(reportId);
-            output = reportService.buildReportResultsForHtml(reportContext,report);
+            result = reportService.buildReportResultsForHtml(reportContext,report);
         } catch (Exception e) {
-            logger.error("Error while downloading report", e);
+            logger.error("Error while emailing report", e);
+            result = "Error found: " + ExceptionUtils.getFullStackTrace(e);
         }
 
-        return PLAIN_TEXT;
+        return result;
     }
 
     public String info() {

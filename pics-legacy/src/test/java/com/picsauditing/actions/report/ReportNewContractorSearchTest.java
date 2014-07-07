@@ -176,18 +176,18 @@ public class ReportNewContractorSearchTest extends PicsTest {
     @Test
     public void testGetWorstFlagColor_MultipleColors() throws Exception {
         List<com.picsauditing.flagcalculator.FlagData> flagData = new ArrayList<>();
-        FlagData flagData1 = new FlagData();
-        flagData1.setFlag(FlagColor.Green);
-        FlagData flagData2 = new FlagData();
-        flagData2.setFlag(FlagColor.Green);
-        FlagData flagData3 = new FlagData();
-        flagData3.setFlag(FlagColor.Amber);
-        FlagData flagData4 = new FlagData();
-        flagData4.setFlag(FlagColor.Amber);
-        FlagData flagData5 = new FlagData();
-        flagData5.setFlag(FlagColor.Red);
-        FlagData flagData6 = new FlagData();
-        flagData6.setFlag(FlagColor.Red);
+        com.picsauditing.flagcalculator.entities.FlagData flagData1 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData1.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Green);
+        com.picsauditing.flagcalculator.entities.FlagData flagData2 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData2.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Green);
+        com.picsauditing.flagcalculator.entities.FlagData flagData3 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData3.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Amber);
+        com.picsauditing.flagcalculator.entities.FlagData flagData4 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData4.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Amber);
+        com.picsauditing.flagcalculator.entities.FlagData flagData5 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData5.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Red);
+        com.picsauditing.flagcalculator.entities.FlagData flagData6 = new com.picsauditing.flagcalculator.entities.FlagData();
+        flagData6.setFlag(com.picsauditing.flagcalculator.entities.FlagColor.Red);
         flagData.add(flagData1);
         flagData.add(flagData2);
         flagData.add(flagData3);

@@ -1,5 +1,9 @@
 describe('translationsService', function() {
-    var translationsService, keys, $rootScope, $timeout, $httpBackend;
+    var translationsService, keys, $rootScope, $timeout, $httpBackend,
+        translationsCallbackCalled = false,
+        translationsCallback = function () {
+            translationsCallbackCalled = true;
+        };
 
     var requestParamsMock = {
         translationKeys: [
@@ -37,9 +41,11 @@ describe('translationsService', function() {
 
     describe('createRouteParamsFromKeys', function () {
         it('should create the correct route params from the given translation keys', function() {
-            var routeParams = translationsService.createRouteParamsFromKeys(keys);
+            var routeParams = translationsService.createRouteParamsFromKeys(keys, 'en_US');
 
             expect(routeParams).toEqual({
+                language: 'en',
+                dialect: 'US',
                 translationKeys: [
                     'my.first.translation.key',
                     'my.second.translation.key'
@@ -86,27 +92,16 @@ describe('translationsService', function() {
 
             translationsService.setTranslations(translationsMock);
 
-            expect($rootScope.text['my.first.translation']).toEqual('my.first.translation');
+            expect($rootScope.text['my.first.translation'].toString()).toEqual('my.first.translation');
         });
 
+        // TODO: Test without having to expose the deferred object and a custom flag
         it('should resolve the promise returned by getTranslations', function () {
-            var mySpy = {
-                callback: function () {}
-            };
+            translationsService.getTranslations().then(translationsCallback);
 
-            spyOn(mySpy, 'callback');
-
-            translationsService.getTranslations().then(mySpy.callback);
-
-            $httpBackend.when('POST', /\w*/).respond(responseMock);
-
-            translationsService.fetchTranslations(requestParamsMock).then(function (data) {
-                translationsService.setTranslations(data.translationsMap);
-            });
-
-            $httpBackend.flush();
-
-            expect(mySpy.callback).toHaveBeenCalled();
+            translationsService.setTranslations();    
+            
+            expect(translationsService.getDeferred().resolved).toBe(true);     
         });
     });
 });

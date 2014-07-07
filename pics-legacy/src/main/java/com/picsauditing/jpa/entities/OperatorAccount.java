@@ -40,6 +40,7 @@ public class OperatorAccount extends Account {
 	public static final int VALSPAR_GARLAND = 23335;
 
 	private OperatorAccount parent;
+	private OperatorAccount reporting;
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
@@ -434,6 +435,16 @@ public class OperatorAccount extends Account {
 
 	public void setParent(OperatorAccount parent) {
 		this.parent = parent;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "reportingID", nullable = true)
+	public OperatorAccount getReporting() {
+		return reporting;
+	}
+
+	public void setReporting(OperatorAccount reporting) {
+		this.reporting = reporting;
 	}
 
 	public boolean isOrIsDescendantOf(int id) {

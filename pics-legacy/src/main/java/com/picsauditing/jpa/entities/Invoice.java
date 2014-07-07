@@ -193,13 +193,6 @@ public class Invoice extends Transaction {
         this.creditMemos = creditMemos;
     }
 
-    @Transient
-	public void markPaid(User u) {
-		setStatus(TransactionStatus.Paid);
-		this.setPaidDate(new Date());
-		this.setAuditColumns(u);
-	}
-
 	@Transient
 	public void updateTotalAmount() {
 		totalAmount = BigDecimal.ZERO;

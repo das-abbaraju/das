@@ -1,17 +1,7 @@
 package com.intuit.developer;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -23,13 +13,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations={"QBWebConnectorSvcSkeletonTest-context.xml"})
 public class QBWebConnectorSvcSkeletonTest {
-	private QBWebConnectorSvcSkeleton qBWebConnectorSvcSkeleton;
+    private QBWebConnectorSvcSkeleton qBWebConnectorSvcSkeleton;
 	private Map<String, QBSession> sessions;
 	private String TEST_PASSWORD = "test_password";
 	
@@ -44,7 +40,7 @@ public class QBWebConnectorSvcSkeletonTest {
 		qBWebConnectorSvcSkeleton = new QBWebConnectorSvcSkeleton();
 		sessions = Whitebox.getInternalState(QBWebConnectorSvcSkeleton.class, "sessions");
 		
-		when(authenticate.getStrUserName()).thenReturn("PICSQBLOADER");
+		when(authenticate.getStrUserName()).thenReturn(PicsQbUser.PICSQBLOADER.getQbUsername());
 		when(authenticate.getStrPassword()).thenReturn(TEST_PASSWORD);
 	}
 	
@@ -71,56 +67,103 @@ public class QBWebConnectorSvcSkeletonTest {
 	
 	@Test
 	public void testSetUpSession_PICSQBLOADER() throws Exception {
-		when(authenticate.getStrUserName()).thenReturn("PICSQBLOADER");
-		
-		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", authenticate);
+		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADER);
 		
 		assertCommonSessionFacts(session);
 		String currencyCode = session.getCurrencyCode();
-		assertThat(currencyCode, is(equalTo("USD")));
+		assertEquals(currencyCode, PicsQbUser.PICSQBLOADER.getCurrency().getIsoCode());
 		String qbId = session.getQbID();
-		assertThat(qbId, is(equalTo("qbListID")));
+		assertEquals(qbId, PicsQbUser.PICSQBLOADER.getQbListId());
 	}
 
 	@Test
 	public void testSetUpSession_PICSQBLOADERCAN() throws Exception {
-		when(authenticate.getStrUserName()).thenReturn("PICSQBLOADERCAN");
-		
-		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", authenticate);
+		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERCAN);
 		
 		assertCommonSessionFacts(session);
 		String currencyCode = session.getCurrencyCode();
-		assertThat(currencyCode, is(equalTo("CAD")));
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADERCAN.getCurrency().getIsoCode());
 		String qbId = session.getQbID();
-		assertThat(qbId, is(equalTo("qbListCAID")));
+        assertEquals(qbId, PicsQbUser.PICSQBLOADERCAN.getQbListId());
 	}
 	
 	@Test
 	public void testSetUpSession_PICSQBLOADERUK() throws Exception {
-		when(authenticate.getStrUserName()).thenReturn("PICSQBLOADERUK");
-		
-		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", authenticate);
+		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERUK);
 		
 		assertCommonSessionFacts(session);
 		String currencyCode = session.getCurrencyCode();
-		assertThat(currencyCode, is(equalTo("GBP")));
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADERUK.getCurrency().getIsoCode());
 		String qbId = session.getQbID();
-		assertThat(qbId, is(equalTo("qbListUKID")));
+        assertEquals(qbId, PicsQbUser.PICSQBLOADERUK.getQbListId());
 	}
 	
 	@Test
 	public void testSetUpSession_PICSQBLOADEREU() throws Exception {
-		when(authenticate.getStrUserName()).thenReturn("PICSQBLOADEREU");
-		
-		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", authenticate);
+		QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADEREU);
 		
 		assertCommonSessionFacts(session);
 		String currencyCode = session.getCurrencyCode();
-		assertThat(currencyCode, is(equalTo("EUR")));
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADEREU.getCurrency().getIsoCode());
 		String qbId = session.getQbID();
-		assertThat(qbId, is(equalTo("qbListEUID")));
+        assertEquals(qbId, PicsQbUser.PICSQBLOADEREU.getQbListId());
 	}
-	
+
+    @Test
+    public void testSetUpSession_PICSQBLOADERNOK() throws Exception {
+        QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERNOK);
+
+        assertCommonSessionFacts(session);
+        String currencyCode = session.getCurrencyCode();
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADEREU.getCurrency().getIsoCode());
+        String qbId = session.getQbID();
+        assertEquals(qbId, PicsQbUser.PICSQBLOADEREU.getQbListId());
+    }
+
+    @Test
+    public void testSetUpSession_PICSQBLOADERSEK() throws Exception {
+        QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERSEK);
+
+        assertCommonSessionFacts(session);
+        String currencyCode = session.getCurrencyCode();
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADEREU.getCurrency().getIsoCode());
+        String qbId = session.getQbID();
+        assertEquals(qbId, PicsQbUser.PICSQBLOADEREU.getQbListId());
+    }
+
+    @Test
+    public void testSetUpSession_PICSQBLOADERDKK() throws Exception {
+        QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERDKK);
+
+        assertCommonSessionFacts(session);
+        String currencyCode = session.getCurrencyCode();
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADEREU.getCurrency().getIsoCode());
+        String qbId = session.getQbID();
+        assertEquals(qbId, PicsQbUser.PICSQBLOADEREU.getQbListId());
+    }
+
+    @Test
+    public void testSetUpSession_PICSQBLOADERCHF() throws Exception {
+        QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERCHF);
+
+        assertCommonSessionFacts(session);
+        String currencyCode = session.getCurrencyCode();
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADERCHF.getCurrency().getIsoCode());
+        String qbId = session.getQbID();
+        assertEquals(qbId, PicsQbUser.PICSQBLOADERCHF.getQbListId());
+    }
+
+    @Test
+    public void testSetUpSession_PICSQBLOADERPLN() throws Exception {
+        QBSession session = Whitebox.invokeMethod(qBWebConnectorSvcSkeleton, "setUpSession", PicsQbUser.PICSQBLOADERPLN);
+
+        assertCommonSessionFacts(session);
+        String currencyCode = session.getCurrencyCode();
+        assertEquals(currencyCode, PicsQbUser.PICSQBLOADERPLN.getCurrency().getIsoCode());
+        String qbId = session.getQbID();
+        assertEquals(qbId, PicsQbUser.PICSQBLOADERPLN.getQbListId());
+    }
+
 	private void assertCommonSessionFacts(QBSession session) {
 		String guid = session.getSessionId();
 		assertThat(guid.length(), is(36));
@@ -145,4 +188,5 @@ public class QBWebConnectorSvcSkeletonTest {
 		// than the number we tried to create
 		assertThat(guids.size(), is(equalTo(numToCreate)));
 	}
+
 }

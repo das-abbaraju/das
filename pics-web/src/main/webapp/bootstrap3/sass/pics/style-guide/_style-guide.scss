@@ -2,7 +2,8 @@
 	-webkit-transform: translateZ(0); /* Forces continual painting to fix Chrome bug */
 }
 
-.FrontendDevelopmentGuide-page {
+.FrontendStyleGuide-page,
+.FrontendCodingConventions-page {
 	.bs-sidebar.affix {
 		-webkit-transform: translateZ(0);
 	}
@@ -12,7 +13,12 @@
 
 		.heading {
 			margin-top: 0;
+			margin-bottom: 10px;
 		}
+	}
+
+	.section-list-item  {
+		margin-bottom: 20px;
 	}
 
 	.example {
@@ -22,6 +28,10 @@
 		.modal {
 		    position: static;
 		}
+	}
+
+	.book-title {
+		font-style: italic;
 	}
 
 	.implementations {

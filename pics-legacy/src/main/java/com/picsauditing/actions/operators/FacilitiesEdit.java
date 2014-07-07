@@ -103,7 +103,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
     public String create() throws NoRightsException {
         if ("Corporate".equals(getCreateType())) {
             if (!isCanEditCorp()) {
-                throw new NoRightsException(OpPerms.ManageOperators, OpType.Edit);
+                throw new NoRightsException(OpPerms.ManageCorporate, OpType.Edit);
             }
         } else {
             setCreateType("Operator");
@@ -174,7 +174,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
         return REDIRECT;
     }
 
-    public String save() {
+    public String save() throws Exception {
+        if (operator.isCorporate()) {
+            if (!isCanEditCorp()) {
+                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageCorporate"));
+                return REDIRECT;
+            }
+        } else {
+            if (!isCanEditOp()) {
+                addActionError(getTextParameterized("Exception.NoRights", "Edit","ManageOperator"));
+                return REDIRECT;
+            }
+        }
+
         if (operator.getId() == 0) {
             operator.setType(getCreateType());
         }
@@ -194,87 +206,85 @@ public class FacilitiesEdit extends OperatorActionSupport {
             return SUCCESS;
         }
 
-        if (permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)) {
-            if (autoApproveRelationships != operator.isAutoApproveRelationships()) {
-                if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
-                    approveAllRelationships();
+        if (autoApproveRelationships != operator.isAutoApproveRelationships()) {
+            if (!operator.isAutoApproveRelationships() && autoApproveRelationships) {
+                approveAllRelationships();
+            }
+
+            operator.setAutoApproveRelationships(autoApproveRelationships);
+        }
+
+        if (operator.isCorporate()) {
+            if (facilities != null) {
+                List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
+
+                for (int operatorID : facilities) {
+                    OperatorAccount opAccount = new OperatorAccount();
+                    opAccount.setId(operatorID);
+                    newFacilities.add(opAccount);
                 }
 
-                operator.setAutoApproveRelationships(autoApproveRelationships);
-            }
+                // Easier to just remove all existing facilities and persist all the new ones
+                // if we have already validated the Facility?
+                Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
+                while (facList.hasNext()) {
+                    Facility opFacilities = facList.next();
+                    if (newFacilities.contains(opFacilities.getOperator())) {
+                        newFacilities.remove(opFacilities.getOperator());
+                    } else {
+                        facilitiesDAO.remove(opFacilities);
 
-            if (operator.isCorporate()) {
-                if (facilities != null) {
-                    List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
-
-                    for (int operatorID : facilities) {
-                        OperatorAccount opAccount = new OperatorAccount();
-                        opAccount.setId(operatorID);
-                        newFacilities.add(opAccount);
-                    }
-
-                    // Easier to just remove all existing facilities and persist all the new ones
-                    // if we have already validated the Facility?
-                    Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
-                    while (facList.hasNext()) {
-                        Facility opFacilities = facList.next();
-                        if (newFacilities.contains(opFacilities.getOperator())) {
-                            newFacilities.remove(opFacilities.getOperator());
-                        } else {
-                            facilitiesDAO.remove(opFacilities);
-
-                            if (operator.equals(opFacilities.getOperator().getParent())) {
-                                opFacilities.getOperator().setParent(null);
-                                operatorDao.save(opFacilities.getOperator());
-                            }
-
-                            facList.remove();
+                        if (operator.equals(opFacilities.getOperator().getParent())) {
+                            opFacilities.getOperator().setParent(null);
+                            operatorDao.save(opFacilities.getOperator());
                         }
-                    }
 
-                    for (OperatorAccount opAccount : newFacilities) {
-                        opAccount = operatorDao.find(opAccount.getId());
-                        if (opAccount != null) {
-                            Facility facility = new Facility();
-                            facility.setCorporate(operator);
-                            facility.setOperator(opAccount);
-                            facility.setAuditColumns(permissions);
-                            facilitiesDAO.save(facility);
-
-                            operator.getOperatorFacilities().add(facility);
-
-                            if (opAccount.getParent() == null) {
-                                opAccount.setParent(operator);
-                                operatorDao.save(opAccount);
-                            }
-                        }
-                    }
-
-                    if (operator.getParent() != null && newFacilities.size() > 0) {
-                        linkChildOperatorsToAllParentAccounts(newFacilities);
+                        facList.remove();
                     }
                 }
+
+                for (OperatorAccount opAccount : newFacilities) {
+                    opAccount = operatorDao.find(opAccount.getId());
+                    if (opAccount != null) {
+                        Facility facility = new Facility();
+                        facility.setCorporate(operator);
+                        facility.setOperator(opAccount);
+                        facility.setAuditColumns(permissions);
+                        facilitiesDAO.save(facility);
+
+                        operator.getOperatorFacilities().add(facility);
+
+                        if (opAccount.getParent() == null) {
+                            opAccount.setParent(operator);
+                            operatorDao.save(opAccount);
+                        }
+                    }
+                }
+
+                if (operator.getParent() != null && newFacilities.size() > 0) {
+                    linkChildOperatorsToAllParentAccounts(newFacilities);
+                }
             }
+        }
 
-            saveLinkedClientsForGeneralContractor();
+        saveLinkedClientsForGeneralContractor();
 
-            operator.setAuditColumns(permissions);
-            operator.setNameIndex();
+        operator.setAuditColumns(permissions);
+        operator.setNameIndex();
 
-            if (operator.getId() == 0) {
-                operator.setNaics(new Naics());
-                operator.getNaics().setCode("0");
-                operator.setInheritFlagCriteria(operator);
-                operator.setInheritInsuranceCriteria(operator);
+        if (operator.getId() == 0) {
+            operator.setNaics(new Naics());
+            operator.getNaics().setCode("0");
+            operator.setInheritFlagCriteria(operator);
+            operator.setInheritInsuranceCriteria(operator);
 
-                // Save so we can get the id and then update the NOLOAD
-                // with
-                // a unique id
-                operatorDao.save(operator);
+            // Save so we can get the id and then update the NOLOAD
+            // with
+            // a unique id
+            operatorDao.save(operator);
 
-                operator.setQbListID("NOLOAD" + operator.getId());
-                operator.setQbListCAID("NOLOAD" + operator.getId());
-            }
+            operator.setQbListID("NOLOAD" + operator.getId());
+            operator.setQbListCAID("NOLOAD" + operator.getId());
         }
 
         facilitiesEditModel.addPicsGlobal(operator, permissions);
@@ -370,6 +380,18 @@ public class FacilitiesEdit extends OperatorActionSupport {
         // remove operators that are children of the current operator
         tmpOperatorList.removeAll(operator.getChildOperators());
         tmpOperatorList.remove(operator);
+
+        // return the list of operators not associated with the current operator
+        return tmpOperatorList;
+    }
+
+    public List<OperatorAccount> getReportingParentList() throws Exception {
+        List<OperatorAccount> tmpOperatorList = new ArrayList<>();
+
+        for (Facility facility : operator.getCorporateFacilities()) {
+            tmpOperatorList.add(facility.getCorporate());
+        }
+        tmpOperatorList.add(operator);
 
         // return the list of operators not associated with the current operator
         return tmpOperatorList;

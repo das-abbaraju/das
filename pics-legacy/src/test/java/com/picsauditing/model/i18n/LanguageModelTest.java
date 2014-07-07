@@ -1,23 +1,12 @@
 package com.picsauditing.model.i18n;
 
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.dao.AppPropertyDAO;
+import com.picsauditing.jpa.entities.AppProperty;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.Language;
+import com.picsauditing.jpa.entities.LanguageStatus;
+import com.picsauditing.toggle.FeatureToggle;
 import org.apache.struts2.ServletActionContext;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -29,13 +18,14 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.jpa.entities.AppProperty;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Language;
-import com.picsauditing.jpa.entities.LanguageStatus;
-import com.picsauditing.toggle.FeatureToggle;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+
+import static junit.framework.Assert.assertFalse;
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class LanguageModelTest {
 
@@ -420,4 +410,30 @@ public class LanguageModelTest {
 
 		languageModel.getDialectCountriesBasedOn(language);
 	}
+
+    @Test
+    public void testGetDialectCountriesBasedOn_WhenDialectIsFuture() {
+        Language dialectFuture = mock(Language.class);
+        when(dialectFuture.getCountry()).thenReturn("zh");
+        when(dialectFuture.getStatus()).thenReturn(LanguageStatus.Future);
+        String language = "en";
+        List<Language> dialectsByLanguage = new ArrayList<>();
+        dialectsByLanguage.add(dialectFuture);
+        when(languageProvider.findDialectsByLanguage(language)).thenReturn(dialectsByLanguage);
+
+        languageModel.getDialectCountriesBasedOn(language);
+    }
+
+    @Test
+    public void testGetCountriesBasedOn_WhenDialectIsFuture() {
+        Language dialectFuture = mock(Language.class);
+        when(dialectFuture.getCountry()).thenReturn("zh");
+        when(dialectFuture.getStatus()).thenReturn(LanguageStatus.Future);
+        String language = "en";
+        List<Language> dialectsByLanguage = new ArrayList<>();
+        dialectsByLanguage.add(dialectFuture);
+        when(languageProvider.findDialectsByLanguage(language)).thenReturn(dialectsByLanguage);
+
+        languageModel.getCountriesBasedOn(language);
+    }
 }

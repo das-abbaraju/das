@@ -408,7 +408,7 @@ public class AuditType extends BaseTableRequiringLanguages implements Comparable
 
     @Transient
     public boolean isAlwaysBilledForAuditGUARD() {
-        return id == MANUAL_AUDIT || id == IMPLEMENTATION_AUDIT || id == SSIP || id == COR || id == VCA_AUDIT
+        return id == MANUAL_AUDIT || id == IMPLEMENTATION_AUDIT || id == SSIP || id == COR
                 || id == ANTI_BRIBERY_CORRUPTION_AUDIT || id == ENVIRONMENT_AUDIT || id == LABOR_EMPLOYMENT_AUDIT;
     }
 

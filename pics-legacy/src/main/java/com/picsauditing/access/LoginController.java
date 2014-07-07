@@ -59,6 +59,8 @@ public class LoginController extends PicsActionSupport {
 	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
+    public static final String REGISTRATION_ACTION_NOT_ANGULAR = "Registration.action";
+    public static final String REGISTRATION_ACTION_ANGULAR = "registration.action";
 
 	// FOR TESTING ONLY
 	protected static ReportUserDAO reportUserDAO;
@@ -534,6 +536,13 @@ public class LoginController extends PicsActionSupport {
 
     public boolean isEulaFeatureEnabled() {
         return Features.USE_EULA.isActive();
+    }
+
+    public String getRegistrationActionUrl() {
+        if (Features.USE_STRIKEIRON_ADDRESS_VERIFICATION_SERVICE.isActive()) {
+            return REGISTRATION_ACTION_ANGULAR;
+        }
+        return REGISTRATION_ACTION_NOT_ANGULAR;
     }
 
 	/* GETTER & SETTERS */

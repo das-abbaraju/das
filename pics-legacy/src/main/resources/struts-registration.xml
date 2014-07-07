@@ -13,6 +13,36 @@
             <result name="AUAddressFields">/struts/contractors/australia/_registration-company-address.jsp</result>
 		</action>
 		
+		<action name="Registration2" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="registration-requests/{registrationRequestKey}" class="com.picsauditing.struts.controller.Registration2" method="registrationFormJson">
+        </action>
+
+        <action name="accounts" class="com.picsauditing.struts.controller.Registration2" method="createAccount">
+        </action>
+
+        <action name="registration/validation" class="com.picsauditing.struts.controller.Registration2" method="validateInputs">
+        </action>
+
+        <action name="languages" class="com.picsauditing.struts.controller.Registration2" method="languages">
+        </action>
+
+        <action name="dialects/{language}" class="com.picsauditing.struts.controller.Registration2" method="countriesBasedOn" >
+        </action>
+
+        <action name="countries" class="com.picsauditing.struts.controller.Registration2" method="countries">
+        </action>
+
+        <action name="sales-phone/{isoCode}" class="com.picsauditing.struts.controller.Registration2" method="salesPhoneNumber">
+        </action>
+
+        <action name="locale" class="com.picsauditing.struts.controller.Registration2" method="locale">
+        </action>
+
+        <action name="mibew-base-url/{language}" class="com.picsauditing.struts.controller.Registration2" method="mibewBaseUrl">
+        </action>
+
         <action name="RegistrationAjax" class="com.picsauditing.struts.controller.Registration" method="dialects">
             <result>struts/contractors/_registration-dialects.jsp</result>
             <result name="input">struts/contractors/_registration-dialects.jsp</result>

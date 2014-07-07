@@ -20,6 +20,7 @@ public final class PicsPrefixActionMapper extends PrefixBasedActionMapper {
                 }
             }
         }
+
         return null;
     }
 

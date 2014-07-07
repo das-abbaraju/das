@@ -1,6 +1,0 @@
-#!/bin/bash
-MINUTES=10
-TOTAL=`/usr/bin/mysql --skip-column-names -Be "SELECT COUNT(*) total FROM contractor_info WHERE lastRecalculation BETWEEN SUBDATE(NOW(), INTERVAL $MINUTES MINUTE) AND NOW()" pics`
-if [[ $TOTAL -lt 50 ]]; then
-  echo "Only $TOTAL contractors were processed in the last $MINUTES minutes" | /bin/mail -s "Slow Contractor Cron" errors@picsauditing.com
-fi

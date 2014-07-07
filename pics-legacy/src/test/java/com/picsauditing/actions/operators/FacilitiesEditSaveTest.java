@@ -125,7 +125,8 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         when(operator.getDiscountPercent()).thenReturn(BigDecimal.ZERO);
         when(user.getId()).thenReturn(NON_ZERO_USER_ID);
         when(permissions.getUserId()).thenReturn(NON_ZERO_USER_ID);
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(false);
+        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+        when(permissions.hasPermission(OpPerms.ManageCorporate, OpType.Edit)).thenReturn(true);
         when(countrySubdivision.getCountry()).thenReturn(country);
         when(newCountrySubdivision.toString()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(country.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
@@ -147,7 +148,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_RedirectOnErrorsForExistingOperator() {
+    public void testSave_RedirectOnErrorsForExistingOperator() throws Exception {
         when(operator.getId()).thenReturn(NON_ZERO_OPERATOR_ID);
 
         String result = facilitiesEdit.save();
@@ -155,7 +156,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NoRedirectOnErrorsForNewOperator() {
+    public void testSave_NoRedirectOnErrorsForNewOperator() throws Exception {
         when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
         when(operator.getName()).thenReturn("");
 
@@ -164,8 +165,9 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_IfOperatorNewCreateTypeSet() {
+    public void testSave_IfOperatorNewCreateTypeSet() throws Exception {
         when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
+        when(operator.getNaics()).thenReturn(new Naics());
 
         facilitiesEdit.save();
 
@@ -173,7 +175,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_RememberMeNotEnabledDoesNotSetTimeoutInDays() {
+    public void testSave_RememberMeNotEnabledDoesNotSetTimeoutInDays() throws Exception {
         when(operator.isRememberMeTimeEnabled()).thenReturn(false);
         when(operator.getRememberMeTimeInDays()).thenReturn(0);
 
@@ -183,7 +185,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_WhenRememberMeIsNotAnIntegerAnErrorIsRecorded() {
+    public void testSave_WhenRememberMeIsNotAnIntegerAnErrorIsRecorded() throws Exception {
         facilitiesEdit.setTimeoutDays(REMEMBER_ME_TIME_IN_DAYS_BAD_VALUE);
 
         facilitiesEdit.save();
@@ -193,7 +195,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_WhenSessionTimeoutIsNotAnIntegerAnErrorIsRecorded() {
+    public void testSave_WhenSessionTimeoutIsNotAnIntegerAnErrorIsRecorded() throws Exception {
         facilitiesEdit.setSessionTimeout(SESSION_TIMEOUT_IN_MINUTES_BAD_VALUE);
 
         facilitiesEdit.save();
@@ -203,7 +205,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_OperatorFacilitiesAreMovedToFacilitiesForNullFacilities() {
+    public void testSave_OperatorFacilitiesAreMovedToFacilitiesForNullFacilities() throws Exception {
         facilitiesEdit.setFacilities(null);
         Facility fac1 = new Facility();
         OperatorAccount op1 = new OperatorAccount();
@@ -224,7 +226,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_PreventSettingSelfAsParent() {
+    public void testSave_PreventSettingSelfAsParent() throws Exception {
         facilities.add(NON_ZERO_OPERATOR_ID);
 
         String result = facilitiesEdit.save();
@@ -237,7 +239,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_CountryChangeIsCopiedToOperator() {
+    public void testSave_CountryChangeIsCopiedToOperator() throws Exception {
         facilitiesEdit.setCountry(country2);
         when(country2.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(countryDAO.findbyISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country2);
@@ -248,7 +250,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NullCountryIsNotCopiedToOperator() {
+    public void testSave_NullCountryIsNotCopiedToOperator() throws Exception {
         facilitiesEdit.setCountry(null);
 
         facilitiesEdit.save();
@@ -257,7 +259,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_SameCountryIsNotCopiedToOperator() {
+    public void testSave_SameCountryIsNotCopiedToOperator() throws Exception {
         facilitiesEdit.setCountry(country);
 
         facilitiesEdit.save();
@@ -266,7 +268,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NullCountrySubdivisionDoesNotGetSearchedFor() {
+    public void testSave_NullCountrySubdivisionDoesNotGetSearchedFor() throws Exception {
         facilitiesEdit.setCountrySubdivision(null);
 
         facilitiesEdit.save();
@@ -275,7 +277,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_ChangeOfCountrySubdivisionFindsAndSetsResultOfFindOnOperator() {
+    public void testSave_ChangeOfCountrySubdivisionFindsAndSetsResultOfFindOnOperator() throws Exception {
         facilitiesEdit.setCountrySubdivision(newCountrySubdivision);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
         when(newCountrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
@@ -288,7 +290,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_When_NullOperatorCountrySubdivisionAndSetFromUI_Then_FindsAndSetsResultOfFindOnOperator() {
+    public void testSave_When_NullOperatorCountrySubdivisionAndSetFromUI_Then_FindsAndSetsResultOfFindOnOperator() throws Exception {
         facilitiesEdit.setCountrySubdivision(newCountrySubdivision);
         when(operator.getCountrySubdivision()).thenReturn(null);
         when(countrySubdivisionDAO.find(newCountrySubdivision.toString())).thenReturn(newCountrySubdivision);
@@ -302,14 +304,14 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NoValidationErrorsFromAccountValidationDoesNotClearDao() {
+    public void testSave_NoValidationErrorsFromAccountValidationDoesNotClearDao() throws Exception {
         facilitiesEdit.save();
 
         verify(operatorDAO, never()).clear();
     }
 
     @Test
-    public void testSave_ValidationErrorFromAccountValidationClearsDaoAndReloadsOperator() {
+    public void testSave_ValidationErrorFromAccountValidationClearsDaoAndReloadsOperator() throws Exception {
         // trigger validation error
         when(operator.getName()).thenReturn(null);
 
@@ -320,7 +322,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_ValidationErrorFromAccountValidationNullOperatorOnReloadSkipsFacilityCopy() {
+    public void testSave_ValidationErrorFromAccountValidationNullOperatorOnReloadSkipsFacilityCopy() throws Exception {
         // trigger validation error
         when(operator.getName()).thenReturn(null);
         when(operatorDAO.find(operator.getId())).thenReturn(null);
@@ -331,7 +333,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_ValidationErrorFromAccountValidationNullOperatorOnReloadStillSetsError() {
+    public void testSave_ValidationErrorFromAccountValidationNullOperatorOnReloadStillSetsError() throws Exception {
         // trigger validation error
         when(operator.getName()).thenReturn(null);
         when(operatorDAO.find(operator.getId())).thenReturn(null);
@@ -343,7 +345,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_ValidationErrorFromAccountValidationOperatorOnReloadSetsError() {
+    public void testSave_ValidationErrorFromAccountValidationOperatorOnReloadSetsError() throws Exception {
         // trigger validation error
         when(operator.getName()).thenReturn(null);
         when(translationService.getText(EMPTY_COMPANY_NAME_ERROR_KEY, Locale.ENGLISH, null)).thenReturn("CompanyNameMissing");
@@ -355,7 +357,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
 
     @Ignore("PICS-14800: It actually doesn't as I think there's a defect in the code. The relevant block really does nothing")
     @Test
-    public void testSave_ValidationErrorFromAccountValidationRecopiesFacilities() {
+    public void testSave_ValidationErrorFromAccountValidationRecopiesFacilities() throws Exception {
         // trigger validation error
         when(operator.getName()).thenReturn(null);
         setupOperatorFacilities(500, 501);
@@ -368,8 +370,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_HasManageOperatorsEdit_TurningAutoApprovesOffDoesNotAutoApproveAndSetsOperatorProperty() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_HasManageOperatorsEdit_TurningAutoApprovesOffDoesNotAutoApproveAndSetsOperatorProperty() throws Exception {
         when(contractorOperator1.getWorkStatus()).thenReturn(ApprovalStatus.Pending);
         when(contractorOperator2.getWorkStatus()).thenReturn(ApprovalStatus.Pending);
         when(operator.getContractorOperators()).thenReturn(contractorOperators);
@@ -384,8 +385,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_HasManageOperatorsEdit_TurningAutoApprovesOnAutoApproveAndSetsOperatorProperty() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_HasManageOperatorsEdit_TurningAutoApprovesOnAutoApproveAndSetsOperatorProperty() throws Exception {
         when(contractorOperator1.getWorkStatus()).thenReturn(ApprovalStatus.Pending);
         when(contractorOperator2.getWorkStatus()).thenReturn(ApprovalStatus.Pending);
         when(operator.getContractorOperators()).thenReturn(contractorOperators);
@@ -400,8 +400,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NoChangeToAutoApprovesDoesNotChangeTheProperty() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_NoChangeToAutoApprovesDoesNotChangeTheProperty() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
 
@@ -411,8 +410,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NoNewlyAddedFacilitiesRemovesNothingAndAddsNothing() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_NoNewlyAddedFacilitiesRemovesNothingAndAddsNothing() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
         when(operator.isCorporate()).thenReturn(true);
@@ -426,8 +424,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_OneNewlyAddedFacilityRemovesAndAddsNothingIfTheOperatorCannotBeFound() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_OneNewlyAddedFacilityRemovesAndAddsNothingIfTheOperatorCannotBeFound() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
         when(operator.isCorporate()).thenReturn(true);
@@ -443,8 +440,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_OneNewlyAddedFacilityRemovesNothingAndSavesNewFacilityIfTheOperatorCanBeFound() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_OneNewlyAddedFacilityRemovesNothingAndSavesNewFacilityIfTheOperatorCanBeFound() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
         when(operator.isCorporate()).thenReturn(true);
@@ -466,8 +462,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_OneNewlyRemovedFacilityRemovesIt() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_OneNewlyRemovedFacilityRemovesIt() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
         when(operator.isCorporate()).thenReturn(true);
@@ -485,8 +480,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_OneNewlyRemovedFacilityIfItIsOperatorParentThenParentIsNulledAndOperatorIsSaved() {
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
+    public void testSave_OneNewlyRemovedFacilityIfItIsOperatorParentThenParentIsNulledAndOperatorIsSaved() throws Exception {
         when(operator.isAutoApproveRelationships()).thenReturn(true);
         facilitiesEdit.setAutoApproveRelationships(true);
         when(operator.isCorporate()).thenReturn(true);
@@ -532,14 +526,14 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_PicsGlobalIsAdded() {
+    public void testSave_PicsGlobalIsAdded() throws Exception {
         facilitiesEdit.save();
 
         verify(facilitiesEditModel).addPicsGlobal(operator, permissions);
     }
 
     @Test
-    public void testSave_PicsCountryAddedIfNotInPicsConsortium() {
+    public void testSave_PicsCountryAddedIfNotInPicsConsortium() throws Exception {
         when(operator.isInPicsConsortium()).thenReturn(false);
 
         facilitiesEdit.save();
@@ -548,7 +542,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_PicsCountryNotAddedIfInPicsConsortium() {
+    public void testSave_PicsCountryNotAddedIfInPicsConsortium() throws Exception {
         when(operator.isInPicsConsortium()).thenReturn(true);
 
         facilitiesEdit.save();
@@ -557,7 +551,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_ContactIdNotSetDoesNotSetPrimaryContact() {
+    public void testSave_ContactIdNotSetDoesNotSetPrimaryContact() throws Exception {
         facilitiesEdit.setContactID(0);
 
         facilitiesEdit.save();
@@ -566,7 +560,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_NullExistingPrimaryContactWillSetPrimaryContact() {
+    public void testSave_NullExistingPrimaryContactWillSetPrimaryContact() throws Exception {
         facilitiesEdit.setContactID(NON_ZERO_USER_ID);
         when(operator.getPrimaryContact()).thenReturn(null);
 
@@ -577,7 +571,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_SameExistingPrimaryContactWillNotSetPrimaryContact() {
+    public void testSave_SameExistingPrimaryContactWillNotSetPrimaryContact() throws Exception {
         facilitiesEdit.setContactID(NON_ZERO_USER_ID);
         when(operator.getPrimaryContact()).thenReturn(new User(NON_ZERO_USER_ID));
 
@@ -587,14 +581,14 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_SaveClientSite_SetsNeedIndexing() {
+    public void testSave_SaveClientSite_SetsNeedIndexing() throws Exception {
         facilitiesEdit.save();
 
         verify(operator).setNeedsIndexing(true);
     }
 
     @Test
-    public void testSave_SaveClientSite_Saves() {
+    public void testSave_SaveClientSite_Saves() throws Exception {
         facilitiesEdit.save();
 
         // there are mulitple saves. We could perhaps differentiate by what has been set in the operator using an
@@ -603,7 +597,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_SaveClientSite_DeactivatedDeactivates() {
+    public void testSave_SaveClientSite_DeactivatedDeactivates() throws Exception {
         when(operator.getStatus()).thenReturn(AccountStatus.Deactivated);
 
         facilitiesEdit.save();
@@ -612,17 +606,16 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_SuccessReturnsSuccessActionMesssageAndRedirect() {
+    public void testSave_SuccessReturnsSuccessActionMesssageAndRedirect() throws Exception {
         facilitiesEdit.save();
 
         verify(translationService).getText(eq(SUCCESS_KEY), eq(Locale.ENGLISH), anyVararg());
     }
 
     @Test
-    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenNaicsSet() {
+    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenNaicsSet() throws Exception {
         when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
         when(operator.getNaics()).thenReturn(naics);
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
 
         facilitiesEdit.save();
 
@@ -631,10 +624,9 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenInheritCriteriaSet() {
+    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenInheritCriteriaSet() throws Exception {
         when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
         when(operator.getNaics()).thenReturn(naics);
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
 
         facilitiesEdit.save();
 
@@ -643,10 +635,9 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     }
 
     @Test
-    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenQuickbooksInfoSet() {
+    public void testSave_IfOperatorNewAndManageOperatorEditPermissionThenQuickbooksInfoSet() throws Exception {
         when(operator.getId()).thenReturn(ZERO_OPERATOR_ID);
         when(operator.getNaics()).thenReturn(naics);
-        when(permissions.hasPermission(OpPerms.ManageOperators, OpType.Edit)).thenReturn(true);
         when(operatorDAO.save(operator)).thenAnswer(new Answer<OperatorAccount>() {
             @Override
             public OperatorAccount answer(InvocationOnMock invocation) throws Throwable {

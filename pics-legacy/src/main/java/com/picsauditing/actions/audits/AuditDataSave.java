@@ -419,7 +419,7 @@ public class AuditDataSave extends AuditActionSupport {
 		if (isAudit && !isAnnualUpdate) {
 			AuditQuestion question = auditDataService.findAuditQuestion(auditData.getQuestion().getId());
 			if (question.getOkAnswer() != null && question.getOkAnswer().contains(auditData.getAnswer())
-					&& (permissions.isAdmin() || permissions.hasPermission(OpPerms.AuditEdit))) {
+					&& (permissions.isAdmin() || permissions.isAuditor())) {
 				newCopy.setDateVerified(new Date());
 				newCopy.setAuditor(getUser());
 			}
@@ -435,7 +435,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if (newCopy.getAudit().hasCaoStatus(AuditStatus.Submitted)
-				&& (permissions.isPicsEmployee() || permissions.hasPermission(OpPerms.AuditEdit))) {
+				&& (permissions.isPicsEmployee() || permissions.isAuditor())) {
 			newCopy.setWasChanged(YesNo.Yes);
 		}
 

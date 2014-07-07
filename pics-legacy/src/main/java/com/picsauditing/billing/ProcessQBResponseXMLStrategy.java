@@ -234,7 +234,16 @@ public class ProcessQBResponseXMLStrategy {
 				contractor.setQbListUKID(qbListID);
 				qbListIDColumnName = "qbListUKID";
 				break;
-		}
+            case CHF:
+                contractor.setQbListCHID(qbListID);
+                qbListIDColumnName = "qbListCHID";
+                break;
+            case PLN:
+                contractor.setQbListPLID(qbListID);
+                qbListIDColumnName = "qbListPLID";
+                break;
+
+        }
 		actionMessages.append("Executing: UPDATE accounts SET " + qbListIDColumnName + " = '" + qbListID + "'");
 		if (setQbSyncToFalse) {
 			contractor.setQbSync(false);

@@ -20,7 +20,7 @@ public class RegistrationSubmission {
     private String countryISO;
     private String phoneNumber;
     private TimeZone timeZone;
-    private String vatID;
+    private String vatId;
     private Locale locale;
     private String registrationRequestHash;
 
@@ -130,13 +130,13 @@ public class RegistrationSubmission {
         return timeZone;
     }
 
-    public RegistrationSubmission setVatID(String vatID) {
-        this.vatID = vatID;
+    public RegistrationSubmission setVatId(String vatId) {
+        this.vatId = vatId;
         return this;
     }
 
-    public String getVatID() {
-        return vatID;
+    public String getVatId() {
+        return vatId;
     }
 
     public RegistrationSubmission setCountrySubdivision(String countrySubdivision) {

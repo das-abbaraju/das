@@ -1,27 +1,15 @@
 package com.picsauditing.jpa.entities;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -50,7 +38,7 @@ public abstract class Transaction extends BaseTable {
 		this.account = account;
 	}
 
-	@ReportField(type = FieldType.Float, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Float, importance = FieldImportance.Average, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getTotalAmount() {
 		return totalAmount;
 	}
