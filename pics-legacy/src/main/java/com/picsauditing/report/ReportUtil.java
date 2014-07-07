@@ -1,21 +1,19 @@
 package com.picsauditing.report;
 
-import java.util.Locale;
-
-import javax.persistence.EnumType;
-
+import com.picsauditing.access.PermissionAware;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.report.fields.Field;
+import com.picsauditing.report.fields.FieldType;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.picsauditing.access.PermissionAware;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
-import com.picsauditing.util.Strings;
+import javax.persistence.EnumType;
+import java.util.Locale;
 
 /**
  * This is a utility class for Dynamic Reports. It should handle all heavy
@@ -23,6 +21,8 @@ import com.picsauditing.util.Strings;
  */
 public final class ReportUtil {
 
+    public static final String NAME_KEY_SUFFIX = ".name";
+    public static final String DESCRIPTION_KEY_SUFFIX = ".description";
     public static final String CATEGORY_KEY_SUFFIX = ".category";
 	public static final String HELP_KEY_SUFFIX = ".help";
 	public static final String REPORT_KEY_PREFIX = "Report.";
@@ -43,12 +43,35 @@ public final class ReportUtil {
 	}
 
 	public static void addTranslatedLabelsToReport(Report report, Locale locale) {
+        addTranslationLabelsToReport(report, locale);
 		addTranslationLabelsToColumns(report, locale);
 		addTranslationLabelsToFilters(report, locale);
 		addTranslationLabelsToSorts(report, locale);
 	}
 
-	private static void addTranslationLabelsToColumns(Report report, Locale locale) {
+    private static void addTranslationLabelsToReport(Report report, Locale locale) {
+        if (StringUtils.isEmpty(report.getSlug())) {
+            return;
+        }
+        String prefix = REPORT_KEY_PREFIX + report.getSlug();
+
+        String nameKey = prefix + NAME_KEY_SUFFIX;
+        String descriptionKey = prefix + DESCRIPTION_KEY_SUFFIX;
+        String nameText = getText(nameKey, locale);
+        String descriptionText = getText(descriptionKey, locale);
+        if (StringUtils.equals(nameText,nameKey)) {
+            nameText = null;
+        }
+
+        if (StringUtils.equals(descriptionText,descriptionKey)) {
+            descriptionText = null;
+        }
+
+        report.setNameText(nameText);
+        report.setDescriptionText(descriptionText);
+    }
+
+    private static void addTranslationLabelsToColumns(Report report, Locale locale) {
 		if (CollectionUtils.isEmpty(report.getColumns())) {
 			return;
 		}

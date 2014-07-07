@@ -13,8 +13,9 @@ public enum NoteCategory implements Translatable {
 	OperatorQualification,
 	Employee,
 	RiskRanking,
-	Registration;
-	
+	Registration,
+	Trades;
+
 	@Transient
 	@Override
 	public String getI18nKey() {

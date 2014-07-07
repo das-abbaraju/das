@@ -1,6 +1,7 @@
 package com.picsauditing.actions.trades;
 
 import com.picsauditing.dao.ContractorAccountDAO;
+import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.TradeDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -24,6 +25,8 @@ public class ContractorTradeActionTest extends PicsActionTest {
     @Mock
     TradeDAO tradeDAO;
     @Mock
+    NoteDAO noteDAO;
+    @Mock
     ContractorAccount contractorAccount;
     @Mock
     ContractorTrade newConTrade;
@@ -41,6 +44,7 @@ public class ContractorTradeActionTest extends PicsActionTest {
 		contractorTradeAction = new ContractorTradeAction();
         setInternalState(contractorTradeAction, "contractorAccountDao", contractorAccountDAO);
         setInternalState(contractorTradeAction, "tradeDAO", tradeDAO);
+        setInternalState(contractorTradeAction, "noteDao", noteDAO);
         contractorTradeAction.setContractor(contractorAccount);
         TreeSet<ContractorTrade> contractorTrades = new TreeSet<ContractorTrade>();
         contractorTrades.add(conTrade1);

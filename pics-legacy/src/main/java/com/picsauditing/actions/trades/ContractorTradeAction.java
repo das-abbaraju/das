@@ -105,6 +105,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
 
 		if (!contractor.getTrades().contains(trade)) {
 			contractor.getTrades().add(trade);
+            addTradeNote("Added");
 		}
 
 		if (trade.getTrade().getContractorCount() == 0) {
@@ -143,11 +144,26 @@ public class ContractorTradeAction extends ContractorActionSupport {
         contractor.setTradesUpdated(new Date());
 		contractorAccountDao.save(contractor);
 
-		// Set the ajax mode to view after saving
+        // Set the ajax mode to view after saving
 		mode = "View";
 
 		return "trade";
 	}
+
+    private void addTradeNote(String action) {
+        String activity = getActivityPercentMap().get(trade.getActivityPercent());
+
+        String performance;
+        if (trade.isSelfPerformed()) {
+            performance = "self performs";
+        }
+        else {
+            performance = "only subcontracts";
+        }
+
+        String summary = action + " Trade: " + trade.getTrade().getName();
+        addNote(contractor, summary, summary + ". This trade represents " + activity + " of the business. The business " + performance + " this service.", NoteCategory.Trades, LowMedHigh.Low, false, Account.PICS_CORPORATE_ID);
+    }
 
     private void updateRiskData() {
         // If the risk level for either product or safety increases due to this
@@ -231,6 +247,8 @@ public class ContractorTradeAction extends ContractorActionSupport {
             contractor.setTradesUpdated(new Date());
 			contractorAccountDao.save(contractor);
 		}
+
+        addTradeNote("Removed");
 
 		trade = null;
 
