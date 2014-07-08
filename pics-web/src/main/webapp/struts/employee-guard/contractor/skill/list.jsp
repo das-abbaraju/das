@@ -8,9 +8,9 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Skills</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.SKILL.LIST.SKILLS" /></s:param>
     <s:param name="actions">
-        <a href="${contractor_skill_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Skill</a>
+        <a href="${contractor_skill_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="CONTRACTOR.SKILL.LIST.SKILL" /></a>
     </s:param>
 </s:include>
 
@@ -18,7 +18,8 @@
     <tw:form formName="contractor_skill_search" action="${contractor_skill_list_url}" class="search-query" role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
-                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Skills" value="${searchForm.searchTerm}" />
+                <s:set var="SEARCH_SKILLS"><s:text name="CONTRACTOR.SKILL.LIST.SEARCH_SKILLS" /></s:set>
+                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${SEARCH_SKILLS}" value="${searchForm.searchTerm}" />
                 <i class="icon-search"></i>
                 <ul id="contractor_skill_search" class="search-results"></ul>
         </fieldset>
@@ -28,9 +29,10 @@
         <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr>
-                    <th class="text-center"><i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i></th>
-                    <th>Skill</th>
-                    <th>Employee Groups</th>
+                    <s:set var="EMPLOYEES"><s:text name="CONTRACTOR.SKILL.LIST.EMPLOYEES" /></s:set>
+                    <th class="text-center"><i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="${EMPLOYEES}"></i></th>
+                    <th><s:text name="CONTRACTOR.SKILL.LIST.SKILL" /></th>
+                    <th><s:text name="CONTRACTOR.SKILL.LIST.EMPLOYEE_GROUPS" /></th>
                 </tr>
             </thead>
 
@@ -53,7 +55,7 @@
                             <td><a href="${contractor_skill_show_url}">${contractorSkill.name}</a></td>
                             <td>
                                 <s:if test="#contractorSkill.ruleType.required">
-                                    <label class="label label-default">All Employees</label>
+                                    <label class="label label-default"><s:text name="CONTRACTOR.SKILL.LIST.ALL_EMPLOYEES" /></label>
                                 </s:if>
                                 <s:else>
                                     <s:set var="contractor_groups" value="#contractorSkill.groups" />
@@ -76,14 +78,14 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4>No Skills</h4>
+                        <h4><s:text name="CONTRACTOR.SKILL.LIST.NO_SKILLS" /></h4>
 
-                        <p>Skills help you track your employees' competencies. There are multiple types of skills that can be created for different types of training tracking. By adding skills to your employee groups, you can make sure that specific sets of employees have the proper training for their work.</p>
+                        <p><s:text name="CONTRACTOR.SKILL.LIST.SKILLS_INFO" /></p>
 
-                        <p>Create your first skill by selecting <strong><i class="icon-plus-sign"></i> Skill</strong> at the top of the page.</p>
+                        <p><s:text name="CONTRACTOR.SKILL.LIST.CREATE_FIRST_SKILL" /></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Skills</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.SKILL.LIST.LEARN_MORE" /></a>
                         </p>
                     </div>
                 </div>

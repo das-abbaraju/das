@@ -25,7 +25,7 @@
 <s:include value="/struts/employee-guard/_page-header.jsp">
     <s:param name="title">Employee: ${employee.firstName} ${employee.lastName}</s:param>
     <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Employee</button>
+        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE" /></button>
     </s:param>
     <s:param name="breadcrumb_id">
         ${id}
@@ -38,8 +38,8 @@
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${contractor_employee_delete_url}</s:param>
-    <s:param name="modal_title">Delete Employee</s:param>
-    <s:param name="modal_message">Deleting will remove all company data and requirements for this person.</s:param>
+    <s:param name="modal_title"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE" /></s:param>
+    <s:param name="modal_message"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE_WARNING" /></s:param>
 </s:include>
 
 <div class="row">
@@ -62,7 +62,7 @@
         </s:include>
 
         <section class="employee-guard-section-full">
-            <h1><i class="icon-certificate icon-large"></i>Required Skills</h1>
+            <h1><i class="icon-certificate icon-large"></i><s:text name="CONTRACTOR.EMPLOYEE.SHOW.REQUIRED_SKILLS" /></h1>
 
             <div class="content">
                 <div class="list-group skill-list">
@@ -100,7 +100,9 @@
                                         <i class="${skill_icon}"></i>${skill_info.name}
                                     </div>
                                     <div class="col-xs-2 col-sm-1 col-md-2 text-center">
-                                        <i class="icon-map-marker" data-toggle="tooltip" data-placement="top" title="" data-original-title="Skill required due to assignment." data-container="body"></i>
+                                        <s:set var="assignment_reqd_skill"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.ASSIGNMENT_REQD_SKILL" /></s:set>
+
+                                        <i class="icon-map-marker" data-toggle="tooltip" data-placement="top" title="" data-original-title="${assignment_reqd_skill}" data-container="body"></i>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +119,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-user icon-large"></i> Personal
+                        <i class="icon-user icon-large"></i> <s:text name="CONTRACTOR.EMPLOYEE.SHOW.PERSONAL" />
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -127,13 +129,13 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">First Name</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.FIRST_NAME" /></dt>
                     <dd class="col-md-9">${employee.firstName}</dd>
-                    <dt class="col-md-3">Last Name</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.LAST_NAME" /></dt>
                     <dd class="col-md-9">${employee.lastName}</dd>
-                    <dt class="col-md-3">Email</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.EMAIL" /></dt>
                     <dd class="col-md-9">${employee.email}</dd>
-                    <dt class="col-md-3">Phone</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.PHONE" /></dt>
                     <dd class="col-md-9">${employee.phone}</dd>
                 </dl>
             </div>
@@ -144,7 +146,7 @@
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-file-text-alt icon-large"></i>
-                        Employment
+                      <s:text name="CONTRACTOR.EMPLOYEE.SHOW.EMPLOYMENT" />
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -154,14 +156,14 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Employee ID</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.EMPLOYEE_ID" /></dt>
                     <dd class="col-md-9">${employee.slug}</dd>
-                    <dt class="col-md-3">Title</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.TITLE" /></dt>
                     <dd class="col-md-9">${employee.positionName}</dd>
                     <%-- <dt class="col-md-3">Classification</dt>
                     <dd>${employee.positionType.displayName}</dd> --%>
                     <dt class="col-md-3">
-                        <a href="${contractor_role_url}">Employee Groups</a>
+                        <a href="${contractor_role_url}"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.EMPLOYEE_GROUPS" /></a>
                     </dt>
                     <dd class="col-md-9">
                         <s:set var="contractor_groups" value="employee.groups"/>
@@ -176,7 +178,7 @@
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-map-marker icon-large"></i>
-                        Current Assignments
+                      <s:text name="CONTRACTOR.EMPLOYEE.SHOW.CURRENT_ASSIGNMENTS" />
                     </div>
                 </div>
             </h1>
@@ -211,12 +213,12 @@
                 <div class="row">
                     <div class="col-md-6 col-md-offset-3">
                         <div class="alert alert-info">
-                            <h4>No Assignments</h4>
+                            <h4><s:text name="CONTRACTOR.EMPLOYEE.SHOW.NO_ASSIGNMENTS" /></h4>
 
-                            <p>This employee is not assigned to any sites or projects.</p>
+                            <p><s:text name="CONTRACTOR.EMPLOYEE.SHOW.NOT_ASSIGNED" /></p>
 
                             <p>
-                                <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Assignments</a>
+                                <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.EMPLOYEE.SHOW.LEARN_MORE" /></a>
                             </p>
                         </div>
                     </div>
