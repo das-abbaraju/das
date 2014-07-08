@@ -244,4 +244,8 @@
     <include file="./liquibase/2014/Q2/mdo56_PICS-15512.sql"/>
     <!--  <include file="./liquibase/2014/Q2dabbaraju1_US1023_TA2378_Add_qbListCHFID_Column_On_Accounts.sql"/> -->
 
+    <!-- 7.2.19 -->
+    <include file="./liquibase/2014/Q3/mdo57_PICS-15589.sql"/>
+    <include file="./liquibase/2014/Q3/mdo58_PICS-15589.sql"/>
+
 </databaseChangeLog>
