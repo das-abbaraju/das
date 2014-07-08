@@ -114,8 +114,8 @@ public class EventSubscriptionBuilder {
 		EmailQueue email = emailBuilder.build();
 		email.setHighPriority();
 		email.setHtml(true);
-		email.setSubjectViewableById(Account.PicsID);
-		email.setBodyViewableById(Account.PicsID);
+		email.setSubjectViewableById(Account.PICS_ID);
+		email.setBodyViewableById(Account.PICS_ID);
 		return email;
 	}
 
@@ -123,7 +123,7 @@ public class EventSubscriptionBuilder {
 		Calendar now = Calendar.getInstance();
 
 		if (stats.isEmailCronError()) {
-			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, Account.PicsID);
+			List<EmailSubscription> subscriptions = subscriptionDAO.find(Subscription.EmailCronFailure, Account.PICS_ID);
 			for (EmailSubscription subscription : subscriptions) {
 				if (isAppropriateToSend(now, subscription)) {
 					sendSystemStatusEmail(subscription, stats);
@@ -200,8 +200,8 @@ public class EventSubscriptionBuilder {
 					+ "The system is unable to send automated emails to this account. "
 					+ "Attempted to send 1 week prior audit implementation email.");
 			email.setLowPriority();
-			email.setSubjectViewableById(Account.PicsID);
-			email.setBodyViewableById(Account.PicsID);
+			email.setSubjectViewableById(Account.PICS_ID);
+			email.setBodyViewableById(Account.PICS_ID);
 			emailSender.send(email);
 			stampNote(email.getContractorAccount(),
 					"Failed to send Audit Notification because of no valid email address.", NoteCategory.Audits);
@@ -273,7 +273,7 @@ public class EventSubscriptionBuilder {
 		note.setPriority(LowMedHigh.High);
 		note.setNoteCategory(noteCategory);
 		note.setAuditColumns(new User(User.SYSTEM));
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 }

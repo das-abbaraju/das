@@ -111,7 +111,7 @@ public class ReportContractorResources extends ReportActionSupport {
         Set<Integer> ids = new HashSet<>();
 
         if (contractor != null) {
-            ids.add(Account.PicsID);
+            ids.add(Account.PICS_ID);
 
             for (ContractorOperator conOp : contractor.getOperators()) {
                 ids.add(conOp.getOperatorAccount().getId());

@@ -67,7 +67,7 @@ public class AccountTest {
         Account operator2 = makeAccount("Operator", 103, "Alice2");;
         Account corporate  = makeAccount("Corporate", 104, "Andy");
         Account corporate2  = makeAccount("Corporate", 105, "Andy2");
-        Account admin = makeAccount("Admin", Account.PicsID, "PICS Auditing, LLC");
+        Account admin = makeAccount("Admin", Account.PICS_ID, "PICS Auditing, LLC");
 
         List<Account> list = new ArrayList<>();
         list.add(contractor2);

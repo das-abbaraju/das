@@ -157,7 +157,7 @@ public enum Subscription implements Translatable {
 					SubscriptionTimePeriod.Monthly });
 			setRequiredForContractor(true);
 			setSubjectViewableBy(Account.EVERYONE);
-			setBodyViewableBy(Account.PicsID);
+			setBodyViewableBy(Account.PICS_ID);
 		}
 	},
 	RegistrationRequests {

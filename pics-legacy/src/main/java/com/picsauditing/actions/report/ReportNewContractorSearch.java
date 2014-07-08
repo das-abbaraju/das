@@ -13,7 +13,6 @@ import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.flagcalculator.FlagCalculator;
-import com.picsauditing.flagcalculator.entities.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -25,7 +24,6 @@ import com.picsauditing.jpa.entities.ContractorAuditOperator;
 import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
@@ -315,8 +313,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setHighPriority();
 				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-				emailQueue.setSubjectViewableById(Account.PicsID);
-				emailQueue.setBodyViewableById(Account.PicsID);
+				emailQueue.setSubjectViewableById(Account.PICS_ID);
+				emailQueue.setBodyViewableById(Account.PICS_ID);
 				emailSender.send(emailQueue);
 			}
 		}

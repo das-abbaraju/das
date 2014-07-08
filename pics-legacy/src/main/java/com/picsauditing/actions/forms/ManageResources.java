@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -67,7 +66,7 @@ public class ManageResources extends PicsActionSupport {
 		if (formName == null)
 			formName = (parentResource == null) ? "": parentResource.getFormName();
 		if (account == null)
-			account = (parentResource == null) ? accountDAO.find(Account.PicsID) : parentResource.getAccount();
+			account = (parentResource == null) ? accountDAO.find(Account.PICS_ID) : parentResource.getAccount();
 		if (locale == null)
 			locale = permissions.getLocale();
 		
@@ -330,7 +329,7 @@ public class ManageResources extends PicsActionSupport {
 		Set<Integer> ids = new HashSet<Integer>();
 
 		if (operator != null) {
-			ids.add(Account.PicsID); // PICS
+			ids.add(Account.PICS_ID); // PICS
 			ids.add(operator.getId());
 			for (OperatorAccount op : operator.getChildOperators()) {
 				ids.add(op.getId());
@@ -354,7 +353,7 @@ public class ManageResources extends PicsActionSupport {
 		} else {
             @SuppressWarnings("unchecked")
             List<Account> list = (List<Account>) dao.findWhere(Account.class,
-                    "t.type IN ('Operator','Corporate') or t.id="+Account.PicsID, 0,
+                    "t.type IN ('Operator','Corporate') or t.id="+Account.PICS_ID, 0,
                     "CASE WHEN t.name LIKE 'PICS' THEN 1 ELSE 2 END, t.name");
             return list;
 		}
@@ -363,7 +362,7 @@ public class ManageResources extends PicsActionSupport {
     private ArrayList<Integer> facilityIdsToCheck() {
         ArrayList<Integer> ids = new ArrayList<Integer>();
         if (permissions.isAdmin()) {
-            ids.add(Account.PicsID);
+            ids.add(Account.PICS_ID);
         }
         ids.add(operator.getId());
         for (Facility facility :operator.getCorporateFacilities()) {

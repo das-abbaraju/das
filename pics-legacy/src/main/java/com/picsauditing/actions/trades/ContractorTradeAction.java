@@ -162,7 +162,7 @@ public class ContractorTradeAction extends ContractorActionSupport {
         }
 
         String summary = action + " Trade: " + trade.getTrade().getName();
-        addNote(contractor, summary, summary + ". This trade represents " + activity + " of the business. The business " + performance + " this service.", NoteCategory.Trades, LowMedHigh.Low, false, Account.PICS_CORPORATE_ID);
+        addNote(contractor, summary, summary + ". This trade represents " + activity + " of the business. The business " + performance + " this service.", NoteCategory.Trades, LowMedHigh.Low, false, Account.PICS_ID);
     }
 
     private void updateRiskData() {

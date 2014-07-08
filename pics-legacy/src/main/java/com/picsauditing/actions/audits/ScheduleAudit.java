@@ -6,7 +6,6 @@ import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -597,8 +596,8 @@ public class ScheduleAudit extends AuditActionSupport implements Preparable {
 			emailBuilder.setUser(conAudit.getAuditor());
 			emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 			EmailQueue email = emailBuilder.build();
-			email.setSubjectViewableById(Account.PicsID);
-			email.setBodyViewableById(Account.PicsID);
+			email.setSubjectViewableById(Account.PICS_ID);
+			email.setBodyViewableById(Account.PICS_ID);
 			emailSender.send(email);
 		}
 

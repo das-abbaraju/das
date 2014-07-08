@@ -25,7 +25,7 @@ public class EmailHashServiceFactory {
 
 		EmailHash emailHash = new EmailHash();
 		SoftDeletedEmployee employee = new SoftDeletedEmployee();
-		employee.setAccountId(Account.PicsID);
+		employee.setAccountId(Account.PICS_ID);
 		employee.setId(Identifiable.SYSTEM);
 		employee.setFirstName(FIRST_NAME);
 		employee.setLastName(LAST_NAME);

@@ -91,8 +91,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setHighPriority();
 				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-				emailQueue.setSubjectViewableById(Account.PicsID);
-				emailQueue.setBodyViewableById(Account.PicsID);
+				emailQueue.setSubjectViewableById(Account.PICS_ID);
+				emailQueue.setBodyViewableById(Account.PICS_ID);
 				emailSender.send(emailQueue);
 			}
 		} catch (Exception e) {

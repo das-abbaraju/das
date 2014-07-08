@@ -84,7 +84,7 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		super.setUp(employeeAction);
 
-		when(permissions.getAccountId()).thenReturn(Account.PicsID);
+		when(permissions.getAccountId()).thenReturn(Account.PICS_ID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 		when(projectRoleService.getRolesForProfile(any(Profile.class))).thenReturn(new ArrayList<ProjectRole>());
 		when(accountService.getIdToAccountModelMap(anyCollectionOf(Integer.class))).thenReturn(new HashMap<Integer, AccountModel>());
@@ -118,7 +118,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertFalse(employeeAction.getEmployees().isEmpty());
 		assertNotNull(employeeAction.getEmployeeSkillStatuses());
 
-		verify(employeeEntityService).getEmployeesForAccount(Account.PicsID);
+		verify(employeeEntityService).getEmployeesForAccount(Account.PICS_ID);
 	}
 
 	@Test
@@ -132,7 +132,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertFalse(employeeAction.getEmployees().isEmpty());
 		assertNotNull(employeeAction.getEmployeeSkillStatuses());
 
-		verify(employeeEntityService).search("Test", Account.PicsID);
+		verify(employeeEntityService).search("Test", Account.PICS_ID);
 	}
 
 	@Test
@@ -144,7 +144,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertNotNull(employeeAction.getEmployee());
 		assertNotNull(employeeAction.getSkillInfoList());
 
-		verify(employeeEntityService).find(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PICS_ID);
 	}
 
 	@Test
@@ -152,7 +152,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsRestActionSupport.CREATE, employeeAction.create());
 		assertFalse(employeeAction.getEmployeeGroups().isEmpty());
 
-		verify(groupService).getGroupsForAccount(Account.PicsID);
+		verify(groupService).getGroupsForAccount(Account.PICS_ID);
 	}
 
 	@Test
@@ -162,7 +162,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		employeeAction.setId(String.valueOf(ID));
 		assertEquals("personal-form", employeeAction.editPersonalSection());
 		assertNotNull(employeeAction.getEmployee());
-		verify(employeeEntityService).find(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PICS_ID);
 	}
 
 	@Test
@@ -172,8 +172,8 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals("employment-form", employeeAction.editEmploymentSection());
 		assertNotNull(employeeAction.getEmployee());
 		assertFalse(employeeAction.getEmployeeGroups().isEmpty());
-		verify(employeeEntityService).find(ID, Account.PicsID);
-		verify(groupService).getGroupsForAccount(Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PICS_ID);
+		verify(groupService).getGroupsForAccount(Account.PICS_ID);
 	}
 
 	@Test
@@ -182,7 +182,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		employeeAction.setId(String.valueOf(ID));
 		assertEquals("assignment-form", employeeAction.editAssignmentSection());
 		assertNotNull(employeeAction.getEmployee());
-		verify(employeeEntityService).find(ID, Account.PicsID);
+		verify(employeeEntityService).find(ID, Account.PICS_ID);
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.insert());
 		assertEquals(url, employeeAction.getUrl());
 
-		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
+		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PICS_ID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
 		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
@@ -209,7 +209,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.insert());
 		assertEquals("/employee-guard/contractor/employee/create", employeeAction.getUrl());
 
-		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PicsID), eq(Identifiable.SYSTEM));
+		verify(employeeService).save(any(EmployeeForm.class), anyString(), eq(Account.PICS_ID), eq(Identifiable.SYSTEM));
 		verify(emailHashService).createNewHash(any(Employee.class));
 		verify(emailService).sendEGWelcomeEmail(any(EmailHash.class), anyString());
 	}
@@ -231,7 +231,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
 		assertTrue(employeeAction.getUrl().startsWith("/employee-guard/contractor/employee/"));
 
-		verify(employeeService).updatePersonal(employeePersonalForm, ID, Account.PicsID, Identifiable.SYSTEM);
+		verify(employeeService).updatePersonal(employeePersonalForm, ID, Account.PICS_ID, Identifiable.SYSTEM);
 	}
 
 	@Test
@@ -244,7 +244,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
 		assertTrue(employeeAction.getUrl().startsWith("/employee-guard/contractor/employee/"));
 
-		verify(employeeService).updateEmployment(employeeEmploymentForm, ID, Account.PicsID, Identifiable.SYSTEM);
+		verify(employeeService).updateEmployment(employeeEmploymentForm, ID, Account.PICS_ID, Identifiable.SYSTEM);
 	}
 
 	@Test
@@ -257,7 +257,7 @@ public class EmployeeActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, employeeAction.update());
 		assertTrue(employeeAction.getUrl().startsWith("/employee-guard/contractor/employee/"));
 
-		verify(employeeEntityService).updatePhoto(eq(employeePhotoForm), anyString(), eq(ID), eq(Account.PicsID));
+		verify(employeeEntityService).updatePhoto(eq(employeePhotoForm), anyString(), eq(ID), eq(Account.PICS_ID));
 	}
 
 	@Test
@@ -279,8 +279,8 @@ public class EmployeeActionTest extends PicsActionTest {
 
 		assertEquals("photo", employeeAction.photo());
 		assertNotNull(employeeAction.getInputStream());
-		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PicsID);
-		verify(photoUtil).getPhotoStreamForEmployee(any(Employee.class), eq(Account.PicsID), anyString());
+		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PICS_ID);
+		verify(photoUtil).getPhotoStreamForEmployee(any(Employee.class), eq(Account.PICS_ID), anyString());
 	}
 
 	@Test
@@ -291,12 +291,12 @@ public class EmployeeActionTest extends PicsActionTest {
 		Employee employee = new Employee();
 		employee.setProfile(new Profile());
 
-		when(employeeEntityService.find(NumberUtils.toInt(id), Account.PicsID)).thenReturn(employee);
-		when(photoUtil.getPhotoStreamForEmployee(eq(employee), eq(Account.PicsID), anyString())).thenReturn(null);
+		when(employeeEntityService.find(NumberUtils.toInt(id), Account.PICS_ID)).thenReturn(employee);
+		when(photoUtil.getPhotoStreamForEmployee(eq(employee), eq(Account.PICS_ID), anyString())).thenReturn(null);
 
 		assertEquals("photo", employeeAction.photo());
 		assertNotNull(employeeAction.getInputStream());
-		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PicsID);
+		verify(employeeEntityService).find(NumberUtils.toInt(id), Account.PICS_ID);
 		verify(profileDocumentService).getPhotoDocumentFromProfile(any(Profile.class));
 		verify(photoUtil).getPhotoStreamForProfile(any(ProfileDocument.class), anyString());
 	}

@@ -61,20 +61,20 @@ public class ProjectServiceTest extends PicsTranslationTest {
 
 	@Test
 	public void testGetProject() throws Exception {
-		projectService.getProject(1, Account.PicsID);
-		verify(projectDAO).findProjectByAccount(1, Account.PicsID);
+		projectService.getProject(1, Account.PICS_ID);
+		verify(projectDAO).findProjectByAccount(1, Account.PICS_ID);
 	}
 
 	@Test
 	public void testGetProjectsForAccount() throws Exception {
-		projectService.getProjectsForAccount(Account.PicsID);
-		verify(projectDAO).findByAccount(Account.PicsID);
+		projectService.getProjectsForAccount(Account.PICS_ID);
+		verify(projectDAO).findByAccount(Account.PICS_ID);
 	}
 
 	@Test
 	public void testSave() throws Exception {
 		Project project = new Project();
-		projectService.save(project, Account.PicsID, Identifiable.SYSTEM);
+		projectService.save(project, Account.PICS_ID, Identifiable.SYSTEM);
 
 		verify(projectDAO).save(project);
 		assertNotNull(project.getCreatedDate());
@@ -88,11 +88,11 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		int skillId = 1;
 
 		List<AccountSkill> skills = new ArrayList<>();
-		skills.add(new AccountSkill(skillId, Account.PicsID));
+		skills.add(new AccountSkill(skillId, Account.PICS_ID));
 		when(accountSkillDAO.findSkillsByAccountsAndIds(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(skillId))).thenReturn(skills);
 
 		Project project = new Project();
-		project.setAccountId(Account.PicsID);
+		project.setAccountId(Account.PICS_ID);
 		ProjectNameSkillsForm projectNameSkillsForm = new ProjectNameSkillsForm();
 		projectNameSkillsForm.setName("Project");
 		projectNameSkillsForm.setSkills(new int[]{skillId});
@@ -118,7 +118,7 @@ public class ProjectServiceTest extends PicsTranslationTest {
 		when(roleDAO.findRoleByAccountIdsAndNames(Arrays.asList(Account.PICS_CORPORATE_ID), Arrays.asList(roleName))).thenReturn(roles);
 
 		Project project = new Project();
-		project.setAccountId(Account.PicsID);
+		project.setAccountId(Account.PICS_ID);
 		ProjectRolesForm projectRolesForm = new ProjectRolesForm();
 		projectRolesForm.setRoles(new String[]{roleName});
 
@@ -133,22 +133,22 @@ public class ProjectServiceTest extends PicsTranslationTest {
 	@Test
 	public void testDelete() throws Exception {
 		Project project = new Project();
-		when(projectDAO.findProjectByAccount(1, Account.PicsID)).thenReturn(project);
+		when(projectDAO.findProjectByAccount(1, Account.PICS_ID)).thenReturn(project);
 
-		projectService.delete(1, Account.PicsID);
+		projectService.delete(1, Account.PICS_ID);
 
 		verify(projectDAO).delete(project);
 	}
 
 	@Test
 	public void testSearch() throws Exception {
-		projectService.search("search", Account.PicsID);
-		verify(projectDAO).search("search", Account.PicsID);
+		projectService.search("search", Account.PICS_ID);
+		verify(projectDAO).search("search", Account.PICS_ID);
 	}
 
 	@Test
 	public void testSearch_MissingSearchTerm() throws Exception {
-		List<Project> results = projectService.search(null, Account.PicsID);
+		List<Project> results = projectService.search(null, Account.PICS_ID);
 		assertNotNull(results);
 		assertTrue(results.isEmpty());
 	}

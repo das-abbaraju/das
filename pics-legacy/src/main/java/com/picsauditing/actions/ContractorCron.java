@@ -1093,7 +1093,7 @@ public class ContractorCron extends PicsActionSupport {
                                 note.setAuditColumns(permissions);
                                 note.setSummary("Auto assign Audit #" + audit.getId() + " was assigned to " + ua.getUser());
                                 note.setNoteCategory(NoteCategory.Audits);
-                                note.setViewableById(Account.PicsID);
+                                note.setViewableById(Account.PICS_ID);
                                 noteDAO.save(note);
 							}
 						}

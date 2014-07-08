@@ -41,7 +41,7 @@ public class AccountEmployeeGuardDAOTest {
         when(em.createQuery(anyString(), eq(AccountEmployeeGuard.class))).thenReturn(typedQuery);
         when(typedQuery.getSingleResult()).thenThrow(new NoResultException());
 
-        AccountEmployeeGuard result = accountEmployeeGuardDAO.find(Account.PicsID);
+        AccountEmployeeGuard result = accountEmployeeGuardDAO.find(Account.PICS_ID);
 
         assertNull(result);
     }
@@ -52,7 +52,7 @@ public class AccountEmployeeGuardDAOTest {
         when(em.createQuery(anyString(), eq(AccountEmployeeGuard.class))).thenReturn(typedQuery);
         when(typedQuery.getSingleResult()).thenReturn(expectedResult);
 
-        AccountEmployeeGuard result = accountEmployeeGuardDAO.find(Account.PicsID);
+        AccountEmployeeGuard result = accountEmployeeGuardDAO.find(Account.PICS_ID);
 
         assertEquals(expectedResult, result);
     }

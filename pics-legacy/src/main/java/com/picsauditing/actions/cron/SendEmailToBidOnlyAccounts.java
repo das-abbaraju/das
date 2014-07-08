@@ -66,7 +66,7 @@ public class SendEmailToBidOnlyAccounts implements CronTask {
         note.setPriority(LowMedHigh.High);
         note.setNoteCategory(noteCategory);
         note.setAuditColumns(system);
-        note.setViewableById(Account.PicsID);
+        note.setViewableById(Account.PICS_ID);
         contractorAccountDAO.save(note);
     }
 

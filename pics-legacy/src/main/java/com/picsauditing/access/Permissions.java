@@ -623,7 +623,7 @@ public class Permissions implements Serializable {
 	}
 
 	public boolean isPicsEmployee() {
-		return (Account.PicsID == accountID);
+		return (Account.PICS_ID == accountID);
 	}
 
 	public boolean isSecurity() {

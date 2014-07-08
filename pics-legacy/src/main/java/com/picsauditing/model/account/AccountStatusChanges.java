@@ -116,7 +116,7 @@ public class AccountStatusChanges {
 		Note note = new Note(account, new User(User.SYSTEM), notation);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 
