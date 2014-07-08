@@ -11,9 +11,13 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.security.auth.login.AccountLockedException;
@@ -31,15 +35,17 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ActiveDirectoryLdapAuthenticationProvider.class)
+
 public class LoginServiceTest {
     private LoginService loginService;
 
-	private String username = "PICSQA";
-	private String password = "MakeItWork1";
+    private String username = "joesixpack";
+    private String password = "8675309";
+
 	private String key = "abc123";
 
-    private static final String LDAP_DOMAIN ="pics.corp" ;
-    private static final String LDAP_URL = "ldap://gold.pics.corp:389/" ;
 	@Mock
 	private UserService userService;
 	@Mock
@@ -62,8 +68,8 @@ public class LoginServiceTest {
 		MockitoAnnotations.initMocks(this);
 		loginService = new LoginService();
 
-        ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider=
-                new ActiveDirectoryLdapAuthenticationProvider(LDAP_DOMAIN,LDAP_URL);
+        final ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider = PowerMockito.mock(ActiveDirectoryLdapAuthenticationProvider.class);
+
         loginService.setLdapActiveDirectoryAuthProvider(ldapActiveDirectoryAuthProvider);
 
 		loginService.userService = userService;
@@ -165,12 +171,11 @@ public class LoginServiceTest {
 		loginService.loginNormally(username, password);
 	}
 
-	@Test(expected = LoginException.class)
+	@Test(expected = AccountNotFoundException.class)
 	public void testLoginNormally_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
-        String INVALID_USERNAME = username + "test";
-        when(userService.loadUserByUsername(INVALID_USERNAME)).thenReturn(null);
+        when(userService.loadUserByUsername(username)).thenReturn(null);
 
-		loginService.loginNormally(INVALID_USERNAME, password);
+		loginService.loginNormally(username, password);
 	}
 
 	@Test(expected = AccountLockedException.class)

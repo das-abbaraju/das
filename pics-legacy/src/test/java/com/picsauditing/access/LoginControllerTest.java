@@ -7,7 +7,6 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.model.LoginContext;
 import com.picsauditing.access.user.UserModeProvider;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.AppPropertyDAO;
