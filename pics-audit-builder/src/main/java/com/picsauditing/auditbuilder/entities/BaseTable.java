@@ -121,23 +121,23 @@ public abstract class BaseTable implements Serializable/*, JSONable, Autocomplet
         setAuditColumns();
     }
 
-    public void setAuditColumns(Permissions permissions) {
-        if (permissions == null) {
-            setAuditColumns();
-            return;
-        }
-        int userID = permissions.getUserId();
-        if (permissions.getAdminID() > 0) {
-            userID = permissions.getAdminID();
-        }
-
-        if (userID == 0) {
-            userID = User.SYSTEM;
-        }
-
-        setAuditColumns(new User(userID));
-    }
-
+//    public void setAuditColumns(Permissions permissions) {
+//        if (permissions == null) {
+//            setAuditColumns();
+//            return;
+//        }
+//        int userID = permissions.getUserId();
+//        if (permissions.getAdminID() > 0) {
+//            userID = permissions.getAdminID();
+//        }
+//
+//        if (userID == 0) {
+//            userID = User.SYSTEM;
+//        }
+//
+//        setAuditColumns(new User(userID));
+//    }
+//
 //    @Transient
 //    public JSONObject toJSON() {
 //        return toJSON(false);
@@ -188,15 +188,15 @@ public abstract class BaseTable implements Serializable/*, JSONable, Autocomplet
         }
     }
 
-//    @Override
-//    public int hashCode() {
-//        if (id == 0) {
-//            return super.hashCode();
-//        } else {
-//            return ((getClass().getName().hashCode() % 1000) * 10000000) + id;
-//        }
-//    }
-//
+    @Override
+    public int hashCode() {
+        if (id == 0) {
+            return super.hashCode();
+        } else {
+            return ((getClass().getName().hashCode() % 1000) * 10000000) + id;
+        }
+    }
+
 //    @Transient
 //    public String getAutocompleteResult() {
 //        return "" + id;

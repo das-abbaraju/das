@@ -46,7 +46,7 @@ public class CaoAutoAdvancer {
             caoW.setStatus(caoWithStatus.getStatus());
             cao.getCaoWorkflow().add(caoW);
 
-            AuditService.changeStatus(cao, caoWithStatus.getStatus(), null);
+            AuditService.changeStatus(cao, caoWithStatus.getStatus());
         }
         return caoW;
     }

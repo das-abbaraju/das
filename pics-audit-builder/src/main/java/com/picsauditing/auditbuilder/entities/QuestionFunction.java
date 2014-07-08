@@ -805,9 +805,7 @@ public enum QuestionFunction {
 			double lowestCpi = NO_CPI_FOR_COUNTRIES_LISTED;
 
 			if ("Yes".equals(actingAsAgent)) {
-					CorruptionPerceptionIndexMap cpiMap = SpringUtils.getBean(SpringUtils.CORRUPTION_PERCEPTION_INDEX_MAP);
-
-					for (Double cpi: cpiMap.findCorruptionPerceptionIndices(unparsedJsonCountries)) {
+					for (Double cpi: input.getCpiMap().findCorruptionPerceptionIndices(unparsedJsonCountries)) {
 						if (cpi != null && cpi < lowestCpi) {
 							lowestCpi = cpi;
 						}
@@ -1095,6 +1093,7 @@ public enum QuestionFunction {
 		private final Collection<AuditQuestionFunctionWatcher> watchers;
         private String currentAnswer = null;
         private String expression = null;
+        private CorruptionPerceptionIndexMap cpiMap = null;
 
         String operatorPrecedence = "+-  */()";
         StringBuilder constant = new StringBuilder();
@@ -1108,6 +1107,7 @@ public enum QuestionFunction {
 			this.params = builder.params;
 			this.answerMap = builder.answerMap;
 			this.watchers = builder.watchers;
+            this.cpiMap = builder.cpiMap;
 		}
 
         public String getCurrentAnswer() {
@@ -1126,12 +1126,21 @@ public enum QuestionFunction {
             this.expression = expression;
         }
 
+        public CorruptionPerceptionIndexMap getCpiMap() {
+            return cpiMap;
+        }
+
+        public void setCpiMap(CorruptionPerceptionIndexMap cpiMap) {
+            this.cpiMap = cpiMap;
+        }
+
         public static class Builder {
 			private Map<String, String> params;
 			private AnswerMap answerMap;
 			private Collection<AuditQuestionFunctionWatcher> watchers = Collections.emptyList();
+            private CorruptionPerceptionIndexMap cpiMap;
 
-			public Builder params(Map<String, String> params) {
+            public Builder params(Map<String, String> params) {
 				this.params = params;
 				return this;
 			}
@@ -1145,6 +1154,11 @@ public enum QuestionFunction {
 				this.watchers = Collections.unmodifiableCollection(watchers);
 				return this;
 			}
+
+            public Builder cpiMap(CorruptionPerceptionIndexMap cpiMap) {
+                this.cpiMap = cpiMap;
+                return this;
+            }
 
 			public FunctionInput build() {
 				return new FunctionInput(this);

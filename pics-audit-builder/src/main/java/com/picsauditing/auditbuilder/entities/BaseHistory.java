@@ -8,8 +8,6 @@ import java.util.Date;
 @SuppressWarnings("serial")
 @MappedSuperclass
 public abstract class BaseHistory extends BaseTable {
-//
-//	static final public Date END_OF_TIME = new GregorianCalendar(4000, 0, 1).getTime();
 //    static final public Date BEGINING_OF_TIME = new GregorianCalendar(2001, 0, 1).getTime();
 //
 	protected Date effectiveDate;

@@ -18,9 +18,9 @@ public class Account extends BaseTable implements Comparable<Account>/*, JSONabl
 //    private static Logger logger = LoggerFactory.getLogger(Account.class);
 //
 //    public static int NONE = 0;
-//    public static int EVERYONE = 1;
-//    public static int PRIVATE = 2;
-//    public static int PicsID = 1100;
+    public static int EVERYONE = 1;
+    public static int PRIVATE = 2;
+    public static int PicsID = 1100;
 //    public static int PICS_CORPORATE_ID = 14;
     public static List<Integer> PICS_CORPORATE = Collections.unmodifiableList(
         Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));

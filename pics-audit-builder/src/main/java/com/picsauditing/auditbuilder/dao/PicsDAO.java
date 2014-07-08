@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
@@ -15,11 +16,11 @@ abstract public class PicsDAO {
 //    @Deprecated
 //	protected QueryMetaData queryMetaData = null;
 //
-//	@PersistenceContext
-//	public void setEntityManager(EntityManager em) {
-//		this.em = em;
-//	}
-//
+	@PersistenceContext
+	public void setEntityManager(EntityManager em) {
+		this.em = em;
+	}
+
 //    @Deprecated
 //	public QueryMetaData getQueryMetaData() {
 //		return queryMetaData;

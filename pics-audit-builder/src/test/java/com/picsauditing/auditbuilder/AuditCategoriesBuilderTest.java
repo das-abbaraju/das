@@ -1,7 +1,9 @@
 package com.picsauditing.auditbuilder;
 
-import com.opensymphony.xwork2.interceptor.annotations.Before;
 import com.picsauditing.EntityFactory;
+import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.service.AuditService;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -172,7 +174,7 @@ public class AuditCategoriesBuilderTest {
 		catRules.clear();
 		catRules.add(rule1);
 		catRules.add(rule2);
-		dependentAudit.getOperators().get(0).changeStatus(AuditStatus.Submitted, null);
+		AuditService.changeStatus(dependentAudit.getOperators().get(0), AuditStatus.Submitted);
 		categories = test.calculate(audit);
 		assertEquals(2, categories.size());
 	}
@@ -197,7 +199,7 @@ public class AuditCategoriesBuilderTest {
 		caop.setCao(cao);
 		cao.getCaoPermissions().add(caop);
 
-		cao.changeStatus(AuditStatus.Pending, null);
+		AuditService.changeStatus(cao, AuditStatus.Pending);
 
 		return audit;
 	}

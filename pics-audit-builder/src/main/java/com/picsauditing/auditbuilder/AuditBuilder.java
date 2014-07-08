@@ -22,6 +22,8 @@ public class AuditBuilder {
 	@Autowired
 	private AuditCategoryMatrixDAO auditCatMatrixDAO;
 	@Autowired
+	private AppTranslationDAO appTranslationDAO;
+	@Autowired
 	private ContractorAuditDAO conAuditDao;
 	@Autowired
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
@@ -256,7 +258,7 @@ public class AuditBuilder {
 		if (renewableAudit != null) {
 			renewableAudit.setExpiresDate(null);
 			for (ContractorAuditOperator cao:renewableAudit.getOperators()) {
-				ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, AuditStatus.Pending, null);
+				ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, AuditStatus.Pending);
 				if (caow != null) {
 					caow.setNotes(String.format("Resetting renewable audit to %s", AuditStatus.Pending));
 					caow.setCreatedBy(systemUser);
@@ -316,10 +318,10 @@ public class AuditBuilder {
             return today;
     }
 
-//    public void setToday(Date today) {
-//        this.today = today;
-//    }
-//
+    public void setToday(Date today) {
+        this.today = today;
+    }
+
     private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
 		buildSetOfAllWCBYears(contractor, auditType);
 		Set<String> yearsForWCBs = getAllYearsForNewWCB();
@@ -480,7 +482,7 @@ public class AuditBuilder {
 				cao.setAuditColumns(systemUser);
 				// This is almost always Pending
 				AuditStatus firstStatus = AuditService.getFirstStep(conAudit.getAuditType().getWorkFlow()).getNewStatus();
-				AuditService.changeStatus(cao, firstStatus, null);
+				AuditService.changeStatus(cao, firstStatus);
 				conAudit.setLastRecalculation(null);
 
                 cao = contractorAuditOperatorDAO.save(cao);
@@ -571,10 +573,17 @@ public class AuditBuilder {
 					!AuditService.pqfIsOkayToChangeCaoStatus(conAudit, cao)) {
 				continue;
 			}
-			ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, status, null);
+			ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, status);
 			if (caow != null) {
-				caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", conAudit.getAuditType()
-						.getName(), conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
+                List<AppTranslation> translations = appTranslationDAO.findWhere("t.locale = 'en' AND t.msgKey = concat('AuditType.'," + conAudit.getAuditType().getId() + ",'.name'");
+
+                String auditTypeName = "";
+                if (!translations.isEmpty()) {
+                    AppTranslation appTranslation = translations.get(0);
+                    auditTypeName = appTranslation.getValue();
+                }
+
+                caow.setNotes(String.format("Changing Status for %s(%d) from %s to %s", auditTypeName, conAudit.getId(), caow.getPreviousStatus(), caow.getStatus()));
 				caow.setCreatedBy(systemUser);
 				contractorAuditOperatorDAO.save(caow);
 			}

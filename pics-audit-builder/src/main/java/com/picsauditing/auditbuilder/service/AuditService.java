@@ -3,6 +3,7 @@ package com.picsauditing.auditbuilder.service;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.entities.QuestionFunction.FunctionInput;
 import com.picsauditing.auditbuilder.util.AnswerMap;
+import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
 
@@ -227,7 +228,7 @@ public class AuditService {
 		return false;
 	}
 
-	public static ContractorAuditOperatorWorkflow changeStatus(ContractorAuditOperator contractorAuditOperator, AuditStatus auditStatus, Permissions permissions) {
+	public static ContractorAuditOperatorWorkflow changeStatus(ContractorAuditOperator contractorAuditOperator, AuditStatus auditStatus) {
 		if (auditStatus.equals(contractorAuditOperator.getStatus()))
 			return null;
 
@@ -235,9 +236,9 @@ public class AuditService {
 		caow.setCao(contractorAuditOperator);
 		caow.setPreviousStatus(contractorAuditOperator.getStatus());
 		caow.setStatus(auditStatus);
-		caow.setAuditColumns(permissions);
+		caow.setAuditColumns();
 
-        contractorAuditOperator.setAuditColumns(permissions);
+        contractorAuditOperator.setAuditColumns();
         contractorAuditOperator.setStatusChangedDate(new Date());
 		contractorAuditOperator.setStatus(auditStatus);
 
@@ -430,14 +431,14 @@ public class AuditService {
         return false;
     }
 
-    public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap) {
-        return calculate(auditQuestionFunction, answerMap, null);
+    public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap cpiMap) {
+        return calculate(auditQuestionFunction, answerMap, cpiMap, null);
     }
 
-	public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, String currentAnswer) {
+	public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap cpiMap, String currentAnswer) {
             Object result;
 		try {
-            FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(auditQuestionFunction.getWatchers()).build();
+            FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(auditQuestionFunction.getWatchers()).cpiMap(cpiMap).build();
             input.setCurrentAnswer(currentAnswer);
             input.setExpression(auditQuestionFunction.getExpression());
 			result = auditQuestionFunction.getFunction().calculate(input);
@@ -464,14 +465,11 @@ public class AuditService {
 	public static List<AuditCategory> getTopCategories(AuditType auditType) {
         List<AuditCategory> topCategories = new ArrayList<>();
 
-		if (topCategories == null) {
-			topCategories = new ArrayList<>();
-			for (AuditCategory cat : auditType.getCategories()) {
-				if (cat.getParent() == null) {
-					topCategories.add(cat);
-				}
-			}
-		}
+        for (AuditCategory cat : auditType.getCategories()) {
+            if (cat.getParent() == null) {
+                topCategories.add(cat);
+            }
+        }
 
 		return topCategories;
 	}
@@ -508,5 +506,4 @@ public class AuditService {
         }
         return false;
     }
-
 }

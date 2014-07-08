@@ -47,11 +47,11 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 		}
 	}
 
-//	public synchronized void clear() {
-//		data = null;
-//        initialize();
-//	}
-//
+	public synchronized void clear() {
+		data = null;
+        initialize();
+	}
+
 	private AuditTypes getData() {
 		if (data == null) {
             initialize();

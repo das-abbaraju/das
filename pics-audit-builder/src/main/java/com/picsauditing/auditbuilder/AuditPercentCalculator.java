@@ -8,6 +8,7 @@ import com.picsauditing.auditbuilder.service.AuditPeriodService;
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.service.CaoAutoAdvancer;
 import com.picsauditing.auditbuilder.util.AnswerMap;
+import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap;
 import com.picsauditing.auditbuilder.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ import java.util.*;
 public class AuditPercentCalculator {
 	@Autowired
 	private AuditCategoryRuleCache auditCategoryRuleCache;
+	@Autowired
+	private CorruptionPerceptionIndexMap corruptionPerceptionIndexMap;
 //	@Autowired
 //	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
@@ -230,7 +233,7 @@ public class AuditPercentCalculator {
                             if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
                                 results = String.valueOf(catData.getAudit().getScore());
                             } else {
-                                Object calculation = AuditService.calculate(function, currentWatcherAnswers);
+                                Object calculation = AuditService.calculate(function, currentWatcherAnswers, corruptionPerceptionIndexMap);
                                 if (calculation != null) {
                                     results = calculation.toString();
                                 }
@@ -604,7 +607,7 @@ public class AuditPercentCalculator {
 		/*
 		 * Gather the category data to use in the recursive calculation.
 		 */
-		Map<AuditCategory, AuditCatData> catDatas = new HashMap<AuditCategory, AuditCatData>();
+		Map<AuditCategory, AuditCatData> catDatas = new HashMap<>();
 		for (AuditCatData data : ca.getCategories()) {
 			catDatas.put(data.getCategory(), data);
 		}

@@ -36,19 +36,6 @@ public class CorruptionPerceptionIndexMapTest {
 	}
 	
 	@Test
-	public void testFindCorruptionPerceptionIndex() {
-		assertEquals(new Double(7.1), corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("US"));
-		assertEquals(new Double(8.7), corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("CA"));
-		assertEquals(new Double(3.0), corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("LK"));
-	}
-	
-	@Test
-	public void testFindCountryWithNullCorruptionPerceptionIndex() {
-		assertNull(corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("RE"));
-		assertNull(corruptionPerceptionIndexMap.findCorruptionPerceptionIndex("CX"));
-	}
-	
-	@Test
 	public void testFindCorruptionPerceptionIndices() {
 		String json = "[{\"id\":\"US\"},{\"id\":\"CA\"},{\"id\":\"CX\"}]";
 		List<Double> cpis = corruptionPerceptionIndexMap.findCorruptionPerceptionIndices(json);

@@ -54,7 +54,6 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //
 //    public static final int ANNUAL_DOCUMENTATION_REVIEW = 635;
 //
-//	protected String name;
 //    private String slug;
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
 //	protected int displayOrder = 100;
@@ -114,18 +113,6 @@ public class AuditType extends BaseTable implements /*Comparable<AuditType>,*/ j
 //        this.advanceDays = a.getAdvanceDays();
 //        this.anchorDay = a.getAnchorDay();
 //        this.anchorMonth = a.getAnchorMonth();
-//	}
-//
-//	@Transient
-//	public String getName() {
-//        if (name != null) {
-//            return name;
-//        }
-//        return translatedString("name");
-//	}
-//
-//	public void setName(String name) {
-//		this.name = name;
 //	}
 //
 //    public String getSlug() {

@@ -2,9 +2,11 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.util.AnswerMap;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO;
+import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO;
+import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.util.AnswerMap;
+import com.picsauditing.auditbuilder.util.DateBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -15,6 +17,7 @@ import org.slf4j.Logger;
 
 import java.util.*;
 
+import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
@@ -30,15 +33,15 @@ public class AuditPercentCalculatorTest {
 	private AuditType auditType;
 
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
-	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+	List<AuditCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
 	private AuditCatData acd1;
 	private AuditCatData acd2;
 	private AuditCatData acd3;
 	private AuditCatData acd4;
-	private List<AuditCatData> auditCatDataList = new ArrayList<AuditCatData>();
-	private List<AuditCategory> auditCategoryList = new ArrayList<AuditCategory>();
+	private List<AuditCatData> auditCatDataList = new ArrayList<>();
+	private List<AuditCategory> auditCategoryList = new ArrayList<>();
 
 	@Mock private Logger logger;
 	@Mock private AuditDataDAO auditDataDAO;
@@ -185,9 +188,12 @@ public class AuditPercentCalculatorTest {
 		q1.setId(1);
 		q2.setId(2);
 		q3.setId(3);
-		q1.setUniqueCode("value");
-		q2.setUniqueCode("value");
-		q3.setUniqueCode("value");
+        q1.setEffectiveDate(DateBean.addMonths(new Date(), -1));
+        q2.setEffectiveDate(DateBean.addMonths(new Date(), -1));
+        q3.setEffectiveDate(DateBean.addMonths(new Date(), -1));
+        q1.setExpirationDate(DateBean.addMonths(new Date(), 1));
+        q2.setExpirationDate(DateBean.addMonths(new Date(), 1));
+        q3.setExpirationDate(DateBean.addMonths(new Date(), 1));
 
 		AuditCategory ac1 = EntityFactory.makeAuditCategory(1);
 		AuditCategory ac2 = EntityFactory.makeAuditCategory(2);
@@ -260,10 +266,11 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_AllPopulatedAllValidPutsFunctionWatcherQuestionIdInReturn() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
-		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<AuditQuestionFunctionWatcher>();
-		
+		List<AuditQuestion> auditQuestions = new ArrayList<>();
+		List<AuditQuestionFunction> functions = new ArrayList<>();
+		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<>();
+
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, true);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
@@ -273,10 +280,11 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_FunctionWatcherQuestionNotValidForDateReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
-		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<AuditQuestionFunctionWatcher>();
-		
+		List<AuditQuestion> auditQuestions = new ArrayList<>();
+		List<AuditQuestionFunction> functions = new ArrayList<>();
+		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<>();
+
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, false);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
@@ -289,20 +297,26 @@ public class AuditPercentCalculatorTest {
 			boolean isDateValid) {
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
+        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
 		auditQuestions.add(auditQuestion);
 
 		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
 		
 		functions.add(auditQuestionFunction);
 		
-		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
 		when(auditQuestion.getFunctions()).thenReturn(functions);
 		
 		AuditQuestion watcherAuditQuestion = mock(AuditQuestion.class);
 		when(watcherAuditQuestion.getId()).thenReturn(2);
-		when(watcherAuditQuestion.isValidQuestion(validDate)).thenReturn(isDateValid);
-		
+        when(watcherAuditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        if (isDateValid) {
+            when(watcherAuditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        }
+        else {
+            when(watcherAuditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        }
+
 		AuditQuestionFunctionWatcher aqfw = new AuditQuestionFunctionWatcher();
 		aqfw.setQuestion(watcherAuditQuestion);
 		watchers.add(aqfw);
@@ -311,18 +325,20 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoWatchersReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		List<AuditQuestion> auditQuestions = new ArrayList<>();
+		List<AuditQuestionFunction> functions = new ArrayList<>();
 		
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
-		auditQuestions.add(auditQuestion);
+        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        auditQuestions.add(auditQuestion);
 
 		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
 		functions.add(auditQuestionFunction);
-		
-		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
+
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 		when(auditQuestion.getFunctions()).thenReturn(functions);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
@@ -332,15 +348,17 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoFunctionsReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		List<AuditQuestion> auditQuestions = new ArrayList<>();
+		List<AuditQuestionFunction> functions = new ArrayList<>();
 		
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
+		when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+		when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
 		auditQuestions.add(auditQuestion);
 
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.isValidQuestion(validDate)).thenReturn(true);
 		when(auditQuestion.getFunctions()).thenReturn(functions);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
@@ -350,18 +368,20 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NotValidQuestionReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		List<AuditQuestionFunction> functions = new ArrayList<AuditQuestionFunction>();
+		List<AuditQuestion> auditQuestions = new ArrayList<>();
+		List<AuditQuestionFunction> functions = new ArrayList<>();
 		
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
-		auditQuestions.add(auditQuestion);
+        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        auditQuestions.add(auditQuestion);
 
 		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
 		functions.add(auditQuestionFunction);
-		
+
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.isValidQuestion(validDate)).thenReturn(false);
 
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
@@ -373,15 +393,16 @@ public class AuditPercentCalculatorTest {
 		when(category.getQuestions()).thenReturn(auditQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		when(catData.getAudit()).thenReturn(contractorAudit);
-		when(contractorAudit.getValidDate()).thenReturn(validDate);
+        when(contractorAudit.getAuditType()).thenReturn(auditType);
 		return validDate;
 	}
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoQuestionsReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		
-		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>();
+
+        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+		functionWatcherQuestionIdsBasicStubbing(auditQuestions);
 
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 
@@ -447,7 +468,9 @@ public class AuditPercentCalculatorTest {
 		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
-		auditQuestions.add(auditQuestion);
+        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        auditQuestions.add(auditQuestion);
 		
 		AuditQuestion requiredQuestion = mock(AuditQuestion.class);
 		when(requiredQuestion.getId()).thenReturn(2);
@@ -477,7 +500,9 @@ public class AuditPercentCalculatorTest {
 		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
 		AuditQuestion auditQuestion = mock(AuditQuestion.class);
 		when(auditQuestion.getId()).thenReturn(1);
-		auditQuestions.add(auditQuestion);
+        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        auditQuestions.add(auditQuestion);
 		
 		AuditQuestion visibleQuestion = mock(AuditQuestion.class);
 		when(visibleQuestion.getId()).thenReturn(2);
@@ -508,7 +533,9 @@ public class AuditPercentCalculatorTest {
 		for (int i = startingId; i < (startingId+numberToCreate); i++) {
 			AuditQuestion auditQuestion = mock(AuditQuestion.class);
 			when(auditQuestion.getId()).thenReturn(i);
-			questions.add(auditQuestion);
+            when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+            when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+            questions.add(auditQuestion);
 		}
 		return questions;
 	}
@@ -524,7 +551,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(10f, 10f, 1f);
 		createRelationships();
 
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(100, audit.getScore());
 	}
 
@@ -539,7 +566,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(0f, 0f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(100, audit.getScore());
 	}
 
@@ -554,7 +581,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(0f, 0f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(100, audit.getScore());
 	}
 
@@ -569,7 +596,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(10f, 10f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(100, audit.getScore());
 	}
 
@@ -584,7 +611,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(0f, 0f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(100, audit.getScore());
 	}
 
@@ -599,7 +626,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(10f, 10f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(75, audit.getScore());
 	}
 
@@ -614,7 +641,7 @@ public class AuditPercentCalculatorTest {
 		acd4 = createWeightedAuditCatData(5f, 10f, 1f);
 
 		createRelationships();
-		calculator.percentCalculateComplete(audit);
+		calculator.percentCalculateComplete(audit, false);
 		assertEquals(75, audit.getScore());
 	}
 
@@ -823,7 +850,7 @@ public class AuditPercentCalculatorTest {
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
 
-        calculator.percentCalculateComplete(contractorAudit);
+        calculator.percentCalculateComplete(contractorAudit, false);
 
         verify(contractorAuditOperator).setPercentComplete(0);
         verify(contractorAuditOperator).setPercentVerified(0);
@@ -841,7 +868,7 @@ public class AuditPercentCalculatorTest {
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Audit);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
 
-        calculator.percentCalculateComplete(contractorAudit);
+        calculator.percentCalculateComplete(contractorAudit, false);
 
         verify(contractorAuditOperator).setPercentComplete(100);
         verify(contractorAuditOperator).setPercentVerified(100);
@@ -882,7 +909,7 @@ public class AuditPercentCalculatorTest {
         when(catData.getNumVerified()).thenReturn(50);
         when(catData.getNumAnswered()).thenReturn(50);
 
-        calculator.percentCalculateComplete(contractorAudit);
+        calculator.percentCalculateComplete(contractorAudit, false);
 
         verify(contractorAuditOperator).setPercentComplete(100);
         verify(contractorAuditOperator).setPercentVerified(50);

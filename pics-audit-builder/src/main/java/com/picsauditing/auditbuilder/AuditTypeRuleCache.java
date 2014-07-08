@@ -42,11 +42,11 @@ public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
 		}
 	}
 
-//	public synchronized void clear() {
-//		data = null;
-//        initialize();
-//	}
-//
+	public synchronized void clear() {
+		data = null;
+        initialize();
+	}
+
 	private SafetyRisks getData() {
 		if (data == null) {
             initialize();

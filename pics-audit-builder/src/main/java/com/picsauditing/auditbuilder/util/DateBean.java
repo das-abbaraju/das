@@ -2,9 +2,15 @@ package com.picsauditing.auditbuilder.util;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DateBean {
 //	public static String NULL_DATE = "0/0/00";
@@ -18,8 +24,8 @@ public class DateBean {
 //
 //	protected static Map<Integer, String> times = new TreeMap<Integer, String>();
 //
-//	private static final Logger logger = LoggerFactory.getLogger(DateBean.class);
-//
+	private static final Logger logger = LoggerFactory.getLogger(DateBean.class);
+
 	public static final int ADD_OPERATION = 1;
 //	public static final int SUBTRACT_OPERATION = -1;
 //
@@ -53,41 +59,41 @@ public class DateBean {
 //
 //	// some patterns come from logs of what users are actually entering
 //	// do two digit year date patterns first
-//	private static List<String> datePatterns = new ArrayList<String>() {
-//		private static final long serialVersionUID = 1L;
-//		{
-//			add("MM-dd-yy");
-//			add("MM/dd/yy");
-//			add("MM/dd.yy");
-//			add("MM.dd.yy");
-//			add("MM dd yy");
-//			add("MMMMM dd, yy");
-//			add("MMMMM dd yy");
-//			add("MMMM dd, yy");
-//			add("MMMM dd yy");
-//
-//			add(PicsDateFormat.Iso);
-//			add("yyyy/MM/dd");
-//			add("yyyy.MM.dd");
-//			add("yyyy MM dd");
-//			add("MM-dd-yyyy");
-//			add("MM/dd/yyyy");
-//			add("dd/MM/yyyy");
-//			add("dd-MM-yyyy");
-//			add("dd.MM.yyyy");
-//			add("dd MM yyyy");
-//			add("dd MMMMM yyyy");
-//			add("dd MMMM yyyy");
-//			add("MMMMM dd, yyyy");
-//			add("MMMMM dd yyyy");
-//			add("MMMM dd, yyyy");
-//			add("MMMM dd yyyy");
-//			add("MM dd yyyy");
-//			add("MM/dd.yyyy");
-//			add("MM.dd.yyyy");
-//		}
-//	};
-//
+	private static List<String> datePatterns = new ArrayList<String>() {
+		private static final long serialVersionUID = 1L;
+		{
+			add("MM-dd-yy");
+			add("MM/dd/yy");
+			add("MM/dd.yy");
+			add("MM.dd.yy");
+			add("MM dd yy");
+			add("MMMMM dd, yy");
+			add("MMMMM dd yy");
+			add("MMMM dd, yy");
+			add("MMMM dd yy");
+
+			add(PicsDateFormat.Iso);
+			add("yyyy/MM/dd");
+			add("yyyy.MM.dd");
+			add("yyyy MM dd");
+			add("MM-dd-yyyy");
+			add("MM/dd/yyyy");
+			add("dd/MM/yyyy");
+			add("dd-MM-yyyy");
+			add("dd.MM.yyyy");
+			add("dd MM yyyy");
+			add("dd MMMMM yyyy");
+			add("dd MMMM yyyy");
+			add("MMMMM dd, yyyy");
+			add("MMMMM dd yyyy");
+			add("MMMM dd, yyyy");
+			add("MMMM dd yyyy");
+			add("MM dd yyyy");
+			add("MM/dd.yyyy");
+			add("MM.dd.yyyy");
+		}
+	};
+
 //	public static String toDBFormat(String month, String day, String year) throws Exception {
 //		return toDBFormat(year + "-" + month + "-" + day);
 //	}
@@ -487,33 +493,33 @@ public class DateBean {
 //		return null;
 //	}
 //
-//	public static Date parseDate(String dateString) {
-//		if (Strings.isEmpty(dateString)) {
-//			return null;
-//		}
-//
-//		// do not be tempted to move this to a static variable -
-//		// SimpleDateFormat is not thread-safe
-//		SimpleDateFormat dateFormat = new SimpleDateFormat();
-//		dateFormat.setLenient(false);
-//
-//		Date date = null;
-//		for (String pattern : datePatterns) {
-//			try {
-//				dateFormat.applyPattern(pattern);
-//				date = dateFormat.parse(dateString);
-//				break;
-//			} catch (ParseException e) {
-//			}
-//		}
-//
-//		if (date == null) {
-//			logger.warn("parseDate (FAILED): {}", dateString);
-//		}
-//
-//		return date;
-//	}
-//
+	public static Date parseDate(String dateString) {
+		if (Strings.isEmpty(dateString)) {
+			return null;
+		}
+
+		// do not be tempted to move this to a static variable -
+		// SimpleDateFormat is not thread-safe
+		SimpleDateFormat dateFormat = new SimpleDateFormat();
+		dateFormat.setLenient(false);
+
+		Date date = null;
+		for (String pattern : datePatterns) {
+			try {
+				dateFormat.applyPattern(pattern);
+				date = dateFormat.parse(dateString);
+				break;
+			} catch (ParseException e) {
+			}
+		}
+
+		if (date == null) {
+			logger.warn("parseDate (FAILED): {}", dateString);
+		}
+
+		return date;
+	}
+
 //	public static Date parseDateTime(String dateString) {
 //		// do not be tempted to move this to a static variable -
 //		// SimpleDateFormat is not thread-safe

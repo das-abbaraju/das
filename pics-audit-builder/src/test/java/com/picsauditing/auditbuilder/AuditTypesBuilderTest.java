@@ -1,8 +1,9 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO;
+import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.util.DateBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,11 +23,11 @@ public class AuditTypesBuilderTest {
 	@Mock
 	AuditTypeRuleCache auditTypeRuleCache;
 	@Mock
-	ContractorAccount contractor;
+    ContractorAccount contractor;
 	@Mock
-	OperatorAccount operator;
+    OperatorAccount operator;
 	@Mock
-	AuditDataDAO auditDataDAO;
+    AuditDataDAO auditDataDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -42,8 +43,8 @@ public class AuditTypesBuilderTest {
 
 		when(auditTypeRuleCache.getRules(contractor)).thenReturn(auditTypeRules);
 
-		List<OperatorAccount> contractorOperatorAccounts = setupOperatorAccountsWithActiveOperator();
-		when(contractor.getOperatorAccounts()).thenReturn(contractorOperatorAccounts);
+		List<ContractorOperator> contractorOperatorAccounts = setupContractorOperatorWithActiveOperator();
+		when(contractor.getOperators()).thenReturn(contractorOperatorAccounts);
 	}
 
     @Test
@@ -379,7 +380,6 @@ public class AuditTypesBuilderTest {
 	private AuditCategory createAuditCategory(int categoryId, String categoryName) {
 		AuditCategory auditCategory = new AuditCategory();
 		auditCategory.setId(categoryId);
-		auditCategory.setName(categoryName);
 
 		return auditCategory;
 	}
@@ -387,7 +387,6 @@ public class AuditTypesBuilderTest {
 	public AuditType addAuditCategoryToAuditType(AuditCategory auditCategory, AuditType auditType) {
 		auditCategory.setAuditType(auditType);
 		auditType.getCategories().add(auditCategory);
-		auditCategory.setNumber(auditType.getCategories().get(auditType.getCategories().size() - 1).getNumber() + 1);
 
 		return auditType;
 	}
@@ -400,12 +399,14 @@ public class AuditTypesBuilderTest {
 		return auditTypeRule;
 	}
 
-	private List<OperatorAccount> setupOperatorAccountsWithActiveOperator() {
-		when(operator.isOperator()).thenReturn(true);
+	private List<ContractorOperator> setupContractorOperatorWithActiveOperator() {
+		when(operator.getType()).thenReturn("Operator");
 		when(operator.getStatus()).thenReturn(AccountStatus.Active);
-		List<OperatorAccount> operatorAccounts = new ArrayList<>();
-		operatorAccounts.add(operator);
-		return operatorAccounts;
+		List<ContractorOperator> contractorOperators = new ArrayList<>();
+        ContractorOperator contractorOperator = new ContractorOperator();
+        contractorOperator.setOperatorAccount(operator);
+		contractorOperators.add(contractorOperator);
+		return contractorOperators;
 	}
 
 }

@@ -88,10 +88,10 @@ public class AuditData extends BaseTable implements java.io.Serializable/*, Comp
 		this.dateVerified = dateVerified;
 	}
 
-//	public void setVerified(boolean inValue) {
-//		this.setDateVerified(inValue ? new Date() : null);
-//	}
-//
+	public void setVerified(boolean inValue) {
+		this.setDateVerified(inValue ? new Date() : null);
+	}
+
 //	@Enumerated(EnumType.STRING)
 //	public YesNo getWasChanged() {
 //		return wasChanged;

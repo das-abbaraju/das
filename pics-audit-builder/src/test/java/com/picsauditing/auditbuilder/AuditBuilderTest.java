@@ -1,15 +1,15 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.entities.Trade;
-import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
-import com.picsauditing.service.audit.AuditPeriodService;
-import com.picsauditing.util.Strings;
-import com.picsauditing.util.test.TranslatorFactorySetup;
-import org.junit.AfterClass;
+import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.auditbuilder.dao.*;
+import com.picsauditing.auditbuilder.entities.*;
+import com.picsauditing.auditbuilder.service.AccountService;
+import com.picsauditing.auditbuilder.service.AuditPeriodService;
+import com.picsauditing.auditbuilder.util.DateBean;
+import com.picsauditing.auditbuilder.util.Strings;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -29,24 +29,26 @@ public class AuditBuilderTest extends PicsTest {
 	AuditBuilder auditBuilder;
 
 	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
-	List<AuditTypeRule> typeRules = new ArrayList<AuditTypeRule>();
+	List<AuditTypeRule> typeRules = new ArrayList<>();
 	AuditTypesBuilder typeBuilder;
     AuditPeriodService auditPeriodService = new AuditPeriodService();
 
 	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
-	List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+	List<AuditCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
 	@Mock
 	AuditPercentCalculator auditPercentCalculator;
 	@Mock
-	AuditDataDAO auditDataDao;
+    AuditDataDAO auditDataDao;
 	@Mock
-	ContractorAuditDAO conAuditDao;
+    ContractorAuditDAO conAuditDao;
     @Mock
     ContractorAuditFileDAO contractorAuditFileDAO;
 	@Mock
 	private AuditDecisionTableDAO auditDecisionTableDAO;
+	@Mock
+	private AppTranslationDAO appTranslationDAO;
     @Mock
     AuditTypeDAO auditTypeDao;
     @Mock
@@ -57,18 +59,11 @@ public class AuditBuilderTest extends PicsTest {
 	ContractorAccount contractor;
 	OperatorAccount operator;
 
-	@AfterClass
-	public static void classTearDown() {
-		TranslatorFactorySetup.resetTranslatorFactoryAfterTest();
-	}
-
 	/**
 	 * Setup Contractors and Audit Types and Categories
 	 */
 	@Before
 	public void setUp() throws Exception {
-		TranslatorFactorySetup.setupTranslatorFactoryForTest();
-
 		MockitoAnnotations.initMocks(this);
 
 		auditBuilder = new AuditBuilder();
@@ -81,6 +76,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.setInternalState(typeRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(catRuleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
+		Whitebox.setInternalState(auditBuilder, "appTranslationDAO", appTranslationDAO);
 		Whitebox.setInternalState(auditBuilder, "conAuditDao", conAuditDao);
 		Whitebox.setInternalState(auditBuilder, "contractorAuditFileDAO", contractorAuditFileDAO);
 
@@ -91,7 +87,7 @@ public class AuditBuilderTest extends PicsTest {
 
 		contractor = EntityFactory.makeContractor();
 		operator = EntityFactory.makeOperator();
-		contractor.getOperatorAccounts().add(operator);
+		AccountService.getOperatorAccounts(contractor).add(operator);
 		EntityFactory.addContractorOperator(contractor, operator);
 	}
 
@@ -181,7 +177,7 @@ public class AuditBuilderTest extends PicsTest {
 		assertEquals(1, auditTypes.size());
 
 		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
-		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit, contractor.getOperatorAccounts());
+		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit, AccountService.getOperatorAccounts(contractor));
 		assertEquals(2, categories.size());
 	}
 
@@ -582,18 +578,18 @@ public class AuditBuilderTest extends PicsTest {
 		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
 		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
 
-		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
-		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
+		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<>();
+		Set<OperatorAccount> caops = new HashSet<>();
 		caops.add(cao1.getOperator());
 		caoMap.put(cao1.getOperator(), caops);
-		caops = new HashSet<OperatorAccount>();
+		caops = new HashSet<>();
 		caops.add(cao2.getOperator());
 		caoMap.put(cao2.getOperator(), caops);
 
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(2, conAudit.getOperators().size());
 
-		Set<AuditCategory> categoriesNeeded = new HashSet<AuditCategory>();
+		Set<AuditCategory> categoriesNeeded = new HashSet<>();
 		categoriesNeeded.addAll(conAudit.getAuditType().getCategories());
 		Whitebox.invokeMethod(auditBuilder, "fillAuditCategories", conAudit, categoriesNeeded);
 		for (AuditCatData catData : conAudit.getCategories()) {
@@ -709,7 +705,9 @@ public class AuditBuilderTest extends PicsTest {
 		when(contractor.getAudits()).thenReturn(audits);
 		when(audit.getContractorAccount()).thenReturn(contractor);
 		when(audit.getAuditFor()).thenReturn(DateBean.getWCBYear());
-		when(audit.getAuditType()).thenReturn(new AuditType(145));
+        AuditType auditType1 = new AuditType();
+        auditType1.setId(145);
+        when(audit.getAuditType()).thenReturn(auditType1);
 
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
 		assertTrue(result);
@@ -745,7 +743,9 @@ public class AuditBuilderTest extends PicsTest {
 		ContractorAccount contractor = mock(ContractorAccount.class);
 		List<ContractorAudit> audits = buildMockAudits();
 		when(contractor.getAudits()).thenReturn(audits);
-		when(wcbAudit.getAuditType()).thenReturn(new AuditType(145));
+        AuditType auditType1 = new AuditType();
+        auditType1.setId(145);
+        when(wcbAudit.getAuditType()).thenReturn(auditType1);
 
 		List<String> result = Whitebox.invokeMethod(auditBuilder, "findAllWCBAuditYears", contractor, wcbAudit);
 		assertNotNull(result);
@@ -762,7 +762,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+		verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -774,31 +774,33 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemovePqfs() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
 		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(contractorAudit.getAuditType()).thenReturn(new AuditType(AuditType.PQF));
+        AuditType auditType1 = new AuditType();
+        auditType1.setId(AuditType.PQF);
+        when(contractorAudit.getAuditType()).thenReturn(auditType1);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveWcbs() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
 		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(contractorAudit.getAuditType().isWCB()).thenReturn(true);
+		when(contractorAudit.getAuditType().getId()).thenReturn(169);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -810,7 +812,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -821,7 +823,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -832,7 +834,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -846,7 +848,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
 	@Test
@@ -865,7 +867,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(anyInt());
+        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
 	}
 
     @Test
@@ -906,7 +908,9 @@ public class AuditBuilderTest extends PicsTest {
 
 	private ContractorAudit buildMockWCBAudit(int auditTypeId, String auditFor) {
 		ContractorAudit audit = mock(ContractorAudit.class);
-		when(audit.getAuditType()).thenReturn(new AuditType(auditTypeId));
+        AuditType auditType1 = new AuditType();
+        auditType1.setId(auditTypeId);
+        when(audit.getAuditType()).thenReturn(auditType1);
 		when(audit.getAuditFor()).thenReturn(auditFor);
 
 		return audit;

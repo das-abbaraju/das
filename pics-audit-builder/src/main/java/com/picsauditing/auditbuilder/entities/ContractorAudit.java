@@ -1,5 +1,6 @@
 package com.picsauditing.auditbuilder.entities;
 
+import com.picsauditing.auditbuilder.util.Grepper;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -107,18 +108,17 @@ public class ContractorAudit extends BaseTable {
 		this.operators = operators;
 	}
 
-//	// TODO Should we pass in permissions to this? See ConInsureGuard.java
-//	// execute() lines 54-67
-//	@Transient
-//	public List<ContractorAuditOperator> getOperatorsVisible() {
-//		return new Grepper<ContractorAuditOperator>() {
-//
-//			public boolean check(ContractorAuditOperator t) {
-//				return t.isVisible();
-//			}
-//		}.grep(this.operators);
-//	}
-//
+    // For Testing
+	@Transient
+	public List<ContractorAuditOperator> getOperatorsVisible() {
+		return new Grepper<ContractorAuditOperator>() {
+
+			public boolean check(ContractorAuditOperator t) {
+				return t.isVisible();
+			}
+		}.grep(this.operators);
+	}
+
 	@Temporal(TemporalType.TIMESTAMP)
 	public Date getExpiresDate() {
 		return expiresDate;
