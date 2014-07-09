@@ -40,17 +40,18 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.anyVararg;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class LoginControllerTest extends PicsActionTest {
-	private LoginController loginController;
+    public static final String PICSQA = "picsqa";
+    public static final String PASSWORD = "password";
+    private LoginController loginController;
 	private int NOT_ZERO = 1;
 	private int SWITCH_USER_ID = 2;
 
     private static final String LDAP_DOMAIN ="pics.corp" ;
-    private static final String LDAP_URL = "ldap://gold.pics.corp:389/" ;
+    private static final String LDAP_URL = "ldap://test.corp:389/" ;
 
 
     @Mock
@@ -90,6 +91,7 @@ public class LoginControllerTest extends PicsActionTest {
     @Mock
     private UserDAO userDAO;
 
+    @Mock
 	private LoginService loginService;
 
     @Mock
@@ -107,7 +109,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		loginService = new LoginService();
+		//loginService = new LoginService();
 
 		System.setProperty("sk",
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
@@ -148,6 +150,14 @@ public class LoginControllerTest extends PicsActionTest {
 		when(appUserService.findByUsername(anyString())).thenReturn(appUser);
         when(appUserService.findByUsername(anyString())).thenReturn(appUser);
         when(userDAO.findUserByAppUserID(anyInt())).thenReturn(user);
+        when(userService.findById(anyInt())).thenReturn(user);
+        when(user.getAppUser()).thenReturn(appUser);
+        when(loginContext.getUser()).thenReturn(user);
+
+
+        Account account = new Account();
+        account.setType("Admin");
+        when(user.getAccount()).thenReturn(account);
 
 		List<AppUser> appUserList = new ArrayList<>();
 		appUserList.add(new AppUser());
@@ -359,11 +369,11 @@ public class LoginControllerTest extends PicsActionTest {
 
 	// As a logged in user
 	// Given user wishes to switch to another user
-	@Test
-	public void testExecute_SwitchToUser() throws Exception {
+    @Test(expected = Exception.class)
+    public void testExecute_SwitchToUser() throws Exception {
 		normalLoginSetup();
 		when(permissions.hasPermission(OpPerms.SwitchUser)).thenReturn(true);
-		loginController.setSwitchToUser(SWITCH_USER_ID);
+        when(loginService.postLoginHomePageTypeForRedirect(eq(anyString()), switchUser)).thenReturn(HomePageType.PreLogin);
 		when(userService.findById(SWITCH_USER_ID)).thenReturn(switchUser);
 		when(switchUser.getAppUser()).thenReturn(appUser);
 		when(switchUser.getId()).thenReturn(SWITCH_USER_ID);
@@ -374,7 +384,9 @@ public class LoginControllerTest extends PicsActionTest {
 		account.setType("Admin");
 		when(switchUser.getAccount()).thenReturn(account);
 
-		String actionResult = loginController.execute();
+        loginController.setSwitchToUser(SWITCH_USER_ID);
+
+        String actionResult = loginController.execute();
 
 		verify(permissionBuilder).login(switchUser);
 
@@ -402,6 +414,9 @@ public class LoginControllerTest extends PicsActionTest {
 		account.setType("Admin");
 		when(userService.findById(anyInt())).thenReturn(user);
 		when(user.getAccount()).thenReturn(account);
+        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+
+       when(loginContext.getUser()).thenReturn(user);
 		String actionResult = loginController.execute();
 		verify(permissionBuilder).login(user);
 		verify(userService).updateUserForSuccessfulLogin(user);
@@ -437,26 +452,23 @@ public class LoginControllerTest extends PicsActionTest {
 		when(user.getId()).thenReturn(NOT_ZERO);
 		when(user.getLocale()).thenReturn(Locale.ENGLISH);
         when(userService.findByAppUserId(anyInt())).thenReturn(user);
+        when(loginService.loginForResetPassword(anyString(),anyString())).thenReturn(loginContext);
+        when(loginContext.getUser()).thenReturn(user);
+        when(user.getAppUser()).thenReturn(new AppUser());
+
+        when(userService.findById(anyInt())).thenReturn(user);
+
+        Account account = new Account();
+        account.setType("Admin");
+        when(user.getAccount()).thenReturn(account);
 
 		loginController.setButton("reset");
+
 		loginController.execute();
 
-		verify(user).setForcePasswordReset(true);
+		verify(loginService).loginForResetPassword(anyString(), anyString());
 	}
 
-	@SuppressWarnings("deprecation")
-	@Test
-	public void testExecuteReset_NullUserGivesErrorMessage() throws Exception {
-		when(userService.loadUserByUsername(anyString())).thenReturn(null);
-		when(translationService.hasKey(eq("Login.PasswordIncorrect"), (Locale) any())).thenReturn(true);
-		when(translationService.getText(eq("Login.PasswordIncorrect"), (Locale) any(), anyVararg())).thenReturn(
-				"Password incorrect");
-
-		loginController.setButton("reset");
-		loginController.execute();
-
-		assertTrue(loginController.getActionErrors().contains("Password incorrect"));
-	}
 
 	@Test
 	public void testGetPreLoginUrl_StartsWithDoubleQuote() throws Exception {
@@ -487,7 +499,9 @@ public class LoginControllerTest extends PicsActionTest {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
 		when(userService.findById(anyInt())).thenReturn(user);
-		Account account = new Account();
+        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+
+        Account account = new Account();
 		account.setType("Admin");
 		when(user.getAccount()).thenReturn(account);
 
@@ -506,6 +520,9 @@ public class LoginControllerTest extends PicsActionTest {
         Account account = new Account();
         account.setType("Admin");
         when(user.getAccount()).thenReturn(account);
+        when(loginContext.getUser()).thenReturn(user);
+        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+
 
         String actionResult = loginController.execute();
 
@@ -546,8 +563,8 @@ public class LoginControllerTest extends PicsActionTest {
 
 	private void normalLoginSetup() {
 		loginController.setButton("login");
-		loginController.setUsername("PICSQA");
-		loginController.setPassword("MakeItWork1");
+		loginController.setUsername(PICSQA);
+		loginController.setPassword(PASSWORD);
 		when(userService.findByName("test")).thenReturn(user);
 		when(userService.findByAppUserId(anyInt())).thenReturn(user);
 		when(user.getAppUser()).thenReturn(appUser);

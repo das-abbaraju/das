@@ -9,6 +9,8 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,6 +40,9 @@ public class LoginService {
 
     @Autowired
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
+
+    private static final Logger logger = LoggerFactory.getLogger(LoginService.class);
+
 
     // todo: This is only part of the login process. Extract code from LoginController to make this complete.
 	public User loginNormally(String username, String password) throws LoginException {
@@ -82,8 +87,9 @@ public class LoginService {
             return result!=null?result.isAuthenticated():false;
         }
         catch(AuthenticationException ace){
-            throw new FailedLoginException("Bad Credentials for user: " + username);
+            logger.error("Bad LDAP Credentials for user: " + username);
         }
+        return false;
     }
 
 
