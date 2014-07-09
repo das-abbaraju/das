@@ -109,7 +109,6 @@ public class LoginControllerTest extends PicsActionTest {
 
 	@Before
 	public void setUp() throws Exception {
-		//loginService = new LoginService();
 
 		System.setProperty("sk",
 				"87hsbhW3PaIlmYB9FEM6rclCc0sGiIfq3tRpGKQFw8ynTFrUU6XQqg7oYk4DXQBkAqdYnGqvDMKRCfwiWOSoVg==");
