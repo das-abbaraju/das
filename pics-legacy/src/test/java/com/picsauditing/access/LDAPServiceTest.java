@@ -26,9 +26,6 @@ import static org.mockito.Matchers.any;
 public class LDAPServiceTest {
 
     @Mock
-    Authentication authentication;
-
-    @Mock
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
     private LDAPService ldapService;
