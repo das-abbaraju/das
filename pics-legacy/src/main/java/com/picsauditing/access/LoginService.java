@@ -21,6 +21,7 @@ import java.util.Calendar;
 public class LoginService {
 
     protected static final int MAX_FAILED_ATTEMPTS = 6;
+    public static final String PICSAD = "picsad";
 
     @Autowired
 	protected UserService userService;
@@ -53,15 +54,22 @@ public class LoginService {
 		return user;
 	}
 
-	public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
-        boolean result = ldapService.doLDAPLoginAuthentication(username, password);
-        if(!result) {
-            verifyUserExists(user, username);
-            verifyUserStatusForLogin(user);
-            verifyPasswordIsCorrect(user, password);
-            verifyPasswordIsNotExpired(user);
+    public LoginContext doPreLoginVerification(String identityProvider, User user, String username, String password) throws LoginException {
+        if(identityProvider.equals(PICSAD)) {
+            ldapService.doLDAPLoginAuthentication(username, password);
         }
+        LoginContext loginContext = new LoginContext();
+        loginContext.setUser(user);
 
+        return loginContext;
+    }
+
+	public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
+
+        verifyUserExists(user, username);
+        verifyUserStatusForLogin(user);
+        verifyPasswordIsCorrect(user, password);
+        verifyPasswordIsNotExpired(user);
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
 
