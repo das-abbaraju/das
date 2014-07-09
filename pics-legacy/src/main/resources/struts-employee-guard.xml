@@ -310,6 +310,9 @@
         <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
         </action>
 
+        <action name="settings" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
         <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
