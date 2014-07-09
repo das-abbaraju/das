@@ -1,30 +1,39 @@
 package com.picsauditing.employeeguard.msgbundle;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.LocaleProvider;
-import com.opensymphony.xwork2.TextProvider;
-import com.opensymphony.xwork2.TextProviderFactory;
+import com.opensymphony.xwork2.*;
 import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.model.i18n.ThreadLocalLocale;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class EGI18n implements TextProvider, LocaleProvider {
 
-	private final TextProviderFactory tpf;
 	private transient TextProvider textProvider;
 	private Container container;
 
-	public EGI18n() {
-		tpf = new TextProviderFactory();
-		container = ActionContext.getContext().getContainer();
-		container.inject(tpf);
-		textProvider = tpf.createInstance(getClass(), this);
+	public static String getBreadCrumbResourceBundle(String breadcrumbLabel){
+		if(!breadcrumbLabel.contains("{")) {
+			String valueFromResourceBundle = EGI18n.getTextFromResourceBundle("BREADCRUMB.LABEL." + breadcrumbLabel);
+			if (StringUtils.isNotEmpty(valueFromResourceBundle)) {
+				breadcrumbLabel = valueFromResourceBundle;
+			}
+		}
+
+		return breadcrumbLabel;
 	}
 
+	public static String getTextFromResourceBundle(String aTextName){
+		ActionContext actionContext = ActionContext.getContext();
+		ActionInvocation actionInvocation = actionContext.getActionInvocation();
+		ActionSupport actionSupport = (ActionSupport)actionInvocation.getAction();
+		ValueStack valueStack = actionContext.getValueStack();
+		return actionSupport.getText(aTextName,aTextName,new ArrayList<Object>(),valueStack);
+	}
 
 	@Override
 	public boolean hasKey(String key) {
@@ -106,15 +115,14 @@ public class EGI18n implements TextProvider, LocaleProvider {
 	 * @return reference to field with TextProvider
 	 */
 	private TextProvider getTextProvider() {
-/*
 		if (textProvider == null) {
 			TextProviderFactory tpf = new TextProviderFactory();
-			if (container != null) {
-				container.inject(tpf);
+			if (container == null) {
+				container = ActionContext.getContext().getContainer();
 			}
+			container.inject(tpf);
 			textProvider = tpf.createInstance(getClass(), this);
 		}
-*/
 		return textProvider;
 	}
 }

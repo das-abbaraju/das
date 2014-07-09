@@ -6,12 +6,12 @@
             <!-- Operator -->
             <breadcrumb>
                 <hint>operators</hint>
-                <label>EmployeeGUARD</label>
+                <label>EMPLOYEEGUARD</label>
                 <uri>/employee-guard/operators/dashboard</uri>
                 <children>
                     <breadcrumb>
                         <hint>project</hint>
-                        <label>Projects</label>
+                        <label>PROJECTS</label>
                         <uri>/employee-guard/operators/projects</uri>
                         <children>
                             <breadcrumb>
@@ -21,24 +21,24 @@
                                 <children>
                                     <breadcrumb>
                                         <hint>assignments</hint>
-                                        <label>Assign Employees</label>
+                                        <label>ASSIGN_EMPLOYEES</label>
                                         <uri>/employee-guard/operators/project/{id}/assignments/{id}</uri>
                                     </breadcrumb>
                                     <breadcrumb>
                                         <hint>site-assignment</hint>
-                                        <label>Site Assignments</label>
+                                        <label>SITE_ASSIGNMENTS</label>
                                         <uri>/employee-guard/operators/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Project</label>
+                                <label>ADD_PROJECT</label>
                                 <uri>/employee-guard/operators/project/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>edit</hint>
-                                <label>Edit Project</label>
+                                <label>EDIT_PROJECT</label>
                                 <uri>/employee-guard/operators/project/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -48,7 +48,7 @@
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>site-assignment</hint>
-                                <label>Site Assignments</label>
+                                <label>SITE_ASSIGNMENTS</label>
                                 <uri>/employee-guard/operators/project/site-assignment</uri>
                                 <children>
                                     <breadcrumb>
@@ -62,12 +62,12 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>skill</hint>
-                        <label>Skills</label>
+                        <label>SKILLS</label>
                         <uri>/employee-guard/operators/skill</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Skill</label>
+                                <label>ADD_SKILL</label>
                                 <uri>/employee-guard/operators/skill/create</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -79,12 +79,12 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>role</hint>
-                        <label>Job Roles</label>
+                        <label>JOB_ROLES</label>
                         <uri>/employee-guard/operators/role</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Job Role</label>
+                                <label>ADD_JOB_ROLE</label>
                                 <uri>/employee-guard/operators/role/create</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -100,22 +100,22 @@
             <!-- Contractor -->
             <breadcrumb>
                 <hint>contractor</hint>
-                <label>EmployeeGUARD</label>
+                <label>EMPLOYEEGUARD</label>
                 <uri>/employee-guard/contractor/dashboard</uri>
                 <children>
                     <breadcrumb>
                         <hint>employee</hint>
-                        <label>Employees</label>
+                        <label>EMPLOYEES</label>
                         <uri>/employee-guard/contractor/employee</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Employee</label>
+                                <label>ADD_EMPLOYEE</label>
                                 <uri>/employee-guard/contractor/employee/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>import-export</hint>
-                                <label>Import / Export Employees</label>
+                                <label>IMPORT_/_EXPORT_EMPLOYEES</label>
                                 <uri>/employee-guard/contractor/employee/import-export</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -127,12 +127,12 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>skill</hint>
-                        <label>Skills</label>
+                        <label>SKILLS</label>
                         <uri>/employee-guard/contractor/skill</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Skill</label>
+                                <label>ADD_SKILL</label>
                                 <uri>/employee-guard/contractor/skill/create</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -144,12 +144,12 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>employee-group</hint>
-                        <label>Employee Groups</label>
+                        <label>EMPLOYEE_GROUPS</label>
                         <uri>/employee-guard/contractor/employee-group</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add Employee Group</label>
+                                <label>ADD_EMPLOYEE_GROUP</label>
                                 <uri>create</uri>
                                 <uri>/employee-guard/contractor/employee-group/create</uri>
                             </breadcrumb>
@@ -162,7 +162,7 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>project</hint>
-                        <label>Assignments and Projects</label>
+                        <label>ASSIGNMENTS_AND_PROJECTS</label>
                         <uri>/employee-guard/contractor/project</uri>
                         <children>
                             <breadcrumb>
@@ -177,19 +177,19 @@
                                 <children>
                                     <breadcrumb>
                                         <hint>assignments</hint>
-                                        <label>Assign Employees</label>
+                                        <label>ASSIGN_EMPLOYEES</label>
                                         <uri>/employee-guard/contractor/project/{id}/assignments/{id}</uri>
                                     </breadcrumb>
                                     <breadcrumb>
                                         <hint>site-assignment</hint>
-                                        <label>Assign Employees</label>
+                                        <label>ASSIGN_EMPLOYEES</label>
                                         <uri>/employee-guard/contractor/site-assignment/{id}</uri>
                                     </breadcrumb>
                                 </children>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>site-assignment</hint>
-                                <label>Assignments: {name}</label>
+                                <label>{name}</label>
                                 <uri>/employee-guard/contractor/project/site-assignment</uri>
                                 <children>
                                     <breadcrumb>
@@ -203,27 +203,27 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>matrix</hint>
-                        <label>Quick Manage</label>
+                        <label>QUICK_MANAGE</label>
                         <uri>/employee-guard/contractor/matrix</uri>
                         <children>
                             <breadcrumb>
                                 <hint>employee-groups-to-employees</hint>
-                                <label>Employee Groups to Employees</label>
+                                <label>EMPLOYEE_GROUPS_TO_EMPLOYEES</label>
                                 <uri>/employee-guard/contractor/matrix/employee-groups-to-employees</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>employee-to-skillz</hint>
-                                <label>Employees to Skills</label>
+                                <label>EMPLOYEES_TO_SKILLS</label>
                                 <uri>/employee-guard/contractor/matrix/employee-to-skills</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>employee-to-sites</hint>
-                                <label>Employees to Sites and Projects</label>
+                                <label>EMPLOYEES_TO_SITES_AND_PROJECTS</label>
                                 <uri>/employee-guard/contractor/matrix/employees-to-sites</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>skills-to-employee-groups</hint>
-                                <label>Skills to Employee Groups</label>
+                                <label>SKILLS_TO_EMPLOYEE_GROUPS</label>
                                 <uri>/employee-guard/contractor/matrix/skills-to-employee-groups</uri>
                             </breadcrumb>
                         </children>
@@ -234,24 +234,24 @@
             <!-- Employee -->
             <breadcrumb>
                 <hint>employee</hint>
-                <label>Dashboard</label>
+                <label>DASHBOARD</label>
                 <uri>/employee-guard/employee/dashboard</uri>
                 <children>
                     <breadcrumb>
                         <hint>skills</hint>
-                        <label>Skills</label>
+                        <label>SKILLS</label>
                         <uri>/employee-guard/employee/skills</uri>
                         <children>
                             <breadcrumb>
                                 <hint>manage-skill</hint>
-                                <label>Manage Skill</label>
+                                <label>MANAGE_SKILL</label>
                                 <uri>/employee-guard/employee/skills/manage-skill</uri>
                             </breadcrumb>
                         </children>
                     </breadcrumb>
                     <breadcrumb>
                         <hint>skill</hint>
-                        <label>Skills</label>
+                        <label>SKILLS</label>
                         <uri>/employee-guard/employee/skills</uri>
                         <children>
                             <breadcrumb>
@@ -263,17 +263,17 @@
                     </breadcrumb>
                     <breadcrumb>
                         <hint>file</hint>
-                        <label>My Files</label>
+                        <label>MY_FILES</label>
                         <uri>/employee-guard/employee/file</uri>
                         <children>
                             <breadcrumb>
                                 <hint>create</hint>
-                                <label>Add File</label>
+                                <label>ADD_FILE</label>
                                 <uri>/employee-guard/employee/file/create</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>edit</hint>
-                                <label>Edit File</label>
+                                <label>EDIT_FILE</label>
                                 <uri>/employee-guard/employee/file/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
@@ -286,7 +286,7 @@
 
                     <breadcrumb>
                         <hint>live-id</hint>
-                        <label>Live ID</label>
+                        <label>LIVE_ID</label>
                         <uri>/employee-guard/employee/live-id</uri>
                     </breadcrumb>
                     <breadcrumb>
@@ -296,12 +296,12 @@
                         <children>
                             <breadcrumb>
                                 <hint>edit</hint>
-                                <label>Edit Profile</label>
+                                <label>EDIT_PROFILE</label>
                                 <uri>/employee-guard/employee/profile/{id}/edit</uri>
                             </breadcrumb>
                             <breadcrumb>
                                 <hint>settings</hint>
-                                <label>Settings</label>
+                                <label>SETTINGS</label>
                                 <uri>/employee-guard/employee/profile/${id}/settings</uri>
                             </breadcrumb>
                         </children>

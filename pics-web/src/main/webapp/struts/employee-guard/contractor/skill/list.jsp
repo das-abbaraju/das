@@ -72,7 +72,7 @@
 <s:else>
     <section class="employee-guard-section">
         <h1>
-            <i class="icon-certificate icon-large"></i>Skills
+            <i class="icon-certificate icon-large"></i><s:text name="CONTRACTOR.SKILL.LIST.SKILLS" />
         </h1>
         <div class="content">
             <div class="row">

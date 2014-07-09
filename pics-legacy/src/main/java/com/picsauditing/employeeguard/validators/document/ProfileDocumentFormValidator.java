@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.validators.document;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
 import com.picsauditing.strutsutil.AjaxUtils;
@@ -19,11 +20,11 @@ public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValid
 	@Override
 	protected void doFormValidation(DocumentForm documentForm) {
 		if (!ProfileDocumentValidationUtil.valid(documentForm, ProfileDocumentValidationUtil.DocumentField.NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "name"), "Name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.DOCUMENT.NAME"));
 		}
 
 		if (!isFileValid(documentForm)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "file"), "Upload is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(PROFILE_DOCUMENT_FORM, "file"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.DOCUMENT.UPLOAD"));
 		}
 
 		String errorString=ProfileDocumentValidationUtil.validateExpirationDate(documentForm);
@@ -47,6 +48,6 @@ public class ProfileDocumentFormValidator extends AbstractBasicAndDuplicateValid
 
 	@Override
 	protected String getDuplicateErrorMessage() {
-		return "Name";
+		return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.DOCUMENT.DUPLICATE");
 	}
 }

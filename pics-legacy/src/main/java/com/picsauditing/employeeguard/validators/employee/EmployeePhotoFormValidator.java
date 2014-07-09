@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.validators.employee;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeEmploymentForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePhotoForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.util.PhotoUtil;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 import com.picsauditing.employeeguard.validators.AbstractBasicValidator;
@@ -17,7 +18,7 @@ public class EmployeePhotoFormValidator extends AbstractBasicValidator<EmployeeP
 	@Override
 	protected void doFormValidation(EmployeePhotoForm form) {
 		if (!fileExtensionValid(form)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(EMPLOYEE_PHOTO_FORM, "photo"), "Invalid filetype. Please upload either a .jpg or .png file.");
+			addFieldErrorIfMessage(fieldKeyBuilder(EMPLOYEE_PHOTO_FORM, "photo"), EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.EMPLOYEE.FILE_TYPE"));
 		}
 	}
 

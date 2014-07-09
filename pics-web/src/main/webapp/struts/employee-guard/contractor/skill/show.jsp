@@ -47,7 +47,12 @@
                     <dt class="col-md-3"><s:text name="CONTRACTOR.SKILL.SHOW.DESCRIPTION" /></dt>
                     <dd class="col-md-9">${skill.description}</dd>
                     <dt class="col-md-3"><s:text name="CONTRACTOR.SKILL.SHOW.SKILL_TYPE" /></dt>
-                    <dd class="col-md-9">${skill.skillType}</dd>
+                    <dd class="col-md-9">
+                      <%-- Skill Type --%>
+                      <s:include value="/struts/employee-guard/_skilltype.jsp">
+                        <s:param name="skillType">${skill.skillType}</s:param>
+                      </s:include>
+                    </dd>
 
                     <s:if test="skill.skillType.training">
                         <dt class="col-md-3"><s:text name="CONTRACTOR.SKILL.SHOW.EXPIRES_AFTER" />&hellip;</dt>

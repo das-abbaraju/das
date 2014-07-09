@@ -1,5 +1,8 @@
 package com.picsauditing.breadcrumb;
 
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +11,8 @@ public class BreadcrumbVisitor implements Visitor {
 
 	@Override
 	public void visit(VisitableNode visitableNode) {
-		Breadcrumb breadcrumb = new Breadcrumb.Builder().label(visitableNode.getLabel()).uri(visitableNode.getUri()).build();
+		String breadcrumbLabel = EGI18n.getBreadCrumbResourceBundle(visitableNode.getLabel());
+		Breadcrumb breadcrumb = new Breadcrumb.Builder().label(breadcrumbLabel).uri(visitableNode.getUri()).build();
 		path.add(breadcrumb);
 	}
 
