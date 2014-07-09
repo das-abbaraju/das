@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services;
+package com.picsauditing.employeeguard.services.email;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.authentication.dao.EmailHashDAO;

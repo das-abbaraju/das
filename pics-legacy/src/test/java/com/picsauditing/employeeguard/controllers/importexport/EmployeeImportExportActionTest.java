@@ -9,7 +9,7 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;

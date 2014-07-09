@@ -6,9 +6,14 @@ import com.picsauditing.employeeguard.entities.builders.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
+import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.joda.time.DateTime;
 
 import java.util.*;
+
+import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.ACCOUNT_ID;
+import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.ENTITY_ID;
+import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.buildFakeAccountSkill;
 
 public class EGTestDataUtil {
 
@@ -17,6 +22,7 @@ public class EGTestDataUtil {
 	public static final int SITE_ID = sequencer++;
 	public static final int CONTRACTOR_ID = sequencer++;
 	public static final int EMPLOYEE_ID = sequencer++;
+	public static final int PROFILE_ID = sequencer++;
 
 	public static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);
 
@@ -54,6 +60,29 @@ public class EGTestDataUtil {
 	// Group Mock Data
 	public static final Group CONTRACTOR_GROUP = new GroupBuilder().accountId(CONTRACTOR_ID).name("CONTRACTOR_GROUP").build();
 
+	// ProfileDocument Mock Data
+
+	public static final Date DOCUMENT_1_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(1, 1, 2014), -1));
+	public static final ProfileDocument PROFILE_DOCUMENT_1 = new ProfileDocumentBuilder()
+			.id(1)
+			.name("Document 1")
+			.createdDate(DOCUMENT_1_CREATED_DATE)
+			.startDate(DOCUMENT_1_CREATED_DATE)
+			.endDate(DateBean.setToEndOfDay(DateBean.getEndOfTime()))
+			.build();
+
+	public static final Date DOCUMENT_2_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
+			DateBean.buildDate(2, 2, 2013), -30));
+
+	public static final ProfileDocument PROFILE_DOCUMENT_2 = new ProfileDocumentBuilder()
+			.id(2)
+			.name("Document 2")
+			.createdDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DOCUMENT_2_CREATED_DATE)
+			.endDate(DateBean.setToStartOfDay(DateBean.addYears(DateBean.buildDate(2, 2, 2013), 2)))
+			.build();
+
 	public static final Map<Project, Set<Role>> PROJECT_ROLES_MAP = new HashMap<Project, Set<Role>>() {{
 
 		put(PROJECT_WITH_SKILLS, new HashSet<>(Arrays.asList(ROLE_WITH_SKILLS, ROLE_NO_SKILLS)));
@@ -81,6 +110,20 @@ public class EGTestDataUtil {
 				.build();
 	}
 
+	public AccountModel buildFakeCorporateAccountModel() {
+		return new AccountModel.Builder()
+						.id(CORPORATE_ID)
+						.accountType(AccountType.CORPORATE)
+						.build();
+	}
+
+	public AccountModel buildFakeSiteAccountModel() {
+		return new AccountModel.Builder()
+						.id(SITE_ID)
+						.accountType(AccountType.OPERATOR)
+						.build();
+	}
+
 	public ProfileDocument buildNewFakeProfileDocument() {
 		return new ProfileDocumentBuilder()
 				.id(sequencer++)
@@ -90,9 +133,9 @@ public class EGTestDataUtil {
 
 	public List<Employee> buildNewFakeEmployees() {
 		return Arrays.asList(
-				new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("bob@test.com").build(),
-				new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("joe@test.com").build(),
-				new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("jill@test.com").build()
+						new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("bob@test.com").profile(buildFakeProfile()).build(),
+						new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("joe@test.com").profile(buildFakeProfile()).build(),
+						new EmployeeBuilder(sequencer++, CONTRACTOR_ID).email("jill@test.com").profile(buildFakeProfile()).build()
 		);
 	}
 
@@ -200,6 +243,109 @@ public class EGTestDataUtil {
 		);
 	}
 
+
+	public List<AccountSkillProfile> buildFakeAccountSkillProfiles_MixedBag(final Employee employee) {
+
+		List<AccountSkill> skills = Arrays.asList(
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Training)
+										.intervalPeriod(1)
+										.intervalType(IntervalType.DAY)
+										.name("Skill 1 Expires in one day")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Certification)
+										.name("Skill 2 - Certification")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Training)
+										.doesNotExpire(true)
+										.name("Skill 3 - Doesnt expire")
+										.build()
+		);
+
+		return Arrays.asList(
+						new AccountSkillProfileBuilder()
+										.accountSkill(skills.get(0))
+										.profile(employee.getProfile())
+										.startDate(DateBean.today())
+										.endDate(DateBean.addDays(DateBean.today(), 45))
+										.build(),
+
+						new AccountSkillProfileBuilder()
+										.accountSkill(skills.get(1))
+										.profile(employee.getProfile())
+										.startDate(DateBean.today())
+										.endDate(DateBean.addDays(DateBean.today(), -50))
+										.build(),
+
+						new AccountSkillProfileBuilder()
+										.accountSkill(skills.get(2))
+										.profile(employee.getProfile())
+										.startDate(DateBean.today())
+										.endDate(DateBean.addDays(DateBean.today(), 1))
+										.build()
+		);
+	}
+
+	public List<ProjectRoleEmployee> buildFakeProjectRoleEmployees() {
+		return Arrays.asList(
+						new ProjectRoleEmployeeBuilder()
+										.projectRole(new ProjectRoleBuilder()
+														.project(new ProjectBuilder().accountId(SITE_ID).name("Test Project").build())
+														.role(new RoleBuilder().accountId(CORPORATE_ID).name("Test Role").build())
+														.build())
+										.employee(buildNewFakeEmployee())
+										.build()
+		);
+	}
+
+	public List<ProjectRoleEmployee> buildFakeProjectRoleEmployees(Employee employee, AccountSkill skill) {
+		return Arrays.asList(
+						new ProjectRoleEmployeeBuilder()
+										.projectRole(new ProjectRoleBuilder()
+														.project(new ProjectBuilder().accountId(SITE_ID).name("Test Project").build())
+														.role(new RoleBuilder().accountId(CORPORATE_ID).name("Test Role").skills(Arrays.asList(skill)).build())
+														.build())
+										.employee(employee)
+										.build()
+		);
+	}
+
+	public List<ProjectRoleEmployee> buildFakeProjectRoleEmployees(Employee employee) {
+		ProjectRoleEmployee pre = 						new ProjectRoleEmployeeBuilder()
+						.projectRole(new ProjectRoleBuilder()
+										.project(new ProjectBuilder().accountId(SITE_ID).name("Test Project").build())
+										.role(new RoleBuilder().accountId(CORPORATE_ID).name("Test Role").build())
+										.build())
+						.employee(employee)
+						.build();
+
+		pre.getProjectRole().setEmployees(Arrays.asList(pre));
+
+		return Arrays.asList(pre);
+	}
+
+	public List<ProjectSkill> buildFakeProjectSkills(final Project fakeProject) {
+		return new ArrayList<ProjectSkill>() {{
+			add(new ProjectSkillBuilder()
+							.project(fakeProject)
+							.skill(buildNewFakeSkill())
+							.build());
+
+		}};
+	}
+
+	public ProjectSkill buildFakeProjectSkill(final Project fakeProject) {
+		return new ProjectSkillBuilder()
+							.project(fakeProject)
+							.skill(buildNewFakeSkill())
+							.build();
+	}
+
 	public Set<Project> buildFakeProjects() {
 		return new HashSet<Project>() {{
 			add(PROJECT_NO_SKILLS);
@@ -240,6 +386,26 @@ public class EGTestDataUtil {
 		}};
 	}
 
+	public Set<AccountSkill> buildFakeCorporateReqdSkills() {
+		return new HashSet<AccountSkill>() {{
+			add(CORPORATE_REQUIRED_SKILL);
+		}};
+	}
+
+	public Set<AccountSkill> buildFakeSiteReqdSkills() {
+		return new HashSet<AccountSkill>() {{
+			add(SITE_REQUIRE_SKILL);
+		}};
+	}
+
+	public List<AccountSkill> buildFakeCorporateReqdSkillsList() {
+		return Arrays.asList(CORPORATE_REQUIRED_SKILL);
+	}
+
+	public List<AccountSkill> buildFakeSiteReqdSkillsList() {
+		return Arrays.asList(SITE_REQUIRE_SKILL);
+	}
+
 	public Map<Project, Set<AccountSkill>> buildFakeProjectRequiredSkills() {
 		return new HashMap<Project, Set<AccountSkill>>() {{
 
@@ -273,6 +439,13 @@ public class EGTestDataUtil {
 		}};
 	}
 
+	public Profile buildFakeProfile(){
+		return new ProfileBuilder()
+						.id(PROFILE_ID)
+						.build();
+
+	}
+
 	public Employee buildNewFakeEmployee() {
 		int newId = sequencer++;
 		return new EmployeeBuilder()
@@ -281,6 +454,7 @@ public class EGTestDataUtil {
 				.firstName("Bob-Id-" + newId)
 				.lastName("Smith")
 				.positionName("Master Welder-" + newId)
+				.profile(buildFakeProfile())
 				.build();
 	}
 
@@ -301,11 +475,29 @@ public class EGTestDataUtil {
 				.build();
 	}
 
+	public Group buildNewFakeGroup() {
+		int newId = sequencer++;
+		return new GroupBuilder()
+						.accountId(CONTRACTOR_ID)
+						.name("GROUP-Id-" + newId)
+						.build();
+	}
+
 	public List<Role> buildNewFakeRoles() {
 		return Arrays.asList(
 				buildNewFakeRole(),
 				buildNewFakeRole(),
 				buildNewFakeRole());
+	}
+
+	public AccountSkill buildNewFakeSkill(){
+		return new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+						.accountId(CORPORATE_ID)
+						.skillType(SkillType.Training)
+						.intervalPeriod(1)
+						.intervalType(IntervalType.DAY)
+						.name("Skill 1 Expires in one day")
+						.build();
 	}
 
 	public List<AccountSkill> buildNewFakeCertificationSkills() {
@@ -356,25 +548,83 @@ public class EGTestDataUtil {
 
 	public List<AccountSkill> buildNewFakeSkillsMixedBag() {
 		return Arrays.asList(
-				new AccountSkillBuilder(sequencer++, CORPORATE_ID)
-						.accountId(CORPORATE_ID)
-						.skillType(SkillType.Training)
-						.intervalPeriod(1)
-						.intervalType(IntervalType.DAY)
-						.name("Skill 1 Expires in one day")
-						.build(),
-				new AccountSkillBuilder(sequencer++, CORPORATE_ID)
-						.accountId(CORPORATE_ID)
-						.skillType(SkillType.Certification)
-						.name("Skill 2 - Certification")
-						.build(),
-				new AccountSkillBuilder(sequencer++, CORPORATE_ID)
-						.accountId(CORPORATE_ID)
-						.skillType(SkillType.Training)
-						.doesNotExpire(true)
-						.name("Skill 3 - Doesnt expire")
-						.build()
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Training)
+										.intervalPeriod(1)
+										.intervalType(IntervalType.DAY)
+										.name("Skill 1 Expires in one day")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Certification)
+										.name("Skill 2 - Certification")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CORPORATE_ID)
+										.accountId(CORPORATE_ID)
+										.skillType(SkillType.Training)
+										.doesNotExpire(true)
+										.name("Skill 3 - Doesnt expire")
+										.build()
 		);
+	}
+
+	public List<AccountSkill> buildNewFakeContractorSkillsMixedBag() {
+		return Arrays.asList(
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Training)
+										.intervalPeriod(1)
+										.intervalType(IntervalType.DAY)
+										.name("Skill 1 Expires in one day")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Certification)
+										.name("Skill 2 - Certification")
+										.build(),
+						new AccountSkillBuilder(sequencer++, CONTRACTOR_ID)
+										.accountId(CONTRACTOR_ID)
+										.skillType(SkillType.Training)
+										.doesNotExpire(true)
+										.name("Skill 3 - Doesnt expire")
+										.build()
+		);
+	}
+
+
+	public Map<Integer,AccountSkill>  buildNewFakeSkillsMixedBagMap() {
+		List<AccountSkill> skills = buildNewFakeSkillsMixedBag();
+
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						}
+		);
+
+		return map;
+	}
+
+	public Map<Integer,AccountSkill>  buildNewFakeContractorSkillsMixedBagMap() {
+		List<AccountSkill> skills = buildNewFakeContractorSkillsMixedBag();
+
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						}
+		);
+
+		return map;
 	}
 
 	public Map<AccountModel, Set<Employee>> buildNewContractorEmployeeMap() {

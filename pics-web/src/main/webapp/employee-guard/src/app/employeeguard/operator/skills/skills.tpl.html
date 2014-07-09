@@ -1,0 +1,96 @@
+<div id="skills_page" ng-controller="operatorSkillListCtrl">
+    <div class="container">
+        <pagetitle title="Skills"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
+                        <li class="active">Skills</li>
+                    </ol>
+                </div>
+                <div class="col-md-4">
+                    <div class="page-actions">
+                        <a href="/employee-guard/operators/project/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Skill</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="employee-guard-section edit-container">
+            <h1>
+                <div class="row">
+                    <div class="col-md-9 col-xs-9">Corporate Required Skills</div>
+                    <div ng-show="(user.type | lowercase) == 'corporate'" class="col-md-3 col-xs-3 edit">
+                        <i class="icon-edit icon-large edit-toggle"></i>
+                    </div>
+                </div>
+            </h1>
+            <div class="content">
+                <div ng-if="requiredSkills.length == 0">
+                    <p class="no-value">These skills are required for everyone that is assigned to any site.</p>
+                    <p>No corporate required skills.</p>
+                </div>
+                <dl ng-if="requiredSkills.length > 0" class="employee-guard-information edit-display-values">
+                    <dt class="col-md-3">Required Skills</dt>
+                    <dd class="col-md-9">
+                        <ul class="employee-guard-list skills">
+                            <s:url action="skill" var="operator_skill_show_url">
+                                <s:param name="id">{{ requiredSkill.id }}</s:param>
+                            </s:url>
+
+                            <li ng-repeat="requiredSkill in requiredSkills">
+                                <a href="${operator_skill_show_url}"><span class="label label-pics">{{ requiredSkill.name }}</span></a>
+                            </li>
+                        </ul>
+                    </dd>
+                </dl>
+            </div>
+        </section>
+
+
+        <section class="table-search-section employee-guard-section">
+            <header>
+                <div class="row">
+                    <div class="col-md-4">
+                        <form name="operator_project_search" action="#" class="search-query" role="search">
+                            <fieldset>
+                                <div class="search-wrapper">
+                                    <input name="searchTerm" type="text" class="form-control" ng-model="search" placeholder="Search Project" />
+                                    <i class="icon-search"></i>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+            </header>
+            <div class="table-responsive">
+                <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
+                    <thead>
+                        <tr>
+                            <th ng-show="(user.type | lowercase) == 'corporate'" ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort">Skill
+                                <i ng-show="orderByField == 'name'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
+                            </th>
+                            <th>
+                                Job Roles
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="skill in skills | orderBy:orderByField:reverseSort | filter:search ">
+                            <td ng-show="user.type == 'CORPORATE'">
+                                {{ skill.name }}
+                            </td>
+                            <td ng-show="user.type == 'CORPORATE'">
+                                <ul class="employee-guard-list edit-display-values">
+                                    <li ng-repeat="role in skill.roles">
+                                        <a href="#"><span class="label label-pics">{{ role.name }}</span></a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
