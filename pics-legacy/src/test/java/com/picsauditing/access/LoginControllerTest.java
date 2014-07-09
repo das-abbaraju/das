@@ -44,8 +44,8 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class LoginControllerTest extends PicsActionTest {
-    public static final String PICSQA = "picsqa";
-    public static final String PASSWORD = "password";
+    public static final String USER_NAME = "test";
+    public static final String PASSWORD = "test password";
     private LoginController loginController;
 	private int NOT_ZERO = 1;
 	private int SWITCH_USER_ID = 2;
@@ -413,7 +413,7 @@ public class LoginControllerTest extends PicsActionTest {
 		account.setType("Admin");
 		when(userService.findById(anyInt())).thenReturn(user);
 		when(user.getAccount()).thenReturn(account);
-        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
        when(loginContext.getUser()).thenReturn(user);
 		String actionResult = loginController.execute();
@@ -498,7 +498,7 @@ public class LoginControllerTest extends PicsActionTest {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
 		when(userService.findById(anyInt())).thenReturn(user);
-        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         Account account = new Account();
 		account.setType("Admin");
@@ -520,7 +520,7 @@ public class LoginControllerTest extends PicsActionTest {
         account.setType("Admin");
         when(user.getAccount()).thenReturn(account);
         when(loginContext.getUser()).thenReturn(user);
-        when(loginService.doPreLoginVerification(user, PICSQA, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
 
         String actionResult = loginController.execute();
@@ -562,7 +562,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 	private void normalLoginSetup() {
 		loginController.setButton("login");
-		loginController.setUsername(PICSQA);
+		loginController.setUsername(USER_NAME);
 		loginController.setPassword(PASSWORD);
 		when(userService.findByName("test")).thenReturn(user);
 		when(userService.findByAppUserId(anyInt())).thenReturn(user);
