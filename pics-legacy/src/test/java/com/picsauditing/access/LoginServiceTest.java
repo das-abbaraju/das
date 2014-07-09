@@ -1,5 +1,6 @@
 package com.picsauditing.access;
 
+import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.UserDAO;
@@ -11,14 +12,9 @@ import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.security.auth.login.AccountLockedException;
 import javax.security.auth.login.AccountNotFoundException;
@@ -35,27 +31,23 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(ActiveDirectoryLdapAuthenticationProvider.class)
-
 public class LoginServiceTest {
     private LoginService loginService;
 
     private String username = "joesixpack";
     private String password = "8675309";
+    private String key = "abc123";
 
-	private String key = "abc123";
-
-	@Mock
-	private UserService userService;
-	@Mock
-	private User user;
+    @Mock
+    private UserService userService;
+    @Mock
+    private User user;
     @Mock
     private AppUser appUser;
     @Mock
     private Profile profile;
-	@Mock
-	private ContractorAccount account;
+    @Mock
+    private ContractorAccount account;
     @Mock
     private AppUserService appUserService;
     @Mock
@@ -63,163 +55,164 @@ public class LoginServiceTest {
     @Mock
     private UserDAO userDAO;
 
+    @Mock
+    private LDAPService ldapService;
+
     @Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-		loginService = new LoginService();
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        loginService = new LoginService();
 
-        final ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider = PowerMockito.mock(ActiveDirectoryLdapAuthenticationProvider.class);
+        loginService.userService = userService;
+        setupNormalUser();
 
-        loginService.setLdapActiveDirectoryAuthProvider(ldapActiveDirectoryAuthProvider);
-
-		loginService.userService = userService;
-		setupNormalUser();
-
-		when(user.getAccount()).thenReturn(account);
-		when(account.getId()).thenReturn(123);
+        when(user.getAccount()).thenReturn(account);
+        when(account.getId()).thenReturn(123);
         when(appUser.getId()).thenReturn(123);
 
         Whitebox.setInternalState(loginService, "appUserService", appUserService);
         Whitebox.setInternalState(loginService, "profileService", profileService);
         Whitebox.setInternalState(loginService, "userService", userService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
-	}
+        Whitebox.setInternalState(loginService, "ldapService", ldapService);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_NotContractorWithPreloginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(false);
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_NotContractorWithPreloginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(false);
 
-		assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
 
-	}
+        assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_NotContractorWithNoPreloginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(false);
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_NotContractorWithNoPreloginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(false);
 
-		assertThat(HomePageType.HomePage, is(equalTo(homePageType)));
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-	}
+        assertThat(HomePageType.HomePage, is(equalTo(homePageType)));
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_DeclinedContractor() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Declined);
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_DeclinedContractor() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Declined);
 
-		assertThat(HomePageType.Declined, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
+        assertThat(HomePageType.Declined, is(equalTo(homePageType)));
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_DeactivatedContractor() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Deactivated);
 
-		assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithPreLoginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Active);
+        assertThat(HomePageType.Deactivated, is(equalTo(homePageType)));
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithPreLoginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Active);
 
-		assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithPreLoginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Pending);
+        assertThat(HomePageType.PreLogin, is(equalTo(homePageType)));
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithPreLoginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Pending);
 
-		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect("not empty", user);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithNoPreLoginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Pending);
+        assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_NotDoneContractorWithNoPreLoginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Pending);
 
-		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-	@Test
-	public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithNoPreLoginUrl() throws Exception {
-		when(account.isContractor()).thenReturn(true);
-		when(account.getStatus()).thenReturn(AccountStatus.Active);
+        assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
+    }
 
-		HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
+    @Test
+    public void testPostLoginHomePageTypeForRedirect_ActiveDoneContractorWithNoPreLoginUrl() throws Exception {
+        when(account.isContractor()).thenReturn(true);
+        when(account.getStatus()).thenReturn(AccountStatus.Active);
 
-		assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
-	}
+        HomePageType homePageType = loginService.postLoginHomePageTypeForRedirect(null, user);
 
-	@Test
-	public void testLoginNormally_HappyPathShouldNotThrowErrors() throws Exception {
+        assertThat(HomePageType.ContractorRegistrationStep, is(equalTo(homePageType)));
+    }
 
-		loginService.loginNormally(username, password);
-	}
+    @Test
+    public void testLoginNormally_HappyPathShouldNotThrowErrors() throws Exception {
 
-	@Test(expected = AccountNotFoundException.class)
-	public void testLoginNormally_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
+        loginService.loginNormally(username, password);
+    }
+
+    @Test(expected = AccountNotFoundException.class)
+    public void testLoginNormally_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
         when(userService.loadUserByUsername(username)).thenReturn(null);
 
-		loginService.loginNormally(username, password);
-	}
+        loginService.loginNormally(username, password);
+    }
 
-	@Test(expected = AccountLockedException.class)
-	public void testLoginNormally_LockedUserShouldThrowAccountLockedException() throws Exception {
-		when(user.isLocked()).thenReturn(true);
+    @Test(expected = AccountLockedException.class)
+    public void testLoginNormally_LockedUserShouldThrowAccountLockedException() throws Exception {
+        when(user.isLocked()).thenReturn(true);
 
-		loginService.loginNormally(username, password);
-	}
+        loginService.loginNormally(username, password);
+    }
 
-	@Test(expected = AccountInactiveException.class)
-	public void testLoginNormally_InactiveUserShouldThrowAccountInactiveException() throws Exception {
-		when(userService.isUserActive(user)).thenReturn(false);
+    @Test(expected = AccountInactiveException.class)
+    public void testLoginNormally_InactiveUserShouldThrowAccountInactiveException() throws Exception {
+        when(userService.isUserActive(user)).thenReturn(false);
 
-		loginService.loginNormally(username, password);
-	}
+        loginService.loginNormally(username, password);
+    }
 
-	@Test(expected = FailedLoginException.class)
-	public void testLoginNormally_FailedLogin() throws Exception {
-		when(user.isEncryptedPasswordEqual(password)).thenReturn(false);
-		when(user.getFailedAttempts()).thenReturn(1);
+    @Test(expected = FailedLoginException.class)
+    public void testLoginNormally_FailedLogin() throws Exception {
+        when(user.isEncryptedPasswordEqual(password)).thenReturn(false);
+        when(user.getFailedAttempts()).thenReturn(1);
 
-		loginService.loginNormally(username, password);
+        loginService.loginNormally(username, password);
 
-		verify(user).setFailedAttempts(2);
-		verify(user, never()).setLockUntil(any(Date.class));
-	}
+        verify(user).setFailedAttempts(2);
+        verify(user, never()).setLockUntil(any(Date.class));
+    }
 
-	@Test(expected = FailedLoginAndLockedException.class)
-	public void testLoginNormally_FailedLoginAndLocked() throws Exception {
-		when(user.isEncryptedPasswordEqual(password)).thenReturn(false);
-		when(user.getFailedAttempts()).thenReturn(LoginService.MAX_FAILED_ATTEMPTS + 1);
+    @Test(expected = FailedLoginAndLockedException.class)
+    public void testLoginNormally_FailedLoginAndLocked() throws Exception {
+        when(user.isEncryptedPasswordEqual(password)).thenReturn(false);
+        when(user.getFailedAttempts()).thenReturn(LoginService.MAX_FAILED_ATTEMPTS + 1);
 
-		loginService.loginNormally(username, password);
+        loginService.loginNormally(username, password);
 
-		verify(user).setFailedAttempts(0);
-		verify(user).setLockUntil(any(Date.class));
-	}
+        verify(user).setFailedAttempts(0);
+        verify(user).setLockUntil(any(Date.class));
+    }
 
-	@Test(expected = PasswordExpiredException.class)
-	public void testLoginNormally_ExpiredPasswordShouldThrowPasswordExpiredException() throws Exception {
-		when(userService.isPasswordExpired(user)).thenReturn(true);
+    @Test(expected = PasswordExpiredException.class)
+    public void testLoginNormally_ExpiredPasswordShouldThrowPasswordExpiredException() throws Exception {
+        when(userService.isPasswordExpired(user)).thenReturn(true);
 
-		loginService.loginNormally(username, password);
-	}
+        loginService.loginNormally(username, password);
+    }
 
     public void passwordResetSetUp() {
         when(appUserService.findByUsername(anyString())).thenReturn(appUser);
@@ -227,72 +220,72 @@ public class LoginServiceTest {
         when(userService.findByAppUserId(anyInt())).thenReturn(user);
     }
 
-	@Test
-	public void testLoginForResetPassword_HappyPathShouldNotThrowErrors() throws Exception {
+    @Test
+    public void testLoginForResetPassword_HappyPathShouldNotThrowErrors() throws Exception {
         passwordResetSetUp();
-		when(appUser.getResetHash()).thenReturn(key);
+        when(appUser.getResetHash()).thenReturn(key);
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
 
-	@Test(expected = InvalidResetKeyException.class)
-	public void testLoginForResetPassword_InvalidResetKeyShouldThrowInvalidResetKeyException() throws Exception {
+    @Test(expected = InvalidResetKeyException.class)
+    public void testLoginForResetPassword_InvalidResetKeyShouldThrowInvalidResetKeyException() throws Exception {
         passwordResetSetUp();
-		when(user.getResetHash()).thenReturn("notAMatch");
+        when(user.getResetHash()).thenReturn("notAMatch");
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
-	@Test
-	public void testLoginForResetPassword_IfKeyMatchesPrepareUserForLoginAfterReset() throws Exception {
+    @Test
+    public void testLoginForResetPassword_IfKeyMatchesPrepareUserForLoginAfterReset() throws Exception {
         passwordResetSetUp();
-		when(appUser.getResetHash()).thenReturn(key);
+        when(appUser.getResetHash()).thenReturn(key);
 
-		loginService.loginForResetPassword(username, key);
+        loginService.loginForResetPassword(username, key);
 
-		verify(appUser).setResetHash(null);
-	}
+        verify(appUser).setResetHash(null);
+    }
 
-	@Test(expected = AccountNotFoundException.class)
-	public void testLoginForResetPassword_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
+    @Test(expected = AccountNotFoundException.class)
+    public void testLoginForResetPassword_NonExistentUserShouldThrowAccountNotFoundException() throws Exception {
         passwordResetSetUp();
         when(appUser.getResetHash()).thenReturn(key);
 
         when(userService.findByAppUserId(anyInt())).thenReturn(null);
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
-	@Test(expected = AccountLockedException.class)
-	public void testLoginForResetPassword_LockedUserShouldThrowAccountLockedException() throws Exception {
+    @Test(expected = AccountLockedException.class)
+    public void testLoginForResetPassword_LockedUserShouldThrowAccountLockedException() throws Exception {
         passwordResetSetUp();
         when(appUser.getResetHash()).thenReturn(key);
 
         when(user.isLocked()).thenReturn(true);
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
-	@Test(expected = AccountInactiveException.class)
-	public void testLoginForResetPassword_InactiveUserShouldThrowAccountInactiveException() throws Exception {
+    @Test(expected = AccountInactiveException.class)
+    public void testLoginForResetPassword_InactiveUserShouldThrowAccountInactiveException() throws Exception {
         passwordResetSetUp();
         when(appUser.getResetHash()).thenReturn(key);
 
         when(userService.isUserActive(user)).thenReturn(false);
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
-	@Test(expected = PasswordExpiredException.class)
-	public void testLoginForResetPassword_ExpiredPasswordShouldThrowPasswordExpiredException() throws Exception {
+    @Test(expected = PasswordExpiredException.class)
+    public void testLoginForResetPassword_ExpiredPasswordShouldThrowPasswordExpiredException() throws Exception {
         passwordResetSetUp();
         when(appUser.getResetHash()).thenReturn(key);
 
         when(userService.isPasswordExpired(user)).thenReturn(true);
 
-		loginService.loginForResetPassword(username, key);
-	}
+        loginService.loginForResetPassword(username, key);
+    }
 
     @Test
     public void testGetUserForUserName() throws LoginException {
@@ -325,11 +318,11 @@ public class LoginServiceTest {
 
 
     private void setupNormalUser() {
-		when(user.isLocked()).thenReturn(false);
-		when(user.isEncryptedPasswordEqual(password)).thenReturn(true);
-		when(user.getResetHash()).thenReturn(key);
-		when(userService.loadUserByUsername(anyString())).thenReturn(user);
-		when(userService.isUserActive(user)).thenReturn(true);
-		when(userService.isPasswordExpired(user)).thenReturn(false);
-	}
+        when(user.isLocked()).thenReturn(false);
+        when(user.isEncryptedPasswordEqual(password)).thenReturn(true);
+        when(user.getResetHash()).thenReturn(key);
+        when(userService.loadUserByUsername(anyString())).thenReturn(user);
+        when(userService.isUserActive(user)).thenReturn(true);
+        when(userService.isPasswordExpired(user)).thenReturn(false);
+    }
 }

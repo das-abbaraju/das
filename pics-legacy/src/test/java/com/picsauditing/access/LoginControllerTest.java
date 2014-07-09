@@ -167,11 +167,6 @@ public class LoginControllerTest extends PicsActionTest {
 		result.put("status", "SUCCESS");
 		result.put("cookie", "whatevz");
 
-        ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider=
-                new ActiveDirectoryLdapAuthenticationProvider(LDAP_DOMAIN,LDAP_URL);
-        loginService.setLdapActiveDirectoryAuthProvider(ldapActiveDirectoryAuthProvider);
-
-
     }
 
 	private void setupSpringUtils() {

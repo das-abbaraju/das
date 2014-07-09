@@ -378,6 +378,7 @@
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
+    <bean id="ldapService" class="com.picsauditing.access.LDAPService"/>
     <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
     <bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
     <bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
