@@ -2,11 +2,7 @@ package com.picsauditing.auditbuilder.entities;
 
 public enum AuditTypePeriod {
     None, Monthly, Quarterly, Yearly, CustomDate;
-//
-//    public boolean isNone() {
-//        return None == this;
-//    }
-//
+
     public boolean isMonthly() {
         return Monthly == this;
     }
@@ -19,10 +15,6 @@ public enum AuditTypePeriod {
         return Yearly == this;
     }
 
-//    public boolean isCustomDate() {
-//        return CustomDate == this;
-//    }
-//
     public boolean isYearlyCustomDate() {
         return Yearly == this || CustomDate == this;
     }
@@ -30,5 +22,4 @@ public enum AuditTypePeriod {
     public boolean isMonthlyQuarterlyAnnual() {
         return Monthly == this || Quarterly == this || Yearly == this || CustomDate == this;
     }
-
 }

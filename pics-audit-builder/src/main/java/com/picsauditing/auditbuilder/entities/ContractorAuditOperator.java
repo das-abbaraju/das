@@ -9,7 +9,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "contractor_audit_operator")
-public class ContractorAuditOperator extends BaseTable /*implements Comparable<ContractorAuditOperator>*/ {
+public class ContractorAuditOperator extends BaseTable {
 
 	private ContractorAudit audit;
 	private OperatorAccount operator;
@@ -18,7 +18,6 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 	private int percentComplete;
 	private int percentVerified;
 	private boolean visible = true;
-//	private FlagColor flag = null;
 	private List<ContractorAuditOperatorPermission> caoPermissions = new ArrayList<>();
 	private List<ContractorAuditOperatorWorkflow> caoWorkflow = new ArrayList<>();
 	private AuditSubStatus auditSubStatus;
@@ -53,14 +52,6 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 		this.status = status;
 	}
 
-//	@Transient
-//	public Date getEffectiveDate() {
-//		if (status.isPending() && audit.getAuditor() != null)
-//			return audit.getAssignedDate();
-//
-//		return statusChangedDate;
-//	}
-//
 	public boolean isVisible() {
 		return visible;
 	}
@@ -69,41 +60,6 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 		this.visible = visible;
 	}
 
-//	@Transient
-//	public boolean isTopCaowUserNote() {
-//		if (CollectionUtils.isNotEmpty(caoWorkflow)) {
-//			List<ContractorAuditOperatorWorkflow> sortedCoaws = new ArrayList<ContractorAuditOperatorWorkflow>(caoWorkflow);
-//			Collections.sort(sortedCoaws, new Comparator<ContractorAuditOperatorWorkflow>() {
-//				@Override
-//				public int compare(ContractorAuditOperatorWorkflow caow1,
-//						ContractorAuditOperatorWorkflow coaw2) {
-//					if (caow1 != null && caow1.getCreationDate().before(coaw2.getCreationDate()))
-//						return 1;
-//					else if (caow1 != null && caow1.getCreationDate().after(coaw2.getCreationDate()))
-//						return -1;
-//
-//					return 0;
-//				}
-//			});
-//
-//			ContractorAuditOperatorWorkflow caow = sortedCoaws.get(0);
-//			if (caow.getStatus().equals(caow.getPreviousStatus()) && !Strings.isEmpty(caow.getNotes())) {
-//				return true;
-//			}
-//		}
-//
-//		return false;
-//	}
-//
-//	@Enumerated(EnumType.STRING)
-//	public FlagColor getFlag() {
-//		return flag;
-//	}
-//
-//	public void setFlag(FlagColor flag) {
-//		this.flag = flag;
-//	}
-//
 	public Date getStatusChangedDate() {
 		return statusChangedDate;
 	}
@@ -128,17 +84,6 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 		this.percentVerified = percentVerified;
 	}
 
-//	@Transient
-//	public int getPercent() {
-//		if (status.isPending())
-//			return this.percentComplete;
-//
-//		if (status.isSubmittedResubmitted())
-//			return this.percentVerified;
-//
-//		return 100;
-//	}
-//
 	@OneToMany(mappedBy = "cao", cascade = { CascadeType.ALL })
 	public List<ContractorAuditOperatorPermission> getCaoPermissions() {
 		return caoPermissions;
@@ -165,64 +110,4 @@ public class ContractorAuditOperator extends BaseTable /*implements Comparable<C
 	public void setAuditSubStatus(AuditSubStatus auditSubStatus) {
 		this.auditSubStatus = auditSubStatus;
 	}
-
-//	@Transient
-//	public boolean isVisibleTo(Permissions permissions) {
-//		if (!this.visible)
-//			return false;
-//
-//		if (permissions.isContractor() || permissions.isPicsEmployee())
-//			return true;
-//
-//		if (operator.getId() == permissions.getAccountId())
-//			return true;
-//
-//		if (permissions.isOperatorCorporate() && !getAudit().getAuditType().isCanOperatorView())
-//			return false;
-//
-//		if (permissions.isCorporate()) {
-//			for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
-//				for (Integer ids : permissions.getOperatorChildren()) {
-//					if (caop.getOperator().getId() == ids)
-//						return true;
-//				}
-//			}
-//		}
-//
-//		return hasCaop(permissions.getAccountId());
-//	}
-//
-//	@Transient
-//	public boolean isReadyToBeSubmitted() {
-//		return ((this.status == AuditStatus.Pending
-//				|| this.status == AuditStatus.Incomplete
-//				|| this.status == AuditStatus.Resubmit)
-//				&& this.percentComplete == 100);
-//	}
-//
-//	@Transient
-//	public boolean hasCaop(int opID) {
-//		for (ContractorAuditOperatorPermission caop : getCaoPermissions()) {
-//			if (caop.getOperator().getId() == opID)
-//				return true;
-//		}
-//		return false;
-//	}
-//
-//	@Transient
-//	public boolean hasOnlyCaop(int opID) {
-//		if (getCaoPermissions().size() == 1) {
-//			return hasCaop(opID);
-//		}
-//		return false;
-//	}
-//
-//	@Override
-//	public int compareTo(ContractorAuditOperator o) {
-//		return this.getOperator().getName().compareTo(o.getOperator().getName());
-//	}
-//
-//    public static ContractorAuditOperatorBuilder builder() {
-//        return new ContractorAuditOperatorBuilder();
-//    }
 }

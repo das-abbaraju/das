@@ -27,15 +27,12 @@ public class AuditService {
 
 	public static boolean isMatchingAnswer(AuditRule auditRule, AuditData data) {
 		if (data == null) {
-			// TODO why would questionComparator be null? Do we return false?
 			if (auditRule.getQuestionComparator() == null)
 				return false;
 
 			return auditRule.getQuestionComparator().equals(QuestionComparator.Empty);
 		}
 
-		// todo: Revisit. If an ineffective/expired question was effective/not expired when it was answered, is the answer
-		// not still valid now? If it is valid, why would we exclude it here?
 		Date auditEffectiveDate = (data.getAudit().getEffectiveDate() != null) ? data.getAudit().getEffectiveDate()
 				: new Date();
 		if (auditEffectiveDate.before(data.getQuestion().getEffectiveDate()))
@@ -128,7 +125,6 @@ public class AuditService {
 		if (auditRule.getOperatorAccount() == null)
 			return true;
 
-		// operatorAccount could be a corporate or an operator
 		if (AccountService.isCorporate(auditRule.getOperatorAccount())) {
 			for (Facility facility : operator.getCorporateFacilities()) {
 				if (auditRule.getOperatorAccount().equals(facility.getCorporate()))
@@ -197,24 +193,18 @@ public class AuditService {
 
 	public static boolean isApplies(AuditCategoryRule auditCategoryRule, AuditCategory category) {
 		if (auditCategoryRule.getAuditCategory() == null) {
-			// We have a wildcard category, so let's figure out if it
-			// matches on categories or subcategories or both
 			if (auditCategoryRule.getRootCategory() == null) {
-				// Any category or subcategory matches
 				return true;
 			} else {
 				if (auditCategoryRule.getRootCategory()) {
 					if (category.getParent() == null)
-						// Only categories match
 						return true;
 				} else {
 					if (category.getParent() != null)
-						// Only subcategories match
 						return true;
 				}
 			}
 		} else if (auditCategoryRule.getAuditCategory().equals(category)) {
-			// We have a direct category match
 			return true;
 		}
 		return false;
@@ -314,23 +304,6 @@ public class AuditService {
 		} else {
 			return false;
 		}
-	}
-
-	public static boolean isVisible(AuditQuestion auditQuestion, AnswerMap answerMap) {
-		if (auditQuestion.getVisibleQuestion() != null) {
-			boolean questionIsVisible = isVisible(auditQuestion, answerMap.get(auditQuestion.getVisibleQuestion().getId()));
-			AuditQuestion q = auditQuestion.getVisibleQuestion();
-
-			while (q != null && questionIsVisible) {
-				if (q.getVisibleQuestion() != null) {
-					questionIsVisible = isVisible(q, answerMap.get(q.getVisibleQuestion().getId()));
-				}
-
-				q = q.getVisibleQuestion();
-			}
-			return questionIsVisible;
-		}
-		return true;
 	}
 
 	public static boolean isVisible(AuditQuestion auditQuestion, AuditData data) {
@@ -472,16 +445,6 @@ public class AuditService {
         }
 
 		return topCategories;
-	}
-
-	public static boolean requiresViewFullPQFPermission(AuditCategory auditCategory) {
-		if (auditCategory.getId() == AuditCategory.WORK_HISTORY) {
-			return true;
-		}
-		if (auditCategory.getId() == AuditCategory.FINANCIAL_HISTORY) {
-			return true;
-		}
-		return false;
 	}
 
 	public static boolean isCurrent(AuditCategory auditCategory) {

@@ -216,7 +216,7 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 		public List<R> next(RuleFilter contractor) {
 			List<R> rules = new ArrayList<R>();
 			for (Trade trade : contractor.trades) {
-				Operators operators = getData(trade); // indirect call to take care of hierarchy of rules
+				Operators operators = getData(trade);
 				if (operators != null)
 					rules.addAll(operators.next(contractor));
 			}
@@ -233,10 +233,6 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 				data.put(rule.getOperatorAccount(), map);
 			}
 			{
-				/*
-				 * Trying to ensure that needed objects are loaded in memory before they are cached so that when they
-				 * are referenced later, lazy initializations do not occur
-				 */
 				if (rule.getOperatorAccount() != null)
 					rule.getOperatorAccount().getCorporateFacilities();
 				if (rule.getQuestion() != null)
@@ -268,5 +264,4 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 	}
 
     abstract void initialize();
-
 }

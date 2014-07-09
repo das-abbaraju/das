@@ -90,20 +90,17 @@ public class AccountService {
 
 	public static List<Integer> getOperatorHeirarchy(OperatorAccount operatorAccount, boolean includePicsConsortium) {
 		List<Integer> list = new ArrayList<>();
-		// Add myself
 		list.add(operatorAccount.getId());
 
 		OperatorAccount topAccount = getTopAccount(operatorAccount);
 		for (Facility facility : operatorAccount.getCorporateFacilities()) {
 			if (!facility.getCorporate().equals(topAccount)) {
-				// Add parent's that aren't my primary parent
                 if (includePicsConsortium || !facility.getCorporate().isInPicsConsortium()) {
 				    list.add(facility.getCorporate().getId());
                 }
 			}
 		}
 		if (!topAccount.equals(operatorAccount)) {
-			// Add my parent
 			list.add(topAccount.getId());
 		}
 		return list;
@@ -123,5 +120,4 @@ public class AccountService {
 		}
 		return topAccount;
 	}
-
 }

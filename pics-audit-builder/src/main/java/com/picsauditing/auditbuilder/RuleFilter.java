@@ -48,7 +48,6 @@ public class RuleFilter {
 		operators.add(null);
 		for (ContractorOperator co : AccountService.getNonCorporateOperators(contractor)) {
 			operators.add(co.getOperatorAccount());
-			// adding parent facilities
 			for (Facility f : co.getOperatorAccount().getCorporateFacilities()) {
 				operators.add(f.getCorporate());
 			}

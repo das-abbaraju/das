@@ -21,7 +21,7 @@ public class CorruptionPerceptionIndexMap {
 	public List<Double> findCorruptionPerceptionIndices(String unparsedJsonCountries) {
 		initialize();
 
-		List<Double> corruptionPerceptionIndices = new ArrayList<Double>();
+		List<Double> corruptionPerceptionIndices = new ArrayList<>();
 
 		if (!Strings.isEmpty(unparsedJsonCountries)) {
 			List<String> isoCodesList = convertJsonToIsoCodes(unparsedJsonCountries);
@@ -47,12 +47,6 @@ public class CorruptionPerceptionIndexMap {
 		return isoCodes;
 	}
 
-//	public Double findCorruptionPerceptionIndex(String isoCode) {
-//		initialize();
-//		return map.get(isoCode.trim());
-//	}
-//
-//
 	private void initialize() {
 		if (map == null) {
 			map = new HashMap<>();
@@ -62,5 +56,4 @@ public class CorruptionPerceptionIndexMap {
 			}
 		}
 	}
-
 }

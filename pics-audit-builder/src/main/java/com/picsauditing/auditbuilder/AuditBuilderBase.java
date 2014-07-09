@@ -23,15 +23,11 @@ public abstract class AuditBuilderBase {
 			this.trades.add(ct.getTrade());
 		}
 		if (this.trades.size() == 0) {
-			// We have to add a blank trade in case the contractor is missing trades.
-			// If we don't then no rules will be found, even wildcard trade rules.
 			Trade blank = new Trade();
 			blank.setId(-1);
 			this.trades.add(blank);
 		}
-		// FIXME PICS-4324 follow-up: Replace the following code with ...
-		// contractorTypes =  contractor.getAccountTypes();
-		// ... and find other places to do it, too.
+
 		if (contractor.isOnsiteServices())
 			contractorTypes.add(ContractorType.Onsite);
 		if (contractor.isOffsiteServices())

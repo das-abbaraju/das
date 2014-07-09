@@ -29,8 +29,6 @@ public class AuditBuilder {
 	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
     @Autowired
     private ContractorAuditFileDAO contractorAuditFileDAO;
-//	@Autowired
-//	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	private ContractorTagDAO contractorTagDAO;
 	@Autowired
@@ -66,7 +64,6 @@ public class AuditBuilder {
 		Set<AuditTypeDetail> requiredAuditTypeDetails = typesBuilder.calculate();
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
 
-		/* Add audits not already there */
 		int year = DateBean.getCurrentYear();
 		for (AuditTypeDetail detail : requiredAuditTypeDetails) {
 			if (!detail.rule.isManuallyAdded()) {
@@ -83,7 +80,6 @@ public class AuditBuilder {
                     addMonthlyQuarterlyYearly(contractor, auditType);
                 } else if (AuditService.isAnnualAddendum(auditType)) {
                     auditType = reconnectAuditType(auditType);
-                    // not the annual updates must be done in this order to find their previous audit
                     addAnnualUpdate(contractor, year - 3, auditType);
                     addAnnualUpdate(contractor, year - 2, auditType);
                     addAnnualUpdate(contractor, year - 1, auditType);
@@ -91,17 +87,12 @@ public class AuditBuilder {
 					boolean found = false;
 					for (ContractorAudit conAudit : contractor.getAudits()) {
 						if (conAudit.getAuditType().equals(auditType)) {
-							// We found a matching audit for this requirement
-							// Now determine if it will be good enough
 							if (auditType.isRenewable()) {
-								// This audit should not be renewed but we already
-								// have one
 								found = true;
 							} else if (AuditService.isWCB(auditType)) {
 								found = foundCurrentYearWCB(conAudit);
 							} else {
 								if (!AuditService.isExpired(conAudit) && !AuditService.willExpireSoon(conAudit)) {
-									// The audit is still valid for a number of days dependent on its type
 									found = true;
 								}
 							}
@@ -127,26 +118,15 @@ public class AuditBuilder {
 
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
 
-		/** Generate Categories and CAOs **/
 		for (ContractorAudit conAudit : contractor.getAudits()) {
-			// We may want to consider only calculating the detail for non-expired Audits
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());
 			if (auditTypeDetail == null) {
-				/*
-				 * This audit is no longer required either because of a rule change or a data change (like removing
-				 * operators)
-				 */
-				// TODO testing updating categories and caos for a manually added audit
 			} else {
 				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
-					// Import PQF does not have an audit type detail because it is manually added, and the audit is an
-					// exception in that the only CAO is PICS Global. The audit_cat_data need to be generated here. We
-					// need all the categories for this audit.
 					categories = new HashSet<>(conAudit.getAuditType().getCategories());
 				}
 
-				// order dependent in czse of new caos
 				fillAuditOperators(conAudit, categoriesBuilder.getCaos());
 				fillAuditCategories(conAudit, categories);
 			}
@@ -155,10 +135,8 @@ public class AuditBuilder {
 		Iterator<ContractorAudit> iterator = contractor.getAudits().iterator();
 		while (iterator.hasNext()) {
 			ContractorAudit conAudit = iterator.next();
-			// checking to see if we still need audit
 			if (!conAudit.isManuallyAdded() && !requiredAuditTypes.contains(conAudit.getAuditType())) {
 				if (!isValidAudit(conAudit)) {
-					// Make sure that the caos' visibility is set correctly
 					for (ContractorAuditOperator cao : conAudit.getOperators()) {
 						if (cao.isVisible()) {
 							cao.setVisible(false);
@@ -192,7 +170,6 @@ public class AuditBuilder {
 			return false;
 		}
 
-		// Never delete the PQF or WCB
 		if (conAudit.getAuditType().getId() == AuditType.PQF || AuditService.isWCB(conAudit.getAuditType())) {
 			return false;
 		}
@@ -276,7 +253,7 @@ public class AuditBuilder {
 
 		buildSetOfAllWCBYears(audit.getContractorAccount(), audit.getAuditType());
 		if (DateBean.isGracePeriodForWCB()) {
-			return hasAllWCBsForGracePeriod(audit);
+			return hasAllWCBsForGracePeriod();
 		}
 
 		return yearsForAllWCBs.contains(DateBean.getWCBYear());
@@ -305,7 +282,7 @@ public class AuditBuilder {
 		yearsForAllWCBs = Collections.unmodifiableSet(years);
 	}
 
-	private boolean hasAllWCBsForGracePeriod(ContractorAudit audit) {
+	private boolean hasAllWCBsForGracePeriod() {
 		String previousYear = Integer.toString(DateBean.getPreviousWCBYear());
 		String currentWCBYear = DateBean.getWCBYear();
 		return yearsForAllWCBs.contains(previousYear) && yearsForAllWCBs.contains(currentWCBYear);
@@ -385,7 +362,7 @@ public class AuditBuilder {
 
 		if (conAudit.getAuditType().getId() == AuditType.WELCOME) {
 			Calendar date = Calendar.getInstance();
-			date.add(Calendar.DATE, -6 * 7); //6 weeks
+			date.add(Calendar.DATE, -6 * 7);
 			if (date.getTime().getTime() > conAudit.getCreationDate().getTime()) {
 				conAudit.setExpiresDate(new Date());
 			}
@@ -440,8 +417,6 @@ public class AuditBuilder {
 		caosToMoveToSubmit = new HashSet<>();
 		HashSet<Integer> operatorsGoingVisibleIds = new HashSet<>();
 
-
-		// Make sure that the caos' visibility is set correctly
 		Set<OperatorAccount> caosToEnsureExist = caoMap.keySet();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			boolean caoShouldBeVisible = contains(caosToEnsureExist, cao.getOperator());
@@ -452,21 +427,17 @@ public class AuditBuilder {
 
 			cao.setVisible(caoShouldBeVisible);
 
-			// add to map for comparison later
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				previousCaoMap.put(caop.getOperator(), cao);
 			}
 
 			if (!caoShouldBeVisible && cao.getCaoPermissions().size() > 0) {
-				// need to remove invisible caos because fillAuditOperatorPermissions only works on visible caos
 				fillAuditOperatorPermissions(cao, new HashSet<OperatorAccount>());
 				cao.getCaoPermissions().clear();
 			}
 		}
 
-		// Add CAOs that don't yet exist
 		for (OperatorAccount governingBody : caosToEnsureExist) {
-			// Now find the existing cao record for this operator (if one exists)
 			ContractorAuditOperator cao = null;
 			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getOperator().getId() == governingBody.getId()) {
@@ -475,12 +446,10 @@ public class AuditBuilder {
 				}
 			}
 			if (cao == null) {
-				// If we don't have one, then add it
 				cao = new ContractorAuditOperator();
 				cao.setAudit(conAudit);
 				cao.setOperator(governingBody);
 				cao.setAuditColumns(systemUser);
-				// This is almost always Pending
 				AuditStatus firstStatus = AuditService.getFirstStep(conAudit.getAuditType().getWorkFlow()).getNewStatus();
 				AuditService.changeStatus(cao, firstStatus);
 				conAudit.setLastRecalculation(null);
@@ -492,7 +461,6 @@ public class AuditBuilder {
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 
-		// set previous cao on caop
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
 			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
@@ -591,8 +559,6 @@ public class AuditBuilder {
 	}
 
 	private void fillAuditCategories(ContractorAudit conAudit, Set<AuditCategory> categoriesNeeded) {
-		// We're doing this step first so categories that get added or removed
-		// manually can be caught in the next block
 		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
 			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
 					.getContractorAccount().getId());
@@ -604,7 +570,6 @@ public class AuditBuilder {
 					}
 				}
 			} else {
-				// We don't want this audit to be updated
 				return;
 			}
 		}
@@ -613,10 +578,6 @@ public class AuditBuilder {
 
 		for (AuditCatData auditCatData : conAudit.getCategories()) {
 			if (auditCatData.getCategory().getParent() == null) {
-				/*
-				 * per Mina (PICS-2902) only change this to Manual and Implementation Audits changes logic from 'does
-				 * not have any pending CAOs' to to 'has at least one submitted or greater cao'
-				 */
 				if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT || conAudit.getAuditType().getId() == AuditType.IMPLEMENTATION_AUDIT) {
 					if (hasAnyCaoStatusAfterIncomplete(conAudit) || auditCatData.isOverride()) {
 						if (auditCatData.isApplies()) {
@@ -626,13 +587,7 @@ public class AuditBuilder {
 						}
 					}
 				} else {
-					// TODO combine or change logic for all other audits to match Manual/Implementation
 					if (!hasPendingCaos || auditCatData.isOverride()) {
-						/*
-						 * Lock the audit category down...keeping it as it was this is to ensure that we don't add new
-						 * categories or remove the existing ones except the override categories for an audit after is
-						 * it being submitted
-						 */
 						if (auditCatData.isApplies()) {
 							categoriesNeeded.add(auditCatData.getCategory());
 						} else {
@@ -643,17 +598,13 @@ public class AuditBuilder {
 			}
 		}
 
-		// Now we have an updated list categoriesNeeded, update the catData
 		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
 
 			AuditCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
-				// (show/hide) a category with more than one CAO.
 			} else {
 				boolean categoryApplies = categoriesNeeded.contains(catData.getCategory());
 				if (categoryApplies) {
-					// Making sure the top level parent applies for
-					// subcategories when adding it to the AuditCatData
 					categoryApplies = areAllParentsApplicable(categoriesNeeded, catData.getCategory());
 				}
 				if (categoryApplies != catData.isApplies()) {
@@ -664,10 +615,8 @@ public class AuditBuilder {
 				}
 				catData.setApplies(categoryApplies);
 			}
-			// Where are we saving the catData??
 		}
 
-		// do for audits updated with last minute for "new" audits
 		if (conAudit.getCreationDate() == null || conAudit.getCreationDate().getTime() > new Date().getTime() - (60 * 1000L)) {
 			auditPercentCalculator.percentCalculateComplete(conAudit, true);
 		}
@@ -714,22 +663,16 @@ public class AuditBuilder {
 				&& cao.isVisible()
 				&& AccountService.getOperatorHeirarchy(cao.getAudit().getRequestingOpAccount())
 						.contains(cao.getOperator().getId())) {
-			// Warning, this only works for operator sites, not corporate accounts
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
 		} else if (cao.getAudit().getAuditType().getId() == AuditType.MANUAL_AUDIT && AuditService.hasCaoStatus(cao.getAudit(), AuditStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
 				if (cao.isVisible()
 						&& AccountService.getOperatorHeirarchy(co.getOperatorAccount()).contains(cao.getOperator().getId())) {
-					// Once the Manual Audit has at least one status that's Complete, then show it to all the
-					// contractor's operators
 					caopOperators.add(co.getOperatorAccount());
 				}
 			}
 		}
 
-		/*
-		 * Remove COAPs from audits where operators cannot view the audit such as the Welcome Call
-		 */
 		if (!cao.getAudit().getAuditType().isCanOperatorView()) {
 			caopOperators.clear();
 		}
@@ -738,16 +681,13 @@ public class AuditBuilder {
 		while (caopIter.hasNext()) {
 			ContractorAuditOperatorPermission caop = caopIter.next();
 			if (caopOperators.contains(caop.getOperator())) {
-				// It's already there, do nothing
 				caopOperators.remove(caop.getOperator());
 			} else {
-				// Delete the caop and remove from cao.getCaoPermissions()
 				caopIter.remove();
 				contractorAuditOperatorDAO.remove(caop);
 			}
 		}
 		for (OperatorAccount operator : caopOperators) {
-			// Insert the remaining operators
 			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
 			caop.setCao(cao);
 			caop.setOperator(operator);
@@ -763,11 +703,10 @@ public class AuditBuilder {
 	private void addAnnualUpdate(ContractorAccount contractor, int year, AuditType auditType) {
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM && year == Integer.parseInt(cAudit.getAuditFor())) {
-				// Do nothing. It's already here
 				return;
 			}
 		}
-		// The Annual Update isn't here yet. Let's add it for the given year.
+
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(year, Calendar.DECEMBER, 31);
 		ContractorAudit audit = new ContractorAudit();
@@ -803,7 +742,6 @@ public class AuditBuilder {
 			}
 		}
 
-		// We didn't find a catData record, so let's create one now
 		AuditCatData catData = new AuditCatData();
 		catData.setCategory(category);
 		catData.setAudit(conAudit);
@@ -814,29 +752,4 @@ public class AuditBuilder {
 		conAudit.getCategories().add(catData);
 		return catData;
 	}
-
-//	public void recalculateCategories(ContractorAudit conAudit) {
-//		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
-//				conAudit.getContractorAccount());
-//
-//		/*
-//		 * I really don't like this. We should probably have the list of operators somewhere else, but I couldn't find
-//		 * it. If we find ourselves doing this more often, then this method should be placed in ContractorAudit as a
-//		 * transient method.
-//		 */
-//		Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-//		for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-//			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-//				operators.add(caop.getOperator());
-//			}
-//		}
-//
-//		Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, operators);
-//		fillAuditCategories(conAudit, categories);
-//		fillAuditOperators(conAudit, categoriesBuilder.getCaos());
-//	}
-//
-//	public AuditTypeRuleCache getTypeRuleCache() {
-//		return typeRuleCache;
-//	}
 }

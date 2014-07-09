@@ -131,5 +131,4 @@ public class EnumMapperWithEmptyStrings implements UserType, ParameterizedType {
     public Object replace(Object original, Object target, Object owner) throws HibernateException {
         return original;
     }
-
 }

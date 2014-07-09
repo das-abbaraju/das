@@ -5,9 +5,6 @@ import com.picsauditing.auditbuilder.service.AuditService;
 
 import java.util.*;
 
-/**
- * Determine which audits and categories are needed for a contractor.
- */
 public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditCategoryRuleCache ruleCache;
 
@@ -49,7 +46,6 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			return categories;
 
 		if (conAudit.getAuditType().getId() == AuditType.FIELD) {
-			// field audits will only have caos that are manually specified (not by rules)
 			operators.put(conAudit.getRequestingOpAccount(), null);
 			auditFor = conAudit.getRequestingOpAccount();
 		} else {
@@ -60,7 +56,6 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 
 		List<AuditCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
 
-		// Prune Rules
 		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
 		Map<Integer, AuditData> answers = getAuditAnswers(rules, conAudit);
 			Iterator<AuditCategoryRule> iterator = rules.iterator();
@@ -76,7 +71,6 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 					for (OperatorAccount operator : auditOperators) {
 						AuditCategoryRule rule = getApplicable(rules, category, trade, type, operator);
 						if (rule != null && rule.isInclude()) {
-							// We need to add this category to the audit
 							categories.add(category);
 
 							if (!categoriesPerOperator.containsKey(operator))
@@ -109,7 +103,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 
 	protected boolean isValid(AuditCategoryRule rule, Map<Integer, AuditData> contractorAnswers,
 	                          Map<Integer, OperatorTag> opTags) {
-		AuditCategoryRule auditCategoryRule = (AuditCategoryRule) rule;
+		AuditCategoryRule auditCategoryRule = rule;
 		if (auditCategoryRule.getDependentAuditType() != null && auditCategoryRule.getDependentAuditStatus() != null) {
 			boolean found = false;
 			for (ContractorAudit audit : contractor.getAudits()) {
@@ -129,24 +123,21 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	}
 
 	public Map<OperatorAccount, Set<OperatorAccount>> getCaos() {
-		Map<OperatorAccount, Set<OperatorAccount>> caos = new HashMap<OperatorAccount, Set<OperatorAccount>>();
+		Map<OperatorAccount, Set<OperatorAccount>> caos = new HashMap<>();
 
-		// We need a PICS Global record to represent the wildcard rules not associated with any operator or corporate
-		// account
 		OperatorAccount picsGlobal = new OperatorAccount("PICS Global");
 		picsGlobal.setId(4);
 
 		for (OperatorAccount operator : operators.keySet()) {
 			AuditCategoryRule rule = operators.get(operator);
 			if (rule == null) {
-				// This operator doesn't require any categories, so I'm just going to ignore it for now
+
 			} else {
 
 				OperatorAccount governingBody = determineGoverningBody(rule.getOperatorAccount(), operator);
 				if (!caos.containsKey(governingBody))
 					caos.put(governingBody, new HashSet<OperatorAccount>());
-				// Add the operator (caop) to one and only one governingBody
-				// (cao)
+
 				if (auditType != null && auditType.getId() == AuditType.FIELD
 						&& auditFor != null) {
 					caos.get(governingBody).add(auditFor);
@@ -187,7 +178,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	}
 
 	private Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
-		Map<Integer, AuditData> answers = new HashMap<Integer, AuditData>();
+		Map<Integer, AuditData> answers = new HashMap<>();
 		for (AuditRule rule : rules) {
 			if (rule.getQuestion() != null) {
 				int currentQuestionId = rule.getQuestion().getId();

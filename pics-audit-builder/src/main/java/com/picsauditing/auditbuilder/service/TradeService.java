@@ -18,7 +18,6 @@ public class TradeService {
 
 	public static boolean childOf(Trade child, Trade candidateParent) {
 		if (child.getParent() == null) {
-			// Gone all the way up and didn't find our parent
 			return false;
 		}
 
@@ -27,14 +26,10 @@ public class TradeService {
 		}
 
 		if (child.equals(candidateParent)) {
-			// We don't consider you to be a child of yourself
 			return false;
 		}
 
-		// Parent Level,Start,End = 1,1,12
-		// Child Level,Start,End = 2,6,9
 		return candidateParent.getIndexLevel() < child.getIndexLevel() && candidateParent.getIndexStart() < child.getIndexStart()
 				&& candidateParent.getIndexEnd() > child.getIndexEnd();
 	}
-
 }

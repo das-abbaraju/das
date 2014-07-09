@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * This is a legacy class from when we used tuples. This is overkill now.
- * TODO Remove this and use a Map<Integer, AuditData> in its place
- */
 @Deprecated
 public class AnswerMap {
 	private Map<Integer, List<AuditData>> list = new HashMap<>();
@@ -36,7 +32,7 @@ public class AnswerMap {
 	private List<AuditData> getDataList(int questionID) {
 		List<AuditData> dataList = list.get(questionID);
 		if (dataList == null) {
-			dataList = new ArrayList<AuditData>();
+			dataList = new ArrayList<>();
 			list.put(questionID, dataList);
 		}
 		return dataList;

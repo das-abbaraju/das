@@ -21,16 +21,10 @@ public class AuditPercentCalculator {
 	private AuditCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private CorruptionPerceptionIndexMap corruptionPerceptionIndexMap;
-//	@Autowired
-//	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	protected ContractorAuditOperatorDAO caoDAO;
-//	@Autowired
-//	protected AuditQuestionDAO auditQuestionDAO;
-//	@Autowired
-//	protected AuditCategoryDataDAO auditCategoryDataDAO;
     @Autowired
     protected AuditPeriodService auditPeriodService;
     @Autowired
@@ -57,27 +51,22 @@ public class AuditPercentCalculator {
 
 		Date validDate = AuditService.getValidDate(catData.getAudit());
 
-		// Get a list of questions/answers for this category
 		Set<Integer> questionIDs = collectQuestionIdsFromAuditCatData(catData);
 		Collection<Integer> functionWatcherQuestionIds = collectFunctionWatcherQuestionIdsFromAuditCatData(catData);
 
-        // Run Rollup Functions
         runRollupFunctions(catData, validDate);
 
         AnswerMap currentWatcherAnswers = auditDataDAO.findAnswersByAuditAndQuestions(catData.getAudit(),
                 functionWatcherQuestionIds);
 
-        // Run functions to update answers
         runCalculationFunctions(catData, validDate, currentWatcherAnswers);
 
-        // Get a map of all answers in this audit
 		List<AuditData> requiredAnswers = new ArrayList<>();
 		for (AuditData answer : catData.getAudit().getData())
 			if (questionIDs.contains(answer.getQuestion().getId()))
 				requiredAnswers.add(answer);
 		AnswerMap answers = new AnswerMap(requiredAnswers);
 
-		// Get a list of questions/answers for this category
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 
 			if (AuditService.isValidQuestion(question, validDate)) {
@@ -100,10 +89,6 @@ public class AuditPercentCalculator {
 							if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
 								isRequired = true;
 						} else {
-							// This question is dependent on another
-							// question's answer
-							// Use the parentAnswer, so we get answers in
-							// the same tuple as this one
 							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
 							if (otherAnswer != null
 									&& questionBeingReviewed.getRequiredAnswer().equals(otherAnswer.getAnswer()))
@@ -111,7 +96,6 @@ public class AuditPercentCalculator {
 						}
 					}
 
-					// make sure this dependent required question is visible
 					if (isRequired) {
 						if (catData.getAudit().getEffectiveDate() != null
 								&& catData.getAudit().getEffectiveDate()
@@ -124,7 +108,6 @@ public class AuditPercentCalculator {
 								isRequired = false;
 						}
 
-						// is visible question visible
 						AuditQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
 						circularVisualQuestionIds.clear();
 						while (questionVisibilityParent != null && isRequired) {
@@ -266,16 +249,14 @@ public class AuditPercentCalculator {
         for (AuditQuestion question : catData.getCategory().getQuestions())
             if (AuditService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
                 AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
-                boolean newTarget = false;
 
                 if (target == null) {
                     target = new AuditData();
                     target.setAudit(catData.getAudit());
                     target.setQuestion(question);
-                    newTarget = true;
                 }
 
-                String results = null;
+                String results;
 
                 for (AuditQuestionFunction function : question.getFunctions()) {
                     if (function.getType() == QuestionFunctionType.Rollup) {
@@ -333,7 +314,7 @@ public class AuditPercentCalculator {
 	}
 
 	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {
-		Collection<Integer> functionWatcherQuestionIds = new ArrayList<Integer>();
+		Collection<Integer> functionWatcherQuestionIds = new ArrayList<>();
 		Date validDate = AuditService.getValidDate(catData.getAudit());
 
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
@@ -349,7 +330,7 @@ public class AuditPercentCalculator {
 	}
 
 	private Set<Integer> collectQuestionIdsFromAuditCatData(AuditCatData catData) {
-		Set<Integer> questionIDs = new HashSet<Integer>();
+		Set<Integer> questionIDs = new HashSet<>();
 
 		for (AuditQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
@@ -366,8 +347,8 @@ public class AuditPercentCalculator {
 	}
 
 	private Set<Integer> collectChainOfRequiredQuestionIds(AuditQuestion question) {
-		Set<Integer> questionIDs = new HashSet<Integer>();
-		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<Integer>();
+		Set<Integer> questionIDs = new HashSet<>();
+		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<>();
 		AuditQuestion q = question.getRequiredQuestion();
 		while (q != null) {
 			questionIDs.add(q.getId());
@@ -382,8 +363,8 @@ public class AuditPercentCalculator {
 	}
 
 	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
-		Set<Integer> questionIDs = new HashSet<Integer>();
-		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<Integer>();
+		Set<Integer> questionIDs = new HashSet<>();
+		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<>();
 		AuditQuestion q = question.getVisibleQuestion();
 		while (q != null) {
 			questionIDs.add(q.getId());
@@ -399,16 +380,9 @@ public class AuditPercentCalculator {
 
 	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
 		AuditQuestion question = answer.getQuestion();
-		// Anything that requires verification, should be
-		// listed as Required.
-		// If we don't then it's possible that the verified
-		// count will be higher than the required total,
-		// resulting in a > 100% verified
+
 		if (AuditService.isVerified(answer))
 			verifiedCount++;
-		// This is used for manual/implementation audits
-		// with questions with no requirements, so we need
-		// to increment the count so we can close it.
 		else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
 			verifiedCount++;
 		} else if (question.getId() == 2447 || question.getId() == 2448 || question.getId() == 10217
@@ -426,18 +400,11 @@ public class AuditPercentCalculator {
 				verifiedCount++;
 		} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
 			verifiedCount = requiredCount;
-			// If the questions are explicited ignored from
-			// verification but still required then we
-			// should increase the verifiedCount so we can
-			// close it
 		} else if (!AuditService.isHasSubmittedStep(catData.getAudit().getAuditType().getWorkFlow())) {
-			// For audits without the submitted step we
-			// don't have to verify the questions
 			verifiedCount++;
 		}
 		int categoryId = catData.getCategory().getId();
 
-		// COHS, OSHA Additional Logs and MSHA are not verified
 		if (categoryId == OshaAudit.CAT_ID_COHS || categoryId == OshaAudit.CAT_ID_OSHA_ADDITIONAL
 				|| categoryId == OshaAudit.CAT_ID_MSHA) {
 			verifiedCount++;
@@ -449,10 +416,6 @@ public class AuditPercentCalculator {
 		return verifiedCount;
 	}
 
-//	public void percentCalculateComplete(ContractorAudit conAudit) {
-//		percentCalculateComplete(conAudit, false);
-//	}
-//
     public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
         percentCalculateComplete(conAudit, recalcCats, true);
     }
@@ -464,14 +427,13 @@ public class AuditPercentCalculator {
         AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
                 conAudit.getContractorAccount());
 
-        Set<AuditCategory> auditCategories = builder.calculate(conAudit);
+        builder.calculate(conAudit);
 
         for (ContractorAuditOperator cao : conAudit.getOperators()) {
             int required = 0;
             int answered = 0;
             int verified = 0;
 
-            float scoreWeight = 0;
             float score = 0;
 
             for (AuditCatData data : conAudit.getCategories()) {
@@ -482,11 +444,9 @@ public class AuditPercentCalculator {
                     answered += data.getRequiredCompleted();
                     verified += data.getNumVerified();
 
-                    // NOTE: Scoreable audits presupposes only one visible cao
                     if (shouldAdjustAuditScore(conAudit, cao)) {
                         if (data.getScorePossible() > 0) {
                             score += data.getScore();
-                            scoreWeight += data.getScorePossible();
                         }
                     }
                 }
@@ -496,7 +456,7 @@ public class AuditPercentCalculator {
                 if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
                     conAudit.setScore((int) Math.min(Math.round(score), 100L));
                 else if (conAudit.getAuditType().getScoreType() == ScoreType.Actual)
-                    conAudit.setScore((int) Math.round(score));
+                    conAudit.setScore(Math.round(score));
             }
 
             int percentComplete = 0;
@@ -519,7 +479,6 @@ public class AuditPercentCalculator {
                 percentComplete = 100;
                 percentVerified = 100;
             } else {
-                // Note: this should never happen, but putting in logging just in case.
                 logger.warn("Policy with no required questions {}", conAudit);
             }
 
@@ -551,9 +510,6 @@ public class AuditPercentCalculator {
                 if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT && cao.getStatus().after(AuditStatus.Incomplete))
                     applies = true;
                 else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
-                    // Import PQF and Welcome Call don't have any
-                    // operators, so just always assume the
-                    // categories apply
                     applies = true;
                 else if (conAudit.getAuditType().getId() == AuditType.WELCOME)
                     applies = true;
@@ -604,18 +560,11 @@ public class AuditPercentCalculator {
 	private void calculateWeightedScore(ContractorAudit ca) {
 		float cumulativeScore = 0f;
 
-		/*
-		 * Gather the category data to use in the recursive calculation.
-		 */
 		Map<AuditCategory, AuditCatData> catDatas = new HashMap<>();
 		for (AuditCatData data : ca.getCategories()) {
 			catDatas.put(data.getCategory(), data);
 		}
 
-		/*
-		 * Iterate over the top level categories and calculate the score based
-		 * on their weights
-		 */
 		for (AuditCategory category : AuditService.getTopCategories(ca.getAuditType())) {
 			subScorePossible = 0f;
 			float score = calculateWeightedScore(category, catDatas);
@@ -631,26 +580,17 @@ public class AuditPercentCalculator {
 	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
 		float subScore = 0f;
 		float scorePossible = 0f;
-		/*
-		 * We either collect the questions (i.e. catData.score and
-		 * catData.scorePossible) or the subcategories. We cannot do both
-		 * currently, as it is comparing apples and oranges.
-		 */
+
 		if (category.getSubCategories().size() > 0) {
 			for (AuditCategory subCategory : category.getSubCategories()) {
 				float runningScore = calculateWeightedScore(subCategory, catDatas);
-				/*
-				 * Handle the N/A Categories. Categories without a possible
-				 * score should not affect the total weight.
-				 */
+
 				if (catDatas.get(subCategory).getScorePossible() > 0) {
 					subScore += runningScore;
 					scorePossible += subCategory.getScoreWeight();
 				}
 			}
-			/*
-			 * Prevent a divide by 0. This will likely never happen
-			 */
+
 			if (scorePossible > 0) {
 				subScore = subScore / scorePossible;
 			}
@@ -675,5 +615,4 @@ public class AuditPercentCalculator {
 	public List<AuditData> getVerifiedPqfData(int auditID) {
 		return auditDataDAO.findCustomPQFVerifications(auditID);
 	}
-
 }

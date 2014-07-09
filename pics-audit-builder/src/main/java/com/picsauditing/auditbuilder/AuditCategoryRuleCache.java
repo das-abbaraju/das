@@ -81,5 +81,4 @@ public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
 			return rules;
 		}
 	}
-
 }

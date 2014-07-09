@@ -12,22 +12,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 
-/**
- * The function that a specific {@link AuditQuestion} performs. This is used for calculated values.
- *
- * @author kpartridge
- *
- */
-
 public enum QuestionFunction {
-
-	/**
-	 * Used for custom {@link AuditQuestionFunction}s. This requires an expression be placed on the params map.
-	 *
-	 * Uses the unique code to create a string that will be executed as javascript
-	 *
-	 * Ex: {totalIncidents} / {manHours}
-	 */
 	CUSTOM {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -60,11 +45,6 @@ public enum QuestionFunction {
             return evaluateSimpleMath(input);
         }
     },
-	/**
-	 * Canadian WCB Surcharge
-	 *
-	 * Net Premium Rate / Industry Rate
-	 */
 	WCB_SURCHARGE {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -77,10 +57,6 @@ public enum QuestionFunction {
 			return netPremiumRate.divide(industryRate, BigDecimal.ROUND_HALF_UP);
 		}
 	},
-	/**
-	 * Annual Update TRIR
-	 * Formula: TRIR = (Total Recordable Incidents * 200,000) / Total Man Hours
-	 */
 	TRIR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -95,7 +71,6 @@ public enum QuestionFunction {
 			}
 
 			int manHours = convertToInt(params.get("manHours").replace(",", ""));
-			//convertToInt(params.get("manHours").replace(",", ""));
 			int fatalities = convertToInt(params.get("fatalities").replace(",", ""));
 			int lostWorkdayCases = convertToInt(params.get("lostWorkdayCases").replace(",", ""));
 			int restrictedCases = convertToInt(params.get("restrictedCases").replace(",", ""));
@@ -105,10 +80,6 @@ public enum QuestionFunction {
 			return calculateRate(totalCases, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * Annual Update LWCR
-	 * LWCR  = (Total Lost Workday Cases / Total Man Hours) * 200,000
-	 */
 	LWCR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -125,10 +96,6 @@ public enum QuestionFunction {
 			return calculateRate(lostWorkdayCases, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * Annual Update RWCR
-	 * RWCR  = (Number of Restricted Work Day Cases (I) / Total Man Hours) * 200,000
-	 */
 	RWCR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -145,10 +112,6 @@ public enum QuestionFunction {
 			return calculateRate(restrictedCases, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * Annual Update DART
-	 * DART  = (Lost Day Work Cases + Restricted Work Cases * 200,000) / Total Man Hours
-	 */
 	DART {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -169,10 +132,6 @@ public enum QuestionFunction {
 			return calculateRate(dartCases, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * US Annual Update Fatality Incident Rate
-	 * FIR  = (Fatalities (G) / Total Man Hours) * 200,000
-	 */
 	FIR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -189,10 +148,6 @@ public enum QuestionFunction {
 			return calculateRate(fatalities, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * US Annual Update Severity Rate
-	 * Severity Rate  = (Lost Workdays (K) / Total Man Hours) * 200,000
-	 */
 	SEVERITY_RATE {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -209,10 +164,6 @@ public enum QuestionFunction {
 			return calculateRate(lostWorkdays, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * US Annual Update Severity Rate
-	 * PICS Severity Rate  = ((Lost Workdays (K) + Restricted Days (L)) / Total Man Hours) * 200,000
-	 */
 	PICS_SEVERITY_RATE {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -232,11 +183,6 @@ public enum QuestionFunction {
 			return calculateRate(totalDays, manHours, OSHA_NORMALIZER);
 		}
 	},
-	/**
-	 * UK Annual Update Incidence Frequency Rate
-	 * IFR = ((fatalities + major injuries + non injuries) / total number of hours worked) X 1,000,000
-	 * Also known as AFR
-	 */
 	IFR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -325,10 +271,6 @@ public enum QuestionFunction {
             return result;
         }
     },
-	/**
-	 * UK Total Lost Time Injuries
-	 * LTIFR = ((Total Lost Time Injuries X 1,000,000) / Total Hours Worked)
-	 */
 	LTIFR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -352,10 +294,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * AUS Total Lost Time Injuries Frequency Rate
-	 * LTIFR = ((Fatalities + Injuries) X 1,000,000) / Total Hours Worked)
-	 */
 	LTIFR_AUS {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -381,10 +319,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * AUS Incident Rate
-	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 100) / Employees)
-	 */
 	IR_AUS {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -410,10 +344,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * AUS Frequency Rate
-	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 1000000) / hours)
-	 */
 	FR_AUS {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -439,10 +369,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * AUS Average Loss Time Rate
-	 * ATLR = Hours Lost / (Fatalities + Lost Time Cases + Non-Lost Time Cases)
-	 */
 	ATLR_AUS {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -468,10 +394,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * Ireland Incident Rate
-	 * IR = ((Fatalities + Lost Time Cases + Non-Lost Time Cases) X 100) / Employees)
-	 */
 	IR_IRELAND {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -500,10 +422,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 * UK Annual Update Dangerous Occurrences Frequency Rate
-	 * DOFR = (dangerous occurrences / total hours worked) x 100,000
-	 */
 	DOFR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -527,9 +445,6 @@ public enum QuestionFunction {
 			return result;
 		}
 	},
-	/**
-	 *  UK Annual Update
-	 */
 	UK_INJURIES{
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -547,10 +462,6 @@ public enum QuestionFunction {
 		}
 
 	},
-	/**
-	 * France Annual Update
-	 * AFR = ((Deaths + Lost Time Injuries) x  1,000,000 / Total Hours)
-	 */
 	FRANCE_AFR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -568,10 +479,6 @@ public enum QuestionFunction {
 			return calculateRate(totalCases, manHours, IFR_FREQUENCY_RATE_NORMALIZER);
 		}
 	},
-	/**
-	 * France Annual Update
-	 * AFR = ((Lost Work Days) x  1,000 / Total Hours)
-	 */
 	FRANCE_LWR {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -588,10 +495,6 @@ public enum QuestionFunction {
 			return calculateRate(lostWorkDays, manHours, FRANCE_NORMALIZER);
 		}
 	},
-	/**
-	 * France Annual Update
-	 * Frequency Index = (Lost Time Injuries) x  1,000 / Employees)
-	 */
 	FRANCE_FI {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -790,10 +693,6 @@ public enum QuestionFunction {
 			return "E";
 		}
 	},
-	/**
-	 * Suncor Audit Corruption Audit.
-	 *
-	 */
 	CPI_CHECK {
 		@Override
 		public Object calculate(FunctionInput input) {
@@ -1022,7 +921,6 @@ public enum QuestionFunction {
     ROLLUP {
         @Override
         public  Object calculate(FunctionInput input) {
-           // placeholder so a function can be designated, actual function is done in code
            return MISSING_PARAMETER;
         }
     },
@@ -1073,14 +971,11 @@ public enum QuestionFunction {
 ;
 	private static final int NO_CPI_FOR_COUNTRIES_LISTED = 11000;
 
-	// US OSHA standard normalizer. Hours in a year * 100 employees
 	private static final BigDecimal OSHA_NORMALIZER = new BigDecimal(2000 * 100);
 
-	// UK HSE standard normalizer.
 	private static final BigDecimal DOFR_NORMALIZER = new BigDecimal(100000);
 	private static final BigDecimal IFR_FREQUENCY_RATE_NORMALIZER = new BigDecimal(1000000);
 
-	// France NRIS standard normalizer.
 	private static final BigDecimal FRANCE_NORMALIZER = new BigDecimal(1000);
 
 	public static final String MISSING_PARAMETER = "Audit.missingParameter";

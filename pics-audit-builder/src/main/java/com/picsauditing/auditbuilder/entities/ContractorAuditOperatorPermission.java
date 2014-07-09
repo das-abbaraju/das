@@ -7,23 +7,11 @@ import java.io.Serializable;
 @Entity
 @Table(name = "contractor_audit_operator_permission")
 public class ContractorAuditOperatorPermission implements Serializable {
-//
-//	private int id;
+
 	private ContractorAuditOperator cao;
 	private OperatorAccount operator;
 	private ContractorAuditOperator previousCao;
 
-//	@Id
-//	@GeneratedValue(strategy = IDENTITY)
-//	@Column(nullable = false)
-//	public int getId() {
-//		return id;
-//	}
-//
-//	public void setId(int id) {
-//		this.id = id;
-//	}
-//
 	@ManyToOne
 	@JoinColumn(name = "caoID")
 	public ContractorAuditOperator getCao() {
@@ -53,8 +41,4 @@ public class ContractorAuditOperatorPermission implements Serializable {
 	public void setPreviousCao(ContractorAuditOperator previousCao) {
 		this.previousCao = previousCao;
 	}
-
-//    public static ContractorAuditOperatorPermissionBuilder builder() {
-//        return new ContractorAuditOperatorPermissionBuilder();
-//    }
 }

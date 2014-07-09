@@ -13,6 +13,7 @@
     <import resource="rabbit-config.xml"/>
     <import resource="employeeguard-config.xml"/>
     <import resource="classpath*:META-INF/flag-calculator-context.xml"/>
+    <import resource="classpath*:META-INF/audit-builder-context.xml"/>
 
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>

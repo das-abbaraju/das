@@ -5,7 +5,7 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "audit_cat_data")
-public class AuditCatData extends BaseTable implements java.io.Serializable/*, Comparable<AuditCatData>*/ {
+public class AuditCatData extends BaseTable implements java.io.Serializable {
 
 	private ContractorAudit audit;
 	private AuditCategory category;
@@ -17,7 +17,6 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 	private boolean applies = true;
 	private float score = 0f;
 	private float scorePossible = 0f;
-//	private Integer ruleID;
 
 	@ManyToOne
 	@JoinColumn(name = "categoryID", nullable = false)
@@ -105,57 +104,4 @@ public class AuditCatData extends BaseTable implements java.io.Serializable/*, C
 	public void setNumVerified(int numVerified) {
 		this.numVerified = numVerified;
 	}
-
-//	public Integer getRuleID() {
-//		return ruleID;
-//	}
-//
-//	public void setRuleID(Integer ruleID) {
-//		this.ruleID = ruleID;
-//	}
-//
-//	@Transient
-//	public List<AuditQuestion> getEffectiveQuestions() {
-//		List<AuditQuestion> result = new ArrayList<AuditQuestion>();
-//		Date effectiveDate = audit.getEffectiveDate();
-//		if (effectiveDate == null)
-//			effectiveDate = new Date();
-//		for (AuditQuestion auditQuestion : category.getQuestions()) {
-//			if (auditQuestion.isCurrent(effectiveDate)) {
-//				result.add(auditQuestion);
-//			}
-//		}
-//
-//		return result;
-//	}
-//
-//	@Transient
-//	public String getPrintableScore() {
-//		if (getScorePossible() > 0) {
-//
-//			int tempScore = Math.round(score);
-//
-//			Map<Integer, String> map = new HashMap<Integer, String>() {
-//
-//				{
-//					put(0, "Red");
-//					put(1, "Yellow");
-//					put(2, "Green");
-//				}
-//			};
-//
-//			return map.get(tempScore);
-//		} else {
-//			return "-";
-//		}
-//	}
-//
-//	@Override
-//	public int compareTo(AuditCatData o) {
-//		return getCategory().compareTo(o.getCategory());
-//	}
-//
-//    public static AuditCatDataBuilder builder() {
-//        return new AuditCatDataBuilder();
-//    }
 }
