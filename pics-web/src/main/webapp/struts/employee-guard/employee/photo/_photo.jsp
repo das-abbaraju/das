@@ -7,7 +7,7 @@
 
     <div class="overlay-container">
         <div class="overlay"></div>
-        <span class="edit-text"><strong>Select to edit...</strong></span>
+        <span class="edit-text"><strong><s:text name="EMPLOYEE.PROFILE.PHOTO.SELECT_TO_EDIT"/></strong></span>
     </div>
     <tw:input inputName="photo" type="file" class="default-file-import" />
     <input type="submit" class="hidden" />

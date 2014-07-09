@@ -11,7 +11,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${site.name}</s:param>
+    <s:param name="title"><s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.PAGE.HEADER"/> ${site.name}</s:param>
     <s:param name="breadcrumb_name">${site.name}</s:param>
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
@@ -22,12 +22,12 @@
             <li class="site-status">
                 <a href="${contractor_site_assignments}">
                     <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
-                    Site Status
+                    <s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.TABLE.SITE_STATUS"/>
                 </a>
             </li>
             <li class="nav-divider"></li>
             <li>
-                <span class="nav-title">Job Roles</span>
+                <span class="nav-title"><s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.SIDE_NAV.JOB_ROLES"/></span>
             </li>
             <s:set var="selected_role" value="%{id}"/>
             <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_job_role">
@@ -62,9 +62,9 @@
             <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
                     <tr>
-                        <th>Company</th>
-                        <th>Employee</th>
-                        <th>Title</th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.TABLE.COLUMN.COMPANY"/></th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.TABLE.COLUMN.EMPLOYEE"/></th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT_ROLE.TABLE.COLUMN.TITLE"/></th>
                         <s:iterator value="siteAssignmentModel.skills" var="skill_info">
                             <th class="text-center">${skill_info.name}</th>
                         </s:iterator>
@@ -117,9 +117,9 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4>No Assignments for this Job Role</h4>
+                        <h4><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.TITLE"/></h4>
 
-                        <p>Currently, no one is assigned to this Job Role.  When companies assign their employees to this Job Role, they will be displayed here.</p>
+                        <p><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.MSG"/></p>
                     </div>
                 </div>
             </div>

@@ -14,7 +14,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title"><s:text name="OPERATOR_ASSIGNMENT_SITE_PAGE_HEADER"/> ${project.name}</s:param>
+    <s:param name="title"><s:text name="OPERATOR.PROJECT_ASSIGNMENT_ROLE.PAGE.HEADER"/> ${project.name}</s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
     <s:param name="breadcrumb_id">${project.id}</s:param>
 </s:include>
@@ -22,7 +22,7 @@
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
         <li>
-            <a href="${operator_project_assignments}"><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_SIDENAV_PROJECT"/></a>
+            <a href="${operator_project_assignments}"><s:text name="OPERATOR.PROJECT_ASSIGNMENT_ROLE.SIDE_NAV.PROJECT_STATUS"/></a>
         </li>
 
         <s:set var="selected_role" value="%{id}"/>
@@ -49,8 +49,8 @@
             <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
                     <tr>
-                        <th><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_TABLE_HEADING_COMPANY"/></th>
-                        <th><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_TABLE_HEADING_EMPLOYEE"/></th>
+                        <th><s:text name="OPERATOR.PROJECT_ASSIGNMENT_ROLE.TABLE.COLUMN.COMPANY"/></th>
+                        <th><s:text name="OPERATOR.PROJECT_ASSIGNMENT_ROLE.TABLE.COLUMN.EMPLOYEE"/></th>
                         <s:iterator value="operatorProjectRoleAssignment.skills" var="skill_name">
                             <th class="text-center">${skill_name.name}</th>
                         </s:iterator>
@@ -102,9 +102,9 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_TABLE_MSG_HEADER_4"/></h4>
+                        <h4><s:text name="OPERATOR.PROJECT_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.TITLE"/></h4>
 
-                        <p><s:text name="OPERATOR_ASSIGNMENT_PROJECT_ROLE_TABLE_MSG_P1"/></p>
+                        <p><s:text name="OPERATOR.PROJECT_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.MSG"/></p>
                     </div>
                 </div>
             </div>

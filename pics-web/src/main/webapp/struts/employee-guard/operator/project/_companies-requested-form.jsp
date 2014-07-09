@@ -11,7 +11,7 @@
     <s:set var="selected_groups" value="employee.groups"/>
 
     <div class="form-group">
-        <tw:label labelName="companies" class="col-md-3 control-label">Companies</tw:label>
+        <tw:label labelName="companies" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.COMPANIES_REQUESTED.EDIT.COMPANIES.LABEL"/></tw:label>
         <div class="col-md-4">
             <s:set var="selected_companies" value="projectCompaniesForm.companies" />
             <tw:select selectName="companies" multiple="true" class="form-control select2 companies-requested" tabindex="1">
@@ -31,8 +31,8 @@
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3 form-actions">
-            <tw:button buttonName="save" type="submit" class="btn btn-success save-requested-comapanies" tabindex="2">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="3">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success save-requested-comapanies" tabindex="2"><s:text name="OPERATOR.PROJECT.COMPANIES.EDIT.SAVE.BUTTON"/></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="3"><s:text name="OPERATOR.PROJECT.COMPANIES.EDIT.CANCEL.BUTTON"/></tw:button>
         </div>
     </div>
 </tw:form>
