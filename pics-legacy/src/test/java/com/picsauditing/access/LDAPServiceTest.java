@@ -2,6 +2,7 @@ package com.picsauditing.access;
 
 import com.picsauditing.access.LDAPService;
 import com.picsauditing.jpa.entities.User;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,12 +43,19 @@ public class LDAPServiceTest {
         ldapService = new LDAPService();
         ldapActiveDirectoryAuthProvider = PowerMockito.mock(ActiveDirectoryLdapAuthenticationProvider.class);
         Whitebox.setInternalState(ldapService, "ldapActiveDirectoryAuthProvider", ldapActiveDirectoryAuthProvider);
-        Whitebox.invokeMethod(ldapService, "doLDAPLoginAuthentication", USERNAME, PASSWORD);
     }
 
     @Test
     public void testDoLDAPLoginAuthentication() throws Exception {
-        boolean result = Whitebox.invokeMethod(ldapService, "doLDAPLoginAuthentication", USERNAME, PASSWORD);
+        boolean result = ldapService.doLDAPLoginAuthentication(LDAPService.PICSAD,USERNAME,PASSWORD);
+
+        Assert.assertFalse(result);
+    }
+
+
+    @Test
+    public void testDoPICSLdapAuthentication() throws Exception {
+        boolean result = Whitebox.invokeMethod(ldapService, "doPICSLdapAuthentication", USERNAME, PASSWORD);
 
         assertFalse(result);
     }
@@ -58,5 +66,4 @@ public class LDAPServiceTest {
 
         assertEquals(result, USERNAME + LDAPService.PICS_CORP);
     }
-
 }

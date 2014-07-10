@@ -408,7 +408,7 @@ public class LoginControllerTest extends PicsActionTest {
 		account.setType("Admin");
 		when(userService.findById(anyInt())).thenReturn(user);
 		when(user.getAccount()).thenReturn(account);
-        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
        when(loginContext.getUser()).thenReturn(user);
 		String actionResult = loginController.execute();
@@ -493,7 +493,7 @@ public class LoginControllerTest extends PicsActionTest {
 		normalLoginSetup();
 		when(userService.isPasswordExpired(user)).thenReturn(false);
 		when(userService.findById(anyInt())).thenReturn(user);
-        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         Account account = new Account();
 		account.setType("Admin");
@@ -515,7 +515,7 @@ public class LoginControllerTest extends PicsActionTest {
         account.setType("Admin");
         when(user.getAccount()).thenReturn(account);
         when(loginContext.getUser()).thenReturn(user);
-        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
 
         String actionResult = loginController.execute();

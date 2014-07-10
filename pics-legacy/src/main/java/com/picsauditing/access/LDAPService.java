@@ -17,20 +17,16 @@ public class LDAPService {
     public static final String PICS_CORP = "@PICS.CORP";
 
     private static final Logger logger = LoggerFactory.getLogger(LDAPService.class);
+    public static final String PICSAD = "picsad";
 
     @Autowired
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
-    public boolean doLDAPLoginAuthentication(String username, String password) throws FailedLoginException {
+    public boolean doLDAPLoginAuthentication(String identityProvider, String username, String password) throws FailedLoginException {
         if (Features.USE_LDAP_AUTHENTICATION.isActive()) {
-            ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
-            String ldapUser = getPICSLdapUser(username);
-            try {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(ldapUser, password);
-                Authentication result = ldapActiveDirectoryAuthProvider.authenticate(authentication);
-                return result != null ? result.isAuthenticated() : false;
-            } catch (AuthenticationException ace) {
-                logger.error("Bad LDAP Credentials for user: " + username);
+            switch (identityProvider) {
+                case PICSAD:
+                    return doPICSLdapAuthentication(username, password);
             }
         }
         return false;
@@ -41,5 +37,18 @@ public class LDAPService {
         ldapUser.append(username);
         ldapUser.append(PICS_CORP);
         return ldapUser.toString();
+    }
+
+    private boolean doPICSLdapAuthentication(String username, String password) {
+        ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
+        String ldapUser = getPICSLdapUser(username);
+        try {
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(ldapUser, password);
+            Authentication result = ldapActiveDirectoryAuthProvider.authenticate(authentication);
+            return result != null ? result.isAuthenticated() : false;
+        } catch (AuthenticationException ace) {
+            logger.error("Bad LDAP Credentials for user: " + username);
+        }
+        return false;
     }
 }

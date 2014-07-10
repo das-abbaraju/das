@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountLockedException;
@@ -21,7 +22,6 @@ import java.util.Calendar;
 public class LoginService {
 
     protected static final int MAX_FAILED_ATTEMPTS = 6;
-    public static final String PICSAD = "picsad";
 
     @Autowired
 	protected UserService userService;
@@ -39,7 +39,7 @@ public class LoginService {
 	public User loginNormally(String username, String password) throws LoginException {
 
 		User user = loadUserByUsername(username);
-		return doPreLoginVerification(user, username, password).getUser();
+		return doPreLoginVerification(null,user, username, password).getUser();
 	}
 
 	public User getUserForUserName(String username) throws LoginException {
@@ -55,8 +55,10 @@ public class LoginService {
 	}
 
     public LoginContext doPreLoginVerification(String identityProvider, User user, String username, String password) throws LoginException {
-        if(identityProvider.equals(PICSAD)) {
-            ldapService.doLDAPLoginAuthentication(username, password);
+        if(StringUtils.isNotEmpty(identityProvider)) {
+            ldapService.doLDAPLoginAuthentication(identityProvider,username, password);
+        }else{
+            doPreLoginVerification(user, username,password);
         }
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
@@ -64,16 +66,11 @@ public class LoginService {
         return loginContext;
     }
 
-	public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
-
+	private  void doPreLoginVerification(User user, String username, String password) throws LoginException {
         verifyUserExists(user, username);
         verifyUserStatusForLogin(user);
         verifyPasswordIsCorrect(user, password);
         verifyPasswordIsNotExpired(user);
-        LoginContext loginContext = new LoginContext();
-        loginContext.setUser(user);
-
-		return loginContext;
 	}
 
 

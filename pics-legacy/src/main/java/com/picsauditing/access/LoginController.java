@@ -6,6 +6,7 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.ReportUserDAO;
+import com.picsauditing.database.StringUtil;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.featuretoggle.Features;
@@ -370,16 +371,10 @@ public class LoginController extends PicsActionSupport {
 			} else {
 				user = userService.findByAppUserId(appUser.getId());
 			}
-
 			if (user != null) {
                 LoginContext loginContext = null;
                 String idProvider = getIdentityProvider();
-                if(idProvider != null){
-                   loginContext = loginService.doPreLoginVerification(idProvider, user, username, password);
-                }
-                else {
-                    loginContext = loginService.doPreLoginVerification(user, username, password);
-                }
+                loginContext = loginService.doPreLoginVerification(idProvider, user, username, password);
 				return doLogin(loginContext);
 			} else {
 				LoginContext loginContext = authenticationService.doPreLoginVerificationEG(username, password);
@@ -602,7 +597,9 @@ public class LoginController extends PicsActionSupport {
 
     public String getIdentityProvider() {
         String idProvider = (String) ActionContext.getContext().getSession().get(IDENTITYPROVIDER);
-        if(idProvider != null && !(idProvider.isEmpty())) return idProvider;
+        if(StringUtils.isNotEmpty(idProvider)){
+            return idProvider;
+        }
         return identityProvider;
     }
 
