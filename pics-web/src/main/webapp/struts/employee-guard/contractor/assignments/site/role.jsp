@@ -11,15 +11,15 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${site.name}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.PAGE_TITLE" /> ${site.name}</s:param>
     <s:param name="breadcrumb_name">${site.name}</s:param>
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
 <%-- Unassign Confirmation --%>
 <s:include value="/struts/employee-guard/_unassign-employee-confirmation.jsp">
-    <s:param name="modal_title">Unassign Employee from Job Role</s:param>
-    <s:param name="modal_message">Unassigning this employee from this Job Role will also unassign them from this Job Role on any Projects that they may currently be assigned to.</s:param>
+    <s:param name="modal_title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.UNASSIGN_EMPLOYEE" /></s:param>
+    <s:param name="modal_message"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.UNASSIGN_EMPLOYEE_DESC" /></s:param>
 </s:include>
 
 <div class="row">
@@ -27,13 +27,13 @@
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="site-status">
                 <a href="${contractor_site_assignments}">
-                    <span class="badge badge-info pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
-                    Site Status
+                  <span class="badge badge-info pull-right">${assignmentMatrix.totalNumberOfEmployeesAssignedToSite}</span>
+                  <s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.SECONDARY_NAV_MENU.SITE" />
                 </a>
             </li>
             <li class="nav-divider"></li>
             <li>
-                <span class="nav-title">Job Roles</span>
+                <span class="nav-title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.SECONDARY_NAV_MENU.JOB_ROLES" /></span>
             </li>
             <s:set var="selected_role" value="%{id}"/>
             <s:iterator value="assignmentMatrix.roleEmployee.keySet()" var="operator_job_role">
@@ -68,9 +68,9 @@
             <table class="table table-striped table-condensed table-hover table-assignment">
                 <thead>
                     <tr>
-                        <th class="text-center">Assign</th>
-                        <th>Employee</th>
-                        <th>Title</th>
+                        <th class="text-center"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.TABLE.ASSIGN" /></th>
+                        <th><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.TABLE.EMPLOYEE" /></th>
+                        <th><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.TABLE.TITLE" /></th>
                         <s:iterator value="assignmentMatrix.skillNames" var="skill_name">
                             <th class="text-center">${skill_name}</th>
                         </s:iterator>
@@ -162,9 +162,9 @@
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4>No Assignments for this Job Role</h4>
+                        <h4><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.STATUS_NO_EMPLOYEES" /></h4>
 
-                        <p>Currently, no one is assigned to this Job Role.  When employees are assigned to this Job Role, they will be displayed here.</p>
+                        <p><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.ROLE.STATUS_NO_EMPLOYEES_DESC" /></p>
                     </div>
                 </div>
             </div>

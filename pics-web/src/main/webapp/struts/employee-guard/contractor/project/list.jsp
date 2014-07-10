@@ -8,7 +8,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments and Projects</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.PROJECT.LIST.ASSIGNMENTS_AND_PROJECTS" /></s:param>
 </s:include>
 
 <section class="employee-guard-section info-toolbar">
@@ -25,7 +25,7 @@
                         </s:param>
                     </s:url>
                     <a href="${contractor_site_assignment}" class="btn btn-warning btn-xs pull-right">
-                        <i class="icon-map-marker icon-large"></i> Site Assignments
+                        <i class="icon-map-marker icon-large"></i> <s:text name="CONTRACTOR.PROJECT.LIST.SITE_ASSIGNMENTS" />
                     </a>
                     <ul class="list-inline hidden-xs pull-right">
                         <li class="success">
@@ -55,10 +55,10 @@
                         <th class="danger text-center">
                             <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expired or Incomplete"></i>
                         </th>
-                        <th>Project</th>
-                        <th>Location</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th><s:text name="CONTRACTOR.PROJECT.LIST.PROJECT" /></th>
+                        <th><s:text name="CONTRACTOR.PROJECT.LIST.LOCATION" /></th>
+                        <th><s:text name="CONTRACTOR.PROJECT.LIST.START_DATE" /></th>
+                        <th><s:text name="CONTRACTOR.PROJECT.LIST.END_DATE" /></th>
                     </tr>
                 </thead>
                 <tbody>

@@ -1,5 +1,8 @@
 package com.picsauditing.employeeguard.validators.group;
 
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
@@ -17,54 +20,85 @@ import javax.servlet.http.HttpServletRequest;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
 
 public class GroupFormValidatorTest {
 
-    private GroupFormValidator groupFormValidator;
+	private GroupFormValidator groupFormValidator;
 
-    @Mock
-    HttpServletRequest request;
-    @Mock
-    private DuplicateEntityChecker duplicateEntityChecker;
+	@Mock
+	HttpServletRequest request;
+	@Mock
+	private DuplicateEntityChecker duplicateEntityChecker;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        groupFormValidator = new GroupFormValidator();
+	@Mock
+	private ThreadLocal<ActionContext> threadLocalActionContext;
 
-        Whitebox.setInternalState(groupFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
-    }
+	@Mock
+	private ActionContext actionContext;
 
-    @Test
-    public void testValidationSuccess() {
-        when(request.getMethod()).thenReturn("POST");
-        ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(GroupFormValidator.GROUP_NAME_SKILLS_FORM, getGroupSkillsFormPassValidation()));
-        ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
+	@Mock
+	private ActionInvocation actionInvocation;
 
-        groupFormValidator.validate(valueStack, validatorContext);
+	@Mock
+	private ActionSupport actionSupport;
 
-        assertFalse(validatorContext.hasErrors());
-    }
+	@Mock
+	private ValueStack valueStack;
 
-    public GroupNameSkillsForm getGroupSkillsFormPassValidation() {
-        GroupNameSkillsForm groupNameSkillsForm = new GroupNameSkillsForm();
-        groupNameSkillsForm.setName("Bob Group");
-        return groupNameSkillsForm;
-    }
+	private static final String DUMMY_RESOURCE_BUNDLE_STRING= "DUMMY RESOURCE BUNDLE STRING";
 
-    @Test
-    public void testValidationFailure() {
-        when(request.getMethod()).thenReturn("POST");
-        ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(GroupFormValidator.GROUP_NAME_SKILLS_FORM, getGroupSkillsFormFailValidation()));
-        ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		groupFormValidator = new GroupFormValidator();
 
-        groupFormValidator.validate(valueStack, validatorContext);
+		Whitebox.setInternalState(groupFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
 
-        assertEquals("Name is missing", validatorContext.getFieldErrors().get(GroupFormValidator.GROUP_NAME_SKILLS_FORM + ".name").get(0));
-    }
+		initResourceBundleMocking();
+	}
 
-    public GroupNameSkillsForm getGroupSkillsFormFailValidation() {
-        return new GroupNameSkillsForm();
-    }
+	private void initResourceBundleMocking(){
+		Whitebox.setInternalState(ActionContext.class, threadLocalActionContext);
+		when(threadLocalActionContext.get()).thenReturn(actionContext);
+		when(actionContext.getActionInvocation()).thenReturn(actionInvocation);
+		when(actionInvocation.getAction()).thenReturn(actionSupport);
+		when(actionContext.getValueStack()).thenReturn(valueStack);
+		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+
+	}
+
+	@Test
+	public void testValidationSuccess() {
+		when(request.getMethod()).thenReturn("POST");
+		ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(GroupFormValidator.GROUP_NAME_SKILLS_FORM, getGroupSkillsFormPassValidation()));
+		ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
+
+		groupFormValidator.validate(valueStack, validatorContext);
+
+		assertFalse(validatorContext.hasErrors());
+	}
+
+	public GroupNameSkillsForm getGroupSkillsFormPassValidation() {
+		GroupNameSkillsForm groupNameSkillsForm = new GroupNameSkillsForm();
+		groupNameSkillsForm.setName("Bob Group");
+		return groupNameSkillsForm;
+	}
+
+	@Test
+	public void testValidationFailure() {
+		when(request.getMethod()).thenReturn("POST");
+		ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(GroupFormValidator.GROUP_NAME_SKILLS_FORM, getGroupSkillsFormFailValidation()));
+		ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
+
+		groupFormValidator.validate(valueStack, validatorContext);
+
+		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, validatorContext.getFieldErrors().get(GroupFormValidator.GROUP_NAME_SKILLS_FORM + ".name").get(0));
+	}
+
+	public GroupNameSkillsForm getGroupSkillsFormFailValidation() {
+		return new GroupNameSkillsForm();
+	}
 }

@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.validators.group;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class GroupFormValidator extends AbstractBasicAndDuplicateValidator<GroupNameSkillsForm> {
@@ -13,8 +14,8 @@ public class GroupFormValidator extends AbstractBasicAndDuplicateValidator<Group
 	@Override
 	public void doFormValidation(GroupNameSkillsForm groupForm) {
 		if (!GroupValidationUtil.valid(groupForm.getName(), GroupValidationUtil.Field.NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_FORM, "name"), "Name is missing");
-			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_NAME_SKILLS_FORM, "name"), "Name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.GROUP.NAME"));
+			addFieldErrorIfMessage(fieldKeyBuilder(GROUP_NAME_SKILLS_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.GROUP.NAME"));
 		}
 	}
 
@@ -30,6 +31,6 @@ public class GroupFormValidator extends AbstractBasicAndDuplicateValidator<Group
 
     @Override
     protected String getDuplicateErrorMessage() {
-        return "Name";
+        return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.GROUP.DUPLICATE");
     }
 }

@@ -39,7 +39,7 @@
             <p class="description">${skillDocumentForm.skillInfo.description}</p>
 
             <dl class="employee-guard-information edit-display-values">
-                <dt class="col-md-3">File</dt>
+                <dt class="col-md-3"><s:text name="EMPLOYEE.SKILL.SHOW.FILE"/></dt>
                 <dd class="col-md-9">${skillDocumentForm.proof}</dd>
 
                 <s:if test="skillDocumentForm.proof != 'None'">

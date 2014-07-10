@@ -13,7 +13,7 @@
 <%-- Page title --%>
 <s:if test="permissions.accountId == skill.accountId">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title"><s:text name="CORPORATE.SKILLS.SHOW.PAGE.HEADER"/> ${skill.name}</s:param>
+        <s:param name="title"><s:text name="COPERATOR.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
         <s:param name="actions">
             <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CORPORATE.SKILLS.SHOW.DELETE.BUTTON"/>
             </button>
@@ -23,7 +23,7 @@
 </s:if>
 <s:else>
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title"><s:text name="OPERATOR.SKILLS.SHOW.PAGE.HEADER"/> ${skill.name}</s:param>
+        <s:param name="title"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
         <s:param name="breadcrumb_name">${skill.name}</s:param>
     </s:include>
 </s:else>

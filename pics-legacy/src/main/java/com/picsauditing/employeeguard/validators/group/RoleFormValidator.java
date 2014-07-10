@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.validators.group;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.operator.OperatorJobRoleForm;
 import com.picsauditing.employeeguard.forms.operator.RoleNameSkillsForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<RoleNameSkillsForm> {
@@ -13,8 +14,8 @@ public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<RoleNa
 	@Override
 	public void doFormValidation(RoleNameSkillsForm roleForm) {
 		if (!GroupValidationUtil.valid(roleForm.getName(), GroupValidationUtil.Field.NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(ROLE_FORM, "name"), "Name is missing");
-			addFieldErrorIfMessage(fieldKeyBuilder(ROLE_NAME_SKILLS_FORM, "name"), "Name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(ROLE_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.ROLE.NAME"));
+			addFieldErrorIfMessage(fieldKeyBuilder(ROLE_NAME_SKILLS_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.ROLE.NAME"));
 		}
 	}
 
@@ -30,6 +31,6 @@ public class RoleFormValidator extends AbstractBasicAndDuplicateValidator<RoleNa
 
 	@Override
 	protected String getDuplicateErrorMessage() {
-		return "Name";
+		return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.ROLE.DUPLICATE");
 	}
 }
