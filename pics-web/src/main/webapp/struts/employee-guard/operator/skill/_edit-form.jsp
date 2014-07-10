@@ -20,21 +20,21 @@
 <tw:form formName="operator_skill_edit" action="${operator_skill_update_url}" method="post" class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+            <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="CORPORATE.SKILLS.EDIT.SKILL.NAME"/></strong></tw:label>
             <div class="col-md-4">
                 <tw:input inputName="name" class="form-control" type="text" autofocus="true" tabindex="1" value="${skill.name}" maxlength="70" />
             </div>
         </div>
 
         <div class="form-group">
-            <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
+            <tw:label labelName="description" class="col-md-3 control-label"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.DESCRIPTION"/></tw:label>
             <div class="col-md-4">
                 <tw:textarea textareaName="description" class="form-control" tabindex="2" maxlength="1470" >${skill.description}</tw:textarea>
             </div>
         </div>
 
         <dl class="employee-guard-information non-editable-form-field">
-            <dt class="col-md-3">Skill Type</dt>
+            <dt class="col-md-3"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.SKILL_TYPE"/></dt>
             <dd class="col-md-4">${skill.skillType}</dd>
         </dl>
         <input type="hidden" name="operator_skill_edit.skillType" value="${skill.skillType}" />

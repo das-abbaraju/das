@@ -17,9 +17,9 @@
 <%-- Page title --%>
 <s:if test="permissions.accountId == role.accountId">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Job Role: ${role.name}</s:param>
+        <s:param name="title"><s:text name="OPERATOR.JOB_ROLES.SHOW.PAGE.HEADER"/> ${role.name}</s:param>
         <s:param name="actions">
-            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Job Role
+            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CORPORATE.JOB_ROLES.SHOW.DELETE.BUTTON"/>
             </button>
         </s:param>
         <s:param name="breadcrumb_name">${role.name}</s:param>
@@ -27,7 +27,7 @@
 </s:if>
 <s:else>
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Job Role: ${role.name}</s:param>
+        <s:param name="title"><s:text name="OPERATOR.JOB_ROLES.SHOW.PAGE.HEADER"/> ${role.name}</s:param>
         <s:param name="breadcrumb_name">${role.name}</s:param>
     </s:include>
 </s:else>
@@ -35,8 +35,8 @@
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${operator_role_delete_url}</s:param>
-    <s:param name="modal_title">Delete Job Role</s:param>
-    <s:param name="modal_message">Deleting will remove the job role and its required skills.</s:param>
+    <s:param name="modal_title"><s:text name="CORPORATE.JOB_ROLES.SHOW.DELETE.MODEL.TITLE"/></s:param>
+    <s:param name="modal_message"><s:text name="CORPORATE.JOB_ROLES.SHOW.DELETE.MODEL.MSG"/></s:param>
 </s:include>
 
 <div class="row">
@@ -45,7 +45,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-group icon-large"></i> Role
+                        <i class="icon-group icon-large"></i> <s:text name="OPERATOR.JOB_ROLES.SHOW.ROLE.HEADER"/>
                     </div>
                     <s:if test="permissions.accountId == role.accountId">
                         <div class="col-md-3 col-xs-3 edit">
@@ -57,9 +57,9 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Name</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.JOB_ROLES.SHOW.ROLE.NAME"/></dt>
                     <dd class="col-md-9">${role.name}</dd>
-                    <dt class="col-md-3">Required Skills</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.JOB_ROLES.SHOW.ROLE.REQUIRED_SKILLS"/></dt>
                     <dd class="col-md-9">
                         <s:set var="operator_skills" value="role.skills"/>
                         <s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
@@ -74,7 +74,7 @@
                 <h1>
                     <div class="row">
                         <div class="col-md-9 col-xs-9">
-                            <i class="icon-sitemap icon-large"></i> Current Projects
+                            <i class="icon-sitemap icon-large"></i> <s:text name="OPERATOR.JOB_ROLES.SHOW.CURRENT_PROJECTS.HEADER"/>
                         </div>
                     </div>
                 </h1>
@@ -96,7 +96,7 @@
                 <h1>
                     <div class="row">
                         <div class="col-md-9 col-xs-9">
-                            <i class="icon-sitemap icon-large"></i> Current Projects
+                            <i class="icon-sitemap icon-large"></i> <s:text name="OPERATOR.JOB_ROLES.SHOW.CURRENT_PROJECTS.HEADER"/>
                         </div>
                     </div>
                 </h1>

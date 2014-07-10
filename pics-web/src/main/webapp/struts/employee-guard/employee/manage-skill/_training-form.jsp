@@ -13,7 +13,7 @@
                  class="form-horizontal js-validation" role="form">
             <fieldset>
                 <div class="form-group">
-                    <tw:label labelName="verified" class="col-md-3 control-label"><strong>File</strong></tw:label>
+                    <tw:label labelName="verified" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.SKILL.EDIT.FILE"/></strong></tw:label>
                     <div class="col-md-9">
                         <div class="checkbox">
                             <tw:label labelName="verified" class="control-label">
@@ -24,7 +24,7 @@
                                     <tw:input inputName="verified" type="checkbox" value="true"/>
                                 </s:else>
 
-                                I certify that I have met all requirements.
+                                <s:text name="EMPLOYEE.SKILL.USER_CERTIFICATION_MSG"/>
                             </tw:label>
                         </div>
                     </div>
@@ -32,8 +32,8 @@
 
                 <div class="form-group">
                     <div class="col-md-9 col-md-offset-3 form-actions">
-                        <tw:button buttonName="update" type="submit" class="btn btn-primary">Update</tw:button>
-                        <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+                        <tw:button buttonName="update" type="submit" class="btn btn-primary"><s:text name="EMPLOYEE.SKILL.EDIT.UPDATE.BUTTON"/></tw:button>
+                        <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="EMPLOYEE.SKILL.EDIT.CANCEL.BUTTON"/></tw:button>
                     </div>
                 </div>
             </fieldset>

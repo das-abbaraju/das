@@ -9,15 +9,15 @@
 <%-- Page title --%>
 <s:if test="permissions.corporate">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Job Roles</s:param>
+        <s:param name="title"><s:text name="OPERATOR.JOB_ROLES.LIST.PAGE.HEADER"/></s:param>
         <s:param name="actions">
-            <a href="${operator_role_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Job Role</a>
+            <a href="${operator_role_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="OPERATOR.JOB_ROLES.LIST.JOB_ROLE.BUTTON"/></a>
         </s:param>
     </s:include>
 </s:if>
 <s:else>
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Job Roles</s:param>
+        <s:param name="title"><s:text name="OPERATOR.JOB_ROLES.LIST.TABLE.HEADER.JOB_ROLE"/></s:param>
     </s:include>
 </s:else>
 
@@ -25,7 +25,8 @@
         <tw:form formName="operator_role_search" action="${operator_role_list_url}" class="search-query" role="form">
             <fieldset>
                 <div class="search-wrapper col-md-4">
-                    <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Job Roles"
+                    <s:set var="placeholderText"><s:text name="OPERATOR.JOB_ROLES.LIST.SEARCH.INPUT.DEFAULT_TEXT"/></s:set>
+                    <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${placeholderText}"
                               value="${searchForm.searchTerm}"/>
                     <i class="icon-search"></i>
                     <ul id="operator_role_search" class="search-results"></ul>
@@ -36,8 +37,8 @@
             <table class="table table-striped table-condensed table-hover">
                 <thead>
                 <tr>
-                    <th>Job Role</th>
-                    <th>Required Skills</th>
+                    <th><s:text name="OPERATOR.JOB_ROLES.LIST.TABLE.HEADER.JOB_ROLE"/></th>
+                    <th><s:text name="OPERATOR.JOB_ROLES.LIST.TABLE.HEADER.REQUIRED_SKILLS"/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -60,31 +61,31 @@
     <s:else>
         <section class="employee-guard-section">
             <h1>
-                <i class="icon-group icon-large"></i>Job Roles
+                <i class="icon-group icon-large"></i><s:text name="Job Roles"/>
             </h1>
             <div class="content">
                 <div class="col-md-8 col-md-offset-2">
                     <s:if test="permissions.corporate">
                         <div class="alert alert-info">
-                            <h4>No Job Roles</h4>
+                            <h4><s:text name="CORPORATE.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.TITLE"/></h4>
 
-                            <p>Job Roles are where companies will assign their employees. By requiring specific Skills for different Job Roles, you can be sure that the assigned employees have the correct competencies for the job at hand.</p>
+                            <p><s:text name="CORPORATE.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.MSG1"/></p>
 
-                            <p>Create your first Job Role by selecting the <strong><i class="icon-plus-sign"></i> Job Role</strong> button at the top of the page.</p>
+                            <p><s:text name="CORPORATE.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.MSG2"/></p>
 
                             <p>
-                                <a href="#"><i class="icon-question-sign"></i> Learn more about Job Roles</a>
+                                <a href="#"><i class="icon-question-sign"></i> <s:text name="CORPORATE.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.MSG3"/></a>
                             </p>
                         </div>
                     </s:if>
                     <s:else>
                         <div class="alert alert-info">
-                            <h4>No Job Roles</h4>
+                            <h4><s:text name="OPERATOR.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.TITLE"/></h4>
 
-                            <p>Job Roles are where companies will assign their employees. Work with your corporate account to make sure the correct Skills are required for different Job Roles. Once these are set up, you can be sure that the assigned employees have the correct competencies for the job at hand.</p>
+                            <p><s:text name="OPERATOR.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.MSG1"/></p>
 
                             <p>
-                                <a href="#"><i class="icon-question-sign"></i> Learn more about Job Roles</a>
+                                <a href="#"><i class="icon-question-sign"></i> <s:text name="OPERATOR.JOB_ROLES.LIST.NO_JOB_ROLES_MSG.MSG2"/></a>
                             </p>
                         </div>
                     </s:else>

@@ -26,9 +26,9 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Project: ${project.name}</s:param>
+    <s:param name="title"><s:text name="OPERATOR.PROJECT.SHOW.PAGE.HEADER"/> ${project.name}</s:param>
     <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Project
+        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="OPERATOR.PROJECT.SHOW.DELETE.BUTTON"/>
         </button>
     </s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
@@ -37,15 +37,15 @@
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${operator_project_delete_url}</s:param>
-    <s:param name="modal_title">Delete Project</s:param>
-    <s:param name="modal_message">Deleting will remove the project and its assigned job roles, assigned companies, and employee assignments.</s:param>
+    <s:param name="modal_title"><s:text name="OPERATOR.PROJECT.SHOW.DELETE.MODAL.TITLE"/></s:param>
+    <s:param name="modal_message"><s:text name="OPERATOR.PROJECT.SHOW.DELETE.MODAL.MSG"/></s:param>
 </s:include>
 
 <%-- Remove Requested Companies Confirmation --%>
 <s:include value="/struts/employee-guard/_remove-requested-company-confirmation.jsp">
     <s:param name="delete_url">#</s:param>
-    <s:param name="modal_title">Confirm Removing Requested Company</s:param>
-    <s:param name="modal_message">You are removing one or more requested companies. Removing a company also removes all of a company's employees assigned to the project.</s:param>
+    <s:param name="modal_title"><s:text name="OPERATOR.PROJECT.EDIT.COMPANY.REMOVE.MODAL.TITLE"/></s:param>
+    <s:param name="modal_message"><s:text name="OPERATOR.PROJECT.EDIT.COMPANY.REMOVE.MODAL.MSG"/></s:param>
 </s:include>
 
 <div class="row">
@@ -54,7 +54,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-sitemap icon-large"></i> Project
+                        <i class="icon-sitemap icon-large"></i> <s:text name="OPERATOR.PROJECT.SHOW.PROJECT.HEADER"/>
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -65,19 +65,19 @@
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
                     <s:if test="permissions.corporate">
-                        <dt class="col-md-3">Site</dt>
+                        <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.CORPOATE.SITE.LABEL"/></dt>
                         <dd class="col-md-9">${project.site}</dd>
                     </s:if>
-                    <dt class="col-md-3">Name</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.NAME.LABEL"/></dt>
                     <dd class="col-md-9">${project.name}</dd>
-                    <dt class="col-md-3">Location</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.LOCATION.LABEL"/></dt>
                     <dd class="col-md-9">${project.location}</dd>
-                    <dt class="col-md-3">Start Date</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.START_DATE.LABEL"/></dt>
                     <dd class="col-md-9"><s:date name="project.startDate" format="yyyy-MM-dd"/></dd>
-                    <dt class="col-md-3">End Date</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.END_DATE.LABEL"/></dt>
                     <dd class="col-md-9"><s:date name="project.endDate" format="yyyy-MM-dd"/></dd>
 
-                    <dt class="col-md-3">Project Skills</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.PROJECT.SHOW.SKILLS.LABEL"/></dt>
                     <dd class="col-md-9">
                         <s:set var="operator_skills" value="project.skills"/>
                         <s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
@@ -90,7 +90,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-group icon-large"></i> Project Job Roles
+                        <i class="icon-group icon-large"></i> <s:text name="OPERATOR.PROJECT.SHOW.ROLES.HEADER"/>
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -121,11 +121,11 @@
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-warning">
-                                <h4>No Project Job Roles!</h4>
+                                <h4><s:text name="OPERATOR.PROJECT.SHOW.ROLES.NO_ROLES_MSG.TITLE"/></h4>
 
-                                <p>Companies can not assign employees to this project until Job Roles are added.</p>
+                                <p><s:text name="OPERATOR.PROJECT.SHOW.ROLES.NO_ROLES_MSG.MSG1"/></p>
 
-                                <p>Select <strong>Edit</strong> ( <i class="icon-edit icon-large"></i> ) in the <strong>Project Job Roles</strong> bar above to add Job Roles to this project.</p>
+                                <p><s:text name="OPERATOR.PROJECT.SHOW.ROLES.NO_ROLES_MSG.MSG2"/></p>
                             </div>
                         </div>
                     </div>
@@ -137,7 +137,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-building icon-large"></i> Companies Requested for Project
+                        <i class="icon-building icon-large"></i> <s:text name="OPERATOR.PROJECT.SHOW.COMPANIES.HEADER"/>
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -157,12 +157,12 @@
         <s:else>
             <section class="employee-guard-section" data-url="${operator_project_url}">
                 <h1>
-                    <i class="icon-map-marker icon-large"></i> Assigned Employees
+                    <i class="icon-map-marker icon-large"></i> <s:text name="OPERATOR.PROJECT.SHOW.ASSIGNED_EMPLOYEES.HEADER"/>
                 </h1>
 
                 <div class="content">
                     <a href="${operator_assignments_url}" class="btn btn-primary btn-block"><i class="icon-table"></i>
-                        Current Assignments</a>
+                        <s:text name="OPERATOR.PROJECT.SHOW.ASSIGNED_EMPLOYEES.CURRENT_ASSIGNMENTS.BUTTON"/></a>
                 </div>
             </section>
         </s:else>

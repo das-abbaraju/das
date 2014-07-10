@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.validators.skill;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.SkillForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class SkillFormValidator extends AbstractBasicAndDuplicateValidator<SkillForm> {
@@ -11,16 +12,16 @@ public class SkillFormValidator extends AbstractBasicAndDuplicateValidator<Skill
 	@Override
 	public void doFormValidation(SkillForm skillForm) {
 		if (!SkillValidationUtil.valid(skillForm, SkillValidationUtil.SkillField.NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(SKILL_FORM, "name"), "Skill name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(SKILL_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.SKILL.NAME"));
 		}
 
 		if (!SkillValidationUtil.valid(skillForm, SkillValidationUtil.SkillField.TYPE)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(SKILL_FORM, "skillType"), "Type is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(SKILL_FORM, "skillType"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.SKILL.TYPE"));
 		}
 
 		if (!SkillValidationUtil.valid(skillForm, SkillValidationUtil.SkillField.EXPIRES)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(SKILL_FORM, "intervalPeriod"),
-					"Expiration is invalid");
+							EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.SKILL.EXPIRATION"));
 		}
 	}
 
@@ -32,6 +33,6 @@ public class SkillFormValidator extends AbstractBasicAndDuplicateValidator<Skill
 
     @Override
     protected String getDuplicateErrorMessage() {
-        return "Name, Type";
+        return EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.SKILL.DUPLICATE");
     }
 }

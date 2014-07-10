@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.validators.document;
 
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import org.joda.time.DateTime;
@@ -38,7 +39,7 @@ public class ProfileDocumentValidationUtil {
 		int day = documentForm.getExpireDay();
 
 		if (year == 0 && month == 0 && day == 0 && !documentForm.isNoExpiration()) {
-			return "Expiration date is required";
+			return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.DOCUMENT.EXPIRATION_DATE");
 		}
 
 		String error = Strings.EMPTY_STRING;
@@ -49,16 +50,16 @@ public class ProfileDocumentValidationUtil {
 			expirationDateTime = new DateTime(year, month, day, 0, 0);
 			currentDateTime = new DateTime();
 		} catch (IllegalFieldValueException e) {
-			error = "Invalid Year-Month-Day";
+			error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE");
 			return error;
 		}
 
 		int yearsAheadBehind = Math.abs(Years.yearsBetween(expirationDateTime, currentDateTime).getYears());
 		if (yearsAheadBehind > 99) {
 			if (expirationDateTime.isBefore(currentDateTime)) {
-				error = "Expiration Date is too far in the past";
+				error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE_IN_PAST");
 			} else {
-				error = "Expiration Date is too far in the future";
+				error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE_IN_FUTURE");
 			}
 		}
 

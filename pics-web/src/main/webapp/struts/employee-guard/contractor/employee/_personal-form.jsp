@@ -13,8 +13,7 @@
 
 <tw:form formName="contractor_employee_edit_personal" action="${contractor_employee_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group ${first_name_error_class}">
-        <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First
-            Name</strong></tw:label>
+        <tw:label labelName="firstName" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.FIRST_NAME" /></strong></tw:label>
         <div class="col-md-4">
             <tw:input inputName="firstName" class="form-control" type="text" autofocus="true" tabindex="1" value="${employee.firstName}" maxlength="100" />
             <tw:error errorName="firstName"/>
@@ -22,7 +21,7 @@
     </div>
 
     <div class="form-group ${last_name_error_class}">
-        <tw:label labelName="lastName" class="col-md-3 control-label"><strong>Last Name</strong></tw:label>
+        <tw:label labelName="lastName" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.LAST_NAME" /></strong></tw:label>
         <div class="col-md-4">
             <tw:input inputName="lastName" class="form-control" type="text" tabindex="2" value="${employee.lastName}" maxlength="100" />
             <tw:error errorName="lastName"/>
@@ -30,7 +29,7 @@
     </div>
 
     <div class="form-group ${email_error_class}">
-        <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
+        <tw:label labelName="email" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.EMAIL" /></strong></tw:label>
         <div class="col-md-4">
             <tw:input inputName="email" class="form-control" type="text" tabindex="3" value="${employee.email}" maxlength="70" />
             <tw:error errorName="email"/>
@@ -38,7 +37,7 @@
     </div>
 
     <div class="form-group">
-        <tw:label labelName="phoneNumber" class="col-md-3 control-label">Phone</tw:label>
+        <tw:label labelName="phoneNumber" class="col-md-3 control-label"><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.PHONE" /></tw:label>
         <div class="col-md-4">
             <tw:input inputName="phoneNumber" class="form-control" tabindex="4" type="text" value="${employee.phone}" maxlength="24" />
         </div>
@@ -46,8 +45,8 @@
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3 form-actions">
-            <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="5">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="6">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="5"><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.SAVE" /></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="6"><s:text name="CONTRACTOR.EMPLOYEE.PERSONAL.CANCEL" /></tw:button>
         </div>
     </div>
 </tw:form>

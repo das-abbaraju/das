@@ -11,20 +11,20 @@
     <tw:input type="hidden" inputName="id" value="${document.id}" />
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+            <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.FILE.EDIT.NAME"/></strong></tw:label>
             <div class="col-md-4">
                 <tw:input inputName="name" class="form-control" type="text" value="${document.name}" maxlength="70" />
             </div>
         </div>
 
         <div class="form-group">
-            <tw:label labelName="file" class="col-md-3 control-label"><strong>File</strong></tw:label>
+            <tw:label labelName="file" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.FILE.EDIT.FILE"/></strong></tw:label>
             <div class="col-md-4">
                 <tw:input inputName="file" type="file" class="file-import default-file-import col-md-12" />
                 <tw:input id="validate-filename" inputName="validate_filename" value="${document.fileName}" type="hidden" />
 
                 <tw:button type="button" class="btn btn-default btn-import">
-                    <i class="icon-upload"></i>Upload New
+                    <i class="icon-upload"></i><s:text name="EMPLOYEE.FILE.EDIT.UPLOAD_NEW"/>
                 </tw:button>
                 <div class="row">
                     <div class="col-md-12">
@@ -35,7 +35,7 @@
         </div>
 
         <div class="form-group">
-            <tw:label labelName="expireYear" class="col-md-3 control-label"><strong>Expires</strong></tw:label>
+            <tw:label labelName="expireYear" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.FILE.EDIT.EXPIRES"/></strong></tw:label>
             <div class="col-md-4">
                 <fieldset class="expiration-date">
                     <div class="row date">
@@ -61,7 +61,7 @@
                         <s:else>
                             <tw:input inputName="noExpiration" type="checkbox" class="no-expiration" data-toggle="form-input" data-target=".expiration-date" value="true" />
                         </s:else>
-                        Does not expire
+                        <s:text name="EMPLOYEE.FILE.EDIT.DOES_NOT_EXPIRE"/>
                     </tw:label>
                 </div>
             </div>
@@ -69,8 +69,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="update" type="submit" class="btn btn-primary">Update</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+                <tw:button buttonName="update" type="submit" class="btn btn-primary"><s:text name="EMPLOYEE.FILE.EDIT.UPDATE.BUTTON"/></tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="EMPLOYEE.FILE.EDIT.CANCEL.BUTTON"/></tw:button>
             </div>
         </div>
     </fieldset>

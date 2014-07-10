@@ -5,7 +5,7 @@
 <s:set var="does_not_expire" value="%{operatorSkillForm.doesNotExpire ? 'checked' : ''}"/>
 
 <div class="form-group">
-    <tw:label labelName="intervalPeriod" class="col-md-3 control-label"><strong>Expires after&hellip;</strong></tw:label>
+    <tw:label labelName="intervalPeriod" class="col-md-3 control-label"><strong><s:text name="CORPORATE.SKILLS.EDIT.SKILL.EXPIRES_AFTER"/></strong></tw:label>
     <div class="col-md-4">
         <div class="row">
             <fieldset class="expiration-date">
@@ -31,7 +31,7 @@
                 <s:else>
                     <tw:input inputName="doesNotExpire" type="checkbox" class="no-expiration" value="true" data-toggle="form-input" data-target=".expiration-date" tabindex="6"/>
                 </s:else>
-                Does not expire
+                <s:text name="CORPORATE.SKILLS.EDIT.SKILL.DOES_NOT_EXPIRE"/>
             </tw:label>
         </div>
     </div>

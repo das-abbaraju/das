@@ -13,9 +13,9 @@
 <%-- Page title --%>
 <s:if test="permissions.accountId == skill.accountId">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Skill: ${skill.name}</s:param>
+        <s:param name="title"><s:text name="COPERATOR.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
         <s:param name="actions">
-            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete Skill
+            <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CORPORATE.SKILLS.SHOW.DELETE.BUTTON"/>
             </button>
         </s:param>
         <s:param name="breadcrumb_name">${skill.name}</s:param>
@@ -23,7 +23,7 @@
 </s:if>
 <s:else>
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Skill: ${skill.name}</s:param>
+        <s:param name="title"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
         <s:param name="breadcrumb_name">${skill.name}</s:param>
     </s:include>
 </s:else>
@@ -31,8 +31,8 @@
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${operator_skill_delete_url}</s:param>
-    <s:param name="modal_title">Delete Skill</s:param>
-    <s:param name="modal_message">Deleting will remove the skill from all job roles and associated employees.</s:param>
+    <s:param name="modal_title"><s:text name="CORPORATE.SKILLS.SHOW.DELETE.MODAL.TITLE"/></s:param>
+    <s:param name="modal_message"><s:text name="CORPORATE.SKILLS.SHOW.DELETE.MODAL.MSG"/></s:param>
 </s:include>
 
 <div class="row">
@@ -53,30 +53,30 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Name</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.NAME"/></dt>
                     <dd class="col-md-9">${skill.name}</dd>
-                    <dt class="col-md-3">Description</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.DESCRIPTION"/></dt>
                     <dd class="col-md-9">${skill.description}</dd>
-                    <dt class="col-md-3">Skill Type</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.SKILL_TYPE"/></dt>
                     <dd class="col-md-9">${skill.skillType}</dd>
 
                     <s:if test="skill.skillType.training">
-                        <dt class="col-md-3">Expires after&hellip;</dt>
+                        <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.EXPIRES_AFTER"/></dt>
                         <dd class="col-md-9">
                             <s:if test="skill.intervalType.applicableExpiration">
                                 ${skill.intervalPeriod}
                                 ${skill.intervalType.displayValue}<s:if test="skill.intervalPeriod != 1">s</s:if>
                             </s:if>
                             <s:else>
-                                Never
+                                <s:text name="OPERATOR.SKILLS.SHOW.NEVER_EXPIRES"/>
                             </s:else>
                         </dd>
                     </s:if>
 
-                    <dt class="col-md-3">Job Roles</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.JOB_ROLES"/></dt>
                     <dd class="col-md-9">
                         <s:if test="skill.ruleType.required">
-                            Required for all employees
+                            <s:text name="OPERATOR.SKILLS.SHOW.REQUIRED_FOR_ALL_EMPLOYEES"/>
                         </s:if>
                         <s:else>
                             <s:set var="operator_roles" value="skill.roles"/>
