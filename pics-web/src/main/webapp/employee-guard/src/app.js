@@ -13,8 +13,10 @@ angular.module('EmployeeGUARD', [
         suffix: '.json'
     });
 
-    $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
-
     // load 'en' table on startup
     $translateProvider.preferredLanguage('en');
+})
+
+.run(function($translate, ProfileSettingsService) {
+    ProfileSettingsService.getSettings();
 });

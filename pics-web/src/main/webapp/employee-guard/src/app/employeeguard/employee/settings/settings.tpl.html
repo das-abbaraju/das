@@ -1,0 +1,70 @@
+<div ng-controller="settingsCtrl" class="employee-settings-page">
+    <div class="container">
+        <pagetitle title="{{ 'EMPLOYEE.SETTINGS.PAGE_TITLE' | translate }}"></pagetitle>
+        <div class="page-subheader">
+            <div class="row">
+                <div class="col-md-8">
+                    <ol class="breadcrumb">
+                        <li><a href="/employee-guard/employee/dashboard" translate="EMPLOYEE.SETTINGS.BREADCRUMB.DASHBOARD"></a></li>
+                        <li class="active" translate="EMPLOYEE.SETTINGS.BREADCRUMB.SETTINGS"></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                <section class="employee-guard-section">
+                    <h1>
+                        <div class="row">
+                            <div class="col-md-9 col-xs-9">
+                                <i class="icon-gear icon-large"></i>
+                                <span translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.TITLE"></span>
+                            </div>
+                            <div class="col-md-3 col-xs-3 edit">
+                                <i class="icon-edit icon-large" ng-click="toggleFormDisplay()"></i>
+                            </div>
+                        </div>
+                    </h1>
+                    <div class="content">
+                        <form name="settingsForm" class="form-horizontal" ng-if="showEditForm">
+                            <div class="form-group">
+                                <label for="operator_skill_edit_name" class="col-md-3 control-label">
+                                    <strong translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.LANGUAGE"></strong>
+                                </label>
+                                <div class="col-md-4">
+                                    <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-change="updateDialectList(user.language)" ng-model="user.language">
+                                        <option ng-repeat="language in languageList" value="{{ language.id }}">{{ language.name }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group" ng-if="dialectList.length">
+                                <label for="operator_skill_edit_name" class="col-md-3 control-label">
+                                    <strong translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.DIALECT"></strong>
+                                </label>
+                                <div class="col-md-4">
+                                    <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="user.dialect">
+                                        <option ng-repeat="dialect in dialectList" value="{{ dialect.id }}">{{ dialect.name }}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-9 col-md-offset-3 form-actions">
+                                    <button name="operator_skill_edit.update" class="btn btn-success" ng-click="updateSettings(user)" type="submit" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.SAVE"></button>
+                                    <button ng-click="toggleFormDisplay()" class="btn btn-default" type="button" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.CANCEL"></button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <dl class="employee-guard-information" ng-if="!showEditForm">
+                            <dt class="col-md-3" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.LANGUAGE"></dt>
+                            <dd class="col-md-9">{{ selected_language.name }}</dd>
+                            <dt ng-if="selected_dialect" class="col-md-3" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.DIALECT"></dt>
+                            <dd ng-if="selected_dialect" class="col-md-9">{{ selected_dialect.name }}</dd>
+                        </dl>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
