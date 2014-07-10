@@ -17,6 +17,7 @@ public class LDAPService {
     public static final String PICS_CORP = "@PICS.CORP";
 
     private static final Logger logger = LoggerFactory.getLogger(LDAPService.class);
+
     public static final String PICSAD = "picsad";
 
     @Autowired
