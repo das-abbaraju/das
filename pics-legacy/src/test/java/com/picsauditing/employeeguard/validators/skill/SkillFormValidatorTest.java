@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.forms.contractor.SkillForm;
 import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContextFactory;
 import com.picsauditing.employeeguard.validators.factory.struts.ValueStackFactory;
 import com.picsauditing.model.i18n.KeyValue;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -50,7 +51,7 @@ public class SkillFormValidatorTest {
 	@Mock
 	private ValueStack valueStack;
 
-	private static final String DUMMY_RESOURCE_BUNDLE_STRING= "DUMMY RESOURCE BUNDLE STRING";
+	private static final String DUMMY_RESOURCE_BUNDLE_STRING = "DUMMY RESOURCE BUNDLE STRING";
 
 	@Before
 	public void setUp() {
@@ -61,18 +62,21 @@ public class SkillFormValidatorTest {
 		Whitebox.setInternalState(skillFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
 
 		initResourceBundleMocking();
-
 	}
 
 
-	private void initResourceBundleMocking(){
+	private void initResourceBundleMocking() {
 		Whitebox.setInternalState(ActionContext.class, threadLocalActionContext);
 		when(threadLocalActionContext.get()).thenReturn(actionContext);
 		when(actionContext.getActionInvocation()).thenReturn(actionInvocation);
 		when(actionInvocation.getAction()).thenReturn(actionSupport);
 		when(actionContext.getValueStack()).thenReturn(valueStack);
-		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+		when(actionSupport.getText(any(String.class), any(String.class), anyList(), any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+	}
 
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
 	}
 
 	@Test
@@ -97,13 +101,13 @@ public class SkillFormValidatorTest {
 	public void testNameAndExpirationValidationFailures() {
 		when(request.getMethod()).thenReturn("POST");
 		ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(SkillFormValidator.SKILL_FORM,
-						buildSkillFormNameAndExpirationValidationFailure()));
+				buildSkillFormNameAndExpirationValidationFailure()));
 		ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
 
 		skillFormValidator.validate(valueStack, validatorContext);
 
 		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, validatorContext.getFieldErrors().get(SkillFormValidator.SKILL_FORM
-						+ ".name").get(0));
+				+ ".name").get(0));
 	}
 
 	private SkillForm buildSkillFormNameAndExpirationValidationFailure() {
@@ -116,13 +120,13 @@ public class SkillFormValidatorTest {
 	public void testMissingSkillTypeValidationFailure() {
 		when(request.getMethod()).thenReturn("POST");
 		ValueStack valueStack = ValueStackFactory.getValueStack(request, new KeyValue<String, Object>(SkillFormValidator.SKILL_FORM,
-						buildSkillFormSkillTypeValidationFailure()));
+				buildSkillFormSkillTypeValidationFailure()));
 		ValidatorContext validatorContext = ValidatorContextFactory.getValidatorContext();
 
 		skillFormValidator.validate(valueStack, validatorContext);
 
 		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, validatorContext.getFieldErrors().get(SkillFormValidator.SKILL_FORM
-						+ ".skillType").get(0));
+				+ ".skillType").get(0));
 	}
 
 	private SkillForm buildSkillFormSkillTypeValidationFailure() {

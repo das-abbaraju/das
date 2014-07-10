@@ -10,6 +10,7 @@ import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContextFactory;
 import com.picsauditing.employeeguard.validators.factory.struts.ValueStackFactory;
 import com.picsauditing.model.i18n.KeyValue;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -67,7 +68,11 @@ public class GroupFormValidatorTest {
 		when(actionInvocation.getAction()).thenReturn(actionSupport);
 		when(actionContext.getValueStack()).thenReturn(valueStack);
 		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+	}
 
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
 	}
 
 	@Test

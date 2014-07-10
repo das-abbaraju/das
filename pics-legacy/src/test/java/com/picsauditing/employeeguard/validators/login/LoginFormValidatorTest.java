@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.forms.LoginForm;
 import com.picsauditing.employeeguard.validators.factory.struts.ValidatorContextFactory;
 import com.picsauditing.employeeguard.validators.factory.struts.ValueStackFactory;
 import com.picsauditing.model.i18n.KeyValue;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,9 +18,7 @@ import org.powermock.reflect.Whitebox;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Mockito.when;
@@ -46,7 +45,7 @@ public class LoginFormValidatorTest {
 	@Mock
 	private ValueStack valueStack;
 
-	private static final String DUMMY_RESOURCE_BUNDLE_STRING= "DUMMY RESOURCE BUNDLE STRING";
+	private static final String DUMMY_RESOURCE_BUNDLE_STRING = "DUMMY RESOURCE BUNDLE STRING";
 
 	@Before
 	public void setUp() {
@@ -58,14 +57,18 @@ public class LoginFormValidatorTest {
 
 	}
 
-	private void initResourceBundleMocking(){
+	private void initResourceBundleMocking() {
 		Whitebox.setInternalState(ActionContext.class, threadLocalActionContext);
 		when(threadLocalActionContext.get()).thenReturn(actionContext);
 		when(actionContext.getActionInvocation()).thenReturn(actionInvocation);
 		when(actionInvocation.getAction()).thenReturn(actionSupport);
 		when(actionContext.getValueStack()).thenReturn(valueStack);
-		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+		when(actionSupport.getText(any(String.class), any(String.class), anyList(), any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+	}
 
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
 	}
 
 	@Test

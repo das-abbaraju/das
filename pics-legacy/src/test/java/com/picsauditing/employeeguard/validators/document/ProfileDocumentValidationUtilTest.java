@@ -6,6 +6,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.util.Strings;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -49,9 +50,12 @@ public class ProfileDocumentValidationUtilTest {
 		when(actionInvocation.getAction()).thenReturn(actionSupport);
 		when(actionContext.getValueStack()).thenReturn(valueStack);
 		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
-
 	}
 
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
+	}
 
 	@Test
 	public void testValidateExpirationDate_NoExpirationDateProvided() {

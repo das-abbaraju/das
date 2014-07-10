@@ -8,6 +8,7 @@ import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
 import com.picsauditing.employeeguard.forms.operator.ProjectForm;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -68,6 +69,11 @@ public class ProjectFormValidatorTest extends PicsActionTest {
 		when(actionContext.getValueStack()).thenReturn(valueStack);
 		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
 
+	}
+
+	@After
+	public void tearDown() {
+		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
 	}
 
 	@Test
