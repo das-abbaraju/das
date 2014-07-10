@@ -420,6 +420,14 @@ public class AuditPercentCalculator {
         percentCalculateComplete(conAudit, recalcCats, true);
     }
 
+    public void percentCalculateComplete(int auditID, boolean recalcCats) {
+        ContractorAudit conAudit = contractorAuditDAO.find(auditID);
+        percentCalculateComplete(conAudit, recalcCats, true);
+        conAudit.setLastRecalculation(new Date());
+        conAudit.setAuditColumns();
+        contractorAuditDAO.save(conAudit);
+    }
+
     public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats, boolean advanceCaos) {
         if (recalcCats)
             recalcAllAuditCatDatas(conAudit);

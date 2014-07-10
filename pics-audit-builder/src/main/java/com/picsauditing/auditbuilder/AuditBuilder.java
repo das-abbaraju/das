@@ -56,6 +56,11 @@ public class AuditBuilder {
 
 	private Set<String> yearsForAllWCBs;
 
+    public void buildAudits(int conID) {
+        ContractorAccount contractor = contractorAuditOperatorDAO.find(ContractorAccount.class, conID);
+        buildAudits(contractor);
+    }
+
 	public void buildAudits(ContractorAccount contractor) {
 		AuditTypesBuilder typesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
         typesBuilder.setContractorTagDAO(contractorTagDAO);

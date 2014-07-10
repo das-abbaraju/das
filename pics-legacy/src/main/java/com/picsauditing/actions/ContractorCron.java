@@ -4,6 +4,7 @@ import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.cron.AuditCategoryJobException;
 import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
@@ -47,10 +48,6 @@ public class ContractorCron extends PicsActionSupport {
 	@Autowired
 	private EmailSubscriptionDAO subscriptionDAO;
 	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	@Autowired
-	private AuditBuilder auditBuilder;
-	@Autowired
 	private ContractorOperatorDAO contractorOperatorDAO;
 	@Autowired
 	private UserAssignmentDAO userAssignmentDAO;
@@ -72,6 +69,8 @@ public class ContractorCron extends PicsActionSupport {
     private EmployeeGuardRulesService employeeGuardRulesService;
     @Autowired
     private MessagePublisherService messageService;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
     @Autowired
     private FlagCalculatorFactory flagCalculatorFactory;
 
@@ -349,16 +348,12 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		logger.trace("ContractorCron starting AuditBuilder");
-		auditBuilder.buildAudits(contractor);
+        auditBuilderFactory.buildAudits(contractor);
+        contractorDAO.refresh(contractor);
 
 		checkLcCor(contractor);
 		cancelScheduledImplementationAudits(contractor);
         auditService.checkSla(contractor, permissions);
-	}
-
-	private boolean isSafetyManualUploadedVerified(ContractorAudit pqf) {
-
-		return false;
 	}
 
 	private void cancelScheduledImplementationAudits(ContractorAccount contractor) {
@@ -449,10 +444,7 @@ public class ContractorCron extends PicsActionSupport {
 			try {
 				final Date lastRecalculation = cAudit.getLastRecalculation();
 				if (lastRecalculation == null || DateBean.getDateDifference(lastRecalculation) < -14) {
-					auditPercentCalculator.percentCalculateComplete(cAudit, true);
-					cAudit.setLastRecalculation(new Date());
-					cAudit.setAuditColumns();
-					conAuditDAO.save(cAudit);
+                    auditBuilderFactory.percentCalculateComplete(cAudit);
 				}
 			} catch (Exception e) {
 				throw new AuditCategoryJobException("Failed to run audit category for contractorAccount id: " + contractor.getId()

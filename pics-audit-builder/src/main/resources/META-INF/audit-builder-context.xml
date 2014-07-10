@@ -9,9 +9,10 @@
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
+    <bean id="AuditBuilder" class="com.picsauditing.auditbuilder.AuditBuilder" scope="prototype"/>
+    <bean id="AuditCategoryRuleCache" class="com.picsauditing.auditbuilder.AuditCategoryRuleCache" scope="prototype"/>
+    <bean id="AuditPercentCalculator" class="com.picsauditing.auditbuilder.AuditPercentCalculator" scope="prototype"/>
     <bean id="AuditTypeRuleCache" class="com.picsauditing.auditbuilder.AuditTypeRuleCache" scope="prototype"/>
-    <bean id="AuditCategoryRuleCache" class="com.picsauditing.auditbuilder.AuditCategoryRuleCache"/>
-    <bean id="AuditPercentCalculator" class="com.picsauditing.auditbuilder.AuditPercentCalculator"/>
 
     <bean id="AuditPeriodService" class="com.picsauditing.auditbuilder.service.AuditPeriodService"/>
 

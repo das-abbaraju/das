@@ -403,6 +403,7 @@
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.SpringConfiguredTranslationUsageDAO" scope="prototype"/>
 
     <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
+    <bean id="AuditBuilderFactory" class="com.picsauditing.audits.AuditBuilderFactory" scope="prototype"/>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"

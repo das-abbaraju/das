@@ -9,7 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.picsauditing</groupId>
     <artifactId>pics-audit-builder</artifactId>
+    <version>1.0</version>
+    <name>Audit Builder</name>
+    <description>Generator for Audits</description>
+
     <dependencies>
         <dependency>
             <groupId>joda-time</groupId>
