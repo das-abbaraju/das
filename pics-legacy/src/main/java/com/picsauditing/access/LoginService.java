@@ -54,9 +54,9 @@ public class LoginService {
 		return user;
 	}
 
-    public LoginContext doPreLoginVerification(String identityProvider, User user, String username, String password) throws LoginException {
-        if(StringUtils.isNotEmpty(identityProvider)) {
-            ldapService.doLDAPLoginAuthentication(identityProvider,username, password);
+    public LoginContext doPreLoginVerification(String idp, User user, String username, String password) throws LoginException {
+        if(StringUtils.isNotEmpty(idp)) {
+            ldapService.doLDAPLoginAuthentication(idp,username, password);
         }else{
             doPreLoginVerification(user, username,password);
         }

@@ -19,7 +19,7 @@ public enum Features implements Feature {
     USE_NEW_FLAGCALCULATOR,
     @Label("QuickBooks: exclude contractor address when sending contractor information or invoices to QuickBooks Web Connector")
     QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS,
-    @Label("Use LDAP authentication while login")
+    @Label("Enable PICS LDAP authentication")
     USE_LDAP_AUTHENTICATION;
 
     public boolean isActive() {

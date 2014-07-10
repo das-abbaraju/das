@@ -6,7 +6,6 @@ import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.dao.ReportUserDAO;
-import com.picsauditing.database.StringUtil;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.featuretoggle.Features;
@@ -62,7 +61,7 @@ public class LoginController extends PicsActionSupport {
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
     public static final String REGISTRATION_ACTION_NOT_ANGULAR = "Registration.action";
     public static final String REGISTRATION_ACTION_ANGULAR = "registration.action";
-    public static final String IDENTITYPROVIDER = "identityprovider";
+    public static final String IDENTITY_PROVIDER = "idp";
 
     // FOR TESTING ONLY
 	protected static ReportUserDAO reportUserDAO;
@@ -89,7 +88,7 @@ public class LoginController extends PicsActionSupport {
 	private boolean rememberMe = false;
 	private int sessionTimeout;
 
-    private String identityProvider;
+    private String idp;
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -109,7 +108,7 @@ public class LoginController extends PicsActionSupport {
 							.getVisibleLanguages());
 					ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
 				}
-                ActionContext.getContext().getSession().put(IDENTITYPROVIDER, identityProvider);
+                ActionContext.getContext().getSession().put(IDENTITY_PROVIDER, idp);
 				return SUCCESS;
 			}
 		} else if ("confirm".equals(button)) {
@@ -373,7 +372,7 @@ public class LoginController extends PicsActionSupport {
 			}
 			if (user != null) {
                 LoginContext loginContext = null;
-                String idProvider = getIdentityProvider();
+                String idProvider = getIdp();
                 loginContext = loginService.doPreLoginVerification(idProvider, user, username, password);
 				return doLogin(loginContext);
 			} else {
@@ -595,16 +594,16 @@ public class LoginController extends PicsActionSupport {
 		this.key = key;
 	}
 
-    public String getIdentityProvider() {
-        String idProvider = (String) ActionContext.getContext().getSession().get(IDENTITYPROVIDER);
+    public String getIdp() {
+        String idProvider = (String) ActionContext.getContext().getSession().get(IDENTITY_PROVIDER);
         if(StringUtils.isNotEmpty(idProvider)){
             return idProvider;
         }
-        return identityProvider;
+        return idp;
     }
 
-    public void setIdentityProvider(String identityProvider) {
-        this.identityProvider = identityProvider;
+    public void setIdp(String idp) {
+        this.idp = idp;
     }
 
 	@Override
