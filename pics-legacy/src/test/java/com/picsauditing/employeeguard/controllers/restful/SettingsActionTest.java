@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.controllers.restful;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.EGTestDataUtil;
+import org.json.simple.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -54,6 +55,11 @@ public class SettingsActionTest extends PicsActionTest {
 	private SettingsAction settingsAction;
 	private	String data = "{\"language\":{\"id\":\"es\",\"name\":\"EspaÃ±ol\"},\"dialect\":{\"id\":\"CR\",\"name\":\"Costa Rica\"}}";
 
+	private MSettingsManager.MSettings populateSettings(){
+
+		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(data, MSettingsManager.MSettings.class);
+	}
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -62,7 +68,7 @@ public class SettingsActionTest extends PicsActionTest {
 		super.setUp(settingsAction);
 
 		Whitebox.setInternalState(settingsAction, "settingsService", settingsService);
-		settingsAction.setData(data);
+		settingsAction.setmSettings(populateSettings());
 
 		when(permissions.getAppUserID()).thenReturn(EGTestDataUtil.APP_USER_ID);
 

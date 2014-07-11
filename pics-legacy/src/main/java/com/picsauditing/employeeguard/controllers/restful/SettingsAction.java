@@ -3,17 +3,11 @@ package com.picsauditing.employeeguard.controllers.restful;
 import com.google.gson.GsonBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
+import com.picsauditing.employeeguard.models.MIdAndName;
 import com.picsauditing.employeeguard.models.MSettingsManager;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProfileDocumentService;
 import com.picsauditing.employeeguard.services.SettingsService;
-import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.util.PhotoUtil;
-import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
-import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
+
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +20,8 @@ public class SettingsAction extends PicsRestActionSupport {
 	@Autowired
 	private SettingsService settingsService;
 
+	private MSettingsManager.MSettings mSettings;
 
-	private String data;
 
 	public String index() {
 		int appUserId = permissions.getAppUserID();
@@ -47,11 +41,19 @@ public class SettingsAction extends PicsRestActionSupport {
 
 
 	public String insert() throws Exception {
-		int appUserId = permissions.getAppUserID();
+		return updateSettings();
+	}
 
-		if(data!=null) {
+	public String update() throws Exception {
+		return updateSettings();
+	}
 
-			MSettingsManager.MSettings mSettings = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(data, MSettingsManager.MSettings.class);
+	private String updateSettings() throws Exception {
+
+		mSettings = populateSettings();
+
+		if(mSettings!=null) {
+			int appUserId = permissions.getAppUserID();
 
 			settingsService.updateSettings(mSettings, appUserId);
 
@@ -62,18 +64,21 @@ public class SettingsAction extends PicsRestActionSupport {
 		}
 
 		return JSON_STRING;
+
 	}
 
-
+	private MSettingsManager.MSettings populateSettings(){
+		JSONObject jsonObject= getJsonFromRequestPayload();
+		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(jsonObject.toJSONString(), MSettingsManager.MSettings.class);
+	}
 
 	/* getters + setters */
 
-
-	public String getData() {
-		return data;
+	public MSettingsManager.MSettings getmSettings() {
+		return mSettings;
 	}
 
-	public void setData(String data) {
-		this.data = data;
+	public void setmSettings(MSettingsManager.MSettings mSettings) {
+		this.mSettings = mSettings;
 	}
 }
