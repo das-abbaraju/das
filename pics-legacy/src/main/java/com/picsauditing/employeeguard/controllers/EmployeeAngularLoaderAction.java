@@ -27,6 +27,7 @@ public class EmployeeAngularLoaderAction extends PicsRestActionSupport {
 		}
 
 		return setUrlForRedirect(EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY_ANGULAR);
+		//return BLANK;
 	}
 
 }
