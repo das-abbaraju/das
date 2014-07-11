@@ -35,7 +35,12 @@
 
         <dl class="employee-guard-information non-editable-form-field">
             <dt class="col-md-3"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.SKILL_TYPE"/></dt>
-            <dd class="col-md-4">${skill.skillType}</dd>
+            <dd class="col-md-4">
+                <%-- Skill Type --%>
+                <s:include value="/struts/employee-guard/_skilltype.jsp">
+                    <s:param name="skillType">${skill.skillType}</s:param>
+                </s:include>
+            </dd>
         </dl>
         <input type="hidden" name="operator_skill_edit.skillType" value="${skill.skillType}" />
 
@@ -46,7 +51,7 @@
         <s:set var="selected_roles" value="operatorSkillForm.roles"/>
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label">Job Roles</tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.JOB_ROLES"/></tw:label>
             <div class="col-md-4">
                 <tw:select selectName="roles" multiple="true" class="form-control select2 operator-skill-employee-groups" tabindex="7">
                     <s:iterator value="roles" var="operator_role">
@@ -78,8 +83,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="update" type="submit" class="btn btn-success" tabindex="9">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="10">Cancel</tw:button>
+                <tw:button buttonName="update" type="submit" class="btn btn-success" tabindex="9"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.SAVE.BUTTON"/></tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="10"><s:text name="CORPORATE.SKILLS.EDIT.SKILL.CANCEL.BUTTON"/></tw:button>
             </div>
         </div>
     </fieldset>

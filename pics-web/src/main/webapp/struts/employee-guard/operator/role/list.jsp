@@ -61,7 +61,7 @@
     <s:else>
         <section class="employee-guard-section">
             <h1>
-                <i class="icon-group icon-large"></i><s:text name="Job Roles"/>
+                <i class="icon-group icon-large"></i><s:text name="OPERATOR.JOB_ROLES.LIST.SECTION.HEADER"/>
             </h1>
             <div class="content">
                 <div class="col-md-8 col-md-offset-2">

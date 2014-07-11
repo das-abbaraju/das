@@ -36,7 +36,12 @@
 
         <dl class="employee-guard-information non-editable-form-field">
             <dt class="col-md-3"><s:text name="CONTRACTOR.SKILL.EDIT_FORM.SKILL_TYPE" /></dt>
-            <dd class="col-md-4">${skill.skillType}</dd>
+            <dd class="col-md-4">
+                <%-- Skill Type --%>
+                <s:include value="/struts/employee-guard/_skilltype.jsp">
+                    <s:param name="skillType">${skill.skillType}</s:param>
+                </s:include>
+            </dd>
         </dl>
         <input type="hidden" name="contractor_skill_edit.skillType" value="${skill.skillType}" />
 

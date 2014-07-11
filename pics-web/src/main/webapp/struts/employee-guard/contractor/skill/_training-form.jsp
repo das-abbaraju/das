@@ -14,11 +14,10 @@
                 </div>
                 <div class="col-md-8 col-xs-8">
                     <tw:select selectName="intervalType" class="form-control select2Min" tabindex="5">
-                        <s:iterator value="intervalTypes" var="intervalType">
-                            <s:set var="is_selected" value="%{#intervalType == skillForm.intervalType}" />
-
-                            <tw:option value="${intervalType.name()}" selected="${is_selected}">${intervalType.displayValue}</tw:option>
-                        </s:iterator>
+                        <tw:option value="Day" selected="${skillForm.intervalType == 'Day'}"><s:text name="INTERVAL_TYPE_DAY" /></tw:option>
+                        <tw:option value="Week" selected="${skillForm.intervalType == 'Week'}"><s:text name="INTERVAL_TYPE_WEEK" /></tw:option>
+                        <tw:option value="Month" selected="${skillForm.intervalType == 'Month'}"><s:text name="INTERVAL_TYPE_MONTH" /></tw:option>
+                        <tw:option value="Year" selected="${skillForm.intervalType == 'Year'}"><s:text name="INTERVAL_TYPE_YEAR" /></tw:option>
                     </tw:select>
                 </div>
             </fieldset>

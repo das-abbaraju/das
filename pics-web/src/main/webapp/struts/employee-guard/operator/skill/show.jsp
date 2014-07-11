@@ -13,7 +13,7 @@
 <%-- Page title --%>
 <s:if test="permissions.accountId == skill.accountId">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title"><s:text name="COPERATOR.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
+        <s:param name="title"><s:text name="CORPORATE.SKILLS.SHOW.SKILL.HEADER"/> ${skill.name}</s:param>
         <s:param name="actions">
             <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CORPORATE.SKILLS.SHOW.DELETE.BUTTON"/>
             </button>
@@ -58,13 +58,21 @@
                     <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.DESCRIPTION"/></dt>
                     <dd class="col-md-9">${skill.description}</dd>
                     <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.SKILL_TYPE"/></dt>
-                    <dd class="col-md-9">${skill.skillType}</dd>
+                    <dd class="col-md-9">
+                        <%-- Skill Type --%>
+                        <s:include value="/struts/employee-guard/_skilltype.jsp">
+                            <s:param name="skillType">${skill.skillType}</s:param>
+                        </s:include>
+                    </dd>
 
                     <s:if test="skill.skillType.training">
                         <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.EXPIRES_AFTER"/></dt>
                         <dd class="col-md-9">
                             <s:if test="skill.intervalType.applicableExpiration">
-                                ${skill.intervalPeriod}
+                                <%-- Interval Type --%>
+                                <s:include value="/struts/employee-guard/_interval_type.jsp">
+                                    <s:param name="intervalType">${skill.intervalPeriod}</s:param>
+                                </s:include>
                                 ${skill.intervalType.displayValue}<s:if test="skill.intervalPeriod != 1">s</s:if>
                             </s:if>
                             <s:else>

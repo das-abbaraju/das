@@ -29,8 +29,8 @@
             <div class="col-md-4 col-xs-11">
                 <tw:select selectName="skillType" class="form-control skillType select2Min" tabindex="3">
                     <tw:option value="Certification"
-                               selected="${operatorSkillForm.skillType == 'Certification'}">Certification</tw:option>
-                    <tw:option value="Training" selected="${operatorSkillForm.skillType == 'Training'}">Training</tw:option>
+                               selected="${operatorSkillForm.skillType == 'Certification'}"><s:text name="SKILL_TYPE_CERTIFICATION"/></tw:option>
+                    <tw:option value="Training" selected="${operatorSkillForm.skillType == 'Training'}"><s:text name="SKILL_TYPE_TRAINING"/></tw:option>
                 </tw:select>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
