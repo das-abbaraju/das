@@ -21,7 +21,8 @@ public final class EmployeeGUARDUrlUtils {
 	/* Employee Links */
 	public static final String IMAGE_LINK = "/employee-guard/employee/contractor/%d/employee-photo/%d";
 	public static final String EMPLOYEE_PROFILE = "/employee-guard/employee/profile/%d";
-	public static final String EMPLOYEE_SUMMARY = "/employee-guard/employee/dashboard";
+	public static final String EMPLOYEE_SUMMARY = "/employee-guard/employee/dashboardPitStop";
+	public static final String EMPLOYEE_SUMMARY_ANGULAR = "/employee-guard/employee/dashboard";
 	public static final String EMPLOYEE_MY_FILES = "/employee-guard/employee/file";
 	public static final String EMPLOYEE_SKILLS = "/employee-guard/employee/skills";
     public static final String EMPLOYEE_PASSWORD_RESET = "/employee-guard/password-reset?username=";

@@ -295,6 +295,9 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
+        <action name="dashboardPitStop" class="com.picsauditing.employeeguard.controllers.EmployeeAngularLoaderAction" method="load">
+        </action>
+
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
