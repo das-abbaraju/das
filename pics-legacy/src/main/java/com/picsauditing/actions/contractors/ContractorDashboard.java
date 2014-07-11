@@ -237,7 +237,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 					+ "&steps=All&redirectUrl=" + redirectUrl);
 		}
 
-		if (permissions.isOperatorCorporate()) {
+		if (permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
 			operatorTags = getOperatorTagNamesList();
 
 			for (ContractorTag contractorTag : contractor.getOperatorTags()) {
@@ -660,6 +660,11 @@ public class ContractorDashboard extends ContractorActionSupport {
 	public List<OperatorTag> getOperatorTagNamesList() throws Exception {
 		if (operatorTags != null && operatorTags.size() > 0)
 			return operatorTags;
+
+        if (permissions.isPicsEmployee()) {
+            List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, "t.active = 1", 0, "t.tag");
+            return tags;
+        }
 
 		return operatorTagDAO.findByOperator(permissions.getAccountId(), true);
 	}
