@@ -36,8 +36,6 @@ public class SettingsAction extends PicsRestActionSupport {
 
 			if(mSettings!=null){
 				jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mSettings);
-
-				permissions.setLocale(mSettings.prepareLocale());
 			}
 
 		} catch (ReqdInfoMissingException e) {
