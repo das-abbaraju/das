@@ -744,7 +744,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 		note.setAuditColumns(permissions);
 		note.setSummary("set PQF status to resubmit to revisit " + eventType.toString() + " section");
 		note.setNoteCategory(NoteCategory.Audits);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDao.save(note);
 	}
 

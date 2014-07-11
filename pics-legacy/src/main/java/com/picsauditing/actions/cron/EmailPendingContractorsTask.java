@@ -198,7 +198,7 @@ public class EmailPendingContractorsTask implements CronTask {
         note.setPriority(LowMedHigh.High);
         note.setNoteCategory(noteCategory);
         note.setAuditColumns(new User(User.SYSTEM));
-        note.setViewableById(Account.PicsID);
+        note.setViewableById(Account.PICS_ID);
         emailQueueDAO.save(note);
     }
 

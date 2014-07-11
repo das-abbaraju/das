@@ -478,8 +478,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				emailBuilder.setToAddresses(billingEmail);
 				emailBuilder.setFromAddress(billingEmail);
 				EmailQueue email = emailBuilder.build();
-				email.setSubjectViewableById(Account.PicsID);
-				email.setBodyViewableById(Account.PicsID);
+				email.setSubjectViewableById(Account.PICS_ID);
+				email.setBodyViewableById(Account.PICS_ID);
 				email.setMediumPriority();
 				emailQueueDAO.save(email);
 
@@ -490,7 +490,7 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 				note.setBody(Strings.implode(emailAddresses, ", "));
 				note.setPriority(LowMedHigh.Med);
 				note.setNoteCategory(NoteCategory.General);
-				note.setViewableById(Account.PicsID);
+				note.setViewableById(Account.PICS_ID);
 				note.setCanContractorView(false);
 				note.setStatus(NoteStatus.Closed);
 				noteDao.save(note);

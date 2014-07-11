@@ -77,8 +77,8 @@ public class EmailDelinquentContractors implements CronTask {
 
                 EmailQueue email = emailBuilder.build();
                 email.setLowPriority();
-                email.setSubjectViewableById(Account.PicsID);
-                email.setBodyViewableById(Account.PicsID);
+                email.setSubjectViewableById(Account.PICS_ID);
+                email.setBodyViewableById(Account.PICS_ID);
                 emailQueueDAO.save(email);
                 stampNote(email.getContractorAccount(), "Deactivation Email Sent to " + email.getToAddresses(),
                         NoteCategory.Billing);
@@ -97,8 +97,8 @@ public class EmailDelinquentContractors implements CronTask {
                 + "The system is unable to send automated emails to this account. "
                 + "Attempted to send Overdue Invoice Email Reminder.");
         email.setLowPriority();
-        email.setSubjectViewableById(Account.PicsID);
-        email.setBodyViewableById(Account.PicsID);
+        email.setSubjectViewableById(Account.PICS_ID);
+        email.setBodyViewableById(Account.PICS_ID);
         emailQueueDAO.save(email);
         stampNote(email.getContractorAccount(), "Failed to send Deactivation Email because of no valid email address.",
                 NoteCategory.Billing);
@@ -110,7 +110,7 @@ public class EmailDelinquentContractors implements CronTask {
         note.setPriority(LowMedHigh.High);
         note.setNoteCategory(noteCategory);
         note.setAuditColumns(new User(User.SYSTEM));
-        note.setViewableById(Account.PicsID);
+        note.setViewableById(Account.PICS_ID);
         contractorAccountDAO.save(note);
     }
 

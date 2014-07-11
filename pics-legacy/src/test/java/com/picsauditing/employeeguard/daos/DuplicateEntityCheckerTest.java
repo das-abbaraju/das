@@ -52,7 +52,7 @@ public class DuplicateEntityCheckerTest {
         return new DuplicateInfoProvider() {
             @Override
             public UniqueIndexable getUniqueIndexable() {
-                return new Employee.EmployeeAccountSlugUniqueKey(1, Account.PicsID, "Slug");
+                return new Employee.EmployeeAccountSlugUniqueKey(1, Account.PICS_ID, "Slug");
             }
 
             @Override

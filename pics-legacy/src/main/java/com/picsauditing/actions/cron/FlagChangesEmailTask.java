@@ -121,8 +121,8 @@ public class FlagChangesEmailTask implements CronTask {
         emailBuilder.setToAddresses(accountMgr);
         EmailQueue email = emailBuilder.build();
         email.setVeryHighPriority();
-        email.setSubjectViewableById(Account.PicsID);
-        email.setBodyViewableById(Account.PicsID);
+        email.setSubjectViewableById(Account.PICS_ID);
+        email.setBodyViewableById(Account.PICS_ID);
         emailQueueDAO.save(email);
         emailBuilder.clear();
     }

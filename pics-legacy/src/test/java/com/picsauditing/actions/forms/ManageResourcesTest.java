@@ -83,7 +83,7 @@ public class ManageResourcesTest extends PicsActionTest {
 
         List<Integer> ids = Whitebox.invokeMethod(manageResources, "facilityIdsToCheck");
 
-        assertTrue(ids.contains(Account.PicsID));
+        assertTrue(ids.contains(Account.PICS_ID));
         assertTrue(ids.contains(OPERATOR_ID));
     }
 

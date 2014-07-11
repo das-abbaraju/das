@@ -78,7 +78,7 @@ public class ProjectActionTest extends PicsActionTest {
 		Whitebox.setInternalState(projectAction, "roleService", roleService);
 		Whitebox.setInternalState(projectAction, "skillService", skillService);
 
-		when(permissions.getAccountId()).thenReturn(Account.PicsID);
+		when(permissions.getAccountId()).thenReturn(Account.PICS_ID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(formBuilderFactory.getProjectInfoFactory()).thenReturn(projectInfoFactory);
@@ -91,7 +91,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 		assertEquals(PicsRestActionSupport.JSON_STRING, projectAction.index());
 
-		verify(projectService).getProjectsForAccount(Account.PicsID);
+		verify(projectService).getProjectsForAccount(Account.PICS_ID);
 
 		Approvals.verify(projectAction.getJsonString());
 	}
@@ -107,7 +107,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 		assertEquals(PicsRestActionSupport.SHOW, projectAction.show());
 
-		verify(projectService).getProject(ID, Account.PicsID);
+		verify(projectService).getProject(ID, Account.PICS_ID);
 		assertNotNull(projectAction.getProject());
 	}
 
@@ -123,7 +123,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setId(String.valueOf(ID));
 
 		assertEquals("name-skills-form", projectAction.editProjectNameSkillsSection());
-		verify(projectService).getProject(ID, Account.PicsID);
+		verify(projectService).getProject(ID, Account.PICS_ID);
 		assertNotNull(projectAction.getProjectNameSkillsForm());
 		assertNotNull(projectAction.getProjectSkills());
 	}
@@ -133,7 +133,7 @@ public class ProjectActionTest extends PicsActionTest {
 		projectAction.setId(String.valueOf(ID));
 
 		assertEquals("job-roles-form", projectAction.editProjectJobRolesSection());
-		verify(projectService).getProject(ID, Account.PicsID);
+		verify(projectService).getProject(ID, Account.PICS_ID);
 		assertNotNull(projectAction.getProjectRolesForm());
 		assertNotNull(projectAction.getProjectRoles());
 	}
@@ -144,7 +144,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.insert());
 		assertEquals(OPERATOR_PROJECTS, projectAction.getUrl());
-		verify(projectService).save(any(Project.class), eq(Account.PicsID), eq(Identifiable.SYSTEM));
+		verify(projectService).save(any(Project.class), eq(Account.PICS_ID), eq(Identifiable.SYSTEM));
 	}
 
 	@Test
@@ -155,7 +155,7 @@ public class ProjectActionTest extends PicsActionTest {
 
 		assertEquals(PicsActionSupport.REDIRECT, projectAction.insert());
 		assertEquals(OPERATOR_PROJECT_CREATE, projectAction.getUrl());
-		verify(projectService).save(any(Project.class), eq(Account.PicsID), eq(Identifiable.SYSTEM));
+		verify(projectService).save(any(Project.class), eq(Account.PICS_ID), eq(Identifiable.SYSTEM));
 	}
 
 	@Test

@@ -354,7 +354,7 @@ public class EntityFactory {
 		User user = new User(counter++);
 		user.setAccount(new Account());
         user.getAccount().setType("Admin");
-		user.getAccount().setId(Account.PicsID);
+		user.getAccount().setId(Account.PICS_ID);
 		user.getAccount().setCountry(mostCommonCountries().get("US"));
 		return user;
 	}

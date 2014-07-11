@@ -297,7 +297,7 @@ public class AccountService {
 
 	private AccountType getAccountTypeForAccount(final Account account) {
 		// From the EmployeeGUARD Perspective, PICS is a Contractor for now
-		if (account.getId() == Account.PicsID) {
+		if (account.getId() == Account.PICS_ID) {
 			return AccountType.CONTRACTOR;
 		}
 
