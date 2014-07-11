@@ -23,6 +23,7 @@ public class EGTestDataUtil {
 	public static final int CONTRACTOR_ID = sequencer++;
 	public static final int EMPLOYEE_ID = sequencer++;
 	public static final int PROFILE_ID = sequencer++;
+	public static final int APP_USER_ID = sequencer++;
 
 	public static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);
 
@@ -442,6 +443,20 @@ public class EGTestDataUtil {
 	public Profile buildFakeProfile(){
 		return new ProfileBuilder()
 						.id(PROFILE_ID)
+						.build();
+
+	}
+	public Profile buildFakeProfileWithSettings(){
+		Settings settings = new Settings();
+		settings.setLocale(Locale.UK);
+		return new ProfileBuilder()
+						.id(PROFILE_ID)
+						.appUserId(APP_USER_ID)
+						.firstName("First Name")
+						.lastName("Last Name")
+						.email("Email Id")
+						.phone("1234567988")
+						.settings(settings)
 						.build();
 
 	}

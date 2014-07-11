@@ -382,6 +382,8 @@
 
     <action name="projects" class="com.picsauditing.employeeguard.controllers.restful.ProjectAction"/>
 
+    <action name="settings" class="com.picsauditing.employeeguard.controllers.restful.SettingsAction"/>
+
   </package>
 
 

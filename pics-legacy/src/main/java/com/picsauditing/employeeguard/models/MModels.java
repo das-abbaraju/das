@@ -17,6 +17,8 @@ public class MModels {
 	private MContractorEmployeeManager mContractorEmployeeManager = new MContractorEmployeeManager();
 	private MContractorManager mContractorManager = new MContractorManager();
 	private MStatusManager mStatusManager = new MStatusManager();
+	private MProfileManager mProfileManager = new MProfileManager();
+	private MSettingsManager mSettingsManager = new MSettingsManager();
 
 	public static MModels newMModels(){
 		MModels mModels = new MModels();
@@ -76,6 +78,10 @@ public class MModels {
 		return fetchmModels().getmStatusManager();
 	}
 
+	public static MSettingsManager fetchSettingsManager() { return fetchmModels().getmSettingsManager();}
+
+	public static MProfileManager fetchProfileManager() { return fetchmModels().getmProfileManager();}
+
 	//-- Getters
 
 
@@ -117,5 +123,13 @@ public class MModels {
 
 	public MGroupsManager getmGroupsManager() {
 		return mGroupsManager;
+	}
+
+	public MSettingsManager getmSettingsManager() {
+		return mSettingsManager;
+	}
+
+	public MProfileManager getmProfileManager() {
+		return mProfileManager;
 	}
 }

@@ -1,16 +1,19 @@
-package com.picsauditing.employeeguard.viewmodel;
+package com.picsauditing.employeeguard.models;
 
-public class IdNameModel implements Comparable<IdNameModel> {
+import com.google.gson.annotations.Expose;
 
+public class MIdAndName implements Comparable<MIdAndName> {
+	@Expose
 	protected final String id;
+	@Expose
 	protected final String name;
 
-	public IdNameModel(Builder builder) {
+	public MIdAndName(Builder builder) {
 		this.id = builder.id;
 		this.name = builder.name;
 	}
 
-	protected IdNameModel(String id, String name) {
+	protected MIdAndName(String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -24,7 +27,7 @@ public class IdNameModel implements Comparable<IdNameModel> {
 	}
 
 	@Override
-	public int compareTo(IdNameModel that) {
+	public int compareTo(MIdAndName that) {
 		return this.name.compareToIgnoreCase(that.name);
 	}
 
@@ -42,8 +45,8 @@ public class IdNameModel implements Comparable<IdNameModel> {
 			return this;
 		}
 
-		public IdNameModel build() {
-			return new IdNameModel(this);
+		public MIdAndName build() {
+			return new MIdAndName(this);
 		}
 	}
 }
