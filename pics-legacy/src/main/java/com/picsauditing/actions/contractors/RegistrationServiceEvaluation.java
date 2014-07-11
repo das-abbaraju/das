@@ -4,7 +4,7 @@ import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.featuretoggle.Features;

@@ -12,8 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.service.i18n.TranslationServiceFactory;
 

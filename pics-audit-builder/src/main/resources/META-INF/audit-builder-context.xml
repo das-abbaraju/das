@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+    <bean id="AuditBuilder" class="com.picsauditing.auditbuilder.AuditBuilder" scope="prototype"/>
+    <bean id="AuditCategoryRuleCache" class="com.picsauditing.auditbuilder.AuditCategoryRuleCache" scope="prototype"/>
+    <bean id="AuditPercentCalculator" class="com.picsauditing.auditbuilder.AuditPercentCalculator" scope="prototype"/>
+    <bean id="AuditTypeRuleCache" class="com.picsauditing.auditbuilder.AuditTypeRuleCache" scope="prototype"/>
+
+    <bean id="AuditPeriodService" class="com.picsauditing.auditbuilder.service.AuditPeriodService"/>
+
+    <bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap"/>
+
+    <bean id="AppTranslationDAO" class="com.picsauditing.auditbuilder.dao.AppTranslationDAO"/>
+    <bean id="AuditCategoryMatrixDAO" class="com.picsauditing.auditbuilder.dao.AuditCategoryMatrixDAO"/>
+    <bean id="AuditDataDAO" class="com.picsauditing.auditbuilder.dao.AuditDataDAO"/>
+    <bean id="AuditDecisionTableDAO" class="com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO"/>
+    <bean id="AuditTypeDAO" class="com.picsauditing.auditbuilder.dao.AuditTypeDAO"/>
+    <bean id="ContractorAuditDAO" class="com.picsauditing.auditbuilder.dao.ContractorAuditDAO"/>
+    <bean id="ContractorAuditFileDAO" class="com.picsauditing.auditbuilder.dao.ContractorAuditFileDAO"/>
+    <bean id="ContractorAuditOperatorDAO" class="com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO"/>
+    <bean id="ContractorTagDAO" class="com.picsauditing.auditbuilder.dao.ContractorTagDAO"/>
+    <bean id="CountryDAO" class="com.picsauditing.auditbuilder.dao.CountryDAO"/>
+</beans>

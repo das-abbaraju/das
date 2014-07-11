@@ -5,10 +5,10 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypesBuilder;
-import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditTypesBuilder;
+import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 
 @SuppressWarnings("serial")
 public class AuditBuilderDebugger extends ContractorActionSupport {

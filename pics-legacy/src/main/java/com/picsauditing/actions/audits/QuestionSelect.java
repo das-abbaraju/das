@@ -12,10 +12,9 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCategory;

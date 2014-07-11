@@ -8,7 +8,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;

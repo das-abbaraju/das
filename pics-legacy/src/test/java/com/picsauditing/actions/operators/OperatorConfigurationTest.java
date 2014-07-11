@@ -2,8 +2,8 @@ package com.picsauditing.actions.operators;
 
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;

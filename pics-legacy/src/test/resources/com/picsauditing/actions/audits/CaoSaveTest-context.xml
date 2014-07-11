@@ -22,6 +22,6 @@
     <mockito:mock id="EmailSubscriptionDAO" class="com.picsauditing.dao.EmailSubscriptionDAO"/>
     <mockito:mock id="NoteDAO" class="com.picsauditing.dao.NoteDAO"/>
     <mockito:mock id="DataSource" class="javax.sql.DataSource"/>
-    <mockito:mock id="auditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
+    <mockito:mock id="auditPercentCalculator" class="com.picsauditing.audits.AuditPercentCalculator"/>
 
 </beans>

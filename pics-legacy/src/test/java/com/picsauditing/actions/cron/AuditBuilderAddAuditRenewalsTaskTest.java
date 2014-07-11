@@ -1,6 +1,6 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.ContractorAuditDAO;
 import org.junit.Before;
 import org.junit.Test;

@@ -2,8 +2,8 @@ package com.picsauditing.models.audits;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.jpa.entities.*;
 
 import java.util.HashSet;
