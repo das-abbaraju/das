@@ -1,7 +1,6 @@
 package com.picsauditing.service.registration;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.authentication.dao.AppUserDAO;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.jpa.entities.*;
@@ -14,10 +13,6 @@ import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.DataScrubber;
 import com.picsauditing.util.SapAppPropertyUtil;
 import com.picsauditing.util.Strings;
-import org.apache.commons.lang.math.NumberUtils;
-import org.json.simple.JSONObject;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Locale;
@@ -118,8 +113,14 @@ public class RegistrationService {
         registrant.setAddress(form.getAddress());
         registrant.setAddress2(form.getAddress2());
         registrant.setCity(form.getCity());
-        registrant.setVatId(form.getVatId());
         registrant.setCountry(new Country(form.getCountryISO()));
+
+        if (form.getCountryISO() == "BR") {
+            registrant.setVatId(form.getCnpjID());
+        }
+        else {
+            registrant.setVatId(form.getVatID());
+        }
 
         if (form.getCountrySubdivision() != null)
             registrant.setCountrySubdivision(new CountrySubdivision(form.getCountrySubdivision()));
