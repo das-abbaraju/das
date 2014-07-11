@@ -247,5 +247,6 @@
     <!-- 7.2.19 -->
     <include file="./liquibase/2014/Q3/mdo57_PICS-15589.sql"/>
     <include file="./liquibase/2014/Q3/mdo58_PICS-15589.sql"/>
+    <include file="./liquibase/2014/Q3/cfranks7_PICS-15083_delete_rows_app_error_log.sql"/>
 
 </databaseChangeLog>
