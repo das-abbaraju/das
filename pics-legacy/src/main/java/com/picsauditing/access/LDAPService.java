@@ -51,6 +51,8 @@ public class LDAPService {
                 throw new FailedLoginException("Bad Credentials for user: " + username);
             }
         }
-        return false;
+        //if we are here means trying to access ldap and feature is disabled, in this case we will throw exception.
+        //TODO show proper error message to the user
+        throw new FailedLoginException("LDAP Feature is disable: " + username);
     }
 }
