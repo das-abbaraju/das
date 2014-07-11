@@ -39,7 +39,6 @@ public class LDAPServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ldapActiveDirectoryAuthProvider = new ActiveDirectoryLdapAuthenticationProvider(USERNAME, PASSWORD);
         ldapService = new LDAPService();
         ldapActiveDirectoryAuthProvider = PowerMockito.mock(ActiveDirectoryLdapAuthenticationProvider.class);
         Whitebox.setInternalState(ldapService, "ldapActiveDirectoryAuthProvider", ldapActiveDirectoryAuthProvider);
