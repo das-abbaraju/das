@@ -32,7 +32,7 @@ public class AuditBuilder2 {
 	@Autowired
 	private ContractorTagDAO2 contractorTagDAO;
 	@Autowired
-	private AuditBuilderDAO auditDataDAO;
+	private AuditDataDAO2 auditDataDAO;
 	@Autowired
 	private AuditTypeRuleCache2 typeRuleCache;
 	@Autowired

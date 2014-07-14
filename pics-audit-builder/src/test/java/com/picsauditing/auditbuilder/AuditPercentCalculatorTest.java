@@ -2,6 +2,8 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
+import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.DateBean;
@@ -42,7 +44,7 @@ public class AuditPercentCalculatorTest {
 	private List<AuditCategory> auditCategoryList = new ArrayList<>();
 
 	@Mock private Logger logger;
-	@Mock private AuditBuilderDAO auditDataDAO;
+	@Mock private AuditDataDAO2 auditDataDAO;
 	@Mock private AuditCatData catData;
 	@Mock private AuditCategory category;
 	@Mock private AuditType mockAuditType;

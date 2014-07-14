@@ -1,5 +1,6 @@
 package com.picsauditing.auditbuilder;
 
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
 import com.picsauditing.auditbuilder.service.AuditService;
@@ -10,9 +11,9 @@ import java.util.*;
 public class AuditTypesBuilder extends AuditBuilderBase {
 	private AuditTypeRuleCache2 ruleCache;
 	private List<AuditTypeRule> rules;
-	private AuditBuilderDAO auditDataDAO;
+	private AuditDataDAO2 auditDataDAO;
 
-    public void setAuditDataDAO(AuditBuilderDAO auditDataDAO) {
+    public void setAuditDataDAO(AuditDataDAO2 auditDataDAO) {
         this.auditDataDAO = auditDataDAO;
     }
 

@@ -1,5 +1,8 @@
 package com.picsauditing.auditbuilder;
 
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorAuditDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AuditPeriodService2;
 import com.picsauditing.auditbuilder.service.AuditService;
@@ -19,7 +22,7 @@ public class AuditPercentCalculator2 {
 	@Autowired
 	private CorruptionPerceptionIndexMap2 corruptionPerceptionIndexMap;
 	@Autowired
-	private AuditBuilderDAO auditDataDAO;
+	private AuditDataDAO2 auditDataDAO;
 	@Autowired
 	protected ContractorAuditOperatorDAO2 caoDAO;
     @Autowired

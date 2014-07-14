@@ -1,6 +1,7 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.DateBean;
 import org.junit.Before;
@@ -26,7 +27,7 @@ public class AuditTypesBuilderTest {
 	@Mock
     OperatorAccount operator;
 	@Mock
-    AuditBuilderDAO auditDataDAO;
+    AuditDataDAO2 auditDataDAO;
 
 	@Before
 	public void setUp() throws Exception {

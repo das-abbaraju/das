@@ -40,7 +40,7 @@ public class AuditBuilderTest extends PicsTest {
 	@Mock
     AuditPercentCalculator2 auditPercentCalculator;
 	@Mock
-    AuditBuilderDAO auditDataDao;
+    AuditDataDAO2 auditDataDao;
 	@Mock
     ContractorAuditDAO2 conAuditDao;
     @Mock
