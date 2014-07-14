@@ -36,7 +36,7 @@
 </s:include>
 
 <%-- Delete Confirmation --%>
-<s:include value="/struts/employee-guard/_delete-confirmation.jsp">
+<s:include value="/struts/employee-guard/contractor/employee/_delete-confirmation.jsp">
     <s:param name="delete_url">${contractor_employee_delete_url}</s:param>
     <s:param name="modal_title"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE" /></s:param>
     <s:param name="modal_message"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE_WARNING" /></s:param>
