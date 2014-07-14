@@ -44,6 +44,7 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
+    private OperatorAccount billableEntity;
 
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
@@ -299,6 +300,16 @@ public class OperatorAccount extends Account {
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
+
+    @ManyToOne
+    @JoinColumn(name = "billableEntityId")
+    public OperatorAccount getBillableEntity() {
+        return billableEntity;
+    }
+
+    public void setBillableEntity(OperatorAccount billableEntity) {
+        this.billableEntity = billableEntity;
+    }
 
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
