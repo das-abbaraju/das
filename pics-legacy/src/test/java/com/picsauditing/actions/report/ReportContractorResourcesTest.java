@@ -42,7 +42,7 @@ public class ReportContractorResourcesTest extends PicsActionTest {
                 .build();
         Set<Integer> idsSet = Whitebox.invokeMethod(reportContractorResources, "extractOperatorIdsFromContractorOperators");
 
-        Integer[] expectedIds = {Account.PicsID, OPERATOR_ONE_ID, OPERATOR_TWO_ID, OPERATOR_THREE_ID};
+        Integer[] expectedIds = {Account.PICS_ID, OPERATOR_ONE_ID, OPERATOR_TWO_ID, OPERATOR_THREE_ID};
         assertTrue(idsSet.contains(OPERATOR_ONE_ID));
         assertTrue(idsSet.contains(OPERATOR_TWO_ID));
         assertTrue(idsSet.contains(OPERATOR_THREE_ID));

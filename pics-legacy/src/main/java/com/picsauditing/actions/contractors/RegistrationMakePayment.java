@@ -9,7 +9,7 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.billing.PaymentService;
 import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.braintree.BrainTreeHash;
@@ -233,8 +233,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 						try {
 							emailQueue = emailBuilder.build();
 							emailQueue.setVeryHighPriority();
-							emailQueue.setSubjectViewableById(Account.PicsID);
-							emailQueue.setBodyViewableById(Account.PicsID);
+							emailQueue.setSubjectViewableById(Account.PICS_ID);
+							emailQueue.setBodyViewableById(Account.PICS_ID);
 
 							emailSender.send(emailQueue);
 						} catch (Exception e) {
@@ -338,7 +338,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 		Note note = new Note(contractor, billingNoteModel.findUserForPaymentNote(permissions), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 

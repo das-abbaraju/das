@@ -82,7 +82,7 @@ public class BillingDetail extends ContractorActionSupport {
 
 			if (invoiceTotal.compareTo(BigDecimal.ZERO) > 0) {
 				this.addNote(contractor, "Created invoice for " + contractor.getCountry().getCurrency().getSymbol()
-						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PicsID,
+						+ invoiceTotal, NoteCategory.Billing, LowMedHigh.Med, false, Account.PICS_ID,
 						billingNoteModel.findUserForPaymentNote(permissions));
 			}
 
@@ -95,7 +95,7 @@ public class BillingDetail extends ContractorActionSupport {
 		if (ACTIVATE_BUTTON.equals(button)) {
 			contractor.setStatus(AccountStatus.Active);
 			this.addNote(contractor, "Activated the account", NoteCategory.Billing, LowMedHigh.High, true,
-					Account.PicsID, billingNoteModel.findUserForPaymentNote(permissions));
+					Account.PICS_ID, billingNoteModel.findUserForPaymentNote(permissions));
 		}
 
 		// Automatically deactivating account based on expired membership

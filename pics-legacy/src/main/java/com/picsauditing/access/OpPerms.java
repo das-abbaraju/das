@@ -1,4 +1,3 @@
-
 package com.picsauditing.access;
 
 import com.picsauditing.jpa.entities.Translatable;
@@ -70,6 +69,10 @@ public enum OpPerms implements Translatable {
 	ContractorActivation("Activate Contractor Accounts", "Allow PICS employees to view/activate/remove contractor accounts during the activation phase", true, true, true, false, false),
 	EditUsers("Manage User Accounts", "Allows administrators to view/add/update/delete users for their account", true, true, true, true, true),
 	EditUsersPics("Manage PICS User Accounts", "Edit user accounts on the PICS Admin account", true, true, true, false, false),
+
+    // Must only be assigned to Executives. Major billing implications.
+    EditBillableEntity("Edit Billable Entity", "Edit the billable entity for a client site", true, false, false, false, false),
+
 	// Audits
 	ManageAudits("Manage Audits and Matrices", "Allow PICS employees view and edit the Audit questions and matrix", true, true, true, false, false),
 	AssignAudits("Audit Assignment", "Allows users to assign implementation Audit, manual Audit, and other audits to PICS Safety Professionals", true, false, true, false, true),

@@ -49,8 +49,7 @@ public class JsonReportBuilder {
 	private static void addReportLevelData(JSONObject json, Report report, Permissions permissions, List<EmailSubscription> subscriptions) {
 		json.put(REPORT_ID, report.getId());
 		json.put(REPORT_MODEL_TYPE, report.getModelType().toString());
-		json.put(REPORT_NAME, report.getName());
-		json.put(REPORT_DESCRIPTION, report.getDescription());
+        addReportLevelNameDescription(json, report);
 		json.put(REPORT_FILTER_EXPRESSION, report.getFilterExpression());
 
 		json.put(REPORT_EDITABLE, getPermissionService().canUserEditReport(permissions, report.getId()));
@@ -63,6 +62,17 @@ public class JsonReportBuilder {
             frequency = SubscriptionTimePeriod.None;
 
         json.put(REPORT_SUBSCRIPTION_FREQUENCY, frequency.toString());
+	}
+
+    private static void addReportLevelNameDescription(JSONObject json, Report report) {
+        if (StringUtils.isNotEmpty(report.getSlug()) && report.getNameText() != null) {
+            json.put(REPORT_NAME, report.getNameText());
+            json.put(REPORT_DESCRIPTION, report.getDescriptionText());
+        }
+        else {
+            json.put(REPORT_NAME, report.getName());
+            json.put(REPORT_DESCRIPTION, report.getDescription());
+        }
 	}
 
 	public static PermissionService getPermissionService() {

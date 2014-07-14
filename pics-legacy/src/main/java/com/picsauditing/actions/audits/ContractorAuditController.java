@@ -14,7 +14,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.auditBuilder.AuditQuestionSuggestion;
+import com.picsauditing.audits.AuditQuestionSuggestion;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.rbic.InsuranceCriteriaChecker;
 import com.picsauditing.rbic.InvalidAuditDataAnswer;
@@ -24,8 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;

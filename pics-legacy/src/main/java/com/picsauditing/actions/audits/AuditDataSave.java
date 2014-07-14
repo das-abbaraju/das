@@ -2,10 +2,9 @@ package com.picsauditing.actions.audits;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.*;

@@ -46,7 +46,7 @@ public class EmployeeServiceFactory {
 		when(employeeService.updateEmployment(any(EmployeeEmploymentForm.class), anyInt(), anyInt(), anyInt())).thenReturn(employee);
 		when(employeeService.updatePersonal(any(EmployeePersonalForm.class), anyInt(), anyInt(), anyInt())).thenReturn(employee);
 		when(employeeService.updatePhoto(any(EmployeePhotoForm.class), anyString(), anyString(), anyInt())).thenReturn(employee);
-		when(employeeService.exportEmployees(Account.PicsID)).thenReturn(new byte[0]);
+		when(employeeService.exportEmployees(Account.PICS_ID)).thenReturn(new byte[0]);
 		when(employeeService.exportEmployees(BAD_ACCOUNT_ID)).thenThrow(new Exception("Testing"));
 		when(employeeService.exportTemplate()).thenReturn(new byte[0]);
 

@@ -23,7 +23,7 @@ public class TaxIdCountryJSON extends PicsActionSupport {
         JSONObject taxIdJson = new JSONObject();
 
         taxIdJson.put("tax_id_required", taxIdRequiredby(iso));
-        taxIdJson.put("label", getTaxIdLabel(iso, locale));
+        taxIdJson.put("tax_type", getTaxIdLabel(iso, locale).toLowerCase());
 
         json = taxIdJson;
 

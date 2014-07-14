@@ -51,7 +51,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 		Whitebox.setInternalState(employeeImportExportAction, "urlBuilder", urlBuilder);
 
 		when(file.length()).thenReturn(1l);
-		when(permissions.getAccountId()).thenReturn(Account.PicsID);
+		when(permissions.getAccountId()).thenReturn(Account.PICS_ID);
 		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
 
 		when(urlBuilder.action(anyString())).thenReturn(urlBuilder);
@@ -66,7 +66,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 		Whitebox.invokeMethod(employeeImportExportAction, "processUpload");
 
-		verify(employeeService).importEmployees(file, Account.PicsID, TEST_ACCOUNT_NAME, User.SYSTEM);
+		verify(employeeService).importEmployees(file, Account.PICS_ID, TEST_ACCOUNT_NAME, User.SYSTEM);
 	}
 
 	@Test

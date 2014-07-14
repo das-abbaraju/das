@@ -197,8 +197,11 @@
 						<%-- End hack --%>
 		            </s:else>
 
-					<li id="tax_id" class="${tax_id_class}">
-						<s:textfield label="taxIdLabel" name="registrationForm.vatId" />
+					<li id="vat_id" class="tax-id">
+						<s:textfield label="registrationForm.vatIdLabel" name="registrationForm.vatId" />
+					</li>
+					<li id="cnpj_id" class="tax-id">
+						<s:textfield label="registrationForm.cnpjIdLabel" name="registrationForm.cnpjId" />
 					</li>
  		        </ul>
 			</section>

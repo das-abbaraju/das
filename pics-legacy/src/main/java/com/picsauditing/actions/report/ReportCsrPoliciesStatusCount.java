@@ -68,7 +68,7 @@ public class ReportCsrPoliciesStatusCount extends ReportAccount {
 		sql.addJoin("JOIN audit_type at ON ca.auditTypeId = at.id");
 		sql.addJoin("JOIN contractor_audit_operator cao ON cao.auditID = ca.id");
 		sql.addJoin("JOIN contractor_audit_operator_workflow caow ON caow.caoID = cao.id");
-		sql.addJoin("JOIN users u ON caow.createdBy = u.id AND u.accountID = "+Account.PicsID);
+		sql.addJoin("JOIN users u ON caow.createdBy = u.id AND u.accountID = "+Account.PICS_ID);
 		String csrs = " u.id IN (" + csrIds[0];
 		for (int i = 1; i < csrIds.length; i++) {
 			csrs += "," + csrIds[i];

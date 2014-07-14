@@ -79,7 +79,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
                 note.setAuditColumns(permissions);
                 note.setSummary("Auditor Cleared");
                 note.setNoteCategory(NoteCategory.Audits);
-                note.setViewableById(Account.PicsID);
+                note.setViewableById(Account.PICS_ID);
                 noteDAO.save(note);
 			}
 			return SUCCESS;
@@ -116,7 +116,7 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
             note.setAuditColumns(permissions);
             note.setSummary("Audit #" + contractorAudit.getId() + " was assigned to " + auditor.getName());
             note.setNoteCategory(NoteCategory.Audits);
-            note.setViewableById(Account.PicsID);
+            note.setViewableById(Account.PICS_ID);
             noteDAO.save(note);
 		}
 
@@ -165,8 +165,8 @@ public class AuditAssignmentUpdate extends PicsActionSupport implements Preparab
 				emailBuilder.setFromAddress(EmailAddressUtils.PICS_AUDIT_EMAIL_ADDRESS_WITH_NAME);
 				EmailQueue email = emailBuilder.build();
 				email.setCcAddresses(null);
-				email.setSubjectViewableById(Account.PicsID);
-				email.setBodyViewableById(Account.PicsID);
+				email.setSubjectViewableById(Account.PICS_ID);
+				email.setBodyViewableById(Account.PICS_ID);
 				emailSender.send(email);
 			}
 

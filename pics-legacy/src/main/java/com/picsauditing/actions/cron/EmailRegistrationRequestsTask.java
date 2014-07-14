@@ -208,7 +208,7 @@ public class EmailRegistrationRequestsTask implements CronTask {
                         Note note = new Note(request, new User(User.SYSTEM), newNote);
                         note.setNoteCategory(NoteCategory.Registration);
                         note.setCanContractorView(true);
-                        note.setViewableById(Account.PicsID);
+                        note.setViewableById(Account.PICS_ID);
                         emailQueueDAO.save(note);
 
                         request.setLastContactedByAutomatedEmailDate(new Date());
@@ -261,7 +261,7 @@ public class EmailRegistrationRequestsTask implements CronTask {
         note.setPriority(LowMedHigh.High);
         note.setNoteCategory(noteCategory);
         note.setAuditColumns(new User(User.SYSTEM));
-        note.setViewableById(Account.PicsID);
+        note.setViewableById(Account.PICS_ID);
         emailQueueDAO.save(note);
     }
 

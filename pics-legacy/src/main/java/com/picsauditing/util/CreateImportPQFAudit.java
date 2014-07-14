@@ -5,8 +5,8 @@ import com.picsauditing.PICS.FeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.Account;

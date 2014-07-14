@@ -117,12 +117,10 @@
             </s:include>
         </li>
 
-        <s:if test="contractor.country.isoCode != 'AE'">
-            <li id="zip_li">
-                <label><s:text name="ContractorEdit.PrimaryAddress.Zip"/>:</label>
-                <s:textfield name="contractor.zip" size="7"/>
-            </li>
-        </s:if>
+        <li id="zip_li">
+            <label><s:text name="ContractorEdit.PrimaryAddress.Zip"/>:</label>
+            <s:textfield name="contractor.zip" size="7"/>
+        </li>
 
         <li>
             <s:select
@@ -188,9 +186,16 @@
             <label><s:text name="ContractorEdit.billingCity"/>:</label>
             <s:textfield name="contractor.billingCity" size="20"/>
         </li>
-        <li>
+        <li class="billing-country">
             <label><s:text name="ContractorEdit.billingCountry"/>:</label>
-            <input type="text" disabled="disabled" id="billing_country" value="${contractor.country.name}"/>
+            <s:select
+                    list="countryList"
+                    name="contractor.billingCountry.isoCode"
+                    id="contractorBillingCountry"
+                    listKey="isoCode"
+                    listValue="name"
+                    value="contractor.billingCountry.isoCode"
+                    cssClass="select2"/>
         </li>
         <li id="billing_countrySubdivision_li" data="<s:property value="#billing_country_subdivision"/>">
             <s:include value="/struts/contractors/_country_subdivision_select.jsp">
@@ -221,12 +226,10 @@
     <h2 class="formLegend"><s:text name="ContractorEdit.IndustryDetails.heading"/></h2>
 
     <ol>
-        <s:if test="contractor.country.isoCode != 'AE'">
-            <li id="tax_li">
-                <label><s:div cssClass="taxIdLabel"/></label>
-                <s:property value="contractor.taxId"/>
-            </li>
-        </s:if>
+        <li id="tax_li">
+            <label><s:div cssClass="taxIdLabel"/></label>
+            <s:property value="contractor.taxId"/>
+        </li>
 
         <li>
             <label><s:text name="ContractorEdit.IndustryDetails.NAICSPrimary"/>:</label>
@@ -418,13 +421,11 @@
             </li>
         </s:if>
 
-        <s:if test="contractor.country.isoCode != 'AE'">
-            <li id="taxIdItem">
-                <label><s:div cssClass="taxIdLabel"/></label>
-                <s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15"/>
-                <s:div cssClass="fieldhelp" id="taxIdLabelHelp"/>
-            </li>
-        </s:if>
+        <li id="taxIdItem">
+            <label><s:div cssClass="taxIdLabel"/></label>
+            <s:textfield id="contractorTaxId" name="contractor.taxId" size="15" maxLength="15"/>
+            <s:div cssClass="fieldhelp" id="taxIdLabelHelp"/>
+        </li>
 
         <li>
             <label>Must Pay?</label>

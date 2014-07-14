@@ -23,16 +23,15 @@ import com.picsauditing.validator.TaxIdValidatorFactory;
 import com.picsauditing.validator.VATValidator;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Sort;
+import org.hibernate.annotations.Where;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.*;
-import javax.persistence.Table;
+import javax.persistence.Column;
 import java.math.BigDecimal;
 import java.util.*;
 

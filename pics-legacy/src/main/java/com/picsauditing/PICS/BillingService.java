@@ -3,9 +3,9 @@ package com.picsauditing.PICS;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
@@ -170,7 +170,7 @@ public class BillingService {
 
 		addNote(toUpdate.getAccount(), "Updated invoice " + toUpdate.getId() + " from " + oldTotal + oldCurrency
                 + " to " + updateWith.getTotalAmount() + updateWith.getCurrency(), NoteCategory.Billing,
-                LowMedHigh.Med, false, Account.PicsID);
+                LowMedHigh.Med, false, Account.PICS_ID);
 	}
 
     public Invoice createInvoice(ContractorAccount contractor, User user) throws Exception {

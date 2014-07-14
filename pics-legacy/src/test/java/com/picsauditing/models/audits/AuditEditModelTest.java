@@ -1,6 +1,6 @@
 package com.picsauditing.models.audits;
 
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 

@@ -81,7 +81,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
 				auditDao.save(conAudit);
 				findConAudit();
 				addNote(conAudit.getContractorAccount(), "Modified " + conAudit.getAuditType().getName().toString()
-						+ " using System Edit", NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID,
+						+ " using System Edit", NoteCategory.Audits, LowMedHigh.Low, false, Account.PICS_ID,
 						this.getUser());
 				addActionMessage("Successfully saved data");
 			}
@@ -111,7 +111,7 @@ public class ConAuditMaintain extends AuditActionSupport implements Preparable {
                     // ignore
                 }
 				addNote(conAudit.getContractorAccount(), "Deleted " + conAudit.getAuditType().getName().toString(),
-						NoteCategory.Audits, LowMedHigh.Low, false, Account.PicsID, this.getUser());
+						NoteCategory.Audits, LowMedHigh.Low, false, Account.PICS_ID, this.getUser());
 				if (conAudit.getAuditType().getClassType().isPolicy())
 					return "PolicyList";
 				return "AuditList";

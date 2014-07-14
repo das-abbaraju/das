@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.jpa.entities.*;
 import org.apache.struts2.ServletActionContext;
 

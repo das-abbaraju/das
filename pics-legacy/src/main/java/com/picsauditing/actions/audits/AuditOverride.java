@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")

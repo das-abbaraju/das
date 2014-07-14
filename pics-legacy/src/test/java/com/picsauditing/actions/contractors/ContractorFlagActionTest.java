@@ -34,7 +34,7 @@ public class ContractorFlagActionTest extends PicsTest {
         contractorFlag = new ContractorFlagAction();
 
         Whitebox.setInternalState(contractorFlag, "permissions", permissions);
-        Whitebox.setInternalState(contractorFlag, "noteDAO", noteDAO);
+        Whitebox.setInternalState(contractorFlag, "noteDao", noteDAO);
         Whitebox.setInternalState(contractorFlag, "contractorOperatorDao", contractorOperatorDao);
     }
 

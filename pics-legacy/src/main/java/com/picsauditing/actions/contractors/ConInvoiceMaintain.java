@@ -108,7 +108,7 @@ public class ConInvoiceMaintain extends ContractorActionSupport implements Prepa
 			// If we are deleting an Invoice, we should perform all the void actions that need to be done.
 			billingService.performInvoiceStatusChangeActions(invoice, TransactionStatus.Void);
 			addNote(contractor, "Removed Invoice #" + invoiceId + " for " + invoice.getTotalAmount(),
-					NoteCategory.Billing, LowMedHigh.Low, false, Account.PicsID, this.getUser());
+					NoteCategory.Billing, LowMedHigh.Low, false, Account.PICS_ID, this.getUser());
 			invoiceDAO.remove(invoiceId);
 			return "BillingDetail";
 		}

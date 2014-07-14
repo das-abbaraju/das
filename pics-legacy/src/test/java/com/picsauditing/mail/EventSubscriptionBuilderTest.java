@@ -2,7 +2,6 @@ package com.picsauditing.mail;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class EventSubscriptionBuilderTest extends PicsTranslationTest {
         when(cronStats.isEmailCronError()).thenReturn(true);
         List<EmailSubscription> subscriptions = new ArrayList<EmailSubscription>();
         subscriptions.add(createEmailSubscription(Subscription.EmailCronFailure, SubscriptionTimePeriod.None, null));
-        when(emailSubscriptionDAO.find(Subscription.EmailCronFailure, Account.PicsID)).thenReturn(subscriptions);
+        when(emailSubscriptionDAO.find(Subscription.EmailCronFailure, Account.PICS_ID)).thenReturn(subscriptions);
         EventSubscriptionBuilder.theSystemIsDown(cronStats);
         verify(emailBuilder, times(0)).build();
     }

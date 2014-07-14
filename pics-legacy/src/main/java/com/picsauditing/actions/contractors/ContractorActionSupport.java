@@ -5,9 +5,9 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
@@ -43,8 +43,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	private AuditBuilder auditBuilder;
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
-	@Autowired
-	private NoteDAO noteDAO;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
@@ -746,8 +744,8 @@ public class ContractorActionSupport extends AccountActionSupport {
 		note.setAuditColumns(permissions);
 		note.setSummary("set PQF status to resubmit to revisit " + eventType.toString() + " section");
 		note.setNoteCategory(NoteCategory.Audits);
-		note.setViewableById(Account.PicsID);
-		noteDAO.save(note);
+		note.setViewableById(Account.PICS_ID);
+		noteDao.save(note);
 	}
 
 	private void changeCAOStatuses(EventType eventType, ContractorAudit pqf) {

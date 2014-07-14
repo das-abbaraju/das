@@ -2,7 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;

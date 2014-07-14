@@ -18,9 +18,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import static com.picsauditing.util.Assert.assertContains;
 import static com.picsauditing.util.Assert.assertNotContains;
@@ -37,7 +35,7 @@ public class SqlBuilderTest {
 	private SqlBuilder sqlBuilder;
 
 	private final int USER_ID = 123;
-	private final int ACCOUNT_ID = Account.PicsID;
+	private final int ACCOUNT_ID = Account.PICS_ID;
 
 	@Before
 	public void setUp() throws Exception {

@@ -79,8 +79,8 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						emailBuilder.setContractor(con, OpPerms.ContractorBilling);
 						emailBuilder.setFromAddress(EmailAddressUtils.getBillingEmail(con.getCurrency()));
 						EmailQueue email = emailBuilder.build();
-						email.setSubjectViewableById(Account.PicsID);
-						email.setBodyViewableById(Account.PicsID);
+						email.setSubjectViewableById(Account.PICS_ID);
+						email.setBodyViewableById(Account.PICS_ID);
 						emailSender.send(email);
 
 						Note note = new Note();
@@ -88,7 +88,7 @@ public class ReportExpiredCreditCards extends ReportAccount {
 						note.setAuditColumns(permissions);
 						note.setSummary("Expired Credit Card email sent to " + email.getToAddresses());
 						note.setNoteCategory(NoteCategory.Billing);
-						note.setViewableById(Account.PicsID);
+						note.setViewableById(Account.PICS_ID);
 						noteDAO.save(note);
 
 					} catch (Exception e) {

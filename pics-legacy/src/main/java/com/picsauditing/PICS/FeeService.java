@@ -1,8 +1,8 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.auditBuilder.AuditTypeRuleCache;
-import com.picsauditing.auditBuilder.AuditTypesBuilder;
-import com.picsauditing.auditBuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.audits.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditTypesBuilder;
+import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
