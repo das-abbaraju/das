@@ -26,12 +26,8 @@
             <tw:input inputName="hashCode" type="hidden" value="${hashCode}" />
             <div class="form-group">
                 <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
-                <div class="form-inline">
-                    <label for="supported_locales">
-                        <i class="icon-globe icon-large"></i>
-                    </label>
-
-                    <s:include value="/struts/user/login/_supported-locales-list.jsp" />
+                <div class="col-xs-11 col-md-11 locale-select">
+                   <s:include value="/struts/employee-guard/account/_supported-locales-list.jsp" />
                 </div>
             </div>
 

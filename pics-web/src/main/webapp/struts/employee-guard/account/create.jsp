@@ -21,11 +21,7 @@
             <div class="form-group">
                 <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
                 <div class="col-xs-11 col-md-11 locale-select">
-                    <tw:select selectName="locale" tabindex="1" class="form-control select2">
-                        <tw:option value="EN"><s:text name="EMPLOYEEGUARD.SIGNUP.LOCALE.MULTISELECT.ENGLISH.VALUE"/></tw:option>
-                        <tw:option value="DK"><s:text name="EMPLOYEEGUARD.SIGNUP.LOCALE.MULTISELECT.DANISH.VALUE"/></tw:option>
-                    </tw:select>
-                    <tw:error errorName="locale" />
+                    <s:include value="/struts/employee-guard/account/_supported-locales-list.jsp" />
                 </div>
             </div>
 

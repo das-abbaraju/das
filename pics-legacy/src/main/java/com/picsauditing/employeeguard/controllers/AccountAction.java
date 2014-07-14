@@ -33,7 +33,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	private static final long serialVersionUID = -3897271223264803860L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountAction.class);
-	public static final String SIGN_UP_VIEW = "sign-up";
+
+	static final String SIGN_UP_VIEW = "sign-up";
 
 	@Autowired
 	private AuthenticationService authenticationService;

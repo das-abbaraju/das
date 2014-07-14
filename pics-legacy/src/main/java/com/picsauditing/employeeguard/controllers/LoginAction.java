@@ -34,7 +34,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
 
-	private static final String LOGIN_VIEW = "login";
+	static final String LOGIN_VIEW = "login";
 
 	@Autowired
 	private AccountService accountService;

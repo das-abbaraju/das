@@ -88,7 +88,7 @@ public class AccountActionTest extends PicsActionTest {
 	}
 
 	private void veriftTestIndex(String result) {
-		assertEquals(PicsRestActionSupport.LIST, result);
+		assertEquals(AccountAction.SIGN_UP_VIEW, result);
 
 		assertNotNull(accountAction.getProfile());
 		assertEquals(EMPLOYEE_FIRST_NAME, accountAction.getProfile().getFirstName());
@@ -117,7 +117,7 @@ public class AccountActionTest extends PicsActionTest {
 
 		String result = accountAction.create();
 
-		assertEquals(PicsRestActionSupport.CREATE, result);
+		assertEquals(AccountAction.SIGN_UP_VIEW, result);
 	}
 
 	@Test(expected = PageNotFoundException.class)

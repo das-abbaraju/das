@@ -102,7 +102,7 @@ public class LoginActionTest extends PicsActionTest {
 	}
 
 	private void verifyTestIndex(String result) {
-		assertEquals(PicsRestActionSupport.LIST, result);
+		assertEquals(LoginAction.LOGIN_VIEW, result);
 		assertNotNull(loginAction.getProfile());
 		assertEquals(EMPLOYEE_FIRST_NAME, loginAction.getProfile().getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, loginAction.getProfile().getLastName());
