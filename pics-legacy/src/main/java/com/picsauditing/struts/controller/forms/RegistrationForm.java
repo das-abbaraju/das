@@ -32,7 +32,8 @@ public class RegistrationForm {
     public static final String MAX_100_CHARS_KEY = "JS.Validation.Maximum100Characters";
     public static final String NO_SPECIAL_CHARS_KEY = "JS.Validation.SpecialCharacters";
     public static final String COMPANY_NAME_EXISTS_KEY = "JS.Validation.CompanyNameAlreadyExists";
-    public static final String INVALID_TAX_ID_KEY = "JS.Validation.InvalidVAT";
+    public static final String INVALID_TAX_VAT_ID_KEY = "JS.Validation.InvalidVAT";
+    public static final String INVALID_TAX_CNPJ_ID_KEY = "JS.Validation.InvalidCNPJ";
     public static final String INVALID_USERNAME_KEY = "JS.Validation.UsernameInvalid";
     public static final String USERNAME_TAKEN_KEY = "JS.Validation.UsernameIsTaken";
     public static final String INVALID_PHONE_FORMAT_KEY = "JS.Validation.InvalidPhoneFormat";
@@ -122,6 +123,9 @@ public class RegistrationForm {
 
     @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
     private String vatId;
+
+    @Pattern(regexp = SPECIAL_CHAR_REGEX, message = NO_SPECIAL_CHARS_KEY)
+    private String cnpjID;
 
     @NotBlank(message = REQUIRED_KEY)
     @NotNull(message = REQUIRED_KEY)
@@ -260,6 +264,14 @@ public class RegistrationForm {
         this.vatId = vatId;
     }
 
+    public String getCnpjId() {
+        return cnpjID;
+    }
+
+    public void setCnpjId(String cnpjID) {
+        this.cnpjID = cnpjID;
+    }
+
     public String getEmail() {
         return email;
     }
@@ -345,7 +357,8 @@ public class RegistrationForm {
             .setZip(this.getZip())
             .setPhoneNumber(this.getPhone())
             .setTimeZone(this.getTimezone())
-            .setVatId(this.getVatId())
+            .setVatID(this.getVatId())
+            .setCnpjID(this.getCnpjId())
             .setCountrySubdivision(
                     Strings.isEmpty(this.getCountrySubdivision())
                             ? null
@@ -371,6 +384,10 @@ public class RegistrationForm {
 
     public VATPair getVATPairing() {
         return new VATPair(getCountryISOCode(), getVatId());
+    }
+
+    public CNPJPair getCNPJPairing() {
+        return new CNPJPair(getCountryISOCode(), getCnpjId());
     }
 
     public CountrySubdivisionPair getCountrySubdivisionPairing() {
@@ -405,7 +422,7 @@ public class RegistrationForm {
         }
     }
 
-    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_ID_KEY)
+    @VatValidation(message = "registrationForm.vatId::" + INVALID_TAX_VAT_ID_KEY)
     public static class VATPair {
         private final String country;
         private final String vatCode;
@@ -417,6 +434,25 @@ public class RegistrationForm {
 
         public String getVatCode() {
             return vatCode;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+    }
+
+    @CnpjValidation(message = "registrationForm.cnpjId::" + INVALID_TAX_CNPJ_ID_KEY)
+    public static class CNPJPair {
+        private final String country;
+        private final String cnpjCode;
+
+        private CNPJPair(String country, String cnpj) {
+            this.country = country;
+            this.cnpjCode = cnpj;
+        }
+
+        public String getCnpjCode() {
+            return cnpjCode;
         }
 
         public String getCountry() {

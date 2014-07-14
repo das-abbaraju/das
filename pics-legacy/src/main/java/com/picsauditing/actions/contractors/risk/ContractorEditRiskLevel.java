@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.auditBuilder.AuditBuilder;
+import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.mail.EmailBuilder;
@@ -217,8 +217,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		try {
 			emailQueue = emailBuilder.build();
 			emailQueue.setHighPriority();
-			emailQueue.setSubjectViewableById(Account.PicsID);
-			emailQueue.setBodyViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PICS_ID);
+			emailQueue.setBodyViewableById(Account.PICS_ID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {
 			logger.error("Cannot send email to  {} ({})\n{}", new Object[] { contractor.getName(), contractor.getId(),
@@ -236,8 +236,8 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
         try {
             emailQueue = emailBuilder.build();
             emailQueue.setHighPriority();
-            emailQueue.setSubjectViewableById(Account.PicsID);
-            emailQueue.setBodyViewableById(Account.PicsID);
+            emailQueue.setSubjectViewableById(Account.PICS_ID);
+            emailQueue.setBodyViewableById(Account.PICS_ID);
             emailSender.send(emailQueue);
         } catch (Exception e) {
             logger.error("Cannot send email to  {} ({})\n{}", new Object[] { contractor.getName(), contractor.getId(),

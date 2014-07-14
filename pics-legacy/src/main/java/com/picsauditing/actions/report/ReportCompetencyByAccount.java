@@ -3,8 +3,8 @@ package com.picsauditing.actions.report;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -91,8 +91,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				EmailQueue emailQueue = emailBuilder.build();
 				emailQueue.setHighPriority();
 				emailQueue.setFromAddress(EmailAddressUtils.getBillingEmail(contractor.getCurrency()));
-				emailQueue.setSubjectViewableById(Account.PicsID);
-				emailQueue.setBodyViewableById(Account.PicsID);
+				emailQueue.setSubjectViewableById(Account.PICS_ID);
+				emailQueue.setBodyViewableById(Account.PICS_ID);
 				emailSender.send(emailQueue);
 			}
 		} catch (Exception e) {

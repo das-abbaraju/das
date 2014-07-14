@@ -46,7 +46,7 @@ public class JsonReportElementsBuilderTest extends PicsTranslationTest {
 	private ReportsModel reportsModel;
 
 	private final int USER_ID = 123;
-	private final int ACCOUNT_ID = Account.PicsID;
+	private final int ACCOUNT_ID = Account.PICS_ID;
 	private static final String TRANSLATION_PREFIX = "translation:";
 
 	@Before

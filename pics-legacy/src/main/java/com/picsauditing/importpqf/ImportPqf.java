@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
 import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCategory;

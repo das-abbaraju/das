@@ -5,7 +5,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.AccountDAO;
 import com.picsauditing.dao.UserAccessDAO;
-import com.picsauditing.dao.UserDAO;
 import com.picsauditing.dao.UserGroupDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.usergroup.UserGroupManagementStatus;
@@ -204,7 +203,7 @@ public class UserManager extends UserGroupManager implements UserManagementServi
         try {
             if (user.isGroup() && permissions.hasPermission(OpPerms.AllOperators)
                     && permissions.getAccountId() != account.getId()) {
-                List<User> ownedByPicsForOperatorsCorpAndContractors = userDAO.findByAccountID(Account.PicsID, "Yes", "Yes");
+                List<User> ownedByPicsForOperatorsCorpAndContractors = userDAO.findByAccountID(Account.PICS_ID, "Yes", "Yes");
                 for (User group : ownedByPicsForOperatorsCorpAndContractors) {
                     if (!group.getName().startsWith("PICS") && !list.contains(group)) {
                         list.add(group);

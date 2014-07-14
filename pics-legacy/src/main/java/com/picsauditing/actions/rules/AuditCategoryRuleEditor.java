@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategoryRule;
 

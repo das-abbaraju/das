@@ -447,8 +447,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		try {
 			emailQueue = emailBuilder.build();
 			emailQueue.setVeryHighPriority();
-			emailQueue.setSubjectViewableById(Account.PicsID);
-			emailQueue.setBodyViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PICS_ID);
+			emailQueue.setBodyViewableById(Account.PICS_ID);
 			emailSender.send(emailQueue);
 		} catch (Exception e) {
 			PicsLogger
@@ -517,7 +517,7 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 		Note note = new Note(payment.getAccount(), billingNoteModel.findUserForPaymentNote(permissions), subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 

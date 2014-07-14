@@ -6,8 +6,8 @@ import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;

@@ -281,8 +281,8 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
         try {
             emailQueue = emailBuilder.build();
             emailQueue.setVeryHighPriority();
-			emailQueue.setSubjectViewableById(Account.PicsID);
-			emailQueue.setBodyViewableById(Account.PicsID);
+			emailQueue.setSubjectViewableById(Account.PICS_ID);
+			emailQueue.setBodyViewableById(Account.PICS_ID);
             emailSender.send(emailQueue);
         } catch (Exception e) {
             PicsLogger
@@ -497,7 +497,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		Note note = new Note(transaction.getAccount(), u, subject);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 
@@ -506,7 +506,7 @@ public class InvoiceDetail extends ContractorActionSupport implements Preparable
 		note.setBody(body);
 		note.setNoteCategory(NoteCategory.Billing);
 		note.setCanContractorView(true);
-		note.setViewableById(Account.PicsID);
+		note.setViewableById(Account.PICS_ID);
 		noteDAO.save(note);
 	}
 

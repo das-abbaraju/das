@@ -1,16 +1,14 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.Indexable;
 import com.picsauditing.jpa.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 public class RecalculateAuditsTask implements CronTask {
     @Autowired

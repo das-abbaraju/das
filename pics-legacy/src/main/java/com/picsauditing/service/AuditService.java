@@ -38,7 +38,7 @@ public class AuditService {
                         note.setAuditColumns(permissions);
                         note.setSummary("Manual Audit #" + audit.getId() + "'s SLA is no longer valid and has been cleared");
                         note.setNoteCategory(NoteCategory.Audits);
-                        note.setViewableById(Account.PicsID);
+                        note.setViewableById(Account.PICS_ID);
                         noteDAO.save(note);
                     }
                     return;
@@ -78,7 +78,7 @@ public class AuditService {
                 note.setAuditColumns(permissions);
                 note.setSummary("Manual Audit #" + audit.getId() + " has a new SLA of " + beginDate.toString());
                 note.setNoteCategory(NoteCategory.Audits);
-                note.setViewableById(Account.PicsID);
+                note.setViewableById(Account.PICS_ID);
                 noteDAO.save(note);
             } else if (shouldResetSla(audit)) {
                 audit.setSlaDate(null);
@@ -89,7 +89,7 @@ public class AuditService {
                 note.setAuditColumns(permissions);
                 note.setSummary("Manual Audit #" + audit.getId() + " is not visible to any operators and has had its SLA cleared.");
                 note.setNoteCategory(NoteCategory.Audits);
-                note.setViewableById(Account.PicsID);
+                note.setViewableById(Account.PICS_ID);
                 noteDAO.save(note);
             }
         }

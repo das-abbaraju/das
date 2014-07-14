@@ -4,7 +4,7 @@
 	<s:set name="tagRemovable" value="false" />
 	<s:iterator value="tagsViewableByUser" var="contractorTag">
 		<s:if test="tag.active">
-			<s:set name="tagRemovable" value="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable)" />
+			<s:set name="tagRemovable" value="tag.operator.id == permissions.accountId || (permissions.corporateParent.contains(tag.operator.id) && tag.inheritable) || permissions.picsEmployee" />
 			<s:if test="#tagRemovable || permissions.admin || (permissions.contractor && tag.visibleToContractor)">
 				<tr>
 					<td><s:if test="tag.operator.id != permissions.accountId"><s:property value="tag.operator.name" />: </s:if><s:property value="tag.tag" /></td>
@@ -22,7 +22,7 @@
 		</s:if>
 	</s:iterator>
     <pics:permission perm="EditTags">
-        <s:if test = "operatorTags.size() > 0 ">
+        <s:if test = "operatorTags.size() > 0 || permissions.picsEmployee">
             <tr>
                 <td colspan="<s:property value="#tagRemovable ? 3 : 2" />"><s:select id="tagName" list="operatorTags" listKey="id" listValue="tag" headerKey="0" headerValue="- %{getText('Filters.header.Tag')} -"/><input
                         type="button" onclick="javascript: return addTag();" value="<s:text name="global.Add" />"></td>

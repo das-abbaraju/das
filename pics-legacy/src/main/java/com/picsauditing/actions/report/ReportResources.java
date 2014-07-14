@@ -12,7 +12,6 @@ import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.PICS.Utilities;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.dao.OperatorFormDAO;
 import com.picsauditing.jpa.entities.Account;
@@ -54,7 +53,7 @@ public class ReportResources extends ReportActionSupport {
 
 		if (operator != null) {
 			if (getFilter().isIncludePicsResources())
-				ids.add(Account.PicsID); // PICS
+				ids.add(Account.PICS_ID); // PICS
 			ids.add(operator.getId());
 			for (OperatorAccount op : operator.getChildOperators()) {
 				ids.add(op.getId());

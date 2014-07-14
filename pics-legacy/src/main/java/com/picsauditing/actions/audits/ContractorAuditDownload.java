@@ -1,6 +1,6 @@
 package com.picsauditing.actions.audits;
 
-import com.picsauditing.auditBuilder.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditCategoriesBuilder;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;

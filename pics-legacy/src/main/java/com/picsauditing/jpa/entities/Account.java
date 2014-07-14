@@ -36,7 +36,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
     public static int NONE = 0;
     public static int EVERYONE = 1;
     public static int PRIVATE = 2;
-    public static int PicsID = 1100;
+    public static int PICS_ID = 1100;
     public static int PICS_CORPORATE_ID = 14;
     public static List<Integer> PICS_CORPORATE = Collections.unmodifiableList(
             Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));
@@ -726,7 +726,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
 
     @Transient
     public boolean isAdmin() {
-        return id == PicsID;
+        return id == PICS_ID;
     }
 
     @Transient

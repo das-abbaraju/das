@@ -103,7 +103,7 @@ public class NoteDAO extends PicsDAO {
 			permWhere += " OR (viewableBy.id > " + Account.PRIVATE + ") AND canContractorView = 1";
 
 		if (permissions.isOnlyAuditor())
-			permWhere += " OR (createdBy.id = :userID AND viewableBy.id = " + Account.PicsID + ")";
+			permWhere += " OR (createdBy.id = :userID AND viewableBy.id = " + Account.PICS_ID + ")";
 
 		// Show intra-company notes users
 		if (permissions.isOperator() || permissions.isCorporate()) {

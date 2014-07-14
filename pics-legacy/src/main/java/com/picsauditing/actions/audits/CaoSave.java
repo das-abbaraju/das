@@ -4,8 +4,8 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.auditBuilder.AuditBuilder;
-import com.picsauditing.auditBuilder.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
 import com.picsauditing.models.audits.CaoSaveModel;
@@ -326,7 +326,7 @@ public class CaoSave extends AuditActionSupport {
                     summary += " for " + cao.getAudit().getAuditFor();
                 summary += " from " + prevStatus + " to " + cao.getStatus();
                 addNote(cao.getAudit().getContractorAccount(), summary, NoteCategory.General, LowMedHigh.Med, false,
-                        Account.PicsID, null, null);
+                        Account.PICS_ID, null, null);
 			} catch (EmailBuildErrorException e) {
 				logger.error("CaoSave.save(): Failed to build email for status change for CAO with id: {}. {}",
 						new Object[]{cao.getId(), e.getMessage()});

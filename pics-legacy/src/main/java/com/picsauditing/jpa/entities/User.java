@@ -586,7 +586,7 @@ public class User extends AbstractIndexableTable implements java.io.Serializable
 	 */
 	@Transient
 	public Location getLocation() {
-		if (account.getId() != Account.PicsID) {
+		if (account.getId() != Account.PICS_ID) {
 			return null;
 		}
 

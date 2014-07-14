@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.auditBuilder.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditCategoryRule;

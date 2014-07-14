@@ -13,9 +13,18 @@
     <import resource="rabbit-config.xml"/>
     <import resource="employeeguard-config.xml"/>
     <import resource="classpath*:META-INF/flag-calculator-context.xml"/>
+    <import resource="classpath*:META-INF/audit-builder-context.xml"/>
 
     <task:annotation-driven scheduler="myScheduler"/>
     <task:scheduler id="myScheduler" pool-size="10"/>
+
+    <bean id="ldapActiveDirectoryAuthProvider" class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
+        <constructor-arg value="pics.corp" />
+        <constructor-arg value="ldap://gold.pics.corp:389/" />
+        <!--   <beans:property name="authoritiesMapper" ref="grantedAuthoritiesMapper" /> -->
+        <property name="useAuthenticationRequestCredentials" value="true" />
+        <property name="convertSubErrorCodesToExceptions" value="true" />
+    </bean>
 
     <bean id="AsyncTaskExecutor"
           class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
@@ -135,10 +144,10 @@
     <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
     <bean id="ContractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
 
-    <bean id="AuditBuilder" class="com.picsauditing.auditBuilder.AuditBuilder"/>
-    <bean id="AuditPercentCalculator" class="com.picsauditing.auditBuilder.AuditPercentCalculator"/>
-    <bean id="AuditCategoryRuleCache" class="com.picsauditing.auditBuilder.AuditCategoryRuleCache"/>
-    <bean id="AuditTypeRuleCache" class="com.picsauditing.auditBuilder.AuditTypeRuleCache"/>
+    <bean id="AuditBuilder" class="com.picsauditing.audits.AuditBuilder"/>
+    <bean id="AuditPercentCalculator" class="com.picsauditing.audits.AuditPercentCalculator"/>
+    <bean id="AuditCategoryRuleCache" class="com.picsauditing.audits.AuditCategoryRuleCache"/>
+    <bean id="AuditTypeRuleCache" class="com.picsauditing.audits.AuditTypeRuleCache"/>
     <bean id="CorruptionPerceptionIndexMap" class="com.picsauditing.util.CorruptionPerceptionIndexMap"/>
 
     <bean id="AccountLevelAdjuster" class="com.picsauditing.PICS.AccountLevelAdjuster" scope="prototype"/>
@@ -370,6 +379,7 @@
     <bean id="UserManager" class="com.picsauditing.model.user.UserManager" scope="prototype"/>
     <bean id="GroupManager" class="com.picsauditing.model.group.GroupManager" scope="prototype"/>
     <bean id="LoginService" class="com.picsauditing.access.LoginService"/>
+    <bean id="ldapService" class="com.picsauditing.access.LDAPService"/>
     <bean id="BillingNoteModel" class="com.picsauditing.model.billing.BillingNoteModel"/>
     <bean id="ReportInfoProvider" class="com.picsauditing.service.ReportInfoProvider" />
     <bean id="ReportInfoConverter" class="com.picsauditing.service.ReportInfoConverter" />
@@ -402,6 +412,7 @@
     <bean id="translationKeyUsageDAO" class="com.picsauditing.dao.SpringConfiguredTranslationUsageDAO" scope="prototype"/>
 
     <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
+    <bean id="AuditBuilderFactory" class="com.picsauditing.audits.AuditBuilderFactory" scope="prototype"/>
 
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"
@@ -453,5 +464,6 @@
             <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
+
 
 </beans>
