@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class AuditPeriodService {
+public class AuditPeriodService2 {
     public boolean shouldCreateAudit(List<ContractorAudit> audits, AuditType auditType, String auditFor, AuditType childAuditType) {
         if (findAudit(audits, auditType, auditFor) != null)
             return false;

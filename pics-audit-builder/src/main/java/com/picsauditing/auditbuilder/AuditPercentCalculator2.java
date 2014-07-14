@@ -1,14 +1,14 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDataDAO;
-import com.picsauditing.auditbuilder.dao.ContractorAuditDAO;
-import com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorAuditDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO2;
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditPeriodService;
+import com.picsauditing.auditbuilder.service.AuditPeriodService2;
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.service.CaoAutoAdvancer;
 import com.picsauditing.auditbuilder.util.AnswerMap;
-import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap;
+import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2;
 import com.picsauditing.auditbuilder.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,22 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public class AuditPercentCalculator {
+public class AuditPercentCalculator2 {
 	@Autowired
-	private AuditCategoryRuleCache auditCategoryRuleCache;
+	private AuditCategoryRuleCache2 auditCategoryRuleCache;
 	@Autowired
-	private CorruptionPerceptionIndexMap corruptionPerceptionIndexMap;
+	private CorruptionPerceptionIndexMap2 corruptionPerceptionIndexMap;
 	@Autowired
-	private AuditDataDAO auditDataDAO;
+	private AuditDataDAO2 auditDataDAO;
 	@Autowired
-	protected ContractorAuditOperatorDAO caoDAO;
+	protected ContractorAuditOperatorDAO2 caoDAO;
     @Autowired
-    protected AuditPeriodService auditPeriodService;
+    protected AuditPeriodService2 auditPeriodService;
     @Autowired
-    protected ContractorAuditDAO contractorAuditDAO;
+    protected ContractorAuditDAO2 contractorAuditDAO;
 
 	protected float subScorePossible;
-	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator.class);
+	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator2.class);
 
 	public void updatePercentageCompleted(AuditCatData catData) {
 		if (catData == null)

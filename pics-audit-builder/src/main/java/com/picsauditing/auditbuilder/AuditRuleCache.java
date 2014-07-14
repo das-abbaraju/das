@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO;
+import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.service.TradeService;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public abstract class AuditRuleCache<R extends AuditRule> {
     @Autowired
-    protected AuditDecisionTableDAO auditDecisionTableDAO;
+    protected AuditDecisionTableDAO2 auditDecisionTableDAO;
 
     private class FilterRule implements RuleFilterable<R> {
 		List<R> rules;

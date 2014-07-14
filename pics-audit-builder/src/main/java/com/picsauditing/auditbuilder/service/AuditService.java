@@ -3,7 +3,7 @@ package com.picsauditing.auditbuilder.service;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.entities.QuestionFunction.FunctionInput;
 import com.picsauditing.auditbuilder.util.AnswerMap;
-import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap;
+import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
 
@@ -404,11 +404,11 @@ public class AuditService {
         return false;
     }
 
-    public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap cpiMap) {
+    public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap2 cpiMap) {
         return calculate(auditQuestionFunction, answerMap, cpiMap, null);
     }
 
-	public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap cpiMap, String currentAnswer) {
+	public static Object calculate(AuditQuestionFunction auditQuestionFunction, AnswerMap answerMap, CorruptionPerceptionIndexMap2 cpiMap, String currentAnswer) {
             Object result;
 		try {
             FunctionInput input = new FunctionInput.Builder().answerMap(answerMap).watchers(auditQuestionFunction.getWatchers()).cpiMap(cpiMap).build();

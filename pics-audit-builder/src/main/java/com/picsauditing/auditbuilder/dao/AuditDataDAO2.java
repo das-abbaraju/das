@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class AuditDataDAO extends PicsDAO {
+public class AuditDataDAO2 extends PicsDAO {
 	public List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
 		Query query = em.createQuery("SELECT d FROM AuditData d " +
 				"WHERE d.audit.contractorAccount.id = :contractor " +

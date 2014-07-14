@@ -15,11 +15,11 @@ import static org.junit.Assert.assertNull;
 
 public class CorruptionPerceptionIndexMapTest {
 
-	CorruptionPerceptionIndexMap corruptionPerceptionIndexMap;
+	CorruptionPerceptionIndexMap2 corruptionPerceptionIndexMap;
 	
 	@Before
 	public void setup() {
-		corruptionPerceptionIndexMap = new CorruptionPerceptionIndexMap();
+		corruptionPerceptionIndexMap = new CorruptionPerceptionIndexMap2();
 		
 		Map<String, Double> map = new HashMap<String, Double>();
 		map.put("US", 7.1);

@@ -2,8 +2,8 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.dao.AuditDataDAO;
-import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO;
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
+import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.DateBean;
@@ -27,12 +27,12 @@ import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
 public class AuditPercentCalculatorTest {
-	private AuditPercentCalculator calculator;
+	private AuditPercentCalculator2 calculator;
 	private ContractorAccount contractor;
 	private ContractorAudit audit;
 	private AuditType auditType;
 
-	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
+	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
 	List<AuditCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
@@ -44,20 +44,20 @@ public class AuditPercentCalculatorTest {
 	private List<AuditCategory> auditCategoryList = new ArrayList<>();
 
 	@Mock private Logger logger;
-	@Mock private AuditDataDAO auditDataDAO;
+	@Mock private AuditDataDAO2 auditDataDAO;
 	@Mock private AuditCatData catData;
 	@Mock private AuditCategory category;
 	@Mock private AuditType mockAuditType;
 	@Mock private ContractorAudit contractorAudit;
 	@Mock private ContractorAuditOperator contractorAuditOperator;
     @Mock
-    private AuditDecisionTableDAO auditDecisionTableDAO;
+    private AuditDecisionTableDAO2 auditDecisionTableDAO;
 
     @Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		calculator = new AuditPercentCalculator();
+		calculator = new AuditPercentCalculator2();
 
 		Whitebox.setInternalState(calculator, "auditCategoryRuleCache", catRuleCache);
 		Whitebox.setInternalState(calculator, "logger", logger);

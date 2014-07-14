@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @SuppressWarnings("unchecked")
-public class ContractorAuditOperatorDAO extends PicsDAO {
+public class ContractorAuditOperatorDAO2 extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAuditOperator save(ContractorAuditOperator o) {
 		if (o.getId() == 0) {

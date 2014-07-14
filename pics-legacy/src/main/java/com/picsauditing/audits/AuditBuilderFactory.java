@@ -1,5 +1,7 @@
 package com.picsauditing.audits;
 
+import com.picsauditing.auditbuilder.AuditBuilder2;
+import com.picsauditing.auditbuilder.AuditPercentCalculator2;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -12,9 +14,9 @@ public class AuditBuilderFactory {
     @Autowired
     AuditPercentCalculator auditPercentCalculator;
     @Autowired
-    com.picsauditing.auditbuilder.AuditBuilder newAuditBuilder;
+    AuditBuilder2 newAuditBuilder;
     @Autowired
-    com.picsauditing.auditbuilder.AuditPercentCalculator newAuditPercentCalculator;
+    AuditPercentCalculator2 newAuditPercentCalculator;
 
     public void buildAudits(ContractorAccount contractorAccount) {
         if (newAuditBuilderEnabled()) {

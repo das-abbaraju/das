@@ -15,13 +15,13 @@ import java.util.List;
 import static junit.framework.Assert.*;
 
 public class AuditPeriodServiceTest extends PicsTest {
-    private AuditPeriodService test;
+    private AuditPeriodService2 test;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        test = new AuditPeriodService();
+        test = new AuditPeriodService2();
     }
 
     @Test

@@ -6,7 +6,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class AuditTypeDAO extends PicsDAO {
+public class AuditTypeDAO2 extends PicsDAO {
 	public List<AuditType> findWhere(String where) {
 		if (where == null)
 			where = "";
