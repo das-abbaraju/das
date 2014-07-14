@@ -134,7 +134,7 @@ public class OperatorSkillForm implements AddAnotherForm, DuplicateInfoProvider 
 			form.setRequired(accountSkill.getRuleType() == RuleType.REQUIRED);
 			form.setIntervalType(accountSkill.getIntervalType());
 			form.setIntervalPeriod(accountSkill.getIntervalPeriod());
-			form.setDoesNotExpire(!accountSkill.getIntervalType().isApplicableExpiration() && accountSkill.getIntervalPeriod() == 0);
+			form.setDoesNotExpire(accountSkill.getIntervalType().doesNotExpire());
 
 			int[] roles = new int[accountSkill.getRoles().size()];
 			int counter = 0;
