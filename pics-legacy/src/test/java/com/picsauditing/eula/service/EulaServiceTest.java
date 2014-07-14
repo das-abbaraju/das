@@ -129,7 +129,7 @@ public class EulaServiceTest {
 
         eulaService.doPreloginVerification(USER_NAME, USER_PASSWORD);
 
-        verify(loginService, never()).doPreLoginVerification(null, any(User.class), anyString(), anyString());
+        verify(loginService, never()).doPreLoginVerification(anyString(), any(User.class), anyString(), anyString());
         verify(authenticationService).doPreLoginVerificationEG(USER_NAME, USER_PASSWORD);
     }
 
