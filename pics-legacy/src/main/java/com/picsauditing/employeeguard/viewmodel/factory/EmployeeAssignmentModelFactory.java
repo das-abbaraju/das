@@ -13,6 +13,7 @@ public class EmployeeAssignmentModelFactory {
     public List<EmployeeAssignmentModel> create(final Set<Project> projects, Map<Integer, AccountModel> accountModels) {
         List<EmployeeAssignmentModel> assignments = new ArrayList<>();
         Map<Integer, List<ProjectModel>> projectAssignments = getCompanyProjectAssignments(projects);
+/*
         for (Map.Entry<Integer, List<ProjectModel>> projectAssignment : projectAssignments.entrySet()) {
             EmployeeAssignmentModel employeeAssignmentModel = new EmployeeAssignmentModel();
             employeeAssignmentModel.setSiteId(projectAssignment.getKey());
@@ -20,6 +21,15 @@ public class EmployeeAssignmentModelFactory {
             employeeAssignmentModel.setProjects(projectAssignment.getValue());
             assignments.add(employeeAssignmentModel);
         }
+*/
+			for (int siteId : accountModels.keySet()) {
+				EmployeeAssignmentModel employeeAssignmentModel = new EmployeeAssignmentModel();
+				employeeAssignmentModel.setSiteId(siteId);
+				employeeAssignmentModel.setSiteName(accountModels.get(siteId).getName());
+				List<ProjectModel> siteProjects = projectAssignments.get(siteId);
+				if(siteProjects!=null) employeeAssignmentModel.setProjects(projectAssignments.get(siteId));
+				assignments.add(employeeAssignmentModel);
+			}
 
         return assignments;
     }
