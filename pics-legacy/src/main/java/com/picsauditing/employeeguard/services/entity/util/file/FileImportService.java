@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.services.entity.util.file;
 
 import com.picsauditing.employeeguard.entities.BaseEntity;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,7 +14,10 @@ public class FileImportService<E extends BaseEntity> {
 		File file = fileImportCommand.getFile();
 
 		if (!validateFileType(fileImportReader, file, fileImportCommand.getFilename())) {
-			return new UploadResult.Builder<E>().uploadError(true).errorMessage("Invalid file").build();
+			return new UploadResult.Builder<E>()
+					.uploadError(true)
+					.errorMessage(EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.INVALID_FILE"))
+					.build();
 		}
 
 		return processFile(file, fileImportCommand, fileImportReader);
@@ -50,7 +54,8 @@ public class FileImportService<E extends BaseEntity> {
 		fileImportReader.open(file);
 		String[] lineOfFile = fileImportReader.readLine();
 		if (!fileRowMapper.isHeader(lineOfFile) && !fileRowMapper.isValid(lineOfFile)) {
-			throw new FileImportReaderException("Please use provided template file.");
+			throw new FileImportReaderException(
+					EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.USE_TEMPLATE"));
 		}
 
 		if (!fileRowMapper.isHeader(lineOfFile)) {
@@ -64,7 +69,8 @@ public class FileImportService<E extends BaseEntity> {
 				}
 
 				if (!fileRowMapper.isValid(lineOfFile)) {
-					throw new FileImportReaderException("Please check that all required fields are in the correct format.");
+					throw new FileImportReaderException(
+							EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.REQUIRED_FIELDS_NOT_PROVIDED"));
 				}
 
 				importedEntities.add(fileRowMapper.mapToEntity(lineOfFile));

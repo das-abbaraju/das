@@ -47,13 +47,13 @@
                 <thead>
                     <tr>
                         <th class="success text-center">
-                            <i class="icon-ok-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Completed"></i>
+                            <i class="icon-ok-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name="CONTRACTOR.PROJECT.LIST.COMPLETE"/>"></i>
                         </th>
                         <th class="warning text-center">
-                            <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring"></i>
+                            <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name="CONTRACTOR.PROJECT.LIST.EXPIRING"/>"></i>
                         </th>
                         <th class="danger text-center">
-                            <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expired or Incomplete"></i>
+                            <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name="CONTRACTOR.PROJECT.LIST.EXPIRED_OR_INCOMPLETE"/>"></i>
                         </th>
                         <th><s:text name="CONTRACTOR.PROJECT.LIST.PROJECT" /></th>
                         <th><s:text name="CONTRACTOR.PROJECT.LIST.LOCATION" /></th>

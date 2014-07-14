@@ -38,7 +38,7 @@
                         <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name="CONTRACTOR.EMPLOYEE.LIST.EXPIRED_INCOMPLETE" />"></i>
                     </th>
                     <th class="warning text-center">
-                        <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name='EMPLOYEE.LIST.EXPIRING' />"></i>
+                        <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name='CONTRACTOR.EMPLOYEE.LIST.EXPIRING' />"></i>
                     </th>
                     <th class="employee"><s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEE" /></th>
                     <th class="title"><s:text name="CONTRACTOR.EMPLOYEE.LIST.TITLE" /></th>

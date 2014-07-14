@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.controllers.importexport;
 
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
@@ -13,6 +14,7 @@ import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -53,6 +55,9 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 	private EmailHashService emailHashService;
 	@Mock
 	private File file;
+
+	private ResourceBundleMocking resourceBundleMocking;
+
 	public static final List<Employee> FAKE_EMPLOYEES = new ArrayList<Employee>() {{
 
 		add(new EmployeeBuilder().accountId(CONTRACTOR_ID).firstName("Test 1").build());
@@ -84,6 +89,14 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 						.accountType(AccountType.CONTRACTOR)
 						.name(TEST_ACCOUNT_NAME)
 						.build());
+
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
+	}
+
+	@After
+	public void tearDown() {
+		resourceBundleMocking.tearDown();
 	}
 
 	@Test
@@ -119,7 +132,7 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 
 	private void verifyTestUpload_FailedUpload_UnexpectedException(final String result) {
 		assertEquals(PicsActionSupport.REDIRECT, result);
-		assertEquals("An error occurred while importing employees.",
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING,
 				employeeImportExportAction.getActionErrors().iterator().next());
 	}
 
@@ -155,7 +168,8 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 		String actionResult = employeeImportExportAction.download();
 
 		assertEquals(PicsActionSupport.REDIRECT, actionResult);
-		assertEquals("Could not prepare download", employeeImportExportAction.getActionErrors().iterator().next());
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING,
+				employeeImportExportAction.getActionErrors().iterator().next());
 	}
 
 	@Test
@@ -175,7 +189,8 @@ public class EmployeeImportExportActionTest extends PicsActionTest {
 		String actionResult = employeeImportExportAction.template();
 
 		assertEquals(PicsActionSupport.REDIRECT, actionResult);
-		assertEquals("Could not prepare download", employeeImportExportAction.getActionErrors().iterator().next());
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING,
+				employeeImportExportAction.getActionErrors().iterator().next());
 	}
 
 	@Test

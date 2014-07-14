@@ -1,60 +1,27 @@
 package com.picsauditing.employeeguard.validators.document;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.util.ValueStack;
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.util.Strings;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.powermock.reflect.Whitebox;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
-import static org.mockito.Matchers.*;
 
 public class ProfileDocumentValidationUtilTest {
 
-	@Mock
-	private ThreadLocal<ActionContext> threadLocalActionContext;
-
-	@Mock
-	private ActionContext actionContext;
-
-	@Mock
-	private ActionInvocation actionInvocation;
-
-	@Mock
-	private ActionSupport actionSupport;
-
-	@Mock
-	private ValueStack valueStack;
-
-	private static final String DUMMY_RESOURCE_BUNDLE_STRING= "DUMMY RESOURCE BUNDLE STRING";
+	private ResourceBundleMocking resourceBundleMocking;
 
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-
-		initResourceBundleMocking();
-	}
-
-	private void initResourceBundleMocking(){
-		Whitebox.setInternalState(ActionContext.class, threadLocalActionContext);
-		when(threadLocalActionContext.get()).thenReturn(actionContext);
-		when(actionContext.getActionInvocation()).thenReturn(actionInvocation);
-		when(actionInvocation.getAction()).thenReturn(actionSupport);
-		when(actionContext.getValueStack()).thenReturn(valueStack);
-		when(actionSupport.getText(any(String.class), any(String.class), anyList(),any(ValueStack.class))).thenReturn("DUMMY RESOURCE BUNDLE STRING");
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
 	}
 
 	@After
 	public void tearDown() {
-		Whitebox.setInternalState(ActionContext.class, "actionContext", new ThreadLocal<ActionContext>());
+		resourceBundleMocking.tearDown();
 	}
 
 	@Test
@@ -63,7 +30,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -81,7 +48,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -90,7 +57,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -99,7 +66,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals(DUMMY_RESOURCE_BUNDLE_STRING, result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -130,5 +97,4 @@ public class ProfileDocumentValidationUtilTest {
 
 		return documentForm;
 	}
-
 }

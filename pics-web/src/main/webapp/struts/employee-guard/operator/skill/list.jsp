@@ -108,7 +108,7 @@
     <tw:form formName="operator_skill_search" action="${operator_skill_list_url}" class="search-query" role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
-                <s:set var="placeholderSkillSearch" value="OPERATOR.SKILLS.LIST.SEARCH.INPUT.DEFAULT_TEXT"/>
+                <s:set var="placeholderSkillSearch"><s:text name="OPERATOR.SKILLS.LIST.SEARCH.INPUT.DEFAULT_TEXT"/></s:set>
                 <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${placeholderSkillSearch}"
                           value="${searchForm.searchTerm}"/>
                 <i class="icon-search"></i>

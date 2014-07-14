@@ -34,7 +34,7 @@
                 </tw:select>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
-               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
+               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="<s:text name="CORPORATE.SKILLS.ADD.SKILL_TYPE.TOOL_TIP"/>" data-container="body"></i>
             </div>
         </div>
 

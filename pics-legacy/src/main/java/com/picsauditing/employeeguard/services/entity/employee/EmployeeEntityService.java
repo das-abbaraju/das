@@ -11,6 +11,7 @@ import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.employeeguard.forms.PhotoForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.entity.EntityService;
 import com.picsauditing.employeeguard.services.entity.Searchable;
 import com.picsauditing.employeeguard.services.entity.util.file.UploadResult;
@@ -20,8 +21,6 @@ import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
@@ -381,7 +380,8 @@ public class EmployeeEntityService implements EntityService<Employee, Integer>, 
 			String filename = PICSFileType.employee_photo.filename(id) + "-" + accountId;
 			photoUtil.sendPhotoToFilesDirectory(photoForm.getPhoto(), directory, id, extension, filename);
 		} else {
-			throw new IllegalArgumentException("Invalid file format");
+			throw new IllegalArgumentException(EGI18n
+					.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.INVALID_FILE_FORMAT"));
 		}
 
 		return find(id, accountId);
