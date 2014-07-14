@@ -69,6 +69,7 @@
                         <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.SHOW.SKILL.EXPIRES_AFTER"/></dt>
                         <dd class="col-md-9">
                             <s:if test="skill.intervalType.applicableExpiration">
+                                ${skill.intervalPeriod}
                                 <%-- Interval Type --%>
                                 <s:include value="/struts/employee-guard/_interval_type.jsp">
                                     <s:param name="intervalType">${skill.intervalPeriod}</s:param>
