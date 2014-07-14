@@ -1,7 +1,6 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.auditbuilder.dao.AuditDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.DateBean;
 import org.junit.Before;
@@ -21,13 +20,13 @@ public class AuditTypesBuilderTest {
 	List<AuditTypeRule> auditTypeRules = new ArrayList<>();
 
 	@Mock
-	AuditTypeRuleCache auditTypeRuleCache;
+    AuditTypeRuleCache2 auditTypeRuleCache;
 	@Mock
     ContractorAccount contractor;
 	@Mock
     OperatorAccount operator;
 	@Mock
-    AuditDataDAO auditDataDAO;
+    AuditBuilderDAO auditDataDAO;
 
 	@Before
 	public void setUp() throws Exception {

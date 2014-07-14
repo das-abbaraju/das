@@ -6,7 +6,7 @@ import com.picsauditing.auditbuilder.service.AuditService;
 import java.util.*;
 
 public class AuditCategoriesBuilder extends AuditBuilderBase {
-	private AuditCategoryRuleCache ruleCache;
+	private AuditCategoryRuleCache2 ruleCache;
 
 	private Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<>();
 	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerOperator = new HashMap<>();
@@ -14,7 +14,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditType auditType = null;
 	private OperatorAccount auditFor = null;
 
-	public AuditCategoriesBuilder(AuditCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
+	public AuditCategoriesBuilder(AuditCategoryRuleCache2 auditCategoryRuleCache, ContractorAccount contractor) {
 		super(contractor);
 		this.ruleCache = auditCategoryRuleCache;
 	}

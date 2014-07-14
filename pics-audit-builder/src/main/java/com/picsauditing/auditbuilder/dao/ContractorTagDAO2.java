@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class ContractorTagDAO extends PicsDAO {
+public class ContractorTagDAO2 extends PicsDAO {
 	public List<ContractorTag> getContractorTags(int conID, Collection<Integer> tagIDs) {
 		Query query = em.createQuery("FROM ContractorTag WHERE contractor.id = ? AND tag.id IN ("
 				+ Strings.implode(tagIDs) + ")");

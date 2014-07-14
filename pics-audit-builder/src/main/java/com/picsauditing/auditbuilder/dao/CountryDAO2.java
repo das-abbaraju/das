@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class CountryDAO extends PicsDAO {
+public class CountryDAO2 extends PicsDAO {
 	public List<Country> findAll() {
 		Query query = em.createQuery("FROM Country t");
 		List<Country> list = new ArrayList<Country>();

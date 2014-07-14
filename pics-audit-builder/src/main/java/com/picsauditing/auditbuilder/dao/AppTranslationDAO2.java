@@ -5,7 +5,7 @@ import com.picsauditing.auditbuilder.entities.AppTranslation;
 import javax.persistence.Query;
 import java.util.List;
 
-public class AppTranslationDAO extends PicsDAO {
+public class AppTranslationDAO2 extends PicsDAO {
 	public List<AppTranslation> findWhere(String where) {
 		Query q = em.createQuery("FROM " + AppTranslation.class + " t WHERE " + where);
 

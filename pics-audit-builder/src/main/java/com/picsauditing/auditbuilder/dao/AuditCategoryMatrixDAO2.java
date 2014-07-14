@@ -6,7 +6,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class AuditCategoryMatrixDAO extends PicsDAO {
+public class AuditCategoryMatrixDAO2 extends PicsDAO {
 	public List<AuditCategory> findCategoriesForCompetencies(int accountID) {
 		Query query = em.createQuery("SELECT a.category FROM AuditCategoryMatrixCompetencies a "
 				+ "WHERE a.operatorCompetency IN (SELECT DISTINCT jc.competency FROM JobCompetency jc "

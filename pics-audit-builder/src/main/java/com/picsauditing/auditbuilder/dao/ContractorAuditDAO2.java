@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class ContractorAuditDAO extends PicsDAO {
+public class ContractorAuditDAO2 extends PicsDAO {
 	@Transactional(propagation = Propagation.NESTED)
 	public ContractorAudit save(ContractorAudit o) {
 		if (o.getId() == 0) {

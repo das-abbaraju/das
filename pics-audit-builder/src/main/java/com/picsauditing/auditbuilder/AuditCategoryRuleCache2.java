@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AuditCategoryRuleCache extends AuditRuleCache<AuditCategoryRule> {
+public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
 	private AuditTypes data;
-	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache.class);
+	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache2.class);
 
 	public List<AuditCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
 		if (getData() == null)

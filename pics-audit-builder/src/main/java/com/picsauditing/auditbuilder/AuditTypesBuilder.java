@@ -1,6 +1,5 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
 import com.picsauditing.auditbuilder.service.AuditService;
@@ -9,11 +8,11 @@ import org.apache.commons.lang.StringUtils;
 import java.util.*;
 
 public class AuditTypesBuilder extends AuditBuilderBase {
-	private AuditTypeRuleCache ruleCache;
+	private AuditTypeRuleCache2 ruleCache;
 	private List<AuditTypeRule> rules;
-	private AuditDataDAO auditDataDAO;
+	private AuditBuilderDAO auditDataDAO;
 
-    public void setAuditDataDAO(AuditDataDAO auditDataDAO) {
+    public void setAuditDataDAO(AuditBuilderDAO auditDataDAO) {
         this.auditDataDAO = auditDataDAO;
     }
 
@@ -22,7 +21,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		public Set<OperatorAccount> operators = new HashSet<>();
 	}
 
-	public AuditTypesBuilder(AuditTypeRuleCache ruleCache, ContractorAccount contractor) {
+	public AuditTypesBuilder(AuditTypeRuleCache2 ruleCache, ContractorAccount contractor) {
 		super(contractor);
 		this.ruleCache = ruleCache;
 	}

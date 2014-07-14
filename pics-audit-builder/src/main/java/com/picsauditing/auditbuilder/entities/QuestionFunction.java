@@ -2,7 +2,7 @@ package com.picsauditing.auditbuilder.entities;
 
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.util.AnswerMap;
-import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap;
+import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2;
 import com.picsauditing.auditbuilder.util.Strings;
 
 import javax.script.ScriptEngine;
@@ -988,7 +988,7 @@ public enum QuestionFunction {
 		private final Collection<AuditQuestionFunctionWatcher> watchers;
         private String currentAnswer = null;
         private String expression = null;
-        private CorruptionPerceptionIndexMap cpiMap = null;
+        private CorruptionPerceptionIndexMap2 cpiMap = null;
 
         String operatorPrecedence = "+-  */()";
         StringBuilder constant = new StringBuilder();
@@ -1021,11 +1021,11 @@ public enum QuestionFunction {
             this.expression = expression;
         }
 
-        public CorruptionPerceptionIndexMap getCpiMap() {
+        public CorruptionPerceptionIndexMap2 getCpiMap() {
             return cpiMap;
         }
 
-        public void setCpiMap(CorruptionPerceptionIndexMap cpiMap) {
+        public void setCpiMap(CorruptionPerceptionIndexMap2 cpiMap) {
             this.cpiMap = cpiMap;
         }
 
@@ -1033,7 +1033,7 @@ public enum QuestionFunction {
 			private Map<String, String> params;
 			private AnswerMap answerMap;
 			private Collection<AuditQuestionFunctionWatcher> watchers = Collections.emptyList();
-            private CorruptionPerceptionIndexMap cpiMap;
+            private CorruptionPerceptionIndexMap2 cpiMap;
 
             public Builder params(Map<String, String> params) {
 				this.params = params;
@@ -1050,7 +1050,7 @@ public enum QuestionFunction {
 				return this;
 			}
 
-            public Builder cpiMap(CorruptionPerceptionIndexMap cpiMap) {
+            public Builder cpiMap(CorruptionPerceptionIndexMap2 cpiMap) {
                 this.cpiMap = cpiMap;
                 return this;
             }

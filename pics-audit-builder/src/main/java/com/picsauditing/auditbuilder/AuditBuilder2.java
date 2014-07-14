@@ -4,7 +4,7 @@ import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
-import com.picsauditing.auditbuilder.service.AuditPeriodService;
+import com.picsauditing.auditbuilder.service.AuditPeriodService2;
 import com.picsauditing.auditbuilder.service.AuditService;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
@@ -17,34 +17,34 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
-public class AuditBuilder {
+public class AuditBuilder2 {
 
 	@Autowired
-	private AuditCategoryMatrixDAO auditCatMatrixDAO;
+	private AuditCategoryMatrixDAO2 auditCatMatrixDAO;
 	@Autowired
-	private AppTranslationDAO appTranslationDAO;
+	private AppTranslationDAO2 appTranslationDAO;
 	@Autowired
-	private ContractorAuditDAO conAuditDao;
+	private ContractorAuditDAO2 conAuditDao;
 	@Autowired
-	private ContractorAuditOperatorDAO contractorAuditOperatorDAO;
+	private ContractorAuditOperatorDAO2 contractorAuditOperatorDAO;
     @Autowired
-    private ContractorAuditFileDAO contractorAuditFileDAO;
+    private ContractorAuditFileDAO2 contractorAuditFileDAO;
 	@Autowired
-	private ContractorTagDAO contractorTagDAO;
+	private ContractorTagDAO2 contractorTagDAO;
 	@Autowired
-	private AuditDataDAO auditDataDAO;
+	private AuditBuilderDAO auditDataDAO;
 	@Autowired
-	private AuditTypeRuleCache typeRuleCache;
+	private AuditTypeRuleCache2 typeRuleCache;
 	@Autowired
-	private AuditCategoryRuleCache categoryRuleCache;
+	private AuditCategoryRuleCache2 categoryRuleCache;
 	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
+	private AuditPercentCalculator2 auditPercentCalculator;
     @Autowired
-    AuditPeriodService auditPeriodService;
+    AuditPeriodService2 auditPeriodService;
     @Autowired
-    private AuditTypeDAO auditTypeDao;
+    private AuditTypeDAO2 auditTypeDao;
 
-	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder2.class);
 
 	private User systemUser = new User(User.SYSTEM);
     private Date today;

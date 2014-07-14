@@ -26,7 +26,7 @@ public class AuditCategoriesBuilderTest {
 	AuditCategory cat2;
 
 	@Mock
-	AuditCategoryRuleCache ruleCache;
+    AuditCategoryRuleCache2 ruleCache;
 
 	@Before
 	public void setUp() throws Exception {

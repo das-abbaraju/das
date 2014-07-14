@@ -8,10 +8,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
-public class AuditTypeRuleCache extends AuditRuleCache<AuditTypeRule> {
+public class AuditTypeRuleCache2 extends AuditRuleCache<AuditTypeRule> {
 	private SafetyRisks data;
 
-	private final Logger logger = LoggerFactory.getLogger(AuditTypeRuleCache.class);
+	private final Logger logger = LoggerFactory.getLogger(AuditTypeRuleCache2.class);
 
 	public List<AuditTypeRule> getRules(ContractorAccount contractor) {
 		List<AuditTypeRule> rules;

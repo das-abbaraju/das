@@ -7,7 +7,7 @@ import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
-import com.picsauditing.auditbuilder.service.AuditPeriodService;
+import com.picsauditing.auditbuilder.service.AuditPeriodService2;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
 import org.junit.Before;
@@ -26,31 +26,31 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class AuditBuilderTest extends PicsTest {
-	AuditBuilder auditBuilder;
+	AuditBuilder2 auditBuilder;
 
-	AuditTypeRuleCache typeRuleCache = new AuditTypeRuleCache();
+	AuditTypeRuleCache2 typeRuleCache = new AuditTypeRuleCache2();
 	List<AuditTypeRule> typeRules = new ArrayList<>();
 	AuditTypesBuilder typeBuilder;
-    AuditPeriodService auditPeriodService = new AuditPeriodService();
+    AuditPeriodService2 auditPeriodService = new AuditPeriodService2();
 
-	AuditCategoryRuleCache catRuleCache = new AuditCategoryRuleCache();
+	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
 	List<AuditCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
 	@Mock
-	AuditPercentCalculator auditPercentCalculator;
+    AuditPercentCalculator2 auditPercentCalculator;
 	@Mock
-    AuditDataDAO auditDataDao;
+    AuditBuilderDAO auditDataDao;
 	@Mock
-    ContractorAuditDAO conAuditDao;
+    ContractorAuditDAO2 conAuditDao;
     @Mock
-    ContractorAuditFileDAO contractorAuditFileDAO;
+    ContractorAuditFileDAO2 contractorAuditFileDAO;
 	@Mock
-	private AuditDecisionTableDAO auditDecisionTableDAO;
+	private AuditDecisionTableDAO2 auditDecisionTableDAO;
 	@Mock
-	private AppTranslationDAO appTranslationDAO;
+	private AppTranslationDAO2 appTranslationDAO;
     @Mock
-    AuditTypeDAO auditTypeDao;
+    AuditTypeDAO2 auditTypeDao;
     @Mock
     ContractorAudit audit;
     @Mock
@@ -66,7 +66,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		auditBuilder = new AuditBuilder();
+		auditBuilder = new AuditBuilder2();
 		autowireEMInjectedDAOs(auditBuilder);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", typeRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
@@ -313,7 +313,7 @@ public class AuditBuilderTest extends PicsTest {
     public void testAuditBuilderDate_NoDateSet() {
         Calendar cal = Calendar.getInstance();
         Calendar compareCal = Calendar.getInstance();
-        AuditBuilder builder = new AuditBuilder();
+        AuditBuilder2 builder = new AuditBuilder2();
         Date date = builder.getToday();
         compareCal.setTime(date);
         assertEquals(cal.get(Calendar.YEAR), compareCal.get(Calendar.YEAR));
@@ -326,7 +326,7 @@ public class AuditBuilderTest extends PicsTest {
         cal.add(Calendar.YEAR, -1);
         cal.add(Calendar.MONTH, -1);
         Calendar compareCal = Calendar.getInstance();
-        AuditBuilder builder = new AuditBuilder();
+        AuditBuilder2 builder = new AuditBuilder2();
         builder.setToday(cal.getTime());
         Date date = builder.getToday();
         compareCal.setTime(date);
