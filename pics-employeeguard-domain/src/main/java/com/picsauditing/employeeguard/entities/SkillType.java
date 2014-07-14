@@ -43,6 +43,4 @@ public enum SkillType {
 	public String toString() {
 		return displayValue;
 	}
-
-
 }
