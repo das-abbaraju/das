@@ -1,49 +1,22 @@
 package com.picsauditing.employeeguard.controllers.restful;
 
+import com.google.gson.GsonBuilder;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.EGTestDataUtil;
-import org.json.simple.JSONObject;
+import com.picsauditing.employeeguard.models.MSettingsManager;
+import com.picsauditing.employeeguard.services.SettingsService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.google.gson.GsonBuilder;
-import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.models.MSettingsManager;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.SettingsService;
-import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.util.PhotoUtil;
-import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
-import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
 import org.mockito.internal.util.reflection.Whitebox;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import com.google.gson.GsonBuilder;
-import com.picsauditing.controller.PicsRestActionSupport;
-import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
-import com.picsauditing.employeeguard.models.MSettingsManager;
-import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.AssignmentService;
-import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.SettingsService;
-import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
-import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
-import com.picsauditing.employeeguard.util.PhotoUtil;
-import com.picsauditing.employeeguard.validators.employee.EmployeePhotoFormValidator;
-import com.picsauditing.employeeguard.validators.profile.ProfileEditFormValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.StringReader;
+
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 public class SettingsActionTest extends PicsActionTest {
 
@@ -53,10 +26,9 @@ public class SettingsActionTest extends PicsActionTest {
 	private MSettingsManager.MSettings mSettings;
 
 	private SettingsAction settingsAction;
-	private	String data = "{\"language\":{\"id\":\"es\",\"name\":\"EspaÃ±ol\"},\"dialect\":{\"id\":\"CR\",\"name\":\"Costa Rica\"}}";
+	private String data = "{\"language\":{\"id\":\"es\",\"name\":\"EspaÃ±ol\"},\"dialect\":{\"id\":\"CR\",\"name\":\"Costa Rica\"}}";
 
-	private MSettingsManager.MSettings populateSettings(){
-
+	private MSettingsManager.MSettings populateSettings() {
 		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(data, MSettingsManager.MSettings.class);
 	}
 
@@ -90,8 +62,10 @@ public class SettingsActionTest extends PicsActionTest {
 
 	@Test
 	public void testInsert() throws Exception {
+		when(super.request.getReader()).thenReturn(new BufferedReader(new StringReader(data)));
+
 		settingsAction.insert();
 
-		verify(settingsService).updateSettings(any(MSettingsManager.MSettings.class),anyInt());
+		verify(settingsService).updateSettings(any(MSettingsManager.MSettings.class), anyInt());
 	}
 }

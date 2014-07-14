@@ -3,10 +3,8 @@ package com.picsauditing.employeeguard.controllers.restful;
 import com.google.gson.GsonBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.models.MIdAndName;
 import com.picsauditing.employeeguard.models.MSettingsManager;
 import com.picsauditing.employeeguard.services.SettingsService;
-
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +23,10 @@ public class SettingsAction extends PicsRestActionSupport {
 
 	public String index() {
 		int appUserId = permissions.getAppUserID();
-		try{
+		try {
 			MSettingsManager.MSettings mSettings = settingsService.extractSettings(appUserId);
 
-			if(mSettings!=null){
+			if (mSettings != null) {
 				jsonString = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().toJson(mSettings);
 			}
 
@@ -52,7 +50,7 @@ public class SettingsAction extends PicsRestActionSupport {
 
 		mSettings = populateSettings();
 
-		if(mSettings!=null) {
+		if (mSettings != null) {
 			int appUserId = permissions.getAppUserID();
 
 			settingsService.updateSettings(mSettings, appUserId);
@@ -64,11 +62,10 @@ public class SettingsAction extends PicsRestActionSupport {
 		}
 
 		return JSON_STRING;
-
 	}
 
-	private MSettingsManager.MSettings populateSettings(){
-		JSONObject jsonObject= getJsonFromRequestPayload();
+	private MSettingsManager.MSettings populateSettings() {
+		JSONObject jsonObject = getJsonFromRequestPayload();
 		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(jsonObject.toJSONString(), MSettingsManager.MSettings.class);
 	}
 
