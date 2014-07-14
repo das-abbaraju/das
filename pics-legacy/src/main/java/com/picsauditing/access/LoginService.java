@@ -24,7 +24,7 @@ public class LoginService {
     protected static final int MAX_FAILED_ATTEMPTS = 6;
 
     @Autowired
-	protected UserService userService;
+    protected UserService userService;
     @Autowired
     private AppUserService appUserService;
     @Autowired
@@ -36,13 +36,13 @@ public class LoginService {
     private LDAPService ldapService;
 
     // todo: This is only part of the login process. Extract code from LoginController to make this complete.
-	public User loginNormally(String username, String password) throws LoginException {
+    public User loginNormally(String username, String password) throws LoginException {
 
-		User user = loadUserByUsername(username);
-		return doPreLoginVerification(null,user, username, password).getUser();
-	}
+        User user = loadUserByUsername(username);
+        return doPreLoginVerification(null, user, username, password).getUser();
+    }
 
-	public User getUserForUserName(String username) throws LoginException {
+    public User getUserForUserName(String username) throws LoginException {
         AppUser appUser = appUserService.findByUsername(username);
         User user;
         if (appUser == null) {
@@ -51,14 +51,14 @@ public class LoginService {
             user = userDAO.findUserByAppUserID(appUser.getId());
         }
 
-		return user;
-	}
+        return user;
+    }
 
     public LoginContext doPreLoginVerification(String idp, User user, String username, String password) throws LoginException {
-        if(StringUtils.isNotEmpty(idp)) {
-            ldapService.doLDAPLoginAuthentication(idp,username, password);
-        }else{
-            doPreLoginVerification(user, username,password);
+        if (StringUtils.isNotEmpty(idp)) {
+            ldapService.doLDAPLoginAuthentication(idp, username, password);
+        } else {
+            doPreLoginVerification(user, username, password);
         }
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
@@ -66,16 +66,16 @@ public class LoginService {
         return loginContext;
     }
 
-	private  void doPreLoginVerification(User user, String username, String password) throws LoginException {
+    private void doPreLoginVerification(User user, String username, String password) throws LoginException {
         verifyUserExists(user, username);
         verifyUserStatusForLogin(user);
         verifyPasswordIsCorrect(user, password);
         verifyPasswordIsNotExpired(user);
-	}
+    }
 
 
-	// todo: This is only part of the login process. Extract code from LoginController to make this complete.
-	public LoginContext loginForResetPassword(String username, String key) throws LoginException {
+    // todo: This is only part of the login process. Extract code from LoginController to make this complete.
+    public LoginContext loginForResetPassword(String username, String key) throws LoginException {
         AppUser appUser = appUserService.findByUsername(username);
         User user = userService.findByAppUserId(appUser.getId());
         Profile profile = profileService.findByAppUserId(appUser.getId());
@@ -88,7 +88,7 @@ public class LoginService {
             throw new AccountNotFoundException("No PicsOrg or EmployeeGUARD account found.");
         }
 
-		processReset(key, appUser);
+        processReset(key, appUser);
         LoginContext loginContext = new LoginContext();
         loginContext.setAppUser(appUser);
 
@@ -103,123 +103,123 @@ public class LoginService {
             loginContext.setUser(user);
         }
 
-		return loginContext;
-	}
+        return loginContext;
+    }
 
-	public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {
-		if (user != null) {
-			Account account = user.getAccount();
-			if (account.isContractor()) {
-				if (account.getStatus().isDeactivated()) {
-					return HomePageType.Deactivated;
-				} else if (account.getStatus().isDeclined()) {
-					return HomePageType.Declined;
-				} else {
-					if (account.getStatus().isPending() && Strings.isNotEmpty(preLoginUrl) && preLoginUrl.contains("InvoiceDetail")) {
-						for (Invoice invoice : ((ContractorAccount) account).getInvoices()) {
-							String linkToInvoice = "InvoiceDetail.action?invoice.id=" + invoice.getId();
-							if (preLoginUrl.contains(linkToInvoice)) {
-								return HomePageType.PreLogin;
-							}
-						}
-					}
+    public HomePageType postLoginHomePageTypeForRedirect(String preLoginUrl, User user) {
+        if (user != null) {
+            Account account = user.getAccount();
+            if (account.isContractor()) {
+                if (account.getStatus().isDeactivated()) {
+                    return HomePageType.Deactivated;
+                } else if (account.getStatus().isDeclined()) {
+                    return HomePageType.Declined;
+                } else {
+                    if (account.getStatus().isPending() && Strings.isNotEmpty(preLoginUrl) && preLoginUrl.contains("InvoiceDetail")) {
+                        for (Invoice invoice : ((ContractorAccount) account).getInvoices()) {
+                            String linkToInvoice = "InvoiceDetail.action?invoice.id=" + invoice.getId();
+                            if (preLoginUrl.contains(linkToInvoice)) {
+                                return HomePageType.PreLogin;
+                            }
+                        }
+                    }
 
-					ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-					if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
-						return HomePageType.PreLogin;
-					} else {
-						return HomePageType.ContractorRegistrationStep;
-					}
-				}
-			} else {
-				if (Strings.isNotEmpty(preLoginUrl)) {
-					return HomePageType.PreLogin;
-				} else {
-					return HomePageType.HomePage;
-				}
-			}
-		} else {
-			return HomePageType.EmployeeGUARD;
-		}
-	}
+                    ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
+                    if (step.isDone() && Strings.isNotEmpty(preLoginUrl)) {
+                        return HomePageType.PreLogin;
+                    } else {
+                        return HomePageType.ContractorRegistrationStep;
+                    }
+                }
+            } else {
+                if (Strings.isNotEmpty(preLoginUrl)) {
+                    return HomePageType.PreLogin;
+                } else {
+                    return HomePageType.HomePage;
+                }
+            }
+        } else {
+            return HomePageType.EmployeeGUARD;
+        }
+    }
 
-	private void processReset(String key, AppUser appUser) throws InvalidResetKeyException {
-		verifyResetHashIsValid(appUser, key);
-		prepareUserForLoginAfterReset(appUser);
-	}
+    private void processReset(String key, AppUser appUser) throws InvalidResetKeyException {
+        verifyResetHashIsValid(appUser, key);
+        prepareUserForLoginAfterReset(appUser);
+    }
 
-	private void verifyUserExists(User user, String username) throws AccountNotFoundException {
-		if (user == null) {
-			throw new AccountNotFoundException("No user with username: " + username + " found.");
-		}
-	}
+    private void verifyUserExists(User user, String username) throws AccountNotFoundException {
+        if (user == null) {
+            throw new AccountNotFoundException("No user with username: " + username + " found.");
+        }
+    }
 
-	protected User loadUserByUsername(String username) {
-		return userService.loadUserByUsername(username);
-	}
+    protected User loadUserByUsername(String username) {
+        return userService.loadUserByUsername(username);
+    }
 
-	private boolean verifyUserStatusForLogin(User user) throws AccountLockedException, AccountInactiveException {
-		if (user.isLocked()) {
-			throw new AccountLockedException("Account is locked for user: " + user.getUsername());
+    private boolean verifyUserStatusForLogin(User user) throws AccountLockedException, AccountInactiveException {
+        if (user.isLocked()) {
+            throw new AccountLockedException("Account is locked for user: " + user.getUsername());
 
-		} else if (!isUserActive(user)) {
-			throw new AccountInactiveException("Account is inactive for user: " + user.getUsername(), user.getUsername());
-		}
-		return true;
-	}
+        } else if (!isUserActive(user)) {
+            throw new AccountInactiveException("Account is inactive for user: " + user.getUsername(), user.getUsername());
+        }
+        return true;
+    }
 
-	protected boolean isUserActive(User user) {
-		return userService.isUserActive(user);
-	}
+    protected boolean isUserActive(User user) {
+        return userService.isUserActive(user);
+    }
 
-	private boolean verifyPasswordIsCorrect(User user, String password) throws FailedLoginException, FailedLoginAndLockedException {
-		if (!user.isEncryptedPasswordEqual(password)) {
-			updateUserForFailedPassword(user);
-			if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
-				throw new FailedLoginAndLockedException("Maximum password attempts exceeded for user: " + user.getUsername() + ". Account locked.", user.getUsername());
-			} else {
-				throw new FailedLoginException("Incorrect password for user: " + user.getUsername());
-			}
+    private boolean verifyPasswordIsCorrect(User user, String password) throws FailedLoginException, FailedLoginAndLockedException {
+        if (!user.isEncryptedPasswordEqual(password)) {
+            updateUserForFailedPassword(user);
+            if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
+                throw new FailedLoginAndLockedException("Maximum password attempts exceeded for user: " + user.getUsername() + ". Account locked.", user.getUsername());
+            } else {
+                throw new FailedLoginException("Incorrect password for user: " + user.getUsername());
+            }
 
-		}
-		return true;
-	}
+        }
+        return true;
+    }
 
-	private void updateUserForFailedPassword(User user) {
-		user.setFailedAttempts(user.getFailedAttempts() + 1);
-		if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
-			lockoutUserForAnHour(user);
-		}
-	}
+    private void updateUserForFailedPassword(User user) {
+        user.setFailedAttempts(user.getFailedAttempts() + 1);
+        if (user.getFailedAttempts() > MAX_FAILED_ATTEMPTS) {
+            lockoutUserForAnHour(user);
+        }
+    }
 
-	private void lockoutUserForAnHour(User user) {
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.HOUR, 1);
-		user.setFailedAttempts(0);
-		user.setLockUntil(calendar.getTime());
-	}
+    private void lockoutUserForAnHour(User user) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 1);
+        user.setFailedAttempts(0);
+        user.setLockUntil(calendar.getTime());
+    }
 
-	private boolean verifyPasswordIsNotExpired(User user) throws PasswordExpiredException {
-		if (isUserPasswordExpired(user)) {
-			throw new PasswordExpiredException("Password expired for user: " + user.getUsername(), user.getUsername());
-		}
-		return true;
-	}
+    private boolean verifyPasswordIsNotExpired(User user) throws PasswordExpiredException {
+        if (isUserPasswordExpired(user)) {
+            throw new PasswordExpiredException("Password expired for user: " + user.getUsername(), user.getUsername());
+        }
+        return true;
+    }
 
-	protected boolean isUserPasswordExpired(User user) {
-		return userService.isPasswordExpired(user);
-	}
+    protected boolean isUserPasswordExpired(User user) {
+        return userService.isPasswordExpired(user);
+    }
 
-	private boolean verifyResetHashIsValid(AppUser appUser, String key) throws InvalidResetKeyException {
-		if (Strings.isNotEmpty(key) && appUser != null) {
-			if (appUser.getResetHash() == null || !appUser.getResetHash().equals(key)) {
-				throw new InvalidResetKeyException("Reset key doesn't match for user: " + appUser.getUsername(), appUser.getUsername());
-			}
-		}
-		return true;
-	}
+    private boolean verifyResetHashIsValid(AppUser appUser, String key) throws InvalidResetKeyException {
+        if (Strings.isNotEmpty(key) && appUser != null) {
+            if (appUser.getResetHash() == null || !appUser.getResetHash().equals(key)) {
+                throw new InvalidResetKeyException("Reset key doesn't match for user: " + appUser.getUsername(), appUser.getUsername());
+            }
+        }
+        return true;
+    }
 
-	private void prepareUserForLoginAfterReset(AppUser appUser) {
+    private void prepareUserForLoginAfterReset(AppUser appUser) {
         if (appUser != null) {
             appUser.setResetHash(null);
         }
@@ -228,9 +228,9 @@ public class LoginService {
 
         if (user != null) {
             user.setForcePasswordReset(true);
-			user.unlockLogin();
-			user.setPasswordChanged(null);
-		}
-	}
+            user.unlockLogin();
+            user.setPasswordChanged(null);
+        }
+    }
 
 }

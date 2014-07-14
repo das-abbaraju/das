@@ -11,13 +11,6 @@
         <param-name>FTP_DIR</param-name>
         <param-value>P:/Development/ftp_dir</param-value>
     </context-param>
-    <context-param>
-        <param-name>contextconfigLocation</param-name>
-        <param-value>classpath:application-Context.xml,
-            classpath:applicationContext-security.xml
-        </param-value>
-
-    </context-param>
 
     <listener>
         <listener-class>

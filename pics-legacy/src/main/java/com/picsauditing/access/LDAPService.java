@@ -15,19 +15,18 @@ import javax.security.auth.login.FailedLoginException;
 public class LDAPService {
 
     public static final String PICS_CORP = "@PICS.CORP";
+    public static final String PICSAD = "picsad";
 
     private static final Logger logger = LoggerFactory.getLogger(LDAPService.class);
-
-    public static final String PICSAD = "picsad";
 
     @Autowired
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
     public boolean doLDAPLoginAuthentication(String idp, String username, String password) throws FailedLoginException {
-            switch (idp) {
-                case PICSAD:
-                    return doPICSLdapAuthentication(username, password);
-            }
+        switch (idp) {
+            case PICSAD:
+                return doPICSLdapAuthentication(username, password);
+        }
         return false;
     }
 
@@ -51,7 +50,7 @@ public class LDAPService {
                 throw new FailedLoginException("Bad Credentials for user: " + username);
             }
         }
-        //if we are here means trying to access ldap and feature is disabled, in this case we will throw exception.
+        //Accessing ldap when Feature is disabled
         //TODO show proper error message to the user
         throw new FailedLoginException("LDAP Feature is disable: " + username);
     }
