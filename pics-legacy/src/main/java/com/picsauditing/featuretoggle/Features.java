@@ -23,8 +23,10 @@ public enum Features implements Feature {
     USE_NEW_AUDIT_PERCENT_CALCULATOR,
     @Label("QuickBooks: exclude contractor address when sending contractor information or invoices to QuickBooks Web Connector")
     QUICKBOOKS_EXCLUDE_CONTRACTOR_ADDRESS,
+    @Label("Enable PICS LDAP authentication")
+    USE_LDAP_AUTHENTICATION,
     @Label("Use New Contractor Flag ETL")
-    USE_NEW_CONTRACTOR_ETL;
+    USE_NEW_CONTRACTOR_ETL; 
 
     public boolean isActive() {
         return FeatureContext.getFeatureManager().isActive(this);

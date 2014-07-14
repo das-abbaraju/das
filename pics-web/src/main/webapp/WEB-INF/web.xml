@@ -11,6 +11,7 @@
         <param-name>FTP_DIR</param-name>
         <param-value>P:/Development/ftp_dir</param-value>
     </context-param>
+
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
@@ -97,6 +98,7 @@
         <filter-name>struts-execute</filter-name>
         <url-pattern>/users/*</url-pattern>
     </filter-mapping>
+
 
     <error-page>
         <error-code>404</error-code>

@@ -54,15 +54,16 @@ import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.*;
 @SuppressWarnings("serial")
 public class LoginController extends PicsActionSupport {
 
-	private static final int ONE_SECOND = 1;
+    private static final int ONE_SECOND = 1;
 
 	public static final String ACCOUNT_RECOVERY_ACTION = "AccountRecovery.action?username=";
 	public static final String LOGIN_ACTION_BUTTON_LOGOUT = "Login.action?button=logout";
 	public static final String DEACTIVATED_ACCOUNT_PAGE = "Deactivated.action";
     public static final String REGISTRATION_ACTION_NOT_ANGULAR = "Registration.action";
     public static final String REGISTRATION_ACTION_ANGULAR = "registration.action";
+    public static final String IDENTITY_PROVIDER = "idp";
 
-	// FOR TESTING ONLY
+    // FOR TESTING ONLY
 	protected static ReportUserDAO reportUserDAO;
 
 	@Autowired
@@ -87,6 +88,8 @@ public class LoginController extends PicsActionSupport {
 	private boolean rememberMe = false;
 	private int sessionTimeout;
 
+    private String idp;
+
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@Anonymous
@@ -105,7 +108,7 @@ public class LoginController extends PicsActionSupport {
 							.getVisibleLanguages());
 					ActionContext.getContext().setLocale(languageUtility.getBrowserLocale());
 				}
-
+                ActionContext.getContext().getSession().put(IDENTITY_PROVIDER, idp);
 				return SUCCESS;
 			}
 		} else if ("confirm".equals(button)) {
@@ -123,7 +126,7 @@ public class LoginController extends PicsActionSupport {
 		}
 	}
 
-	/**
+    /**
 	 * Method to log in via an ajax overlay
 	 */
 	@SuppressWarnings("unchecked")
@@ -367,9 +370,10 @@ public class LoginController extends PicsActionSupport {
 			} else {
 				user = userService.findByAppUserId(appUser.getId());
 			}
-
 			if (user != null) {
-				LoginContext loginContext = loginService.doPreLoginVerification(user, username, password);
+                LoginContext loginContext = null;
+                String idProvider = getIdp();
+                loginContext = loginService.doPreLoginVerification(idProvider, user, username, password);
 				return doLogin(loginContext);
 			} else {
 				LoginContext loginContext = authenticationService.doPreLoginVerificationEG(username, password);
@@ -589,6 +593,18 @@ public class LoginController extends PicsActionSupport {
 	public void setKey(String key) {
 		this.key = key;
 	}
+
+    public String getIdp() {
+        String idProvider = (String) ActionContext.getContext().getSession().get(IDENTITY_PROVIDER);
+        if(StringUtils.isNotEmpty(idProvider)){
+            return idProvider;
+        }
+        return idp;
+    }
+
+    public void setIdp(String idp) {
+        this.idp = idp;
+    }
 
 	@Override
 	public String setUrlForRedirect(String url) throws IOException {
