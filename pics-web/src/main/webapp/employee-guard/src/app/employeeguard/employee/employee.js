@@ -18,6 +18,6 @@ angular.module('PICS.employeeguard')
             templateUrl: '/employee-guard/src/app/employeeguard/employee/skills/skill_list.tpl.html'
         })
         .when('/employee-guard/employee/settings', {
-            templateUrl: '/employee-guard/src/app/employeeguard/employee/settings/settings.tpl.html'
+            templateUrl: '/employee-guard/src/app/employeeguard/employee/profile/settings.tpl.html'
         });
 });

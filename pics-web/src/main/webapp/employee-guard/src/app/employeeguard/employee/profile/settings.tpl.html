@@ -1,4 +1,4 @@
-<div ng-controller="settingsCtrl" class="employee-settings-page">
+<div ng-controller="profileSettingsCtrl" class="profile-settings-page">
     <div class="container">
         <pagetitle title="{{ 'EMPLOYEE.SETTINGS.PAGE_TITLE' | translate }}"></pagetitle>
         <div class="page-subheader">
@@ -32,7 +32,7 @@
                                     <strong translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.LANGUAGE"></strong>
                                 </label>
                                 <div class="col-md-4">
-                                    <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-change="updateDialectList(user.language)" ng-model="user.language">
+                                    <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-change="getDialectList(user.language)" ng-model="user.language">
                                         <option ng-repeat="language in languageList" value="{{ language.id }}">{{ language.name }}</option>
                                     </select>
                                 </div>
@@ -50,7 +50,7 @@
 
                             <div class="form-group">
                                 <div class="col-md-9 col-md-offset-3 form-actions">
-                                    <button name="operator_skill_edit.update" class="btn btn-success" ng-click="updateSettings(user)" type="submit" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.SAVE"></button>
+                                    <button name="operator_skill_edit.update" class="btn btn-success" ng-click="saveProfileSettings(user)" type="submit" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.SAVE"></button>
                                     <button ng-click="toggleFormDisplay()" class="btn btn-default" type="button" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.CANCEL"></button>
                                 </div>
                             </div>
@@ -58,9 +58,9 @@
 
                         <dl class="employee-guard-information" ng-if="!showEditForm">
                             <dt class="col-md-3" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.LANGUAGE"></dt>
-                            <dd class="col-md-9">{{ selected_language.name }}</dd>
-                            <dt ng-if="selected_dialect" class="col-md-3" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.DIALECT"></dt>
-                            <dd ng-if="selected_dialect" class="col-md-9">{{ selected_dialect.name }}</dd>
+                            <dd class="col-md-9">{{ profile_settings.language.name }}</dd>
+                            <dt ng-if="profile_settings.dialect" class="col-md-3" translate="EMPLOYEE.SETTINGS.PERSONAL_SETTINGS.DIALECT"></dt>
+                            <dd ng-if="profile_settings.dialect" class="col-md-9">{{ profile_settings.dialect.name }}</dd>
                         </dl>
                     </div>
                 </section>
