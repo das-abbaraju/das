@@ -7,7 +7,8 @@ angular.module('PICS.employeeguard', [
     'PICS.charts',
     'PICS.skills',
     'PICS.filters',
-    'ui.select2'
+    'ui.select2',
+    'ProfileService'
 ])
 
 .config(function ($locationProvider, $routeProvider) {

@@ -25,6 +25,7 @@ module.exports = function(grunt) {
     ];
 
     var modules = [
+        'src/common/profile/profileService.js',
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
