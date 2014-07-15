@@ -1,10 +1,12 @@
 package com.picsauditing.employeeguard.controllers.restful;
 
 import com.google.gson.GsonBuilder;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
 import com.picsauditing.employeeguard.models.MSettingsManager;
 import com.picsauditing.employeeguard.services.SettingsService;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +61,7 @@ public class SettingsAction extends PicsRestActionSupport {
 
 			permissions.setLocale(mSettings.prepareLocale());
 
+			SessionInfoProviderFactory.getSessionInfoProvider().putInSession(Permissions.SESSION_PERMISSIONS_COOKIE_KEY, permissions);
 		}
 
 		return JSON_STRING;

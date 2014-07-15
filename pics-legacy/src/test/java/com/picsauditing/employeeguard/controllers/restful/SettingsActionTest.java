@@ -5,14 +5,15 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.EGTestDataUtil;
 import com.picsauditing.employeeguard.models.MSettingsManager;
 import com.picsauditing.employeeguard.services.SettingsService;
+import com.picsauditing.web.SessionInfoProvider;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.util.reflection.Whitebox;
+import org.powermock.reflect.Whitebox;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.StringReader;
 
 import static org.junit.Assert.assertNotNull;
@@ -22,6 +23,8 @@ public class SettingsActionTest extends PicsActionTest {
 
 	@Mock
 	SettingsService settingsService;
+	@Mock
+	private SessionInfoProvider sessionInfoProvider;
 
 	private MSettingsManager.MSettings mSettings;
 
@@ -48,7 +51,7 @@ public class SettingsActionTest extends PicsActionTest {
 
 		when(settingsService.extractSettings(EGTestDataUtil.APP_USER_ID)).thenReturn(mSettings);
 
-
+		Whitebox.setInternalState(SessionInfoProviderFactory.class, "mockSessionInfoProvider", sessionInfoProvider);
 	}
 
 	@Test
@@ -67,5 +70,6 @@ public class SettingsActionTest extends PicsActionTest {
 		settingsAction.insert();
 
 		verify(settingsService).updateSettings(any(MSettingsManager.MSettings.class), anyInt());
+		verify(sessionInfoProvider).putInSession(anyString(), anyString());
 	}
 }
