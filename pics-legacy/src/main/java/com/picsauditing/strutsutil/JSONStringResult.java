@@ -13,6 +13,7 @@ public class JSONStringResult extends StreamResult {
 
 		inputStream = new ByteArrayInputStream(json.getBytes("UTF-8"));
 		contentType = "application/json";
+		contentCharSet = "UTF-8";
 		super.doExecute(finalLocation, invocation);
 	}
 }
