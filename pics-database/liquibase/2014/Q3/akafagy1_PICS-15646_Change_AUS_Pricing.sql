@@ -267,3 +267,11 @@ SET amount = 220.00
 WHERE rc.isoCode = 'NZ'
       AND rc.currency = 'NZD'
       AND fee.fee LIKE 'Reactivation Fee%';
+
+UPDATE invoice_fee_country ifc
+  JOIN ref_country rc ON rc.isoCode = ifc.country
+  JOIN invoice_fee fee ON ifc.feeID = fee.id
+SET amount = 220.00
+WHERE rc.isoCode = 'NZ'
+      AND rc.currency = 'NZD'
+      AND fee.fee LIKE 'One-time Activation Fee%';
