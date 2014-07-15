@@ -31708,7 +31708,1123 @@ angular.module('ngResource', ['ng']).
   }]);
 
 
-})(window, window.angular);;/**
+})(window, window.angular);;/*!
+ * angular-translate - v2.2.0 - 2014-06-03
+ * http://github.com/PascalPrecht/angular-translate
+ * Copyright (c) 2014 ; Licensed MIT
+ */
+angular.module('pascalprecht.translate', ['ng']).run([
+  '$translate',
+  function ($translate) {
+    var key = $translate.storageKey(), storage = $translate.storage();
+    if (storage) {
+      if (!storage.get(key)) {
+        if (angular.isString($translate.preferredLanguage())) {
+          $translate.use($translate.preferredLanguage());
+        } else {
+          storage.set(key, $translate.use());
+        }
+      } else {
+        $translate.use(storage.get(key));
+      }
+    } else if (angular.isString($translate.preferredLanguage())) {
+      $translate.use($translate.preferredLanguage());
+    }
+  }
+]);
+angular.module('pascalprecht.translate').provider('$translate', [
+  '$STORAGE_KEY',
+  function ($STORAGE_KEY) {
+    var $translationTable = {}, $preferredLanguage, $availableLanguageKeys = [], $languageKeyAliases, $fallbackLanguage, $fallbackWasString, $uses, $nextLang, $storageFactory, $storageKey = $STORAGE_KEY, $storagePrefix, $missingTranslationHandlerFactory, $interpolationFactory, $interpolatorFactories = [], $interpolationSanitizationStrategy = false, $loaderFactory, $cloakClassName = 'translate-cloak', $loaderOptions, $notFoundIndicatorLeft, $notFoundIndicatorRight, $postCompilingEnabled = false, NESTED_OBJECT_DELIMITER = '.';
+    var getLocale = function () {
+      var nav = window.navigator;
+      return (nav.language || nav.browserLanguage || nav.systemLanguage || nav.userLanguage || '').split('-').join('_');
+    };
+    var negotiateLocale = function (preferred) {
+      var avail = [], locale = angular.lowercase(preferred), i = 0, n = $availableLanguageKeys.length;
+      for (; i < n; i++) {
+        avail.push(angular.lowercase($availableLanguageKeys[i]));
+      }
+      if (avail.indexOf(locale) > -1) {
+        return preferred;
+      }
+      if ($languageKeyAliases) {
+        var alias;
+        for (var langKeyAlias in $languageKeyAliases) {
+          var hasWildcardKey = false;
+          var hasExactKey = $languageKeyAliases.hasOwnProperty(langKeyAlias) && angular.lowercase(langKeyAlias) === angular.lowercase(preferred);
+          if (langKeyAlias.slice(-1) === '*') {
+            hasWildcardKey = langKeyAlias.slice(0, -1) === preferred.slice(0, langKeyAlias.length - 1);
+          }
+          if (hasExactKey || hasWildcardKey) {
+            alias = $languageKeyAliases[langKeyAlias];
+            if (avail.indexOf(angular.lowercase(alias)) > -1) {
+              return alias;
+            }
+          }
+        }
+      }
+      var parts = preferred.split('_');
+      if (parts.length > 1 && avail.indexOf(angular.lowercase(parts[0])) > -1) {
+        return parts[0];
+      }
+      return preferred;
+    };
+    var translations = function (langKey, translationTable) {
+      if (!langKey && !translationTable) {
+        return $translationTable;
+      }
+      if (langKey && !translationTable) {
+        if (angular.isString(langKey)) {
+          return $translationTable[langKey];
+        }
+      } else {
+        if (!angular.isObject($translationTable[langKey])) {
+          $translationTable[langKey] = {};
+        }
+        angular.extend($translationTable[langKey], flatObject(translationTable));
+      }
+      return this;
+    };
+    this.translations = translations;
+    this.cloakClassName = function (name) {
+      if (!name) {
+        return $cloakClassName;
+      }
+      $cloakClassName = name;
+      return this;
+    };
+    var flatObject = function (data, path, result, prevKey) {
+      var key, keyWithPath, keyWithShortPath, val;
+      if (!path) {
+        path = [];
+      }
+      if (!result) {
+        result = {};
+      }
+      for (key in data) {
+        if (!data.hasOwnProperty(key)) {
+          continue;
+        }
+        val = data[key];
+        if (angular.isObject(val)) {
+          flatObject(val, path.concat(key), result, key);
+        } else {
+          keyWithPath = path.length ? '' + path.join(NESTED_OBJECT_DELIMITER) + NESTED_OBJECT_DELIMITER + key : key;
+          if (path.length && key === prevKey) {
+            keyWithShortPath = '' + path.join(NESTED_OBJECT_DELIMITER);
+            result[keyWithShortPath] = '@:' + keyWithPath;
+          }
+          result[keyWithPath] = val;
+        }
+      }
+      return result;
+    };
+    this.addInterpolation = function (factory) {
+      $interpolatorFactories.push(factory);
+      return this;
+    };
+    this.useMessageFormatInterpolation = function () {
+      return this.useInterpolation('$translateMessageFormatInterpolation');
+    };
+    this.useInterpolation = function (factory) {
+      $interpolationFactory = factory;
+      return this;
+    };
+    this.useSanitizeValueStrategy = function (value) {
+      $interpolationSanitizationStrategy = value;
+      return this;
+    };
+    this.preferredLanguage = function (langKey) {
+      if (langKey) {
+        $preferredLanguage = langKey;
+        return this;
+      }
+      return $preferredLanguage;
+    };
+    this.translationNotFoundIndicator = function (indicator) {
+      this.translationNotFoundIndicatorLeft(indicator);
+      this.translationNotFoundIndicatorRight(indicator);
+      return this;
+    };
+    this.translationNotFoundIndicatorLeft = function (indicator) {
+      if (!indicator) {
+        return $notFoundIndicatorLeft;
+      }
+      $notFoundIndicatorLeft = indicator;
+      return this;
+    };
+    this.translationNotFoundIndicatorRight = function (indicator) {
+      if (!indicator) {
+        return $notFoundIndicatorRight;
+      }
+      $notFoundIndicatorRight = indicator;
+      return this;
+    };
+    this.fallbackLanguage = function (langKey) {
+      fallbackStack(langKey);
+      return this;
+    };
+    var fallbackStack = function (langKey) {
+      if (langKey) {
+        if (angular.isString(langKey)) {
+          $fallbackWasString = true;
+          $fallbackLanguage = [langKey];
+        } else if (angular.isArray(langKey)) {
+          $fallbackWasString = false;
+          $fallbackLanguage = langKey;
+        }
+        if (angular.isString($preferredLanguage)) {
+          $fallbackLanguage.push($preferredLanguage);
+        }
+        return this;
+      } else {
+        if ($fallbackWasString) {
+          return $fallbackLanguage[0];
+        } else {
+          return $fallbackLanguage;
+        }
+      }
+    };
+    this.use = function (langKey) {
+      if (langKey) {
+        if (!$translationTable[langKey] && !$loaderFactory) {
+          throw new Error('$translateProvider couldn\'t find translationTable for langKey: \'' + langKey + '\'');
+        }
+        $uses = langKey;
+        return this;
+      }
+      return $uses;
+    };
+    var storageKey = function (key) {
+      if (!key) {
+        if ($storagePrefix) {
+          return $storagePrefix + $storageKey;
+        }
+        return $storageKey;
+      }
+      $storageKey = key;
+    };
+    this.storageKey = storageKey;
+    this.useUrlLoader = function (url) {
+      return this.useLoader('$translateUrlLoader', { url: url });
+    };
+    this.useStaticFilesLoader = function (options) {
+      return this.useLoader('$translateStaticFilesLoader', options);
+    };
+    this.useLoader = function (loaderFactory, options) {
+      $loaderFactory = loaderFactory;
+      $loaderOptions = options || {};
+      return this;
+    };
+    this.useLocalStorage = function () {
+      return this.useStorage('$translateLocalStorage');
+    };
+    this.useCookieStorage = function () {
+      return this.useStorage('$translateCookieStorage');
+    };
+    this.useStorage = function (storageFactory) {
+      $storageFactory = storageFactory;
+      return this;
+    };
+    this.storagePrefix = function (prefix) {
+      if (!prefix) {
+        return prefix;
+      }
+      $storagePrefix = prefix;
+      return this;
+    };
+    this.useMissingTranslationHandlerLog = function () {
+      return this.useMissingTranslationHandler('$translateMissingTranslationHandlerLog');
+    };
+    this.useMissingTranslationHandler = function (factory) {
+      $missingTranslationHandlerFactory = factory;
+      return this;
+    };
+    this.usePostCompiling = function (value) {
+      $postCompilingEnabled = !!value;
+      return this;
+    };
+    this.determinePreferredLanguage = function (fn) {
+      var locale = fn && angular.isFunction(fn) ? fn() : getLocale();
+      if (!$availableLanguageKeys.length) {
+        $preferredLanguage = locale;
+      } else {
+        $preferredLanguage = negotiateLocale(locale);
+      }
+      return this;
+    };
+    this.registerAvailableLanguageKeys = function (languageKeys, aliases) {
+      if (languageKeys) {
+        $availableLanguageKeys = languageKeys;
+        if (aliases) {
+          $languageKeyAliases = aliases;
+        }
+        return this;
+      }
+      return $availableLanguageKeys;
+    };
+    this.$get = [
+      '$log',
+      '$injector',
+      '$rootScope',
+      '$q',
+      function ($log, $injector, $rootScope, $q) {
+        var Storage, defaultInterpolator = $injector.get($interpolationFactory || '$translateDefaultInterpolation'), pendingLoader = false, interpolatorHashMap = {}, langPromises = {}, fallbackIndex, startFallbackIteration;
+        var $translate = function (translationId, interpolateParams, interpolationId) {
+          if (angular.isArray(translationId)) {
+            var translateAll = function (translationIds) {
+              var results = {};
+              var promises = [];
+              var translate = function (translationId) {
+                var deferred = $q.defer();
+                var regardless = function (value) {
+                  results[translationId] = value;
+                  deferred.resolve([
+                    translationId,
+                    value
+                  ]);
+                };
+                $translate(translationId, interpolateParams, interpolationId).then(regardless, regardless);
+                return deferred.promise;
+              };
+              for (var i = 0, c = translationIds.length; i < c; i++) {
+                promises.push(translate(translationIds[i]));
+              }
+              return $q.all(promises).then(function () {
+                return results;
+              });
+            };
+            return translateAll(translationId);
+          }
+          var deferred = $q.defer();
+          if (translationId) {
+            translationId = translationId.trim();
+          }
+          var promiseToWaitFor = function () {
+              var promise = $preferredLanguage ? langPromises[$preferredLanguage] : langPromises[$uses];
+              fallbackIndex = 0;
+              if ($storageFactory && !promise) {
+                var langKey = Storage.get($storageKey);
+                promise = langPromises[langKey];
+                if ($fallbackLanguage && $fallbackLanguage.length) {
+                  var index = indexOf($fallbackLanguage, langKey);
+                  fallbackIndex = index > -1 ? index += 1 : 0;
+                  $fallbackLanguage.push($preferredLanguage);
+                }
+              }
+              return promise;
+            }();
+          if (!promiseToWaitFor) {
+            determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+          } else {
+            promiseToWaitFor.then(function () {
+              determineTranslation(translationId, interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+            }, deferred.reject);
+          }
+          return deferred.promise;
+        };
+        var indexOf = function (array, searchElement) {
+          for (var i = 0, len = array.length; i < len; i++) {
+            if (array[i] === searchElement) {
+              return i;
+            }
+          }
+          return -1;
+        };
+        var applyNotFoundIndicators = function (translationId) {
+          if ($notFoundIndicatorLeft) {
+            translationId = [
+              $notFoundIndicatorLeft,
+              translationId
+            ].join(' ');
+          }
+          if ($notFoundIndicatorRight) {
+            translationId = [
+              translationId,
+              $notFoundIndicatorRight
+            ].join(' ');
+          }
+          return translationId;
+        };
+        var useLanguage = function (key) {
+          $uses = key;
+          $rootScope.$emit('$translateChangeSuccess');
+          if ($storageFactory) {
+            Storage.set($translate.storageKey(), $uses);
+          }
+          defaultInterpolator.setLocale($uses);
+          angular.forEach(interpolatorHashMap, function (interpolator, id) {
+            interpolatorHashMap[id].setLocale($uses);
+          });
+          $rootScope.$emit('$translateChangeEnd');
+        };
+        var loadAsync = function (key) {
+          if (!key) {
+            throw 'No language key specified for loading.';
+          }
+          var deferred = $q.defer();
+          $rootScope.$emit('$translateLoadingStart');
+          pendingLoader = true;
+          $injector.get($loaderFactory)(angular.extend($loaderOptions, { key: key })).then(function (data) {
+            var translationTable = {};
+            $rootScope.$emit('$translateLoadingSuccess');
+            if (angular.isArray(data)) {
+              angular.forEach(data, function (table) {
+                angular.extend(translationTable, flatObject(table));
+              });
+            } else {
+              angular.extend(translationTable, flatObject(data));
+            }
+            pendingLoader = false;
+            deferred.resolve({
+              key: key,
+              table: translationTable
+            });
+            $rootScope.$emit('$translateLoadingEnd');
+          }, function (key) {
+            $rootScope.$emit('$translateLoadingError');
+            deferred.reject(key);
+            $rootScope.$emit('$translateLoadingEnd');
+          });
+          return deferred.promise;
+        };
+        if ($storageFactory) {
+          Storage = $injector.get($storageFactory);
+          if (!Storage.get || !Storage.set) {
+            throw new Error('Couldn\'t use storage \'' + $storageFactory + '\', missing get() or set() method!');
+          }
+        }
+        if (angular.isFunction(defaultInterpolator.useSanitizeValueStrategy)) {
+          defaultInterpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
+        }
+        if ($interpolatorFactories.length) {
+          angular.forEach($interpolatorFactories, function (interpolatorFactory) {
+            var interpolator = $injector.get(interpolatorFactory);
+            interpolator.setLocale($preferredLanguage || $uses);
+            if (angular.isFunction(interpolator.useSanitizeValueStrategy)) {
+              interpolator.useSanitizeValueStrategy($interpolationSanitizationStrategy);
+            }
+            interpolatorHashMap[interpolator.getInterpolationIdentifier()] = interpolator;
+          });
+        }
+        var getTranslationTable = function (langKey) {
+          var deferred = $q.defer();
+          if ($translationTable.hasOwnProperty(langKey)) {
+            deferred.resolve($translationTable[langKey]);
+            return deferred.promise;
+          } else {
+            langPromises[langKey].then(function (data) {
+              translations(data.key, data.table);
+              deferred.resolve(data.table);
+            }, deferred.reject);
+          }
+          return deferred.promise;
+        };
+        var getFallbackTranslation = function (langKey, translationId, interpolateParams, Interpolator) {
+          var deferred = $q.defer();
+          getTranslationTable(langKey).then(function (translationTable) {
+            if (translationTable.hasOwnProperty(translationId)) {
+              Interpolator.setLocale(langKey);
+              deferred.resolve(Interpolator.interpolate(translationTable[translationId], interpolateParams));
+              Interpolator.setLocale($uses);
+            } else {
+              deferred.reject();
+            }
+          }, deferred.reject);
+          return deferred.promise;
+        };
+        var getFallbackTranslationInstant = function (langKey, translationId, interpolateParams, Interpolator) {
+          var result, translationTable = $translationTable[langKey];
+          if (translationTable.hasOwnProperty(translationId)) {
+            Interpolator.setLocale(langKey);
+            result = Interpolator.interpolate(translationTable[translationId], interpolateParams);
+            Interpolator.setLocale($uses);
+          }
+          return result;
+        };
+        var resolveForFallbackLanguage = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
+          var deferred = $q.defer();
+          if (fallbackLanguageIndex < $fallbackLanguage.length) {
+            var langKey = $fallbackLanguage[fallbackLanguageIndex];
+            getFallbackTranslation(langKey, translationId, interpolateParams, Interpolator).then(function (translation) {
+              deferred.resolve(translation);
+            }, function () {
+              var nextFallbackLanguagePromise = resolveForFallbackLanguage(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
+              deferred.resolve(nextFallbackLanguagePromise);
+            });
+          } else {
+            if ($missingTranslationHandlerFactory) {
+              var resultString = $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+              if (resultString !== undefined) {
+                deferred.resolve(resultString);
+              } else {
+                deferred.resolve(translationId);
+              }
+            } else {
+              deferred.resolve(translationId);
+            }
+          }
+          return deferred.promise;
+        };
+        var resolveForFallbackLanguageInstant = function (fallbackLanguageIndex, translationId, interpolateParams, Interpolator) {
+          var result;
+          if (fallbackLanguageIndex < $fallbackLanguage.length) {
+            var langKey = $fallbackLanguage[fallbackLanguageIndex];
+            result = getFallbackTranslationInstant(langKey, translationId, interpolateParams, Interpolator);
+            if (!result) {
+              result = resolveForFallbackLanguageInstant(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator);
+            }
+          }
+          return result;
+        };
+        var fallbackTranslation = function (translationId, interpolateParams, Interpolator) {
+          return resolveForFallbackLanguage(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
+        };
+        var fallbackTranslationInstant = function (translationId, interpolateParams, Interpolator) {
+          return resolveForFallbackLanguageInstant(startFallbackIteration > 0 ? startFallbackIteration : fallbackIndex, translationId, interpolateParams, Interpolator);
+        };
+        var determineTranslation = function (translationId, interpolateParams, interpolationId) {
+          var deferred = $q.defer();
+          var table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
+          if (table && table.hasOwnProperty(translationId)) {
+            var translation = table[translationId];
+            if (translation.substr(0, 2) === '@:') {
+              $translate(translation.substr(2), interpolateParams, interpolationId).then(deferred.resolve, deferred.reject);
+            } else {
+              deferred.resolve(Interpolator.interpolate(translation, interpolateParams));
+            }
+          } else {
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
+              fallbackTranslation(translationId, interpolateParams, Interpolator).then(function (translation) {
+                deferred.resolve(translation);
+              }, function (_translationId) {
+                deferred.reject(applyNotFoundIndicators(_translationId));
+              });
+            } else {
+              deferred.reject(applyNotFoundIndicators(translationId));
+            }
+          }
+          return deferred.promise;
+        };
+        var determineTranslationInstant = function (translationId, interpolateParams, interpolationId) {
+          var result, table = $uses ? $translationTable[$uses] : $translationTable, Interpolator = interpolationId ? interpolatorHashMap[interpolationId] : defaultInterpolator;
+          if (table && table.hasOwnProperty(translationId)) {
+            var translation = table[translationId];
+            if (translation.substr(0, 2) === '@:') {
+              result = determineTranslationInstant(translation.substr(2), interpolateParams, interpolationId);
+            } else {
+              result = Interpolator.interpolate(translation, interpolateParams);
+            }
+          } else {
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+            if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
+              fallbackIndex = 0;
+              result = fallbackTranslationInstant(translationId, interpolateParams, Interpolator);
+            } else {
+              result = applyNotFoundIndicators(translationId);
+            }
+          }
+          return result;
+        };
+        $translate.preferredLanguage = function () {
+          return $preferredLanguage;
+        };
+        $translate.cloakClassName = function () {
+          return $cloakClassName;
+        };
+        $translate.fallbackLanguage = function (langKey) {
+          if (langKey !== undefined && langKey !== null) {
+            fallbackStack(langKey);
+            if ($loaderFactory) {
+              if ($fallbackLanguage && $fallbackLanguage.length) {
+                for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+                  if (!langPromises[$fallbackLanguage[i]]) {
+                    langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
+                  }
+                }
+              }
+            }
+            $translate.use($translate.use());
+          }
+          if ($fallbackWasString) {
+            return $fallbackLanguage[0];
+          } else {
+            return $fallbackLanguage;
+          }
+        };
+        $translate.useFallbackLanguage = function (langKey) {
+          if (langKey !== undefined && langKey !== null) {
+            if (!langKey) {
+              startFallbackIteration = 0;
+            } else {
+              var langKeyPosition = indexOf($fallbackLanguage, langKey);
+              if (langKeyPosition > -1) {
+                startFallbackIteration = langKeyPosition;
+              }
+            }
+          }
+        };
+        $translate.proposedLanguage = function () {
+          return $nextLang;
+        };
+        $translate.storage = function () {
+          return Storage;
+        };
+        $translate.use = function (key) {
+          if (!key) {
+            return $uses;
+          }
+          var deferred = $q.defer();
+          $rootScope.$emit('$translateChangeStart');
+          var aliasedKey = negotiateLocale(key);
+          if (aliasedKey) {
+            key = aliasedKey;
+          }
+          if (!$translationTable[key] && $loaderFactory) {
+            $nextLang = key;
+            langPromises[key] = loadAsync(key).then(function (translation) {
+              translations(translation.key, translation.table);
+              deferred.resolve(translation.key);
+              if ($nextLang === key) {
+                useLanguage(translation.key);
+                $nextLang = undefined;
+              }
+            }, function (key) {
+              $nextLang = undefined;
+              $rootScope.$emit('$translateChangeError');
+              deferred.reject(key);
+              $rootScope.$emit('$translateChangeEnd');
+            });
+          } else {
+            deferred.resolve(key);
+            useLanguage(key);
+          }
+          return deferred.promise;
+        };
+        $translate.storageKey = function () {
+          return storageKey();
+        };
+        $translate.isPostCompilingEnabled = function () {
+          return $postCompilingEnabled;
+        };
+        $translate.refresh = function (langKey) {
+          if (!$loaderFactory) {
+            throw new Error('Couldn\'t refresh translation table, no loader registered!');
+          }
+          var deferred = $q.defer();
+          function resolve() {
+            deferred.resolve();
+            $rootScope.$emit('$translateRefreshEnd');
+          }
+          function reject() {
+            deferred.reject();
+            $rootScope.$emit('$translateRefreshEnd');
+          }
+          $rootScope.$emit('$translateRefreshStart');
+          if (!langKey) {
+            var tables = [];
+            if ($fallbackLanguage && $fallbackLanguage.length) {
+              for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+                tables.push(loadAsync($fallbackLanguage[i]));
+              }
+            }
+            if ($uses) {
+              tables.push(loadAsync($uses));
+            }
+            $q.all(tables).then(function (tableData) {
+              angular.forEach(tableData, function (data) {
+                if ($translationTable[data.key]) {
+                  delete $translationTable[data.key];
+                }
+                translations(data.key, data.table);
+              });
+              if ($uses) {
+                useLanguage($uses);
+              }
+              resolve();
+            });
+          } else if ($translationTable[langKey]) {
+            loadAsync(langKey).then(function (data) {
+              translations(data.key, data.table);
+              if (langKey === $uses) {
+                useLanguage($uses);
+              }
+              resolve();
+            }, reject);
+          } else {
+            reject();
+          }
+          return deferred.promise;
+        };
+        $translate.instant = function (translationId, interpolateParams, interpolationId) {
+          if (translationId === null || angular.isUndefined(translationId)) {
+            return translationId;
+          }
+          if (angular.isArray(translationId)) {
+            var results = {};
+            for (var i = 0, c = translationId.length; i < c; i++) {
+              results[translationId[i]] = $translate.instant(translationId[i], interpolateParams, interpolationId);
+            }
+            return results;
+          }
+          if (angular.isString(translationId) && translationId.length < 1) {
+            return translationId;
+          }
+          if (translationId) {
+            translationId = translationId.trim();
+          }
+          var result, possibleLangKeys = [];
+          if ($preferredLanguage) {
+            possibleLangKeys.push($preferredLanguage);
+          }
+          if ($uses) {
+            possibleLangKeys.push($uses);
+          }
+          if ($fallbackLanguage && $fallbackLanguage.length) {
+            possibleLangKeys = possibleLangKeys.concat($fallbackLanguage);
+          }
+          for (var j = 0, d = possibleLangKeys.length; j < d; j++) {
+            var possibleLangKey = possibleLangKeys[j];
+            if ($translationTable[possibleLangKey]) {
+              if (typeof $translationTable[possibleLangKey][translationId] !== 'undefined') {
+                result = determineTranslationInstant(translationId, interpolateParams, interpolationId);
+              }
+            }
+            if (typeof result !== 'undefined') {
+              break;
+            }
+          }
+          if (!result && result !== '') {
+            result = translationId;
+            if ($missingTranslationHandlerFactory && !pendingLoader) {
+              $injector.get($missingTranslationHandlerFactory)(translationId, $uses);
+            }
+          }
+          return result;
+        };
+        if ($loaderFactory) {
+          if (angular.equals($translationTable, {})) {
+            $translate.use($translate.use());
+          }
+          if ($fallbackLanguage && $fallbackLanguage.length) {
+            for (var i = 0, len = $fallbackLanguage.length; i < len; i++) {
+              langPromises[$fallbackLanguage[i]] = loadAsync($fallbackLanguage[i]);
+            }
+          }
+        }
+        return $translate;
+      }
+    ];
+  }
+]);
+angular.module('pascalprecht.translate').factory('$translateDefaultInterpolation', [
+  '$interpolate',
+  function ($interpolate) {
+    var $translateInterpolator = {}, $locale, $identifier = 'default', $sanitizeValueStrategy = null, sanitizeValueStrategies = {
+        escaped: function (params) {
+          var result = {};
+          for (var key in params) {
+            if (params.hasOwnProperty(key)) {
+              result[key] = angular.element('<div></div>').text(params[key]).html();
+            }
+          }
+          return result;
+        }
+      };
+    var sanitizeParams = function (params) {
+      var result;
+      if (angular.isFunction(sanitizeValueStrategies[$sanitizeValueStrategy])) {
+        result = sanitizeValueStrategies[$sanitizeValueStrategy](params);
+      } else {
+        result = params;
+      }
+      return result;
+    };
+    $translateInterpolator.setLocale = function (locale) {
+      $locale = locale;
+    };
+    $translateInterpolator.getInterpolationIdentifier = function () {
+      return $identifier;
+    };
+    $translateInterpolator.useSanitizeValueStrategy = function (value) {
+      $sanitizeValueStrategy = value;
+      return this;
+    };
+    $translateInterpolator.interpolate = function (string, interpolateParams) {
+      if ($sanitizeValueStrategy) {
+        interpolateParams = sanitizeParams(interpolateParams);
+      }
+      return $interpolate(string)(interpolateParams || {});
+    };
+    return $translateInterpolator;
+  }
+]);
+angular.module('pascalprecht.translate').constant('$STORAGE_KEY', 'NG_TRANSLATE_LANG_KEY');
+angular.module('pascalprecht.translate').directive('translate', [
+  '$translate',
+  '$q',
+  '$interpolate',
+  '$compile',
+  '$parse',
+  '$rootScope',
+  function ($translate, $q, $interpolate, $compile, $parse, $rootScope) {
+    return {
+      restrict: 'AE',
+      scope: true,
+      compile: function (tElement, tAttr) {
+        var translateValuesExist = tAttr.translateValues ? tAttr.translateValues : undefined;
+        var translateInterpolation = tAttr.translateInterpolation ? tAttr.translateInterpolation : undefined;
+        var translateValueExist = tElement[0].outerHTML.match(/translate-value-+/i);
+        return function linkFn(scope, iElement, iAttr) {
+          scope.interpolateParams = {};
+          iAttr.$observe('translate', function (translationId) {
+            if (angular.equals(translationId, '') || !angular.isDefined(translationId)) {
+              scope.translationId = $interpolate(iElement.text().replace(/^\s+|\s+$/g, ''))(scope.$parent);
+            } else {
+              scope.translationId = translationId;
+            }
+          });
+          iAttr.$observe('translateDefault', function (value) {
+            scope.defaultText = value;
+          });
+          if (translateValuesExist) {
+            iAttr.$observe('translateValues', function (interpolateParams) {
+              if (interpolateParams) {
+                scope.$parent.$watch(function () {
+                  angular.extend(scope.interpolateParams, $parse(interpolateParams)(scope.$parent));
+                });
+              }
+            });
+          }
+          if (translateValueExist) {
+            var fn = function (attrName) {
+              iAttr.$observe(attrName, function (value) {
+                scope.interpolateParams[angular.lowercase(attrName.substr(14, 1)) + attrName.substr(15)] = value;
+              });
+            };
+            for (var attr in iAttr) {
+              if (iAttr.hasOwnProperty(attr) && attr.substr(0, 14) === 'translateValue' && attr !== 'translateValues') {
+                fn(attr);
+              }
+            }
+          }
+          var applyElementContent = function (value, scope, successful) {
+            if (!successful && typeof scope.defaultText !== 'undefined') {
+              value = scope.defaultText;
+            }
+            iElement.html(value);
+            var globallyEnabled = $translate.isPostCompilingEnabled();
+            var locallyDefined = typeof tAttr.translateCompile !== 'undefined';
+            var locallyEnabled = locallyDefined && tAttr.translateCompile !== 'false';
+            if (globallyEnabled && !locallyDefined || locallyEnabled) {
+              $compile(iElement.contents())(scope);
+            }
+          };
+          var updateTranslationFn = function () {
+              if (!translateValuesExist && !translateValueExist) {
+                return function () {
+                  var unwatch = scope.$watch('translationId', function (value) {
+                      if (scope.translationId && value) {
+                        $translate(value, {}, translateInterpolation).then(function (translation) {
+                          applyElementContent(translation, scope, true);
+                          unwatch();
+                        }, function (translationId) {
+                          applyElementContent(translationId, scope, false);
+                          unwatch();
+                        });
+                      }
+                    }, true);
+                };
+              } else {
+                return function () {
+                  var updateTranslations = function () {
+                    if (scope.translationId && scope.interpolateParams) {
+                      $translate(scope.translationId, scope.interpolateParams, translateInterpolation).then(function (translation) {
+                        applyElementContent(translation, scope, true);
+                      }, function (translationId) {
+                        applyElementContent(translationId, scope, false);
+                      });
+                    }
+                  };
+                  scope.$watch('interpolateParams', updateTranslations, true);
+                  scope.$watch('translationId', updateTranslations);
+                };
+              }
+            }();
+          var unbind = $rootScope.$on('$translateChangeSuccess', updateTranslationFn);
+          updateTranslationFn();
+          scope.$on('$destroy', unbind);
+        };
+      }
+    };
+  }
+]);
+angular.module('pascalprecht.translate').directive('translateCloak', [
+  '$rootScope',
+  '$translate',
+  function ($rootScope, $translate) {
+    return {
+      compile: function (tElement) {
+        $rootScope.$on('$translateLoadingSuccess', function () {
+          tElement.removeClass($translate.cloakClassName());
+        });
+        tElement.addClass($translate.cloakClassName());
+      }
+    };
+  }
+]);
+angular.module('pascalprecht.translate').filter('translate', [
+  '$parse',
+  '$translate',
+  function ($parse, $translate) {
+    return function (translationId, interpolateParams, interpolation) {
+      if (!angular.isObject(interpolateParams)) {
+        interpolateParams = $parse(interpolateParams)(this);
+      }
+      return $translate.instant(translationId, interpolateParams, interpolation);
+    };
+  }
+]);;/*!
+ * angular-translate - v2.2.0 - 2014-06-03
+ * http://github.com/PascalPrecht/angular-translate
+ * Copyright (c) 2014 ; Licensed MIT
+ */
+angular.module('pascalprecht.translate').factory('$translateStaticFilesLoader', [
+  '$q',
+  '$http',
+  function ($q, $http) {
+    return function (options) {
+      if (!options || (!angular.isString(options.prefix) || !angular.isString(options.suffix))) {
+        throw new Error('Couldn\'t load static files, no prefix or suffix specified!');
+      }
+      var deferred = $q.defer();
+      $http({
+        url: [
+          options.prefix,
+          options.key,
+          options.suffix
+        ].join(''),
+        method: 'GET',
+        params: ''
+      }).success(function (data) {
+        deferred.resolve(data);
+      }).error(function (data) {
+        deferred.reject(options.key);
+      });
+      return deferred.promise;
+    };
+  }
+]);;/**
+ * @license AngularJS v1.2.19
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
+ * License: MIT
+ */
+(function(window, angular, undefined) {'use strict';
+
+/**
+ * @ngdoc module
+ * @name ngCookies
+ * @description
+ *
+ * # ngCookies
+ *
+ * The `ngCookies` module provides a convenient wrapper for reading and writing browser cookies.
+ *
+ *
+ * <div doc-module-components="ngCookies"></div>
+ *
+ * See {@link ngCookies.$cookies `$cookies`} and
+ * {@link ngCookies.$cookieStore `$cookieStore`} for usage.
+ */
+
+
+angular.module('ngCookies', ['ng']).
+  /**
+   * @ngdoc service
+   * @name $cookies
+   *
+   * @description
+   * Provides read/write access to browser's cookies.
+   *
+   * Only a simple Object is exposed and by adding or removing properties to/from this object, new
+   * cookies are created/deleted at the end of current $eval.
+   * The object's properties can only be strings.
+   *
+   * Requires the {@link ngCookies `ngCookies`} module to be installed.
+   *
+   * @example
+   *
+   * ```js
+   * function ExampleController($cookies) {
+   *   // Retrieving a cookie
+   *   var favoriteCookie = $cookies.myFavorite;
+   *   // Setting a cookie
+   *   $cookies.myFavorite = 'oatmeal';
+   * }
+   * ```
+   */
+   factory('$cookies', ['$rootScope', '$browser', function ($rootScope, $browser) {
+      var cookies = {},
+          lastCookies = {},
+          lastBrowserCookies,
+          runEval = false,
+          copy = angular.copy,
+          isUndefined = angular.isUndefined;
+
+      //creates a poller fn that copies all cookies from the $browser to service & inits the service
+      $browser.addPollFn(function() {
+        var currentCookies = $browser.cookies();
+        if (lastBrowserCookies != currentCookies) { //relies on browser.cookies() impl
+          lastBrowserCookies = currentCookies;
+          copy(currentCookies, lastCookies);
+          copy(currentCookies, cookies);
+          if (runEval) $rootScope.$apply();
+        }
+      })();
+
+      runEval = true;
+
+      //at the end of each eval, push cookies
+      //TODO: this should happen before the "delayed" watches fire, because if some cookies are not
+      //      strings or browser refuses to store some cookies, we update the model in the push fn.
+      $rootScope.$watch(push);
+
+      return cookies;
+
+
+      /**
+       * Pushes all the cookies from the service to the browser and verifies if all cookies were
+       * stored.
+       */
+      function push() {
+        var name,
+            value,
+            browserCookies,
+            updated;
+
+        //delete any cookies deleted in $cookies
+        for (name in lastCookies) {
+          if (isUndefined(cookies[name])) {
+            $browser.cookies(name, undefined);
+          }
+        }
+
+        //update all cookies updated in $cookies
+        for(name in cookies) {
+          value = cookies[name];
+          if (!angular.isString(value)) {
+            value = '' + value;
+            cookies[name] = value;
+          }
+          if (value !== lastCookies[name]) {
+            $browser.cookies(name, value);
+            updated = true;
+          }
+        }
+
+        //verify what was actually stored
+        if (updated){
+          updated = false;
+          browserCookies = $browser.cookies();
+
+          for (name in cookies) {
+            if (cookies[name] !== browserCookies[name]) {
+              //delete or reset all cookies that the browser dropped from $cookies
+              if (isUndefined(browserCookies[name])) {
+                delete cookies[name];
+              } else {
+                cookies[name] = browserCookies[name];
+              }
+              updated = true;
+            }
+          }
+        }
+      }
+    }]).
+
+
+  /**
+   * @ngdoc service
+   * @name $cookieStore
+   * @requires $cookies
+   *
+   * @description
+   * Provides a key-value (string-object) storage, that is backed by session cookies.
+   * Objects put or retrieved from this storage are automatically serialized or
+   * deserialized by angular's toJson/fromJson.
+   *
+   * Requires the {@link ngCookies `ngCookies`} module to be installed.
+   *
+   * @example
+   *
+   * ```js
+   * function ExampleController($cookies) {
+   *   // Put cookie
+   *   $cookieStore.put('myFavorite','oatmeal');
+   *   // Get cookie
+   *   var favoriteCookie = $cookieStore.get('myFavorite');
+   *   // Removing a cookie
+   *   $cookieStore.remove('myFavorite');
+   * }
+   * ```
+   */
+   factory('$cookieStore', ['$cookies', function($cookies) {
+
+      return {
+        /**
+         * @ngdoc method
+         * @name $cookieStore#get
+         *
+         * @description
+         * Returns the value of given cookie key
+         *
+         * @param {string} key Id to use for lookup.
+         * @returns {Object} Deserialized cookie value.
+         */
+        get: function(key) {
+          var value = $cookies[key];
+          return value ? angular.fromJson(value) : value;
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookieStore#put
+         *
+         * @description
+         * Sets a value for given cookie key
+         *
+         * @param {string} key Id for the `value`.
+         * @param {Object} value Value to be stored.
+         */
+        put: function(key, value) {
+          $cookies[key] = angular.toJson(value);
+        },
+
+        /**
+         * @ngdoc method
+         * @name $cookieStore#remove
+         *
+         * @description
+         * Remove given cookie
+         *
+         * @param {string} key Id of the key-value pair to delete.
+         */
+        remove: function(key) {
+          delete $cookies[key];
+        }
+      };
+
+    }]);
+
+
+})(window, window.angular);
+;/**
  * bootstrap.js v3.0.0 by @fat and @mdo
  * Copyright 2013 Twitter Inc.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -54947,189 +56063,55 @@ window.Modernizr = (function( window, document, undefined ) {
 
 }(this, document));
 
-;/**
- * @name Translations
- * @author Jason Roos
- * @date 2013-4-23
- *
- * @description
- *
- * This is an AngularJS module to handle content translation.
- *
- * To implement:
- *
- * 1) Include translations.js and translationsKeys.js in your index.html.
- * 2) Inject the translationsService into your main app module.
- * 3) Add the attribute directive "translated-page" to your "ng-view" element directive.
- * 4) Bind the promise returned by getTranslations to the resolve object of the target route, e.g.:
- *
- *     .when('/my-route', {
- *         resolve: {
- *              text: function (translationsService) {
- *                  return translationsService.getTranslations();
- *              }
- *          }
- *      });
- *
- * 5) Use the following syntax in your template files:
- *
- *    For a translation with key 'my.first.translation.key' and value 'My {0} value for translation #{1}':
- *    <p>{{ text['my.first.translation.key'] | translationValues:['translation', '1'] }}</p>
- *
- * Translation keys for each route must be added to the routePathToTranslationKeys value
- * in translationKeys.js. The value of routeKeyToTranslationKeys is a JavaScript object mapping
- * each route path to an array of translation keys associated with that route path.
- *
- * You can generate these key-value pairs automatically by doing the following:
- *
- * 1) Inject translationsService into your main app module's run block, and call setLogKeysToConsole,
- *    passing a boolean value of true, e.g.:
- *
- *    app.module('app').run(function (translationsService) {
- *        translations.Service.setLogKeysToConsole(true);
- *    });
- *
- * 2) Open your browser, and navigate to the target route path.
- *
- * 3) Open the JavaScript console of your browser to view the key-value pair.
- *
- * 4) Copy-and-paste the key-value pair into the translationKeys file.
- *
- * 5) To turn logging off (e.g., for production), change the value passed to setLogKeysToConsole to false.
- */
-(function () {
-    var logKeysToConsole = true,
-        translationKeys = [],
-        routePath;
+;angular.module('ProfileService', [
+    'pascalprecht.translate',
+    'ngResource'
+])
 
-    angular.module('PICS.translations', [])
+.factory('ProfileService', function (ProfileResource) {
+    var factory = {},
+        profile_settings;
 
-    .config(['$provide', function ($provide) {
-        $provide.factory('translationsService', ['$http', '$rootScope', '$q', 'routePathToTranslationKeys',
-            function ($http, $rootScope, $q, routePathToTranslationKeys) {
-                var deferred = $q.defer();
-
-                function setLogKeysToConsole(value) {
-                    logKeysToConsole = !!value;
-                }
-
-                function createRouteParamsFromKeys(keys) {
-                    return {
-                        translationKeys: keys
-                    };
-                }
-
-                function getRoutePathToTranslationKeys() {
-                    return routePathToTranslationKeys;
-                }
-
-                function fetchTranslations(requestParams) {
-                    return $http.post('/translations.action', requestParams);
-                }
-
-                function setTranslations(value) {
-                    $rootScope.text = value;
-                    deferred.resolve(value);
-                }
-
-                function getTranslations() {
-                    return deferred.promise;
-                }
-
-                return {
-                    setLogKeysToConsole: setLogKeysToConsole,
-                    fetchTranslations: fetchTranslations,
-                    createRouteParamsFromKeys: createRouteParamsFromKeys,
-                    getRoutePathToTranslationKeys: getRoutePathToTranslationKeys,
-                    getTranslations: getTranslations,
-                    setTranslations: setTranslations
-                };
+    factory.getSettings = function(callback, forceReload) {
+        if (forceReload || (typeof profile_settings === 'undefined')) {
+            return factory.fetchSettings(callback);
+        } else {
+            if (callback) {
+                callback(profile_settings);
+            } else {
+                return profile_settings;
             }
-        ]);
-    }])
-
-    .run(['$rootScope', '$http', '$q', 'translationsService',
-        function ($rootScope, $http, $q, translationsService) {    
-            $rootScope.$on('$routeChangeStart', function (event, next) {
-                var routePathToTranslationKeys = translationsService.getRoutePathToTranslationKeys(),
-                    keys, requestParams;
-
-                routePath = next.$$route.originalPath;
-                translationKeys = [];
-
-                keys = routePathToTranslationKeys[routePath];
-                requestParams = translationsService.createRouteParamsFromKeys(keys);
-
-                translationsService.fetchTranslations(requestParams)
-                .then(function (response) {
-                    translationsService.setTranslations(response.data.translationsMap);
-                });
-            }
-        );
-    }])
-
-    .directive('translatedPage', ['$rootScope', '$http', '$log',
-        function ($rootScope, $http, $log) {
-            function getKeyValueJson(key, value) {
-                return '"' + routePath + '":' + JSON.stringify(translationKeys);
-            }
-
-            return {
-                restrict: 'A',
-                link: function (scope) {
-                    scope.$on('$includeContentLoaded', function () {
-                        if (logKeysToConsole) {
-                            $log.info(getKeyValueJson(routePath, JSON.stringify(translationKeys)));
-                        }
-                    });
-                }
-            };
         }
-    ])
+    };
 
-    .directive('translate', function () {
-        function getKeysFromText(text) {
-            var expressions = text.match(/[{\s*]text\[('|\")[\w.]+('|\")\]/g),
-                keys = [];
+    factory.cacheProfileSettings = function(values) {
+        profile_settings = values;
+    };
 
-            angular.forEach(expressions, function (expression, index) {
-                keys.push(expression.match(/\['[\w.]+\']/)[0].match(/[\w.]+/)[0]);
-            });
+    factory.save = function(values) {
+        ProfileResource.update(values);
+    };
 
-            return keys;
-        }
-
-        function addKeysFromElementText(text) {
-            var keys = getKeysFromText(text);
-
-            angular.forEach(keys, function (key, index) {
-                translationKeys.push(key);
-            });
-        }
-
-        return {
-            restrict: 'A',
-            link: function (scope, element) {
-                if (logKeysToConsole) {
-                    addKeysFromElementText(element.text());
-                }
+    factory.fetchSettings = function(callback) {
+        return ProfileResource.get(function(profile_settings) {
+            factory.cacheProfileSettings(profile_settings);
+            if (callback) {
+                callback(profile_settings);
             }
-        };
-    })
+        });
+    };
 
-    .filter('translationValues', function () {
-        return function (translationExpression, replaceValues) {
-            function replaceFn (replaceParam, replaceValueIndex) {
-                return replaceValues[replaceValueIndex];
-            }
+    return factory;
+})
 
-            return translationExpression.replace(/{([0-9]+)}/g, replaceFn);
-        };
+.factory('ProfileResource', function($resource) {
+    var live_url = '/employee-guard/employee/settings',
+        dev_url = '/employee-guard/json/employee/settings/settings.json';
+
+    return $resource(dev_url, {}, {
+        update: { method: 'PUT'},
+        get: { method: 'GET'}
     });
-}());;angular.module('PICS.translations')
-
-.value('routePathToTranslationKeys', {
-"/registration.action":["Registration.BecomeAMember","Registration.JoinInfo","Registration.Qualify","Registration.CountryCount","Registration.OperatorCount","Registration.UserCount","Registration.Why","Registration.Reason1","Registration.Reason2","Registration.Reason3","Registration.Reason4","Registration.Reason5","Registration.Reason6","Registration.Reason7","Registration.CompanyInformation","User.locale","Registration.dialect"] 
 });;angular.module('PICS.directives', []);;angular.module('PICS.charts', []);;angular.module('PICS.filters', [])
 
 .filter('removeInvalidCharactersFromUrl', function () {
@@ -55191,13 +56173,16 @@ window.Modernizr = (function( window, document, undefined ) {
         }
     };
 });;angular.module('PICS.employeeguard', [
+    'pascalprecht.translate',
+    'ngCookies',
     'ngRoute',
     'ngResource',
     'PICS.directives',
     'PICS.charts',
     'PICS.skills',
     'PICS.filters',
-    'ui.select2'
+    'ui.select2',
+    'ProfileService'
 ])
 
 .config(function ($locationProvider, $routeProvider) {
@@ -55213,11 +56198,34 @@ window.Modernizr = (function( window, document, undefined ) {
 });
 ;angular.module('EmployeeGUARD', [
     'PICS.employeeguard',
-    'PICS.employeeguard.skills'
+    'PICS.employeeguard.skills',
+    'ProfileService'
 ])
 .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('noCacheInterceptor');
-}]);;angular.module('PICS.employeeguard')
+}])
+
+.config(function ($translateProvider) {
+    // configures staticFilesLoader
+    $translateProvider.useStaticFilesLoader({
+        prefix: '/employee-guard/src/app/employeeguard/translations/locale-',
+        suffix: '.json'
+    });
+
+    $translateProvider.fallbackLanguage(['en']);
+})
+
+.run(function($translate, ProfileService) {
+    function setProfileLanguage(profile_settings) {
+        if (profile_settings){
+            if (profile_settings.language) {
+                $translate.use(profile_settings.language.id);
+            }
+        }
+    }
+
+    ProfileService.getSettings(setProfileLanguage);
+});;angular.module('PICS.employeeguard')
 
 .controller('betaFeedbackCtrl', function ($scope, Feedback) {
     $scope.submitFeedback = function () {
@@ -55497,7 +56505,122 @@ window.Modernizr = (function( window, document, undefined ) {
         })
         .when('/employee-guard/employee/skills/sites/:siteSlug/projects/:projectSlug', {
             templateUrl: '/employee-guard/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/employee/settings', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employee/profile/settings.tpl.html'
         });
+});;angular.module('PICS.employeeguard')
+
+.factory('Dialect', function($resource) {
+    return $resource('/employee-guard/json/employee/settings/dialects_:id.json');
+});;angular.module('PICS.employeeguard')
+
+.factory('Language', function($resource) {
+    return $resource('/employee-guard/json/employee/settings/languages.json');
+});;angular.module('PICS.employeeguard')
+
+.controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, ProfileService) {
+    $scope.user = {
+        language: '',
+        dialect: ''
+    };
+
+    getProfileSettings();
+    getLanguageList();
+
+    function getProfileSettings() {
+        ProfileService.getSettings(function(settings) {
+            $scope.profile_settings = settings;
+            getDialectList(settings.language.id);
+            setSelectedLanguage(settings.language.id);
+            setSelectedDialect(settings.dialect.id);
+        });
+    }
+
+    function getLanguageList() {
+        Language.query(function(languages) {
+            $scope.languageList = languages;
+        });
+    }
+
+    function getDialectList (languageID) {
+        Dialect.query({id: languageID},function(dialects) {
+            $scope.dialectList = dialects;
+        });
+    }
+
+    function setSelectedLanguage(languageID) {
+        $scope.user.language = languageID;
+    }
+
+    function setSelectedDialect(dialectID) {
+        $scope.user.dialect = dialectID;
+    }
+
+    function formatRequestPayload(user) {
+        var user_settings = {
+            language:formatLanguageJSON(user.language),
+            dialect:formatDialectJSON(user.dialect)
+        };
+
+        return user_settings;
+    }
+
+    function formatLanguageJSON(selected_language) {
+        var language = $filter('filter')($scope.languageList, { id: selected_language})[0];
+
+        if (language) {
+            return {
+                id: language.id,
+                name: language.name
+            };
+        }
+    }
+
+    function formatDialectJSON(selected_dialect) {
+        var dialect = $filter('filter')($scope.dialectList, { id: selected_dialect})[0];
+
+        if (dialect) {
+            return {
+                id: dialect.id,
+                name: dialect.name
+            };
+        }
+    }
+
+    function saveProfileSettings(user) {
+        var user_settings = formatRequestPayload(user);
+        ProfileService.save(user_settings);
+        updateApplicationWithNewLanguage(user_settings);
+    }
+
+    function updateApplicationWithNewLanguage(user_settings) {
+        setTranslationLanguage(user_settings.language.id);
+
+        ProfileService.cacheProfileSettings(user_settings);
+
+        $scope.toggleFormDisplay();
+
+        $scope.profile_settings = user_settings;
+    }
+
+    function setTranslationLanguage(id) {
+        $translate.use(id);
+    }
+
+    $scope.toggleFormDisplay = function() {
+        $scope.showEditForm = !$scope.showEditForm;
+    };
+
+    angular.extend($scope, {
+        getProfileSettings: getProfileSettings,
+        getLanguageList: getLanguageList,
+        getDialectList: getDialectList,
+        setSelectedLanguage: setSelectedLanguage,
+        setSelectedDialect: setSelectedDialect,
+        saveProfileSettings: saveProfileSettings,
+        formatRequestPayload: formatRequestPayload
+    });
 });;angular.module('PICS.employeeguard')
 
 .controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
@@ -55859,7 +56982,7 @@ window.Modernizr = (function( window, document, undefined ) {
     return $resource('/employee-guard/operators/:siteId/contractors/employees/:id');
 });;angular.module('PICS.employeeguard')
 
-.controller('operatorEmployeeCtrl', function ($scope, $location, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI, EmployeeService) {
+.controller('operatorEmployeeCtrl', function ($scope, $location, $translate, EmployeeCompanyInfo, SiteList, SkillModel, SkillList, $routeParams, $filter, WhoAmI, EmployeeService) {
     var skillModel;
 
     var employee_info = EmployeeCompanyInfo.get({id: $routeParams.id, siteId: $routeParams.siteId}, function(employee) {
@@ -55929,13 +57052,16 @@ window.Modernizr = (function( window, document, undefined ) {
         var slugname = $routeParams.roleSlug,
             role = skillModel.getRoleBySlug(slugname);
 
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getSiteAndCorpRequiredSkills(),
             skillGroup: role,
             employeeStatusIcon: role.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getRoleNameBySlug(slugname),
-            requiredTitle: 'Required by Site'
+            viewTitle: skillModel.getRoleNameBySlug(slugname)
         };
     }
 
@@ -55943,21 +57069,27 @@ window.Modernizr = (function( window, document, undefined ) {
         var slugname = $routeParams.projectSlug,
             project = skillModel.getProjectBySlug(slugname);
 
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECT').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getProjectAndSiteRequiredSkillsBySlug(slugname),
             skillGroup: project,
             employeeStatusIcon: project.status,
             selectedMenuItem: slugname,
-            viewTitle: skillModel.getProjectNameBySlug(slugname),
-            requiredTitle: 'Required by Site or Project'
+            viewTitle: skillModel.getProjectNameBySlug(slugname)
         };
     }
 
     function getDefaultModel() {
+        $translate('OPERATOR.LIVEID.REQUIRED_BY_SITE_OR_PROJECTS').then(function (translation) {
+            $scope.requiredTitle = translation;
+        });
+
         return {
             requiredSkills: skillModel.getAllRequiredSkills(),
-            selectedMenuItem: 'all',
-            requiredTitle: 'Required by Site or Projects'
+            selectedMenuItem: 'all'
         };
     }
 
@@ -56162,6 +57294,9 @@ window.Modernizr = (function( window, document, undefined ) {
         })
         .when('/employee-guard/operators/projects', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/project/project_list.tpl.html'
+        })
+        .when('/employee-guard/operators/assignments', {
+            templateUrl: '/employee-guard/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
         .when('/employee-guard/operators/roles', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/role/role_list.tpl.html'

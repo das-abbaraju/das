@@ -1,0 +1,10 @@
+{
+    "language": {
+      "id":"de",
+      "name":"Deutsch"
+   },
+    "dialect": {
+      "id":"CH",
+      "name":"Schweiz"
+   }
+}

@@ -1,6 +1,7 @@
 angular.module('EmployeeGUARD', [
     'PICS.employeeguard',
-    'PICS.employeeguard.skills'
+    'PICS.employeeguard.skills',
+    'ProfileService'
 ])
 .config(['$httpProvider', function($httpProvider) {
     $httpProvider.interceptors.push('noCacheInterceptor');
@@ -13,8 +14,17 @@ angular.module('EmployeeGUARD', [
         suffix: '.json'
     });
 
-    $translateProvider.addInterpolation('$translateMessageFormatInterpolation');
+    $translateProvider.fallbackLanguage(['en']);
+})
 
-    // load 'en' table on startup
-    $translateProvider.preferredLanguage('en');
+.run(function($translate, ProfileService) {
+    function setProfileLanguage(profile_settings) {
+        if (profile_settings){
+            if (profile_settings.language) {
+                $translate.use(profile_settings.language.id);
+            }
+        }
+    }
+
+    ProfileService.getSettings(setProfileLanguage);
 });

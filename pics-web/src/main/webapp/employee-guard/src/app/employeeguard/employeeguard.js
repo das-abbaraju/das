@@ -1,12 +1,14 @@
 angular.module('PICS.employeeguard', [
     'pascalprecht.translate',
+    'ngCookies',
     'ngRoute',
     'ngResource',
     'PICS.directives',
     'PICS.charts',
     'PICS.skills',
     'PICS.filters',
-    'ui.select2'
+    'ui.select2',
+    'ProfileService'
 ])
 
 .config(function ($locationProvider, $routeProvider) {
