@@ -40,10 +40,10 @@ angular.module('ProfileService', [
 })
 
 .factory('ProfileResource', function($resource) {
-    var live_url = '/employee-guard/employee/settings',
+    var live_url = '/employee-guard/api/settings',
         dev_url = '/employee-guard/json/employee/settings/settings.json';
 
-    return $resource(dev_url, {}, {
+    return $resource(live_url, {}, {
         update: { method: 'PUT'},
         get: { method: 'GET'}
     });

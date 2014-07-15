@@ -33,6 +33,21 @@ describe("A Employee Skill List Controller", function() {
         }
     ];
 
+    var urls = {
+        settings: {
+            live: '/employee-guard/api/settings',
+            dev: '/employee-guard/json/employee/settings/settings.json'
+        },
+        language: {
+            live: '/employee-guard/api/languages',
+            dev: '/employee-guard/json/employee/settings/languages.json'
+        },
+        dialect: {
+            live: '/employee-guard/api/dialects/de',
+            dev: '/employee-guard/json/employee/settings/dialects_de.json'
+        }
+    };
+
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
     beforeEach(inject(function($rootScope, $controller, _$httpBackend_, _$translate_, _ProfileService_) {
@@ -46,9 +61,9 @@ describe("A Employee Skill List Controller", function() {
             $scope: scope
         });
 
-        $httpBackend.when('GET', '/employee-guard/json/employee/settings/settings.json').respond(profile_settings);
-        $httpBackend.when('GET', '/employee-guard/json/employee/settings/languages.json').respond(languages);
-        $httpBackend.when('GET', '/employee-guard/json/employee/settings/dialects_de.json').respond(dialect);
+        $httpBackend.when('GET', urls.settings.live).respond(profile_settings);
+        $httpBackend.when('GET', urls.language.live).respond(languages);
+        $httpBackend.when('GET', urls.dialect.live).respond(dialect);
     }));
 
     describe("Profile", function() {

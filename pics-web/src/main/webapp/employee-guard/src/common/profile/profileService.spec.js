@@ -10,6 +10,10 @@ describe('Profile Service', function() {
           "name":"Schweiz"
        }
     };
+    var settings_url = {
+        live: '/employee-guard/api/settings',
+        dev: '/employee-guard/json/employee/settings/settings.json'
+    };
 
     beforeEach(angular.mock.module('ProfileService'));
 
@@ -43,7 +47,7 @@ describe('Profile Service', function() {
 
     describe("Fetch profile settings", function() {
         beforeEach(function () {
-            $httpBackend.when('GET', '/employee-guard/json/employee/settings/settings.json').respond(profile_settings);
+            $httpBackend.when('GET', settings_url.live).respond(profile_settings);
         });
 
         it("should fetch settings", function() {
@@ -115,7 +119,7 @@ describe('Profile Service', function() {
 
     describe("Save settings", function() {
         it("should make a request to save profile settings", function() {
-            $httpBackend.when('PUT', '/employee-guard/json/employee/settings/settings.json').respond();
+            $httpBackend.when('PUT', settings_url.live).respond();
 
             ProfileService.save(profile_settings);
 
