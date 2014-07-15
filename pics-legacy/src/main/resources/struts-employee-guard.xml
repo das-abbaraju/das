@@ -387,6 +387,10 @@
 
     <action name="settings" class="com.picsauditing.employeeguard.controllers.restful.SettingsAction"/>
 
+    <action name="languages" class="com.picsauditing.employeeguard.controllers.restful.LanguageAction"/>
+
+    <action name="dialects/{language}" class="com.picsauditing.employeeguard.controllers.restful.DialectAction"/>
+
   </package>
 
 

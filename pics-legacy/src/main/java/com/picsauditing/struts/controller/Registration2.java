@@ -462,24 +462,12 @@ public class Registration2 extends RegistrationAction {
 
     @Anonymous
     public String languages() {
-        List<KeyValue<String, String>> visibleLanguagesSansDialect = supportedLanguages.getVisibleLanguagesSansDialect();
-        List idNameModels = new ArrayList<>();
-        for (KeyValue<String, String> keyValue : visibleLanguagesSansDialect) {
-            idNameModels.add(new IdNameModel.Builder().id(keyValue.getKey()).name(keyValue.getValue()).build());
-        }
-        jsonString = new Gson().toJson(idNameModels);
-        return JSON_STRING;
+		return "forward";
     }
 
     @Anonymous
     public String countriesBasedOn() {
-        Map<String, String> countriesBasedOn = supportedLanguages.getCountriesBasedOn(language);
-        List idNameModels = new ArrayList<>();
-        for (String language : countriesBasedOn.keySet()) {
-            idNameModels.add(new IdNameModel.Builder().id(language).name(countriesBasedOn.get(language)).build());
-        }
-        jsonString = new Gson().toJson(idNameModels);
-        return JSON_STRING;
+		return "forward";
     }
 
     @Anonymous
