@@ -641,13 +641,13 @@ public final class MenuBuilder {
 	private static void addEmployeeGUARDUserMode(Permissions permissions, MenuComponent userMenu) {
 		if (isEmployeeGUARDAndPICSORGUser(permissions)) {
 			if (inAdminMode(permissions)) {
-				userMenu.addChild(getText("Switch to Employee Mode"),
+				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Switch_To_Employee_Mode"),
 						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
 								UserMode.EMPLOYEE.getModeParameterValue()), "");
 			}
 
 			if (inEmployeeMode(permissions)) {
-				userMenu.addChild(getText("Switch to Admin Mode"),
+				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Switch_To_Admin_Mode"),
 						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
 								UserMode.ADMIN.getModeParameterValue()), "");
 			}

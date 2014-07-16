@@ -1,8 +1,13 @@
 package com.picsauditing.employeeguard.services.entity.employee;
 
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.entities.Employee;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.entity.util.file.FileRowMapper;
 import com.picsauditing.util.Strings;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -15,8 +20,23 @@ public class EmployeeFileRowMapperTest {
 	public static final String EMPLOYEE_LAST_NAME = "The Builder";
 	public static final String EMPLOYEE_EMAIL = "test@testing.com";
 
+	private ResourceBundleMocking resourceBundleMocking;
+
+	@Before
+	public void setUp() {
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
+	}
+
+	@After
+	public void tearDown() {
+		resourceBundleMocking.tearDown();
+	}
+
 	@Test
 	public void testIsHeader_RowIsNotHeader() {
+		ResourceBundleMocking resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
 		FileRowMapper<Employee> fileRowMapper = new EmployeeFileRowMapper(CONTRACTOR_ID);
 
 		boolean result = fileRowMapper.isHeader(new String[]{"test", "1", "2", "3"});
@@ -28,7 +48,14 @@ public class EmployeeFileRowMapperTest {
 	public void testIsHeader_RowIsHeader() {
 		FileRowMapper<Employee> fileRowMapper = new EmployeeFileRowMapper(CONTRACTOR_ID);
 
-		boolean result = fileRowMapper.isHeader(EmployeeImportTemplate.IMPORT_FILE_HEADER);
+		boolean result = fileRowMapper.isHeader(new String[] {
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.FIRST_NAME"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.LAST_NAME"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.TITLE"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.EMAIL"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.PHONE"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.UNIQUE_ID")
+		});
 
 		assertTrue(result);
 	}

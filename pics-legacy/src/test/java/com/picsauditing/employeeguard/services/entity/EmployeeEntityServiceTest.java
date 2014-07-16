@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.daos.ProjectRoleEmployeeDAO;
 import com.picsauditing.employeeguard.daos.SiteAssignmentDAO;
@@ -16,6 +17,7 @@ import com.picsauditing.util.Strings;
 import org.approvaltests.Approvals;
 import org.approvaltests.reporters.DiffReporter;
 import org.approvaltests.reporters.UseReporter;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -48,6 +50,8 @@ public class EmployeeEntityServiceTest {
 	@Mock
 	private SiteAssignmentDAO siteAssignmentDAO;
 
+	private ResourceBundleMocking resourceBundleMocking;
+
 	@Before
 	public void setUp() throws Exception {
 		employeeEntityService = new EmployeeEntityService();
@@ -58,6 +62,14 @@ public class EmployeeEntityServiceTest {
 		Whitebox.setInternalState(employeeEntityService, "employeeImportExportProcess", employeeImportExportProcess);
 		Whitebox.setInternalState(employeeEntityService, "projectRoleEmployeeDAO", projectRoleEmployeeDAO);
 		Whitebox.setInternalState(employeeEntityService, "siteAssignmentDAO", siteAssignmentDAO);
+
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
+	}
+
+	@After
+	public void tearDown() {
+		resourceBundleMocking.tearDown();
 	}
 
 	@Test(expected = NullPointerException.class)
