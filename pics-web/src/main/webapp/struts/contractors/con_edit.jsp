@@ -188,16 +188,9 @@
             <label><s:text name="ContractorEdit.billingCity"/>:</label>
             <s:textfield name="contractor.billingCity" size="20"/>
         </li>
-        <li class="country">
+        <li>
             <label><s:text name="ContractorEdit.billingCountry"/>:</label>
-            <s:select
-                    list="countryList"
-                    name="contractor.billingCountry.isoCode"
-                    id="contractorBillingCountry"
-                    listKey="isoCode"
-                    listValue="name"
-                    value="contractor.billingCountry.isoCode"
-                    cssClass="select2"/>
+            <input type="text" disabled="disabled" id="billing_country" value="${contractor.country.name}"/>
         </li>
         <li id="billing_countrySubdivision_li" data="<s:property value="#billing_country_subdivision"/>">
             <s:include value="/struts/contractors/_country_subdivision_select.jsp">
