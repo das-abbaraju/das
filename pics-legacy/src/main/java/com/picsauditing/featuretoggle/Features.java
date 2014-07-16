@@ -26,7 +26,9 @@ public enum Features implements Feature {
     @Label("Enable PICS LDAP authentication")
     USE_LDAP_AUTHENTICATION,
     @Label("Use New Contractor Flag ETL")
-    USE_NEW_CONTRACTOR_ETL; 
+    USE_NEW_CONTRACTOR_ETL,
+    @Label("Use New Billable Entity Logic")
+    USE_NEW_BILLABLE_ENTITY;
 
     public boolean isActive() {
         return FeatureContext.getFeatureManager().isActive(this);
