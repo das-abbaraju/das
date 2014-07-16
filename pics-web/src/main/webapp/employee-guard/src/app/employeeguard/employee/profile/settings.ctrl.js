@@ -1,6 +1,6 @@
 angular.module('PICS.employeeguard')
 
-.controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, ProfileService) {
+.controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, Profile) {
     $scope.user = {
         language: '',
         dialect: ''
@@ -10,7 +10,7 @@ angular.module('PICS.employeeguard')
     getLanguageList();
 
     function getProfileSettings() {
-        ProfileService.getSettings(function(settings) {
+        Profile.get().then(function(settings) {
             $scope.profile_settings = settings;
             getDialectList(settings.language.id);
             setSelectedLanguage(settings.language.id);
@@ -79,7 +79,7 @@ angular.module('PICS.employeeguard')
 
     function saveProfileSettings(user) {
         var user_settings = formatRequestPayload(user);
-        ProfileService.save(user_settings);
+        Profile.save(user_settings);
         updateApplicationWithNewLanguage(user_settings);
     }
 
@@ -92,7 +92,7 @@ angular.module('PICS.employeeguard')
             }
         }
 
-        ProfileService.cacheProfileSettings(user_settings);
+        // Profile.cacheProfileSettings(user_settings);
 
         $scope.toggleFormDisplay();
 

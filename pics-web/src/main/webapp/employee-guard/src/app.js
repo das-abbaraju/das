@@ -16,7 +16,7 @@ angular.module('EmployeeGUARD', [
     $translateProvider.fallbackLanguage(['en_GB']);
 })
 
-.run(function($translate, ProfileService, $rootScope) {
+.run(function($translate, $rootScope, Profile) {
     function setProfileLanguage(profile_settings) {
         if (profile_settings){
             if (profile_settings.language) {
@@ -29,7 +29,9 @@ angular.module('EmployeeGUARD', [
         }
     }
 
-    ProfileService.getSettings(setProfileLanguage);
+    Profile.get().then(function(response) {
+        setProfileLanguage(response);
+    });
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
