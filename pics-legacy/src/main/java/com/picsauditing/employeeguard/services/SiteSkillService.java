@@ -4,7 +4,10 @@ import com.picsauditing.employeeguard.daos.SiteSkillDAO;
 import com.picsauditing.employeeguard.entities.AccountSkill;
 import com.picsauditing.employeeguard.entities.ProjectCompany;
 import com.picsauditing.employeeguard.entities.SiteSkill;
-import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
+import com.picsauditing.employeeguard.models.*;
+import com.picsauditing.employeeguard.models.operations.MOperations;
+import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -19,6 +22,20 @@ public class SiteSkillService {
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
 
+	@Autowired
+	private SkillEntityService skillEntityService;
+
+	public Set<MSkillsManager.MSkill> findSkills(int accountId) throws ReqdInfoMissingException {
+
+		MModels.fetchSkillsManager().operations().copyName().copyId().attachRoles();
+
+		MModels.fetchRolesManager().operations().copyId().copyName();
+
+		List<Integer> accountIds = accountService.getTopmostCorporateAccountIds(accountId);
+		List<AccountSkill> skills = skillEntityService.findSkillsForSite(accountIds);
+		return MModels.fetchSkillsManager().copySkills(skills);
+
+	}
 
 	public Map<AccountModel, Set<AccountSkill>> getRequiredSkillsForProjects(final List<ProjectCompany> projectCompanies) {
 		if (CollectionUtils.isEmpty(projectCompanies)) {

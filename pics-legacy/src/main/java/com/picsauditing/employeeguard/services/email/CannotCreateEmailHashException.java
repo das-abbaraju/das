@@ -1,4 +1,4 @@
-package com.picsauditing.employeeguard.services;
+package com.picsauditing.employeeguard.services.email;
 
 public class CannotCreateEmailHashException extends RuntimeException {
 

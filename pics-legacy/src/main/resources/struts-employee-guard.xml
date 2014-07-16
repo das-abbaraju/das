@@ -55,6 +55,8 @@
         <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
         </action>
 
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
     </package>
 
     <!-- Operator -->
@@ -300,6 +302,9 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
+        <action name="dashboardPitStop" class="com.picsauditing.employeeguard.controllers.EmployeeAngularLoaderAction" method="load">
+        </action>
+
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
@@ -366,4 +371,30 @@
             <result name="training">/struts/employee-guard/employee/manage-skill/_training-form.jsp</result>
         </action>
     </package>
+
+  <!-- Restful API URIs -->
+  <package name="com.picsauditing.employee-guard.api" extends="com.picsauditing" namespace="/employee-guard/api">
+    <default-interceptor-ref name="pics-rest-stack"/>
+
+    <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkills"/>
+
+    <action name="groups" class="com.picsauditing.employeeguard.controllers.restful.GroupAction"/>
+
+    <action name="roles" class="com.picsauditing.employeeguard.controllers.restful.RoleAction"/>
+
+    <action name="files" class="com.picsauditing.employeeguard.controllers.restful.FilesAction"/>
+
+    <action name="projects/{projectId}/roles/{roleId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleEmployeeAction"/>
+
+    <action name="projects/{projectId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectEmployeeAction"/>
+
+    <action name="projects/{projectId}/roles" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleAction"/>
+
+    <action name="projects" class="com.picsauditing.employeeguard.controllers.restful.ProjectAction"/>
+
+    <action name="settings" class="com.picsauditing.employeeguard.controllers.restful.SettingsAction"/>
+
+  </package>
+
+
 </struts>

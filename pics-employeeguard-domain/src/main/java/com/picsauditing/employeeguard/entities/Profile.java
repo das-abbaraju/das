@@ -3,12 +3,14 @@ package com.picsauditing.employeeguard.entities;
 import com.picsauditing.database.domain.Identifiable;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @Table(name = "profile")
@@ -39,6 +41,9 @@ public class Profile implements BaseEntity, Identifiable, Comparable<Profile> {
 
 	@Column(nullable = false)
 	private String phone;
+
+	@Embedded
+	private Settings settings;
 
 	private int createdBy;
 	private int updatedBy;
@@ -128,6 +133,7 @@ public class Profile implements BaseEntity, Identifiable, Comparable<Profile> {
 		this.phone = phone;
 	}
 
+
 	public int getCreatedBy() {
 		return createdBy;
 	}
@@ -203,6 +209,14 @@ public class Profile implements BaseEntity, Identifiable, Comparable<Profile> {
 	@Transient
 	public String getName() {
 		return firstName + " " + lastName;
+	}
+
+	public Settings getSettings() {
+		return settings;
+	}
+
+	public void setSettings(Settings settings) {
+		this.settings = settings;
 	}
 
 	@Override

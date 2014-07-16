@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 
 // TODO replace this class with the new entity service
+/**
+ * Use/Change SkillEntityService instead.  Any method accessing DAOs should be moved into an Entity Service class
+ */
 @Deprecated
 public class SkillService {
 

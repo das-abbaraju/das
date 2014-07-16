@@ -8,6 +8,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.entities.builders.SoftDeletedEmployeeBuilder;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
