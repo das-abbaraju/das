@@ -13,7 +13,7 @@ angular.module('EmployeeGUARD', [
         suffix: '.json'
     });
 
-    $translateProvider.fallbackLanguage(['en']);
+    $translateProvider.fallbackLanguage(['en_GB']);
 })
 
 .run(function($translate, ProfileService, $rootScope) {
@@ -33,6 +33,6 @@ angular.module('EmployeeGUARD', [
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
-        $translate.use('en');
+        $translate.use('en_GB');
     });
 });

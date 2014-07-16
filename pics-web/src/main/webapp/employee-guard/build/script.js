@@ -56211,7 +56211,7 @@ window.Modernizr = (function( window, document, undefined ) {
         suffix: '.json'
     });
 
-    $translateProvider.fallbackLanguage(['en']);
+    $translateProvider.fallbackLanguage(['en_GB']);
 })
 
 .run(function($translate, ProfileService, $rootScope) {
@@ -56231,7 +56231,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
-        $translate.use('en');
+        $translate.use('en_GB');
     });
 });;angular.module('PICS.employeeguard')
 
