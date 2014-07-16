@@ -250,5 +250,7 @@
     <include file="./liquibase/2014/Q3/cfranks7_PICS-15083_delete_rows_app_error_log.sql"/>
     <include file="./liquibase/2014/Q3/akafagy1_PICS-15646_Change_AUS_Pricing.sql"/>
 
+    <!-- 7.2.20 -->
+    <include file="./liquibase/2014/Q3/dalvarado12_US1087_add_billable_entity.sql"/>
 
 </databaseChangeLog>
