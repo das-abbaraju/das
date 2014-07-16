@@ -56105,10 +56105,10 @@ window.Modernizr = (function( window, document, undefined ) {
 })
 
 .factory('ProfileResource', function($resource) {
-    var live_url = '/employee-guard/employee/settings',
+    var live_url = '/employee-guard/api/settings',
         dev_url = '/employee-guard/json/employee/settings/settings.json';
 
-    return $resource(dev_url, {}, {
+    return $resource(live_url, {}, {
         update: { method: 'PUT'},
         get: { method: 'GET'}
     });
@@ -56206,7 +56206,6 @@ window.Modernizr = (function( window, document, undefined ) {
 }])
 
 .config(function ($translateProvider) {
-    // configures staticFilesLoader
     $translateProvider.useStaticFilesLoader({
         prefix: '/employee-guard/src/app/employeeguard/translations/locale-',
         suffix: '.json'
@@ -56215,16 +56214,25 @@ window.Modernizr = (function( window, document, undefined ) {
     $translateProvider.fallbackLanguage(['en']);
 })
 
-.run(function($translate, ProfileService) {
+.run(function($translate, ProfileService, $rootScope) {
     function setProfileLanguage(profile_settings) {
         if (profile_settings){
             if (profile_settings.language) {
-                $translate.use(profile_settings.language.id);
+                if (profile_settings.dialect) {
+                    $translate.use(profile_settings.language.id + '_' + profile_settings.dialect.id);
+                } else {
+                    $translate.use(profile_settings.language.id);
+                }
             }
         }
     }
 
     ProfileService.getSettings(setProfileLanguage);
+
+    //Fix for failure of angular translate fallback for static files
+    $rootScope.$on('$translateChangeError', function() {
+        $translate.use('en');
+    });
 });;angular.module('PICS.employeeguard')
 
 .controller('betaFeedbackCtrl', function ($scope, Feedback) {
@@ -56512,11 +56520,11 @@ window.Modernizr = (function( window, document, undefined ) {
 });;angular.module('PICS.employeeguard')
 
 .factory('Dialect', function($resource) {
-    return $resource('/employee-guard/json/employee/settings/dialects_:id.json');
+    return $resource('/employee-guard/api/dialects/:id');
 });;angular.module('PICS.employeeguard')
 
 .factory('Language', function($resource) {
-    return $resource('/employee-guard/json/employee/settings/languages.json');
+    return $resource('/employee-guard/api/languages');
 });;angular.module('PICS.employeeguard')
 
 .controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, ProfileService) {
@@ -56558,10 +56566,18 @@ window.Modernizr = (function( window, document, undefined ) {
     }
 
     function formatRequestPayload(user) {
-        var user_settings = {
-            language:formatLanguageJSON(user.language),
-            dialect:formatDialectJSON(user.dialect)
-        };
+        var user_settings;
+
+        if (user.dialect) {
+            user_settings = {
+                language:formatLanguageJSON(user.language),
+                dialect:formatDialectJSON(user.dialect)
+            };
+        } else {
+            user_settings = {
+                language:formatLanguageJSON(user.language)
+            };
+        }
 
         return user_settings;
     }
@@ -56595,7 +56611,13 @@ window.Modernizr = (function( window, document, undefined ) {
     }
 
     function updateApplicationWithNewLanguage(user_settings) {
-        setTranslationLanguage(user_settings.language.id);
+        if (user_settings.language) {
+            if (user_settings.dialect) {
+                setTranslationLanguage(user_settings.language.id, user_settings.dialect.id);
+            } else {
+                setTranslationLanguage(user_settings.language.id);
+            }
+        }
 
         ProfileService.cacheProfileSettings(user_settings);
 
@@ -56604,8 +56626,14 @@ window.Modernizr = (function( window, document, undefined ) {
         $scope.profile_settings = user_settings;
     }
 
-    function setTranslationLanguage(id) {
-        $translate.use(id);
+    function setTranslationLanguage(languageID, dialectID) {
+        if (languageID) {
+            if (dialectID) {
+                $translate.use(languageID + '_' + dialectID);
+            } else {
+                $translate.use(languageID);
+            }
+        }
     }
 
     $scope.toggleFormDisplay = function() {
