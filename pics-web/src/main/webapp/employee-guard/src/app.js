@@ -8,7 +8,6 @@ angular.module('EmployeeGUARD', [
 }])
 
 .config(function ($translateProvider) {
-    // configures staticFilesLoader
     $translateProvider.useStaticFilesLoader({
         prefix: '/employee-guard/src/app/employeeguard/translations/locale-',
         suffix: '.json'
@@ -17,14 +16,23 @@ angular.module('EmployeeGUARD', [
     $translateProvider.fallbackLanguage(['en']);
 })
 
-.run(function($translate, ProfileService) {
+.run(function($translate, ProfileService, $rootScope) {
     function setProfileLanguage(profile_settings) {
         if (profile_settings){
             if (profile_settings.language) {
-                $translate.use(profile_settings.language.id);
+                if (profile_settings.dialect) {
+                    $translate.use(profile_settings.language.id + '_' + profile_settings.dialect.id);
+                } else {
+                    $translate.use(profile_settings.language.id);
+                }
             }
         }
     }
 
     ProfileService.getSettings(setProfileLanguage);
+
+    //Fix for failure of angular translate fallback for static files
+    $rootScope.$on('$translateChangeError', function() {
+        $translate.use('en');
+    });
 });

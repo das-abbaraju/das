@@ -39,10 +39,18 @@ angular.module('PICS.employeeguard')
     }
 
     function formatRequestPayload(user) {
-        var user_settings = {
-            language:formatLanguageJSON(user.language),
-            dialect:formatDialectJSON(user.dialect)
-        };
+        var user_settings;
+
+        if (user.dialect) {
+            user_settings = {
+                language:formatLanguageJSON(user.language),
+                dialect:formatDialectJSON(user.dialect)
+            };
+        } else {
+            user_settings = {
+                language:formatLanguageJSON(user.language)
+            };
+        }
 
         return user_settings;
     }
@@ -76,7 +84,13 @@ angular.module('PICS.employeeguard')
     }
 
     function updateApplicationWithNewLanguage(user_settings) {
-        setTranslationLanguage(user_settings.language.id);
+        if (user_settings.language) {
+            if (user_settings.dialect) {
+                setTranslationLanguage(user_settings.language.id, user_settings.dialect.id);
+            } else {
+                setTranslationLanguage(user_settings.language.id);
+            }
+        }
 
         ProfileService.cacheProfileSettings(user_settings);
 
@@ -85,8 +99,14 @@ angular.module('PICS.employeeguard')
         $scope.profile_settings = user_settings;
     }
 
-    function setTranslationLanguage(id) {
-        $translate.use(id);
+    function setTranslationLanguage(languageID, dialectID) {
+        if (languageID) {
+            if (dialectID) {
+                $translate.use(languageID + '_' + dialectID);
+            } else {
+                $translate.use(languageID);
+            }
+        }
     }
 
     $scope.toggleFormDisplay = function() {

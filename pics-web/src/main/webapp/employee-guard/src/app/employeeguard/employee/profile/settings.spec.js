@@ -1,4 +1,4 @@
-describe("A Employee Skill List Controller", function() {
+describe("Profile Settings Controller", function() {
     var scope, ProfileService, $translate;
 
     var profile_settings = {
@@ -130,7 +130,17 @@ describe("A Employee Skill List Controller", function() {
                 expect(formatted_settings.dialect).not.toBeDefined();
             });
 
-            it("should apply selected language settings immediately", function() {
+            it("should apply selected language settings immediately to a base language", function() {
+                var user_settings = {
+                    "language": "de"
+                };
+
+                scope.saveProfileSettings(user_settings);
+
+                expect($translate.use()).toEqual('de');
+            });
+
+            it("should apply selected language settings immediately to a language and dialect", function() {
                 var user_settings = {
                     "language": "de",
                     "dialect": "AT"
@@ -138,7 +148,7 @@ describe("A Employee Skill List Controller", function() {
 
                 scope.saveProfileSettings(user_settings);
 
-                expect($translate.use()).toEqual('de');
+                expect($translate.use()).toEqual('de_AT');
             });
         });
     });
