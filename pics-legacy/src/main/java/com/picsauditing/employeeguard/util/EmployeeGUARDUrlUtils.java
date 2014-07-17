@@ -31,6 +31,8 @@ public final class EmployeeGUARDUrlUtils {
 	public static final String DOCUMENT_THUMBNAIL_LINK = "/employee-guard/skillreview/employee/%d/skill/%d/thumbnail";
 	public static final String DOCUMENT_DOWNLOAD_LINK = "/employee-guard/skillreview/employee/%d/skill/%d/download";
 
+	/* Settings page */
+	public static final String EMPLOYEE_SETTINGS = "/employee-guard/profile/settings";
 
 	public static String buildUrl(final String url, final Object... params) {
 		return String.format(url, params);
