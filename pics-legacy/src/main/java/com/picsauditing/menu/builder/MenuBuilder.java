@@ -642,13 +642,15 @@ public final class MenuBuilder {
 			}
 
 			if (inEmployeeMode(permissions)) {
-				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Settings"),
-						EmployeeGUARDUrlUtils.EMPLOYEE_SETTINGS);
-
 				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Switch_To_Admin_Mode"),
 						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
 								UserMode.ADMIN.getModeParameterValue()));
 			}
+		}
+
+		if (inEmployeeMode(permissions)) {
+			userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Settings"),
+					EmployeeGUARDUrlUtils.EMPLOYEE_SETTINGS);
 		}
 	}
 
