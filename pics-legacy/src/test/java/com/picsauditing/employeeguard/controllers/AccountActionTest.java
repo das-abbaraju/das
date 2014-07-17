@@ -1,10 +1,12 @@
 package com.picsauditing.employeeguard.controllers;
 
+import com.opensymphony.xwork2.ActionInvocation;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.entities.builder.AppUserBuilder;
 import com.picsauditing.controller.PicsRestActionSupport;
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.builders.EmailHashBuilder;
@@ -18,6 +20,7 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.service.authentication.AuthenticationService;
 import com.picsauditing.service.authentication.UsernameNotAvailableException;
 import com.picsauditing.util.system.PicsEnvironment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -60,6 +63,10 @@ public class AccountActionTest extends PicsActionTest {
 	@Mock
 	private ProfileEntityService profileEntityService;
 
+	//private ActionContextMocking actionContextMocking;
+	@Mock
+	private ActionInvocation actionInvocation;
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -75,7 +82,11 @@ public class AccountActionTest extends PicsActionTest {
 		Whitebox.setInternalState(accountAction, "profileEntityService", profileEntityService);
 
 		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+
+		actionContext.setActionInvocation(actionInvocation);
+		when(actionInvocation.getInvocationContext()).thenReturn(actionContext);
 	}
+
 
 	@Test
 	public void testIndex() throws Exception {

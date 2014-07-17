@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.controllers;
 
 import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.PICS.DateBean;
@@ -24,6 +25,8 @@ import com.picsauditing.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Locale;
 
 import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
 
@@ -51,6 +54,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	private String hashCode;
 	private Profile profile;
+
 
 	@Anonymous
 	public String switchLanguage() {
@@ -94,7 +98,10 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		try {
 			AppUser appUser = authenticationService.createNewAppUser(profileForm.getEmail(), profileForm.getPassword());
 
-			Profile profile = profileForm.buildProfile(appUser.getId());
+			profile = profileForm.buildProfile(appUser.getId());
+
+			populateLocale();
+
 			profile = profileEntityService.save(profile, new EntityAuditInfo.Builder().appUserId(User.SYSTEM)
 					.timestamp(DateBean.today()).build());
 
@@ -106,11 +113,17 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 					profileForm.getPassword(), hashCode, true);
 			doSetCookieMaxAge(sessionCookieContent);
 
+
 			return setUrlForRedirect(EMPLOYEE_SUMMARY);
 		} catch (Exception e) {
 			LOG.error("Error creating appUser and logging in ", e);
 			return ERROR;
 		}
+	}
+
+	private void populateLocale(){
+		Locale locale = ActionContext.getContext().getActionInvocation().getInvocationContext().getLocale();
+		profile.getSettings().setLocale(locale);
 	}
 
 	@Override
