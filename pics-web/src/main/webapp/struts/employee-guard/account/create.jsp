@@ -11,7 +11,7 @@
 <%-- Terms of Service Modal --%>
 <s:include value="/struts/employee-guard/account/_terms-of-service.jsp" />
 
-<div class="row">
+<div class="row" id="login_row">
     <div id="login-container" class="col-md-4 col-md-offset-4">
         <img src="/v7/img/logo/logo-large.png" class="logo img-responsive">
 
@@ -19,9 +19,13 @@
             <input type="hidden" name="hashCode" value="${hashCode}" />
 
             <div class="form-group">
-                <tw:label labelName="locale" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></tw:label>
+                <label for="supported_locales" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></label>
                 <div class="col-xs-11 col-md-11 locale-select">
-                    <s:include value="/struts/employee-guard/account/_supported-locales-list.jsp" />
+                    <select id="supported_locales" name="request_locale" class="form-control select2Min" tabindex="1">
+                        <s:iterator value="supportedLanguages.visibleLanguagesSansDialect" var="language">
+                            <option value="${language.key}">${language.value}</option>
+                        </s:iterator>
+                    </select>
                 </div>
             </div>
 
