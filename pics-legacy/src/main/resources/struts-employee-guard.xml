@@ -29,6 +29,9 @@
         <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
         </action>
 
+        <action name="profile/settings" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
         <action name="serverInfo" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
         </action>
 
@@ -308,9 +311,6 @@
         </action>
 
         <action name="summary/employee-info" class="com.picsauditing.employeeguard.controllers.employee.SummaryAction" method="employeeInfo">
-        </action>
-
-        <action name="settings" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">

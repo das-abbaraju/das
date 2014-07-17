@@ -6,17 +6,14 @@ angular.module('PICS.employeeguard')
         dialect: ''
     };
 
-    getProfileSettings();
     getLanguageList();
 
-    function getProfileSettings() {
-        Profile.get().then(function(settings) {
-            $scope.profile_settings = settings;
-            getDialectList(settings.language.id);
-            setSelectedLanguage(settings.language.id);
-            setSelectedDialect(settings.dialect.id);
-        });
-    }
+    Profile.get().then(function(profile) {
+        $scope.profile_settings = profile;
+        getDialectList(profile.language.id);
+        setSelectedLanguage(profile.language.id);
+        setSelectedDialect(profile.dialect.id);
+    });
 
     function getLanguageList() {
         Language.query(function(languages) {
@@ -114,7 +111,6 @@ angular.module('PICS.employeeguard')
     };
 
     angular.extend($scope, {
-        getProfileSettings: getProfileSettings,
         getLanguageList: getLanguageList,
         getDialectList: getDialectList,
         setSelectedLanguage: setSelectedLanguage,

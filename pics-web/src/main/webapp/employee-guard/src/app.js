@@ -16,21 +16,25 @@ angular.module('EmployeeGUARD', [
     $translateProvider.fallbackLanguage(['en_GB']);
 })
 
+.config(function ($routeProvider) {
+    $routeProvider
+        .when('/employee-guard/profile/settings', {
+            templateUrl: '/employee-guard/src/common/profile/settings.tpl.html'
+        });
+})
+
+
 .run(function($translate, $rootScope, Profile) {
-    function setProfileLanguage(profile_settings) {
-        if (profile_settings){
-            if (profile_settings.language) {
-                if (profile_settings.dialect) {
-                    $translate.use(profile_settings.language.id + '_' + profile_settings.dialect.id);
-                } else {
-                    $translate.use(profile_settings.language.id);
-                }
-            }
+    function setProfileLanguage(language, dialect) {
+        if (dialect) {
+            $translate.use(language.id + '_' + dialect.id);
+        } else {
+            $translate.use(language.id);
         }
     }
 
-    Profile.get().then(function(response) {
-        setProfileLanguage(response);
+    Profile.get().then(function(profile) {
+        setProfileLanguage(profile.language, profile.dialect);
     });
 
     //Fix for failure of angular translate fallback for static files
