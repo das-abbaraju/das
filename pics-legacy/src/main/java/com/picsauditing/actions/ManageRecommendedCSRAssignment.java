@@ -58,6 +58,7 @@ public class ManageRecommendedCSRAssignment extends PicsActionSupport {
 			SQLException {
 		report = reportDao.find(Report.class, reportID);
 		SelectSQL sql = new SqlBuilder().initializeReportAndBuildSql(report, permissions);
+        sql.setLimit(250);
 		JSONObject json = new JSONObject();
 		ReportSearchResults reportSearchResults = reportDao.runQuery(sql.toString());
 		json.put(ReportJson.RESULTS_TOTAL, reportSearchResults.getTotalResultSize());
