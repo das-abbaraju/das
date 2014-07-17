@@ -4,6 +4,7 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.dao.*;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.account.AccountStatusChanges;
 import com.picsauditing.model.operators.FacilitiesEditModel;
@@ -97,7 +98,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 
         loadSelectedClients();
 
+        defaultBillableEntityToSelfIfNecessary(operator);
+
         return SUCCESS;
+    }
+
+    private void defaultBillableEntityToSelfIfNecessary(OperatorAccount operator) {
+        if (operator != null && operator.getBillableEntity() == null) {
+            operator.setBillableEntity(operator);
+        }
+    }
+
+    public boolean isBillingEntityEditEnabled() {
+        return Features.USE_NEW_BILLABLE_ENTITY.isActive();
     }
 
     public String create() throws NoRightsException {
@@ -277,6 +290,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.getNaics().setCode("0");
             operator.setInheritFlagCriteria(operator);
             operator.setInheritInsuranceCriteria(operator);
+            operator.setBillableEntity(operator);
 
             // Save so we can get the id and then update the NOLOAD
             // with
@@ -467,7 +481,10 @@ public class FacilitiesEdit extends OperatorActionSupport {
                 if (operator.getInheritInsuranceCriteria() != null) {
 					relatedFacilities.add(operator.getInheritInsuranceCriteria());
 				}
+                if (operator.getBillableEntity() != null) {
+                    relatedFacilities.add(operator.getBillableEntity());
             }
+        }
         }
 
         return relatedFacilities;

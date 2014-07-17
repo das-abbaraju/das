@@ -261,6 +261,22 @@
                         </a>
                     </s:if>
                 </li>
+                <s:if test="isBillingEntityEditEnabled()">
+                    <pics:permission perm="EditBillableEntity">
+                        <li>
+                            <label>
+                                <s:text name="FacilitiesEdit.billableEntity"/>:
+                            </label>
+                            <s:select
+                                    name="operator.billableEntity"
+                                    value="operator.billableEntity.id"
+                                    list="relatedFacilities"
+                                    listKey="id"
+                                    listValue="name"
+                                    />
+                        </li>
+                    </pics:permission>
+                </s:if>
             </s:if>
             <s:if test="operator.corporateFacilities.size() > 0">
                 <li>
