@@ -5,15 +5,11 @@ import com.picsauditing.authentication.dao.EmailHashDAO;
 import com.picsauditing.employeeguard.daos.softdeleted.SoftDeletedEmployeeDAO;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
 import com.picsauditing.util.Strings;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 
 public class EmailHashService {
 
@@ -22,49 +18,41 @@ public class EmailHashService {
 	@Autowired
 	private SoftDeletedEmployeeDAO softDeletedEmployeeDAO;
 
-	public boolean hashIsValid(final String hash) {
-		if (isInvalidHash(hash)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	private boolean isInvalidHash(String hash) {
-		if (Strings.isEmpty(hash)) {
-			return true;
-		}
-
-		EmailHash emailHash = findByHash(hash);
-
-		return (emailHash == null || !(emailHash.getExpirationDate().after(DateBean.today())));
-	}
-
 	public EmailHash findByHash(final String hash) {
 		return emailHashDAO.findByHash(hash);
 	}
 
+	public EmailHash findByEmployee(final Employee employee) {
+		return emailHashDAO.findByEmployee(employee.getId(), employee.getEmail());
+	}
+
 	public void expire(final EmailHash emailHash) {
-		emailHash.setExpirationDate(new Date());
+		emailHash.setExpirationDate(DateBean.today());
 		emailHashDAO.save(emailHash);
 	}
 
-	public EmailHash createNewHash(final SoftDeletedEmployee employeeRecord) throws Exception {
-		EmailHash emailHash = new EmailHash();
-		emailHash.setCreatedDate(DateBean.today());
-		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
-		emailHash.setEmailAddress(employeeRecord.getEmail());
-		emailHash.setEmployee(employeeRecord);
+	public boolean isUserRegistered(final EmailHash emailHash) {
+		return validHash(emailHash) && userAlreadyRegistered(emailHash);
+	}
 
-		String hash = emailHash.toString();
-		MessageDigest msgDigest = MessageDigest.getInstance("MD5");
-		msgDigest.update(hash.getBytes());
-		byte[] hashed = msgDigest.digest();
+	private boolean userAlreadyRegistered(EmailHash emailHash) {
+		return emailHash.getEmployee().getProfile() != null;
+	}
 
-		BigInteger number = new BigInteger(1, hashed);
-		emailHash.setHashCode(number.toString(16).replace("+", "_"));
+	public boolean invalidHash(final EmailHash emailHash) {
+		return !isValid(emailHash);
+	}
 
-		return emailHashDAO.save(emailHash);
+	public boolean isValid(final EmailHash emailHash) {
+		return validHash(emailHash) && !isExpired(emailHash) && !userAlreadyRegistered(emailHash);
+	}
+
+	public boolean isExpired(final EmailHash emailHash) {
+		return emailHash.getExpirationDate().after(DateBean.today());
+	}
+
+	private boolean validHash(final EmailHash emailHash) {
+		return emailHash == null ? true : false;
 	}
 
 	/**
@@ -75,11 +63,11 @@ public class EmailHashService {
 	 * @throws Exception
 	 */
 	public EmailHash createNewHash(final Employee employee) throws Exception {
-		if (employee.getId() <= 0 || Strings.isEmpty(employee.getEmail())) {
+		if (invalidEmployee(employee)) {
 			throw new CannotCreateEmailHashException();
 		}
 
-		EmailHash emailHash = findHash(employee);
+		EmailHash emailHash = findByEmployee(employee);
 		if (emailHash == null) {
 			return createNewEmailHash(employee);
 		}
@@ -87,39 +75,29 @@ public class EmailHashService {
 		return updateEmailHash(emailHash, employee);
 	}
 
-	private EmailHash createNewEmailHash(final Employee employee) throws NoSuchAlgorithmException {
-		EmailHash emailHash = new EmailHash();
-
-		emailHash.setCreatedDate(DateBean.today());
-		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
-		emailHash.setEmailAddress(employee.getEmail());
-		emailHash.setEmployee(softDeletedEmployeeDAO.find(employee.getId()));
-
-		emailHash.setHashCode(buildHashCode(emailHash));
-
-		return emailHashDAO.save(emailHash);
+	private boolean invalidEmployee(final Employee employee) {
+		return employee.getId() <= 0 || Strings.isEmpty(employee.getEmail());
 	}
 
-	private EmailHash findHash(final Employee employee) {
-		return emailHashDAO.findByEmployee(employee.getId(), employee.getEmail());
+	private EmailHash createNewEmailHash(final Employee employee) throws NoSuchAlgorithmException {
+		EmailHash emailHash = new EmailHash();
+		emailHash.setCreatedDate(DateBean.today());
+		emailHash.setEmployee(softDeletedEmployeeDAO.find(employee.getId()));
+
+		return emailHashDAO.save(setExpirationDateEmailAndHashCode(emailHash, employee));
 	}
 
 	private EmailHash updateEmailHash(final EmailHash emailHash, final Employee employee) throws NoSuchAlgorithmException {
-		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
-		emailHash.setEmailAddress(employee.getEmail());
-		emailHash.setHashCode(buildHashCode(emailHash));
-
-		return emailHashDAO.save(emailHash);
+		return emailHashDAO.save(setExpirationDateEmailAndHashCode(emailHash, employee));
 	}
 
-	private String buildHashCode(final EmailHash emailHash) throws NoSuchAlgorithmException {
-		String hashSalt = Long.toString(DateBean.today().getTime()) + emailHash.getEmailAddress()
-				+ emailHash.getEmployee().getAccountId();
-		MessageDigest msgDigest = MessageDigest.getInstance("MD5");
-		msgDigest.update(hashSalt.getBytes());
-		byte[] hashed = msgDigest.digest();
+	private EmailHash setExpirationDateEmailAndHashCode(final EmailHash emailHash, final Employee employee)
+			throws NoSuchAlgorithmException {
 
-		BigInteger number = new BigInteger(1, hashed);
-		return number.toString(16).replace("+", "_");
+		emailHash.setExpirationDate(new LocalDateTime().plusMonths(1).toDate());
+		emailHash.setEmailAddress(employee.getEmail());
+		emailHash.setHashCode(EmailHashCodeGenerator.generateHashCode(emailHash));
+
+		return emailHash;
 	}
 }
