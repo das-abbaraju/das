@@ -5,6 +5,9 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
+import com.picsauditing.employeeguard.util.PicsEnvironmentUtil;
+import com.picsauditing.security.SessionSecurity;
+import com.picsauditing.util.SpringUtils;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionInvocation;
@@ -84,7 +87,18 @@ public class I18nInterceptor extends com.opensymphony.xwork2.interceptor.I18nInt
 	private void setLocaleToCookie(Locale locale) {
 		Cookie cookie = new Cookie(COOKIE_NAME, locale.toString());
 		cookie.setMaxAge(3600 * 24 * 365); // One Year
+		setDomainAndPath(cookie);
 		ServletActionContext.getResponse().addCookie(cookie);
+	}
+
+	private void setDomainAndPath(Cookie cookie){
+		PicsEnvironmentUtil picsEnvironmentUtil = SpringUtils.getBean(SpringUtils.PICS_ENVIRONMENT_UTIL);
+
+		cookie.setPath("/");
+		if(!picsEnvironmentUtil.isLocalhostEnvironment()){
+			cookie.setDomain(SessionSecurity.SESSION_COOKIE_DOMAIN);
+		}
+
 	}
 
 	private void setThreadLocalLocale(Locale locale) {

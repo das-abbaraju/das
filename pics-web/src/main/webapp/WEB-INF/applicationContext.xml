@@ -403,6 +403,9 @@
 
     <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
 
+    <!-- Util -->
+    <bean id="PicsEnvironmentUtil" class="com.picsauditing.employeeguard.util.PicsEnvironmentUtil"/>
+
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

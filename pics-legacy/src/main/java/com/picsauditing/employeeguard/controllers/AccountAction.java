@@ -1,7 +1,6 @@
 package com.picsauditing.employeeguard.controllers;
 
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.PICS.DateBean;
@@ -54,7 +53,6 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	private String hashCode;
 	private Profile profile;
-
 
 	@Anonymous
 	public String switchLanguage() {
