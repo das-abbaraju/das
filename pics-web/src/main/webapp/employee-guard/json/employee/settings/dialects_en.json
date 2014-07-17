@@ -1,0 +1,46 @@
+[
+   {
+      "id":"AU",
+      "name":"Australia"
+   },
+   {
+      "id":"CA",
+      "name":"Canada"
+   },
+   {
+      "id":"GB",
+      "name":"United Kingdom"
+   },
+   {
+      "id":"IE",
+      "name":"Ireland"
+   },
+   {
+      "id":"IN",
+      "name":"India"
+   },
+   {
+      "id":"MT",
+      "name":"Malta"
+   },
+   {
+      "id":"NZ",
+      "name":"New Zealand"
+   },
+   {
+      "id":"PH",
+      "name":"Philippines"
+   },
+   {
+      "id":"SG",
+      "name":"Singapore"
+   },
+   {
+      "id":"US",
+      "name":"United States"
+   },
+   {
+      "id":"ZA",
+      "name":"South Africa"
+   }
+]

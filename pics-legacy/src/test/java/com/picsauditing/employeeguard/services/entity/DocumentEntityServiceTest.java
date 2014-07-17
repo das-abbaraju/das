@@ -1,5 +1,6 @@
 package com.picsauditing.employeeguard.services.entity;
 
+import com.picsauditing.PICS.Utilities;
 import com.picsauditing.employeeguard.daos.ProfileDocumentDAO;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.entities.builders.ProfileDocumentBuilder;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static com.picsauditing.employeeguard.services.entity.EntityAuditInfoConstants.*;
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,6 +49,16 @@ public class DocumentEntityServiceTest {
 
 		assertNotNull(result);
 		assertEquals(expected.getId(), result.getId());
+	}
+
+	@Test
+	public void testFindDocumentsForAppUser() {
+		List<ProfileDocument> fakeProfileDocuments = Arrays.asList(buildFakeProfileDocument());
+		when(documentDAO.findByAppUserId(anyInt())).thenReturn(fakeProfileDocuments);
+
+		List<ProfileDocument> results = documentEntityService.findDocumentsForAppUser(123);
+
+		assertTrue(Utilities.collectionsAreEqual(fakeProfileDocuments, results));
 	}
 
 	@Test

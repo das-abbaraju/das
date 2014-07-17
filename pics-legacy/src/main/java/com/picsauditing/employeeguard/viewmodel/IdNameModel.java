@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.viewmodel;
 
 public class IdNameModel implements Comparable<IdNameModel> {
+
 	protected final String id;
 	protected final String name;
 

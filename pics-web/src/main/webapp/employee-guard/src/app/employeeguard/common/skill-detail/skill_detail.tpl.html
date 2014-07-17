@@ -36,7 +36,7 @@
                         <p>{{ skill.description }}</p>
 
                         <div ng-if="skill.skill_type === 'Certification'">
-                            <div ng-if="!skill.file_url" class="alert alert-danger" translate="{{ 'EMPLOYEE.SKILL.SKILL.ALERT' | translate }}">
+                            <div ng-if="!skill.file_url" class="alert alert-danger" translate="{{ 'EMPLOYEE_SKILL.SKILL.ALERT' | translate }}">
                             </div>
 
                             <div ng-if="skill.file_url">
@@ -69,7 +69,7 @@
                                     <span ng-if="!skill.never_expires" class="{{ getSkillStatusClassName(skill.status) }}">{{ skill.expiration | date:'yyyy-MM-dd' }}</span>
                                 </dd>
                             </dl>
-                            <div ng-if="!skill.status" class="alert alert-danger" translate="{{ 'EMPLOYEE.SKILL.SKILL.ALERT' | translate }}">
+                            <div ng-if="!skill.status" class="alert alert-danger" translate="{{ 'EMPLOYEE_SKILL.SKILL.ALERT' | translate }}">
                             </div>
                         </div>
                     </div>

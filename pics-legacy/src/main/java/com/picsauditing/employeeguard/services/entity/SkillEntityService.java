@@ -5,6 +5,7 @@ import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.exceptions.NoCorporateForOperatorException;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.util.Extractor;
 import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
@@ -29,6 +30,8 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 	private ProjectSkillDAO projectSkillDAO;
 	@Autowired
 	private SiteSkillDAO siteSkillDAO;
+	@Autowired
+	private AccountService accountService;
 
 	/* All Find Methods */
 
@@ -355,6 +358,47 @@ public class SkillEntityService implements EntityService<AccountSkill, Integer>,
 
 		AccountSkill accountSkill = find(id);
 		delete(accountSkill);
+	}
+
+	public List<AccountSkill> findSkillsForSite(final List<Integer> accountIds) {
+		if (CollectionUtils.isEmpty(accountIds)) {
+			return Collections.emptyList();
+		}
+		return accountSkillDAO.findByAccounts(accountIds);
+	}
+
+	public List<AccountSkill> findSkillsForCorporate(int accountId) {
+		return accountSkillDAO.findByAccount(accountId);
+	}
+
+	public List<AccountSkill> findSkillsForContractor(int accountId) {
+		return accountSkillDAO.findByAccount(accountId);
+	}
+
+	public List<AccountSkill> findReqdSkillsForAccount(int accountId) {
+		return siteSkillDAO.findReqdSkillsForAccount(accountId);
+	}
+
+	public List<AccountSkill> findAllParentCorpSiteRequiredSkills(int accountId) {
+		List<Integer> parentIds = accountService.getTopmostCorporateAccountIds(accountId);
+
+		return siteSkillDAO.findAllParentCorpSiteRequiredSkills(parentIds);
+	}
+
+	public Map<Integer,AccountSkill> findReqdSkillsForAccountMap(int siteId) {
+		List<AccountSkill> skills= siteSkillDAO.findReqdSkillsForAccount(siteId);
+		Map<Integer,AccountSkill> map = PicsCollectionUtil.convertToMap(skills,
+
+						new PicsCollectionUtil.MapConvertable<Integer, AccountSkill>() {
+
+							@Override
+							public Integer getKey(AccountSkill skill) {
+								return skill.getId();
+							}
+						});
+
+
+		return map;
 	}
 
 }

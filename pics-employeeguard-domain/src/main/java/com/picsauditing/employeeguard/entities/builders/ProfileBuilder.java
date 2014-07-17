@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.entities.builders;
 
-import com.picsauditing.employeeguard.entities.AccountSkillProfile;
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.ProfileDocument;
+import com.picsauditing.employeeguard.entities.*;
 
 import java.util.List;
 
@@ -63,6 +60,11 @@ public class ProfileBuilder extends AbstractBaseEntityBuilder<Profile, ProfileBu
 
 	public ProfileBuilder skills(final List<AccountSkillProfile> accountSkillProfiles) {
 		entity.setSkills(accountSkillProfiles);
+		return this;
+	}
+
+	public ProfileBuilder settings(final Settings settings) {
+		entity.setSettings(settings);
 		return this;
 	}
 

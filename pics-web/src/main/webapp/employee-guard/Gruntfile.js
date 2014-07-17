@@ -6,8 +6,6 @@ module.exports = function(grunt) {
         'vendor/angular/angular-resource.js',
         'vendor/angular/bower_components/angular-translate/angular-translate.js',
         'vendor/angular/bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
-        'vendor/angular/bower_components/messageformat/messageformat.js',
-        'vendor/angular/bower_components/angular-translate-interpolation-messageformat/angular-translate-interpolation-messageformat.js',
         'vendor/bootstrap/bootstrap.js',
         'vendor/d3/d3.js',
         'vendor/bootstrap/bootstrap.tooltip.js',
@@ -26,8 +24,7 @@ module.exports = function(grunt) {
     ];
 
     var modules = [
-        'src/common/translations/translations.js',
-        'src/common/translations/translationKeys.js',
+        'src/common/profile/profile-service.js',
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
