@@ -14,10 +14,10 @@
                 </div>
                 <div class="col-md-8 col-xs-8">
                     <tw:select selectName="intervalType" class="form-control select2Min" tabindex="5">
-                        <tw:option value="DAY" selected="${skillForm.intervalType == 'DAY'}"><s:text name="INTERVAL_TYPE_DAY" /></tw:option>
-                        <tw:option value="WEEK" selected="${skillForm.intervalType == 'WEEK'}"><s:text name="INTERVAL_TYPE_WEEK" /></tw:option>
-                        <tw:option value="MONTH" selected="${skillForm.intervalType == 'MONTH'}"><s:text name="INTERVAL_TYPE_MONTH" /></tw:option>
-                        <tw:option value="YEAR" selected="${skillForm.intervalType == 'YEAR'}"><s:text name="INTERVAL_TYPE_YEAR" /></tw:option>
+                        <tw:option value="DAY" selected="${operatorSkillForm.intervalType == 'DAY'}"><s:text name="INTERVAL_TYPE_DAY" /></tw:option>
+                        <tw:option value="WEEK" selected="${operatorSkillForm.intervalType == 'WEEK'}"><s:text name="INTERVAL_TYPE_WEEK" /></tw:option>
+                        <tw:option value="MONTH" selected="${operatorSkillForm.intervalType == 'MONTH'}"><s:text name="INTERVAL_TYPE_MONTH" /></tw:option>
+                        <tw:option value="YEAR" selected="${operatorSkillForm.intervalType == 'YEAR'}"><s:text name="INTERVAL_TYPE_YEAR" /></tw:option>
                     </tw:select>
                 </div>
             </fieldset>

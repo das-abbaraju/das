@@ -144,9 +144,9 @@ public class SkillForm implements AddAnotherForm, DuplicateInfoProvider {
 			form.setRequired(accountSkill.getRuleType() == RuleType.REQUIRED);
 			form.setIntervalType(accountSkill.getIntervalType());
 			form.setIntervalPeriod(accountSkill.getIntervalPeriod());
-			form.setDoesNotExpire(!accountSkill.getIntervalType().isApplicableExpiration() && accountSkill.getIntervalPeriod() == 0);
+			form.setDoesNotExpire(accountSkill.getIntervalType().doesNotExpire());
 
-      Integer[] groups = new Integer[accountSkill.getGroups().size()];
+			Integer[] groups = new Integer[accountSkill.getGroups().size()];
 			int counter = 0;
 			for (AccountSkillGroup accountSkillGroup : accountSkill.getGroups()) {
 				groups[counter++] = accountSkillGroup.getGroup().getId();

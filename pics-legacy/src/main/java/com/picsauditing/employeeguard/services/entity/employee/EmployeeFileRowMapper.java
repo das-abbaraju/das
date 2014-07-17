@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.services.entity.employee;
 
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.entity.util.file.FileRowMapper;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.ArrayUtils;
@@ -16,7 +17,14 @@ class EmployeeFileRowMapper implements FileRowMapper<Employee> {
 
 	@Override
 	public boolean isHeader(String[] row) {
-		return ArrayUtils.isEquals(EmployeeImportTemplate.IMPORT_FILE_HEADER, row);
+		return ArrayUtils.isEquals(new String[] {
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.FIRST_NAME"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.LAST_NAME"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.TITLE"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.EMAIL"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.PHONE"),
+				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.UNIQUE_ID")
+		}, row);
 	}
 
 	@Override
