@@ -6,6 +6,7 @@ import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.email.EmailService;
@@ -50,12 +51,12 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 			if (uploadResult.isUploadError()) {
 				addActionError(uploadResult.getErrorMessage());
 			} else {
-				addActionMessage("Successfully uploaded employees.");
+				addActionMessage(EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.SUCCESSFUL_IMPORT_MSG"));
 			}
 
 		} catch (Exception e) {
 			LOG.error("Unexpected exception while uploading employees.", e);
-			addActionError("An error occurred while importing employees.");
+			addActionError(EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.IMPORT_ERROR_MSG"));
 		}
 
 		return redirectToEmployeeImportPage();
@@ -106,7 +107,7 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 
 		} catch (Exception e) {
 			LOG.error("Error exporting employees for account {}\n{}", permissions.getAccountId(), e);
-			addActionError("Could not prepare download");
+			addActionError(EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.EMPLOYEE_DOWNLOAD_ERROR"));
 			return redirectToEmployeeImportPage();
 		}
 	}
@@ -114,7 +115,7 @@ public class EmployeeImportExportAction extends PicsRestActionSupport {
 	public String template() throws IOException {
 		byte[] employeeImportTemplate = employeeEntityService.employeeImportTemplate();
 		if (employeeImportTemplate == null) {
-			addActionError("Could not prepare download");
+			addActionError(EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE_DOWNLOAD_ERROR"));
 			return redirectToEmployeeImportPage();
 		}
 

@@ -8,18 +8,25 @@
             <result name="success">/struts/employee-guard/_breadcrumbs.jsp</result>
         </action>
 
-        <action name="welcome" class="com.picsauditing.employeeguard.controllers.LoginAction">
-            <result name="list">/struts/employee-guard/account/login.jsp</result>
+        <action name="login/switchLanguage" class="com.picsauditing.employeeguard.controllers.LoginAction"
+                method="switchLanguage">
+            <result name="login">/struts/employee-guard/account/login.jsp</result>
+        </action>
+
+        <action name="welcome" class="com.picsauditing.employeeguard.controllers.LoginAction" method="welcome">
             <result name="login">/struts/employee-guard/account/login.jsp</result>
         </action>
 
         <action name="welcome/submit" class="com.picsauditing.employeeguard.controllers.LoginAction" method="login">
-            <result name="login">/struts/employee-guard/account/login.jsp</result>
+        </action>
+
+        <action name="sign-up/switchLanguage" class="com.picsauditing.employeeguard.controllers.AccountAction"
+                method="switchLanguage">
+            <result name="sign-up">/struts/employee-guard/account/create.jsp</result>
         </action>
 
         <action name="sign-up" class="com.picsauditing.employeeguard.controllers.AccountAction">
-            <result name="list">/struts/employee-guard/account/create.jsp</result>
-            <result name="create">/struts/employee-guard/account/create.jsp</result>
+            <result name="sign-up">/struts/employee-guard/account/create.jsp</result>
         </action>
 
         <action name="password-reset" class="com.picsauditing.employeeguard.controllers.ResetPassword">

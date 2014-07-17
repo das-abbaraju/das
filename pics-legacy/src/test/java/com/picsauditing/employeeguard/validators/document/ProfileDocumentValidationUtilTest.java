@@ -1,12 +1,28 @@
 package com.picsauditing.employeeguard.validators.document;
 
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.util.Strings;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class ProfileDocumentValidationUtilTest {
+
+	private ResourceBundleMocking resourceBundleMocking;
+
+	@Before
+	public void setup() {
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
+	}
+
+	@After
+	public void tearDown() {
+		resourceBundleMocking.tearDown();
+	}
 
 	@Test
 	public void testValidateExpirationDate_NoExpirationDateProvided() {
@@ -14,7 +30,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals("Expiration date is required", result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -32,7 +48,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals("Invalid Year-Month-Day", result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -41,7 +57,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals("Expiration Date is too far in the future", result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -50,7 +66,7 @@ public class ProfileDocumentValidationUtilTest {
 
 		String result = ProfileDocumentValidationUtil.validateExpirationDate(fakeDocumentForm);
 
-		assertEquals("Expiration Date is too far in the past", result);
+		assertEquals(ResourceBundleMocking.DEFAULT_RESOURCE_BUNDLE_STRING, result);
 	}
 
 	@Test
@@ -81,5 +97,4 @@ public class ProfileDocumentValidationUtilTest {
 
 		return documentForm;
 	}
-
 }

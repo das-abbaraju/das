@@ -25,8 +25,8 @@
         <p>${modal_message}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button class="btn btn-warning unassign">Unassign</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><s:text name="CONTRACTOR.EMPLOYEE.UNASSIGN.CONFIRMATION.CANCEL" /></button>
+        <button class="btn btn-warning unassign"><s:text name="CONTRACTOR.EMPLOYEE.UNASSIGN.CONFIRMATION.UNASSIGN" /></button>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

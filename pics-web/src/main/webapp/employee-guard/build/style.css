@@ -17026,37 +17026,38 @@ section.visible h1 {
 .beta-section .issue-more {
   color: #226396;
 }
-/* line 25, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section textarea {
+
+/* line 27, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback textarea {
   font-size: 14px;
 }
-/* line 29, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section .btn-primary {
+/* line 31, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback .btn-primary {
   margin-top: 10px;
   margin-right: 0px;
 }
-/* line 34, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section ::-webkit-input-placeholder {
+/* line 36, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback ::-webkit-input-placeholder {
   /* WebKit browsers */
   color: #999999;
 }
-/* line 37, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section :-moz-placeholder {
+/* line 39, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback :-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: #999999;
 }
-/* line 40, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section ::-moz-placeholder {
+/* line 42, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback ::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   color: #999999;
 }
-/* line 43, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section :-ms-input-placeholder {
+/* line 45, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback :-ms-input-placeholder {
   /* Internet Explorer 10+ */
   color: #999999;
 }
-/* line 48, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
-.beta-section .alert-success h1 {
+/* line 50, ../src/app/employeeguard/common/betafeedback/_feedback.scss */
+.feedback .alert-success h1 {
   font-size: 18px;
   font-weight: bold;
   margin-top: 0px;

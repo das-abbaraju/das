@@ -9,10 +9,10 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Employees</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEES" /></s:param>
     <s:param name="actions">
-        <a href="${contractor_employee_import_export_url}" class="btn btn-default">Import / Export</a>
-        <a href="${contractor_employee_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Employee</a>
+        <a href="${contractor_employee_import_export_url}" class="btn btn-default"><s:text name="CONTRACTOR.EMPLOYEE.LIST.IMPORT_EXPORT" /></a>
+        <a href="${contractor_employee_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEE" /></a>
     </s:param>
 </s:include>
 
@@ -21,7 +21,8 @@
              role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
-                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Employees"
+                <s:set var="search_employees"><s:text name="CONTRACTOR.EMPLOYEE.LIST.SEARCH_EMPLOYEES" /></s:set>
+                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${search_employees}"
                           value="${searchForm.searchTerm}"/>
                 <i class="icon-search"></i>
                 <ul id="contractor_employee_search_form_results" class="search-results"></ul>
@@ -34,14 +35,14 @@
             <thead>
                 <tr>
                     <th class="danger text-center">
-                        <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expired or Incomplete"></i>
+                        <i class="icon-minus-sign-alt icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name="CONTRACTOR.EMPLOYEE.LIST.EXPIRED_INCOMPLETE" />"></i>
                     </th>
                     <th class="warning text-center">
-                        <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Expiring"></i>
+                        <i class="icon-warning-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="<s:text name='CONTRACTOR.EMPLOYEE.LIST.EXPIRING' />"></i>
                     </th>
-                    <th class="employee">Employee</th>
-                    <th class="title">Title</th>
-                    <th class="groups">Employee Groups</th>
+                    <th class="employee"><s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEE" /></th>
+                    <th class="title"><s:text name="CONTRACTOR.EMPLOYEE.LIST.TITLE" /></th>
+                    <th class="groups"><s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEE_GROUPS" /></th>
                 </tr>
             </thead>
             <tbody>
@@ -96,20 +97,20 @@
 <s:else>
     <section class="employee-guard-section">
         <h1>
-            <i class="icon-map-marker icon-large"></i>Employees
+            <i class="icon-map-marker icon-large"></i><s:text name="CONTRACTOR.EMPLOYEE.LIST.EMPLOYEES" />
         </h1>
         <div class="content">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4>No Employees</h4>
+                        <h4><s:text name="CONTRACTOR.EMPLOYEE.LIST.NO_EMPLOYEES" /></h4>
 
-                        <p>Add your employees either individually by selecting <strong><i class="icon-plus-sign"></i> Employee</strong>, or import a batch by selecting <strong>Import/Export</strong> at the top of the page.</p>
+                        <p><s:text name="CONTRACTOR.EMPLOYEE.LIST.ADD_HELP" /></p>
 
-                        <p>After your employees are created you can manage and monitor them on this page.</p>
+                        <p><s:text name="CONTRACTOR.EMPLOYEE.LIST.AFTER_ADD_HELP" /></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Adding Employees</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.EMPLOYEE.LIST.ADD_LEARN_MORE" /></a>
                         </p>
                     </div>
                 </div>

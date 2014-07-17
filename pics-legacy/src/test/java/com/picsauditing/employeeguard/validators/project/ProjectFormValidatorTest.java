@@ -3,8 +3,10 @@ package com.picsauditing.employeeguard.validators.project;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.ValidatorContext;
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.employeeguard.ResourceBundleMocking;
 import com.picsauditing.employeeguard.daos.DuplicateEntityChecker;
 import com.picsauditing.employeeguard.forms.operator.ProjectForm;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -16,14 +18,17 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class ProjectFormValidatorTest extends PicsActionTest {
+
 	private ProjectFormValidator projectFormValidator;
 
-    @Mock
-    private DuplicateEntityChecker duplicateEntityChecker;
-    @Mock
-	private ValueStack valueStack;
-    @Mock
+	@Mock
+	private DuplicateEntityChecker duplicateEntityChecker;
+	@Mock
 	private ValidatorContext validatorContext;
+	@Mock
+	private ValueStack valueStack;
+
+	private ResourceBundleMocking resourceBundleMocking;
 
 	@Before
 	public void setUp() throws Exception {
@@ -33,9 +38,17 @@ public class ProjectFormValidatorTest extends PicsActionTest {
 
 		super.setupMocks();
 
-        Whitebox.setInternalState(projectFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
+		Whitebox.setInternalState(projectFormValidator, "duplicateEntityChecker", duplicateEntityChecker);
 
 		when(request.getMethod()).thenReturn("POST");
+
+		resourceBundleMocking = new ResourceBundleMocking();
+		resourceBundleMocking.setUp();
+	}
+
+	@After
+	public void tearDown() {
+		resourceBundleMocking.tearDown();
 	}
 
 	@Test

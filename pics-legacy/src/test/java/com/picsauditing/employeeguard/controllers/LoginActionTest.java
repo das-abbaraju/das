@@ -96,13 +96,13 @@ public class LoginActionTest extends PicsActionTest {
 	public void testIndex() throws Exception {
 		loginAction.setHashCode(VALID_HASH);
 
-		String result = loginAction.index();
+		String result = loginAction.welcome();
 
 		verifyTestIndex(result);
 	}
 
 	private void verifyTestIndex(String result) {
-		assertEquals(PicsRestActionSupport.LIST, result);
+		assertEquals(LoginAction.LOGIN_VIEW, result);
 		assertNotNull(loginAction.getProfile());
 		assertEquals(EMPLOYEE_FIRST_NAME, loginAction.getProfile().getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, loginAction.getProfile().getLastName());
@@ -113,13 +113,13 @@ public class LoginActionTest extends PicsActionTest {
 
 	@Test(expected = PageNotFoundException.class)
 	public void testIndex_HashIsMissing() throws Exception {
-		loginAction.index();
+		loginAction.welcome();
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void testIndex_HashIsInvalid() throws Exception {
 		loginAction.setHashCode("Invalid hash");
-		loginAction.index();
+		loginAction.welcome();
 	}
 
 	@Test(expected = PageNotFoundException.class)
@@ -131,7 +131,7 @@ public class LoginActionTest extends PicsActionTest {
 		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
 
 		loginAction.setHashCode(VALID_HASH);
-		loginAction.index();
+		loginAction.welcome();
 	}
 
 	@Test

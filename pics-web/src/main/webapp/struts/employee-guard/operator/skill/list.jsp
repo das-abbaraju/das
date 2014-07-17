@@ -15,15 +15,15 @@
 <%-- Page title --%>
 <s:if test="permissions.corporate">
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Skills</s:param>
+        <s:param name="title"><s:text name="CORPORARE.SKILLS.LIST.PAGE.HEADER"/></s:param>
         <s:param name="actions">
-            <a href="${operator_skill_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Skill</a>
+            <a href="${operator_skill_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="CORPORATE.SKILLS.LIST.SKILL.BUTTON"/></a>
         </s:param>
     </s:include>
 </s:if>
 <s:else>
     <s:include value="/struts/employee-guard/_page-header.jsp">
-        <s:param name="title">Skills</s:param>
+        <s:param name="title"><s:text name="OPERATOR.SKILLS.LIST.PAGE.HEADER"/></s:param>
     </s:include>
 </s:else>
 
@@ -31,7 +31,7 @@
     <section class="employee-guard-section edit-container" data-url="${site_skill_edit_url}">
         <h1>
             <div class="row">
-                <div class="col-md-9 col-xs-9">Corporate Required Skills</div>
+                <div class="col-md-9 col-xs-9"><s:text name="CORPORATE.SKILLS.LIST.REQUIRED_SKILLS_HEADER"/></div>
                 <s:if test="permissions.corporate">
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -42,12 +42,12 @@
 
         <div class="content">
             <s:if test="requiredSkills.isEmpty()">
-                <p class="no-value">These skills are required for everyone that is assigned to any site.</p>
-                <p>No corporate required skills.</p>
+                <p class="no-value"><s:text name="CORPORATE.SKILLS.CORPORATE_REQUIRED.MSG1"/></p>
+                <p><s:text name="CORPORATE.SKILLS.CORPORATE_REQUIRED.MSG2"/></p>
             </s:if>
             <s:else>
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Required Skills</dt>
+                    <dt class="col-md-3"><s:text name="CORPORATE.SKILLS.LIST.REQUIRED_SKILLS.REQUIRED_SKILLS"/></dt>
                     <dd class="col-md-9">
                         <ul class="employee-guard-list skills">
                             <s:iterator value="requiredSkills" var="operator_skill">
@@ -70,7 +70,7 @@
     <section class="employee-guard-section edit-container" data-url="${site_skill_edit_url}">
         <h1>
             <div class="row">
-                <div class="col-md-9 col-xs-9">Site Required Skills</div>
+                <div class="col-md-9 col-xs-9"><s:text name="OPERATOR.SKILLS.LIST.REQUIRED_SKILLS_HEADER"/></div>
                 <div class="col-md-3 col-xs-3 edit">
                     <i class="icon-edit icon-large edit-toggle"></i>
                 </div>
@@ -79,12 +79,12 @@
 
         <div class="content">
             <s:if test="requiredSkills.isEmpty()">
-                <p class="no-value">These skills are required for everyone that is assigned to the site.</p>
-                <p>No site required skills.</p>
+                <p class="no-value"><s:text name="OPERATOR.SKILLS.CORPORATE_REQUIRED.MSG1"/></p>
+                <p><s:text name="OPERATOR.SKILLS.CORPORATE_REQUIRED.MSG2"/></p>
             </s:if>
             <s:else>
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Required Skills</dt>
+                    <dt class="col-md-3"><s:text name="OPERATOR.SKILLS.LIST.REQUIRED_SKILLS.REQUIRED_SKILLS"/></dt>
                     <dd class="col-md-9">
                         <ul class="employee-guard-list skills">
                             <s:iterator value="requiredSkills" var="operator_skill">
@@ -108,7 +108,8 @@
     <tw:form formName="operator_skill_search" action="${operator_skill_list_url}" class="search-query" role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
-                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Skills"
+                <s:set var="placeholderSkillSearch"><s:text name="OPERATOR.SKILLS.LIST.SEARCH.INPUT.DEFAULT_TEXT"/></s:set>
+                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${placeholderSkillSearch}"
                           value="${searchForm.searchTerm}"/>
                 <i class="icon-search"></i>
                 <ul id="operator-skill-search" class="search-results"></ul>
@@ -120,8 +121,8 @@
         <table class="table table-striped table-condensed table-hover">
             <thead>
             <tr>
-                <th class="col-md-5">Skill</th>
-                <th class="col-md-7">Job Roles</th>
+                <th class="col-md-5"><s:text name="OPERATOR.SKILLS.LIST.TABLE.HEADER.SKILL.COLUMN"/></th>
+                <th class="col-md-7"><s:text name="OPERATOR.SKILLS.LIST.TABLE.HEADER.JOB_ROLES.COLUMN"/></th>
             </tr>
             </thead>
 
@@ -135,7 +136,7 @@
                     <td><a href="${operator_skill_show_url}">${operatorSkill.name}</a></td>
                     <td>
                         <s:if test="#operatorSkill.ruleType.required">
-                            <label class="label label-default">All Employees</label>
+                            <label class="label label-default"><s:text name="OPERATOR.SKILLS.LIST.COLUMN.JOB_ROLES.ALL_EMPLOYEES"/></label>
                         </s:if>
                         <s:else>
                             <s:set name="operator_roles" value="#operatorSkill.roles"/>
@@ -157,25 +158,25 @@
             <div class="col-md-8 col-md-offset-2">
                 <s:if test="permissions.corporate">
                     <div class="alert alert-info">
-                        <h4>No Skills</h4>
+                        <h4><s:text name="CORPORATE.SKILLS.LIST.NO_SKILLS_MSG.TITLE"/></h4>
 
-                        <p>Skills are the competencies or qualifications that assigned employees must meet to do their assigned jobs. Multiple types of of Skills can be created and required for different Job Roles. Skills can even be required for entire Sites, Projects, or designated as a Corporate Required Skill that ALL assigned employees at every Site must satisfy.</p>
+                        <p><s:text name="CORPORATE.SKILLS.LIST.NO_SKILLS_MSG.MSG1"/></p>
 
-                        <p>Create your first Skill by selecting the <strong><i class="icon-plus-sign"></i> Skill</strong> button at the top of the page.</p>
+                        <p><s:text name="CORPORATE.SKILLS.LIST.NO_SKILLS_MSG.MSG2"/></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Skills</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="CORPORATE.SKILLS.LIST.NO_SKILLS_MSG.MSG3"/></a>
                         </p>
                     </div>
                 </s:if>
                 <s:else>
                     <div class="alert alert-info">
-                        <h4>No Skills</h4>
+                        <h4><s:text name="OPERATOR.SKILLS.LIST.NO_SKILLS_MSG.TITLE"/></h4>
 
-                        <p>Skills are the competencies or qualifications that assigned employees must meet to do their assigned jobs. Multiple types of of Skills can be created (your corporate account is responsible for creating Skills), then required for different Job Roles. Skills can also be required for entire Projects or designated as a Site Required Skill that ALL employees assigned to the site must satisfy.</p>
+                        <p><s:text name="OPERATOR.SKILLS.LIST.NO_SKILLS_MSG.MSG1"/></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Skills</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="OPERATOR.SKILLS.LIST.NO_SKILLS_MSG.MSG2"/></a>
                         </p>
                     </div>
                 </s:else>

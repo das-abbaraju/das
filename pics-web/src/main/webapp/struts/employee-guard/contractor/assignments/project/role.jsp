@@ -14,7 +14,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${project.name}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.ROLE.PAGE_TITLE" /> ${project.name}</s:param>
     <s:param name="breadcrumb_name">${project.name}</s:param>
     <s:param name="breadcrumb_id">${project.id}</s:param>
 </s:include>
@@ -22,7 +22,7 @@
 <div class="row">
     <ul class="nav nav-pills nav-stacked col-md-3">
         <li>
-            <a href="${contractor_project_assignments}">Project</a>
+            <a href="${contractor_project_assignments}"><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.ROLE.SECONDARY_NAV_MENU.PROJECT" /></a>
         </li>
 
         <s:set var="selected_role" value="%{id}"/>
@@ -48,9 +48,9 @@
         <table class="table table-striped table-condensed table-hover table-assignment">
             <thead>
                 <tr>
-                    <th class="text-center">Assign</th>
-                    <th>Employee</th>
-                    <th>Title</th>
+                    <th class="text-center"><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.ROLE.TABLE.ASSIGN" /></th>
+                    <th><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.ROLE.TABLE.EMPLOYEE" /></th>
+                    <th><s:text name="CONTRACTOR.PROJECT.ASSIGNMENTS.ROLE.TABLE.TITLE" /></th>
                     <s:iterator value="contractorProjectAssignmentMatrix.skillNames" var="skill_name">
                         <th class="text-center">${skill_name}</th>
                     </s:iterator>

@@ -10,10 +10,10 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Project: ${project.projectName}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.PROJECT.SHOW.PROJECT_WITH_COLON" /> ${project.projectName}</s:param>
     <s:param name="actions">
         <a href="${contractor_assignments_url}" class="btn btn-primary"><i class="icon-map-marker icon-large"></i>
-            Manage Project Assignments</a>
+          <s:text name="CONTRACTOR.PROJECT.SHOW.MANAGE_PROJECT_ASSIGNMENTS" /></a>
     </s:param>
     <s:param name="breadcrumb_name">${project.projectName}</s:param>
     <s:param name="breadcrumb_id">${project.projectId}</s:param>
@@ -25,24 +25,24 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-sitemap icon-large"></i> Project
+                        <i class="icon-sitemap icon-large"></i> <s:text name="CONTRACTOR.PROJECT.SHOW.PROJECT" />
                     </div>
                 </div>
             </h1>
 
             <div class="content">
                 <dl class="employee-guard-information">
-                    <dt class="col-md-3">Site</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.SITE" /></dt>
                     <dd class="col-md-9">${project.siteName}</dd>
-                    <dt class="col-md-3">Name</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.NAME" /></dt>
                     <dd class="col-md-9">${project.projectName}</dd>
-                    <dt class="col-md-3">Location</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.LOCATION" /></dt>
                     <dd class="col-md-9">${project.location}</dd>
-                    <dt class="col-md-3">Start Date</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.START_DATE" /></dt>
                     <dd class="col-md-9"><s:date name="project.startDate" format="yyyy-MM-dd" /></dd>
-                    <dt class="col-md-3">End Date</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.END_DATE" /></dt>
                     <dd class="col-md-9"><s:date name="project.endDate" format="yyyy-MM-dd" /></dd>
-                    <dt class="col-md-3">Project Skills</dt>
+                    <dt class="col-md-3"><s:text name="CONTRACTOR.PROJECT.SHOW.PROJECT_SKILLS" /></dt>
                     <dd class="col-md-9">
                         <s:set var="operator_skills" value="project.skills"/>
                         <s:include value="/struts/employee-guard/operator/skill/_list.jsp"/>
@@ -55,7 +55,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-group icon-large"></i> Project Job Roles
+                        <i class="icon-group icon-large"></i> <s:text name="CONTRACTOR.PROJECT.SHOW.PROJECT_JOB_ROLES" />
                     </div>
                 </div>
             </h1>
@@ -87,9 +87,9 @@
                     <s:else>
                        <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-warning">
-                                <h4>No Project Job Roles!</h4>
+                                <h4><s:text name="CONTRACTOR.PROJECT.SHOW.NO_PROJECT_JOB_ROLES" /></h4>
 
-                                <p>You can not assign employees until the project's owner adds Job Roles for assignments.</p>
+                                <p><s:text name="CONTRACTOR.PROJECT.SHOW.CANNOT_ASSIGN_EMPLOYEES_MESSAGE" /></p>
                             </div>
                         </div>
                     </s:else>
@@ -101,17 +101,17 @@
         <s:if test="(projectAssignmentBreakdown.expired <= 0) && (projectAssignmentBreakdown.expiring <= 0) && (projectAssignmentBreakdown.complete <= 0)">
             <section class="employee-guard-section-full">
                 <h1>
-                    <i class="icon-sitemap icon-large"></i> Assigned Employees
+                    <i class="icon-sitemap icon-large"></i> <s:text name="CONTRACTOR.PROJECT.SHOW.ASSIGNED_EMPLOYEES" />
                 </h1>
 
                 <div class="content">
                     <div class="alert alert-info">
-                        <h4>No Assignments</h4>
+                        <h4><s:text name="CONTRACTOR.PROJECT.SHOW.NO_ASSIGNMENTS" /></h4>
 
-                        <p>Start assigning employees by selecting <strong><i class="icon-map-marker"></i> Manage Project Assignments</strong> at the top of the page.</p>
+                        <p><s:text name="CONTRACTOR.PROJECT.SHOW.ASSIGN_EMPLOYEES_MESSAGE" /></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Assigning Employees</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.PROJECT.SHOW.LEARN_MORE" /></a>
                         </p>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
         <s:else>
             <section class="employee-guard-section">
                 <h1>
-                    <i class="icon-sitemap icon-large"></i> Assigned Employees
+                    <i class="icon-sitemap icon-large"></i> <s:text name="CONTRACTOR.PROJECT.SHOW.ASSIGNED_EMPLOYEES" />
                 </h1>
 
                 <div class="content">
@@ -130,7 +130,7 @@
                                 <div class="col-md-1 col-xs-1">
                                     <i class="icon-minus-sign-alt"></i>
                                 </div>
-                                <div class="col-md-9 col-xs-9">Expired or Incomplete</div>
+                                <div class="col-md-9 col-xs-9"><s:text name="CONTRACTOR.PROJECT.SHOW.EXPIRED_OR_INCOMPLETE" /></div>
                                 <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expired}</div>
                             </div>
                         </li>
@@ -139,7 +139,7 @@
                                 <div class="col-md-1 col-xs-1">
                                     <i class="icon-warning-sign"></i>
                                 </div>
-                                <div class="col-md-9 col-xs-9">Expiring</div>
+                                <div class="col-md-9 col-xs-9"><s:text name="CONTRACTOR.PROJECT.SHOW.EXPIRING" /></div>
                                 <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.expiring}</div>
                             </div>
                         </li>
@@ -148,7 +148,7 @@
                                 <div class="col-md-1 col-xs-1">
                                     <i class="icon-ok-sign"></i>
                                 </div>
-                                <div class="col-md-9 col-xs-9">Complete</div>
+                                <div class="col-md-9 col-xs-9"><s:text name="CONTRACTOR.PROJECT.SHOW.COMPLETE" /></div>
                                 <div class="col-md-1 col-xs-1 assigned-count">${projectAssignmentBreakdown.complete}</div>
                             </div>
                         </li>

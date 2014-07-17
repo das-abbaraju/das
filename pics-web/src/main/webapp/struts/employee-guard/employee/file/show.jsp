@@ -15,9 +15,9 @@
 
 <%-- Page header --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">File: ${document.name}</s:param>
+    <s:param name="title"><s:text name="EMPLOYEE.FILE.SHOW.HEADER"/> ${document.name}</s:param>
     <s:param name="actions">
-        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger">Delete File
+        <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="EMPLOYEE.FILE.SHOW.DELETE.BUTTON"/>
         </button>
     </s:param>
     <s:param name="breadcrumb_name">${document.name}</s:param>
@@ -26,8 +26,8 @@
 <%-- Delete Confirmation --%>
 <s:include value="/struts/employee-guard/_delete-confirmation.jsp">
     <s:param name="delete_url">${employee_file_delete_url}</s:param>
-    <s:param name="modal_title">Delete File</s:param>
-    <s:param name="modal_message">Deleting will remove the file and set all associated skills to incomplete.</s:param>
+    <s:param name="modal_title"><s:text name="EMPLOYEE.FILE.SHOW.DELETE.MODAL.TITLE"/></s:param>
+    <s:param name="modal_message"><s:text name="EMPLOYEE.FILE.SHOW.DELETE.MODAL.MSG"/></s:param>
 </s:include>
 
 <div class="row">
@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-picture icon-large"></i>
-                        File
+                        <s:text name="EMPLOYEE.FILE.SHOW.FILE.SECTION"/>
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -47,14 +47,14 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">Name</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.FILE.SHOW.NAME"/></dt>
                     <dd class="col-md-9">${document.name}</dd>
-                    <dt class="col-md-3">File</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.FILE.SHOW.FILE"/></dt>
                     <dd class="col-md-9"><a href="${employee_file_download_url}">${document.fileName}</a></dd>
-                    <dt class="col-md-3">Expires</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.FILE.SHOW.EXPIRES"/></dt>
                     <dd class="col-md-9">
                         <s:if test="document.doesNotExpire">
-                            Never
+                            <s:text name="EMPLOYEE.FILE.SHOW.NEVER_EXPIRES"/>
                         </s:if>
                         <s:else>
                             ${document.endDate}
