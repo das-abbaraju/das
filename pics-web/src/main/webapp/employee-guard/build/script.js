@@ -32621,210 +32621,6 @@ angular.module('pascalprecht.translate').factory('$translateStaticFilesLoader', 
     };
   }
 ]);;/**
- * @license AngularJS v1.2.19
- * (c) 2010-2014 Google, Inc. http://angularjs.org
- * License: MIT
- */
-(function(window, angular, undefined) {'use strict';
-
-/**
- * @ngdoc module
- * @name ngCookies
- * @description
- *
- * # ngCookies
- *
- * The `ngCookies` module provides a convenient wrapper for reading and writing browser cookies.
- *
- *
- * <div doc-module-components="ngCookies"></div>
- *
- * See {@link ngCookies.$cookies `$cookies`} and
- * {@link ngCookies.$cookieStore `$cookieStore`} for usage.
- */
-
-
-angular.module('ngCookies', ['ng']).
-  /**
-   * @ngdoc service
-   * @name $cookies
-   *
-   * @description
-   * Provides read/write access to browser's cookies.
-   *
-   * Only a simple Object is exposed and by adding or removing properties to/from this object, new
-   * cookies are created/deleted at the end of current $eval.
-   * The object's properties can only be strings.
-   *
-   * Requires the {@link ngCookies `ngCookies`} module to be installed.
-   *
-   * @example
-   *
-   * ```js
-   * function ExampleController($cookies) {
-   *   // Retrieving a cookie
-   *   var favoriteCookie = $cookies.myFavorite;
-   *   // Setting a cookie
-   *   $cookies.myFavorite = 'oatmeal';
-   * }
-   * ```
-   */
-   factory('$cookies', ['$rootScope', '$browser', function ($rootScope, $browser) {
-      var cookies = {},
-          lastCookies = {},
-          lastBrowserCookies,
-          runEval = false,
-          copy = angular.copy,
-          isUndefined = angular.isUndefined;
-
-      //creates a poller fn that copies all cookies from the $browser to service & inits the service
-      $browser.addPollFn(function() {
-        var currentCookies = $browser.cookies();
-        if (lastBrowserCookies != currentCookies) { //relies on browser.cookies() impl
-          lastBrowserCookies = currentCookies;
-          copy(currentCookies, lastCookies);
-          copy(currentCookies, cookies);
-          if (runEval) $rootScope.$apply();
-        }
-      })();
-
-      runEval = true;
-
-      //at the end of each eval, push cookies
-      //TODO: this should happen before the "delayed" watches fire, because if some cookies are not
-      //      strings or browser refuses to store some cookies, we update the model in the push fn.
-      $rootScope.$watch(push);
-
-      return cookies;
-
-
-      /**
-       * Pushes all the cookies from the service to the browser and verifies if all cookies were
-       * stored.
-       */
-      function push() {
-        var name,
-            value,
-            browserCookies,
-            updated;
-
-        //delete any cookies deleted in $cookies
-        for (name in lastCookies) {
-          if (isUndefined(cookies[name])) {
-            $browser.cookies(name, undefined);
-          }
-        }
-
-        //update all cookies updated in $cookies
-        for(name in cookies) {
-          value = cookies[name];
-          if (!angular.isString(value)) {
-            value = '' + value;
-            cookies[name] = value;
-          }
-          if (value !== lastCookies[name]) {
-            $browser.cookies(name, value);
-            updated = true;
-          }
-        }
-
-        //verify what was actually stored
-        if (updated){
-          updated = false;
-          browserCookies = $browser.cookies();
-
-          for (name in cookies) {
-            if (cookies[name] !== browserCookies[name]) {
-              //delete or reset all cookies that the browser dropped from $cookies
-              if (isUndefined(browserCookies[name])) {
-                delete cookies[name];
-              } else {
-                cookies[name] = browserCookies[name];
-              }
-              updated = true;
-            }
-          }
-        }
-      }
-    }]).
-
-
-  /**
-   * @ngdoc service
-   * @name $cookieStore
-   * @requires $cookies
-   *
-   * @description
-   * Provides a key-value (string-object) storage, that is backed by session cookies.
-   * Objects put or retrieved from this storage are automatically serialized or
-   * deserialized by angular's toJson/fromJson.
-   *
-   * Requires the {@link ngCookies `ngCookies`} module to be installed.
-   *
-   * @example
-   *
-   * ```js
-   * function ExampleController($cookies) {
-   *   // Put cookie
-   *   $cookieStore.put('myFavorite','oatmeal');
-   *   // Get cookie
-   *   var favoriteCookie = $cookieStore.get('myFavorite');
-   *   // Removing a cookie
-   *   $cookieStore.remove('myFavorite');
-   * }
-   * ```
-   */
-   factory('$cookieStore', ['$cookies', function($cookies) {
-
-      return {
-        /**
-         * @ngdoc method
-         * @name $cookieStore#get
-         *
-         * @description
-         * Returns the value of given cookie key
-         *
-         * @param {string} key Id to use for lookup.
-         * @returns {Object} Deserialized cookie value.
-         */
-        get: function(key) {
-          var value = $cookies[key];
-          return value ? angular.fromJson(value) : value;
-        },
-
-        /**
-         * @ngdoc method
-         * @name $cookieStore#put
-         *
-         * @description
-         * Sets a value for given cookie key
-         *
-         * @param {string} key Id for the `value`.
-         * @param {Object} value Value to be stored.
-         */
-        put: function(key, value) {
-          $cookies[key] = angular.toJson(value);
-        },
-
-        /**
-         * @ngdoc method
-         * @name $cookieStore#remove
-         *
-         * @description
-         * Remove given cookie
-         *
-         * @param {string} key Id of the key-value pair to delete.
-         */
-        remove: function(key) {
-          delete $cookies[key];
-        }
-      };
-
-    }]);
-
-
-})(window, window.angular);
-;/**
  * bootstrap.js v3.0.0 by @fat and @mdo
  * Copyright 2013 Twitter Inc.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -56068,50 +55864,50 @@ window.Modernizr = (function( window, document, undefined ) {
     'ngResource'
 ])
 
-.factory('ProfileService', function (ProfileResource) {
-    var factory = {},
-        profile_settings;
+.factory('Profile', function ($resource, $q) {
+    var settings = {},
+        profile_settings_cache,
+        settings_promise;
 
-    factory.getSettings = function(callback, forceReload) {
-        if (forceReload || (typeof profile_settings === 'undefined')) {
-            return factory.fetchSettings(callback);
-        } else {
-            if (callback) {
-                callback(profile_settings);
-            } else {
-                return profile_settings;
-            }
-        }
-    };
-
-    factory.cacheProfileSettings = function(values) {
-        profile_settings = values;
-    };
-
-    factory.save = function(values) {
-        ProfileResource.update(values);
-    };
-
-    factory.fetchSettings = function(callback) {
-        return ProfileResource.get(function(profile_settings) {
-            factory.cacheProfileSettings(profile_settings);
-            if (callback) {
-                callback(profile_settings);
-            }
-        });
-    };
-
-    return factory;
-})
-
-.factory('ProfileResource', function($resource) {
-    var live_url = '/employee-guard/api/settings',
-        dev_url = '/employee-guard/json/employee/settings/settings.json';
-
-    return $resource(live_url, {}, {
+    var profileResource = $resource('/employee-guard/api/settings', {}, {
         update: { method: 'PUT'},
         get: { method: 'GET'}
     });
+
+    settings.get = function(force_reload) {
+        var deferred = $q.defer();
+
+        if (!force_reload) {
+            if(settings_promise) {
+                settings_promise.then(function(profile) {
+                    deferred.resolve(profile);
+                });
+                return deferred.promise;
+            } else if (profile_settings_cache) {
+                deferred.resolve(profile_settings_cache);
+                return deferred.promise;
+            }
+        }
+
+        settings_promise = fetchSettings(function(profile) {
+            profile_settings_cache = profile;
+            deferred.resolve(profile);
+        }, function() { deferred.reject();});
+
+        return deferred.promise;
+    };
+
+    settings.save = function(profile) {
+        profileResource.update(profile, function(value, responseHeaders) {
+            profile_settings_cache = profile;
+        });
+    };
+
+    function fetchSettings(onSuccess, onError) {
+        return profileResource.get(onSuccess, onError).$promise;
+    }
+
+    return settings;
 });;angular.module('PICS.directives', []);;angular.module('PICS.charts', []);;angular.module('PICS.filters', [])
 
 .filter('removeInvalidCharactersFromUrl', function () {
@@ -56174,7 +55970,6 @@ window.Modernizr = (function( window, document, undefined ) {
     };
 });;angular.module('PICS.employeeguard', [
     'pascalprecht.translate',
-    'ngCookies',
     'ngRoute',
     'ngResource',
     'PICS.directives',
@@ -56214,20 +56009,26 @@ window.Modernizr = (function( window, document, undefined ) {
     $translateProvider.fallbackLanguage(['en_GB']);
 })
 
-.run(function($translate, ProfileService, $rootScope) {
-    function setProfileLanguage(profile_settings) {
-        if (profile_settings){
-            if (profile_settings.language) {
-                if (profile_settings.dialect) {
-                    $translate.use(profile_settings.language.id + '_' + profile_settings.dialect.id);
-                } else {
-                    $translate.use(profile_settings.language.id);
-                }
-            }
+.config(function ($routeProvider) {
+    $routeProvider
+        .when('/employee-guard/profile/settings', {
+            templateUrl: '/employee-guard/src/common/profile/settings.tpl.html'
+        });
+})
+
+
+.run(function($translate, $rootScope, Profile) {
+    function setProfileLanguage(language, dialect) {
+        if (dialect) {
+            $translate.use(language.id + '_' + dialect.id);
+        } else {
+            $translate.use(language.id);
         }
     }
 
-    ProfileService.getSettings(setProfileLanguage);
+    Profile.get().then(function(profile) {
+        setProfileLanguage(profile.language, profile.dialect);
+    });
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
@@ -56517,138 +56318,6 @@ window.Modernizr = (function( window, document, undefined ) {
         .when('/employee-guard/employee/settings', {
             templateUrl: '/employee-guard/src/app/employeeguard/employee/profile/settings.tpl.html'
         });
-});;angular.module('PICS.employeeguard')
-
-.factory('Dialect', function($resource) {
-    return $resource('/employee-guard/api/dialects/:id');
-});;angular.module('PICS.employeeguard')
-
-.factory('Language', function($resource) {
-    return $resource('/employee-guard/api/languages');
-});;angular.module('PICS.employeeguard')
-
-.controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, ProfileService) {
-    $scope.user = {
-        language: '',
-        dialect: ''
-    };
-
-    getProfileSettings();
-    getLanguageList();
-
-    function getProfileSettings() {
-        ProfileService.getSettings(function(settings) {
-            $scope.profile_settings = settings;
-            getDialectList(settings.language.id);
-            setSelectedLanguage(settings.language.id);
-            setSelectedDialect(settings.dialect.id);
-        });
-    }
-
-    function getLanguageList() {
-        Language.query(function(languages) {
-            $scope.languageList = languages;
-        });
-    }
-
-    function getDialectList (languageID) {
-        Dialect.query({id: languageID},function(dialects) {
-            $scope.dialectList = dialects;
-        });
-    }
-
-    function setSelectedLanguage(languageID) {
-        $scope.user.language = languageID;
-    }
-
-    function setSelectedDialect(dialectID) {
-        $scope.user.dialect = dialectID;
-    }
-
-    function formatRequestPayload(user) {
-        var user_settings;
-
-        if (user.dialect) {
-            user_settings = {
-                language:formatLanguageJSON(user.language),
-                dialect:formatDialectJSON(user.dialect)
-            };
-        } else {
-            user_settings = {
-                language:formatLanguageJSON(user.language)
-            };
-        }
-
-        return user_settings;
-    }
-
-    function formatLanguageJSON(selected_language) {
-        var language = $filter('filter')($scope.languageList, { id: selected_language})[0];
-
-        if (language) {
-            return {
-                id: language.id,
-                name: language.name
-            };
-        }
-    }
-
-    function formatDialectJSON(selected_dialect) {
-        var dialect = $filter('filter')($scope.dialectList, { id: selected_dialect})[0];
-
-        if (dialect) {
-            return {
-                id: dialect.id,
-                name: dialect.name
-            };
-        }
-    }
-
-    function saveProfileSettings(user) {
-        var user_settings = formatRequestPayload(user);
-        ProfileService.save(user_settings);
-        updateApplicationWithNewLanguage(user_settings);
-    }
-
-    function updateApplicationWithNewLanguage(user_settings) {
-        if (user_settings.language) {
-            if (user_settings.dialect) {
-                setTranslationLanguage(user_settings.language.id, user_settings.dialect.id);
-            } else {
-                setTranslationLanguage(user_settings.language.id);
-            }
-        }
-
-        ProfileService.cacheProfileSettings(user_settings);
-
-        $scope.toggleFormDisplay();
-
-        $scope.profile_settings = user_settings;
-    }
-
-    function setTranslationLanguage(languageID, dialectID) {
-        if (languageID) {
-            if (dialectID) {
-                $translate.use(languageID + '_' + dialectID);
-            } else {
-                $translate.use(languageID);
-            }
-        }
-    }
-
-    $scope.toggleFormDisplay = function() {
-        $scope.showEditForm = !$scope.showEditForm;
-    };
-
-    angular.extend($scope, {
-        getProfileSettings: getProfileSettings,
-        getLanguageList: getLanguageList,
-        getDialectList: getDialectList,
-        setSelectedLanguage: setSelectedLanguage,
-        setSelectedDialect: setSelectedDialect,
-        saveProfileSettings: saveProfileSettings,
-        formatRequestPayload: formatRequestPayload
-    });
 });;angular.module('PICS.employeeguard')
 
 .controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {
@@ -57865,7 +57534,135 @@ window.Modernizr = (function( window, document, undefined ) {
             };
         }())
     });
-}(jQuery));;angular.module('PICS.charts', [])
+}(jQuery));;angular.module('PICS.employeeguard')
+
+.factory('Dialect', function($resource) {
+    return $resource('/employee-guard/api/dialects/:id');
+});;angular.module('PICS.employeeguard')
+
+.factory('Language', function($resource) {
+    return $resource('/employee-guard/api/languages');
+});;angular.module('PICS.employeeguard')
+
+.controller('profileSettingsCtrl', function ($scope, $filter, $translate, Language, Dialect, Profile) {
+    $scope.user = {
+        language: '',
+        dialect: ''
+    };
+
+    getLanguageList();
+
+    Profile.get().then(function(profile) {
+        $scope.profile_settings = profile;
+        getDialectList(profile.language.id);
+        setSelectedLanguage(profile.language.id);
+        setSelectedDialect(profile.dialect.id);
+    });
+
+    function getLanguageList() {
+        Language.query(function(languages) {
+            $scope.languageList = languages;
+        });
+    }
+
+    function getDialectList (languageID) {
+        Dialect.query({id: languageID},function(dialects) {
+            $scope.dialectList = dialects;
+        });
+    }
+
+    function setSelectedLanguage(languageID) {
+        $scope.user.language = languageID;
+    }
+
+    function setSelectedDialect(dialectID) {
+        $scope.user.dialect = dialectID;
+    }
+
+    function formatRequestPayload(user) {
+        var user_settings;
+
+        if (user.dialect) {
+            user_settings = {
+                language:formatLanguageJSON(user.language),
+                dialect:formatDialectJSON(user.dialect)
+            };
+        } else {
+            user_settings = {
+                language:formatLanguageJSON(user.language)
+            };
+        }
+
+        return user_settings;
+    }
+
+    function formatLanguageJSON(selected_language) {
+        var language = $filter('filter')($scope.languageList, { id: selected_language})[0];
+
+        if (language) {
+            return {
+                id: language.id,
+                name: language.name
+            };
+        }
+    }
+
+    function formatDialectJSON(selected_dialect) {
+        var dialect = $filter('filter')($scope.dialectList, { id: selected_dialect})[0];
+
+        if (dialect) {
+            return {
+                id: dialect.id,
+                name: dialect.name
+            };
+        }
+    }
+
+    function saveProfileSettings(user) {
+        var user_settings = formatRequestPayload(user);
+        Profile.save(user_settings);
+        updateApplicationWithNewLanguage(user_settings);
+    }
+
+    function updateApplicationWithNewLanguage(user_settings) {
+        if (user_settings.language) {
+            if (user_settings.dialect) {
+                setTranslationLanguage(user_settings.language.id, user_settings.dialect.id);
+            } else {
+                setTranslationLanguage(user_settings.language.id);
+            }
+        }
+
+        // Profile.cacheProfileSettings(user_settings);
+
+        $scope.toggleFormDisplay();
+
+        $scope.profile_settings = user_settings;
+    }
+
+    function setTranslationLanguage(languageID, dialectID) {
+        if (languageID) {
+            if (dialectID) {
+                $translate.use(languageID + '_' + dialectID);
+            } else {
+                $translate.use(languageID);
+            }
+        }
+    }
+
+    $scope.toggleFormDisplay = function() {
+        $scope.showEditForm = !$scope.showEditForm;
+    };
+
+    angular.extend($scope, {
+        getLanguageList: getLanguageList,
+        getDialectList: getDialectList,
+        setSelectedLanguage: setSelectedLanguage,
+        setSelectedDialect: setSelectedDialect,
+        saveProfileSettings: saveProfileSettings,
+        formatRequestPayload: formatRequestPayload
+    });
+});;angular.module('PICS.charts', [])
 
 .factory('TypeToChart', function(AnimatedArcChart) {
     return {
