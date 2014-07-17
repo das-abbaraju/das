@@ -99,7 +99,14 @@ public class MSettingsManager extends MModelManager{
 		}
 
 		public Locale prepareLocale(){
-			return new Locale.Builder().setLanguage(language.getId()).setRegion(dialect.getId()).build();
+			if(language!=null && dialect!=null) {
+				return new Locale.Builder().setLanguage(language.getId()).setRegion(dialect.getId()).build();
+			}
+			else if(language!=null ){
+				return new Locale.Builder().setLanguage(language.getId()).build();
+			}
+
+			return null;
 		}
 
 		@Override
