@@ -34,6 +34,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	private static final Logger LOG = LoggerFactory.getLogger(AccountAction.class);
 
+	static final String SIGN_UP_VIEW = "sign-up";
+
 	@Autowired
 	private AuthenticationService authenticationService;
 	@Autowired
@@ -52,6 +54,11 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 	private Profile profile;
 
 	@Anonymous
+	public String switchLanguage() {
+		return SIGN_UP_VIEW;
+	}
+
+	@Anonymous
 	public String index() throws Exception {
 		if (!emailHashService.hashIsValid(hashCode)) {
 			throw new PageNotFoundException();
@@ -61,7 +68,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 		loadProfile(emailHash);
 
-		return LIST;
+		return SIGN_UP_VIEW;
 	}
 
 	private void loadProfile(final EmailHash emailHash) {
@@ -80,7 +87,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 			throw new PageNotFoundException();
 		}
 
-		return CREATE;
+		return SIGN_UP_VIEW;
 	}
 
 	@Anonymous

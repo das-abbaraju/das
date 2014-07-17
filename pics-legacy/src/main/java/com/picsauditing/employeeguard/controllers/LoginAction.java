@@ -34,6 +34,8 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	private static final Logger LOG = LoggerFactory.getLogger(LoginAction.class);
 
+	static final String LOGIN_VIEW = "login";
+
 	@Autowired
 	private AccountService accountService;
 	@Autowired
@@ -54,10 +56,16 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	private Profile profile;
 	private String companyName = "PICS";
+
 	/* pages */
 
 	@Anonymous
-	public String index() throws Exception {
+	public String switchLanguage() {
+		return LOGIN_VIEW;
+	}
+
+	@Anonymous
+	public String welcome() throws Exception {
 		if (!emailHashService.hashIsValid(hashCode)) {
 			LOG.warn("Invalid hashCode = " + hashCode);
 			throw new PageNotFoundException();
@@ -77,7 +85,7 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 			companyName = account.getName();
 		}
 
-		return LIST;
+		return LOGIN_VIEW;
 	}
 
 	private void prepareProfile(SoftDeletedEmployee employee) {
