@@ -21,7 +21,6 @@
                 </s:text>
             </strong>
         </p>
-        ${locale.language}
         <tw:form formName="employee_guard_login" action="${employee_guard_account_login_url}" method="post" class="form-horizontal login-form js-validation" role="form">
             <tw:input inputName="hashCode" type="hidden" value="${hashCode}" />
             <div class="form-group">
