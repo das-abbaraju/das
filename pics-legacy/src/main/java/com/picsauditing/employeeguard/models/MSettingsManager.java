@@ -142,8 +142,15 @@ public class MSettingsManager extends MModelManager {
 			this.user = user;
 		}
 
-		public Locale prepareLocale() {
-			return new Locale.Builder().setLanguage(language.getId()).setRegion(dialect.getId()).build();
+		public Locale prepareLocale(){
+			if(language!=null && dialect!=null) {
+				return new Locale.Builder().setLanguage(language.getId()).setRegion(dialect.getId()).build();
+			}
+			else if(language!=null ){
+				return new Locale.Builder().setLanguage(language.getId()).build();
+			}
+
+			return null;
 		}
 
 		@Override
