@@ -16,5 +16,8 @@ angular.module('PICS.employeeguard')
         })
         .when('/employee-guard/employee/skills/sites/:siteSlug/projects/:projectSlug', {
             templateUrl: '/employee-guard/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/invalid-hash', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employee/invalidHash/invalid_hash.tpl.html'
         });
 });

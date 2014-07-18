@@ -58060,7 +58060,13 @@ window.Modernizr = (function( window, document, undefined ) {
         })
         .when('/employee-guard/employee/skills/sites/:siteSlug/projects/:projectSlug', {
             templateUrl: '/employee-guard/src/app/employeeguard/employee/skills/skill_list.tpl.html'
+        })
+        .when('/employee-guard/invalid-hash', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employee/invalidHash/invalid_hash.tpl.html'
         });
+});;angular.module('PICS.employeeguard')
+
+.controller('invalidHashCtrl', function ($scope) {
 });;angular.module('PICS.employeeguard')
 
 .controller('employeeSkillListCtrl', function ($scope, EmployeeSkillList, EmployeeSkillModel, $routeParams, $filter) {

@@ -63,6 +63,9 @@
         <pattern>/employee-guard/info</pattern>
         <pattern>/employee-guard/employees/*/skill/*</pattern>
     </decorator>
+    <decorator name="eg-index-simple" page="eg-index-simple.jsp">
+        <pattern>/employee-guard/invalid-hash</pattern>
+    </decorator>
     <decorator name="index-simple" page="index-simple.jsp">
         <pattern>/registration*</pattern>
     </decorator>
