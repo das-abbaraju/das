@@ -26,7 +26,7 @@ PICS.define('employee-guard.Welcome', {
             populateGreeting();
         }
 
-        function populationGreeting() {
+        function populateGreeting() {
             if (profile_fname) {
                 profile_fname_el.html(profile_fname);
             }
