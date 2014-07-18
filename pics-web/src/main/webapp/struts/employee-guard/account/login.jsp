@@ -16,8 +16,8 @@
         <p class="text-center">
             <strong>
                 <s:text name="EMPLOYEEGUARD.WELCOME.MESSAGE">
-                    <s:param>${profile.firstName}</s:param>
-                    <s:param>${companyName}</s:param>
+                    <s:param><span id="profile_fname">${profile.firstName}</span></s:param>
+                    <s:param><span id="companyName">${companyName}</span></s:param>
                 </s:text>
             </strong>
         </p>

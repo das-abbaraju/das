@@ -42,7 +42,9 @@ PICS.define('employee-guard.SignUp', {
         function setActiveLanguage(language) {
             PICS.ajax({
                 url: 'sign-up/switchLanguage',
-                request_locale: language,
+                data: {
+                    request_locale: language
+                },
                 success: onUpdateLanguageRequestSuccess
             });
         }
