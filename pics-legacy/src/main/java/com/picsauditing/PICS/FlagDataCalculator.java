@@ -700,36 +700,6 @@ public class FlagDataCalculator implements FlagCalculator {
 		return WaitingOn.None;
 	}
 
-	public FlagColor calculateCaoStatus(AuditType auditType, Set<com.picsauditing.jpa.entities.FlagData> flagDatas) {
-		logger.info("Calculating recommendation for {}", auditType);
-
-		FlagColor flag = null;
-		for (com.picsauditing.jpa.entities.FlagData flagData : flagDatas) {
-			if (isInsuranceCriteria(flagData, auditType)) {
-				flag = FlagColor.getWorseColor(flag, flagData.getFlag());
-				if (flag.isRed()) {
-					logger.info(" --- {} {}", flagData.getFlag(), flagData.getCriteria().getQuestion());
-
-					return flag;
-				}
-			}
-		}
-
-		if (flag == null) {
-			flag = FlagColor.Green;
-		}
-
-		return flag;
-	}
-
-	private boolean isInsuranceCriteria(com.picsauditing.jpa.entities.FlagData flagData, AuditType auditType) {
-		boolean isAppropriateAudit = true;
-		if (flagData.getCriteria().getQuestion() != null && flagData.getCriteria().getQuestion().getAuditType() != null) {
-			isAppropriateAudit = flagData.getCriteria().getQuestion().getAuditType().equals(auditType);
-		}
-		return flagData.getCriteria().isInsurance() && isAppropriateAudit;
-	}
-
 	private void setContractorCriteria(Collection<FlagCriteriaContractor> list) {
 		contractorCriteria = new HashMap<>();
 		for (FlagCriteriaContractor value : list) {

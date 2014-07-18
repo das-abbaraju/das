@@ -710,7 +710,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		logger.trace("ContractorCron starting Policies");
 
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         dao.save(contractor);
 
 		Set<ContractorAudit> expiringPolicies = getExpiringPolicies(contractor);
