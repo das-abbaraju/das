@@ -8,7 +8,8 @@
     <s:textfield id="username" name="username" tabindex="2" />
                     
     <label for="password"><s:text name="global.Password" /></label>
-    <s:password name="password" tabindex="3" cssClass="password" />                    
+    <s:password name="password" tabindex="3" cssClass="password" />
+    <s:hidden name="idp" />
 </div>
 
 <div id="forgot_password">

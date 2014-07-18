@@ -15,21 +15,12 @@ import javax.persistence.Column;
 public class IdpUser extends BaseTable {
     private static final Logger logger = LoggerFactory.getLogger(IdpUser.class);
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
     private User user;
 
     private String idpUserName;
 
-    public int getId() {
-        return id;
-    }
+    private String idp;
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @ManyToOne
     @JoinColumn(name = "userID", nullable = false, updatable = false)
@@ -41,7 +32,7 @@ public class IdpUser extends BaseTable {
         this.user = user;
     }
 
-    @Column(name = "idpusername", length = 255, nullable = false)
+    @Column(name = "idpusername", length = 200, nullable = false)
     public String getIdpUserName() {
         return idpUserName;
     }
@@ -49,4 +40,14 @@ public class IdpUser extends BaseTable {
     public void setIdpUserName(String idpUserName) {
         this.idpUserName = idpUserName;
     }
+
+    @Column(name = "idp", length = 200, nullable = false)
+    public String getIdp() {
+        return idp;
+    }
+
+    public void setIdp(String idp) {
+        this.idp = idp;
+    }
+
 }

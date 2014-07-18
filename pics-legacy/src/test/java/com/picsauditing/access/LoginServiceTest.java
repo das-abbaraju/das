@@ -73,7 +73,6 @@ public class LoginServiceTest {
         Whitebox.setInternalState(loginService, "profileService", profileService);
         Whitebox.setInternalState(loginService, "userService", userService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
-        Whitebox.setInternalState(loginService, "ldapService", ldapService);
 
     }
 

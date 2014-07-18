@@ -70,8 +70,8 @@ public class IdpUserServiceTest {
 
     @Test
     public void testSaveUser() throws Exception {
-        idpUserService.saveUser(idpUser);
+        idpUserService.saveIdpUser(idpUser);
 
-       // verify(idpUserDAO.save(idpUser));
+        verify(idpUserDAO).save(idpUser);
     }
 }

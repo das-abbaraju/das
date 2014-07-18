@@ -1,7 +1,9 @@
 package com.picsauditing.access;
 
 import com.picsauditing.access.LDAPService;
+import com.picsauditing.jpa.entities.IdpUser;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.service.user.IdpUserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(PowerMockRunner.class)
@@ -29,6 +32,12 @@ public class LDAPServiceTest {
 
     @Mock
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
+
+    @Mock
+    private IdpUserService idpUserService;
+
+    @Mock
+    private IdpUser idpUser;
 
     private LDAPService ldapService;
 
@@ -41,7 +50,11 @@ public class LDAPServiceTest {
         MockitoAnnotations.initMocks(this);
         ldapService = new LDAPService();
         ldapActiveDirectoryAuthProvider = mock(ActiveDirectoryLdapAuthenticationProvider.class);
+        when(idpUserService.loadIdpUserBy(USERNAME,LDAPService.PICSAD)).thenReturn(idpUser);
+
         Whitebox.setInternalState(ldapService, "ldapActiveDirectoryAuthProvider", ldapActiveDirectoryAuthProvider);
+        Whitebox.setInternalState(ldapService, "idpUserService", idpUserService);
+
     }
 
     @Test
@@ -60,7 +73,7 @@ public class LDAPServiceTest {
 
     @Test
     public void testGetPICSLdapUser() throws Exception {
-        String result = Whitebox.invokeMethod(ldapService, "getPICSLdapUser", USERNAME);
+        String result = Whitebox.invokeMethod(ldapService, "appendPICSLdapDomain", USERNAME);
 
         assertEquals(result, USERNAME + LDAPService.PICS_CORP);
     }

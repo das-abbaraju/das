@@ -1,6 +1,8 @@
 package com.picsauditing.access;
 
 import com.picsauditing.featuretoggle.Features;
+import com.picsauditing.jpa.entities.IdpUser;
+import com.picsauditing.service.user.IdpUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class LDAPService {
     @Autowired
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
 
+    @Autowired
+    private IdpUserService idpUserService;
+
     public boolean doLDAPLoginAuthentication(String idp, String username, String password) throws FailedLoginException {
         switch (idp) {
             case PICSAD:
@@ -30,28 +35,26 @@ public class LDAPService {
         return false;
     }
 
-    private String getPICSLdapUser(String username) {
-        StringBuilder ldapUser = new StringBuilder();
-        ldapUser.append(username);
-        ldapUser.append(PICS_CORP);
-        return ldapUser.toString();
+    private String appendPICSLdapDomain(String username) {
+        StringBuilder picsDomain = new StringBuilder();
+        picsDomain.append(username);
+        picsDomain.append(PICS_CORP);
+        return picsDomain.toString();
     }
 
-    private boolean doPICSLdapAuthentication(String username, String password) throws FailedLoginException {
+    private boolean doPICSLdapAuthentication(String userName, String password) throws FailedLoginException {
         if (Features.USE_LDAP_AUTHENTICATION.isActive()) {
-            ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
-            String ldapUser = getPICSLdapUser(username);
+            String picsLdapDomain = appendPICSLdapDomain(userName);
             try {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(ldapUser, password);
+                ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(picsLdapDomain, password);
                 Authentication result = ldapActiveDirectoryAuthProvider.authenticate(authentication);
                 return result != null ? result.isAuthenticated() : false;
             } catch (AuthenticationException ace) {
-                logger.error("Bad LDAP Credentials for user: " + username);
-                throw new FailedLoginException("Bad Credentials for user: " + username);
+                logger.error("Bad LDAP Credentials for user: " + userName);
+                throw new FailedLoginException("Bad Credentials for user: " + userName);
             }
         }
-        //Accessing ldap when Feature is disabled
-        //TODO show proper error message to the user
-        throw new FailedLoginException("LDAP Feature is disable: " + username);
+        return false;
     }
 }

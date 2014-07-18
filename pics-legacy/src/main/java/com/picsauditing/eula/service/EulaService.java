@@ -43,7 +43,7 @@ public class EulaService {
         User user = loginService.getUserForUserName(userName);
 
         if (user != null) {
-            loginService.doPreLoginVerification(null, user, userName, password);
+            loginService.doPreLoginVerification(user, userName, password);
         } else {
             authenticationService.doPreLoginVerificationEG(userName, password);
         }

@@ -2,9 +2,10 @@ package com.picsauditing.dao;
 
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.EncodedKey;
 import com.picsauditing.util.Strings;
+import com.picsauditing.jpa.entities.User;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -38,12 +39,13 @@ public class IdpUserDAO extends PicsDAO {
     }
 
     public IdpUser findBy(String idpUserName, String idp) {
-        Query query = em.createQuery("select * from IdpUser i join User u on i.user.id = u.id " +
-                "where i.idpUserName=:idpUserName and i.idp=:idp");
-        query.setParameter(idpUserName,"idpUserName");
-        query.setParameter(idp,"idp");
-
-        return (IdpUser) query.getSingleResult();
+        Query query = em.createQuery("select i from IdpUser i " +
+                " join i.user u  " +
+                " where i.idpUserName=:idpUserName and i.idp=:idp");
+        query.setParameter("idpUserName", idpUserName);
+        query.setParameter("idp", idp);
+        List<IdpUser> elementList = query.getResultList();
+        return CollectionUtils.isEmpty(elementList) ? null : elementList.get(0);
     }
 
 }
