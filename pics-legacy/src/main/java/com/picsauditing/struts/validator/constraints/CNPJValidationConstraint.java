@@ -6,6 +6,7 @@ import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.util.Strings;
 import com.picsauditing.validator.TaxIdValidator;
 import com.picsauditing.validator.TaxIdValidatorFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -24,6 +25,10 @@ public class CNPJValidationConstraint implements ConstraintValidator<CnpjValidat
 
     @Override
     public boolean isValid(RegistrationForm.CNPJPair value, ConstraintValidatorContext context) {
+        if (value.getCountry() == null || StringUtils.isEmpty(value.getCnpjCode())) {
+            return true;
+        }
+
         if (Strings.isEmpty(value.getCountry())) return false;
 
         try {
