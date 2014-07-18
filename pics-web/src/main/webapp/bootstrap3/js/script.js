@@ -29169,7 +29169,6 @@ PICS.define('employee-guard.SignUp', {
         }
 
         function setActiveLanguage(language) {
-            console.log(language);
             PICS.ajax({
                 url: 'sign-up/switchLanguage',
                 data: {
