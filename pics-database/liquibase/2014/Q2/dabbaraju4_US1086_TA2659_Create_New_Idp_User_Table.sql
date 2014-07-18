@@ -9,8 +9,9 @@ CREATE TABLE `idp_user` (
   `idp` varchar(200) NOT NULL,
   `createdBy` int(11) DEFAULT NULL,
   `updatedBy` int(11) DEFAULT NULL,
-  `creationDate` date DEFAULT NULL,
-  `updateDate` date DEFAULT NULL,
+  `creationDate` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+  `updateDate` timestamp NULL ON UPDATE CURRENT_TIMESTAMP,
    PRIMARY KEY (`id`),
   CONSTRAINT `fk1_idp_user` FOREIGN KEY (`userid`) REFERENCES users (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+

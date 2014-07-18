@@ -3,6 +3,8 @@ package com.picsauditing.access;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.IdpUser;
 import com.picsauditing.service.user.IdpUserService;
+import org.apache.commons.lang.StringUtils;
+import org.apache.poi.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,17 @@ public class LDAPService {
             }
         }
         return false;
+    }
+
+    public boolean isValidIdp(String idp) {
+        if (StringUtils.isEmpty(idp)) {
+            return false;
+        }
+        switch (idp) {
+            case PICSAD:
+                return true;
+            default:
+                return false;
+        }
     }
 }

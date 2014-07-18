@@ -128,7 +128,7 @@ public class LoginController extends PicsActionSupport {
             return loginForResetPassword();
         } else if (switchToUser > 0) {
             return switchTo();
-        } else if (StringUtils.isNotEmpty(idp)) {
+        } else if (isValidIdp(idp)) {
             return loginUsingLDAP();
         } else {
             return loginNormally();
@@ -466,9 +466,8 @@ public class LoginController extends PicsActionSupport {
                 picsUserName = idpUser.getUser().getUsername();
             }
             AppUser appUser = appUserService.findByUsername(picsUserName);
-            if (loginFailed(isLdapAuthenticated, appUser)) {
+            if (loginLdapFailed(isLdapAuthenticated, appUser)) {
                 setActionErrorHeader(getText("Login.Failed"));
-                logAndMessageError(getText("Login.PasswordIncorrect"));
                 return ERROR;
             } else {
                 user = userService.findByAppUserId(appUser.getId());
@@ -480,7 +479,7 @@ public class LoginController extends PicsActionSupport {
             }
         } catch (AccountNotFoundException e) {
             setActionErrorHeader(getText("Login.Failed"));
-            logAndMessageError(getText("Login.PasswordIncorrect"));
+            logAndMessageError(getText("Login.LdapPasswordIncorrect"));
             return ERROR;
         } catch (AccountLockedException e) {
             setActionErrorHeader(getText("Login.Failed"));
@@ -491,7 +490,7 @@ public class LoginController extends PicsActionSupport {
             return ERROR;
         } catch (FailedLoginException e) {
             setActionErrorHeader(getText("Login.Failed"));
-            logAndMessageError(getText("Login.PasswordIncorrect"));
+            logAndMessageError(getText("Login.LdapPasswordIncorrect"));
             return ERROR;
         } catch (FailedLoginAndLockedException e) {
             setActionErrorHeader(getText("Login.Failed"));
@@ -505,7 +504,8 @@ public class LoginController extends PicsActionSupport {
         return ERROR;
     }
 
-    private boolean loginFailed(boolean isLdapAuthenticated, AppUser appUser) {
+    private boolean loginLdapFailed(boolean isLdapAuthenticated, AppUser appUser) throws Exception {
+        logAndMessageError(getText("Login.LdapPasswordIncorrect"));
         return appUser == null || !isLdapAuthenticated;
     }
 
@@ -600,6 +600,10 @@ public class LoginController extends PicsActionSupport {
 
         boolean userBetaTester = BetaPool.isUserBetaTester(permissions, betaPool);
         return userBetaTester;
+    }
+
+    private boolean isValidIdp(String idp) {
+        return ldapService.isValidIdp(idp);
     }
 
     public boolean isEulaFeatureEnabled() {

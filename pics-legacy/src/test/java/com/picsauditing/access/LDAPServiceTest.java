@@ -19,6 +19,7 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -50,7 +51,7 @@ public class LDAPServiceTest {
         MockitoAnnotations.initMocks(this);
         ldapService = new LDAPService();
         ldapActiveDirectoryAuthProvider = mock(ActiveDirectoryLdapAuthenticationProvider.class);
-        when(idpUserService.loadIdpUserBy(USERNAME,LDAPService.PICSAD)).thenReturn(idpUser);
+        when(idpUserService.loadIdpUserBy(USERNAME, LDAPService.PICSAD)).thenReturn(idpUser);
 
         Whitebox.setInternalState(ldapService, "ldapActiveDirectoryAuthProvider", ldapActiveDirectoryAuthProvider);
         Whitebox.setInternalState(ldapService, "idpUserService", idpUserService);
@@ -76,5 +77,26 @@ public class LDAPServiceTest {
         String result = Whitebox.invokeMethod(ldapService, "appendPICSLdapDomain", USERNAME);
 
         assertEquals(result, USERNAME + LDAPService.PICS_CORP);
+    }
+
+    @Test
+    public void testIsValidIdp() throws Exception {
+        boolean result = ldapService.isValidIdp(LDAPService.PICSAD);
+
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsValidIdp_null() throws Exception {
+        boolean result = ldapService.isValidIdp(null);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void testIsValidIdp_InvalidText() throws Exception {
+        boolean result = ldapService.isValidIdp("test");
+
+        assertFalse(result);
     }
 }
