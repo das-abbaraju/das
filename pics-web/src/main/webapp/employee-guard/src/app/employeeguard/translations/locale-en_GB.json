@@ -128,5 +128,10 @@
     "FEEDBACK.PLACEHOLDER": "Let us know what you think or what issues you've found.(United Kingdom)",
     "FEEDBACK.BUTTON.SEND_FEEDBACK": "Send Feedback(United Kingdom)",
     "FEEDBACK.ALERT.TITLE": "Feedback Sent(United Kingdom)",
-    "FEEDBACK.ALERT.MESSAGE": "Thanks for the heads up! We really appreciate the feedback."
+    "FEEDBACK.ALERT.MESSAGE": "Thanks for the heads up! We really appreciate the feedback.",
+
+    "EMPLOYEE.INVALID_HASH.TITLE": "Registration Link Invalid(United Kingdom)",
+    "EMPLOYEE.INVALID_HASH.MESSAGE": "Please check your email for a newer registration request.(United Kingdom)",
+    "EMPLOYEE.INVALID_HASH.MESSAGE2": "If you already have an account, login to(United Kingdom)",
+    "EMPLOYEE.INVALID_HASH.LINK": "PICS Organizer(United Kingdom)"
 }

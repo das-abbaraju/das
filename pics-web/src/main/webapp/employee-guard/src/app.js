@@ -13,7 +13,7 @@ angular.module('EmployeeGUARD', [
         suffix: '.json'
     });
 
-    $translateProvider.fallbackLanguage(['en_GB']);
+    $translateProvider.fallbackLanguage(['en_US']);
 })
 
 .config(function ($routeProvider) {
@@ -23,22 +23,13 @@ angular.module('EmployeeGUARD', [
         });
 })
 
-
 .run(function($translate, $rootScope, Profile) {
-    function setProfileLanguage(language, dialect) {
-        if (dialect) {
-            $translate.use(language.id + '_' + dialect.id);
-        } else {
-            $translate.use(language.id);
-        }
-    }
-
     Profile.get().then(function(profile) {
-        setProfileLanguage(profile.language, profile.dialect);
+        Profile.setTranslatedLanguage(profile.language, profile.dialect);
     });
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
-        $translate.use('en_GB');
+        $translate.use('en_US');
     });
 });

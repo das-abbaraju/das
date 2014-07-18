@@ -3,7 +3,7 @@ angular.module('ProfileService', [
     'ngResource'
 ])
 
-.factory('Profile', function ($resource, $q) {
+.factory('Profile', function ($resource, $q, $translate) {
     var settings = {},
         profile_settings_cache,
         settings_promise;
@@ -40,6 +40,16 @@ angular.module('ProfileService', [
         profileResource.update(profile, function(value, responseHeaders) {
             profile_settings_cache = profile;
         });
+    };
+
+    settings.setTranslatedLanguage = function(language, dialect) {
+        if (language && dialect) {
+            $translate.use(language.id + '_' + dialect.id);
+        } else if (language && !dialect) {
+            $translate.use(language.id);
+        } else {
+            $translate.use('en_US');
+        }
     };
 
     function fetchSettings(onSuccess, onError) {
