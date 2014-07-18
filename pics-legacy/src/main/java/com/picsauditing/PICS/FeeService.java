@@ -4,6 +4,7 @@ import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.audits.AuditTypesBuilder;
 import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.SpringUtils;
@@ -171,7 +172,7 @@ public class FeeService {
             return;
         }
 
-        setPayingFacilities(contractor);
+        setPayingFacilitiesCount(contractor);
 
         if (contractor.getPayingFacilities() == 0) {
             clearAllFees(contractor);
@@ -397,11 +398,12 @@ public class FeeService {
         return contractorFee;
     }
 
-    private void setPayingFacilities(ContractorAccount contractor) {
-        List<OperatorAccount> payingOperators = calculatePayingFacilitiesCount(contractor);
+    private void setPayingFacilitiesCount(ContractorAccount contractor) {
+        Set<OperatorAccount> payingOperators = findPayingFacilities(contractor);
 
         if (payingOperators.size() == 1) {
-            if (payingOperators.get(0).getDoContractorsPay().equals("Multiple")) {
+            OperatorAccount [] payingOperatorArray = payingOperators.toArray(new OperatorAccount[payingOperators.size()]);
+            if (payingOperatorArray[0].getDoContractorsPay().equals("Multiple")) {
                 contractor.setPayingFacilities(0);
                 return;
             }
@@ -410,15 +412,32 @@ public class FeeService {
         contractor.setPayingFacilities(payingOperators.size());
     }
 
-    private List<OperatorAccount> calculatePayingFacilitiesCount(ContractorAccount contractor) {
-        List<OperatorAccount> payingOperators = new ArrayList<OperatorAccount>();
+    HashSet<OperatorAccount> findPayingFacilities(ContractorAccount contractor) {
+        HashSet<OperatorAccount> payingFacilities = new HashSet<>();
         for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
             OperatorAccount operator = contractorOperator.getOperatorAccount();
-            if (operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay())) {
-                payingOperators.add(operator);
+            if (isBillableEntity(operator)) {
+                if(Features.USE_NEW_BILLABLE_ENTITY.isActive()){
+                    addBillableEntityToPayingFacilities(payingFacilities, operator);
+                } else {
+                    payingFacilities.add(operator);
+                }
             }
         }
-        return payingOperators;
+        return payingFacilities;
+    }
+
+    private void addBillableEntityToPayingFacilities(HashSet<OperatorAccount> payingFacilities, OperatorAccount operator) {
+        OperatorAccount billableEntity = operator.getBillableEntity();
+        if (billableEntity == null) {
+            payingFacilities.add(operator);
+        } else {
+            payingFacilities.add(billableEntity);
+        }
+    }
+
+    private boolean isBillableEntity(OperatorAccount operator) {
+        return operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay());
     }
 
     public static BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {

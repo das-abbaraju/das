@@ -3,22 +3,24 @@ package com.picsauditing.PICS;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import java.math.BigDecimal;
 import java.util.*;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,6 +36,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private List<ContractorOperator> operatorList;
     private ContractorAccount contractor;
 
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
     @Mock
     private ContractorAccount contractorAccount;
     @Mock
@@ -115,21 +119,29 @@ public class FeeServiceTest extends PicsTranslationTest {
         Whitebox.setInternalState(feeService, "billingService", billingService);
         Whitebox.setInternalState(feeService, "employeeGuardRulesService", employeeGuardRulesService);
 
-        setUpContractor();
+        contractor = setUpContractor();
 
         when(billingService.billingStatus(contractor)).thenReturn(BillingStatus.Upgrade);
 
 		assert (OAMocksSet.isEmpty());
 	}
 
-    private void setUpContractor() {
-        contractor = new ContractorAccount();
+    private ContractorAccount setUpContractor() {
+        ContractorAccount contractor = new ContractorAccount();
         contractor.setOperators(operatorList);
         contractor.setCountry(country);
-        ArrayList<ContractorTag> tags = new ArrayList<ContractorTag>();
-        tags.add(contractorTag);
+
+        ArrayList<ContractorTag> tags = buildContractorTags();
         contractor.setOperatorTags(tags);
         when(contractorTag.getTag()).thenReturn(operatorTag);
+        
+        return contractor;
+    }
+
+    private ArrayList<ContractorTag> buildContractorTags() {
+        ArrayList<ContractorTag> tags = new ArrayList<ContractorTag>();
+        tags.add(contractorTag);
+        return tags;
     }
 
 	@After
@@ -164,6 +176,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testActivation_getAdjustedFeeAmount_operatorWithDiscount() {
+        ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.Activation);
@@ -176,6 +189,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testActivation_getAdjustedFeeAmount_operatorWithoutDiscount() {
+        ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithoutDiscount);
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.Activation);
@@ -188,6 +202,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testActivation_getAdjustedFeeAmount_noOperators() {
+        ContractorAccount contractor = setUpContractor();
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.Activation);
 
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
@@ -198,6 +213,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testActivation_getAdjustedFeeAmount_multipleDiscountedOperators() {
+        ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
         operatorList.add(contractorOperator2);
@@ -212,6 +228,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testActivation_getAdjustedFeeAmount_variedOperators() {
+        ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
         operatorList.add(contractorOperator2);
@@ -578,6 +595,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void calcMembershipFees_contractorRequestedSkip() {
+        ContractorAccount contractor = setUpContractor();
         contractor.setStatus(AccountStatus.Requested);
 
         boolean skipRequestedStatusContractors = true;
@@ -593,6 +611,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
         contractorFees.put(FeeClass.AuditGUARD, new ContractorFee());
 
+        ContractorAccount contractor = setUpContractor();
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(new ArrayList<ContractorOperator>());
         contractor.setFees(contractorFees);
@@ -619,6 +638,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         ArrayList<ContractorOperator> contractorOperators = new ArrayList<ContractorOperator>();
         contractorOperators.add(contractorOperator1);
 
+        ContractorAccount contractor = setUpContractor();
         contractor.setStatus(AccountStatus.Active);
         contractor.setOperators(contractorOperators);
         when(contractorOperator1.getOperatorAccount()).thenReturn(operatorAccount);
@@ -1358,6 +1378,7 @@ public class FeeServiceTest extends PicsTranslationTest {
 
     @Test
     public void testDropBlockSSManualAuditTagIfUpgrading_Tagged() throws Exception {
+        ContractorAccount contractor = setUpContractor();
         when(operatorTag.isBlockSSManualAudit()).thenReturn(true);
 
         Whitebox.invokeMethod(feeService, "dropBlockSSManualAuditTagIfUpgrading", contractor, BillingStatus.Upgrade);
@@ -1372,12 +1393,148 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(feeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
         when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Upgrade);
 
-
         feeService.calculateContractorInvoiceFees(contractorAccount, false);
 
         verify(employeeGuardRulesService).runEmployeeGuardRules(any(ContractorAccount.class), any(HashSet.class));
-
-
     }
+
+    @Test
+    public void testFindPayingFacilities_IsBERTrueBENotSet() {
+        OperatorAccount operator = buildActiveOperatorAccount();
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(1, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_IsBEFalseOperatorStatusInactive() {
+        OperatorAccount operator = buildActiveOperatorAccount();
+        operator.setStatus(AccountStatus.Deactivated);
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(0, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_IsBEFalseOperatorDoNotPay() {
+        OperatorAccount operator = buildActiveOperatorAccount();
+        operator.setDoContractorsPay("No");
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(0, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_TwoOperatorsWithSameBE_TogglzEnabled() {
+        togglzRule.enable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(1, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_TwoOperatorsWithSameBE_TogglzDisabled() {
+        togglzRule.disable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(2, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_TwoBESameOneDifferent_TogglzEnabled() {
+        togglzRule.enable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+        OperatorAccount operator3 = buildActiveOperatorAccount();
+
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+        operatorList.add(contractorOperator3);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+        when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(2, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_TwoBESameOneDifferent_TogglzDisabled() {
+        togglzRule.disable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+        OperatorAccount operator3 = buildActiveOperatorAccount();
+
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+        operatorList.add(contractorOperator3);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+        when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(3, payingFacilities.size());
+    }
+
+    private OperatorAccount buildActiveOperatorAccount() {
+        OperatorAccount operator = new OperatorAccount();
+        operator.setStatus(AccountStatus.Active);
+        operator.setDoContractorsPay("Yes");
+        return operator;
+    }
+
 
 }
