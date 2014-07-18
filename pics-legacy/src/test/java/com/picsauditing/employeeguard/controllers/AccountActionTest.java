@@ -1,5 +1,8 @@
 package com.picsauditing.employeeguard.controllers;
 
+import com.opensymphony.xwork2.*;
+import com.opensymphony.xwork2.interceptor.PreResultListener;
+import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.authentication.entities.builder.AppUserBuilder;
@@ -20,11 +23,14 @@ import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
 import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.Cookie;
+
+import java.util.Locale;
 
 import static com.picsauditing.employeeguard.EGTestDataUtil.*;
 import static com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils.EMPLOYEE_SUMMARY;
@@ -43,6 +49,8 @@ public class AccountActionTest extends PicsActionTest {
 	// Class under test
 	private AccountAction accountAction;
 
+	@Mock
+	private ActionInvocation actionInvocation;
 	@Mock
 	private AuthenticationService authenticationService;
 	@Mock
@@ -96,7 +104,7 @@ public class AccountActionTest extends PicsActionTest {
 	}
 
 	private void verifyTestIndex(String result) {
-		assertEquals(PicsRestActionSupport.LIST, result);
+		assertEquals(AccountAction.SIGN_UP_VIEW, result);
 
 		assertEquals(VALID_EMAIL_HASH.getEmployee().getFirstName(), accountAction.getProfile().getFirstName());
 		assertEquals(VALID_EMAIL_HASH.getEmployee().getLastName(), accountAction.getProfile().getLastName());
@@ -130,7 +138,7 @@ public class AccountActionTest extends PicsActionTest {
 
 		String result = accountAction.create();
 
-		assertEquals(PicsRestActionSupport.CREATE, result);
+		assertEquals(AccountAction.SIGN_UP_VIEW, result);
 	}
 
 	@Test
@@ -184,6 +192,10 @@ public class AccountActionTest extends PicsActionTest {
 
 		when(authenticationService.authenticateEmployeeGUARDUser(USER_NAME, PASSWORD, VALID_EMAIL_HASH_STRING, true))
 				.thenReturn("fake cookie content");
+
+		actionContext.setActionInvocation(actionInvocation);
+		when(actionInvocation.getInvocationContext()).thenReturn(actionContext);
+		actionContext.setLocale(Locale.UK);
 	}
 
 	private void verifyTestInsert(String result) throws FailedLoginException {
