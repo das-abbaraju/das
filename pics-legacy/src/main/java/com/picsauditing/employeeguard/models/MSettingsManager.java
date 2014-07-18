@@ -3,21 +3,26 @@ package com.picsauditing.employeeguard.models;
 import com.google.gson.annotations.Expose;
 import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.exceptions.ReqdInfoMissingException;
-import com.picsauditing.employeeguard.models.operations.*;
-import com.picsauditing.model.i18n.KeyValue;
+import com.picsauditing.employeeguard.models.operations.MCopyAppUserId;
+import com.picsauditing.employeeguard.models.operations.MCopyLocale;
+import com.picsauditing.employeeguard.models.operations.MOperations;
+import com.picsauditing.jpa.entities.User;
 
 import java.util.*;
 
-public class MSettingsManager extends MModelManager{
-	private Map<Integer,MSettings> lookup = new HashMap<>();
+public class MSettingsManager extends MModelManager {
 
-	public static Set<MSettings> newCollection(){
+	private Map<Integer, MSettings> lookup = new HashMap<>();
+
+	public static Set<MSettings> newCollection() {
 		return new HashSet<>();
 	}
 
-	private Map<Integer, Profile> entityMap = new HashMap<>();
+	private Map<Integer, Profile> profileEntityMap = new HashMap<>();
+	private Map<Integer, User> userEntityMap = new HashMap<>();
 
 	private final SupportedOperations operations;
+
 	public SupportedOperations operations() {
 		return operations;
 	}
@@ -26,40 +31,52 @@ public class MSettingsManager extends MModelManager{
 		operations = new SupportedOperations();
 	}
 
-	public MSettings fetchModel(int id){
+	public MSettings fetchModel(int id) {
 		return lookup.get(id);
 	}
 
-	public MSettings attachWithModel(Profile profile){
+	public MSettings attachWithModel(Profile profile) {
 		int id = profile.getId();
 
-		if(lookup.get(id)==null){
+		if (lookup.get(id) == null) {
 			lookup.put(id, new MSettings(profile));
 		}
 
 		return lookup.get(id);
 	}
 
-	private void addEntityToMap(Profile profile){
-		entityMap.put(profile.getId(), profile);
+	public MSettings attachWithModel(User user) {
+		int id = user.getId();
+
+		if (lookup.get(id) == null) {
+			lookup.put(id, new MSettings(user));
+		}
+
+		return lookup.get(id);
 	}
 
+	private void addEntityToMap(Profile profile) {
+		profileEntityMap.put(profile.getId(), profile);
+	}
+
+	private void addEntityToMap(User user) {
+		userEntityMap.put(user.getId(), user);
+	}
 
 	public MSettings copyProfile(Profile profile) throws ReqdInfoMissingException {
 		MSettings mSettings = this.fetchModel(profile.getId());
-		if(mSettings !=null){
+		if (mSettings != null) {
 			return mSettings;
 		}
 
 		addEntityToMap(profile);
 		MSettings model = this.attachWithModel(profile);
 
-		for(MOperations mOperation: mOperations){
+		for (MOperations mOperation : mOperations) {
 
-			if(mOperation.equals(MOperations.COPY_LOCALE)){
+			if (mOperation.equals(MOperations.COPY_LOCALE)) {
 				model.copyLocale();
-			}
-			else if(mOperation.equals(MOperations.COPY_APP_USER_ID)){
+			} else if (mOperation.equals(MOperations.COPY_APP_USER_ID)) {
 				model.copyAppUserId();
 			}
 
@@ -68,7 +85,29 @@ public class MSettingsManager extends MModelManager{
 		return model;
 	}
 
-	public class SupportedOperations implements MCopyLocale, MCopyAppUserId  {
+	public MSettings copyUser(User user) throws ReqdInfoMissingException {
+		MSettings mSettings = this.fetchModel(user.getId());
+		if (mSettings != null) {
+			return mSettings;
+		}
+
+		addEntityToMap(user);
+		MSettings model = this.attachWithModel(user);
+
+		for (MOperations mOperation : mOperations) {
+
+			if (mOperation.equals(MOperations.COPY_LOCALE)) {
+				model.copyLocale();
+			} else if (mOperation.equals(MOperations.COPY_APP_USER_ID)) {
+				model.copyAppUserId();
+			}
+
+		}
+
+		return model;
+	}
+
+	public class SupportedOperations implements MCopyLocale, MCopyAppUserId {
 
 		@Override
 		public SupportedOperations copyLocale() {
@@ -83,9 +122,10 @@ public class MSettingsManager extends MModelManager{
 		}
 	}
 
-	public static class MSettings extends MBaseModel implements MCopyLocale, MCopyAppUserId  {
+	public static class MSettings extends MBaseModel implements MCopyLocale, MCopyAppUserId {
 
 		private Profile profile;
+		private User user;
 
 		@Expose
 		private Integer appUserId;
@@ -98,15 +138,26 @@ public class MSettingsManager extends MModelManager{
 			this.profile = profile;
 		}
 
-		public Locale prepareLocale(){
+		public MSettings(User user) {
+			this.user = user;
+		}
+
+		public Locale prepareLocale() {
 			return new Locale.Builder().setLanguage(language.getId()).setRegion(dialect.getId()).build();
 		}
 
 		@Override
 		public MSettings copyLocale() {
-			Locale locale = profile.getSettings().getLocale();
-			this.language= extractLanguage(locale);
+			Locale locale = null;
+			if (profile != null) {
+				locale = profile.getSettings().getLocale();
+			} else if (user != null) {
+				locale = user.getLocale();
+			}
+
+			this.language = extractLanguage(locale);
 			this.dialect = extractDialect(locale);
+
 			return this;
 		}
 
@@ -116,11 +167,11 @@ public class MSettingsManager extends MModelManager{
 			return this;
 		}
 
-		private MIdAndName extractLanguage(Locale locale){
+		private MIdAndName extractLanguage(Locale locale) {
 			return new MIdAndName.Builder().id(locale.getLanguage()).name(locale.getDisplayLanguage()).build();
 		}
 
-		private MIdAndName extractDialect(Locale locale){
+		private MIdAndName extractDialect(Locale locale) {
 			return new MIdAndName.Builder().id(locale.getCountry()).name(locale.getDisplayCountry()).build();
 		}
 
@@ -164,13 +215,5 @@ public class MSettingsManager extends MModelManager{
 		public int hashCode() {
 			return profile.hashCode();
 		}
-
-
 	}
-
-
-
-
-
-
 }

@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class SettingsAction extends PicsRestActionSupport {
+
 	private static Logger log = LoggerFactory.getLogger(SettingsAction.class);
 
 	private static final long serialVersionUID = -490476912556033616L;
@@ -21,7 +22,6 @@ public class SettingsAction extends PicsRestActionSupport {
 	private SettingsService settingsService;
 
 	private MSettingsManager.MSettings mSettings;
-
 
 	public String index() {
 		int appUserId = permissions.getAppUserID();
@@ -69,7 +69,8 @@ public class SettingsAction extends PicsRestActionSupport {
 
 	private MSettingsManager.MSettings populateSettings() {
 		JSONObject jsonObject = getJsonFromRequestPayload();
-		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(jsonObject.toJSONString(), MSettingsManager.MSettings.class);
+		return new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create().fromJson(jsonObject.toJSONString(),
+				MSettingsManager.MSettings.class);
 	}
 
 	/* getters + setters */

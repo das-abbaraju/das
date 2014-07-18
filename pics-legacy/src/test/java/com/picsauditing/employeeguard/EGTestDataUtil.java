@@ -7,6 +7,8 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.models.AccountType;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.builders.UserBuilder;
 import org.joda.time.DateTime;
 
 import java.util.*;
@@ -446,6 +448,7 @@ public class EGTestDataUtil {
 						.build();
 
 	}
+
 	public Profile buildFakeProfileWithSettings(){
 		Settings settings = new Settings();
 		settings.setLocale(Locale.UK);
@@ -458,6 +461,18 @@ public class EGTestDataUtil {
 						.phone("1234567988")
 						.settings(settings)
 						.build();
+
+	}
+
+	public User buildFakeUserWithSettings() {
+		return new UserBuilder()
+				.id(PROFILE_ID)
+				.firstName("First Name")
+				.lastName("Last Name")
+				.email("Email Id")
+				.phone("1234567988")
+				.locale(Locale.UK)
+				.build();
 
 	}
 
