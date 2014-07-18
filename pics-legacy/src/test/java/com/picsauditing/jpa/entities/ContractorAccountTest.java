@@ -724,7 +724,7 @@ public class ContractorAccountTest {
 	@Test
 	public void testValidVat_isUK() throws Exception {
 		when(country.getIsoCode()).thenReturn(Country.UK_ISO_CODE);
-		when(countryDAO.findbyISO(Country.UK_ISO_CODE)).thenReturn(country);
+		when(countryDAO.findByISO(Country.UK_ISO_CODE)).thenReturn(country);
 		contractorUnderTest.setCountry(country);
 
 		boolean validationResult = contractorUnderTest.isValidVAT("145798");

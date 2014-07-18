@@ -785,7 +785,7 @@ public class FacilitiesEdit extends OperatorActionSupport {
         if (country == null || country.getIsoCode().isEmpty()) {
             errorMessages.add(getText("FacilitiesEdit.SelectCountry"));
         } else {
-            country = countryDAO.findbyISO(country.getIsoCode()); // reload
+            country = countryDAO.findByISO(country.getIsoCode()); // reload
             operator.setCountry(country);
 
             if (country.isHasCountrySubdivisions()) {

@@ -1171,7 +1171,7 @@ public class UsersManage extends PicsActionSupport {
 		List<Country> listOfCountriesServiced = new ArrayList<Country>();
 
 		for (String countryString : countries) {
-			listOfCountriesServiced.add(countryDAO.findbyISO(countryString));
+			listOfCountriesServiced.add(countryDAO.findByISO(countryString));
 		}
 
 		Collections.sort(listOfCountriesServiced);

@@ -1,7 +1,6 @@
 package com.picsauditing.struts.validator.constraints;
 
 import com.picsauditing.dao.CountryDAO;
-import com.picsauditing.database.StringUtil;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.util.Strings;
@@ -34,7 +33,7 @@ public class VATValidationConstraint implements ConstraintValidator<VatValidatio
         if (Strings.isEmpty(value.getCountry())) return false;
 
         try {
-            final Country country = dao.findbyISO(value.getCountry());
+            final Country country = dao.findByISO(value.getCountry());
             if (country == null) return false;
             final TaxIdValidator validator = validatorFactory.buildTaxIdValidator(country);
             return (validator == null ||  validator.validated(country, value.getVatCode()) != null);

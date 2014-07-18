@@ -59,7 +59,7 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     public void testExecute_true() {
 		when(request.getParameter(REQUEST_PARAMETER)).thenReturn(TESTING_ISO);
         when(request.getParameter(REQUEST_PARAMETER_LOCALE)).thenReturn(TESTING_LOCALE_STRING);
-        when(mockDao.findbyISO(TESTING_ISO)).thenReturn(mockCountry);
+        when(mockDao.findByISO(TESTING_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(true);
         when(mockCountry.isUK()).thenReturn(false);
 		assertEquals(RESPONSE, taxIdCountryJSON.execute());
@@ -69,7 +69,7 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     @Test
     public void testExecute_false() {
 		when(request.getParameter(REQUEST_PARAMETER)).thenReturn(TESTING_ISO);
-        when(mockDao.findbyISO(TESTING_ISO)).thenReturn(mockCountry);
+        when(mockDao.findByISO(TESTING_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(false);
         when(mockCountry.isUK()).thenReturn(false);
 		assertEquals(RESPONSE, taxIdCountryJSON.execute());
@@ -79,7 +79,7 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     @Test
     public void testExecute_UKisFalse () {
 		when(request.getParameter(REQUEST_PARAMETER)).thenReturn(UK_ISO);
-        when(mockDao.findbyISO(UK_ISO)).thenReturn(mockCountry);
+        when(mockDao.findByISO(UK_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(true);
         when(mockCountry.isUK()).thenReturn(true);
 		assertEquals(RESPONSE, taxIdCountryJSON.execute());
@@ -89,7 +89,7 @@ public class TaxIdCountryJSONTest extends PicsActionTest {
     @Test
     public void testExecute_BR() {
         when(request.getParameter(REQUEST_PARAMETER)).thenReturn(BR_ISO);
-        when(mockDao.findbyISO(BR_ISO)).thenReturn(mockCountry);
+        when(mockDao.findByISO(BR_ISO)).thenReturn(mockCountry);
         when(mockCountry.isEuropeanUnion()).thenReturn(false);
         when(mockCountry.isBrazil()).thenReturn(true);
         when(mockCountry.isUK()).thenReturn(false);

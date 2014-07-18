@@ -81,6 +81,6 @@ public class CountryAutocompleteService extends AbstractAutocompleteService<Coun
 			return Collections.emptyList();
 		}
 
-		return Arrays.asList(this.countryDAO.findbyISO(searchKey));
+		return Arrays.asList(this.countryDAO.findByISO(searchKey));
 	}
 }

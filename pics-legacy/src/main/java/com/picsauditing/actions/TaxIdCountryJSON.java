@@ -43,7 +43,7 @@ public class TaxIdCountryJSON extends PicsActionSupport {
     }
 
     private String getTaxIdLabel(String iso, String locale) {
-        Country country = dao.findbyISO(iso);
+        Country country = dao.findByISO(iso);
 
 
         if (country.isBrazil()) {
@@ -59,7 +59,7 @@ public class TaxIdCountryJSON extends PicsActionSupport {
         if (iso.toUpperCase().equals("GB")) {
             return false;
         }
-        Country country = dao.findbyISO(iso);
+        Country country = dao.findByISO(iso);
          return country.isEuropeanUnion() || country.isBrazil();
     }
 

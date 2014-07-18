@@ -25,7 +25,7 @@ public class CountryZipCodeValidator implements ConstraintValidator<ValidateZipC
     public boolean isValid(RegistrationForm.CountrySubdivisionPair value, ConstraintValidatorContext context) {
         if (Strings.isEmpty(value.getCountry())) return true;
 
-        final Country country = dao.findbyISO(value.getCountry());
+        final Country country = dao.findByISO(value.getCountry());
         if (country == null) return true;
 
         return !requiresZipCode(country) || validZipCode(country, value.getZip());

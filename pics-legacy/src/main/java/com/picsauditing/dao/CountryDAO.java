@@ -50,7 +50,7 @@ public class CountryDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
-	public Country findbyISO(String iso) {
+	public Country findByISO(String iso) {
 		return (Country) em.createQuery("FROM Country c WHERE c.isoCode = '" + iso + "'").getSingleResult();
 	}
 

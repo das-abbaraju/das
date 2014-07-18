@@ -229,7 +229,7 @@ public class LanguageModel {
 			String countryIsoCode = dialect.getCountry();
 
 			if (countryIsoCode != null && dialect.getStatus() != LanguageStatus.Future) {
-				countries.add(countryDAO.findbyISO(countryIsoCode));
+				countries.add(countryDAO.findByISO(countryIsoCode));
 			}
 		}
 
