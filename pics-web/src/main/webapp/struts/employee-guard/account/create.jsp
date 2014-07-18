@@ -16,7 +16,7 @@
         <img src="/v7/img/logo/logo-large.png" class="logo img-responsive">
 
         <tw:form formName="employee_guard_create_account" action="${employee_guard_account_create_url}" method="post" class="form-horizontal login-form js-validation" role="form">
-            <input type="hidden" name="hashCode" value="${hashCode}" />
+            <tw:input inputName="hashCode" type="hidden" value="${hashCode}" />
 
             <div class="form-group">
                 <label for="supported_locales" class="col-xs-1 col-md-1 control-label locale-label"><i class="icon-globe icon-large"></i></label>
@@ -28,7 +28,6 @@
                     </select>
                 </div>
             </div>
-
             <div class="form-group">
                 <tw:label labelName="firstName"><s:text name="EMPLOYEEGUARD.SIGNUP.FIRST_NAME"/></tw:label>
                 <tw:input class="form-control" inputName="firstName" type="text" tabindex="4" value="${profile.firstName}" maxlength="100" />
