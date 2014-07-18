@@ -29169,9 +29169,12 @@ PICS.define('employee-guard.SignUp', {
         }
 
         function setActiveLanguage(language) {
+            console.log(language);
             PICS.ajax({
                 url: 'sign-up/switchLanguage',
-                request_locale: language,
+                data: {
+                    request_locale: language
+                },
                 success: onUpdateLanguageRequestSuccess
             });
         }
@@ -29200,7 +29203,11 @@ PICS.define('employee-guard.Welcome', {
     methods: (function () {
         var welcome_page_el = $('.employee_guard_welcome-page'),
             selected_language,
-            language_select_el;
+            language_select_el,
+            profile_fname_el,
+            profile_fname,
+            companyName_el,
+            companyName;
 
         function init() {
             if (welcome_page_el.length > 0) {
@@ -29213,6 +29220,21 @@ PICS.define('employee-guard.Welcome', {
 
             language_select_el.on('change', onSupportedLanguageChange);
             language_select_el.val(selected_language);
+
+            profile_fname_el = welcome_page_el.find('#profile_fname');
+            companyName_el = welcome_page_el.find('#companyName');
+
+            populateGreeting();
+        }
+
+        function populationGreeting() {
+            if (profile_fname) {
+                profile_fname_el.html(profile_fname);
+            }
+
+            if (companyName) {
+                companyName_el.html(companyName);
+            }
         }
 
         function onSupportedLanguageChange(event) {
@@ -29220,6 +29242,8 @@ PICS.define('employee-guard.Welcome', {
 
             selected_language = language;
             setActiveLanguage(language);
+            profile_fname = welcome_page_el.find('#profile_fname').html();
+            companyName = welcome_page_el.find('#companyName').html();
         }
 
         function setActiveLanguage(language) {
