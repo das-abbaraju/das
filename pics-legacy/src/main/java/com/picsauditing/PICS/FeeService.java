@@ -4,6 +4,7 @@ import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.audits.AuditTypesBuilder;
 import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.util.SpringUtils;
@@ -416,16 +417,23 @@ public class FeeService {
         for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
             OperatorAccount operator = contractorOperator.getOperatorAccount();
             if (isBillableEntity(operator)) {
-                OperatorAccount billableEntity = operator.getBillableEntity();
-                if(billableEntity == null) {
+                if(Features.USE_NEW_BILLABLE_ENTITY.isActive()){
+                    addBillableEntityToPayingFacilities(payingFacilities, operator);
+                } else {
                     payingFacilities.add(operator);
-                }
-                else {
-                    payingFacilities.add(billableEntity);
                 }
             }
         }
         return payingFacilities;
+    }
+
+    private void addBillableEntityToPayingFacilities(HashSet<OperatorAccount> payingFacilities, OperatorAccount operator) {
+        OperatorAccount billableEntity = operator.getBillableEntity();
+        if (billableEntity == null) {
+            payingFacilities.add(operator);
+        } else {
+            payingFacilities.add(billableEntity);
+        }
     }
 
     private boolean isBillableEntity(OperatorAccount operator) {

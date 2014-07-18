@@ -3,16 +3,19 @@ package com.picsauditing.PICS;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.reflect.Whitebox;
+import org.togglz.junit.TogglzRule;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -33,6 +36,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private List<ContractorOperator> operatorList;
     private ContractorAccount contractor;
 
+    @Rule
+    public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
     @Mock
     private ContractorAccount contractorAccount;
     @Mock
@@ -1388,16 +1393,13 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(feeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
         when(billingService.billingStatus(contractorAccount)).thenReturn(BillingStatus.Upgrade);
 
-
         feeService.calculateContractorInvoiceFees(contractorAccount, false);
 
         verify(employeeGuardRulesService).runEmployeeGuardRules(any(ContractorAccount.class), any(HashSet.class));
-
-
     }
 
     @Test
-    public void testFindPayingFacilities_billableEntityNotSet() {
+    public void testFindPayingFacilities_IsBERTrueBENotSet() {
         OperatorAccount operator = buildActiveOperatorAccount();
         ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
@@ -1410,7 +1412,7 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testFindPayingFacilities_operatorStatusInactive() {
+    public void testFindPayingFacilities_IsBEFalseOperatorStatusInactive() {
         OperatorAccount operator = buildActiveOperatorAccount();
         operator.setStatus(AccountStatus.Deactivated);
         ContractorAccount contractor = setUpContractor();
@@ -1424,7 +1426,7 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testFindPayingFacilities_operatorDoNotPay() {
+    public void testFindPayingFacilities_IsBEFalseOperatorDoNotPay() {
         OperatorAccount operator = buildActiveOperatorAccount();
         operator.setDoContractorsPay("No");
         ContractorAccount contractor = setUpContractor();
@@ -1438,16 +1440,20 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testFindPayingFacilities_twoOperatorsWithSameBE() {
-        OperatorAccount operator = buildActiveOperatorAccount();
-        operator.setBillableEntity(operator);
+    public void testFindPayingFacilities_TwoOperatorsWithSameBE_TogglzEnabled() {
+        togglzRule.enable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
 
         ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         operatorList.add(contractorOperator2);
 
-        when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
-        when(contractorOperator2.getOperatorAccount()).thenReturn(operator);
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
 
         Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
 
@@ -1455,25 +1461,72 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testFindPayingFacilities_twoBEsameOneDifferent() {
-        OperatorAccount parentOperator = buildActiveOperatorAccount();
-        OperatorAccount operator = buildActiveOperatorAccount();
-        operator.setBillableEntity(operator);
+    public void testFindPayingFacilities_TwoOperatorsWithSameBE_TogglzDisabled() {
+        togglzRule.disable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(2, payingFacilities.size());
+    }
+
+    @Test
+    public void testFindPayingFacilities_TwoBESameOneDifferent_TogglzEnabled() {
+        togglzRule.enable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+        OperatorAccount operator3 = buildActiveOperatorAccount();
 
         ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         operatorList.add(contractorOperator2);
         operatorList.add(contractorOperator3);
 
-        when(contractorOperator1.getOperatorAccount()).thenReturn(parentOperator);
-        when(contractorOperator2.getOperatorAccount()).thenReturn(parentOperator);
-        when(contractorOperator3.getOperatorAccount()).thenReturn(operator);
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+        when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
 
         Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
 
         assertEquals(2, payingFacilities.size());
+    }
 
+    @Test
+    public void testFindPayingFacilities_TwoBESameOneDifferent_TogglzDisabled() {
+        togglzRule.disable(Features.USE_NEW_BILLABLE_ENTITY);
+        OperatorAccount billableEntity = buildActiveOperatorAccount();
+        OperatorAccount operator1 = buildActiveOperatorAccount();
+        operator1.setBillableEntity(billableEntity);
+        OperatorAccount operator2 = buildActiveOperatorAccount();
+        operator2.setBillableEntity(billableEntity);
+        OperatorAccount operator3 = buildActiveOperatorAccount();
 
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        operatorList.add(contractorOperator2);
+        operatorList.add(contractorOperator3);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
+        when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
+        when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
+
+        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+
+        assertEquals(3, payingFacilities.size());
     }
 
     private OperatorAccount buildActiveOperatorAccount() {
