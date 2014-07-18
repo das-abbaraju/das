@@ -33,7 +33,8 @@
             <result name="success">/struts/employee-guard/account/reset-password.jsp</result>
         </action>
 
-        <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
+        <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction"
+                method="feedbackComment">
         </action>
 
         <action name="profile/settings" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
@@ -45,18 +46,28 @@
         <action name="info" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
-        <action name="employees/{employeeId}/skill/{skillId}" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        <action name="employees/{employeeId}/skill/{skillId}"
+                class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <!-- Who Am I -->
-        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.AboutAction" method="whoAmI" />
+        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.AboutAction" method="whoAmI"/>
 
         <!-- Skill Review -->
-        <action name="skillreview/employee/{employeeId}/skill/{skillId}/info" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchSkillInfo" />
-        <action name="skillreview/employee/{employeeId}/info" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchEmployeeInfo" />
-        <action name="skillreview/employee/{employeeId}/skill/{skillId}/download" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadDocument" />
-        <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail" class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">            <result name="photo" type="stream"></result>
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/info"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchSkillInfo"/>
+        <action name="skillreview/employee/{employeeId}/info"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchEmployeeInfo"/>
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/download"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadDocument"/>
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">
+            <result name="photo" type="stream"></result>
         </action>
+
+        <!-- Invalid Hashcode page -->
+        <action name="invalid-hash" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction"
+                method="anonymousLoad"/>
 
         <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>

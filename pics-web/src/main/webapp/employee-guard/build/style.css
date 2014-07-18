@@ -15785,6 +15785,38 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin: 0px;
 }
 
+/* line 1, ../src/common/layout/eg-simple-layout/_eg-simple-layout.scss */
+.eg-simple-layout {
+  background-color: #002441;
+}
+/* line 4, ../src/common/layout/eg-simple-layout/_eg-simple-layout.scss */
+.eg-simple-layout .message-box {
+  background: #f1f1f2;
+  -webkit-box-shadow: #131313 0 2px 8px;
+  -moz-box-shadow: #131313 0 2px 8px;
+  box-shadow: #131313 0 2px 8px;
+  margin: 100px auto 20px;
+  padding: 40px 40px;
+  text-align: center;
+}
+/* line 11, ../src/common/layout/eg-simple-layout/_eg-simple-layout.scss */
+.eg-simple-layout .message-box h1 {
+  font-size: 25px;
+  margin: 30px 0;
+  font-weight: normal;
+  color: #a84d10;
+}
+/* line 18, ../src/common/layout/eg-simple-layout/_eg-simple-layout.scss */
+.eg-simple-layout .message-box p {
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  /* line 25, ../src/common/layout/eg-simple-layout/_eg-simple-layout.scss */
+  .eg-simple-layout {
+    background: #f1f1f2;
+  }
+}
 /* line 4, ../src/common/plugins/_twitter-typehead-overrides.scss */
 #primary_navigation .twitter-typeahead .tt-query,
 #primary_navigation .twitter-typeahead .tt-hint {

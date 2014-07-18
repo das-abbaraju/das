@@ -19,5 +19,8 @@ angular.module('PICS.employeeguard')
         })
         .when('/employee-guard/employee/settings', {
             templateUrl: '/employee-guard/src/app/employeeguard/employee/profile/settings.tpl.html'
+        })
+        .when('/employee-guard/invalid-hash', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employee/invalidHash/invalid_hash.tpl.html'
         });
 });

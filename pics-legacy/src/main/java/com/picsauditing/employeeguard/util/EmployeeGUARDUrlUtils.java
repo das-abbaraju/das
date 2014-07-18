@@ -33,6 +33,9 @@ public final class EmployeeGUARDUrlUtils {
 
 	/* Settings page */
 	public static final String EMPLOYEE_SETTINGS = "/employee-guard/profile/settings";
+	
+	/* Invalid hash link */
+	public static final String INVALID_HASH_LINK = "/employee-guard/invalid-hash";
 
 	public static String buildUrl(final String url, final Object... params) {
 		return String.format(url, params);

@@ -27,6 +27,53 @@ public class EGTestDataUtil {
 	public static final int PROFILE_ID = sequencer++;
 	public static final int APP_USER_ID = sequencer++;
 
+	public static final String INVALID_EMAIL_HASH_STRING = "invalid hash";
+	public static final EmailHash INVALID_EMAIL_HASH = new EmailHashBuilder()
+			.createdDate(DateBean.today())
+			.expirationDate(DateBean.addDays(DateBean.today(), -4))
+			.hashCode(INVALID_EMAIL_HASH_STRING)
+			.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
+					.accountId(123)
+					.firstName("Bob")
+					.lastName("Bad")
+					.email("bob.bad@test.com")
+					.build())
+			.build();
+
+	public static final String VALID_EMAIL_HASH_STRING = "valid hash";
+	public static final EmailHash VALID_EMAIL_HASH = new EmailHashBuilder()
+			.createdDate(DateBean.today())
+			.expirationDate(DateBean.addDays(DateBean.today(), 4))
+			.hashCode(VALID_EMAIL_HASH_STRING)
+			.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
+					.accountId(124)
+					.firstName("Bob")
+					.lastName("Good")
+					.email("bob.good@test.com")
+					.build())
+			.build();
+
+	public static final String EXISTING_PROFILE_EMAIL_HASH_STRING = "existing profile hash";
+	public static final EmailHash EXISTING_PROFILE_EMAIL_HASH = new EmailHashBuilder()
+			.createdDate(DateBean.today())
+			.expirationDate(DateBean.addDays(DateBean.today(), 35))
+			.hashCode(EXISTING_PROFILE_EMAIL_HASH_STRING)
+			.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
+					.accountId(125)
+					.firstName("Bob")
+					.lastName("Existing")
+					.email("bob.existing@test.com")
+					.profile(new Profile())
+					.build())
+			.build();
+
+	public static final String NO_EMPLOYEE_EMAIL_HASH_STRING = "no employee hash";
+	public static final EmailHash NO_EMPLOYEE_EMAIL_HASH = new EmailHashBuilder()
+			.createdDate(DateBean.today())
+			.expirationDate(DateBean.addDays(DateBean.today(), 35))
+			.hashCode(NO_EMPLOYEE_EMAIL_HASH_STRING)
+			.build();
+
 	public static final List<Integer> CORPORATE_ACCOUNT_IDS = Arrays.asList(CORPORATE_ID);
 
 	// Project Mock Data

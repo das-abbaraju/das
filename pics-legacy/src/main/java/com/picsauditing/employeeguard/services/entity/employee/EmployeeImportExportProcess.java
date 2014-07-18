@@ -2,7 +2,6 @@ package com.picsauditing.employeeguard.services.entity.employee;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.entity.util.file.CsvFileImportReader;
 import com.picsauditing.employeeguard.services.entity.util.file.FileImportCommand;
@@ -56,7 +55,7 @@ public class EmployeeImportExportProcess {
 	}
 
 	private void addHeader(final CSVWriter csvWriter) {
-		csvWriter.writeNext(new String[] {
+		csvWriter.writeNext(new String[]{
 				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.FIRST_NAME"),
 				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.LAST_NAME"),
 				EGI18n.getTextFromResourceBundle("EMPLOYEE.IMPORT_EXPORT.TEMPLATE.HEADER.TITLE"),

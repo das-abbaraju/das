@@ -5,7 +5,6 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.opensymphony.xwork2.validator.DelegatingValidatorContext;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.Anonymous;
-import com.picsauditing.access.PageNotFoundException;
 import com.picsauditing.actions.validation.AjaxValidator;
 import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.controller.PicsRestActionSupport;
@@ -14,12 +13,14 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.forms.ProfileForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.email.EmailHashService;
-import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.authentication.AuthenticationService;
+import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,11 +62,13 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String index() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
-		}
-
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+		if (emailHashService.isUserRegistered(emailHash)) {
+			return setUrlForRedirect(PicsUrlConstants.LOGIN_URL);
+		} else if (emailHashService.invalidHash(emailHash)) {
+			return setUrlForRedirect(EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
+		}
 
 		loadProfile(emailHash);
 
@@ -84,8 +87,12 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String create() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
+		EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+		if (emailHashService.isUserRegistered(emailHash)) {
+			return setUrlForRedirect(PicsUrlConstants.LOGIN_URL);
+		} else if (emailHashService.invalidHash(emailHash)) {
+			return setUrlForRedirect(EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
 		}
 
 		return SIGN_UP_VIEW;
@@ -111,7 +118,6 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 					profileForm.getPassword(), hashCode, true);
 			doSetCookieMaxAge(sessionCookieContent);
 
-
 			return setUrlForRedirect(EMPLOYEE_SUMMARY);
 		} catch (Exception e) {
 			LOG.error("Error creating appUser and logging in ", e);
@@ -119,7 +125,7 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 		}
 	}
 
-	private void populateLocale(){
+	private void populateLocale() {
 		Locale locale = ActionContext.getContext().getActionInvocation().getInvocationContext().getLocale();
 		profile.getSettings().setLocale(locale);
 	}
