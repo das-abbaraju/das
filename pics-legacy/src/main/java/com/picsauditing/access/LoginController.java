@@ -457,7 +457,7 @@ public class LoginController extends PicsActionSupport {
             return ERROR;
         }
         try {
-            IdpUser idpUser = idpUserService.loadIdpUserBy(username, LDAPService.PICSAD);
+            IdpUser idpUser = idpUserService.loadIdpUserBy(username, idp);
             boolean isLdapAuthenticated = false;
             String picsUserName = null;
 
