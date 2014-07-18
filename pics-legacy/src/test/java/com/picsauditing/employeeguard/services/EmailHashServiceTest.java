@@ -22,6 +22,8 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import static com.picsauditing.employeeguard.EGTestDataUtil.*;
+
 public class EmailHashServiceTest {
 
 	public static final String INVALID_HASH = "MY_HASH";
@@ -48,16 +50,24 @@ public class EmailHashServiceTest {
 	}
 
 	@Test
-	public void testHashIsValid() {
-		EmailHash emailHash = new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), 5)).build();
-/*
-		when(emailHashDAO.findByHash(VALID_HASH))
-				.thenReturn(emailHash);
-*/
+	public void testIsUserRegistered() {
+		Boolean result = emailHashService.isUserRegistered(EXISTING_PROFILE_EMAIL_HASH);
 
-		Boolean result = emailHashService.invalidHash(emailHash);
+		assertTrue(result);
+	}
+
+	@Test
+	public void testIsUserRegistered_NotRegistered() {
+		Boolean result = emailHashService.isUserRegistered(VALID_EMAIL_HASH);
 
 		assertFalse(result);
+	}
+
+	@Test
+	public void testHashIsValid() {
+		Boolean result = emailHashService.isValid(VALID_EMAIL_HASH);
+
+		assertTrue(result);
 	}
 
 	@Test
@@ -67,17 +77,12 @@ public class EmailHashServiceTest {
 		assertTrue(result);
 	}
 
-/*
 	@Test
 	public void testHashIsNotValid_ExpiredHash() {
-		when(emailHashDAO.findByHash(INVALID_HASH))
-				.thenReturn(new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), -8)).build());
+		Boolean result = emailHashService.invalidHash(INVALID_EMAIL_HASH);
 
-		Boolean result = emailHashService.hashIsValid(INVALID_HASH);
-
-		assertFalse(result);
+		assertTrue(result);
 	}
-*/
 
 	@Test
 	public void testCreateNewHash() throws Exception {

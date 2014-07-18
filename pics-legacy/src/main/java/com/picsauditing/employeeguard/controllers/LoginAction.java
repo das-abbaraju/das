@@ -16,11 +16,13 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.service.authentication.AuthenticationService;
+import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,9 +62,11 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 	public String index() throws Exception {
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
 
-		if (emailHashService.invalidHash(emailHash)) {
+		if (emailHashService.isUserRegistered(emailHash)) {
+			return setUrlForRedirect(PicsUrlConstants.LOGIN_URL);
+		} else if (emailHashService.invalidHash(emailHash)) {
 			LOG.warn("Invalid hashCode = " + hashCode);
-			throw new PageNotFoundException();
+			return setUrlForRedirect(EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
 		}
 
 		SoftDeletedEmployee employee = emailHash.getEmployee();

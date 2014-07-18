@@ -48,11 +48,11 @@ public class EmailHashService {
 	}
 
 	public boolean isExpired(final EmailHash emailHash) {
-		return emailHash.getExpirationDate().after(DateBean.today());
+		return emailHash.getExpirationDate().before(DateBean.today());
 	}
 
 	private boolean validHash(final EmailHash emailHash) {
-		return emailHash == null ? true : false;
+		return emailHash == null ? false : true;
 	}
 
 	/**

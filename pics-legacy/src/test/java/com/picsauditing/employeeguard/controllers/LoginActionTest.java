@@ -15,8 +15,10 @@ import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.employeeguard.validators.login.LoginFormValidator;
 import com.picsauditing.service.authentication.AuthenticationService;
+import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.util.system.PicsEnvironment;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,16 +30,19 @@ import javax.security.auth.login.FailedLoginException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import static com.picsauditing.employeeguard.EGTestDataUtil.*;
+
 public class LoginActionTest extends PicsActionTest {
 
 	private static final String USERNAME = "username";
 	private static final String PASSWORD = "password";
-	private static final String VALID_HASH = "valid hash";
+//	private static final String VALID_HASH = "valid hash";
 	private static final String EMPLOYEE_FIRST_NAME = "First";
 	private static final String EMPLOYEE_LAST_NAME = "Last";
 	private static final String EMPLOYEE_EMAIL = "tester@picsauditing.com";
@@ -81,21 +86,20 @@ public class LoginActionTest extends PicsActionTest {
 
 		when(accountService.getAccountById(anyInt())).thenReturn(accountModel);
 		when(picsEnvironment.isLocalhost()).thenReturn(true);
-		when(emailHashService.invalidHash(any(EmailHash.class))).thenReturn(false);
+		when(emailHashService.invalidHash(INVALID_EMAIL_HASH)).thenReturn(true);
+		when(emailHashService.invalidHash(VALID_EMAIL_HASH)).thenReturn(false);
+		when(emailHashService.isUserRegistered(EXISTING_PROFILE_EMAIL_HASH)).thenReturn(true);
 
-
-		when(emailHashService.findByHash(VALID_HASH)).thenReturn(new EmailHashBuilder()
-				.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
-						.id(EMPLOYEE_ID)
-						.firstName(EMPLOYEE_FIRST_NAME)
-						.lastName(EMPLOYEE_LAST_NAME)
-						.build())
-				.build());
+		when(emailHashService.findByHash(null)).thenReturn(INVALID_EMAIL_HASH);
+		when(emailHashService.findByHash(VALID_EMAIL_HASH_STRING)).thenReturn(VALID_EMAIL_HASH);
+		when(emailHashService.findByHash(INVALID_EMAIL_HASH_STRING)).thenReturn(INVALID_EMAIL_HASH);
+		when(emailHashService.findByHash(EXISTING_PROFILE_EMAIL_HASH_STRING)).thenReturn(EXISTING_PROFILE_EMAIL_HASH);
+		when(emailHashService.findByHash(NO_EMPLOYEE_EMAIL_HASH_STRING)).thenReturn(NO_EMPLOYEE_EMAIL_HASH);
 	}
 
 	@Test
 	public void testIndex() throws Exception {
-		loginAction.setHashCode(VALID_HASH);
+		loginAction.setHashCode(VALID_EMAIL_HASH_STRING);
 
 		String result = loginAction.index();
 
@@ -105,33 +109,45 @@ public class LoginActionTest extends PicsActionTest {
 	private void verifyTestIndex(String result) {
 		assertEquals(PicsRestActionSupport.LIST, result);
 		assertNotNull(loginAction.getProfile());
-		assertEquals(EMPLOYEE_FIRST_NAME, loginAction.getProfile().getFirstName());
-		assertEquals(EMPLOYEE_LAST_NAME, loginAction.getProfile().getLastName());
+		assertEquals(VALID_EMAIL_HASH.getEmployee().getFirstName(), loginAction.getProfile().getFirstName());
+		assertEquals(VALID_EMAIL_HASH.getEmployee().getLastName(), loginAction.getProfile().getLastName());
 		assertEquals(EMPLOYEE_COMPANY_NAME, loginAction.getCompanyName());
-		verify(emailHashService).invalidHash(any(EmailHash.class));
-		verify(emailHashService).findByHash(VALID_HASH);
+		verify(emailHashService).invalidHash(VALID_EMAIL_HASH);
+		verify(emailHashService).findByHash(VALID_EMAIL_HASH_STRING);
 	}
 
-	@Test(expected = PageNotFoundException.class)
+	@Test
 	public void testIndex_HashIsMissing() throws Exception {
-		loginAction.index();
+		String result = loginAction.index();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
+		assertEquals(loginAction.getUrl(), EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
 	}
 
-	@Test(expected = PageNotFoundException.class)
+	@Test
 	public void testIndex_HashIsInvalid() throws Exception {
-		loginAction.setHashCode("Invalid hash");
-		loginAction.index();
+		loginAction.setHashCode(INVALID_EMAIL_HASH_STRING);
+
+		String result = loginAction.index();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
+		assertEquals(loginAction.getUrl(), EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
+	}
+
+	@Test
+	public void testIndex_UserAlreadyRegistered() throws Exception {
+		loginAction.setHashCode(EXISTING_PROFILE_EMAIL_HASH_STRING);
+
+		String result = loginAction.index();
+
+		assertEquals(PicsActionSupport.REDIRECT, result);
+		assertEquals(loginAction.getUrl(), PicsUrlConstants.LOGIN_URL);
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void testIndex_EmployeeIsMissing() throws Exception {
-		EmailHash emailHash = new EmailHash();
+		loginAction.setHashCode(NO_EMPLOYEE_EMAIL_HASH_STRING);
 
-		when(emailHashService.findByHash(VALID_HASH)).thenReturn(emailHash);
-
-		Whitebox.setInternalState(loginAction, "emailHashService", emailHashService);
-
-		loginAction.setHashCode(VALID_HASH);
 		loginAction.index();
 	}
 
@@ -148,9 +164,9 @@ public class LoginActionTest extends PicsActionTest {
 		LoginForm loginForm = new LoginForm();
 		loginForm.setUsername(USERNAME);
 		loginForm.setPassword(PASSWORD);
-		loginForm.setHashCode(VALID_HASH);
+		loginForm.setHashCode(VALID_EMAIL_HASH_STRING);
 
-		loginAction.setHashCode(VALID_HASH);
+		loginAction.setHashCode(VALID_EMAIL_HASH_STRING);
 		loginAction.setLoginForm(loginForm);
 
 		when(authenticationService.authenticateEmployeeGUARDUser(USERNAME, PASSWORD, loginForm.getHashCode(), true))
@@ -159,19 +175,24 @@ public class LoginActionTest extends PicsActionTest {
 
 	private void verifyTestLogin(String result) {
 		assertEquals(PicsActionSupport.REDIRECT, result);
-		verify(emailHashService).findByHash(VALID_HASH);
+		verify(emailHashService).findByHash(VALID_EMAIL_HASH_STRING);
 		verify(profileEntityService).findByAppUserId(anyInt());
 		verify(employeeEntityService).linkEmployeeToProfile(any(SoftDeletedEmployee.class), any(Profile.class));
 	}
 
 	@Test(expected = PageNotFoundException.class)
 	public void testLogin_Failure() throws Exception {
+		setupTestLogin_Failure();
+
+		loginAction.login();
+	}
+
+	private void setupTestLogin_Failure() {
 		LoginForm loginForm = new LoginForm();
 		loginForm.setUsername(USERNAME);
 		loginForm.setPassword(PASSWORD);
-		loginForm.setHashCode(VALID_HASH);
+		loginForm.setHashCode(VALID_EMAIL_HASH_STRING);
 
 		loginAction.setLoginForm(loginForm);
-		loginAction.login();
 	}
 }
