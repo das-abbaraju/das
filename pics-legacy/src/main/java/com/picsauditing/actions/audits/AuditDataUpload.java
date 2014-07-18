@@ -6,12 +6,12 @@ import java.util.Set;
 
 import javax.persistence.NoResultException;
 
+import com.picsauditing.audits.AuditBuilderFactory;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.audits.AuditCategoriesBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -54,7 +54,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	@Autowired
 	protected AuditQuestionDAO questionDAO;
 	@Autowired
-	protected AuditBuilder auditBuilder = null;
+	protected AuditBuilderFactory auditBuilderFactory;
 
 	private int copyDataID = 0;
 	private String debugLog = null;
@@ -533,7 +533,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 			contractorAccountDao.save(contractor);
 		}
 
-		auditBuilder.buildAudits(contractor);
+		auditBuilderFactory.buildAudits(contractor);
 
 		return audit;
 	}

@@ -3,7 +3,6 @@ package com.picsauditing.actions;
 import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.cron.AuditCategoryJobException;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;

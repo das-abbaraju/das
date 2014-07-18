@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.toggle.FeatureToggle;
 import org.slf4j.Logger;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.NoteDAO;
 import com.picsauditing.dao.UserDAO;
 import com.picsauditing.mail.EmailBuilder;
@@ -31,7 +31,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 	@Autowired
 	protected NoteDAO noteDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private EmailSender emailSender;
     @Autowired
@@ -256,7 +256,7 @@ public class ContractorEditRiskLevel extends ContractorActionSupport implements 
 		for (ContractorAudit audit : contractor.getAudits()) {
 			if (audit.getAuditType().isPicsPqf()) {
 				resetCaos(audit);
-				auditBuilder.recalculateCategories(audit);
+				auditBuilderFactory.recalculateCategories(audit);
 				dao.save(audit);
 			}
 		}

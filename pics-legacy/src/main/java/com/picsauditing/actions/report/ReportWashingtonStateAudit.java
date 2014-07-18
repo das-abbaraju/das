@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.picsauditing.audits.AuditBuilderFactory;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -47,7 +47,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private EmailSender emailSender;
 
@@ -96,7 +96,7 @@ public class ReportWashingtonStateAudit extends ReportAccount {
 			// cao.setAuditColumns(permissions);
 			// caoDAO.save(cao);
 
-			auditBuilder.buildAudits(con);
+            auditBuilderFactory.buildAudits(con);
 
 			// TODO clean up email language?
 			EmailQueue email = new EmailQueue();

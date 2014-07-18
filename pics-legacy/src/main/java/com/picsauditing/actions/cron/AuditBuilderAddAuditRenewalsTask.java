@@ -1,6 +1,6 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class AuditBuilderAddAuditRenewalsTask implements CronTask {
     @Autowired
     ContractorAuditDAO contractorAuditDAO;
     @Autowired
-    AuditBuilder auditBuilder;
+    AuditBuilderFactory auditBuilderFactory;
 
     public String getDescription() {
         return "Generate renewal audits to replace expiring audits";
@@ -33,7 +33,7 @@ public class AuditBuilderAddAuditRenewalsTask implements CronTask {
         List<ContractorAccount> contractors = contractorAuditDAO.findContractorsWithExpiringAudits();
         for (ContractorAccount contractor : contractors) {
             try {
-                auditBuilder.buildAudits(contractor);
+                auditBuilderFactory.buildAudits(contractor);
                 contractorAuditDAO.save(contractor);
                 results.getLogger().append(", " + contractor.getId());
             } catch (Exception e) {

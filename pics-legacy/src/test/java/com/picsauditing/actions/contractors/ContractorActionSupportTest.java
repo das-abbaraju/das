@@ -6,7 +6,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -47,7 +47,7 @@ public class ContractorActionSupportTest extends PicsTest {
 	@Mock
 	private Permissions permissions;
 	@Mock
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Mock
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Mock
@@ -82,7 +82,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "permissions", permissions);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditPercentCalculator", auditPercentCalculator);
-		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditBuilder", auditBuilder);
+		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditBuilderFactory", auditBuilderFactory);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "featureToggle", featureToggle);
 
 		eventQuestions = new ArrayList<AuditData>();
@@ -172,7 +172,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		when(auditDAO.findPQF(anyInt())).thenReturn(null);
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
-		verify(auditBuilder, never()).buildAudits(contractor);
+		verify(auditBuilderFactory, never()).buildAudits(contractor);
 		verify(auditDataDAO, never()).findWhere(anyString());
 		verify(auditDAO, never()).save(any(ContractorAuditOperatorWorkflow.class));
 		verify(noteDAO, never()).save(any(Note.class));
@@ -184,7 +184,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		when(audit.hasCaoStatusAfter((AuditStatus) any())).thenReturn(false);
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
-		verify(auditBuilder, never()).buildAudits(contractor);
+		verify(auditBuilderFactory, never()).buildAudits(contractor);
 	}
 
 	@Test
@@ -194,7 +194,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		when(auditDataDAO.findWhere(anyString())).thenReturn(Collections.EMPTY_LIST);
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
-		verify(auditBuilder, never()).buildAudits(contractor);
+		verify(auditBuilderFactory, never()).buildAudits(contractor);
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class ContractorActionSupportTest extends PicsTest {
 		when(auditDataDAO.findWhere(anyString())).thenReturn(eventQuestions);
 		contractorActionSupport.setContractor(contractor);
 		contractorActionSupport.reviewCategories(EventType.Locations);
-		verify(auditBuilder, times(1)).buildAudits(contractor);
+		verify(auditBuilderFactory, times(1)).buildAudits(contractor);
 	}
 
 	@Test

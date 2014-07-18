@@ -1,9 +1,9 @@
 package com.picsauditing.PICS;
 
+import com.picsauditing.audits.AuditBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.AccountLevel;
@@ -18,7 +18,7 @@ public class AccountLevelAdjuster {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
-	protected AuditBuilder auditBuilder = null;
+	protected AuditBuilderFactory auditBuilderFactory = null;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 
@@ -26,7 +26,7 @@ public class AccountLevelAdjuster {
 		contractor.setAccountLevel(AccountLevel.Full);
 		contractor.setRenew(true);
 		resetPqfToPending(contractor, permissions);
-		auditBuilder.buildAudits(contractor);
+		auditBuilderFactory.buildAudits(contractor);
 	}
 
 	private void resetPqfToPending(ContractorAccount contractor, Permissions permissions) {
@@ -45,7 +45,7 @@ public class AccountLevelAdjuster {
 					}
 				}
 				if (atLeastOneCaoAffected) {
-					auditBuilder.recalculateCategories(cAudit);
+                    auditBuilderFactory.recalculateCategories(cAudit);
 					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 					auditPercentCalculator.percentCalculateComplete(cAudit);
 					auditDataDAO.save(cAudit);

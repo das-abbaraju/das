@@ -1,6 +1,6 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.ContractorAuditDAO;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,7 @@ public class AuditBuilderAddAuditRenewalsTaskTest {
     @Mock
     private ContractorAuditDAO contractorAuditDAO;
     @Mock
-    private AuditBuilder auditBuilder;
+    private AuditBuilderFactory auditBuilderFactory;
 
     @Before
     public void setUp() throws Exception {
@@ -20,7 +20,7 @@ public class AuditBuilderAddAuditRenewalsTaskTest {
 
         task = new AuditBuilderAddAuditRenewalsTask();
         task.contractorAuditDAO = contractorAuditDAO;
-        task.auditBuilder = auditBuilder;
+        task.auditBuilderFactory = auditBuilderFactory;
     }
 
     @Test

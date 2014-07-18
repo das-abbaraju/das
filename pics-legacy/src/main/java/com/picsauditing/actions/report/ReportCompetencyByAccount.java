@@ -3,7 +3,7 @@ package com.picsauditing.actions.report;
 import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -24,7 +24,7 @@ import java.util.Set;
 @SuppressWarnings("serial")
 public class ReportCompetencyByAccount extends ReportEmployee {
 	@Autowired
-	protected AuditBuilder auditBuilder;
+	protected AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
@@ -59,7 +59,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 				contractor.setAccountLevel(AccountLevel.Full);
 				contractor.setRenew(true);
 
-				auditBuilder.buildAudits(contractor);
+                auditBuilderFactory.buildAudits(contractor);
 
 				for (ContractorAudit cAudit : contractor.getAudits()) {
 					if (cAudit.getAuditType().isPicsPqf()) {
@@ -70,7 +70,7 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 							}
 						}
 
-						auditBuilder.recalculateCategories(cAudit);
+                        auditBuilderFactory.recalculateCategories(cAudit);
 						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 						auditPercentCalculator.percentCalculateComplete(cAudit);
 						auditDataDAO.save(cAudit);

@@ -4,7 +4,7 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
@@ -31,7 +31,7 @@ public class CaoSave extends AuditActionSupport {
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private CaoSaveModel caoSaveModel;
 
@@ -196,7 +196,7 @@ public class CaoSave extends AuditActionSupport {
 	public String refresh() throws RecordNotFoundException, NoRightsException {
 		if (auditID != 0) {
 			findConAudit();
-			auditBuilder.recalculateCategories(conAudit);
+			auditBuilderFactory.recalculateCategories(conAudit);
 			auditPercentCalculator.percentCalculateComplete(conAudit, false);
 			getValidSteps();
 			auditDao.save(conAudit);

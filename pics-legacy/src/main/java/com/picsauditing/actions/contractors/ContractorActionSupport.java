@@ -5,7 +5,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.AccountActionSupport;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
@@ -40,7 +40,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	protected OperatorAccountDAO operatorDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
@@ -727,7 +727,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 				recalculatePQF(pqf);
 
-				auditBuilder.buildAudits(contractor);
+				auditBuilderFactory.buildAudits(contractor);
 			}
 		}
 	}
