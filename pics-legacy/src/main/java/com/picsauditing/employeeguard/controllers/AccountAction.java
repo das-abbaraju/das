@@ -110,7 +110,8 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 			profile = profileEntityService.save(profile, new EntityAuditInfo.Builder().appUserId(User.SYSTEM)
 					.timestamp(DateBean.today()).build());
 
-			EmailHash emailHash = emailHashService.findByHash(hashCode);
+			EmailHash emailHash = emailHashService.findByHash(getRequest()
+					.getParameter("employee_guard_create_account.hashCode"));
 			employeeEntityService.linkEmployeeToProfile(emailHash.getEmployee(), profile);
 			emailHashService.expire(emailHash);
 

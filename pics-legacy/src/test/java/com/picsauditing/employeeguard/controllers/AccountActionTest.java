@@ -196,6 +196,7 @@ public class AccountActionTest extends PicsActionTest {
 		actionContext.setActionInvocation(actionInvocation);
 		when(actionInvocation.getInvocationContext()).thenReturn(actionContext);
 		actionContext.setLocale(Locale.UK);
+		when(request.getParameter("employee_guard_create_account.hashCode")).thenReturn(VALID_EMAIL_HASH_STRING);
 	}
 
 	private void verifyTestInsert(String result) throws FailedLoginException {
