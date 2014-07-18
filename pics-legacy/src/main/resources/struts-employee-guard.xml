@@ -55,7 +55,7 @@
 
         <!-- Invalid Hashcode page -->
         <action name="invalid-hash" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction"
-                method="load"/>
+                method="anonymousLoad"/>
 
     </package>
 
