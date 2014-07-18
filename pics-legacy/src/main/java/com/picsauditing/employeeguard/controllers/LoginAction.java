@@ -58,12 +58,13 @@ public class LoginAction extends PicsRestActionSupport implements AjaxValidator 
 
 	@Anonymous
 	public String index() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
+		EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+		if (emailHashService.invalidHash(emailHash)) {
 			LOG.warn("Invalid hashCode = " + hashCode);
 			throw new PageNotFoundException();
 		}
 
-		EmailHash emailHash = emailHashService.findByHash(hashCode);
 		SoftDeletedEmployee employee = emailHash.getEmployee();
 		if (employee == null) {
 			LOG.warn("Could not find employee for hashCode = " + hashCode);

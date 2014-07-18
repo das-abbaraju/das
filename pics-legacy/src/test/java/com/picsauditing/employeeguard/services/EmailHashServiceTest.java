@@ -49,21 +49,25 @@ public class EmailHashServiceTest {
 
 	@Test
 	public void testHashIsValid() {
+		EmailHash emailHash = new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), 5)).build();
+/*
 		when(emailHashDAO.findByHash(VALID_HASH))
-				.thenReturn(new EmailHashBuilder().expirationDate(DateBean.addDays(DateBean.today(), 5)).build());
+				.thenReturn(emailHash);
+*/
 
-		Boolean result = emailHashService.hashIsValid(VALID_HASH);
-
-		assertTrue(result);
-	}
-
-	@Test
-	public void testHashIsNotValid_EmptyHash() {
-		Boolean result = emailHashService.hashIsValid(null);
+		Boolean result = emailHashService.invalidHash(emailHash);
 
 		assertFalse(result);
 	}
 
+	@Test
+	public void testHashIsNotValid_EmptyHash() {
+		Boolean result = emailHashService.invalidHash(null);
+
+		assertTrue(result);
+	}
+
+/*
 	@Test
 	public void testHashIsNotValid_ExpiredHash() {
 		when(emailHashDAO.findByHash(INVALID_HASH))
@@ -73,6 +77,7 @@ public class EmailHashServiceTest {
 
 		assertFalse(result);
 	}
+*/
 
 	@Test
 	public void testCreateNewHash() throws Exception {

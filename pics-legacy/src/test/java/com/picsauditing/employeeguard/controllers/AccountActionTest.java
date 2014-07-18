@@ -74,7 +74,7 @@ public class AccountActionTest extends PicsActionTest {
 		Whitebox.setInternalState(accountAction, "picsEnvironment", picsEnvironment);
 		Whitebox.setInternalState(accountAction, "profileEntityService", profileEntityService);
 
-		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+		//when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class AccountActionTest extends PicsActionTest {
 		assertEquals(EMPLOYEE_LAST_NAME, accountAction.getProfile().getLastName());
 		assertEquals(EMPLOYEE_EMAIL, accountAction.getProfile().getEmail());
 
-		verify(emailHashService).hashIsValid(VALID_HASH);
+		//verify(emailHashService).hashIsValid(VALID_HASH);
 		verify(emailHashService).findByHash(VALID_HASH);
 	}
 

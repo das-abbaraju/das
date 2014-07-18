@@ -16,11 +16,13 @@ import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.EmailHashService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
+import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.employeeguard.validators.profile.ProfileFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.security.CookieSupport;
 import com.picsauditing.service.authentication.AuthenticationService;
+import com.picsauditing.struts.url.PicsUrlConstants;
 import com.picsauditing.validator.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,16 +55,20 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String index() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
-		}
-
 		EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+		if (emailHashService.invalidHash(emailHash)) {
+			return setUrlForRedirect(EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
+		}
+		else if(emailHashService.isUserRegistered(emailHash)){
+			return setUrlForRedirect(PicsUrlConstants.LOGIN_URL);
+		}
 
 		loadProfile(emailHash);
 
 		return LIST;
 	}
+
 
 	private void loadProfile(final EmailHash emailHash) {
 		profile = new Profile();
@@ -76,8 +82,13 @@ public class AccountAction extends PicsRestActionSupport implements AjaxValidato
 
 	@Anonymous
 	public String create() throws Exception {
-		if (!emailHashService.hashIsValid(hashCode)) {
-			throw new PageNotFoundException();
+		EmailHash emailHash = emailHashService.findByHash(hashCode);
+
+		if (emailHashService.invalidHash(emailHash)) {
+			return setUrlForRedirect(EmployeeGUARDUrlUtils.INVALID_HASH_LINK);
+		}
+		else if(emailHashService.isUserRegistered(emailHash)){
+			return setUrlForRedirect(PicsUrlConstants.LOGIN_URL);
 		}
 
 		return CREATE;

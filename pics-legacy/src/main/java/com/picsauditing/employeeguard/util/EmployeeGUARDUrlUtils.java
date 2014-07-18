@@ -30,6 +30,9 @@ public final class EmployeeGUARDUrlUtils {
 	public static final String DOCUMENT_THUMBNAIL_LINK = "/employee-guard/skillreview/employee/%d/skill/%d/thumbnail";
 	public static final String DOCUMENT_DOWNLOAD_LINK = "/employee-guard/skillreview/employee/%d/skill/%d/download";
 
+	/* Invalid hash link */
+	public static final String INVALID_HASH_LINK = "/employee-guard/invalid-hash";
+
 
 	public static String buildUrl(final String url, final Object... params) {
 		return String.format(url, params);

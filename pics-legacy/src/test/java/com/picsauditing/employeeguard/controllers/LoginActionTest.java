@@ -81,7 +81,8 @@ public class LoginActionTest extends PicsActionTest {
 
 		when(accountService.getAccountById(anyInt())).thenReturn(accountModel);
 		when(picsEnvironment.isLocalhost()).thenReturn(true);
-		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+		when(emailHashService.invalidHash(any(EmailHash.class))).thenReturn(false);
+
 
 		when(emailHashService.findByHash(VALID_HASH)).thenReturn(new EmailHashBuilder()
 				.softDeletedEmployee(new SoftDeletedEmployeeBuilder()
@@ -107,7 +108,7 @@ public class LoginActionTest extends PicsActionTest {
 		assertEquals(EMPLOYEE_FIRST_NAME, loginAction.getProfile().getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, loginAction.getProfile().getLastName());
 		assertEquals(EMPLOYEE_COMPANY_NAME, loginAction.getCompanyName());
-		verify(emailHashService).hashIsValid(VALID_HASH);
+		verify(emailHashService).invalidHash(any(EmailHash.class));
 		verify(emailHashService).findByHash(VALID_HASH);
 	}
 

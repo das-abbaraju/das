@@ -35,7 +35,8 @@ public class EmailHashServiceFactory {
 		emailHash.setEmailAddress(employee.getEmail());
 
 		when(emailHashService.createNewHash(any(Employee.class))).thenReturn(emailHash);
-		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+		when(emailHashService.invalidHash(any(EmailHash.class))).thenReturn(false);
+
 		when(emailHashService.findByHash(anyString())).thenReturn(emailHash);
 
 		return emailHashService;
