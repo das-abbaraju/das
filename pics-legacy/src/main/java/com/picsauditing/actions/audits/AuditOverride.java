@@ -3,18 +3,18 @@ package com.picsauditing.actions.audits;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.actions.contractors.ContractorDocuments;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditOverride extends ContractorDocuments {
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 
 	protected List<Integer> selectedEmployeeIds;
 	List<Employee> employeesLeftList;
@@ -84,7 +84,7 @@ public class AuditOverride extends ContractorDocuments {
 			}
 
 			if ("Create".equals(button)) {
-				auditBuilder.buildAudits(contractor);
+				auditBuilderFactory.buildAudits(contractor);
 
 				if (auditType.isEmployeeSpecificAudit()) {
 					return this.setUrlForRedirect("EmployeeDashboard.action?id=" + id);

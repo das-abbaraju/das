@@ -3,7 +3,7 @@ package com.picsauditing.PICS;
 import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
@@ -44,7 +44,7 @@ public class BillingService {
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
@@ -641,7 +641,7 @@ public class BillingService {
 		contractor.getAudits().add(importAudit);
 		auditTypeDAO.save(importAudit);
 
-		auditBuilder.buildAudits(contractor);
+		auditBuilderFactory.buildAudits(contractor);
 		auditPercentCalculator.percentCalculateComplete(importAudit);
 
 		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE);

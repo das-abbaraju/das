@@ -49,6 +49,10 @@ public class AuditBuilder {
 
 	private Set<String> yearsForAllWCBs;
 
+    public void buildAudits(int conID) {
+
+    }
+
 	public void buildAudits(ContractorAccount contractor) {
 		AuditTypesBuilder typesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
 

@@ -2,10 +2,10 @@ package com.picsauditing.util;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.audits.AuditBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
@@ -26,7 +26,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
@@ -62,7 +62,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				contractor.getAudits().add(importAudit);
 				auditDao.save(importAudit);
 
-				auditBuilder.buildAudits(contractor);
+				auditBuilderFactory.buildAudits(contractor);
 				auditPercentCalculator.percentCalculateComplete(importAudit);
 
 				addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true,

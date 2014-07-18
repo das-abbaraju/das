@@ -9,7 +9,7 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.PICS.data.InvoiceDataEvent;
 import com.picsauditing.PICS.data.PaymentDataEvent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.billing.PaymentService;
 import com.picsauditing.billing.PaymentServiceFactory;
 import com.picsauditing.braintree.BrainTreeHash;
@@ -61,7 +61,7 @@ public class RegistrationMakePayment extends RegistrationAction {
     @Autowired
 	private AppPropertyDAO appPropDao;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -161,7 +161,7 @@ public class RegistrationMakePayment extends RegistrationAction {
 
 		contractorValidator.setOfficeLocationInPqfBasedOffOfAddress(contractor);
 
-		auditBuilder.buildAudits(contractor);
+		auditBuilderFactory.buildAudits(contractor);
 		this.resetActiveAudits();
 
 		// enforcing workflow steps before completing registration

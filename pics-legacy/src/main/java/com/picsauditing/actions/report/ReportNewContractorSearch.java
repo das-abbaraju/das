@@ -7,7 +7,7 @@ import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -51,7 +51,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	@Autowired
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
@@ -281,7 +281,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 				contractor.setAccountLevel(AccountLevel.Full);
 				contractor.setRenew(true);
 
-				auditBuilder.buildAudits(contractor);
+                auditBuilderFactory.buildAudits(contractor);
 
 				for (ContractorAudit cAudit : contractor.getAudits()) {
 					if (cAudit.getAuditType().isPicsPqf()) {
@@ -292,7 +292,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 							}
 						}
 
-						auditBuilder.recalculateCategories(cAudit);
+                        auditBuilderFactory.recalculateCategories(cAudit);
 						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 						auditPercentCalculator.percentCalculateComplete(cAudit);
 						auditDataDAO.save(cAudit);

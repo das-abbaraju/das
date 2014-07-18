@@ -304,6 +304,23 @@ public class AuditBuilder2 {
         this.today = today;
     }
 
+    public void recalculateCategories(Integer auditID) {
+        ContractorAudit conAudit = conAuditDao.find(ContractorAudit.class, auditID);
+        AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
+                conAudit.getContractorAccount());
+
+        Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
+        for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
+            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+                operators.add(caop.getOperator());
+            }
+        }
+
+        Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, operators);
+        fillAuditCategories(conAudit, categories);
+        fillAuditOperators(conAudit, categoriesBuilder.getCaos());
+    }
+
     private void createWCBAudits(ContractorAccount contractor, AuditType auditType) {
 		buildSetOfAllWCBYears(contractor, auditType);
 		Set<String> yearsForWCBs = getAllYearsForNewWCB();

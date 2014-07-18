@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorOperatorDAO;
@@ -38,8 +37,6 @@ public class FacilityChanger {
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	private EmailSender emailSender;
-    @Autowired
-	protected AuditBuilder auditBuilder = null;
     @Autowired
 	private AccountLevelAdjuster accountLevelAdjuster;
     @Autowired

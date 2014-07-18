@@ -2,11 +2,11 @@ package com.picsauditing.actions.report;
 
 import java.util.Iterator;
 
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -53,7 +53,7 @@ public class ReportBiddingContractors extends ReportAccount {
 	@Autowired
 	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
-	protected AuditBuilder auditBuilderController;
+	protected AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private EmailSender emailSender;
     @Autowired
@@ -91,7 +91,7 @@ public class ReportBiddingContractors extends ReportAccount {
 		contractor.setAccountLevel(AccountLevel.Full);
 		contractor.setRenew(true);
 
-		auditBuilderController.buildAudits(contractor);
+		auditBuilderFactory.buildAudits(contractor);
 
 		for (ContractorAudit cAudit : contractor.getAudits()) {
 			if (cAudit.getAuditType().isPicsPqf()) {
@@ -102,7 +102,7 @@ public class ReportBiddingContractors extends ReportAccount {
 					}
 				}
 
-				auditBuilderController.recalculateCategories(cAudit);
+				auditBuilderFactory.recalculateCategories(cAudit);
 				auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
 				auditPercentCalculator.percentCalculateComplete(cAudit);
 				contractorAuditDAO.save(cAudit);

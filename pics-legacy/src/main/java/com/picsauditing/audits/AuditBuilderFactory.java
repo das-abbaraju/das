@@ -34,6 +34,14 @@ public class AuditBuilderFactory {
         }
     }
 
+    public void recalculateCategories(ContractorAudit audit) {
+        if (newAuditBuilderEnabled()) {
+            newAuditBuilder.recalculateCategories(audit.getId());
+        } else {
+            auditBuilder.recalculateCategories(audit);
+        }
+    }
+
     private static boolean newAuditBuilderEnabled() {
         try {
             return Features.USE_NEW_AUDIT_BUILDER.isActive();

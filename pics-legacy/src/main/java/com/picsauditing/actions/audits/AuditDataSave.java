@@ -2,7 +2,7 @@ package com.picsauditing.actions.audits;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
-import com.picsauditing.audits.AuditBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditCategoriesBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
@@ -59,7 +59,7 @@ public class AuditDataSave extends AuditActionSupport {
 	@Autowired
 	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
-	private AuditBuilder auditBuilder;
+	private AuditBuilderFactory auditBuilderFactory;
     @Autowired
     private CaoSaveModel caoSaveModel;
     private boolean verifyButton;
@@ -198,7 +198,7 @@ public class AuditDataSave extends AuditActionSupport {
 
 				AuditQuestion checkRecalculateCategories = questionDao.find(currentQuestionId);
 				if (checkRecalculateCategories.isRecalculateCategories()) {
-					auditBuilder.recalculateCategories(tempAudit);
+					auditBuilderFactory.recalculateCategories(tempAudit);
 					auditDao.save(tempAudit);
 				}
 
@@ -309,7 +309,7 @@ public class AuditDataSave extends AuditActionSupport {
 
     private void recalculateAuditCatData(AuditCatData catData) {
         if (checkDependentQuestions() || checkOtherRules()) {
-            auditBuilder.recalculateCategories(conAudit);
+            auditBuilderFactory.recalculateCategories(conAudit);
             auditPercentCalculator.percentCalculateComplete(conAudit, true);
             auditDao.save(conAudit);
         } else if (catData != null) {
