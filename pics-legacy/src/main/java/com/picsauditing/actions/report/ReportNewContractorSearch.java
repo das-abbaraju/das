@@ -184,7 +184,7 @@ public class ReportNewContractorSearch extends ReportAccount {
 	}
 
     private boolean isZipPresent(String zip) {
-        if(StringUtils.isEmpty(zip) || zip.contains("Zip")|| zip.contains("null")){
+        if(StringUtils.isEmpty(zip) || zip.contains("Zip")|| zip.contains("null") || zip.equals(getFilter().getDefaultZip())){
             return false;
         }
         return true;
