@@ -7,9 +7,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.picsauditing.report.fields.Field;
-import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.FieldImportance;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.json.simple.JSONArray;
 import org.junit.Before;
@@ -53,13 +50,24 @@ public class ReportDataConverterTest extends PicsTranslationTest {
 		JSONArray json = runJsonConverter(queryResults);
 
 		assertEquals(1, json.size());
-		String expected = "\\[\\{\"ContractorTrades\":\"1, 2, 3, 4, 5\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ \\d{2}:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
+		String expected = "\\[\\{\"ContractorTrades\":\"1, 2, 3, 4, 5\",\"AccountCountry\":\"Canada\",\"AccountID\":1," +
+                "\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"" + getTimezoneSafeDateTime() + "\"," +
+                "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null," +
+                "\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"" + getTimezoneSafeDate() + "\"\\}\\]";
         String jsonString = json.toString();
         Pattern pattern = Pattern.compile(expected);
         Matcher matcher = pattern.matcher(jsonString);
 
-        assertTrue(matcher.matches());
+        assertTrue("JSON String doesn't match", matcher.matches());
 	}
+
+    private String getTimezoneSafeDate() {
+        return "1970-01-\\d{2}";
+    }
+
+    private String getTimezoneSafeDateTime() {
+        return getTimezoneSafeDate() + " @ \\d{2}:\\d{2}";
+    }
 
 	@Test
 	public void testConvertQueryResultsToJson_Simple() {
@@ -87,12 +95,15 @@ public class ReportDataConverterTest extends PicsTranslationTest {
         JSONArray json = reportResults.toJson();
 
         assertEquals(1, json.size());
-        String expected = "\\[\\{\"ContractorTrades\":\"a, b, c, d, e\",\"AccountCountry\":\"Canada\",\"AccountID\":1,\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"1970-01-14 @ \\d{2}:56\",\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null,\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"1970-01-14\"\\}\\]";
+        String expected = "\\[\\{\"ContractorTrades\":\"a, b, c, d, e\",\"AccountCountry\":\"Canada\",\"AccountID\":1," +
+                "\"AccountName\":\"Test 1\",\"AccountCreationDate\":\"" + getTimezoneSafeDateTime() + "\"," +
+                "\"ContractorMembershipDate__Month\":\"janvier\",\"ContractorLastUpgradeDate\":null," +
+                "\"AccountZip\":\"92614\",\"ContractorMembershipDate\":\"" + getTimezoneSafeDate() + "\"\\}\\]";
         String jsonString = json.toString();
         Pattern pattern = Pattern.compile(expected);
         Matcher matcher = pattern.matcher(jsonString);
 
-        assertTrue(matcher.matches());
+        assertTrue("JSON String doesn't match", matcher.matches());
     }
 
 	@Test
