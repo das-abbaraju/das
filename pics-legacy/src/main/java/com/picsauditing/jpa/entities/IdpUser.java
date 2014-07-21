@@ -11,14 +11,11 @@ import javax.persistence.Column;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "idp_user")
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class IdpUser extends BaseTable {
+
     private static final Logger logger = LoggerFactory.getLogger(IdpUser.class);
-
     private User user;
-
     private String idpUserName;
-
     private String idp;
 
 
@@ -32,7 +29,7 @@ public class IdpUser extends BaseTable {
         this.user = user;
     }
 
-    @Column(name = "idpusername", length = 200, nullable = false)
+    @Column(name = "idpUserName")
     public String getIdpUserName() {
         return idpUserName;
     }
@@ -41,7 +38,7 @@ public class IdpUser extends BaseTable {
         this.idpUserName = idpUserName;
     }
 
-    @Column(name = "idp", length = 200, nullable = false)
+    @Column(name = "idp")
     public String getIdp() {
         return idp;
     }

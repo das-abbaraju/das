@@ -1,8 +1,6 @@
 package com.picsauditing.access;
 
-import com.picsauditing.access.LDAPService;
 import com.picsauditing.jpa.entities.IdpUser;
-import com.picsauditing.jpa.entities.User;
 import com.picsauditing.service.user.IdpUserService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,11 +8,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import static junit.framework.Assert.assertEquals;
@@ -29,7 +25,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ActiveDirectoryLdapAuthenticationProvider.class)
-public class LDAPServiceTest {
+public class LdapServiceTest {
 
     @Mock
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
@@ -40,7 +36,7 @@ public class LDAPServiceTest {
     @Mock
     private IdpUser idpUser;
 
-    private LDAPService ldapService;
+    private LdapService ldapService;
 
     private String USERNAME = "joesixpack";
 
@@ -49,9 +45,9 @@ public class LDAPServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        ldapService = new LDAPService();
+        ldapService = new LdapService();
         ldapActiveDirectoryAuthProvider = mock(ActiveDirectoryLdapAuthenticationProvider.class);
-        when(idpUserService.loadIdpUserBy(USERNAME, LDAPService.PICSAD)).thenReturn(idpUser);
+        when(idpUserService.loadIdpUserBy(USERNAME, LdapService.PICSAD)).thenReturn(idpUser);
 
         Whitebox.setInternalState(ldapService, "ldapActiveDirectoryAuthProvider", ldapActiveDirectoryAuthProvider);
         Whitebox.setInternalState(ldapService, "idpUserService", idpUserService);
@@ -60,7 +56,7 @@ public class LDAPServiceTest {
 
     @Test
     public void testDoLDAPLoginAuthentication() throws Exception {
-        boolean result = ldapService.doLDAPLoginAuthentication(LDAPService.PICSAD, USERNAME, PASSWORD);
+        boolean result = ldapService.doLdapLoginAuthentication(LdapService.PICSAD, USERNAME, PASSWORD);
 
         Assert.assertFalse(result);
     }
@@ -73,15 +69,15 @@ public class LDAPServiceTest {
     }
 
     @Test
-    public void testGetPICSLdapUser() throws Exception {
-        String result = Whitebox.invokeMethod(ldapService, "appendPICSLdapDomain", USERNAME);
+    public void testGetPicsLdapUser() throws Exception {
+        String result = Whitebox.invokeMethod(ldapService, "appendPicsLdapDomain", USERNAME);
 
-        assertEquals(result, USERNAME + LDAPService.PICS_CORP);
+        assertEquals(result, USERNAME + LdapService.PICS_CORP);
     }
 
     @Test
     public void testIsValidIdp() throws Exception {
-        boolean result = ldapService.isValidIdp(LDAPService.PICSAD);
+        boolean result = ldapService.isValidIdp(LdapService.PICSAD);
 
         assertTrue(result);
     }
@@ -94,7 +90,7 @@ public class LDAPServiceTest {
     }
 
     @Test
-    public void testIsValidIdp_InvalidText() throws Exception {
+    public void testIsValidIdp_invalidText() throws Exception {
         boolean result = ldapService.isValidIdp("test");
 
         assertFalse(result);

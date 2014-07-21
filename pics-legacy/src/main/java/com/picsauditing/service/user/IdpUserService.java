@@ -14,21 +14,20 @@ import java.util.Date;
 
 public class IdpUserService {
 
-   	@Autowired
-	private IdpUserDAO idpUserDAO;
+    @Autowired
+    private IdpUserDAO idpUserDAO;
 
     private static final Logger logger = LoggerFactory.getLogger(IdpUserService.class);
 
     public IdpUser loadIdpUser(int id) {
         return idpUserDAO.find(id);
-	}
+    }
 
-	public IdpUser loadIdpUserBy(String idpUserName,String idp) {
-        return idpUserDAO.findBy(idpUserName,idp);
-	}
+    public IdpUser loadIdpUserBy(String idpUserName, String idp) {
+        return idpUserDAO.findBy(idpUserName, idp);
+    }
 
     public void saveIdpUser(IdpUser user) {
         idpUserDAO.save(user);
     }
-
 }

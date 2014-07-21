@@ -82,7 +82,7 @@ public class LoginController extends PicsActionSupport {
     private UserService userService;
 
     @Autowired
-    private LDAPService ldapService;
+    private LdapService ldapService;
 
     @Autowired
     private IdpUserService idpUserService;
@@ -129,7 +129,7 @@ public class LoginController extends PicsActionSupport {
         } else if (switchToUser > 0) {
             return switchTo();
         } else if (isValidIdp(idp)) {
-            return loginUsingLDAP();
+            return loginUsingLdap();
         } else {
             return loginNormally();
         }
@@ -452,7 +452,7 @@ public class LoginController extends PicsActionSupport {
         }
     }
 
-    private String loginUsingLDAP() throws Exception {
+    private String loginUsingLdap() throws Exception {
         if (!verifyCookiesAreEnabled()) {
             return ERROR;
         }
@@ -462,7 +462,7 @@ public class LoginController extends PicsActionSupport {
             String picsUserName = null;
 
             if (idpUser != null) {
-                isLdapAuthenticated = ldapService.doLDAPLoginAuthentication(idp, username, password);
+                isLdapAuthenticated = ldapService.doLdapLoginAuthentication(idp, username, password);
                 picsUserName = idpUser.getUser().getUsername();
             }
             AppUser appUser = appUserService.findByUsername(picsUserName);

@@ -9,7 +9,6 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountLockedException;
@@ -50,14 +49,14 @@ public class LoginService {
     }
 
     public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
-        verify(user, username, password);
+        verifyPreLoginConditions(user, username, password);
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
 
         return loginContext;
     }
 
-    private void verify(User user, String username, String password) throws LoginException {
+    private void verifyPreLoginConditions(User user, String username, String password) throws LoginException {
         verifyUserExists(user, username);
         verifyUserStatusForLogin(user);
         verifyPasswordIsCorrect(user, password);

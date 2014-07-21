@@ -1,10 +1,8 @@
 package com.picsauditing.access;
 
 import com.picsauditing.featuretoggle.Features;
-import com.picsauditing.jpa.entities.IdpUser;
 import com.picsauditing.service.user.IdpUserService;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +14,12 @@ import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAu
 import javax.security.auth.login.FailedLoginException;
 
 
-public class LDAPService {
+public class LdapService {
 
     public static final String PICS_CORP = "@PICS.CORP";
     public static final String PICSAD = "picsad";
 
-    private static final Logger logger = LoggerFactory.getLogger(LDAPService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LdapService.class);
 
     @Autowired
     private ActiveDirectoryLdapAuthenticationProvider ldapActiveDirectoryAuthProvider;
@@ -29,7 +27,7 @@ public class LDAPService {
     @Autowired
     private IdpUserService idpUserService;
 
-    public boolean doLDAPLoginAuthentication(String idp, String username, String password) throws FailedLoginException {
+    public boolean doLdapLoginAuthentication(String idp, String username, String password) throws FailedLoginException {
         switch (idp) {
             case PICSAD:
                 return doPICSLdapAuthentication(username, password);
@@ -37,7 +35,7 @@ public class LDAPService {
         return false;
     }
 
-    private String appendPICSLdapDomain(String username) {
+    private String appendPicsLdapDomain(String username) {
         StringBuilder picsDomain = new StringBuilder();
         picsDomain.append(username);
         picsDomain.append(PICS_CORP);
@@ -46,7 +44,7 @@ public class LDAPService {
 
     private boolean doPICSLdapAuthentication(String userName, String password) throws FailedLoginException {
         if (Features.USE_LDAP_AUTHENTICATION.isActive()) {
-            String picsLdapDomain = appendPICSLdapDomain(userName);
+            String picsLdapDomain = appendPicsLdapDomain(userName);
             try {
                 ldapActiveDirectoryAuthProvider.setConvertSubErrorCodesToExceptions(true);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(picsLdapDomain, password);
@@ -59,7 +57,6 @@ public class LDAPService {
         }
         return false;
     }
-
     public boolean isValidIdp(String idp) {
         if (StringUtils.isEmpty(idp)) {
             return false;

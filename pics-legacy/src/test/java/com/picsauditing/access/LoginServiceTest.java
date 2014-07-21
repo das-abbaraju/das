@@ -55,7 +55,7 @@ public class LoginServiceTest {
     private UserDAO userDAO;
 
     @Mock
-    private LDAPService ldapService;
+    private LdapService ldapService;
 
     @Before
     public void setUp() throws Exception {

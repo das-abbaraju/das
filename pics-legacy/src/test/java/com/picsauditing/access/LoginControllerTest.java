@@ -30,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
-import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.servlet.http.Cookie;
 import java.util.*;
@@ -98,7 +97,7 @@ public class LoginControllerTest extends PicsActionTest {
 
 
     @Mock
-    private LDAPService ldapService;
+    private LdapService ldapService;
 
     @AfterClass
     public static void tearDown() throws Exception {
