@@ -197,30 +197,12 @@ public class ReportFilterAccountTest extends PicsActionTest {
 	}
 
 	@Test
-	public void testGetAccountName_Null() {
-		accountFilter.setAccountName(null);
-
-		accountFilter.getAccountName();
-
-		verify(translationService).getText(eq("global.CompanyName"), (Locale) any());
-	}
-
-	@Test
 	public void testGetAccountName_NotNull() {
 		accountFilter.setAccountName("Account Name");
 
 		accountFilter.getAccountName();
 
 		verify(translationService, never()).getText("global.CompanyName", Locale.ENGLISH);
-	}
-
-	@Test
-	public void testGetCity_Null() {
-		accountFilter.setCity(null);
-
-		accountFilter.getCity();
-
-		verify(translationService).getText(eq("global.City"), (Locale) any());
 	}
 
 	@Test
@@ -256,15 +238,6 @@ public class ReportFilterAccountTest extends PicsActionTest {
 		// The new setter code ignores a String[] with one empty string, so the
 		// field should still be null:
 		assertNull(accountFilter.getLocation());
-	}
-
-	@Test
-	public void testGetZip_Null() {
-		accountFilter.setZip(null);
-
-		accountFilter.getZip();
-
-		verify(translationService).getText(eq("global.ZipPostalCode"), (Locale) any());
 	}
 
 	@Test
