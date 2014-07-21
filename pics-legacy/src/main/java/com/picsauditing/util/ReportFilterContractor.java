@@ -476,10 +476,6 @@ public class ReportFilterContractor extends ReportFilterAccount {
 	}
 
 	public String getTaxID() {
-		if (Strings.isEmpty(taxID)) {
-			taxID = getDefaultTaxID();
-		}
-
 		return taxID;
 	}
 
