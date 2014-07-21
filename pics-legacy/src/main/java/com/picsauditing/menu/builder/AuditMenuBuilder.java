@@ -273,12 +273,15 @@ public class AuditMenuBuilder {
 
 			if (hasEmployeeGUARD && (permissions.isPicsEmployee() || permissions.isAdmin())) {
 
-				MenuComponent notPermitted = new MenuComponent("Not Permitted", Strings.EMPTY_STRING);
+				MenuComponent notPermitted = new MenuComponent(
+						getText("global.Menu.EmployeeGUARD.PICS_ADMIN.Not_Permitted"), Strings.EMPTY_STRING);
 
 				addToServiceMenu(Service.EMPLOYEEGUARD, notPermitted);
 				addLegacyEmployeeGUARDSubMenu();
 			} else if (hasEmployeeGUARD && permissions.isOperatorCorporate()) {
-				MenuComponent assignments = new MenuComponent("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
+				MenuComponent assignments = new MenuComponent(
+						getText("global.Menu.EmployeeGUARD.Operator_Corporate.Assignments"),
+						EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
 				addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
 				addLegacyEmployeeGUARDSubMenu();
 			} else if (hasEmployeeGUARD && permissions.isContractor()) {
@@ -293,19 +296,24 @@ public class AuditMenuBuilder {
 	}
 
 	private void buildEmployeeGUARDMenu() {
-		MenuComponent summary = new MenuComponent("Summary", EmployeeGUARDUrlUtils.CONTRACTOR_SUMMARY);
+		MenuComponent summary = new MenuComponent(getText("global.Menu.EmployeeGUARD.Contractor.Summary"),
+				EmployeeGUARDUrlUtils.CONTRACTOR_SUMMARY);
 		addToServiceMenu(Service.EMPLOYEEGUARD, summary);
 
-		MenuComponent employees = new MenuComponent("Employees", EmployeeGUARDUrlUtils.CONTRACTOR_EMPLOYEES);
+		MenuComponent employees = new MenuComponent(getText("global.Menu.EmployeeGUARD.Contractor.Employees"),
+				EmployeeGUARDUrlUtils.CONTRACTOR_EMPLOYEES);
 		addToServiceMenu(Service.EMPLOYEEGUARD, employees);
 
-		MenuComponent assignments = new MenuComponent("Employee Assignments", EmployeeGUARDUrlUtils.CONTRACTOR_ASSIGNMENTS);
+		MenuComponent assignments = new MenuComponent(getText("global.Menu.EmployeeGUARD.Contractor.Assignments"),
+				EmployeeGUARDUrlUtils.CONTRACTOR_ASSIGNMENTS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, assignments);
 
-		MenuComponent groups = new MenuComponent("Employee Groups", EmployeeGUARDUrlUtils.CONTRACTOR_GROUPS);
+		MenuComponent groups = new MenuComponent(getText("global.Menu.EmployeeGUARD.Contractor.Groups"),
+				EmployeeGUARDUrlUtils.CONTRACTOR_GROUPS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, groups);
 
-		MenuComponent skills = new MenuComponent("Skills", EmployeeGUARDUrlUtils.CONTRACTOR_SKILLS);
+		MenuComponent skills = new MenuComponent(getText("global.Menu.EmployeeGUARD.Contractor.Skills"),
+				EmployeeGUARDUrlUtils.CONTRACTOR_SKILLS);
 		addToServiceMenu(Service.EMPLOYEEGUARD, skills);
 	}
 

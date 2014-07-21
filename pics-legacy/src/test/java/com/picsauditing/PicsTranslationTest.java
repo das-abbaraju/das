@@ -2,6 +2,7 @@ package com.picsauditing;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.picsauditing.i18n.service.TranslationService;
+import com.picsauditing.service.i18n.EchoTranslationService;
 import org.junit.*;
 import org.mockito.Mockito;
 
@@ -31,6 +32,13 @@ public abstract class PicsTranslationTest {
         TranslationServiceFactory.registerNonLoggingTranslationService(null);
 	}
 
+	public void setupEchoTranslationService() {
+		EchoTranslationService echoTranslationService = new EchoTranslationService();
+
+		TranslationServiceFactory.registerTranslationService(echoTranslationService);
+		TranslationServiceFactory.registerNonLoggingTranslationService(echoTranslationService);
+	}
+
     public void assertEmitsRequiredLanguageError(ActionSupport action) {
         boolean foundError = false;
         for (String error : action.getActionErrors()) {
@@ -41,6 +49,4 @@ public abstract class PicsTranslationTest {
         }
         assertTrue(foundError);
     }
-
-
 }

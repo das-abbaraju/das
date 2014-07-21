@@ -30,6 +30,7 @@ import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
 public class AuditMenuBuilderTest extends PicsTranslationTest {
+
 	private AuditMenuBuilder auditMenuBuilder;
 
 	@Mock

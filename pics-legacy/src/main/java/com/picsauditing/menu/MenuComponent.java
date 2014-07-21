@@ -1,6 +1,8 @@
 package com.picsauditing.menu;
 
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -245,4 +247,8 @@ public class MenuComponent implements Serializable, Comparable<MenuComponent> {
     public void sortChildren() {
         Collections.sort(children);
     }
+
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
 }
