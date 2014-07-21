@@ -1,12 +1,5 @@
 package com.picsauditing.util;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -17,9 +10,16 @@ import org.json.simple.JSONValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
 public class GoogleTranslate {
 
-	private static String apikey = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
+	private static String apikey = "AIzaSyB_2vVGi6xipomXYbKHDZHsqjZGAYLAWV8";
 	private static boolean useV1 = false;
 	private static final Logger logger = LoggerFactory.getLogger(GoogleTranslate.apikey);
 	public static void main(String[] args) {
