@@ -63,7 +63,7 @@ public class LdapServiceTest {
 
     @Test
     public void testDoPICSLdapAuthentication() throws Exception {
-        boolean result = Whitebox.invokeMethod(ldapService, "doPICSLdapAuthentication", USERNAME, PASSWORD);
+        boolean result = Whitebox.invokeMethod(ldapService, "doPicsLdapAuthentication", USERNAME, PASSWORD);
 
         assertFalse(result);
     }

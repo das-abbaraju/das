@@ -30,7 +30,7 @@ public class LdapService {
     public boolean doLdapLoginAuthentication(String idp, String username, String password) throws FailedLoginException {
         switch (idp) {
             case PICSAD:
-                return doPICSLdapAuthentication(username, password);
+                return doPicsLdapAuthentication(username, password);
         }
         return false;
     }
@@ -42,7 +42,7 @@ public class LdapService {
         return picsDomain.toString();
     }
 
-    private boolean doPICSLdapAuthentication(String userName, String password) throws FailedLoginException {
+    private boolean doPicsLdapAuthentication(String userName, String password) throws FailedLoginException {
         if (Features.USE_LDAP_AUTHENTICATION.isActive()) {
             String picsLdapDomain = appendPicsLdapDomain(userName);
             try {
