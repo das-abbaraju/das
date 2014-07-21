@@ -70,6 +70,10 @@
 
 		<s:if test="filter.showAccountName">
 			<div class="filterOption">
+                <span class="q_status">
+					<s:text name="filter.accountName" />
+					:
+			    </span>
 				<s:textfield name="filter.accountName" cssClass="forms" size="18" />
 			</div>
 		</s:if>
@@ -230,6 +234,10 @@
 
 		<s:if test="filter.showTaxID">
 			<div class="filterOption">
+                <span class="q_status">
+					<s:text name="filter.taxID" />
+					:
+			    </span>
 				<s:textfield name="filter.taxID" cssClass="forms" size="9"
 					title="%{getTextNullSafe('Filters.MustBe9Digits')}" />
 			</div>

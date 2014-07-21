@@ -169,10 +169,6 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getAccountName() {
-		if (Strings.isEmpty(accountName)) {
-			accountName = getDefaultName();
-		}
-
 		return accountName;
 	}
 
@@ -181,10 +177,6 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getCity() {
-		if (Strings.isEmpty(city)) {
-			city = getDefaultCity();
-		}
-
 		return city;
 	}
 
@@ -206,10 +198,6 @@ public class ReportFilterAccount extends ReportFilter {
 	}
 
 	public String getZip() {
-		if (Strings.isEmpty(zip)) {
-			zip = getDefaultZip();
-		}
-
 		return zip;
 	}
 

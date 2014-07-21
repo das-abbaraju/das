@@ -87,18 +87,6 @@ public class ReportNewContractorSearchTest extends PicsTest {
     }
 
     @Test
-    public void testBuildQuery_ifDefaultBillingZip_dontAddWhereClause() {
-        reportNewContractorSearch.getFilter().setShowPostalCode(true);
-        reportNewContractorSearch.getFilter().setZip("- Post Code -");
-        when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
-
-        reportNewContractorSearch.buildQuery();
-
-        SelectAccount sql = reportNewContractorSearch.sql;
-        assertFalse(sql.toString().contains("a.zip = "));
-    }
-
-    @Test
     public void testCalculateOverallFlags_notOperator() throws Exception {
         Whitebox.invokeMethod(reportNewContractorSearch, "calculateOverallFlags");
     }
