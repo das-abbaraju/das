@@ -50,10 +50,6 @@ public class LoginControllerTest extends PicsActionTest {
     private int NOT_ZERO = 1;
     private int SWITCH_USER_ID = 2;
 
-    private static final String LDAP_DOMAIN = "pics.corp";
-    private static final String LDAP_URL = "ldap://test.corp:389/";
-
-
     @Mock
     protected AppPropertyDAO propertyDAO;
     @Mock
@@ -101,6 +97,9 @@ public class LoginControllerTest extends PicsActionTest {
     private PermissionBuilder permissionBuilder;
 
 
+    @Mock
+    private LDAPService ldapService;
+
     @AfterClass
     public static void tearDown() throws Exception {
         PicsActionTest.classTearDown();
@@ -136,6 +135,7 @@ public class LoginControllerTest extends PicsActionTest {
         Whitebox.setInternalState(loginController, "loginService", loginService);
         Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
         Whitebox.setInternalState(loginController, "appUserService", appUserService);
+        Whitebox.setInternalState(loginController, "ldapService", ldapService);
 
         setupSpringUtils();
 
@@ -408,7 +408,7 @@ public class LoginControllerTest extends PicsActionTest {
         account.setType("Admin");
         when(userService.findById(anyInt())).thenReturn(user);
         when(user.getAccount()).thenReturn(account);
-        when(loginService.doPreLoginVerification( user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         when(loginContext.getUser()).thenReturn(user);
         String actionResult = loginController.execute();
@@ -493,7 +493,7 @@ public class LoginControllerTest extends PicsActionTest {
         normalLoginSetup();
         when(userService.isPasswordExpired(user)).thenReturn(false);
         when(userService.findById(anyInt())).thenReturn(user);
-        when(loginService.doPreLoginVerification( user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         Account account = new Account();
         account.setType("Admin");
