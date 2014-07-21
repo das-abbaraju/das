@@ -468,6 +468,7 @@ public class LoginController extends PicsActionSupport {
             AppUser appUser = appUserService.findByUsername(picsUserName);
             if (loginLdapFailed(isLdapAuthenticated, appUser)) {
                 setActionErrorHeader(getText("Login.Failed"));
+                logAndMessageError(getText("Login.LdapPasswordIncorrect"));
                 return ERROR;
             } else {
                 user = userService.findByAppUserId(appUser.getId());
@@ -505,7 +506,6 @@ public class LoginController extends PicsActionSupport {
     }
 
     private boolean loginLdapFailed(boolean isLdapAuthenticated, AppUser appUser) throws Exception {
-        logAndMessageError(getText("Login.LdapPasswordIncorrect"));
         return appUser == null || !isLdapAuthenticated;
     }
 
