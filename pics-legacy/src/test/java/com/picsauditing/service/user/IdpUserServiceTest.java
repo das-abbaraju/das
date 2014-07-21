@@ -27,36 +27,36 @@ public class IdpUserServiceTest {
     public static final String IDP = "idp";
     IdpUserService idpUserService = new IdpUserService();
 
-	@Mock
-	private User user;
+    @Mock
+    private User user;
 
     @Mock
     private IdpUser idpUser;
 
-	@Mock
-	private IdpUserDAO idpUserDAO;
+    @Mock
+    private IdpUserDAO idpUserDAO;
     @Mock
     private AppUserService appUserService;
     @Mock
     private AppUser appUser;
-	@Mock
-	private Account account;
+    @Mock
+    private Account account;
 
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
+    @Before
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
 
-		Whitebox.setInternalState(idpUserService, "idpUserDAO", idpUserDAO);
-	}
+        Whitebox.setInternalState(idpUserService, "idpUserDAO", idpUserDAO);
+    }
 
-	@Test
-	public void testLoadIdpUser() throws Exception {
+    @Test
+    public void testLoadIdpUser() throws Exception {
         when(idpUserDAO.find(anyInt())).thenReturn(idpUser);
 
-		IdpUser result = idpUserService.loadIdpUser(1);
+        IdpUser result = idpUserService.loadIdpUser(1);
 
-		assertTrue(result != null);
-	}
+        assertTrue(result != null);
+    }
 
     @Test
     public void testLoadIdpUserBy() throws Exception {
@@ -65,7 +65,7 @@ public class IdpUserServiceTest {
 
         IdpUser result = idpUserService.loadIdpUserBy(IDPUSERNAME, IDP);
 
-        assertTrue(result!=null);
+        assertTrue(result != null);
     }
 
     @Test
