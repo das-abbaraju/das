@@ -250,7 +250,11 @@
     <include file="./liquibase/2014/Q3/cfranks7_PICS-15083_delete_rows_app_error_log.sql"/>
     <include file="./liquibase/2014/Q3/akafagy1_PICS-15646_Change_AUS_Pricing.sql"/>
 
-    <!-- 7.2.20 -->
+    <!-- 7.3.1 -->
     <include file="./liquibase/2014/Q3/dalvarado12_US1087_add_billable_entity.sql"/>
+
+    <!-- 7.3.2 -->
+    <include file="./liquibase/2014/Q3/dabbaraju4_US1086_TA2659_Create_New_Idp_User_Table.sql"/>
+    <include file="./liquibase/2014/Q3/dabbaraju5_US1086_TA2659_Insert_Idp_User_Table.sql"/>
 
 </databaseChangeLog>
