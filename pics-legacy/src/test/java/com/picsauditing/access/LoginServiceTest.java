@@ -55,7 +55,7 @@ public class LoginServiceTest {
     private UserDAO userDAO;
 
     @Mock
-    private LDAPService ldapService;
+    private LdapService ldapService;
 
     @Before
     public void setUp() throws Exception {
@@ -73,7 +73,6 @@ public class LoginServiceTest {
         Whitebox.setInternalState(loginService, "profileService", profileService);
         Whitebox.setInternalState(loginService, "userService", userService);
         Whitebox.setInternalState(loginService, "userDAO", userDAO);
-        Whitebox.setInternalState(loginService, "ldapService", ldapService);
 
     }
 

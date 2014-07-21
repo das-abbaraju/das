@@ -9,7 +9,6 @@ import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountLockedException;
@@ -32,14 +31,10 @@ public class LoginService {
     @Autowired
     private UserDAO userDAO;
 
-    @Autowired
-    private LDAPService ldapService;
-
     // todo: This is only part of the login process. Extract code from LoginController to make this complete.
     public User loginNormally(String username, String password) throws LoginException {
-
         User user = loadUserByUsername(username);
-        return doPreLoginVerification(null, user, username, password).getUser();
+        return doPreLoginVerification(user, username, password).getUser();
     }
 
     public User getUserForUserName(String username) throws LoginException {
@@ -50,23 +45,18 @@ public class LoginService {
         } else {
             user = userDAO.findUserByAppUserID(appUser.getId());
         }
-
         return user;
     }
 
-    public LoginContext doPreLoginVerification(String idp, User user, String username, String password) throws LoginException {
-        if (StringUtils.isNotEmpty(idp)) {
-            ldapService.doLDAPLoginAuthentication(idp, username, password);
-        } else {
-            doPreLoginVerification(user, username, password);
-        }
+    public LoginContext doPreLoginVerification(User user, String username, String password) throws LoginException {
+        verifyPreLoginConditions(user, username, password);
         LoginContext loginContext = new LoginContext();
         loginContext.setUser(user);
 
         return loginContext;
     }
 
-    private void doPreLoginVerification(User user, String username, String password) throws LoginException {
+    private void verifyPreLoginConditions(User user, String username, String password) throws LoginException {
         verifyUserExists(user, username);
         verifyUserStatusForLogin(user);
         verifyPasswordIsCorrect(user, password);

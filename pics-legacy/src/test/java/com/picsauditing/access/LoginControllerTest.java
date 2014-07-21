@@ -30,7 +30,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.powermock.reflect.Whitebox;
-import org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider;
 
 import javax.servlet.http.Cookie;
 import java.util.*;
@@ -49,10 +48,6 @@ public class LoginControllerTest extends PicsActionTest {
     private LoginController loginController;
     private int NOT_ZERO = 1;
     private int SWITCH_USER_ID = 2;
-
-    private static final String LDAP_DOMAIN = "pics.corp";
-    private static final String LDAP_URL = "ldap://test.corp:389/";
-
 
     @Mock
     protected AppPropertyDAO propertyDAO;
@@ -101,6 +96,9 @@ public class LoginControllerTest extends PicsActionTest {
     private PermissionBuilder permissionBuilder;
 
 
+    @Mock
+    private LdapService ldapService;
+
     @AfterClass
     public static void tearDown() throws Exception {
         PicsActionTest.classTearDown();
@@ -136,6 +134,7 @@ public class LoginControllerTest extends PicsActionTest {
         Whitebox.setInternalState(loginController, "loginService", loginService);
         Whitebox.setInternalState(loginController, "supportedLanguages", languageModel);
         Whitebox.setInternalState(loginController, "appUserService", appUserService);
+        Whitebox.setInternalState(loginController, "ldapService", ldapService);
 
         setupSpringUtils();
 
@@ -408,7 +407,7 @@ public class LoginControllerTest extends PicsActionTest {
         account.setType("Admin");
         when(userService.findById(anyInt())).thenReturn(user);
         when(user.getAccount()).thenReturn(account);
-        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         when(loginContext.getUser()).thenReturn(user);
         String actionResult = loginController.execute();
@@ -493,7 +492,7 @@ public class LoginControllerTest extends PicsActionTest {
         normalLoginSetup();
         when(userService.isPasswordExpired(user)).thenReturn(false);
         when(userService.findById(anyInt())).thenReturn(user);
-        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
         Account account = new Account();
         account.setType("Admin");
@@ -515,7 +514,7 @@ public class LoginControllerTest extends PicsActionTest {
         account.setType("Admin");
         when(user.getAccount()).thenReturn(account);
         when(loginContext.getUser()).thenReturn(user);
-        when(loginService.doPreLoginVerification(null, user, USER_NAME, PASSWORD)).thenReturn(loginContext);
+        when(loginService.doPreLoginVerification(user, USER_NAME, PASSWORD)).thenReturn(loginContext);
 
 
         String actionResult = loginController.execute();
