@@ -35,6 +35,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	public static final int USER_ID = 123;
 	public static final int SWITCHED_TO_ID = 456;
 	public static final int APP_USER_ID = 54321;
+	public static final String ACTION_LINK = "ActionLink";
 
 	@Mock
 	private Permissions permissions;
@@ -144,7 +145,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Test
 	public void testBuildMenubar_OperatorClientSitesActivityWatch() throws Exception {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.isOperatorCorporate()).thenReturn(true);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
@@ -162,7 +163,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Test
 	public void testBuildMenubar_ReportsMenu_GetStarted() throws Exception {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
 		when(permissions.isAdmin()).thenReturn(true);
@@ -191,7 +192,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Test
 	public void testBuildMenubar_ManageMenu_GetStarted() throws Exception {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
 		when(permissions.isAdmin()).thenReturn(true);
@@ -212,7 +213,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Test
 	public void testBuildMenubar_ManageMenu_SubMenu_SearchForNew() throws Exception {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
 		when(permissions.isAdmin()).thenReturn(true);
@@ -236,7 +237,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Test
 	public void testBuildMenubar_ManageMenu_SubMenu_CompanyFinder() throws Exception {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
 		when(permissions.isAdmin()).thenReturn(true);
@@ -262,7 +263,7 @@ public class MenuBuilderTest extends PicsActionTest {
 		togglzRule.disable(Features.COMPANY_FINDER);
 
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
 		when(permissions.isShowClientSitesLink()).thenReturn(true);
 		when(permissions.isAdmin()).thenReturn(true);
@@ -291,7 +292,7 @@ public class MenuBuilderTest extends PicsActionTest {
 
 	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_EmployeeUser() {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 		when(permissions.getCurrentMode()).thenReturn(UserMode.EMPLOYEE);
 
@@ -309,7 +310,7 @@ public class MenuBuilderTest extends PicsActionTest {
 
 	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode() {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 		when(permissions.getCurrentMode()).thenReturn(UserMode.EMPLOYEE);
@@ -330,7 +331,7 @@ public class MenuBuilderTest extends PicsActionTest {
 
 	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode() {
 		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn("ActionLink");
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
 		when(permissions.getUserId()).thenReturn(USER_ID);
 		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 		when(permissions.getCurrentMode()).thenReturn(UserMode.ADMIN);
