@@ -1,4 +1,4 @@
-package com.picsauditing.struts.controller.validator.constraints
+package com.picsauditing.struts.validator.constraints
 
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.mock.MockitoSugar
@@ -16,22 +16,22 @@ class CountrySubdivisionValidationTest extends FlatSpec with Matchers with Mocki
   "CountrySubdivisionValidation" should "return a true validation if the country is null. (This will be handled by other validators.)" in new TestSetup {
     when(mockObject.getCountry) thenReturn null.asInstanceOf[String]
     subdivisionValidator isValid(mockObject, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO any[String]
+    verify(mockDao, never) findByISO any[String]
   }
 
   it should "return a true validation if the country is empty. (This will be handled by other validators.)" in new TestSetup {
     when(mockObject.getCountry) thenReturn ""
     subdivisionValidator isValid(mockObject, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO any[String]
+    verify(mockDao, never) findByISO any[String]
   }
 
   it should "return a true validation if the value object is null. (This will be handled by other validators.)" in new TestSetup {
     subdivisionValidator isValid(null, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO any[String]
+    verify(mockDao, never) findByISO any[String]
   }
 
   it should "return a true validation if the countryISO doesn't reflect an actual ISO. (Handled elsewhere.)" in new TestSetup {
-    when(mockDao.findbyISO(any[String])) thenReturn null.asInstanceOf[Country]
+    when(mockDao.findByISO(any[String])) thenReturn null.asInstanceOf[Country]
     when(mockObject.getCountry) thenReturn "XXX"
     subdivisionValidator isValid(mockObject, mockContext) shouldBe true
   }
@@ -72,40 +72,40 @@ class CountrySubdivisionValidationTest extends FlatSpec with Matchers with Mocki
   }
 
   "CountryISOValidation" should "return a false validation if the country ISO doesn't reflect an actual ISO." in new TestSetup {
-    when(mockDao findbyISO any[String]) thenReturn null.asInstanceOf[Country]
+    when(mockDao findByISO any[String]) thenReturn null.asInstanceOf[Country]
     isoValidator isValid("XXX", mockContext) shouldBe false
   }
 
   it should "return a true validation if the country ISO does reflect an actual ISO" in new TestSetup {
-    when(mockDao findbyISO anyString) thenReturn mockCountry
+    when(mockDao findByISO anyString) thenReturn mockCountry
     isoValidator isValid("XXX", mockContext) shouldBe true
   }
 
   it should "return a true validation if the countryISO is empty. (Handled elsewhere.)" in new TestSetup {
     isoValidator isValid("", mockContext) shouldBe true
-    verify(mockDao, never) findbyISO anyString
+    verify(mockDao, never) findByISO anyString
   }
 
   it should "return a true validation if the countryISO is null. (Handled elsewhere.)" in new TestSetup {
     isoValidator isValid(null, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO anyString
+    verify(mockDao, never) findByISO anyString
   }
 
   "CountryZipCodeValidation" should "return true if the countryISO is null. (Handled elsewhere.)" in new TestSetup {
     when(mockObject getCountry) thenReturn null.asInstanceOf[String]
     zipValidator isValid(mockObject, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO anyString
+    verify(mockDao, never) findByISO anyString
   }
 
   it should "return true if the countryISO is empty. (Handled elsewhere.)" in new TestSetup {
     when(mockObject getCountry) thenReturn ""
     zipValidator isValid(mockObject, mockContext) shouldBe true
-    verify(mockDao, never) findbyISO anyString
+    verify(mockDao, never) findByISO anyString
   }
 
   it should "return true if the country for the given ISO doesn't exist. (Handled elsewhere.)" in new TestSetup {
     when(mockObject getCountry) thenReturn "XXX"
-    when(mockDao findbyISO anyString) thenReturn null.asInstanceOf[Country]
+    when(mockDao findByISO anyString) thenReturn null.asInstanceOf[Country]
     zipValidator isValid(mockObject, mockContext) shouldBe true
   }
 
@@ -172,7 +172,7 @@ class CountrySubdivisionValidationTest extends FlatSpec with Matchers with Mocki
     Whitebox.setInternalState(subdivisionValidator, "dao", mockDao)
     Whitebox.setInternalState(isoValidator, "dao", mockDao)
     Whitebox.setInternalState(zipValidator, "dao", mockDao)
-    when(mockDao.findbyISO(any[String])) thenReturn mockCountry
+    when(mockDao.findByISO(any[String])) thenReturn mockCountry
 
     private val subdivisionList = new java.util.ArrayList[CountrySubdivision]
     subdivisionList add new CountrySubdivision("AAA")

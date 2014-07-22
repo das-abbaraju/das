@@ -131,7 +131,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
         when(newCountrySubdivision.toString()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(country.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
         when(countrySubdivision.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
-        when(countryDAO.findbyISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country);
+        when(countryDAO.findByISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country);
 
         Whitebox.setInternalState(facilitiesEdit, "facilitiesEditModel", facilitiesEditModel);
         Whitebox.setInternalState(facilitiesEdit, "contractorOperatorService", contractorOperatorService);
@@ -242,7 +242,7 @@ public class FacilitiesEditSaveTest extends PicsActionTest {
     public void testSave_CountryChangeIsCopiedToOperator() throws Exception {
         facilitiesEdit.setCountry(country2);
         when(country2.getIsoCode()).thenReturn(NEW_COUNTRY_SUBDIVISION_ISO_CODE);
-        when(countryDAO.findbyISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country2);
+        when(countryDAO.findByISO(NEW_COUNTRY_SUBDIVISION_ISO_CODE)).thenReturn(country2);
 
         facilitiesEdit.save();
 

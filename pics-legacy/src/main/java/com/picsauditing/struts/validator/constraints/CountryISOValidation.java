@@ -18,7 +18,7 @@ public class CountryISOValidation implements ConstraintValidator<CountryExists, 
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        return Strings.isEmpty(value) || dao.findbyISO(value) != null;
+        return Strings.isEmpty(value) || dao.findByISO(value) != null;
     }
 
 }
