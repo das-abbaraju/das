@@ -1,7 +1,6 @@
 package com.picsauditing.actions.audits;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.audits.AuditBuilderFactory;
@@ -55,7 +54,6 @@ public class CaoSave extends AuditActionSupport {
 
 	// Update flags
 	private Set<FlagCriteriaContractor> contractorFlagCriteria;
-	private FlagDataCalculator flagCalculator;
 
 	private static final Logger logger = LoggerFactory.getLogger(CaoSave.class);
 
@@ -505,10 +503,9 @@ public class CaoSave extends AuditActionSupport {
 	private void updateFlag(ContractorAuditOperator cao) {
 		if (contractorFlagCriteria == null || contractorFlagCriteria != cao.getAudit().getContractorAccount().getFlagCriteria()) {
 			contractorFlagCriteria = cao.getAudit().getContractorAccount().getFlagCriteria();
-			flagCalculator = new FlagDataCalculator(contractorFlagCriteria);
 		}
 
-        InsurancePolicySuggestionCalculator.calculateSuggestionForPolicy(cao.getAudit().getContractorAccount(), flagCalculator, conAudit);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForPolicy(cao.getAudit().getContractorAccount(), conAudit);
 	}
 
 	public int getCaoID() {

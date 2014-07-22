@@ -1406,9 +1406,9 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(1, payingFacilities.size());
+        assertEquals(1, payingFacilitiesCount);
     }
 
     @Test
@@ -1420,9 +1420,9 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(0, payingFacilities.size());
+        assertEquals(0, payingFacilitiesCount);
     }
 
     @Test
@@ -1434,9 +1434,9 @@ public class FeeServiceTest extends PicsTranslationTest {
 
         when(contractorOperator1.getOperatorAccount()).thenReturn(operator);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(0, payingFacilities.size());
+        assertEquals(0, payingFacilitiesCount);
     }
 
     @Test
@@ -1455,9 +1455,9 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
         when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(1, payingFacilities.size());
+        assertEquals(1, payingFacilitiesCount);
     }
 
     @Test
@@ -1476,9 +1476,9 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(contractorOperator1.getOperatorAccount()).thenReturn(operator1);
         when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(2, payingFacilities.size());
+        assertEquals(2, payingFacilitiesCount);
     }
 
     @Test
@@ -1500,9 +1500,9 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
         when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(2, payingFacilities.size());
+        assertEquals(2, payingFacilitiesCount);
     }
 
     @Test
@@ -1524,9 +1524,9 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(contractorOperator2.getOperatorAccount()).thenReturn(operator2);
         when(contractorOperator3.getOperatorAccount()).thenReturn(operator3);
 
-        Set<OperatorAccount> payingFacilities = feeService.findPayingFacilities(contractor);
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(contractor);
 
-        assertEquals(3, payingFacilities.size());
+        assertEquals(3, payingFacilitiesCount);
     }
 
     private OperatorAccount buildActiveOperatorAccount() {

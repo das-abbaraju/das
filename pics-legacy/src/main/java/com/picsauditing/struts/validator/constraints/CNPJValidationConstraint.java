@@ -32,7 +32,7 @@ public class CNPJValidationConstraint implements ConstraintValidator<CnpjValidat
         if (Strings.isEmpty(value.getCountry())) return false;
 
         try {
-            final Country country = dao.findbyISO(value.getCountry());
+            final Country country = dao.findByISO(value.getCountry());
             if (country == null) return false;
             final TaxIdValidator validator = validatorFactory.buildTaxIdValidator(country);
             return (validator == null ||  validator.validated(country, value.getCnpjCode()) != null);

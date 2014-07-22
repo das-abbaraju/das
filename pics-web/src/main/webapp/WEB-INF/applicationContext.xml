@@ -416,6 +416,7 @@
 
     <bean id="FlagCalculatorFactory" class="com.picsauditing.PICS.FlagCalculatorFactory" scope="prototype"/>
     <bean id="AuditBuilderFactory" class="com.picsauditing.audits.AuditBuilderFactory" scope="prototype"/>
+    <bean id="WaitingOnService" class="com.picsauditing.service.account.WaitingOnService" scope="prototype"/>
 
     <!-- Util -->
     <bean id="PicsEnvironmentUtil" class="com.picsauditing.employeeguard.util.PicsEnvironmentUtil"/>

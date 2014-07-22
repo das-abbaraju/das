@@ -31,7 +31,7 @@ import java.util.*;
 public class ScheduleAudit extends AuditActionSupport implements Preparable {
 
 	// TODO Move this to a common location
-	static final public String GOOGLE_API_KEY = "AIzaSyBuCaFEPZ4Uzi9Y5HK0nUJUirHaVXSLBrk";
+	static final public String GOOGLE_API_KEY = "AIzaSyB_2vVGi6xipomXYbKHDZHsqjZGAYLAWV8";
 
     private TimeZone selectedTimeZone = TimeZone.getTimeZone("CST");
 

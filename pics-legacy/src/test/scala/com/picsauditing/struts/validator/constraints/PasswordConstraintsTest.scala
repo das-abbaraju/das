@@ -1,4 +1,4 @@
-package com.picsauditing.struts.controller.validator.constraints
+package com.picsauditing.struts.validator.constraints
 
 import org.scalatest.{Matchers, FlatSpec}
 import org.scalatest.mock.MockitoSugar

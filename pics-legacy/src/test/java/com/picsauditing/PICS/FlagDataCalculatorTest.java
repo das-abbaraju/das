@@ -1139,27 +1139,6 @@ public class FlagDataCalculatorTest {
 	}
 
 	@Test
-	public void testIsInsuranceCriteria() throws Exception {
-		Boolean isInsuranceCriteria;
-		FlagData flagData = EntityFactory.makeFlagData();;
-		FlagCriteria criteria = EntityFactory.makeFlagCriteria();
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		AuditType generalLiability = EntityFactory.makeAuditType(13);
-		AuditType pqf = EntityFactory.makeAuditType(1);
-		flagData.setCriteria(criteria);
-
-		// non insurance
-		criteria.setInsurance(false);
-		isInsuranceCriteria = Whitebox.invokeMethod(calculator, "isInsuranceCriteria", flagData, generalLiability);
-		assertFalse(isInsuranceCriteria);
-
-		// insurance
-		criteria.setInsurance(true);
-		isInsuranceCriteria = Whitebox.invokeMethod(calculator, "isInsuranceCriteria", flagData, generalLiability);
-		assertTrue(isInsuranceCriteria);
-	}
-
-	@Test
 	public void testIsFlagged_WCB_DoesNotHaveApplicableCAOP() throws Exception {
 		ContractorAccount contractor = buildFakeContractorAccountWithWCBs(AuditStatus.NotApplicable);
 		FlagCriteria flagCriteria = buildFakeFlagCriteria();

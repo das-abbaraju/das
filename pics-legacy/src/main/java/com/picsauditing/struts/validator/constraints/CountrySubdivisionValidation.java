@@ -4,7 +4,6 @@ import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.jpa.entities.Country;
 import com.picsauditing.jpa.entities.CountrySubdivision;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
-import com.picsauditing.util.DataScrubber;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,7 +22,7 @@ public class CountrySubdivisionValidation implements ConstraintValidator<Validat
     public boolean isValid(RegistrationForm.CountrySubdivisionPair value, ConstraintValidatorContext context) {
 
         if (value == null || Strings.isEmpty(value.getCountry())) return true;
-        final Country country = dao.findbyISO(value.getCountry());
+        final Country country = dao.findByISO(value.getCountry());
         if (country == null) return true;
 
         final String subdivisionISO = value.getSubdivision();
