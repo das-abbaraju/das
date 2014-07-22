@@ -285,61 +285,60 @@ public class MenuBuilderTest extends PicsActionTest {
 
 	@Test
 	public void testBuildMenubar_EmployeeGUARD_EmployeeUser() throws Exception {
-		MenuComponent menu = setupTestBuildMenubar_EmployeeGUARD_EmployeeUser();
+		setupTestBuildMenubar_EmployeeGUARD_EmployeeUser();
+
+		MenuComponent menu = MenuBuilder.buildMenubar(permissions);
 
 		Approvals.verify(menu.getChildren().toString());
 	}
 
-	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_EmployeeUser() {
-		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
-		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
+	private void setupTestBuildMenubar_EmployeeGUARD_EmployeeUser() {
+		commonEmployeeGUARDMenuBuilderSetup();
+
 		when(permissions.getCurrentMode()).thenReturn(UserMode.EMPLOYEE);
-
-		super.setupEchoTranslationService();
-
-		return MenuBuilder.buildMenubar(permissions);
 	}
 
 	@Test
 	public void testBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode() throws Exception {
-		MenuComponent menu = setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode();
+		setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode();
 
-		Approvals.verify(menu.getChildren().toString());
+		MenuComponent result = MenuBuilder.buildMenubar(permissions);
+
+		Approvals.verify(result.getChildren().toString());
 	}
 
-	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode() {
-		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
+	private void setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InEmployeeMode() {
+		commonEmployeeGUARDMenuBuilderSetup();
+
 		when(permissions.getUserId()).thenReturn(USER_ID);
-		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 		when(permissions.getCurrentMode()).thenReturn(UserMode.EMPLOYEE);
 		when(permissions.getAvailableUserModes()).thenReturn(new HashSet<>(Arrays.asList(UserMode.EMPLOYEE,
 				UserMode.ADMIN)));
-
-		super.setupEchoTranslationService();
-
-		return MenuBuilder.buildMenubar(permissions);
 	}
 
 	@Test
 	public void testBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode() throws Exception {
-		MenuComponent menu = setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode();
+		setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode();
 
-		Approvals.verify(menu.getChildren().toString());
+		MenuComponent result = MenuBuilder.buildMenubar(permissions);
+
+		Approvals.verify(result.getChildren().toString());
 	}
 
-	private MenuComponent setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode() {
-		MenuBuilder.setUrlUtils(urlUtils);
-		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
+	private void setupTestBuildMenubar_EmployeeGUARD_ContractorUser_InAdminMode() {
+		commonEmployeeGUARDMenuBuilderSetup();
+
 		when(permissions.getUserId()).thenReturn(USER_ID);
-		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 		when(permissions.getCurrentMode()).thenReturn(UserMode.ADMIN);
 		when(permissions.getAvailableUserModes()).thenReturn(new HashSet<>(Arrays.asList(UserMode.EMPLOYEE,
 				UserMode.ADMIN)));
+	}
 
+	private void commonEmployeeGUARDMenuBuilderSetup() {
 		super.setupEchoTranslationService();
 
-		return MenuBuilder.buildMenubar(permissions);
+		MenuBuilder.setUrlUtils(urlUtils);
+		when(urlUtils.getActionUrl(anyString(), anyString(), anyInt())).thenReturn(ACTION_LINK);
+		when(permissions.getAppUserID()).thenReturn(APP_USER_ID);
 	}
 }
