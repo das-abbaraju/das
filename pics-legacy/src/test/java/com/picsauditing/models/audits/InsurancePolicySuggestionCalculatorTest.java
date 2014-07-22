@@ -1,6 +1,5 @@
 package com.picsauditing.models.audits;
 
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.jpa.entities.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
@@ -13,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 
 public class InsurancePolicySuggestionCalculatorTest {
 
-    private FlagDataCalculator flagDataCalculator;
     private AuditType auditType;
     private FlagCriteria insuranceCriteria;
     private ContractorAudit contractorAudit;
@@ -29,7 +27,7 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperator}));
 
         setAuditsAndOperators(cao);
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(FlagColor.Green, cao.getFlag());
     }
 
@@ -51,7 +49,7 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
 
         setAuditsAndOperators(cao);
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(FlagColor.Red, cao.getFlag());
     }
 
@@ -73,7 +71,7 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
 
         setAuditsAndOperators(cao);
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(FlagColor.Red, cao.getFlag());
     }
 
@@ -97,7 +95,7 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
 
         setAuditsAndOperators(cao);
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(null, cao.getFlag());
     }
 
@@ -124,7 +122,7 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
         setAuditsAndOperators(cao);
 
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(null, cao.getFlag());
     }
 
@@ -152,15 +150,13 @@ public class InsurancePolicySuggestionCalculatorTest {
         contractor.setOperators(Arrays.asList(new ContractorOperator[]{contractorOperatorA, contractorOperatorB}));
 
         setAuditsAndOperators(cao);
-        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor, flagDataCalculator);
+        InsurancePolicySuggestionCalculator.calculateSuggestionForAllPolicies(contractor);
         assertEquals(null, cao.getFlag());
     }
 
 
     @Before
     public void setup() {
-        flagDataCalculator = new FlagDataCalculator();
-
         auditType = AuditType.builder()
                 .auditClass(AuditTypeClass.Policy)
                 .build();
