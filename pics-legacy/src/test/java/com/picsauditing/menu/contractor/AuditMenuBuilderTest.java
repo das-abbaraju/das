@@ -9,6 +9,9 @@ import com.picsauditing.menu.builder.AuditMenuBuilder;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.URLUtils;
+import org.approvaltests.Approvals;
+import org.approvaltests.reporters.DiffReporter;
+import org.approvaltests.reporters.UseReporter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -29,7 +32,9 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("unchecked")
+@UseReporter(DiffReporter.class)
 public class AuditMenuBuilderTest extends PicsTranslationTest {
+
 	private AuditMenuBuilder auditMenuBuilder;
 
 	@Mock
@@ -541,5 +546,83 @@ public class AuditMenuBuilderTest extends PicsTranslationTest {
 		contractorAuditOperators.add(contractorAuditOperator);
 		when(mockAudit.getOperators()).thenReturn(contractorAuditOperators);
 		when(mockAudit.getCurrentOperators()).thenReturn(contractorAuditOperators);
+	}
+
+	@Test
+	public void testBuildAuditMenu_PicsAdmin_EmployeeGUARD_Menu() throws Exception {
+		setupTestBuildAuditMenu_PicsAdmin_EmployeeGUARD_Menu();
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> result = auditMenuBuilder.buildAuditMenu();
+
+		Approvals.verify(result.get(AuditMenuBuilder.Service.EMPLOYEEGUARD).toString());
+	}
+
+	private void setupTestBuildAuditMenu_PicsAdmin_EmployeeGUARD_Menu() {
+		commonEmployeeGUARDAuditMenuSetup();
+
+		when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(true);
+		when(permissions.isAdmin()).thenReturn(true);
+		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
+	}
+
+	@Test
+	public void testBuildAuditMenu_Operator_EmployeeGUARD_Menu() throws Exception {
+		setupTestBuildAuditMenu_Operator_EmployeeGUARD_Menu();
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> result = auditMenuBuilder.buildAuditMenu();
+
+		Approvals.verify(result.get(AuditMenuBuilder.Service.EMPLOYEEGUARD).toString());
+	}
+
+	private void setupTestBuildAuditMenu_Operator_EmployeeGUARD_Menu() {
+		commonEmployeeGUARDAuditMenuSetup();
+
+		when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(true);
+		when(permissions.isOperatorCorporate()).thenReturn(true);
+		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
+	}
+
+	@Test
+	public void testBuildAuditMenu_Contractor_EmployeeGUARD_Menu() throws Exception {
+		setupTestBuildAuditMenu_Contractor_EmployeeGUARD_Menu();
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> result = auditMenuBuilder.buildAuditMenu();
+
+		Approvals.verify(result.get(AuditMenuBuilder.Service.EMPLOYEEGUARD).toString());
+	}
+
+	private void setupTestBuildAuditMenu_Contractor_EmployeeGUARD_Menu() {
+		commonEmployeeGUARDAuditMenuSetup();
+
+		when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(true);
+		when(permissions.isContractor()).thenReturn(true);
+		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
+	}
+
+	@Test
+	public void testBuildAuditMenu_Legacy_EmployeeGUARD_Menu() throws Exception {
+		setupTestBuildAuditMenu_Legacy_EmployeeGUARD_Menu();
+
+		Map<AuditMenuBuilder.Service, List<MenuComponent>> result = auditMenuBuilder.buildAuditMenu();
+
+		Approvals.verify(result.get(AuditMenuBuilder.Service.EMPLOYEEGUARD).toString());
+	}
+
+	private void setupTestBuildAuditMenu_Legacy_EmployeeGUARD_Menu() {
+		commonEmployeeGUARDAuditMenuSetup();
+
+		when(productSubscriptionService.hasEmployeeGUARD(anyInt())).thenReturn(false);
+		when(permissions.isContractor()).thenReturn(false);
+		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
+	}
+
+	private void commonEmployeeGUARDAuditMenuSetup() {
+		super.setupEchoTranslationService();
+
+		when(productSubscriptionService.hasLegacyEmployeeGUARD(any(ContractorAccount.class))).thenReturn(true);
+		when(permissions.has(OpPerms.ContractorSafety)).thenReturn(true);
+		when(permissions.has(OpPerms.ContractorAdmin)).thenReturn(true);
+		when(permissions.has(OpPerms.DefineRoles)).thenReturn(true);
+		when(contractorAccount.isHasEmployeeGUARDTag()).thenReturn(true);
 	}
 }
