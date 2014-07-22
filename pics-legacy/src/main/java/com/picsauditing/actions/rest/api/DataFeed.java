@@ -44,7 +44,7 @@ public class DataFeed extends ReportApi implements ParameterAware {
     }
 
     @Override
-//    @ApiRequired
+    @ApiRequired
     public String execute() {
     	Report report = null;
 
