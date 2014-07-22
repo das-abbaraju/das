@@ -27,8 +27,8 @@
         </div>
 
         <div class="form-group">
-            <tw:button buttonName="save" type="submit" class="btn btn-success btn-block" tabindex="2">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default btn-block cancel" tabindex="3">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success btn-block" tabindex="2"><s:text name="CONTRACTOR.GROUP.EMPLOYEES_FORM.SAVE" /></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default btn-block cancel" tabindex="3"><s:text name="CONTRACTOR.GROUP.EMPLOYEES_FORM.CANCEL" /></tw:button>
         </div>
     </fieldset>
 

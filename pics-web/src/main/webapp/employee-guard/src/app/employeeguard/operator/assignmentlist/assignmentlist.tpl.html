@@ -1,18 +1,18 @@
 <div class="operator-assignmentlist" ng-controller="operatorAssignmentsCtrl">
     <div class="container">
-        <pagetitle title="Assignments"></pagetitle>
+        <pagetitle title="{{ 'OPERATOR.ASSIGNMENTS.PAGE_TITLE' | translate }}"></pagetitle>
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
-                        <li class="active">Assignments</li>
+                        <li><a href="/employee-guard/operators/dashboard" translate="OPERATOR.ASSIGNMENTS.BREADCRUMB.EMPLOYEEGUARD"></a></li>
+                        <li class="active" translate="OPERATOR.ASSIGNMENTS.BREADCRUMB.ASSIGNMENTS"></li>
                     </ol>
                 </div>
                 <div class="col-md-4">
                     <div class="page-actions">
                         <a href="/employee-guard/operators/project/site-assignment/{{ selected_site }}" class="btn btn-warning pull-right" target="_self">
-                            <i class="icon-map-marker icon-large"></i> View Site Assignments
+                            <i class="icon-map-marker icon-large"></i> {{ 'OPERATOR.ASSIGNMENTS.BUTTON.VIEW_SITE_ASSIGNMENTS' | translate }}
                         </a>
                     </div>
                 </div>
@@ -23,7 +23,7 @@
             <div class="col-md-4 col-md-offset-4">
                 <div class="panel panel-primary">
                     <div class="panel-heading ">
-                        <h3 class="panel-title">Site Selection</h3>
+                        <h3 class="panel-title" translate="OPERATOR.ASSIGNMENTS.CORPORATE.SITE_SELECTION"></h3>
                     </div>
                     <div class="panel-body">
                         <select ui-select2="{ minimumResultsForSearch: -1, width: '100%' }" ng-model="selected_site" ng-change="loadAssignmentsBySiteId(selected_site)">

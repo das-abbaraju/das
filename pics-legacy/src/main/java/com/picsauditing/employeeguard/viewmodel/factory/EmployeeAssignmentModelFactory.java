@@ -6,36 +6,34 @@ import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.ProjectModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class EmployeeAssignmentModelFactory {
 
-    public List<EmployeeAssignmentModel> create(List<ProjectRole> projectRoles, Map<Integer, AccountModel> accountModels) {
+    public List<EmployeeAssignmentModel> create(final Set<Project> projects, Map<Integer, AccountModel> accountModels) {
         List<EmployeeAssignmentModel> assignments = new ArrayList<>();
-        Map<Integer, List<ProjectModel>> projectAssignments = getCompanyProjectAssignments(projectRoles);
-        for (Map.Entry<Integer, List<ProjectModel>> projectAssignment : projectAssignments.entrySet()) {
-            EmployeeAssignmentModel employeeAssignmentModel = new EmployeeAssignmentModel();
-            employeeAssignmentModel.setSiteId(projectAssignment.getKey());
-            employeeAssignmentModel.setSiteName(accountModels.get(projectAssignment.getKey()).getName());
-            employeeAssignmentModel.setProjects(projectAssignment.getValue());
-            assignments.add(employeeAssignmentModel);
-        }
+        Map<Integer, List<ProjectModel>> projectAssignments = getCompanyProjectAssignments(projects);
+
+			for (int siteId : accountModels.keySet()) {
+				EmployeeAssignmentModel employeeAssignmentModel = new EmployeeAssignmentModel();
+				employeeAssignmentModel.setSiteId(siteId);
+				employeeAssignmentModel.setSiteName(accountModels.get(siteId).getName());
+				List<ProjectModel> siteProjects = projectAssignments.get(siteId);
+				if(siteProjects!=null) employeeAssignmentModel.setProjects(projectAssignments.get(siteId));
+				assignments.add(employeeAssignmentModel);
+			}
 
         return assignments;
     }
 
-    private Map<Integer, List<ProjectModel>> getCompanyProjectAssignments(List<ProjectRole> projectRoles) {
+    private Map<Integer, List<ProjectModel>> getCompanyProjectAssignments(final Set<Project> projects) {
         Map<Integer, List<ProjectModel>> assignments = new HashMap<>();
-        for (ProjectRole projectRole : projectRoles) {
-            int siteId = projectRole.getProject().getAccountId();
+        for (Project project : projects) {
+            int siteId = project.getAccountId();
             if (!assignments.containsKey(siteId)) {
                 assignments.put(siteId, new ArrayList<ProjectModel>());
             }
 
-            Project project = projectRole.getProject();
             assignments.get(siteId).add(new ProjectModel(project.getId(), project.getName()));
         }
 

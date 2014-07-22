@@ -440,4 +440,16 @@ public class FileUtils {
 
 		return "C:/temp";
 	}
+
+	public static void safeClose(final Closeable closeable) {
+		if (closeable == null) {
+			return;
+		}
+
+		try {
+			closeable.close();
+		} catch (Exception e) {
+			// ignore
+		}
+	}
 }

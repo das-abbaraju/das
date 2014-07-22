@@ -9,7 +9,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Skill: ${skillDocumentForm.skillInfo.name}</s:param>
+    <s:param name="title"><s:text name="EMPLOYEE.SKILL.SHOW.HEADER"/> ${skillDocumentForm.skillInfo.name}</s:param>
     <s:param name="breadcrumb_name">${skillDocumentForm.skillInfo.name}</s:param>
 </s:include>
 
@@ -21,7 +21,7 @@
                 <s:include value="/struts/employee-guard/_action-message.jsp">
                     <s:param name="type">danger</s:param>
                     <s:param name="message">
-                        <strong>Incomplete!</strong> This required skill has not been completed.
+                        <s:text name="EMPLOYEE.SKILL.SHOW.MSG.INCOMPLETE"/>
                     </s:param>
                 </s:include>
             </s:if>
@@ -31,7 +31,7 @@
                 <s:include value="/struts/employee-guard/_action-message.jsp">
                     <s:param name="type">warning</s:param>
                     <s:param name="message">
-                        <strong>Notice!</strong> This required skill is expiring soon.
+                        <s:text name="EMPLOYEE.SKILL.SHOW.MSG.EXPIRING_SOON"/>
                     </s:param>
                 </s:include>
             </s:if>
@@ -39,14 +39,14 @@
             <p class="description">${skillDocumentForm.skillInfo.description}</p>
 
             <dl class="employee-guard-information edit-display-values">
-                <dt class="col-md-3">File</dt>
+                <dt class="col-md-3"><s:text name="EMPLOYEE.SKILL.SHOW.FILE"/></dt>
                 <dd class="col-md-9">${skillDocumentForm.proof}</dd>
 
                 <s:if test="skillDocumentForm.proof != 'None'">
-                    <dt class="col-md-3">Expires</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.SKILL.SHOW.EXPIRES"/></dt>
                     <dd class="col-md-9">
                         <s:if test="skillDocumentForm.doesNotExpire">
-                            Never
+                            <s:text name="EMPLOYEE.SKILL.SHOW.NEVER_EXPIRES"/>
                         </s:if>
                         <s:else>
                             ${skillDocumentForm.skillInfo.endDate}
@@ -56,21 +56,8 @@
             </dl>
 
             <div class="col-md-9 col-md-offset-3">
-                <button class="btn btn-default update edit-toggle">Update</button>
+                <button class="btn btn-default update edit-toggle"><s:text name="EMPLOYEE.SKILL.SHOW.UPDATE.BUTTON"/></button>
             </div>
         </div>
     </div>
-        <%-- if training --%>
-<%--         <s:if test="skillDocumentForm.skillInfo.skillType.training">
-            <s:include value="/struts/employee-guard/employee/manage-skill/_training-form.jsp" />
-        </s:if>
-        <s:else>
-            <s:include value="/struts/employee-guard/employee/manage-skill/_certification-form.jsp" />
-        </s:else> --%>
-
-    <%--<div class="col-md-4 well well-required-for">Required For:
-        <ul>
-            <li>PICS</li>
-        </ul>
-    </div>--%>
 </div>

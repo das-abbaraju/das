@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+        http://www.springframework.org/schema/aop 
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"
        default-autowire="autodetect">
 
     <!-- EmployeeGUARD DAOs -->
@@ -36,26 +38,37 @@
     <bean id="AccountSkillProfileService" class="com.picsauditing.employeeguard.services.AccountSkillProfileService"/>
     <bean id="AppUserService" class="com.picsauditing.authentication.service.AppUserService"/>
     <bean id="ContractorProjectService" class="com.picsauditing.employeeguard.services.ContractorProjectService"/>
-    <bean id="OperatorProjectService" class="com.picsauditing.employeeguard.services.OperatorProjectService"/>
-    <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.EmailHashService"/>
+    <bean id="CorpRoleService" class="com.picsauditing.employeeguard.services.CorpRoleService"/>
+    <bean id="EmailHashService" class="com.picsauditing.employeeguard.services.email.EmailHashService"/>
     <bean id="EmailService" class="com.picsauditing.employeeguard.services.email.EmailService"/>
+    <bean id="EmployeeFileService" class="com.picsauditing.employeeguard.services.EmployeeFileService"/>
     <bean id="EmployeeService" class="com.picsauditing.employeeguard.services.EmployeeService"/>
+    <bean id="FileImportService" class="com.picsauditing.employeeguard.services.entity.util.file.FileImportService"/>
     <bean id="GroupService" class="com.picsauditing.employeeguard.services.GroupService"/>
-    <bean id="ProfileService" class="com.picsauditing.employeeguard.services.ProfileService"/>
     <bean id="ProfileDocumentService" class="com.picsauditing.employeeguard.services.ProfileDocumentService"/>
-    <bean id="ProjectRoleService" class="com.picsauditing.employeeguard.services.ProjectRoleService"/>
     <bean id="ProjectService" class="com.picsauditing.employeeguard.services.ProjectService"/>
     <bean id="RoleService" class="com.picsauditing.employeeguard.services.RoleService"/>
+    <bean id="SiteRoleService" class="com.picsauditing.employeeguard.services.SiteRoleService"/>
     <bean id="SiteSkillService" class="com.picsauditing.employeeguard.services.SiteSkillService"/>
     <bean id="SkillService" class="com.picsauditing.employeeguard.services.SkillService"/>
-    <bean id="SkillUsageLocator" class="com.picsauditing.employeeguard.services.SkillUsageLocator"/>
+    <bean id="SiteProjectService" class="com.picsauditing.employeeguard.services.SiteProjectService"/>
+    <bean id="SettingsService" class="com.picsauditing.employeeguard.services.SettingsService"/>
+
+    <!-- Aspects -->
+    <bean id="ProfileDocumentServiceAspect" class="com.picsauditing.employeeguard.services.aop.docdownload.ProfileDocumentServiceAspect"/>
+
+    <bean id="CorporateSkillService" class="com.picsauditing.employeeguard.services.CorporateSkillService"/>
+    <bean id="ContractorSkillService" class="com.picsauditing.employeeguard.services.ContractorSkillService"/>
+  <bean id="ContractorGroupService" class="com.picsauditing.employeeguard.services.ContractorGroupService"/>
 
     <!-- External Services -->
     <bean id="AccountService" class="com.picsauditing.employeeguard.services.AccountService"/>
     <bean id="AccountFilter" class="com.picsauditing.employeeguard.services.AccountFilter"/>
 
     <!-- Entity Services -->
-    <bean id="EmployeeEntityService" class="com.picsauditing.employeeguard.services.entity.EmployeeEntityService"/>
+    <bean id="DocumentEntityService" class="com.picsauditing.employeeguard.services.entity.DocumentEntityService"/>
+    <bean id="EmployeeEntityService"
+          class="com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService"/>
     <bean id="GroupEntityService" class="com.picsauditing.employeeguard.services.entity.GroupEntityService"/>
     <bean id="ProfileEntityService" class="com.picsauditing.employeeguard.services.entity.ProfileEntityService"/>
     <bean id="ProjectEntityService" class="com.picsauditing.employeeguard.services.entity.ProjectEntityService"/>
@@ -64,23 +77,17 @@
 
     <!-- Business Services -->
     <bean id="AssignmentService" class="com.picsauditing.employeeguard.services.AssignmentService"/>
-    <bean id="ProjectAssignmentService" class="com.picsauditing.employeeguard.services.ProjectAssignmentService"/>
     <bean id="LiveIDEmployeeService" class="com.picsauditing.employeeguard.services.LiveIDEmployeeService"/>
     <bean id="OperatorEmployeeService" class="com.picsauditing.employeeguard.services.OperatorEmployeeService"/>
     <bean id="EmployeeSkillsModelService" class="com.picsauditing.employeeguard.services.EmployeeSkillsModelService"/>
 
     <!-- Processes -->
+    <bean id="ContractorAssignmentProcess" class="com.picsauditing.employeeguard.process.ContractorAssignmentProcess"/>
+    <bean id="EmployeeImportExportProcess" class="com.picsauditing.employeeguard.services.entity.employee.EmployeeImportExportProcess"/>
     <bean id="EmployeeSiteStatusProcess" class="com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess"/>
     <bean id="EmployeeSkillDataProcess" class="com.picsauditing.employeeguard.process.EmployeeSkillDataProcess"/>
     <bean id="ProfileSkillStatusProcess" class="com.picsauditing.employeeguard.process.ProfileSkillStatusProcess"/>
-    <bean id="ContractorAssignmentProcess" class="com.picsauditing.employeeguard.process.ContractorAssignmentProcess"/>
     <bean id="ProcessHelper" class="com.picsauditing.employeeguard.process.ProcessHelper"/>
-
-    <!-- Skill Engine and related classes -->
-    <bean id="SkillEngine" class="com.picsauditing.employeeguard.services.engine.SkillEngine"/>
-
-    <!-- Service Helpers -->
-    <bean id="SkillAssignmentHelper" class="com.picsauditing.employeeguard.services.SkillAssignmentHelper"/>
 
     <!-- Factories -->
     <bean id="CompanySkillsFormBuilder" class="com.picsauditing.employeeguard.forms.factory.CompanySkillsFormBuilder"/>
@@ -126,5 +133,8 @@
     <!-- Converters -->
     <bean id="RequiredSiteSkillFormConverter"
           class="com.picsauditing.employeeguard.forms.converter.RequiredSiteSkillFormConverter"/>
+
+    <!-- Enable AOP -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
 </beans>

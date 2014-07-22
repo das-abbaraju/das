@@ -10,7 +10,7 @@ import com.picsauditing.employeeguard.models.factories.RoleStatusModelFactory;
 import com.picsauditing.employeeguard.models.factories.SkillStatusModelFactory;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusProcess;
 import com.picsauditing.employeeguard.process.EmployeeSiteStatusResult;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

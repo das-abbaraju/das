@@ -14,10 +14,10 @@
     <tw:form formName="employee_skill_file" action="${employee_skill_url}" method="post" enctype="multipart/form-data" class="form-horizontal js-validation" role="form">
         <fieldset>
             <div class="form-group">
-                <tw:label labelName="documentId" class="col-md-3 control-label"><strong>File</strong></tw:label>
+                <tw:label labelName="documentId" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.FILE.UPLOAD.FILE.LABEL"/></strong></tw:label>
                 <div class="col-md-4">
                     <tw:select selectName="documentId" class="form-control select2 file-select">
-                        <tw:option value="null">None</tw:option>
+                        <tw:option value="null"><s:text name="EMPLOYEE.FILE.UPLOAD.MULTISELECT.NONE.OPTION"/></tw:option>
                         <s:iterator value="documents" var="document">
                             <s:if test="%{#document.id== documentId}">
                               <tw:option value="${document.id}" selected="true">${document.name}</tw:option>
@@ -41,15 +41,14 @@
 
             <div class="form-group">
                 <div class="col-md-4 col-md-offset-3">
-                    <tw:input inputName="file" type="file" class="hidden" />
-                    <a href="${employee_file_create_url}" class="btn btn-default btn-auto-width"><i class="icon-plus-sign"></i> File</a>
+                    <a href="${employee_file_create_url}" class="btn btn-default btn-auto-width"><i class="icon-plus-sign"></i> <s:text name="EMPLOYEE.FILE.UPLOAD.FILE.LINK"/></a>
                 </div>
             </div>
 
             <div class="form-group">
                 <div class="col-md-9 col-md-offset-3 form-actions">
-                    <tw:button buttonName="update" type="submit" disabled="disabled" class="btn btn-primary">Update</tw:button>
-                    <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+                    <tw:button buttonName="update" type="submit" disabled="disabled" class="btn btn-primary"><s:text name="EMPLOYEE.FILE.UPLOAD.UPDATE.BUTTON"/></tw:button>
+                    <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="EMPLOYEE.FILE.UPLOAD.CANCEL.BUTTON"/></tw:button>
                 </div>
             </div>
         </fieldset>

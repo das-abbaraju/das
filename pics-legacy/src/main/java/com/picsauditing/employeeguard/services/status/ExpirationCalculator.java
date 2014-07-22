@@ -22,6 +22,9 @@ public class ExpirationCalculator {
 		int intervalPeriod = accountSkillProfile.getSkill().getIntervalPeriod();
 
 		Date trainingSkillDocUpdated = accountSkillProfile.getStartDate();
+		if (trainingSkillDocUpdated == null) { // Case where no documentation has been provided
+			return null;
+		}
 
 		switch (accountSkillProfile.getSkill().getIntervalType()) {
 			case DAY:

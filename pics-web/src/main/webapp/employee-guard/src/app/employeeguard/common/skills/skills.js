@@ -3,6 +3,10 @@ angular.module('PICS.skills', [])
 .factory('SkillStatus', function() {
     return {
         getClassNameFromStatus: function(status) {
+            if (!status) {
+                return;
+            }
+
             var classname = '';
 
             status = status.toLowerCase();

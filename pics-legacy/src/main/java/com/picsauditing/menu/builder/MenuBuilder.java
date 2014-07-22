@@ -9,7 +9,7 @@ import com.picsauditing.actions.report.ManageReports;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ReportUserDAO;
 import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.util.EmployeeGUARDUrlUtils;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
@@ -34,7 +34,7 @@ import java.util.Locale;
 public final class MenuBuilder {
 
 	private static final String SEARCH_FOR_NEW_URL = "NewContractorSearch.action?filter.performedBy=Self%20Performed&filter.primaryInformation=true&filter.tradeInformation=true";
-    private static final String COMPANY_FINDER_URL ="company-finder.action";
+	private static final String COMPANY_FINDER_URL = "company-finder.action";
 	private static final Logger logger = LoggerFactory.getLogger(MenuBuilder.class);
 
 	public static ReportUserDAO reportUserDAO;
@@ -86,14 +86,16 @@ public final class MenuBuilder {
 	private static void buildEmployeeGUARDMenuBarForEmployeeUser(MenuComponent menubar, Permissions permissions) {
 		int id = getEmployeeGUARDProfileId(permissions);
 
-		menubar.addChild("Profile", EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, id),
-				"employee_profile");
-		menubar.addChild("Skills", EmployeeGUARDUrlUtils.EMPLOYEE_SKILLS, "employee_skills");
-		menubar.addChild("My Files", EmployeeGUARDUrlUtils.EMPLOYEE_MY_FILES, "employee_my_files");
+		menubar.addChild(getText("global.Menu.EmployeeGUARD.Employee.Profile"),
+				EmployeeGUARDUrlUtils.buildUrl(EmployeeGUARDUrlUtils.EMPLOYEE_PROFILE, id), "employee_profile");
+		menubar.addChild(getText("global.Menu.EmployeeGUARD.Employee.Skills"),
+				EmployeeGUARDUrlUtils.EMPLOYEE_SKILLS, "employee_skills");
+		menubar.addChild(getText("global.Menu.EmployeeGUARD.Employee.My_Files"),
+				EmployeeGUARDUrlUtils.EMPLOYEE_MY_FILES, "employee_my_files");
 	}
 
 	private static int getEmployeeGUARDProfileId(final Permissions permissions) {
-		ProfileService profileService = SpringUtils.getBean("ProfileService");
+		ProfileEntityService profileService = SpringUtils.getBean(SpringUtils.PROFILE_ENTITY_SERVICE);
 		Profile profile = profileService.findByAppUserId(permissions.getAppUserID());
 		return profile == null ? 1 : profile.getId();
 	}
@@ -242,10 +244,10 @@ public final class MenuBuilder {
 			companyMenu.addChild(getText("menu.CompanyProfile"), contractorEdit, "contractor_edit");
 		}
 
-        if (permissions.hasPermission(OpPerms.AuditVerification)) {
-            String verifyView = urlUtils.getActionUrl("VerifyView", "id", accountId);
-            companyMenu.addChild(getText("menu.PQFVerification"), verifyView, "verify_view");
-        }
+		if (permissions.hasPermission(OpPerms.AuditVerification)) {
+			String verifyView = urlUtils.getActionUrl("VerifyView", "id", accountId);
+			companyMenu.addChild(getText("menu.PQFVerification"), verifyView, "verify_view");
+		}
 	}
 
 	private static void addConfigureMenu(MenuComponent menubar, Permissions permissions) {
@@ -368,9 +370,9 @@ public final class MenuBuilder {
 
 		if (permissions.hasPermission(OpPerms.SearchContractors)) {
 			manageMenu.addChild(getText("NewContractorSearch.title"), SEARCH_FOR_NEW_URL, "NewContractorSearch");
-            if (Features.COMPANY_FINDER.isActive()) {
-                manageMenu.addChild(getText("CompanyFinder.title"), COMPANY_FINDER_URL, "CompanyFinder");
-            }
+			if (Features.COMPANY_FINDER.isActive()) {
+				manageMenu.addChild(getText("CompanyFinder.title"), COMPANY_FINDER_URL, "CompanyFinder");
+			}
 		}
 
 		addEmailSubmenu(manageMenu, permissions);
@@ -634,16 +636,21 @@ public final class MenuBuilder {
 	private static void addEmployeeGUARDUserMode(Permissions permissions, MenuComponent userMenu) {
 		if (isEmployeeGUARDAndPICSORGUser(permissions)) {
 			if (inAdminMode(permissions)) {
-				userMenu.addChild(getText("Switch to Employee Mode"),
+				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Switch_To_Employee_Mode"),
 						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
-								UserMode.EMPLOYEE.getModeParameterValue()), "");
+								UserMode.EMPLOYEE.getModeParameterValue()));
 			}
 
 			if (inEmployeeMode(permissions)) {
-				userMenu.addChild(getText("Switch to Admin Mode"),
+				userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Switch_To_Admin_Mode"),
 						PicsUrlConstants.buildUrl(PicsUrlConstants.USER_MODE_SWITCH_URL,
-								UserMode.ADMIN.getModeParameterValue()), "");
+								UserMode.ADMIN.getModeParameterValue()));
 			}
+		}
+
+		if (inEmployeeMode(permissions)) {
+			userMenu.addChild(getText("global.Menu.EmployeeGUARD.User.Settings"),
+					EmployeeGUARDUrlUtils.EMPLOYEE_SETTINGS);
 		}
 	}
 

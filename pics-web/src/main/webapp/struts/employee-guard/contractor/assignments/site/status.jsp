@@ -4,15 +4,15 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Assignments: ${site.name}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.PAGE_TITLE" /> ${site.name}</s:param>
     <s:param name="breadcrumb_name">${site.name}</s:param>
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
 <%-- Unassign Confirmation --%>
 <s:include value="/struts/employee-guard/_unassign-employee-confirmation.jsp">
-    <s:param name="modal_title">Unassign Employee from Site</s:param>
-    <s:param name="modal_message">Unassigning this employee from the site will unassign them from all Job Roles and Projects that they may currently be assigned to.</s:param>
+    <s:param name="modal_title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.UNASSIGN_EMPLOYEE" /></s:param>
+    <s:param name="modal_message"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.UNASSIGN_EMPLOYEE_DESC" /></s:param>
 </s:include>
 
 <div class="row">
@@ -20,13 +20,13 @@
         <ul class="nav nav-pills nav-stacked nav-assignment">
             <li class="active site-status">
                 <a href="#">
-                    <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
-                    Site Status
+                  <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
+                  <s:text name="CONTRACTOR.SITE.ASSIGNMENTS.SECONDARY_NAV_MENU.SITE" />
                 </a>
             </li>
             <li class="nav-divider"></li>
             <li>
-                <span class="nav-title">Job Roles</span>
+                <span class="nav-title"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.SECONDARY_NAV_MENU.JOB_ROLES" /></span>
             </li>
             <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_job_role">
                 <li>
@@ -52,10 +52,10 @@
             <table class="table table-striped table-condensed table-hover table-assignment">
                 <thead>
                     <tr>
-                        <th class="text-center">Assign</th>
-                        <th>Employee</th>
-                        <th>Title</th>
-                        <th class="text-center">Site Status</th>
+                        <th class="text-center"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.TABLE.ASSIGN" /></th>
+                        <th><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.TABLE.EMPLOYEE" /></th>
+                        <th><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.TABLE.TITLE" /></th>
+                        <th class="text-center"><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.TABLE.STATUS" /></th>
                     </tr>
                 </thead>
 
@@ -114,18 +114,18 @@
         <div class="col-md-9">
             <section class="employee-guard-section">
                 <h1>
-                    <i class="icon-map-marker icon-large"></i>Site Status
+                    <i class="icon-map-marker icon-large"></i><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.SECONDARY_NAV_MENU.SITE" />
                 </h1>
                 <div class="content">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Employees Assigned</h4>
+                                <h4><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES" /></h4>
 
-                                <p>Assign employees by first selecting a Job Role, and then click on the assign icon ( <i class='icon-map-marker'></i> ).  Once an employee is assigned, they'll see the assignment and the required skills that they'll need to complete.</p>
+                                <p><s:text name="CONTRACTOR.SITE.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES_DESC" /></p>
 
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assigning Employees</a>
+                                    <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.SITE.ASSIGNMENTS.PROJECT.STATUS_NO_EMPLOYEES_LEARN_MORE" /></a>
                                 </p>
                             </div>
                         </div>

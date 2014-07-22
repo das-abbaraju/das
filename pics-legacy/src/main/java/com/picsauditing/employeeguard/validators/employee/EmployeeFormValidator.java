@@ -4,6 +4,7 @@ import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.PersonalInformationForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeeForm;
 import com.picsauditing.employeeguard.forms.contractor.EmployeePersonalForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<PersonalInformationForm> {
@@ -19,15 +20,15 @@ public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<Pe
 		}
 
 		if (!EmployeeValidationUtil.valid(personalInformationForm.getFirstName(), EmployeeValidationUtil.EmployeeField.FIRST_NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(formName, "firstName"), "First name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(formName, "firstName"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.EMPLOYEE.FIRST_NAME"));
 		}
 
 		if (!EmployeeValidationUtil.valid(personalInformationForm.getLastName(), EmployeeValidationUtil.EmployeeField.LAST_NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(formName, "lastName"), "Last name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(formName, "lastName"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.EMPLOYEE.LAST_NAME"));
 		}
 
 		if (!EmployeeValidationUtil.valid(personalInformationForm.getEmail(), EmployeeValidationUtil.EmployeeField.EMAIL)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(formName, "email"), "Email is missing or already used");
+			addFieldErrorIfMessage(fieldKeyBuilder(formName, "email"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.EMPLOYEE.EMAIL"));
 		}
 	}
 
@@ -44,6 +45,6 @@ public class EmployeeFormValidator extends AbstractBasicAndDuplicateValidator<Pe
 
     @Override
     protected String getDuplicateErrorMessage() {
-        return "Email";
+        return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.EMPLOYEE.DUPLICATE");
     }
 }

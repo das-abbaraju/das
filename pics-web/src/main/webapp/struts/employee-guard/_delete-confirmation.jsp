@@ -25,8 +25,8 @@
         <p>${modal_message}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <a href="${delete_url}" class="btn btn-danger">Delete</a>
+        <button type="button" class="btn btn-default" data-dismiss="modal"><s:text name="EMPLOYEE_GUARD.DELETE_CONFIRMATION.CANCEL" /></button>
+        <a href="${delete_url}" class="btn btn-danger"><s:text name="EMPLOYEE_GUARD.DELETE_CONFIRMATION.DELETE" /></a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->

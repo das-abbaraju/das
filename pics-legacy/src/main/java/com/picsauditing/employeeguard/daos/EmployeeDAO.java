@@ -1,9 +1,6 @@
 package com.picsauditing.employeeguard.daos;
 
-import com.picsauditing.employeeguard.entities.Employee;
-import com.picsauditing.employeeguard.entities.Profile;
-import com.picsauditing.employeeguard.entities.Project;
-import com.picsauditing.employeeguard.entities.Role;
+import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.util.ListUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,4 +249,6 @@ public class EmployeeDAO extends AbstractBaseEntityDAO<Employee> {
 
 		return query.getResultList();
 	}
+
+
 }

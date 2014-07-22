@@ -81,6 +81,17 @@ public class LoginService {
         processReset(key, appUser);
         LoginContext loginContext = new LoginContext();
         loginContext.setAppUser(appUser);
+        if (profile != null) {
+            loginContext.setProfile(profile);
+        } else {
+            verifyUserExists(user, username);
+
+            if (user != null) {
+                verifyUserStatusForLogin(user);
+                verifyPasswordIsNotExpired(user);
+                loginContext.setUser(user);
+            }
+        }
 
         if (profile != null) {
             loginContext.setProfile(profile);

@@ -9,15 +9,13 @@ import com.picsauditing.employeeguard.models.ContractorSummary;
 import com.picsauditing.employeeguard.models.ModelFactory;
 import com.picsauditing.employeeguard.process.EmployeeSkillDataProcess;
 import com.picsauditing.employeeguard.services.AccountService;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
-import com.picsauditing.employeeguard.services.engine.SkillEngine;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

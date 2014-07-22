@@ -26,9 +26,20 @@
         </action>
 
         <action name="languages" class="com.picsauditing.struts.controller.Registration2" method="languages">
+            <result name="forward" type="chain">
+                <param name="actionName">languages</param>
+                <param name="namespace">/employee-guard/api</param>
+                <param name="method">index</param>
+            </result>
         </action>
 
-        <action name="dialects/{language}" class="com.picsauditing.struts.controller.Registration2" method="countriesBasedOn" >
+        <action name="dialects/{language}" class="com.picsauditing.struts.controller.Registration2"
+                method="countriesBasedOn">
+            <result name="forward" type="chain">
+                <param name="actionName">dialects/{language}</param>
+                <param name="namespace">/employee-guard/api</param>
+                <param name="method">index</param>
+            </result>
         </action>
 
         <action name="countries" class="com.picsauditing.struts.controller.Registration2" method="countries">

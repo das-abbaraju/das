@@ -12,29 +12,30 @@
          class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+            <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.SKILL.CREATE_FORM.NAME" /></strong></tw:label>
             <div class="col-md-4">
-                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}"/>
+                <tw:input autofocus="true" inputName="name" class="form-control" type="text" tabindex="1" value="${skillForm.name}" maxlength="70" />
             </div>
         </div>
 
         <div class="form-group">
-            <tw:label labelName="description" class="col-md-3 control-label">Description</tw:label>
+            <tw:label labelName="description" class="col-md-3 control-label"><s:text name="CONTRACTOR.SKILL.CREATE_FORM.DESCRIPTION" /></tw:label>
             <div class="col-md-4">
-                <tw:textarea textareaName="description" class="form-control" tabindex="2">${skillForm.description}</tw:textarea>
+                <tw:textarea textareaName="description" class="form-control" tabindex="2" maxlength="1470" >${skillForm.description}</tw:textarea>
             </div>
         </div>
 
         <div class="form-group">
-            <tw:label labelName="skillType" class="col-md-3 control-label"><strong>Skill Type</strong></tw:label>
+            <tw:label labelName="skillType" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.SKILL.CREATE_FORM.SKILL_TYPE" /></strong></tw:label>
             <div class="col-md-4 col-xs-11">
                 <tw:select selectName="skillType" class="form-control skillType select2Min" tabindex="3">
-                    <tw:option value="Certification" selected="${skillForm.skillType == 'Certification'}">Certification</tw:option>
-                    <tw:option value="Training" selected="${skillForm.skillType == 'Training'}">Training</tw:option>
+                    <tw:option value="Certification" selected="${skillForm.skillType == 'Certification'}"><s:text name="CONTRACTOR.SKILL.CREATE_FORM.SKILL_TYPE_CERTIFICATION" /></tw:option>
+                    <tw:option value="Training" selected="${skillForm.skillType == 'Training'}"><s:text name="CONTRACTOR.SKILL.CREATE_FORM.SKILL_TYPE_TRAINING" /></tw:option>
                 </tw:select>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
-               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="Certificates require an uploaded file and expiration to be supplied. Training is honor-based." data-container="body"></i>
+               <s:set var="CERTIFICATE_REQUIRE_UPLOAD"><s:text name="CONTRACTOR.SKILL.CREATE_FORM.CERTIFICATE_REQUIRE_UPLOAD" /></s:set>
+               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="${CERTIFICATE_REQUIRE_UPLOAD}" data-container="body"></i>
             </div>
         </div>
 
@@ -45,7 +46,7 @@
         <s:set var="selected_groups" value="skillForm.groups" />
 
         <div class="form-group">
-            <tw:label labelName="groups" class="col-md-3 control-label">Employee Groups</tw:label>
+            <tw:label labelName="groups" class="col-md-3 control-label"><s:text name="CONTRACTOR.SKILL.CREATE_FORM.EMPLOYEE_GROUPS" /></tw:label>
             <div class="col-md-4">
                 <tw:select selectName="groups" multiple="true" class="form-control contractor-skill-employee-groups select2" tabindex="7" >
                     <s:iterator value="skillGroups" var="contractor_group">
@@ -62,7 +63,7 @@
 
                 <div class="checkbox">
                     <tw:label labelName="required" class="control-label">
-                        <tw:input inputName="required" class="required now" type="checkbox" data-toggle="form-input" data-target=".contractor-skill-employee-groups" value="true" tabindex="8" /> Required for all employees
+                        <tw:input inputName="required" class="required now" type="checkbox" data-toggle="form-input" data-target=".contractor-skill-employee-groups" value="true" tabindex="8" /> <s:text name="CONTRACTOR.SKILL.CREATE_FORM.REQUIRED_FOR_ALL_EMPLOYEES" />
                     </tw:label>
                 </div>
             </div>
@@ -72,14 +73,14 @@
             <div class="col-md-4 col-md-offset-3">
                 <div classs="checkbox">
                     <tw:label labelName="addAnother" class="control-label">
-                        <tw:input inputName="addAnother" type="checkbox" value="true" tabindex="9" /> Add Another
+                        <tw:input inputName="addAnother" type="checkbox" value="true" tabindex="9" /> <s:text name="CONTRACTOR.SKILL.CREATE_FORM.ADD_ANOTHER" />
                     </tw:label>
                 </div>
             </div>
 
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="10" >Add</tw:button>
-                <a href="${contractor_skill_list_url}" class="btn btn-default" tabindex="11" >Cancel</a>
+                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="10" ><s:text name="CONTRACTOR.SKILL.CREATE_FORM.ADD" /></tw:button>
+                <a href="${contractor_skill_list_url}" class="btn btn-default" tabindex="11" ><s:text name="CONTRACTOR.SKILL.CREATE_FORM.CANCEL" /></a>
             </div>
         </div>
     </fieldset>

@@ -3,12 +3,14 @@ package com.picsauditing.employeeguard.process;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.models.AccountModel;
 import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.entity.ProjectEntityService;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.entity.RoleEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ public class ProfileSkillStatusProcess {
 	@Autowired
 	private ProfileEntityService profileEntityService;
 	@Autowired
+	private ProjectEntityService projectEntityService;
+	@Autowired
 	private RoleEntityService roleEntityService;
 	@Autowired
 	private SkillEntityService skillEntityService;
@@ -32,19 +36,10 @@ public class ProfileSkillStatusProcess {
 	@Autowired
 	private ProcessHelper processHelper;
 
-	// Required Skills contains all the group skills, Site and Corporate Required Skills, Skills from Roles
-	// the person is assigned to at the Site
-
-	// Only Project required skills and skills for roles under a project show up listed under the project
-
 	public ProfileSkillData buildProfileSkillData(final Profile profile) {
 		Set<Employee> employees = new HashSet<>(profile.getEmployees());
 		Set<Project> projects = findProjects(profile);
 		Set<Role> roles = findRoles(profile);
-/*
-		if(roles!=null && profile !=null)
-			log.debug(String.format("Profile=[%s] Found following roles [%s]", profile, roles));
-*/
 
 		Map<Project, Set<Role>> projectRoles = processHelper.getProjectRoles(projects);
 		Map<Role, Set<AccountSkill>> roleSkills = processHelper.getRoleSkills(roles);
@@ -59,12 +54,22 @@ public class ProfileSkillStatusProcess {
 		profileSkillData = addAccountInformation(profileSkillData, profile);
 		profileSkillData = addAccountRequiredSkills(profileSkillData, profile, projectRoles, roleSkills);
 		profileSkillData = addSiteProjects(profileSkillData, projects);
+		profileSkillData = addSiteRoles(profileSkillData, employees);
+		profileSkillData = addContractorGroups(profileSkillData, employees);
+		profileSkillData = addGroupSkills(profileSkillData);
 		profileSkillData = addProjectStatus(profileSkillData, projects, profile);
 		profileSkillData = addAccountStatus(profileSkillData, profile);
 		profileSkillData = addAllSkillStatuses(profileSkillData, profile);
 		profileSkillData = addOverallSkillStatus(profileSkillData);
-		profileSkillData = addSiteRoles(profileSkillData, employees);
-		profileSkillData = addContractorGroups(profileSkillData, employees);
+
+		return profileSkillData;
+	}
+
+	private ProfileSkillData addGroupSkills(final ProfileSkillData profileSkillData) {
+		Map<Group, Set<AccountSkill>> groupSkills = skillEntityService.getSkillsForGroups(
+				PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAccountGroups().values()));
+
+		profileSkillData.setGroupSkills(groupSkills);
 
 		return profileSkillData;
 	}
@@ -105,6 +110,7 @@ public class ProfileSkillStatusProcess {
 
 		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllProjectSkills().values()));
 		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getAllRequiredSkills().values()));
+		allSkills.addAll(PicsCollectionUtil.mergeCollectionOfCollections(profileSkillData.getGroupSkills().values()));
 
 		return allSkills;
 	}
@@ -113,7 +119,8 @@ public class ProfileSkillStatusProcess {
 											  final Profile profile) {
 		Map<AccountModel, Set<AccountSkill>> allSiteSkills =
 				processHelper.allSkillsForAllSite(profileSkillData.getSiteProjects(),
-						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills());
+						profileSkillData.getAllProjectSkills(), profileSkillData.getAllRequiredSkills(),
+						profileSkillData.getAccountGroups(), profileSkillData.getGroupSkills());
 
 		profileSkillData.setSiteStatuses(statusCalculatorService
 				.getSkillStatusPerEntity(getEmployee(profile), allSiteSkills, SkillStatus.Completed));
@@ -290,7 +297,7 @@ public class ProfileSkillStatusProcess {
 	}
 
 	private Set<Project> findProjects(final Profile profile) {
-		return profileEntityService.findProjectsForProfile(profile);
+		return projectEntityService.getProjectsForProfile(profile);
 	}
 
 	private Set<Role> findRoles(final Profile profile) {
@@ -298,6 +305,10 @@ public class ProfileSkillStatusProcess {
 	}
 
 	private Employee getEmployee(final Profile profile) {
+		if (CollectionUtils.isEmpty(profile.getEmployees())) {
+			return null;
+		}
+
 		return profile.getEmployees().get(profile.getEmployees().size() - 1);
 	}
 }

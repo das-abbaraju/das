@@ -1,6 +1,6 @@
 describe('Who Am I service', function() {
     var scope, mockResource, httpMock, whoAmI, roles;
-    var whoami_url = '/employee-guard/operators/who-am-i';
+    var whoami_url = '/employee-guard/who-am-i';
 
     var operator_user = {
         "userId":116680,

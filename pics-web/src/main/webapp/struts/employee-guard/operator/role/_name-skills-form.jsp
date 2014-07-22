@@ -11,16 +11,16 @@
          class="form-horizontal js-validation" role="form">
     <fieldset>
         <div class="form-group">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+            <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="OPERATOR.JOB_ROLES.EDIT.ROLE.NAME"/></strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="name" class="form-control" type="text" value="${role.name}" autofocus="true" tabindex="1"/>
+                <tw:input inputName="name" class="form-control" type="text" value="${role.name}" autofocus="true" tabindex="1" maxlength="70" />
             </div>
         </div>
 
         <s:set var="selected_skills" value="role.skills"/>
 
         <div class="form-group">
-            <tw:label labelName="skills" class="col-md-3 control-label">Required Skills</tw:label>
+            <tw:label labelName="skills" class="col-md-3 control-label"><s:text name="OPERATOR.JOB_ROLES.EDIT.ROLE.REQUIRED_SKILLS"/></tw:label>
             <div class="col-md-4">
                 <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="2">
                     <s:iterator value="roleSkills" var="operator_skill">
@@ -39,8 +39,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="3">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="4">Cancel</tw:button>
+                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="3"><s:text name="OPERATOR.JOB_ROLES.EDIT.ROLE.SAVE.BUTTON"/></tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="4"><s:text name="OPERATOR.JOB_ROLES.EDIT.ROLE.CANCEL.BUTTON"/></tw:button>
             </div>
         </div>
     </fieldset>

@@ -1,6 +1,7 @@
 package com.picsauditing.employeeguard.forms;
 
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.Settings;
 
 public class ProfileForm {
 	private String email;
@@ -64,7 +65,7 @@ public class ProfileForm {
 		profile.setLastName(lastName);
 		profile.setEmail(email);
 		profile.setUserId(userId);
-
+		profile.setSettings(new Settings());
 		return profile;
 	}
 }

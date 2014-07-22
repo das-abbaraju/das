@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="page-actions">
-                        <a ng-show="(user.type | lowercase) == 'corporate'" href="/employee-guard/operators/project/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Job Role</a>
+                        <a ng-show="(user.type | lowercase) == 'corporate'" href="/employee-guard/operators/role/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Job Role</a>
                     </div>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                 </div>
             </header>
 
-            <div class="content">
+            <div class="content no_padding">
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
                         <thead>

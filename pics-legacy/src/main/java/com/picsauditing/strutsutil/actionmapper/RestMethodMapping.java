@@ -29,9 +29,12 @@ final class RestMethodMapping {
                 // Creating a new entry on POST e.g. foo/
             } else if (HttpUtil.isPost(request)) {
                 return methodMapping.getPostMethodName();
-            }
+								// PUT e.g. foo/
+            } else if (HttpUtil.isPut(request)) {
+							return methodMapping.getPutMethodName();
+						}
 
-        } else {
+						} else {
             // Viewing the form to create a new item e.g. foo/create
             if (HttpUtil.isGet(request) && methodMapping.getNewMethodName().equals(idParameter)) {
                 return methodMapping.getNewMethodName();

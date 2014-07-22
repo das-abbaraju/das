@@ -7,17 +7,17 @@
                 <ul class="nav nav-pills nav-stacked">
                     <li>
                         <a href="/employee-guard/employee/profile/{{ employee.id }}" target="_self">
-                            <i class="icon-user icon-large"></i>Profile
+                            <i class="icon-user icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.PROFILE' | translate }}
                         </a>
                     </li>
                     <li>
-                        <a href="/employee-guard/employee/skills" target="_self">
-                            <i class="icon-certificate icon-large"></i>Skills
+                        <a href="/employee-guard/employee/skills">
+                            <i class="icon-certificate icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.SKILLS' | translate }}
                         </a>
                     </li>
                     <li>
                         <a href="/employee-guard/employee/file" target="_self">
-                            <i class="icon-picture icon-large"></i>My Files
+                            <i class="icon-picture icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.SECONDARY_NAV_MENU.MY_FILES' | translate }}
                         </a>
                     </li>
                 </ul>
@@ -25,65 +25,39 @@
             <div class="col-md-9">
                 <section class="employee-guard-section">
                     <h1>
-                        <i class="icon-map-marker icon-large"></i>Assignment Status
+                        <i class="icon-map-marker icon-large"></i>{{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.TITLE' | translate }}
                     </h1>
-
                     <div class="content clearfix">
-                        <div ng-show="assignments" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
+                        <div ng-if="assignments.length" class="col-md-4 text-center tile-container" ng-click="viewAssignedSkills(assignment)" ng-repeat="assignment in assignments | orderBy: 'name'">
                             <div class="tile" ng-class="getSkillClass(assignment.status)">
                                 <skillstatusicon status="{{ assignment.status }}"></skillstatusicon>
                                 <p class="title">{{ assignment.name }}</p>
-
-
-                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }} Employee
-                                    <ng-pluralize count="assignment.groups" when="{'1': 'Group','other': 'Groups'}" />
+                                <p class="subtitle" ng-show="assignment.groups">{{ assignment.groups }}
+                                    <span ng-if="assignment.groups <= 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUP"></span>
+                                    <span ng-if="assignment.groups > 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.EMPLOYEE_GROUPS"></span>
                                 </p>
-                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }} Job Roles</p>
+                                <p class="subtitle" ng-show="assignment.roles">{{ assignment.roles }}
+                                    <span ng-if="assignment.roles <= 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLE"></span>
+                                    <span ng-if="assignment.roles > 1" translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.JOB_ROLES"></span>
+                                </p>
                                 <p class="subtitle" ng-show="assignment.site">{{ assignment.site }}</p>
                             </div>
                         </div>
-
-                        <div ng-show="!assignments.length" class="col-md-8 col-md-offset-2">
+                        <div ng-if="!assignments.length" class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Assignments</h4>
-
-                                <p>Your employer has not given you any assignments yet.  After you've been assigned to a site, your status will show in this area.</p>
-
-                                <p>You can get a head start by adding certificates or other skill proof ahead of time. Just go to <a href="/employee-guard/employee/file" target="_self">My Files</a> and upload any certificates (files or photos) you already have. Those uploads can be easily applied to future required skills!</p>
-
+                                <h4 translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.TITLE"></h4>
+                                <p translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE"></p>
+                                <p translate="EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.MESSAGE2" translate-values="{ url: '/employee-guard/employee/file', target:'_self'}"></p>
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                                    <a href="#"><i class="icon-question-sign"></i> {{ 'EMPLOYEE.DASHBOARD.ASSIGNMENT_STATUS.NO_ASSIGNMENTS.LEARN_MORE' | translate }}</a>
                                 </p>
                             </div>
                         </div>
                     </div>
                 </section>
-                <div class="row beta-section">
-                    <div class="col-md-8">
-                        <section class="employee-guard-section">
-                            <h1>
-                                <i class="icon-wrench icon-large"></i>Beta Updates (Thursday 2014-05-08)
-                            </h1>
-                            <div class="content">
-                                <ul class="list-unstyled">
-                                    <li class="issue-known">
-                                        <span><i class="icon-lemon"></i> Known Issue:</span>
-                                        Can't reset passwords
-                                    </li>
-                                    <li class="issue-known">
-                                        <span><i class="icon-lemon"></i> Known Issue:</span>
-                                        Adding a duplicate file creates an error
-                                    </li>
-                                    <li class="issue-more">
-                                        <a href="/employee-guard/employee/changelog">
-                                            <i class="icon-list"></i> View more update history in the Change Log...
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-md-4">
+
+                <div class="row">
+                    <div class="col-md-12">
                         <betafeedback></betafeedback>
                     </div>
                 </div>

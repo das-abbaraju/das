@@ -166,3 +166,9 @@
 .btn-xs {
     padding: 3px 8px;
 }
+
+.lt-ie11 {
+  .btn-import {
+      display: none;
+  }
+}

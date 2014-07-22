@@ -4,6 +4,7 @@ import com.picsauditing.PicsActionTest;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.controller.PicsRestActionSupport;
 import com.picsauditing.database.domain.Identifiable;
+import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.Group;
 import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
@@ -12,7 +13,7 @@ import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
 import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
-import com.picsauditing.employeeguard.services.factory.EmployeeServiceFactory;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.factory.GroupServiceFactory;
 import com.picsauditing.employeeguard.services.factory.SkillServiceFactory;
 import com.picsauditing.jpa.entities.Account;
@@ -23,16 +24,22 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class GroupActionTest extends PicsActionTest {
+
 	public static final String ID = "ID";
+
 	private GroupAction groupAction;
 
-	private EmployeeService employeeService;
+	@Mock
+	private EmployeeEntityService employeeEntityService;
+
 	private GroupService groupService;
 	private SkillService skillService;
 
@@ -44,18 +51,17 @@ public class GroupActionTest extends PicsActionTest {
 		MockitoAnnotations.initMocks(this);
 
 		groupAction = new GroupAction();
-		employeeService = EmployeeServiceFactory.getEmployeeService();
 		groupService = GroupServiceFactory.getGroupService();
 		skillService = SkillServiceFactory.getSkillService();
 
 		super.setUp(groupAction);
 
-		Whitebox.setInternalState(groupAction, "employeeService", employeeService);
+		Whitebox.setInternalState(groupAction, "employeeEntityService", employeeEntityService);
 		Whitebox.setInternalState(groupAction, "groupService", groupService);
 		Whitebox.setInternalState(groupAction, "skillService", skillService);
 		Whitebox.setInternalState(groupAction, "urlBuilder", urlBuilder);
 
-		when(permissions.getAccountId()).thenReturn(Account.PICS_ID);
+		when(permissions.getAccountId()).thenReturn(Account.PicsID);
 		when(permissions.getAppUserID()).thenReturn(Identifiable.SYSTEM);
 	}
 
@@ -63,7 +69,7 @@ public class GroupActionTest extends PicsActionTest {
 	public void testIndex() throws Exception {
 		assertEquals(PicsRestActionSupport.LIST, groupAction.index());
 		assertFalse(groupAction.getGroups().isEmpty());
-		verify(groupService).getGroupsForAccount(Account.PICS_ID);
+		verify(groupService).getGroupsForAccount(Account.PicsID);
 	}
 
 	@Test
@@ -74,7 +80,7 @@ public class GroupActionTest extends PicsActionTest {
 
 		assertEquals(PicsRestActionSupport.LIST, groupAction.index());
 		assertFalse(groupAction.getGroups().isEmpty());
-		verify(groupService).search("Test", Account.PICS_ID);
+		verify(groupService).search("Test", Account.PicsID);
 	}
 
 	@Test
@@ -83,16 +89,18 @@ public class GroupActionTest extends PicsActionTest {
 
 		assertEquals(PicsRestActionSupport.SHOW, groupAction.show());
 		assertNotNull(groupAction.getGroup());
-		verify(groupService).getGroup(ID, Account.PICS_ID);
+		verify(groupService).getGroup(ID, Account.PicsID);
 	}
 
 	@Test
 	public void testCreate() throws Exception {
+		when(employeeEntityService.getEmployeesForAccount(anyInt())).thenReturn(Arrays.asList(new Employee()));
+
 		assertEquals(PicsRestActionSupport.CREATE, groupAction.create());
 		assertFalse(groupAction.getGroupEmployees().isEmpty());
 		assertFalse(groupAction.getGroupSkills().isEmpty());
-		verify(employeeService).getEmployeesForAccount(Account.PICS_ID);
-		verify(skillService).getOptionalSkillsForAccount(Account.PICS_ID);
+		verify(employeeEntityService).getEmployeesForAccount(Account.PicsID);
+		verify(skillService).getOptionalSkillsForAccount(Account.PicsID);
 	}
 
 	@Test
@@ -102,19 +110,20 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals("name-skills-form", groupAction.editNameSkillsSection());
 		assertNotNull(groupAction.getGroup());
 		assertFalse(groupAction.getGroupSkills().isEmpty());
-		verify(groupService).getGroup(ID, Account.PICS_ID);
-		verify(skillService).getOptionalSkillsForAccount(Account.PICS_ID);
+		verify(groupService).getGroup(ID, Account.PicsID);
+		verify(skillService).getOptionalSkillsForAccount(Account.PicsID);
 	}
 
 	@Test
 	public void testEditEmployeesSection() throws Exception {
+		when(employeeEntityService.getEmployeesForAccount(anyInt())).thenReturn(Arrays.asList(new Employee()));
 		groupAction.setId(ID);
 
 		assertEquals("employees-form", groupAction.editEmployeesSection());
 		assertNotNull(groupAction.getGroup());
 		assertFalse(groupAction.getGroupEmployees().isEmpty());
-		verify(groupService).getGroup(ID, Account.PICS_ID);
-		verify(employeeService).getEmployeesForAccount(Account.PICS_ID);
+		verify(groupService).getGroup(ID, Account.PicsID);
+		verify(employeeEntityService).getEmployeesForAccount(Account.PicsID);
 	}
 
 	@Test
@@ -129,7 +138,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, groupAction.insert());
 		assertEquals(url, groupAction.getUrl());
 
-		verify(groupService).save(any(Group.class), eq(Account.PICS_ID), anyInt());
+		verify(groupService).save(any(Group.class), eq(Account.PicsID), anyInt());
 	}
 
 	@Test
@@ -141,7 +150,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertEquals(PicsActionSupport.REDIRECT, groupAction.insert());
 		assertEquals("/employee-guard/contractor/employee-group/create", groupAction.getUrl());
 
-		verify(groupService).save(any(Group.class), eq(Account.PICS_ID), anyInt());
+		verify(groupService).save(any(Group.class), eq(Account.PicsID), anyInt());
 	}
 
 	@Test
@@ -154,7 +163,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertNotNull(groupAction.getGroup());
 		assertTrue(groupAction.getUrl().startsWith("/employee-guard/contractor/employee-group/"));
 
-		verify(groupService).update(groupNameSkillsForm, ID, Account.PICS_ID, Identifiable.SYSTEM);
+		verify(groupService).update(groupNameSkillsForm, ID, Account.PicsID, Identifiable.SYSTEM);
 	}
 
 	@Test
@@ -167,7 +176,7 @@ public class GroupActionTest extends PicsActionTest {
 		assertNotNull(groupAction.getGroup());
 		assertTrue(groupAction.getUrl().startsWith("/employee-guard/contractor/employee-group/"));
 
-		verify(groupService).update(groupEmployeesForm, ID, Account.PICS_ID, Identifiable.SYSTEM);
+		verify(groupService).update(groupEmployeesForm, ID, Account.PicsID, Identifiable.SYSTEM);
 	}
 
 	@Test

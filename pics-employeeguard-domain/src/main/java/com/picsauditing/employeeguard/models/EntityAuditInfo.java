@@ -5,12 +5,16 @@ import java.util.Date;
 
 public final class EntityAuditInfo {
 
-	private final int userId;
+	private final int appUserId;
 	private final Date timestamp;
 
 	public EntityAuditInfo(final Builder builder) {
-		this.userId = builder.appUserId;
+		this.appUserId = builder.appUserId;
 		this.timestamp = builder.timestamp;
+	}
+
+	public static EntityAuditInfo newEntityAuditInfo(int appUserId){
+		return new EntityAuditInfo.Builder().appUserId(appUserId).timestamp(new Date()).build();
 	}
 
 	/**
@@ -19,7 +23,7 @@ public final class EntityAuditInfo {
 	 * @return
 	 */
 	public int getAppUserId() {
-		return userId;
+		return appUserId;
 	}
 
 	public Date getTimestamp() {
