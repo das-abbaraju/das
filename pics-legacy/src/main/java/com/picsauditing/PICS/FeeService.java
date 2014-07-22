@@ -399,20 +399,22 @@ public class FeeService {
     }
 
     private void setPayingFacilitiesCount(ContractorAccount contractor) {
-        Set<OperatorAccount> payingOperators = findPayingFacilities(contractor);
+        contractor.setPayingFacilities(findPayingFacilitiesCount(contractor));
+    }
+
+    public int findPayingFacilitiesCount(ContractorAccount contractorAccount){
+        Set<OperatorAccount> payingOperators = findPayingFacilities(contractorAccount);
 
         if (payingOperators.size() == 1) {
             OperatorAccount [] payingOperatorArray = payingOperators.toArray(new OperatorAccount[payingOperators.size()]);
             if (payingOperatorArray[0].getDoContractorsPay().equals("Multiple")) {
-                contractor.setPayingFacilities(0);
-                return;
+                return 0;
             }
         }
-
-        contractor.setPayingFacilities(payingOperators.size());
+        return payingOperators.size();
     }
 
-    HashSet<OperatorAccount> findPayingFacilities(ContractorAccount contractor) {
+    private HashSet<OperatorAccount> findPayingFacilities(ContractorAccount contractor) {
         HashSet<OperatorAccount> payingFacilities = new HashSet<>();
         for (ContractorOperator contractorOperator : contractor.getNonCorporateOperators()) {
             OperatorAccount operator = contractorOperator.getOperatorAccount();
