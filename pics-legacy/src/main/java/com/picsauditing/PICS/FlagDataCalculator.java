@@ -575,6 +575,7 @@ public class FlagDataCalculator implements FlagCalculator {
 		return false;
 	}
 
+    @Deprecated
 	public WaitingOn calculateWaitingOn(ContractorOperator co) {
 
 		ContractorAccount contractor = co.getContractorAccount();

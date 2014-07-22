@@ -19,6 +19,7 @@ import com.picsauditing.rbic.RulesRunner;
 import com.picsauditing.search.Database;
 import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.AuditService;
+import com.picsauditing.service.account.WaitingOnService;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
@@ -72,6 +73,8 @@ public class ContractorCron extends PicsActionSupport {
     private AuditBuilderFactory auditBuilderFactory;
     @Autowired
     private FlagCalculatorFactory flagCalculatorFactory;
+    @Autowired
+    private WaitingOnService waitingOnService;
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
@@ -657,8 +660,7 @@ public class ContractorCron extends PicsActionSupport {
 
 		logger.trace("ContractorCron starting WaitingOn for {}", co.getOperatorAccount().getName());
 		WaitingOn waitingOn = null;
-		flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagAuditCriteriaInherited());
-		waitingOn = flagDataCalculator.calculateWaitingOn(co);
+        waitingOn = waitingOnService.calculateWaitingOn(co);
 
 		if (!waitingOn.equals(co.getWaitingOn()) && !co.getWorkStatus().isNo()) {
 			OperatorAccount operator = co.getOperatorAccount();
