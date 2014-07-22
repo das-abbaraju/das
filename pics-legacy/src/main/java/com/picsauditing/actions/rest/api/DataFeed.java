@@ -23,32 +23,12 @@ import com.picsauditing.util.Strings;
 @SuppressWarnings("serial")
 public class DataFeed extends ReportApi implements ParameterAware {
 
-	private ReportDataConverter converter;
-
-	protected String outputFormat = "";
-	protected String reportIdSpecified = "";
+    private ReportDataConverter converter;
+	private String outputFormat = "";
+    private String reportIdSpecified = "";
+    private String paginated = "";
 
     private static final Logger logger = LoggerFactory.getLogger(DataFeed.class);
-
-    public String getOutputFormat() {
-        return outputFormat;
-    }
-
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
-
-    public String getReportIdSpecified() {
-        return reportIdSpecified;
-    }
-
-    public void setReportIdSpecified(String reportIdSpecified) {
-        this.reportIdSpecified = reportIdSpecified;
-    }
-
-    public void setReport(int reportId) {
-        setReportId(reportId);
-    }
 
     @Override
     public void setParameters(Map<String, String[]> parameters) {
@@ -77,7 +57,9 @@ public class DataFeed extends ReportApi implements ParameterAware {
 
 	        JSONObject payloadJson = getJsonFromRequestPayload();
             setIncludeData(true);
-            setLimit(Integer.MAX_VALUE);
+            if(!Boolean.parseBoolean(paginated)) {
+                setLimit(Integer.MAX_VALUE);
+            }
 	        ReportContext reportContext = buildReportContext(payloadJson);
 	        report = reportService.createOrLoadReport(reportContext, params, removeAggregates);
 
@@ -125,4 +107,31 @@ public class DataFeed extends ReportApi implements ParameterAware {
         results.put("data", newData);
     }
 
+    public String getOutputFormat() {
+        return outputFormat;
+    }
+
+    public void setOutputFormat(String outputFormat) {
+        this.outputFormat = outputFormat;
+    }
+
+    public String getReportIdSpecified() {
+        return reportIdSpecified;
+    }
+
+    public void setReportIdSpecified(String reportIdSpecified) {
+        this.reportIdSpecified = reportIdSpecified;
+    }
+
+    public String getPaginated() {
+        return paginated;
+    }
+
+    public void setPaginated(String paginated) {
+        this.paginated = paginated;
+    }
+
+    public void setReport(int reportId) {
+        setReportId(reportId);
+    }
 }
