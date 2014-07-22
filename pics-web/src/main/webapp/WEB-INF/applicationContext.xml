@@ -418,6 +418,9 @@
     <bean id="AuditBuilderFactory" class="com.picsauditing.audits.AuditBuilderFactory" scope="prototype"/>
     <bean id="WaitingOnService" class="com.picsauditing.service.account.WaitingOnService" scope="prototype"/>
 
+    <!-- Util -->
+    <bean id="PicsEnvironmentUtil" class="com.picsauditing.employeeguard.util.PicsEnvironmentUtil"/>
+
     <!--  JPA implementation -->
     <bean id="entityManagerFactory"
           class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">

@@ -13,9 +13,9 @@ import com.picsauditing.employeeguard.forms.SearchForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.services.EmployeeService;
 import com.picsauditing.employeeguard.services.GroupService;
 import com.picsauditing.employeeguard.services.SkillService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.validators.group.GroupFormValidator;
 import com.picsauditing.forms.binding.FormBinding;
 import com.picsauditing.util.web.UrlBuilder;
@@ -32,7 +32,7 @@ public class GroupAction extends PicsRestActionSupport implements AjaxValidator 
 
 	/* Service + Validator */
 	@Autowired
-	private EmployeeService employeeService;
+	private EmployeeEntityService employeeEntityService;
 	@Autowired
 	private GroupService groupService;
 	@Autowired
@@ -147,7 +147,7 @@ public class GroupAction extends PicsRestActionSupport implements AjaxValidator 
 	}
 
 	private void loadEmployees() {
-		groupEmployees = employeeService.getEmployeesForAccount(permissions.getAccountId());
+		groupEmployees = employeeEntityService.getEmployeesForAccount(permissions.getAccountId());
 	}
 
 	private UrlBuilder urlBuilder() {

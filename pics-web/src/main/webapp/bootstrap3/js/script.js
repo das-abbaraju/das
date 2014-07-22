@@ -28738,10 +28738,13 @@ PICS.define('employee-guard.employee.photo.PhotoController', {
             var $element = $(event.target),
                 $figure = $element.closest('figure'),
                 $file_input = $figure.find('input[type="file"]'),
-                photoValidation = PICS.getClass('employee-guard.FormValidation');
+                photoValidation = PICS.getClass('employee-guard.FormValidation'),
+                fileUpdateCtrl = PICS.getClass('employee-guard.FileUpload'),
+                filename = fileUpdateCtrl.getFileNameFromFileInput(event);
 
-            //update hidden field that holds filename for validation
-            $('#validate-filename').val($file_input[0].files[0].name);
+            if (filename) {
+                $('#validate-filename').val(filename);
+            }
 
             //send for validation
             photoValidation.submitFormForValidation(event);
@@ -28864,25 +28867,27 @@ PICS.define('employee-guard.FileUpload', {
         function changeImportedFile(event) {
             var $element = $(event.target);
 
-            showImportFilename($element);
-            updateHiddenFilenameForValidation($element);
+            showImportFilename($element, event);
+            updateHiddenFilenameForValidation($element, event);
         }
 
-        function showImportFilename($element) {
+        function showImportFilename($element, event) {
             var $form_group = $element.closest('.form-group'),
                 $display_name = $form_group.find('.filename-display'),
-                filename = $element[0].files[0].name;
+                filename = getFileNameFromFileInput(event);
 
             if (filename) {
                 $display_name.html(filename);
             }
         }
 
-        function updateHiddenFilenameForValidation($element) {
+        function updateHiddenFilenameForValidation($element, event) {
             var $validate_filename = $('#validate-filename'),
-                filename = $element[0].files[0].name;
+                filename = getFileNameFromFileInput(event);
 
-            $validate_filename.val(filename);
+            if (filename) {
+                $validate_filename.val(filename);
+            }
         }
 
         function disableSubmitBtnAfterSubmit(event) {
@@ -28892,8 +28897,17 @@ PICS.define('employee-guard.FileUpload', {
             $submitBtn.attr('disabled', true);
         }
 
+        function getFileNameFromFileInput(event) {
+            var file = event.target.value,
+                lastSlash = file.lastIndexOf('\\'),
+                filename = file.substring(lastSlash + 1, file.length);
+
+            return filename;
+        }
+
         return {
-            init: init
+            init: init,
+            getFileNameFromFileInput: getFileNameFromFileInput
         };
     }())
 });
@@ -29113,6 +29127,153 @@ PICS.define('employee-guard.LeftNavigation', {
     }())
 });
 
+PICS.define('employee-guard.SignUp', {
+    methods: (function () {
+        var sign_up_page_el = $('.employee_guard_sign_up-page'),
+            selected_language,
+            language_select_el,
+            formValues;
+
+        function init() {
+            if (sign_up_page_el.length > 0) {
+                bindEvents();
+            }
+        }
+
+        function bindEvents() {
+            language_select_el = sign_up_page_el.find('#supported_locales');
+
+            language_select_el.on('change', onSupportedLanguageChange);
+            language_select_el.val(selected_language);
+
+            if (formValues) {
+                prefillFormData(formValues);
+            }
+
+        }
+
+        function prefillFormData (formValues) {
+            var form = sign_up_page_el.find('form');
+
+            form.find('#employee_guard_create_account_hashCode').val(formValues.hashCode);
+            form.find('#employee_guard_create_account_firstName').val(formValues.firstName);
+            form.find('#employee_guard_create_account_lastName').val(formValues.lastName);
+            form.find('#employee_guard_create_account_email').val(formValues.email);
+        }
+
+        function onSupportedLanguageChange(event) {
+            var language = language_select_el.val();
+            selected_language = language;
+            setActiveLanguage(language);
+            setFormValues(language);
+        }
+
+        function setActiveLanguage(language) {
+            PICS.ajax({
+                url: 'sign-up/switchLanguage',
+                data: {
+                    request_locale: language
+                },
+                success: onUpdateLanguageRequestSuccess
+            });
+        }
+
+        function setFormValues(language) {
+            var form = sign_up_page_el.find('form');
+
+            formValues = {};
+            formValues.hashCode = form.find('#employee_guard_create_account_hashCode').val();
+            formValues.firstName = form.find('#employee_guard_create_account_firstName').val();
+            formValues.lastName = form.find('#employee_guard_create_account_lastName').val();
+            formValues.email = form.find('#employee_guard_create_account_email').val();
+        }
+
+        function onUpdateLanguageRequestSuccess(new_login_form_html) {
+            sign_up_page_el.find('#login_row').replaceWith(new_login_form_html);
+            init();
+        }
+
+        return {
+            init: init
+        };
+    }())
+});
+PICS.define('employee-guard.Welcome', {
+    methods: (function () {
+        var welcome_page_el = $('.employee_guard_welcome-page'),
+            selected_language,
+            language_select_el,
+            profile_fname_el,
+            profile_fname,
+            companyName_el,
+            companyName;
+
+        function init() {
+            if (welcome_page_el.length > 0) {
+                bindEvents();
+            }
+        }
+
+        function bindEvents() {
+            language_select_el = welcome_page_el.find('#supported_locales');
+
+            language_select_el.on('change', onSupportedLanguageChange);
+            language_select_el.val(selected_language);
+
+            profile_fname_el = welcome_page_el.find('#profile_fname');
+            companyName_el = welcome_page_el.find('#companyName');
+
+            populateGreeting();
+        }
+
+        function populateGreeting() {
+            if (profile_fname) {
+                profile_fname_el.html(profile_fname);
+            }
+
+            if (companyName) {
+                companyName_el.html(companyName);
+            }
+        }
+
+        function onSupportedLanguageChange(event) {
+            var language = language_select_el.val();
+
+            selected_language = language;
+            setActiveLanguage(language);
+            profile_fname = welcome_page_el.find('#profile_fname').html();
+            companyName = welcome_page_el.find('#companyName').html();
+        }
+
+        function setActiveLanguage(language) {
+            PICS.ajax({
+                url: 'login/switchLanguage',
+                data: formatFormData(language),
+                success: onUpdateLanguageRequestSuccess
+            });
+        }
+
+        function formatFormData(language) {
+            var hashCode = $('#employee_guard_login_hashCode').val();
+
+            var data = {
+                request_locale: language,
+                hashCode: hashCode
+            };
+
+            return data;
+        }
+
+        function onUpdateLanguageRequestSuccess(new_login_form_html) {
+            welcome_page_el.find('#login_row').replaceWith(new_login_form_html);
+            init();
+        }
+
+        return {
+            init: init
+        };
+    }())
+});
 PICS.define('employee-guard.Operator.Project', {
     methods: (function () {
 

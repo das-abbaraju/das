@@ -8,22 +8,18 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">My Files</s:param>
+    <s:param name="title"><s:text name="EMPLOYEE.FILE.LIST.HEADER"/></s:param>
     <s:param name="actions">
-        <a href="${employee_file_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> File</a>
+        <a href="${employee_file_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="EMPLOYEE.FILE.LIST.FILE.BUTTON"/></a>
     </s:param>
 </s:include>
-
-
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
-
 
 <s:if test="documents.size() > 0">
     <tw:form formName="employee_skill_search" action="${employee_skill_list_url}" class="search-query" role="form">
         <fieldset>
             <div class="search-wrapper col-md-4">
-                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search My Files"
+                <s:set var="placeholderSearchMyFiles"><s:text name="EMPLOYEE.FILE.LIST.SEARCH.DEFAULT_TEXT"/></s:set>
+                <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${placeholderSearchMyFiles}"
                           value="${searchForm.searchTerm}"/>
                 <i class="icon-search"></i>
                 <ul id="employee_skill_search_form_results" class="search-results"></ul>
@@ -35,9 +31,9 @@
         <table class="table table-striped table-condensed table-hover">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Added</th>
-                    <th>Expires</th>
+                    <th><s:text name="EMPLOYEE.FILE.LIST.TABLE.NAME.COLUMN"/></th>
+                    <th><s:text name="EMPLOYEE.FILE.LIST.TABLE.ADDED.COLUMN"/></th>
+                    <th><s:text name="EMPLOYEE.FILE.LIST.TABLE.EXPIRES.COLUMN"/></th>
                 </tr>
             </thead>
             <tbody>
@@ -57,7 +53,7 @@
                     </s:else>
 
                     <s:if test="#document.doesNotExpire">
-                        <s:set var="document_expires">Never</s:set>
+                        <s:set var="document_expires"><s:text name="EMPLOYEE.FILE.LIST.TABLE.EXPIRES.COLUMN.NEVER_EXPIRES"/></s:set>
                     </s:if>
                     <s:else>
                         <s:set var="document_expires">${document.expires}</s:set>
@@ -78,12 +74,12 @@
     <div class="row">
         <div class="col-md-6 col-md-offset-3">
             <div class="alert alert-info">
-                <h4>No Files</h4>
+                <h4><s:text name="EMPLOYEE.FILE.LIST.TABLE.NO_FILES_MSG.TITLE"/></h4>
 
-                <p>Add certificates or other skill proof by selecting <strong><i class="icon-plus-sign"></i> File</strong> at the top of the page. Upload any certificates, files, or photos you already have; then easily apply those uploads to your required skills!</p>
+                <p><s:text name="EMPLOYEE.FILE.LIST.TABLE.NO_FILES_MSG.MSG1"/></p>
 
                 <p>
-                    <a href="#"><i class="icon-question-sign"></i> Learn more about My Files</a>
+                    <a href="#"><i class="icon-question-sign"></i> <s:text name="EMPLOYEE.FILE.LIST.TABLE.NO_FILES_MSG.MSG2"/></a>
                 </p>
             </div>
         </div>

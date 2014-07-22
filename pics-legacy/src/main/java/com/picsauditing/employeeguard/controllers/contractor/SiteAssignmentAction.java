@@ -14,8 +14,7 @@ import com.picsauditing.employeeguard.process.ContractorAssignmentProcess;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.RoleService;
-import com.picsauditing.employeeguard.services.SkillUsageLocator;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
@@ -25,6 +24,7 @@ import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRol
 import com.picsauditing.employeeguard.viewmodel.contractor.ContractorEmployeeRoleAssignmentMatrix;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.factory.ViewModelFactory;
+import org.apache.commons.collections.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +49,6 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 	private StatusCalculatorService statusCalculatorService;
 	@Autowired
 	private SkillEntityService skillEntityService;
-	@Autowired
-	private SkillUsageLocator skillUsageLocator;
 
 	private int siteId;
 	private int roleId;
@@ -86,8 +84,13 @@ public class SiteAssignmentAction extends PicsRestActionSupport {
 		Map<AccountModel, Map<Employee, SkillStatus>> employeeAccountAssignment = contractorAssignmentProcess
 				.buildEmployeeSiteAssignmentStatistics(siteHierarchy, contractorAssignmentData);
 
+		Map<Employee, SkillStatus> employeeSiteAssignmentStatus = employeeAccountAssignment.get(site);
+		if (MapUtils.isEmpty(employeeSiteAssignmentStatus)) {
+			employeeSiteAssignmentStatus = Collections.emptyMap();
+		}
+
 		return ViewModelFactory.getContractorSiteAssignmentModelFactory().create(site, Arrays.asList(account),
-				new HashSet<>(employees), employeeAccountAssignment.get(site), roleCounts);
+				new HashSet<>(employees), employeeSiteAssignmentStatus, roleCounts);
 	}
 
 	private Map<RoleInfo, Integer> getRoleEmployeeCounts(final List<Employee> employees) {

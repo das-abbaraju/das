@@ -3,13 +3,12 @@ package com.picsauditing.employeeguard.controllers.contractor;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
+import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AssignmentService;
 import com.picsauditing.employeeguard.services.RoleService;
-import com.picsauditing.employeeguard.services.SkillUsageLocator;
-import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
-import com.picsauditing.employeeguard.services.entity.EmployeeEntityService;
+import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.services.entity.SkillEntityService;
-import com.picsauditing.employeeguard.services.AccountService;
+import com.picsauditing.employeeguard.services.status.StatusCalculatorService;
 import com.picsauditing.jpa.entities.User;
 import org.json.simple.JSONObject;
 import org.junit.Before;
@@ -31,7 +30,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	// Class under test
 	private SiteAssignmentAction siteAssignmentAction;
 
-
 	@Mock
 	private AccountService accountService;
 	@Mock
@@ -44,8 +42,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 	private StatusCalculatorService statusCalculatorService;
 	@Mock
 	private SkillEntityService skillEntityService;
-	@Mock
-	private SkillUsageLocator skillUsageLocator;
 
 	@Before
 	public void setUp() throws Exception {
@@ -60,7 +56,6 @@ public class SiteAssignmentActionTest extends PicsActionTest {
 		Whitebox.setInternalState(siteAssignmentAction, "roleService", roleService);
 		Whitebox.setInternalState(siteAssignmentAction, "statusCalculatorService", statusCalculatorService);
 		Whitebox.setInternalState(siteAssignmentAction, "skillEntityService", skillEntityService);
-		Whitebox.setInternalState(siteAssignmentAction, "skillUsageLocator", skillUsageLocator);
 
 		when(permissions.getAppUserID()).thenReturn(User.SYSTEM);
 	}

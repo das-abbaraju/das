@@ -1,8 +1,12 @@
 package com.picsauditing.employeeguard.validators.document;
 
 import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.joda.time.DateTime;
+import org.joda.time.IllegalFieldValueException;
+import org.joda.time.Years;
 
 import java.io.File;
 
@@ -24,6 +28,45 @@ public class ProfileDocumentValidationUtil {
 				throw new IllegalArgumentException("You have not setup validation for that field: " + field);
 		}
 	}
+
+	public static String validateExpirationDate(DocumentForm documentForm) {
+		if (documentForm.isNoExpiration()) {
+			return Strings.EMPTY_STRING;
+		}
+
+		int year = documentForm.getExpireYear();
+		int month = documentForm.getExpireMonth();
+		int day = documentForm.getExpireDay();
+
+		if (year == 0 && month == 0 && day == 0 && !documentForm.isNoExpiration()) {
+			return EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.DOCUMENT.EXPIRATION_DATE");
+		}
+
+		String error = Strings.EMPTY_STRING;
+
+		DateTime expirationDateTime = null;
+		DateTime currentDateTime = null;
+		try {
+			expirationDateTime = new DateTime(year, month, day, 0, 0);
+			currentDateTime = new DateTime();
+		} catch (IllegalFieldValueException e) {
+			error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE");
+			return error;
+		}
+
+		int yearsAheadBehind = Math.abs(Years.yearsBetween(expirationDateTime, currentDateTime).getYears());
+		if (yearsAheadBehind > 99) {
+			if (expirationDateTime.isBefore(currentDateTime)) {
+				error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE_IN_PAST");
+			} else {
+				error = EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.DOCUMENT.EXPIRATION_DATE_IN_FUTURE");
+			}
+		}
+
+		return error;
+
+	}
+
 
 	private static boolean validateName(DocumentForm documentForm) {
 		return Strings.isNotEmpty(documentForm.getName());

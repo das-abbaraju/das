@@ -11,12 +11,19 @@ import com.picsauditing.employeeguard.services.entity.SkillEntityService;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
+import com.picsauditing.util.SpringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,6 +32,9 @@ import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration( {"classpath:EGITest-localhost-context.xml"} )
+@WebAppConfiguration
+@ActiveProfiles("jpa")
+//@Transactional
 public class AccountSkillProfileServiceITest {
 
 	private static final int LENNY_LEONARD_PROFILE_ID =1;
@@ -62,18 +72,31 @@ public class AccountSkillProfileServiceITest {
 	@Autowired
 	private FormBuilderFactory formBuilderFactory;
 
+	@PersistenceContext
+	private EntityManager em;
+
+	public void deleteAccountSkillProfile(int id){
+		AccountSkillProfile accountSkillProfile=em.find(AccountSkillProfile.class, id);
+		em.merge(accountSkillProfile);
+		em.remove(accountSkillProfile);
+		em.flush();
+
+	}
+
 	@Test
 	public void testUpdate_BrandNewSkillUpdate_ExpectCompletedStatus() throws Exception {
 		Profile profile = profileDAO.find(LENNY_LEONARD_PROFILE_ID);
 		AccountSkill accountSkill = accountSkillDAO.find(SKILL_FirePreventionTraining_ID);
 		AccountSkillProfile accountSkillProfile = accountSkillProfileDAO.findByProfileAndSkill(profile,accountSkill);
+
 		if(accountSkillProfile!=null) {
 			accountSkillProfile=accountSkillProfileDAO.find(accountSkillProfile.getId());
 			accountSkillProfileDAO.delete(accountSkillProfile);
 		}
 
-		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Expired);
+		SkillInfo skillInfo = formBuilderFactory.getSkillInfoBuilder().build(accountSkill, SkillStatus.Completed);
 		SkillDocumentForm skillDocumentForm = formBuilderFactory.getSkillDocumentFormBuilder().build(skillInfo, null);
+		skillDocumentForm.setVerified(true);
 
 		accountSkillProfileService.update(accountSkill, profile, skillDocumentForm);
 
@@ -82,7 +105,7 @@ public class AccountSkillProfileServiceITest {
 		assertNotNull(accountSkillProfile);
 
 		SkillStatus skillStatus = SkillStatusCalculator.calculateStatusFromSkill(accountSkillProfile);
-		assertEquals(skillStatus.getDisplayValue(),SkillStatus.Completed.toString());
+		assertEquals(skillStatus.toString(),SkillStatus.Completed.toString());
 	}
 
 }

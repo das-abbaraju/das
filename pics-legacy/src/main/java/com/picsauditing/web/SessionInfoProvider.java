@@ -33,4 +33,6 @@ public interface SessionInfoProvider {
 
 	String getReferer();
 
+	public Map<String, Object> getRequest();
+
 }

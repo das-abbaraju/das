@@ -4,8 +4,8 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Site Assignments</s:param>
-    <s:param name="breadcrumb_name">Site Assignments</s:param>
+    <s:param name="title"><s:text name="OPERATOR.SITE_ASSIGNMENT.PAGE.HEADER"/></s:param>
+    <s:param name="breadcrumb_name"><s:text name="OPERATOR.SITE_ASSIGNMENT.BREADCRUMB_NAME"/></s:param>
     <s:param name="breadcrumb_id">${site.id}</s:param>
 </s:include>
 
@@ -15,12 +15,12 @@
             <li class="active site-status">
                 <a href="#">
                     <span class="badge badge-info pull-right">${siteAssignmentModel.totalEmployeesAssignedToSite}</span>
-                    Site Status
+                    <s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.SITE_STATUS"/>
                 </a>
             </li>
             <li class="nav-divider"></li>
             <li>
-                <span class="nav-title">Job Roles</span>
+                <span class="nav-title"><s:text name="OPERATOR.SITE_ASSIGNMENT.SIDE_NAV.JOB_ROLES"/></span>
             </li>
             <s:iterator value="siteAssignmentModel.roleEmployee.keySet()" var="operator_project_role">
                 <s:url action="project/site-assignment/{siteId}/role/{id}" var="operator_project_role_url">
@@ -46,10 +46,10 @@
             <table class="table table-striped table-condensed table-hover table-assignment view-only">
                 <thead>
                     <tr>
-                        <th>Company</th>
-                        <th>Employee</th>
-                        <th>Title</th>
-                        <th class="text-center">Site Status</th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.HEADER.COMPANY"/></th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.COLUMN.EMPLOYEE"/></th>
+                        <th><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.COLUMN.TITLE"/></th>
+                        <th class="text-center"><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.COLUMN.SITE_STATUS"/></th>
                     </tr>
                 </thead>
 
@@ -94,18 +94,18 @@
         <div class="col-md-9">
             <section class="employee-guard-section">
                 <h1>
-                    <i class="icon-map-marker icon-large"></i>Site Status
+                    <i class="icon-map-marker icon-large"></i><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.TITLE"/>
                 </h1>
                 <div class="content">
                     <div class="row">
                         <div class="col-md-8 col-md-offset-2">
                             <div class="alert alert-info">
-                                <h4>No Site Assignments</h4>
+                                <h4><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.SUB_TITLE"/></h4>
 
-                                <p>If all the correct Job Roles are ready, it's up to the companies doing work for you to assign their employees to the proper roles.</p>
+                                <p><s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.MSG1"/></p>
 
                                 <p>
-                                    <a href="#"><i class="icon-question-sign"></i> Learn more about Site Assignments</a>
+                                    <a href="#"><i class="icon-question-sign"></i> <s:text name="OPERATOR.SITE_ASSIGNMENT.TABLE.NO_ASSIGNMENTS_MSG.MSG2"/></a>
                                 </p>
                             </div>
                         </div>

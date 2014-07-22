@@ -2,6 +2,7 @@ package com.picsauditing.employeeguard.validators.skill;
 
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.employeeguard.forms.operator.OperatorSkillForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.validators.AbstractBasicAndDuplicateValidator;
 
 public class OperatorSkillFormValidator extends AbstractBasicAndDuplicateValidator<OperatorSkillForm> {
@@ -10,16 +11,16 @@ public class OperatorSkillFormValidator extends AbstractBasicAndDuplicateValidat
 	@Override
 	public void doFormValidation(OperatorSkillForm operatorSkillForm) {
 		if (!OperatorSkillValidationUtil.valid(operatorSkillForm, OperatorSkillValidationUtil.OperatorSkillField.NAME)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(OPERATOR_SKILL_FORM, "name"), "Skill name is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(OPERATOR_SKILL_FORM, "name"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.SKILL.NAME"));
 		}
 
 		if (!OperatorSkillValidationUtil.valid(operatorSkillForm, OperatorSkillValidationUtil.OperatorSkillField.TYPE)) {
-			addFieldErrorIfMessage(fieldKeyBuilder(OPERATOR_SKILL_FORM, "skillType"), "Type is missing");
+			addFieldErrorIfMessage(fieldKeyBuilder(OPERATOR_SKILL_FORM, "skillType"), EGI18n.getTextFromResourceBundle("VALIDATION.REQUIRED.SKILL.TYPE"));
 		}
 
 		if (!OperatorSkillValidationUtil.valid(operatorSkillForm, OperatorSkillValidationUtil.OperatorSkillField.EXPIRES)) {
 			addFieldErrorIfMessage(fieldKeyBuilder(OPERATOR_SKILL_FORM, "intervalPeriod"),
-					"Expiration is invalid");
+							EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.SKILL.EXPIRATION"));
 		}
 	}
 
@@ -30,6 +31,6 @@ public class OperatorSkillFormValidator extends AbstractBasicAndDuplicateValidat
 
     @Override
     protected String getDuplicateErrorMessage() {
-        return "Name, Type";
+        return EGI18n.getTextFromResourceBundle("VALIDATION.INVALID.SKILL.DUPLICATE");
     }
 }

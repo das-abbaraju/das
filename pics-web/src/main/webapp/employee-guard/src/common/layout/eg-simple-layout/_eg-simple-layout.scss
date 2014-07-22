@@ -1,0 +1,28 @@
+.eg-simple-layout {
+    background-color: $pics_blue;
+
+    .message-box {
+        background: $pics_cool_grey;
+        @include box-shadow(#131313 0 2px 8px);
+        margin: 100px auto 20px;
+        padding: 40px 40px;
+        text-align: center;
+
+        h1 {
+            font-size: 25px;
+            margin: 30px 0;
+            font-weight: normal;
+            color: $pics_burnt_orange;
+        }
+
+        p {
+            text-align: left;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .eg-simple-layout {
+        background: $pics_cool_grey;
+    }
+}

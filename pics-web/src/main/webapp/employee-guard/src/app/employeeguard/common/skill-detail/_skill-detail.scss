@@ -1,0 +1,64 @@
+.skill-detail-page {
+    h2 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 0px;
+    }
+
+    .employee-guard-section {
+        .alert,
+        .file-container {
+            margin: 20px 0px;
+        }
+    }
+
+    .employee-guard-information {
+        img {
+            display: block;
+        }
+
+        span.danger {
+            background: none;
+
+            dt {
+                color: $danger_light;
+            }
+        }
+
+        span.warning {
+            background: none;
+
+            dt {
+                color: $warning_med;
+            }
+        }
+
+        span.success {
+            background: none;
+            color: $default_steel;
+        }
+    }
+
+    .name {
+        color: $default_steel;
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+
+    li {
+        line-height: 21px;
+    }
+
+    .company {
+        color: $default_nickel;
+        font-size: 14px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    .title {
+        color: $default_nickel;
+        font-size: 14px;
+    }
+}

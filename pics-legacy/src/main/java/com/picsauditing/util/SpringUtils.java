@@ -52,7 +52,8 @@ public class SpringUtils implements ApplicationContextAware {
 	public static final String USER_SERVICE = "AltUserService";
     public static final String CONTRACTOR_OPERATOR_DAO = "ContractorOperatorDAO";
 	public static final String FEE_SERVICE = "FeeService";
-	public static final String PROFILE_SERVICE = "ProfileService";
+	public static final String PROFILE_ENTITY_SERVICE = "ProfileEntityService";
+	public static final String PICS_ENVIRONMENT_UTIL = "PicsEnvironmentUtil";
 
     private static ApplicationContext applicationContext;
 

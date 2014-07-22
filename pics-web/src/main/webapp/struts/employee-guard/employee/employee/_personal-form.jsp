@@ -10,40 +10,40 @@
 <tw:form formName="employee_profile_edit" action="${employee_profile_edit_url}"
          method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group">
-        <tw:label labelName="firstName" class="col-md-3 control-label"><strong>First Name</strong></tw:label>
+        <tw:label labelName="firstName" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.PROFILE.EDIT.FIRST_NAME"/></strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="firstName" class="form-control" type="text" value="${personalInfo.firstName}"/>
+            <tw:input inputName="firstName" class="form-control" type="text" value="${personalInfo.firstName}" maxlength="100" />
             <tw:error errorName="firstName" />
         </div>
     </div>
 
     <div class="form-group">
-        <tw:label labelName="lastName" class="col-md-3 control-label"><strong>Last Name</strong></tw:label>
+        <tw:label labelName="lastName" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.PROFILE.EDIT.LAST_NAME"/></strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="lastName" class="form-control" value="${personalInfo.lastName}" type="text" />
+            <tw:input inputName="lastName" class="form-control" value="${personalInfo.lastName}" type="text" maxlength="100" />
             <tw:error errorName="lastName" />
         </div>
     </div>
 
     <div class="form-group">
-        <tw:label labelName="email" class="col-md-3 control-label"><strong>Email</strong></tw:label>
+        <tw:label labelName="email" class="col-md-3 control-label"><strong><s:text name="EMPLOYEE.PROFILE.EDIT.EMAIL"/></strong></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="email" class="form-control" type="text" value="${personalInfo.email}"/>
+            <tw:input inputName="email" class="form-control" type="text" value="${personalInfo.email}" maxlength="70" />
             <tw:error errorName="email" />
         </div>
     </div>
 
     <div class="form-group">
-        <tw:label labelName="phone" class="col-md-3 control-label">Phone</tw:label>
+        <tw:label labelName="phone" class="col-md-3 control-label"><s:text name="EMPLOYEE.PROFILE.EDIT.PHONE"/></tw:label>
         <div class="col-md-4">
-            <tw:input inputName="phone" class="form-control" type="text" value="${personalInfo.phone}"/>
+            <tw:input inputName="phone" class="form-control" type="text" value="${personalInfo.phone}" maxlength="24" />
         </div>
     </div>
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3 form-actions">
-            <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success"><s:text name="EMPLOYEE.PROFILE.EDIT.SAVE.BUTTON"/></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="EMPLOYEE.PROFILE.EDIT.CANCEL.BUTTON"/></tw:button>
         </div>
     </div>
 </tw:form>

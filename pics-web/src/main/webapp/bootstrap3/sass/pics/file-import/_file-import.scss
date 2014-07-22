@@ -1,0 +1,14 @@
+input[type="file"].default-file-import,
+p.default-file-import {
+    display: none;
+}
+
+.lt-ie11 {
+    input[type="file"].default-file-import {
+        display: block;
+        height: auto;
+        position: static;
+        visibility: visible;
+        width: auto;
+    }
+}

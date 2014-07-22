@@ -3,7 +3,7 @@ describe('An Operator Role List', function() {
 
     var roles_url = '/employee-guard/operators/role/list';
     var roles_url_dev = '/angular/json/operator/role_list.json';
-    var whoami_url = '/employee-guard/operators/who-am-i';
+    var whoami_url = '/employee-guard/who-am-i';
 
     var operator_roles = [{
             "id": 4,

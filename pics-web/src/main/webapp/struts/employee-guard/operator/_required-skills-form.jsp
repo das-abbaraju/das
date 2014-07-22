@@ -11,7 +11,7 @@
 
 <tw:form formName="operator_required_skill_edit" action="${operator_required_skill_edit_url}" method="post" class="form-horizontal js-validation" autocomplete="off" role="form">
     <div class="form-group">
-        <tw:label labelName="skills" class="col-md-3 control-label">Required Skills</tw:label>
+        <tw:label labelName="skills" class="col-md-3 control-label"><s:text name="OPERATOR.SKILLS.REQUIRED_SKILLS.EDIT.REQUIRED_SKILLS"/></tw:label>
         <div class="col-md-4">
             <s:set var="selected_skills" value="%{requiredSkills}" />
 
@@ -32,8 +32,8 @@
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3 form-actions">
-            <tw:button buttonName="save" type="submit" class="btn btn-success">Save</tw:button>
-            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel">Cancel</tw:button>
+            <tw:button buttonName="save" type="submit" class="btn btn-success"><s:text name="OPERATOR.SKILLS.REQUIRED_SKILLS.EDIT.SAVE.BUTTON"/></tw:button>
+            <tw:button buttonName="cancel" type="button" class="btn btn-default cancel"><s:text name="OPERATOR.SKILLS.REQUIRED_SKILLS.EDIT.CANCEL.BUTTON"/></tw:button>
         </div>
     </div>
 </tw:form>

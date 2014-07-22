@@ -3,7 +3,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Add Skill</s:param>
+    <s:param name="title"><s:text name="CORPORATE.SKILLS.ADD.PAGE.TITLE"/></s:param>
 </s:include>
 
 <div class="col-md-8">

@@ -51,5 +51,4 @@ public enum IntervalType {
 	public String toString() {
 		return displayValue;
 	}
-
 }

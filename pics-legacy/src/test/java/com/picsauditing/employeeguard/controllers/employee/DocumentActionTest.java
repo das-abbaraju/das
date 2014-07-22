@@ -11,10 +11,8 @@ import com.picsauditing.employeeguard.forms.contractor.DocumentForm;
 import com.picsauditing.employeeguard.forms.factory.FormBuilderFactory;
 import com.picsauditing.employeeguard.forms.factory.ProfileDocumentInfoBuilder;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
-import com.picsauditing.employeeguard.services.ProfileService;
 import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.employeeguard.services.factory.ProfileDocumentServiceFactory;
-import com.picsauditing.employeeguard.services.factory.ProfileServiceFactory;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -57,7 +55,7 @@ public class DocumentActionTest extends PicsActionTest {
 		Whitebox.setInternalState(documentAction, "profileEntityService", profileEntityService);
 		Whitebox.setInternalState(documentAction, "profileDocumentService", profileDocumentService);
 
-        when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
+		when(formBuilderFactory.getProfileDocumentInfoBuilder()).thenReturn(new ProfileDocumentInfoBuilder());
 	}
 
 	@Ignore

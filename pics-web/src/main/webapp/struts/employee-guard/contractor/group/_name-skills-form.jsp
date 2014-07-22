@@ -13,9 +13,9 @@
          role="form">
     <fieldset>
         <div class="form-group ${name_error_class}">
-            <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+            <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="CONTRACTOR.GROUP.NAME_SKILLS_FORM.NAME" /></strong></tw:label>
             <div class="col-md-4">
-                <tw:input inputName="name" class="form-control" type="text" value="${group.name}" autofocus="true" tabindex="1" />
+                <tw:input inputName="name" class="form-control" type="text" value="${group.name}" autofocus="true" tabindex="1" maxlength="70" />
                 <tw:error errorName="name"/>
             </div>
         </div>
@@ -23,7 +23,7 @@
         <s:set var="selected_skills" value="group.skills"/>
 
         <div class="form-group">
-            <tw:label labelName="skills" class="col-md-3 control-label">Required Skills</tw:label>
+            <tw:label labelName="skills" class="col-md-3 control-label"><s:text name="CONTRACTOR.GROUP.NAME_SKILLS_FORM.REQUIRED_SKILLS" /></tw:label>
             <div class="col-md-4">
                 <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="2">
                     <s:iterator value="groupSkills" var="company_skill">
@@ -42,8 +42,8 @@
 
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
-                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="3">Save</tw:button>
-                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="4">Cancel</tw:button>
+                <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="3"><s:text name="CONTRACTOR.GROUP.NAME_SKILLS_FORM.SAVE" /></tw:button>
+                <tw:button buttonName="cancel" type="button" class="btn btn-default cancel" tabindex="4"><s:text name="CONTRACTOR.GROUP.NAME_SKILLS_FORM.CANCEL" /></tw:button>
             </div>
         </div>
     </fieldset>

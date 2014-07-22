@@ -3,7 +3,7 @@ package com.picsauditing.access;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.user.UserMode;
-import com.picsauditing.employeeguard.services.ProfileService;
+import com.picsauditing.employeeguard.services.entity.ProfileEntityService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.menu.MenuComponent;
@@ -44,7 +44,7 @@ public class MenuBuilderTest extends PicsActionTest {
 	@Mock
 	private ProductSubscriptionService productSubscriptionService;
 	@Mock
-	private ProfileService profileService;
+	private ProfileEntityService profileService;
 
 	@Rule
 	public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
@@ -56,7 +56,7 @@ public class MenuBuilderTest extends PicsActionTest {
 
 		Map<String, Object> beans = new HashMap<>();
 		beans.put(SpringUtils.PRODUCT_SUBSCRIPTION_SERVICE, productSubscriptionService);
-		beans.put(SpringUtils.PROFILE_SERVICE, profileService);
+		beans.put(SpringUtils.PROFILE_ENTITY_SERVICE, profileService);
 		PicsTestUtil.setSpringUtilsBeans(beans);
 
 		when(translationService.getText(anyString(), (Locale) any())).thenReturn("");

@@ -9,11 +9,14 @@ import com.picsauditing.employeeguard.entities.Profile;
 import com.picsauditing.employeeguard.entities.Project;
 import com.picsauditing.employeeguard.entities.SiteAssignment;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
+import com.picsauditing.employeeguard.forms.employee.EmployeeProfileEditForm;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -59,10 +62,6 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 				});
 	}
 
-	public Set<Project> findProjectsForProfile(final Profile profile) {
-		return new HashSet<>(projectDAO.findByProfile(profile));
-	}
-
 	/* All Save Methods */
 
 	@Override
@@ -91,6 +90,21 @@ public class ProfileEntityService implements EntityService<Profile, Integer> {
 		profileToUpdate = EntityHelper.setUpdateAuditFields(profileToUpdate, entityAuditInfo);
 
 		return profileDAO.save(profileToUpdate);
+	}
+
+	public Profile update(final EmployeeProfileEditForm employeeProfileEditForm,
+						  final String profileId,
+						  final int userId) {
+
+		Profile profile = profileDAO.find(NumberUtils.toInt(profileId));
+		profile.setFirstName(employeeProfileEditForm.getFirstName());
+		profile.setLastName(employeeProfileEditForm.getLastName());
+		profile.setEmail(employeeProfileEditForm.getEmail());
+		profile.setPhone(employeeProfileEditForm.getPhone());
+
+		EntityHelper.setUpdateAuditFields(profile, userId, new Date());
+
+		return profileDAO.save(profile);
 	}
 
 	/* All Delete Methods */

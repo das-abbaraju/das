@@ -10,7 +10,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Profile</s:param>
+    <s:param name="title"><s:text name="EMPLOYEE.PROFILE.SHOW.HEADER"/></s:param>
     <s:param name="breadcrumb_name">${profile.firstName} ${profile.lastName}</s:param>
 </s:include>
 
@@ -31,7 +31,7 @@
         </s:include>
 
         <section class="employee-guard-section-full">
-            <h1><i class="icon-certificate icon-large"></i>Required Skills</h1>
+            <h1><i class="icon-certificate icon-large"></i><s:text name="EMPLOYEE.PROFILE.SHOW.SIDE_NAV.REQUIRED_SKILLS.HEADER"/></h1>
 
             <div class="content">
                 <div class="list-group skill-list">
@@ -73,7 +73,7 @@
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
                         <i class="icon-user icon-large"></i>
-                        Personal
+                        <s:text name="EMPLOYEE.PROFILE.PERSONAL.HEADER"/>
                     </div>
                     <div class="col-md-3 col-xs-3 edit">
                         <i class="icon-edit icon-large edit-toggle"></i>
@@ -83,20 +83,20 @@
 
             <div class="content">
                 <dl class="employee-guard-information edit-display-values">
-                    <dt class="col-md-3">First Name</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.PROFILE.PERSONAL.FIRST_NAME"/></dt>
                     <dd class="col-md-9">${employeeProfileForm.personalInformation.firstName}</dd>
-                    <dt class="col-md-3">Last Name</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.PROFILE.PERSONAL.LAST_NAME"/></dt>
                     <dd class="col-md-9">${employeeProfileForm.personalInformation.lastName}</dd>
-                    <dt class="col-md-3">Email</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.PROFILE.PERSONAL.EMAIL"/></dt>
                     <dd class="col-md-9">${employeeProfileForm.personalInformation.email}</dd>
-                    <dt class="col-md-3">Phone</dt>
+                    <dt class="col-md-3"><s:text name="EMPLOYEE.PROFILE.PERSONAL.PHONE"/></dt>
                     <dd class="col-md-9">${employeeProfileForm.personalInformation.phone}</dd>
                 </dl>
             </div>
         </section>
 
         <section class="employee-guard-section" id="employment">
-            <h1><i class="icon-file-text-alt"></i> Current Employment</h1>
+            <h1><i class="icon-file-text-alt"></i> <s:text name="EMPLOYEE.PROFILE.CURRENT_EMPLOYMENT.SECTION"/></h1>
             <div class="content">
                 <s:iterator value="employeeProfileForm.companyGroupInfoList" var="company_info">
                     <dl class="employee-guard-information">
@@ -118,7 +118,7 @@
         </section>
 
         <section class="employee-guard-section" id="assignments">
-            <h1><i class="icon-map-marker"></i> Current Assignments</h1>
+            <h1><i class="icon-map-marker"></i> <s:text name="EMPLOYEE.PROFILE.CURRENT_ASSIGNMENTS.SECTION"/></h1>
 
             <div class="content">
                 <s:if test="!employeeAssignments.isEmpty()">
@@ -146,12 +146,12 @@
                 <s:else>
                     <div class="col-md-8 col-md-offset-2">
                         <div class="alert alert-info">
-                            <h4>No Assignments</h4>
+                            <h4><s:text name="EMPLOYEE.PROFILE.CURRENT_ASSIGNMENTS.NO_ASSIGNMENTS_MSG.TITLE"/></h4>
 
-                            <p>You currently are not assigned to any sites.</p>
+                            <p><s:text name="EMPLOYEE.PROFILE.CURRENT_ASSIGNMENTS.NO_ASSIGNMENTS_MSG.MSG1"/></p>
 
                             <p>
-                                <a href="#"><i class="icon-question-sign"></i> Learn more about Assignments</a>
+                                <a href="#"><i class="icon-question-sign"></i> <s:text name="EMPLOYEE.PROFILE.CURRENT_ASSIGNMENTS.NO_ASSIGNMENTS_MSG.MSG2"/></a>
                             </p>
                         </div>
                     </div>

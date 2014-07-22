@@ -1,18 +1,22 @@
-<section class="employee-guard-section-full" ng-controller="betaFeedbackCtrl">
+<section class="employee-guard-section-full feedback" ng-controller="betaFeedbackCtrl">
     <h1>
-        <i class="icon-bullhorn icon-large"></i>Tell us what you think!
+        <i class="icon-bullhorn icon-large"></i>{{ 'FEEDBACK.TITLE' | translate }}
     </h1>
     <div class="content">
         <form name="feedBackForm" class="form-horizontal" ng-hide="feedbackSent" ng-init="feedbackSent == false">
-            <textarea class="form-control" ng-model="feedback" name="message" rows="3" placeholder="Let us know what you think or what issues you've found." required></textarea>
-            <button class="btn btn-primary pull-right" ng-disabled="feedBackForm.message.$invalid" ng-click="submitFeedback()">
-                <i class="icon-bullhorn"></i> Send Feedback
-            </button>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <textarea class="form-control" ng-model="feedback" name="message" rows="6" placeholder="{{ 'FEEDBACK.PLACEHOLDER' | translate }}" required maxlength="1470"></textarea>
+                    <button class="btn btn-primary pull-right" ng-disabled="feedBackForm.message.$invalid" ng-click="submitFeedback()">
+                        <i class="icon-bullhorn"></i>{{ 'FEEDBACK.BUTTON.SEND_FEEDBACK' | translate }}
+                    </button>
+                </div>
+            </div>
         </form>
 
-        <div ng-show="feedbackSent" class="alert alert-success">
-            <h1>Feedback Sent</h1>
-            <p>Thanks for the heads up! We really appreciate the feedback.</p>
+        <div ng-show="feedbackSent" class="alert alert-success col-md-6 col-md-offset-3">
+            <h1 translate="FEEDBACK.ALERT.TITLE"></h1>
+            <p translate="FEEDBACK.ALERT.MESSAGE"></p>
         </div>
     </div>
 </section>

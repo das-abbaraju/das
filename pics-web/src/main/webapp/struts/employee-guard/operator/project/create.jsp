@@ -8,7 +8,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Add Project</s:param>
+    <s:param name="title"><s:text name="OPERATOR.PROJECT.ADD.PAGE.HEADER"/></s:param>
 </s:include>
 
 <div class="col-md-8">
@@ -21,7 +21,7 @@
         <fieldset>
             <s:if test="permissions.corporate">
                 <div class="form-group">
-                    <tw:label labelName="name" class="col-md-3 control-label"><strong>Site</strong></tw:label>
+                    <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="OPERATOR.PROJECT.ADD.SITE.LABEL"/></strong></tw:label>
                     <div class="col-md-4">
                         <tw:select selectName="siteId" class="form-control select2" autofocus="true">
                             <s:iterator value="projectSites" var="project_site">
@@ -33,21 +33,21 @@
             </s:if>
 
             <div class="form-group">
-                <tw:label labelName="name" class="col-md-3 control-label"><strong>Name</strong></tw:label>
+                <tw:label labelName="name" class="col-md-3 control-label"><strong><s:text name="OPERATOR.PROJECT.ADD.NAME.LABEL"/></strong></tw:label>
                 <div class="col-md-4">
-                    <tw:input inputName="name" class="form-control" type="text"/>
+                    <tw:input inputName="name" class="form-control" type="text" maxlength="70" />
                 </div>
             </div>
 
             <div class="form-group">
-                <tw:label labelName="location" class="col-md-3 control-label">Location</tw:label>
+                <tw:label labelName="location" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.ADD.LOCATION.LABEL"/></tw:label>
                 <div class="col-md-4">
-                    <tw:input inputName="location" class="form-control" type="text"/>
+                    <tw:input inputName="location" class="form-control" type="text" maxlength="70"/>
                 </div>
             </div>
 
             <div class="form-group">
-                <tw:label labelName="startYear" class="col-md-3 control-label">Start Date</tw:label>
+                <tw:label labelName="startYear" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.ADD.START_DATE.LABEL"/></tw:label>
                 <div class="col-md-4">
                     <fieldset class="expiration-date">
                         <div class="row date">
@@ -73,7 +73,7 @@
             </div>
 
             <div class="form-group">
-                <tw:label labelName="endYear" class="col-md-3 control-label">End Date</tw:label>
+                <tw:label labelName="endYear" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.ADD.END_DATE.LABEL"/></tw:label>
                 <div class="col-md-4">
                     <fieldset class="expiration-date">
                         <div class="row date">
@@ -99,7 +99,7 @@
             </div>
 
             <div class="form-group">
-                <tw:label labelName="skills" class="col-md-3 control-label">Project Skills</tw:label>
+                <tw:label labelName="skills" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.ADD.SKILLS.LABEL"/></tw:label>
                 <div class="col-md-4">
                     <s:set var="selected_skills" value="%{projectForm.skills}"/>
                     <tw:select selectName="skills" multiple="true" class="form-control select2" tabindex="2">
@@ -119,7 +119,7 @@
             </div>
 
             <div class="form-group">
-                <tw:label labelName="roles" class="col-md-3 control-label">Job Roles</tw:label>
+                <tw:label labelName="roles" class="col-md-3 control-label"><s:text name="OPERATOR.PROJECT.ADD.ROLES.LABEL"/></tw:label>
                 <div class="col-md-4">
                     <s:set var="selected_roles" value="%{projectForm.roles}"/>
                     <tw:select selectName="roles" multiple="true" class="form-control select2" tabindex="2">
@@ -142,13 +142,13 @@
                 <div class="col-md-4 col-md-offset-3">
                     <div classs="checkbox">
                         <tw:label labelName="addAnother" class="control-label">
-                            <tw:input inputName="addAnother" type="checkbox" value="true" tabindex="4"/> Add Another
+                            <tw:input inputName="addAnother" type="checkbox" value="true" tabindex="4"/> <s:text name="OPERATOR.PROJECT.ADD.ADD_ANOTHER.BUTTON"/>
                         </tw:label>
                     </div>
                 </div>
                 <div class="col-md-9 col-md-offset-3 form-actions">
-                    <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="5">Add</tw:button>
-                    <a href="${operator_project_list_url}" class="btn btn-default" tabindex="6">Cancel</a>
+                    <tw:button buttonName="save" type="submit" class="btn btn-success" tabindex="5"><s:text name="OPERATOR.PROJECT.ADD.SAVE.BUTTON"/></tw:button>
+                    <a href="${operator_project_list_url}" class="btn btn-default" tabindex="6"><s:text name="OPERATOR.PROJECT.ADD.CANCEL.BUTTON"/></a>
                 </div>
             </div>
         </fieldset>

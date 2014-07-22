@@ -8,21 +8,18 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Employee Groups</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEE_GROUPS" /></s:param>
     <s:param name="actions">
-        <a href="${contractor_group_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> Employee
-            Group</a>
+        <a href="${contractor_group_create_url}" class="btn btn-default"><i class="icon-plus-sign"></i> <s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEE_GROUP" /></a>
     </s:param>
 </s:include>
-
-<%-- Pagination --%>
-<s:include value="/struts/employee-guard/_pagination.jsp"/>
 
 <s:if test="!groups.isEmpty()">
     <tw:form formName="contractor_group_search" action="${contractor_group_list_url}" class="search-query" role="form">
     <fieldset>
         <div class="search-wrapper col-md-4">
-            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="Search Employee Groups" value="${searchForm.searchTerm}"/>
+            <s:set var="SEARCH_EMPLOYEE_GROUPS"><s:text name="CONTRACTOR.GROUP.LIST.SEARCH_EMPLOYEE_GROUPS" /></s:set>
+            <tw:input inputName="searchTerm" type="text" class="form-control" placeholder="${SEARCH_EMPLOYEE_GROUPS}" value="${searchForm.searchTerm}"/>
             <i class="icon-search"></i>
             <ul id="contractor_group_search" class="search-results"></ul>
         </div>
@@ -33,10 +30,11 @@
         <thead>
         <tr>
             <th class="text-center">
-                <i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="Employees"></i>
+                <s:set var="EMPLOYEES"><s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEES" /></s:set>
+                <i class="icon-user icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="${EMPLOYEES}"></i>
             </th>
-            <th>Employee Group</th>
-            <th>Required Skills</th>
+            <th><s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEE_GROUP" /></th>
+            <th><s:text name="CONTRACTOR.GROUP.LIST.REQUIRED_SKILLS" /></th>
         </tr>
         </thead>
         <tbody>
@@ -63,20 +61,20 @@
 <s:else>
     <section class="employee-guard-section">
         <h1>
-            <i class="icon-group icon-large"></i>Employee Groups
+            <i class="icon-group icon-large"></i><s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEE_GROUPS" />
         </h1>
         <div class="content">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2">
                     <div class="alert alert-info">
-                        <h4>No Employee Groups</h4>
+                        <h4><s:text name="CONTRACTOR.GROUP.LIST.NO_EMPLOYEE_GROUPS" /></h4>
 
-                        <p>Employee Groups allow you to organize your employees and the skills that are required for them.</p>
+                        <p><s:text name="CONTRACTOR.GROUP.LIST.EMPLOYEE_GROUPS_MESSAGE" /></p>
 
-                        <p>Create your first Employee Group by selecting <strong><i class="icon-plus-sign"></i> Employee Group</strong> at the top of the page.</p>
+                        <p><s:text name="CONTRACTOR.GROUP.LIST.CREATE_FIRST_EMPLOYEE_MESSAGE" /></p>
 
                         <p>
-                            <a href="#"><i class="icon-question-sign"></i> Learn more about Employee Groups</a>
+                            <a href="#"><i class="icon-question-sign"></i> <s:text name="CONTRACTOR.GROUP.LIST.LEARN_MORE" /></a>
                         </p>
                     </div>
                 </div>

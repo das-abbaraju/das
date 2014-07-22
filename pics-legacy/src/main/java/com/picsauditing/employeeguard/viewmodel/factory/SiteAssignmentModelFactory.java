@@ -3,11 +3,8 @@ package com.picsauditing.employeeguard.viewmodel.factory;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.forms.operator.RoleInfo;
 import com.picsauditing.employeeguard.models.AccountModel;
-import com.picsauditing.employeeguard.services.SkillUsage;
 import com.picsauditing.employeeguard.services.status.SkillStatus;
 import com.picsauditing.employeeguard.services.status.SkillStatusCalculator;
-import com.picsauditing.employeeguard.util.Extractor;
-import com.picsauditing.employeeguard.util.ExtractorUtil;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
 import com.picsauditing.employeeguard.viewmodel.contractor.EmployeeSiteAssignmentModel;
 import com.picsauditing.employeeguard.viewmodel.contractor.SiteAssignmentModel;
@@ -38,28 +35,6 @@ public class SiteAssignmentModelFactory {
 				buildEmployeeSiteAssignmentsWithEmployeeStatusMap(employeeAccounts, employeeSkillStatusMap, employeeRoles);
 
 		return create(employeeSiteAssignments, roleCounts);
-	}
-
-	private Map<Employee, Set<AccountSkill>> getEmployeeSkills(List<SkillUsage> skillUsages) {
-		Map<Employee, Set<AccountSkill>> employeeSkills = new HashMap<>();
-		for (SkillUsage skillUsage : skillUsages) {
-			Employee employee = skillUsage.getEmployee();
-
-			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteAssignmentSkills().keySet());
-			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getProjectJobRoleSkills().keySet());
-			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getSiteRequiredSkills().keySet());
-			PicsCollectionUtil.addAllToMapOfKeyToSet(employeeSkills, employee, skillUsage.getCorporateRequiredSkills().keySet());
-		}
-		return employeeSkills;
-	}
-
-	private List<Employee> getEmployees(List<SkillUsage> skillUsages) {
-		return ExtractorUtil.extractList(skillUsages, new Extractor<SkillUsage, Employee>() {
-			@Override
-			public Employee extract(SkillUsage skillUsage) {
-				return skillUsage.getEmployee();
-			}
-		});
 	}
 
 	private Map<Employee, Set<Role>> getEmployeeRoles(Set<Employee> employees, int siteId) {

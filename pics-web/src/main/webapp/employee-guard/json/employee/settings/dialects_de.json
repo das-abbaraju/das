@@ -1,0 +1,18 @@
+[
+   {
+      "id":"AT",
+      "name":"Österreich"
+   },
+   {
+      "id":"CH",
+      "name":"Schweiz"
+   },
+   {
+      "id":"DE",
+      "name":"Deutschland"
+   },
+   {
+      "id":"LU",
+      "name":"Luxemburg"
+   }
+]

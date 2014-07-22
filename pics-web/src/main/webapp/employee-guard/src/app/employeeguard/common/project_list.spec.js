@@ -2,7 +2,7 @@ describe('A Project List', function() {
     var scope, mockResource, httpMock, whoAmI;
 
     var projects_url = '/employee-guard/operators/projects/list';
-    var whoami_url = '/employee-guard/operators/who-am-i';
+    var whoami_url = '/employee-guard/who-am-i';
 
     var corporate_projects = [{
             "id": 4,

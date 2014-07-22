@@ -52,16 +52,24 @@
     <decorator name="eg-index" page="eg-index.jsp">
         <pattern>/employee-guard/operators/employees/*</pattern>
         <pattern>/employee-guard/operators/dashboard</pattern>
+        <pattern>/employee-guard/operators/assignments</pattern>
         <pattern>/employee-guard/operators/projects</pattern>
+        <pattern>/employee-guard/operators/roles</pattern>
         <pattern>/employee-guard/contractor/dashboard</pattern>
         <pattern>/employee-guard/employee/dashboard</pattern>
+        <pattern>/employee-guard/employee/skills</pattern>
+        <pattern>/employee-guard/employee/skills/sites/*</pattern>
+        <pattern>/employee-guard/profile/settings</pattern>
+        <pattern>/employee-guard/*/changelog</pattern>
+        <pattern>/employee-guard/info</pattern>
+        <pattern>/employee-guard/employees/*/skill/*</pattern>
+        <pattern>/employee-guard/skills</pattern>
+    </decorator>
+    <decorator name="eg-index-simple" page="eg-index-simple.jsp">
+        <pattern>/employee-guard/invalid-hash</pattern>
     </decorator>
     <decorator name="index-simple" page="index-simple.jsp">
         <pattern>/registration*</pattern>
-        <pattern>/employee-guard/employee/skills</pattern>
-        <pattern>/employee-guard/employee/skills/sites/*</pattern>
-        <pattern>/employee-guard/*/changelog</pattern>
-        <pattern>/employee-guard/info</pattern>
     </decorator>
     <decorator name="index" page="index.jsp">
         <pattern>/registration/address-validation/*</pattern>

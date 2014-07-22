@@ -4,7 +4,7 @@ import com.picsauditing.database.domain.Identifiable;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.softdeleted.SoftDeletedEmployee;
-import com.picsauditing.employeeguard.services.EmailHashService;
+import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.jpa.entities.Account;
 import org.mockito.Mockito;
 
@@ -35,7 +35,8 @@ public class EmailHashServiceFactory {
 		emailHash.setEmailAddress(employee.getEmail());
 
 		when(emailHashService.createNewHash(any(Employee.class))).thenReturn(emailHash);
-		when(emailHashService.hashIsValid(VALID_HASH)).thenReturn(true);
+		when(emailHashService.invalidHash(any(EmailHash.class))).thenReturn(false);
+
 		when(emailHashService.findByHash(anyString())).thenReturn(emailHash);
 
 		return emailHashService;

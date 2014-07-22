@@ -1,6 +1,8 @@
 package com.picsauditing.breadcrumb;
 
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.Collections;

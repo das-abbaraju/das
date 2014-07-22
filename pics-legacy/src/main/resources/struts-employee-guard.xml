@@ -8,25 +8,36 @@
             <result name="success">/struts/employee-guard/_breadcrumbs.jsp</result>
         </action>
 
-        <action name="welcome" class="com.picsauditing.employeeguard.controllers.LoginAction">
-            <result name="list">/struts/employee-guard/account/login.jsp</result>
+        <action name="login/switchLanguage" class="com.picsauditing.employeeguard.controllers.LoginAction"
+                method="switchLanguage">
+            <result name="login">/struts/employee-guard/account/login.jsp</result>
+        </action>
+
+        <action name="welcome" class="com.picsauditing.employeeguard.controllers.LoginAction" method="welcome">
             <result name="login">/struts/employee-guard/account/login.jsp</result>
         </action>
 
         <action name="welcome/submit" class="com.picsauditing.employeeguard.controllers.LoginAction" method="login">
-            <result name="login">/struts/employee-guard/account/login.jsp</result>
+        </action>
+
+        <action name="sign-up/switchLanguage" class="com.picsauditing.employeeguard.controllers.AccountAction"
+                method="switchLanguage">
+            <result name="sign-up">/struts/employee-guard/account/create.jsp</result>
         </action>
 
         <action name="sign-up" class="com.picsauditing.employeeguard.controllers.AccountAction">
-            <result name="list">/struts/employee-guard/account/create.jsp</result>
-            <result name="create">/struts/employee-guard/account/create.jsp</result>
+            <result name="sign-up">/struts/employee-guard/account/create.jsp</result>
         </action>
 
         <action name="password-reset" class="com.picsauditing.employeeguard.controllers.ResetPassword">
             <result name="success">/struts/employee-guard/account/reset-password.jsp</result>
         </action>
 
-        <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction" method="feedbackComment">
+        <action name="beta/feedback" class="com.picsauditing.employeeguard.controllers.BetaFeedbackAction"
+                method="feedbackComment">
+        </action>
+
+        <action name="profile/settings" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
         <action name="serverInfo" class="com.picsauditing.employeeguard.controllers.AboutAction" method="info">
@@ -35,6 +46,31 @@
         <action name="info" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
+        <action name="employees/{employeeId}/skill/{skillId}"
+                class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <!-- Who Am I -->
+        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.AboutAction" method="whoAmI"/>
+
+        <!-- Skill Review -->
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/info"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchSkillInfo"/>
+        <action name="skillreview/employee/{employeeId}/info"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="fetchEmployeeInfo"/>
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/download"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadDocument"/>
+        <action name="skillreview/employee/{employeeId}/skill/{skillId}/thumbnail"
+                class="com.picsauditing.employeeguard.controllers.SkillReviewAction" method="downloadThumbnail">
+            <result name="photo" type="stream"></result>
+        </action>
+
+        <!-- Invalid Hashcode page -->
+        <action name="invalid-hash" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction"
+                method="anonymousLoad"/>
+
+        <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
     </package>
 
     <!-- Operator -->
@@ -69,7 +105,6 @@
             <result name="name-skills-form">/struts/employee-guard/operator/project/_name-skills-form.jsp</result>
             <result name="job-roles-form">/struts/employee-guard/operator/project/_job-roles-form.jsp</result>
             <result name="companies-form">/struts/employee-guard/operator/project/_companies-requested-form.jsp</result>
-            <result name="list">/struts/employee-guard/operator/project/list.jsp</result>
             <result name="show">/struts/employee-guard/operator/project/show.jsp</result>
         </action>
 
@@ -145,8 +180,6 @@
         </action>
 
         <action name="assignments" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load" />
-        <!-- Who Am I -->
-        <action name="who-am-i" class="com.picsauditing.employeeguard.controllers.operator.SummaryAction" method="whoAmI" />
     </package>
 
     <package name="com.picsauditing.employee-guard.corporate" extends="com.picsauditing.employee-guard"
@@ -205,27 +238,6 @@
         <action name="employee/import-template"
                 class="com.picsauditing.employeeguard.controllers.importexport.EmployeeImportExportAction"
                 method="template">
-        </action>
-
-        <!-- Matrix -->
-        <action name="matrix/employee-groups-to-employees"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="rolesToEmployees">
-            <result name="roles-to-employees">/struts/employee-guard/contractor/matrix/roles-to-employees.jsp</result>
-        </action>
-
-        <action name="matrix/employee-to-skills"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeeToSkills">
-            <result name="employee-to-skills">/struts/employee-guard/contractor/matrix/employee-to-skills.jsp</result>
-        </action>
-
-        <action name="matrix/employees-to-skills"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="employeesToSkills">
-            <result name="employees-to-skills">/struts/employee-guard/contractor/matrix/employees-to-skills.jsp</result>
-        </action>
-
-        <action name="matrix/skills-to-employee-groups"
-                class="com.picsauditing.employeeguard.controllers.contractor.MatrixAction" method="skillsToRoles">
-            <result name="skills-to-roles">/struts/employee-guard/contractor/matrix/skills-to-roles.jsp</result>
         </action>
 
         <!-- Group -->
@@ -304,6 +316,9 @@
         <default-interceptor-ref name="pics-rest-stack"/>
 
         <!-- Dashboard -->
+        <action name="dashboardPitStop" class="com.picsauditing.employeeguard.controllers.EmployeeAngularLoaderAction" method="load">
+        </action>
+
         <action name="dashboard" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
 
@@ -363,9 +378,6 @@
         <!-- Skills -->
         <action name="skillz" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
-        <action name="skills" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
-            <result name="list">/struts/employee-guard/employee/manage-skill/list.jsp</result>
-        </action>
 
         <action name="skill" class="com.picsauditing.employeeguard.controllers.employee.SkillAction">
             <result name="show">/struts/employee-guard/employee/manage-skill/show.jsp</result>
@@ -373,4 +385,34 @@
             <result name="training">/struts/employee-guard/employee/manage-skill/_training-form.jsp</result>
         </action>
     </package>
+
+  <!-- Restful API URIs -->
+  <package name="com.picsauditing.employee-guard.api" extends="com.picsauditing" namespace="/employee-guard/api">
+    <default-interceptor-ref name="pics-rest-stack"/>
+
+    <action name="skills" class="com.picsauditing.employeeguard.controllers.restful.SkillAction" method="findSkills"/>
+
+    <action name="groups" class="com.picsauditing.employeeguard.controllers.restful.GroupAction"/>
+
+    <action name="roles" class="com.picsauditing.employeeguard.controllers.restful.RoleAction"/>
+
+    <action name="files" class="com.picsauditing.employeeguard.controllers.restful.FilesAction"/>
+
+    <action name="projects/{projectId}/roles/{roleId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleEmployeeAction"/>
+
+    <action name="projects/{projectId}/employees" class="com.picsauditing.employeeguard.controllers.restful.ProjectEmployeeAction"/>
+
+    <action name="projects/{projectId}/roles" class="com.picsauditing.employeeguard.controllers.restful.ProjectRoleAction"/>
+
+    <action name="projects" class="com.picsauditing.employeeguard.controllers.restful.ProjectAction"/>
+
+    <action name="settings" class="com.picsauditing.employeeguard.controllers.restful.SettingsAction"/>
+
+    <action name="languages" class="com.picsauditing.employeeguard.controllers.restful.LanguageAction"/>
+
+    <action name="dialects/{language}" class="com.picsauditing.employeeguard.controllers.restful.DialectAction"/>
+
+  </package>
+
+
 </struts>

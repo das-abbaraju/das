@@ -1,13 +1,13 @@
 package com.picsauditing.employeeguard.services;
 
-import com.picsauditing.PICS.Utilities;
-import com.picsauditing.employeeguard.daos.*;
+import com.picsauditing.employeeguard.daos.AccountGroupDAO;
+import com.picsauditing.employeeguard.daos.AccountSkillDAO;
+import com.picsauditing.employeeguard.daos.EmployeeDAO;
 import com.picsauditing.employeeguard.entities.*;
 import com.picsauditing.employeeguard.entities.helper.BaseEntityCallback;
 import com.picsauditing.employeeguard.entities.helper.EntityHelper;
 import com.picsauditing.employeeguard.forms.contractor.GroupEmployeesForm;
 import com.picsauditing.employeeguard.forms.contractor.GroupNameSkillsForm;
-import com.picsauditing.employeeguard.forms.operator.RoleProjectsForm;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -26,15 +26,7 @@ public class GroupService {
 	@Autowired
 	private AccountSkillDAO accountSkillDAO;
 	@Autowired
-	private AccountSkillProfileService accountSkillProfileService;
-	@Autowired
 	private EmployeeDAO employeeDAO;
-	@Autowired
-	private ProjectService projectService;
-	@Autowired
-	private ProjectRoleEmployeeDAO projectRoleEmployeeDAO;
-	@Autowired
-	private RoleDAO roleDAO;
 
 	public Group getGroup(String id, int accountId) {
 		return accountGroupDAO.findGroupByAccount(NumberUtils.toInt(id), accountId);
@@ -42,22 +34,6 @@ public class GroupService {
 
 	public List<Group> getGroupsForAccount(int accountId) {
 		return accountGroupDAO.findByAccount(accountId);
-	}
-
-	public List<Group> getGroupsForAccounts(final Collection<Integer> accountIds) {
-		if (CollectionUtils.isEmpty(accountIds)) {
-			return Collections.emptyList();
-		}
-
-		return accountGroupDAO.findByAccounts(accountIds);
-	}
-
-	public List<Group> getEmployeeGroups(final Employee employee) {
-		return accountGroupDAO.findGroupsForEmployee(employee);
-	}
-
-	public List<Group> getGroupAssignmentsForEmployee(final Employee employee) {
-		return accountGroupDAO.findEmployeeGroupAssignments(employee);
 	}
 
 	public Group save(Group group, int accountId, int appUserId) {
@@ -124,10 +100,10 @@ public class GroupService {
 				GroupEmployee.COMPARATOR,
 				new BaseEntityCallback(appUserId, new Date()));
 
-    updatedGroup.getEmployees().clear();
-    updatedGroup.getEmployees().addAll(groupEmployees);
-    updatedGroup.getSkills().clear();
-    updatedGroup.getSkills().addAll(groupInDatabase.getSkills());
+		updatedGroup.getEmployees().clear();
+		updatedGroup.getEmployees().addAll(groupEmployees);
+		updatedGroup.getSkills().clear();
+		updatedGroup.getSkills().addAll(groupInDatabase.getSkills());
 
 		return accountGroupDAO.save(updatedGroup);
 	}

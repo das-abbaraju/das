@@ -46,6 +46,20 @@
 	#terms_of_service {
 		margin-top: -15px;
 	}
+
+	#termsModal {
+		li {
+			margin-top: 15px;
+
+			p {
+				margin-top: 10px;
+			}
+		}
+
+		p {
+			margin-bottom: 10px;
+		}
+	}
 }
 
 @media (max-width: 767px) {
