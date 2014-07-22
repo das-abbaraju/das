@@ -1,5 +1,6 @@
 package com.picsauditing.actions.contractors;
 
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.contractor.PricingTier;
@@ -18,6 +19,8 @@ public class ContractorPricing extends ContractorActionSupport {
 
 	@Autowired
 	private PricingTiersBuilder pricingTiersBuilder;
+    @Autowired
+    private FeeService feeService;
 
     private List<PricingTier> pricingTiers;
 
@@ -42,8 +45,8 @@ public class ContractorPricing extends ContractorActionSupport {
 		}
 
         List<FeeClass> applicableFeeClasses = findApplicableFeeClasses(contractorFeeMap);
-
-        pricingTiers = pricingTiersBuilder.buildPricingTiersForCountry(country, applicableFeeClasses, con.getOperatorAccounts().size());
+        int payingFacilitiesCount = feeService.findPayingFacilitiesCount(con);
+        pricingTiers = pricingTiersBuilder.buildPricingTiersForCountry(country, applicableFeeClasses, payingFacilitiesCount);
 
 		return SUCCESS;
 	}
