@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.SQLException;
+import java.util.HashSet;
 
 public class ConvertToLatLong extends ReportActionSupport {
     @Autowired
@@ -32,6 +33,7 @@ public class ConvertToLatLong extends ReportActionSupport {
 
         run(sql);
 
+        HashSet<ContractorLocation> contractorLocationHashSet = new HashSet<>();
         for (BasicDynaBean datum : getData()) {
             String address = null;
             int conId = 0;
@@ -64,18 +66,18 @@ public class ConvertToLatLong extends ReportActionSupport {
                     }
                 }
             }
-            persistToDatabase(conId, lng, lat);
-        }
+            ContractorLocation contractorLocation = ContractorLocation.createFrom(conId, lat.floatValue(), lng.floatValue(), 38586);
+            contractorLocationHashSet.add(contractorLocation);
 
+        }
+        persistToDatabase(contractorLocationHashSet);
         return BLANK;
     }
 
-    private void persistToDatabase(int conId, Double lng, Double lat) {
-        System.out.println("(" + lat + "," + lng + ")");
-        System.out.println("=========");
-
-        ContractorLocation contractorLocation = ContractorLocation.createFrom(conId, lat.floatValue(), lng.floatValue(), 38586);
-        contractorLocationDao.insertContractorLocation(contractorLocation);
+    private void persistToDatabase(HashSet<ContractorLocation> contractorLocations) {
+        for(ContractorLocation contractorLocation : contractorLocations) {
+            contractorLocationDao.insertContractorLocation(contractorLocation);
+        }
     }
 
     private JSONObject findLocationObject(String body) throws ParseException {
