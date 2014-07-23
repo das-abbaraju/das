@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FlagCalculatorFactory;
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
@@ -40,8 +39,6 @@ public class ContractorCronTest extends PicsActionTest {
 
     @Mock
     private EntityManager entityManager;
-    @Mock
-    private Database databaseForTesting;
 	@Mock
 	private FeatureToggle featureToggleChecker;
 	@Mock
@@ -73,7 +70,7 @@ public class ContractorCronTest extends PicsActionTest {
 	@Mock
 	private OshaAudit oshaAudit;
     @Mock
-    private FlagDataCalculator flagDataCalculator;
+    private com.picsauditing.flagcalculator.FlagDataCalculator flagCalculator;
     @Mock
     private Publisher flagChangePublisher;
     @Mock
@@ -105,13 +102,13 @@ public class ContractorCronTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorCron, "flagCriteriaDAO", flagCriteriaDAO);
 		Whitebox.setInternalState(contractorCron, "dao", dao);
 		Whitebox.setInternalState(contractorCron, "conAuditDAO", contractorAuditDAO);
-		Whitebox.setInternalState(contractorCron, "database", databaseForTesting);
         Whitebox.setInternalState(contractorCron, "userAssignmentDAO", userAssignmentDAO);
         Whitebox.setInternalState(contractorCron, "messageService", messageService);
         Whitebox.setInternalState(contractorCron, "employeeGuardRulesService", employeeGuardRulesService);
         Whitebox.setInternalState(contractorCron, "flagCalculatorFactory", flagCalculatorFactory);
 
         when(messageService.getFlagChangePublisher()).thenReturn(flagChangePublisher);
+        when(flagCalculatorFactory.flagCalculator(any(ContractorOperator.class), any(MessagePublisherService.class))).thenReturn(flagCalculator);
 	}
 
     private void setupEntityManager() {
@@ -176,7 +173,7 @@ public class ContractorCronTest extends PicsActionTest {
         conOp.setFlagColor(FlagColor.Green);
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        verify(flagDataCalculator,never()).saveFlagData(anyList());
+        verify(flagCalculator,never()).saveFlagData(anyList());
     }
 
     @Test
@@ -199,16 +196,16 @@ public class ContractorCronTest extends PicsActionTest {
         changes.add(flagData);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
-        when(flagDataCalculator.calculate()).thenReturn(changes);
-        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagCalculator);
+        when(flagCalculator.calculate()).thenReturn(changes);
+        when(flagCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Active);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
         when(flagCriteriaDAO.find(anyInt())).thenReturn(new FlagCriteria());
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        verify(flagDataCalculator).saveFlagData(anyList());
+        verify(flagCalculator).saveFlagData(anyList());
     }
 
     @Test
@@ -236,16 +233,16 @@ public class ContractorCronTest extends PicsActionTest {
 //        when(flagCriteriaOperator.getCriteria()).thenReturn(criteria);
 
         Whitebox.setInternalState(contractorCron, "steps", steps);
-        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagDataCalculator);
-        when(flagDataCalculator.calculate()).thenReturn(changes);
-        when(flagDataCalculator.saveFlagData(changes)).thenReturn(true);
+        when(flagCalculatorFactory.flagCalculator(conOp, messageService)).thenReturn(flagCalculator);
+        when(flagCalculator.calculate()).thenReturn(changes);
+        when(flagCalculator.saveFlagData(changes)).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
         when(contractor.getStatus()).thenReturn(AccountStatus.Declined);
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
         when(flagCriteriaDAO.find(anyInt())).thenReturn(new FlagCriteria());
 
         Whitebox.invokeMethod(contractorCron, "runFlag", conOp);
-        verify(flagDataCalculator).saveFlagData(anyList());
+        verify(flagCalculator).saveFlagData(anyList());
     }
 
 	/**

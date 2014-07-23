@@ -11,8 +11,6 @@ import java.util.*;
 
 public class FlagCalculatorFactory {
 
-    private Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds;
-
     @Autowired
     private com.picsauditing.flagcalculator.FlagDataCalculator newFlagDataCalculator;
     @Autowired
@@ -25,29 +23,18 @@ public class FlagCalculatorFactory {
     public FlagCalculator flagCalculator(ContractorOperator co,MessagePublisherService messagePublisherService) throws Exception {
         Map<FlagCriteria, List<FlagDataOverride>> overrides = calculateOverrides(co);
 
-        if (newFlagCalculatorIsEnabled()) {
-            if (co.getId() > 0) {
-                newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
-            }
-            else {
-                newFlagDataCalculator.initialize(co.getContractorAccount().getId(), co.getOperatorAccount().getId(), convertOverridesToIDMap(overrides));
-            }
-
-            if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PUBLISH_FLAG_CHANGES)) {
-                newFlagDataCalculator.setShouldPublishChanges(true);
-            } else {
-                newFlagDataCalculator.setShouldPublishChanges(false);
-            }
-            return newFlagDataCalculator;
+        if (co.getId() > 0) {
+            newFlagDataCalculator.initialize(co.getId(), convertOverridesToIDMap(overrides));
         } else {
-            FlagDataCalculator flagDataCalculator =  new FlagDataCalculator(co.getContractorAccount().getFlagCriteria(), overrides);
-            flagDataCalculator.setOperator(co.getOperatorAccount());
-            flagDataCalculator.setOperatorCriteria(co.getOperatorAccount().getFlagCriteriaInherited());
-            flagDataCalculator.setContractorOperator(co);
-            flagDataCalculator.setMessagePublisherService(messagePublisherService);
-            flagDataCalculator.setCorrespondingMultiYearCriteria(correspondingMultiscopeCriteriaIds);
-            return flagDataCalculator;
+            newFlagDataCalculator.initialize(co.getContractorAccount().getId(), co.getOperatorAccount().getId(), convertOverridesToIDMap(overrides));
         }
+
+        if (featureToggleChecker.isFeatureEnabled(FeatureToggle.TOGGLE_PUBLISH_FLAG_CHANGES)) {
+            newFlagDataCalculator.setShouldPublishChanges(true);
+        } else {
+            newFlagDataCalculator.setShouldPublishChanges(false);
+        }
+        return newFlagDataCalculator;
     }
 
     private static Map<Integer, List<Integer>> convertOverridesToIDMap(Map<FlagCriteria, List<FlagDataOverride>> overrides) {
@@ -88,18 +75,6 @@ public class FlagCalculatorFactory {
         }
 
         return overridesMap;
-    }
-
-    private static boolean newFlagCalculatorIsEnabled() {
-        try {
-            return Features.USE_NEW_FLAGCALCULATOR.isActive();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public void setCorrespondingMultiscopeCriteriaIds(Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds) {
-        this.correspondingMultiscopeCriteriaIds = correspondingMultiscopeCriteriaIds;
     }
 
     public void runContractorFlagETL(ContractorAccount contractorAccount) {

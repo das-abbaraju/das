@@ -1,35 +1,17 @@
 package com.picsauditing.actions.operators;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
-import com.picsauditing.dao.OperatorTagDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.PICS.FlagDataCalculator;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.dao.FlagCriteriaDAO;
 import com.picsauditing.dao.FlagCriteriaOperatorDAO;
 import com.picsauditing.dao.FlagDataOverrideDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AmBest;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteria;
-import com.picsauditing.jpa.entities.FlagCriteriaContractor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.FlagData;
-import com.picsauditing.jpa.entities.FlagDataOverride;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.OperatorTag;
+import com.picsauditing.dao.OperatorTagDAO;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 public class ManageFlagCriteriaOperator extends OperatorActionSupport {
 	private static final long serialVersionUID = 124465979749052347L;
