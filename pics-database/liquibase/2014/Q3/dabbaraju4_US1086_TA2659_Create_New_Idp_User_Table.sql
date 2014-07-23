@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `idp_user` (
   `createdBy` int(11) DEFAULT NULL,
   `updatedBy` int(11) DEFAULT NULL,
   `creationDate` TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
-  `updateDate` TIMESTAMP NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updateDate` TIMESTAMP NULL,
    PRIMARY KEY (`id`),
   CONSTRAINT `fk1_idp_user_users` FOREIGN KEY (`userid`) REFERENCES users (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

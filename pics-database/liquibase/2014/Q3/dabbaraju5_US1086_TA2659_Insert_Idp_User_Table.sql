@@ -6,7 +6,7 @@
 -- Below script insert data into IDP_USER table for the
 -- mapping of windows login and Pics user id
 
-INSERT INTO IDP_USER(userid, idpusername, idp)
+INSERT INTO idp_user(userId, idpUserName, idp)
 SELECT user.id, substring(user.email,1,instr(user.email,'@')-1 ),'picsad'
 FROM users user
 JOIN app_user au ON au.id = user.appUserID
