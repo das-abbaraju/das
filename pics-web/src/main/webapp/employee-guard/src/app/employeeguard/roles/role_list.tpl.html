@@ -1,4 +1,4 @@
-<div ng-controller="operatorRoleListCtrl" class="operator-rolelist">
+<div ng-controller="roleListCtrl" class="rolelist">
     <div class="container">
         <pagetitle title="Job Roles"></pagetitle>
         <div class="page-subheader">
@@ -11,7 +11,7 @@
                 </div>
                 <div class="col-md-4">
                     <div class="page-actions">
-                        <a ng-show="(user.type | lowercase) == 'corporate'" href="/employee-guard/operators/role/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Job Role</a>
+                        <a ng-if="userType === 'corporate'" href="/employee-guard/operators/role/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Job Role</a>
                     </div>
                 </div>
             </div>
@@ -54,7 +54,7 @@
                                 </td>
                                 <td>
                                     <ul class="employee-guard-list skills">
-                                        <li ng-repeat="skill in role.requiredSkills">
+                                        <li ng-repeat="skill in role.skills">
                                         <a href="/employee-guard/operators/skill/{{ skill.id }}"><span class="label label-pics">{{ skill.name }} </span></a>
                                         </li>
                                     </ul>

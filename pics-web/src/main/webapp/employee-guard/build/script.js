@@ -55984,6 +55984,7 @@ window.Modernizr = (function( window, document, undefined ) {
     'ngResource',
     'PICS.directives',
     'PICS.charts',
+    'PICS.roles',
     'PICS.skills',
     'PICS.filters',
     'ui.select2',
@@ -56147,10 +56148,6 @@ window.Modernizr = (function( window, document, undefined ) {
 
 .factory('ProjectList', function($resource) {
     return $resource('/employee-guard/operators/projects/list');
-});;angular.module('PICS.employeeguard')
-
-.factory('RoleList', function($resource) {
-    return $resource('/angular/json/operator/role_list.json');
 });;angular.module('PICS.employeeguard')
 
 .factory('SiteAssignments', function($resource, $routeParams) {
@@ -57002,9 +56999,6 @@ window.Modernizr = (function( window, document, undefined ) {
         .when('/employee-guard/operators/assignments', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
-        .when('/employee-guard/operators/roles', {
-            templateUrl: '/employee-guard/src/app/employeeguard/operator/role/role_list.tpl.html'
-        })
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
@@ -57034,11 +57028,6 @@ window.Modernizr = (function( window, document, undefined ) {
             $scope.orderByField = 'site';
         }
     });
-});;angular.module('PICS.employeeguard')
-
-.controller('operatorRoleListCtrl', function ($scope, RoleList, WhoAmI) {
-    $scope.roles = RoleList.query();
-    $scope.user = WhoAmI.get();
 });;angular.module('PICS.employeeguard.skills', [])
 
 .config(function ($routeProvider, $locationProvider) {
@@ -57063,6 +57052,30 @@ window.Modernizr = (function( window, document, undefined ) {
         $scope.requiredSkills = $filter('filter')(skills, { isRequiredSkill: true });
     });
 });;angular.module('PICS.employeeguard')
+
+.factory('RoleListResource', function($resource) {
+    return $resource('/employee-guard/json/roles/role_list.json');
+});;angular.module('PICS.employeeguard')
+
+.controller('roleListCtrl', function ($scope, RoleListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+    });
+
+    $scope.roles = RoleListResource.query();
+});;angular.module('PICS.roles', [
+    'ngRoute'
+])
+
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider
+        .when('/employee-guard/roles', {
+            templateUrl: '/employee-guard/src/app/employeeguard/roles/role_list.tpl.html'
+        });
+});
+;angular.module('PICS.employeeguard')
 
 .controller('serverInfoCtrl', function ($scope, ServerInfo) {
     $scope.server = ServerInfo.get();

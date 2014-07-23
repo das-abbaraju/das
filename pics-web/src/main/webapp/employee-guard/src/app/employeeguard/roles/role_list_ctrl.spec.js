@@ -1,18 +1,20 @@
-describe('An Operator Role List', function() {
+describe('A Role List', function() {
     var scope;
 
-    var roles_url = '/employee-guard/operators/role/list';
-    var roles_url_dev = '/angular/json/operator/role_list.json';
+    var roles_url = '/employee-guard/roles';
+    var roles_url_dev = '/employee-guard/json/roles/role_list.json';
     var whoami_url = '/employee-guard/who-am-i';
 
-    var operator_roles = [{
+    var roles = [{
             "id": 4,
             "name": "Safety Supervisor",
-            "requiredSkills": [{
+            "skills": [{
                     "id": 1,
                     "name": "Bob's Burgers"
                 }
-            ]
+            ],
+            'employees': [],
+            'projects': []
         }];
 
     var operator_user = {
@@ -24,17 +26,16 @@ describe('An Operator Role List', function() {
 
     beforeEach(angular.mock.module('PICS.employeeguard'));
 
-    beforeEach(inject(function($rootScope, $controller, $httpBackend, RoleList, WhoAmI) {
+    beforeEach(inject(function($rootScope, $controller, $httpBackend, RoleListResource, WhoAmI) {
         scope = $rootScope.$new();
-        $controller("operatorRoleListCtrl", {
+        $controller("roleListCtrl", {
             $scope: scope
         });
 
         httpMock = $httpBackend;
-        mockResource = RoleList;
 
-        httpMock.when('GET', roles_url).respond(operator_roles);
-        httpMock.when('GET', roles_url_dev).respond(operator_roles);
+        httpMock.when('GET', roles_url).respond(roles);
+        httpMock.when('GET', roles_url_dev).respond(roles);
         httpMock.when('GET', whoami_url).respond(operator_user);
         httpMock.flush();
     }));
@@ -45,7 +46,6 @@ describe('An Operator Role List', function() {
     });
 
     it("should have a user object", function() {
-        expect(scope.user).toBeDefined();
-        expect(scope.user.type).toBeDefined();
+        expect(scope.userType).toBeDefined();
     });
 });

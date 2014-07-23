@@ -1,6 +1,9 @@
 angular.module('PICS.employeeguard')
 
-.controller('operatorRoleListCtrl', function ($scope, RoleList, WhoAmI) {
-    $scope.roles = RoleList.query();
-    $scope.user = WhoAmI.get();
+.controller('roleListCtrl', function ($scope, RoleListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+    });
+
+    $scope.roles = RoleListResource.query();
 });

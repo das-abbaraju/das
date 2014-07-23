@@ -1,28 +1,34 @@
 [{
     "id": 4,
     "name": "Safety Supervisor",
-    "requiredSkills": [{
+    "skills": [{
             "id": 1,
             "name": "Bob's Burgers"
         }
-    ]
+    ],
+    "employees": [],
+    "projects": []
 },{
     "id": 28,
     "name": "Engineer",
-    "requiredSkills": [{
+    "skills": [{
             "id": 24,
             "name": "DB 101"
         }
-    ]
+    ],
+    "employees": [],
+    "projects": []
 },{
     "id": 5,
     "name": "Leadman",
-    "requiredSkills": [{
+    "skills": [{
             "id": 2,
             "name": "Agile Practices"
         }, {
             "id": 5,
             "name": "How to NOT be annoying"
         }
-    ]
+    ],
+    "employees": [],
+    "projects": []
 }]
