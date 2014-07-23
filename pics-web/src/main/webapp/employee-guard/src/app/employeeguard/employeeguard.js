@@ -5,7 +5,8 @@ angular.module('PICS.employeeguard', [
     'PICS.directives',
     'PICS.charts',
     'PICS.roles',
-    'PICS.skills',
+    'PICS.breadcrumb',
+    'PICS.employeeguard.skills',
     'PICS.filters',
     'ui.select2',
     'ProfileService'
