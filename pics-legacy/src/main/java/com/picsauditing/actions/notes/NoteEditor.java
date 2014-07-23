@@ -50,7 +50,7 @@ public class NoteEditor extends AccountActionSupport {
 	private String fileContentType;
 	private String fileFileName;
 	private InputStream inputStream;
-    private int defaultRestrictedViewableAccountID;
+ //   private int defaultRestrictedViewableAccountID;
 
 	private int employeeID;
 	public static int RESTRICTED_TO = 3;
@@ -65,12 +65,7 @@ public class NoteEditor extends AccountActionSupport {
 			viewableByOther = viewableBy;
 			viewableBy = RESTRICTED_TO;
 		} else if (viewableBy == Account.NONE) {
-			viewableBy = Account.EVERYONE;
-		}
-
-		if (permissions.hasPermission(OpPerms.Billing) || permissions.isOperatorCorporate()) {
 			viewableBy = RESTRICTED_TO;
-			viewableByOther = permissions.getTopAccountID();
 		}
 
 		return mode;
