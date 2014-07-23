@@ -68,6 +68,13 @@
     "OPERATOR.LIVEID.REQUIRED_BY_SITE": "Required by Site",
     "OPERATOR.LIVEID.CORPORATE.SITE_SELECTION": "Site Selection",
 
+    "OPERATOR.SKILLS_LIST.CORPORATE.REQUIRED.SKILLS.TITLE": "Corporate Required Skills",
+    "OPERATOR.SKILLS_LIST.CORPORATE.REQUIRED.SKILLS.MESSAGE": "These skills are required for everyone that is assigned to any site.",
+    "OPERATOR.SKILLS_LIST.CORPORATE.REQUIRED.SKILLS.NO_SKILLS": "No corporate required skills.",
+    "OPERATOR.SKILLS_LIST.SITE.REQUIRED.SKILLS.TITLE": "Site Required Skills",
+    "OPERATOR.SKILLS_LIST.SITE.REQUIRED.SKILLS.MESSAGE": "These skills are required for everyone that is assigned to the site.",
+    "OPERATOR.SKILLS_LIST.SITE.REQUIRED.SKILLS.NO_SKILLS": "No site required skills.",
+
     "EMPLOYEE_SKILL.TITLE": "Skill:",
     "EMPLOYEE_SKILL.BREADCRUMB.EMPLOYEEGUARD": "EmployeeGUARD",
     "EMPLOYEE_SKILL.BREADCRUMB.EMPLOYEES": "Employees",
@@ -133,5 +140,19 @@
     "EMPLOYEE.INVALID_HASH.TITLE": "Registration Link Invalid",
     "EMPLOYEE.INVALID_HASH.MESSAGE": "Please check your email for a newer registration request.",
     "EMPLOYEE.INVALID_HASH.MESSAGE2": "If you already have an account, login to",
-    "EMPLOYEE.INVALID_HASH.LINK": "PICS Organizer"
+    "EMPLOYEE.INVALID_HASH.LINK": "PICS Organizer",
+
+    "SKILLS_LIST.TITLE": "Skills",
+    "SKILLS_LIST.BREADCRUMB.EMPLOYEEGUARD": "EmployeeGUARD",
+    "SKILLS_LIST.BREADCRUMB.SKILLS": "Skills",
+    "SKILLS_LIST.BUTTON.ADD_SKILL": "Skill",
+    "SKILLS_LIST.SKILLS.TITLE": "Skills",
+    "SKILLS_LIST.SKILLS.SEARCH": "Search Skills",
+    "SKILLS_LIST.SKILLS.SKILL": "Skill",
+    "SKILLS_LIST.SKILLS.TYPE": "Type",
+    "SKILLS_LIST.SKILLS.JOB_ROLES": "Job Roles",
+    "SKILLS_LIST.SKILLS.EMPLOYEE_GROUPS": "Employee Groups",
+    "SKILLS_LIST.SKILLS.EMPLOYEES": "Employees",
+    "SKILLS_LIST.REQUIRED.SKILLS.BUTTON.SAVE": "Save",
+    "SKILLS_LIST.REQUIRED.SKILLS.BUTTON.CANCEL": "Cancel"
 }
