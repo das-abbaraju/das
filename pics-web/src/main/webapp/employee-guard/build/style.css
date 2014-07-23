@@ -14869,24 +14869,25 @@ ul.skill-nav a {
   display: block;
 }
 
-/* line 136, ../src/common/components/_table.scss */
-.table-sort i {
+/* line 137, ../src/common/components/_table.scss */
+.table-sort i.icon-sort-down {
   color: #999999;
 }
-/* line 139, ../src/common/components/_table.scss */
+/* line 141, ../src/common/components/_table.scss */
 .table-sort i.icon-sort-up {
+  color: #999999;
   margin-top: 6px;
 }
-/* line 144, ../src/common/components/_table.scss */
+/* line 147, ../src/common/components/_table.scss */
 .table-sort th.sort-active {
   background-color: #333333;
 }
-/* line 150, ../src/common/components/_table.scss */
+/* line 153, ../src/common/components/_table.scss */
 .table-sort th.sort-active.success, .table-sort th.sort-active.warning, .table-sort th.sort-active.danger, .table-sort th.sort-active.primary {
   background-color: #333333;
 }
 
-/* line 157, ../src/common/components/_table.scss */
+/* line 160, ../src/common/components/_table.scss */
 .table-search-section header {
   background-color: #f1f1f1;
   color: #808285;
@@ -14894,18 +14895,18 @@ ul.skill-nav a {
   margin-bottom: 0px;
   margin-top: 20px;
 }
-/* line 164, ../src/common/components/_table.scss */
+/* line 167, ../src/common/components/_table.scss */
 .table-search-section header h1 {
   font-size: 14px;
   font-weight: bold;
   line-height: 44px;
   margin: 0px;
 }
-/* line 170, ../src/common/components/_table.scss */
+/* line 173, ../src/common/components/_table.scss */
 .table-search-section header h1 i {
   margin-right: 5px;
 }
-/* line 177, ../src/common/components/_table.scss */
+/* line 180, ../src/common/components/_table.scss */
 .table-search-section.employee-guard-section .content.no_padding {
   padding: 0px;
 }

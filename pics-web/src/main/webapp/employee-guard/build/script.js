@@ -55945,39 +55945,16 @@ window.Modernizr = (function( window, document, undefined ) {
 
         return new_array;
     };
-});;angular.module('PICS.skills', [])
+});;angular.module('PICS.employeeguard.skills', [
+    'ngRoute'
+])
 
-.factory('SkillStatus', function() {
-    return {
-        getClassNameFromStatus: function(status) {
-            if (!status) {
-                return;
-            }
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
 
-            var classname = '';
-
-            status = status.toLowerCase();
-
-            switch (status) {
-                case 'completed':
-                    classname = 'success';
-                    break;
-                case 'pending':
-                    classname = 'success';
-                    break;
-                case 'expiring':
-                    classname = 'warning';
-                    break;
-                case 'expired':
-                    classname = 'danger';
-                    break;
-                default:
-                    break;
-            }
-
-            return classname;
-        }
-    };
+    $routeProvider.when('/employee-guard/skills', {
+        templateUrl: '/employee-guard/src/app/employeeguard/skills/skills.tpl.html'
+    });
 });;angular.module('PICS.employeeguard', [
     'pascalprecht.translate',
     'ngRoute',
@@ -55985,7 +55962,8 @@ window.Modernizr = (function( window, document, undefined ) {
     'PICS.directives',
     'PICS.charts',
     'PICS.roles',
-    'PICS.skills',
+    'PICS.breadcrumb',
+    'PICS.employeeguard.skills',
     'PICS.filters',
     'ui.select2',
     'ProfileService'
@@ -56059,6 +56037,18 @@ window.Modernizr = (function( window, document, undefined ) {
 
 .factory('Feedback', function($resource) {
     return $resource('/employee-guard/beta/feedback');
+});;angular.module('PICS.breadcrumb', [])
+
+.directive('breadcrumb', function () {
+    return {
+        restrict: 'E',
+        scope: {
+            links: '=',
+            target: '&'
+        },
+        replace: true,
+        templateUrl: '/employee-guard/src/app/employeeguard/common/breadcrumb/_breadcrumb.tpl.html'
+    };
 });;angular.module('PICS.employeeguard')
 .factory('EmployeeService', function (EmployeeServiceFactory) {
     var factory = {},
@@ -56213,10 +56203,6 @@ window.Modernizr = (function( window, document, undefined ) {
         replace: true,
         templateUrl: '/employee-guard/src/app/employeeguard/common/skill-status-icon/_skill-status-icon.tpl.html'
     };
-});;angular.module('PICS.employeeguard')
-
-.factory('OperatorSkillList', function($resource) {
-    return $resource('/employee-guard/api/skills');
 });;angular.module('PICS.employeeguard')
 
 .factory('WhoAmI', function($resource) {
@@ -57028,29 +57014,6 @@ window.Modernizr = (function( window, document, undefined ) {
             $scope.orderByField = 'site';
         }
     });
-});;angular.module('PICS.employeeguard.skills', [])
-
-.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
-
-    $routeProvider.when('/employee-guard/skills', {
-        templateUrl: '/employee-guard/src/app/employeeguard/operator/skills/skills.tpl.html'
-    });
-});;angular.module('PICS.skills')
-
-.controller('operatorSkillListCtrl', function ($scope, OperatorSkillList, $filter, WhoAmI) {
-    $scope.user = WhoAmI.get();
-
-    $scope.user.$promise.then(function(user) {
-        if (user.type.toLowerCase() === 'corporate') {
-            $scope.orderByField = 'skill';
-        }
-    });
-
-    OperatorSkillList.query(function (skills) {
-        $scope.skills = skills;
-        $scope.requiredSkills = $filter('filter')(skills, { isRequiredSkill: true });
-    });
 });;angular.module('PICS.employeeguard')
 
 .factory('RoleListResource', function($resource) {
@@ -57084,6 +57047,121 @@ window.Modernizr = (function( window, document, undefined ) {
 .factory('ServerInfo', function($resource) {
     // return $resource('/angular/json/serverinfo/serverinfo.json');
     return $resource('/employee-guard/serverInfo');
+});;angular.module('PICS.employeeguard.skills')
+
+.factory('SkillListResource', function($resource) {
+    var skillListResource = $resource('/employee-guard/api/skills', {}, {
+        update: { method: 'PUT'},
+        query: { method: 'GET', isArray:true }
+    });
+
+    return skillListResource;
+});;angular.module('PICS.employeeguard.skills')
+
+/* MISSING JSON INFORMATION
+    contractor: "All Employees" group
+    contractor, operator, corp: skill type
+    operator, corp:  isRequired
+*/
+
+.controller('skillListCtrl', function ($scope, $filter, SkillListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+
+        if (user.type.toLowerCase() === 'corporate') {
+            $scope.orderByField = 'skill';
+        }
+    });
+
+    SkillListResource.query(function (skills) {
+        var requiredSkills;
+
+        $scope.skills = skills;
+
+        requiredSkillsList = $filter('filter')(skills, { isRequiredSkill: true });
+
+        if (requiredSkillsList) {
+            $scope.requiredSkillsList = requiredSkillsList;
+            prefillSelectedSkills(requiredSkillsList);
+        }
+    });
+
+    function prefillSelectedSkills(requiredSkillsList) {
+        var selected_skills = [];
+
+        angular.forEach(requiredSkillsList, function(skill, i) {
+            selected_skills.push(skill.id);
+        });
+        $scope.selected_skills = selected_skills;
+    }
+
+    function formatRequestPayload(selected_skills) {
+        var required_skills = [];
+
+        if (selected_skills) {
+            angular.forEach($scope.skills, function(skill, i) {
+                angular.forEach(selected_skills, function(selected, i) {
+                    selected = parseInt(selected);
+                    if (skill.id === selected) {
+                        required_skills.push({
+                            id: skill.id,
+                            name: skill.name
+                        });
+                    }
+                });
+            });
+        }
+
+        return required_skills;
+    }
+
+    $scope.updateRequiredSkills = function(selected_skills) {
+        var requiredSkills = formatRequestPayload(selected_skills);
+        SkillListResource.update(requiredSkills);
+        $scope.toggleFormDisplay();
+        $scope.requiredSkillsList = requiredSkills;
+    };
+
+    $scope.toggleFormDisplay = function() {
+        $scope.showEditForm = !$scope.showEditForm;
+    };
+
+    angular.extend($scope, {
+        prefillSelectedSkills: prefillSelectedSkills
+    });
+});;angular.module('PICS.employeeguard.skills')
+
+.factory('SkillStatus', function() {
+    return {
+        getClassNameFromStatus: function(status) {
+            if (!status) {
+                return;
+            }
+
+            var classname = '';
+
+            status = status.toLowerCase();
+
+            switch (status) {
+                case 'completed':
+                    classname = 'success';
+                    break;
+                case 'pending':
+                    classname = 'success';
+                    break;
+                case 'expiring':
+                    classname = 'warning';
+                    break;
+                case 'expired':
+                    classname = 'danger';
+                    break;
+                default:
+                    break;
+            }
+
+            return classname;
+        }
+    };
 });;angular.module('PICS.directives')
 
 //overrides to drawConfig be added to the template or the controller file.  If not defined, drawConfig uses default values
@@ -57138,6 +57216,34 @@ window.Modernizr = (function( window, document, undefined ) {
             scope.progress = scope.values();
         },
         templateUrl: '/employee-guard/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
+    };
+});;angular.module('PICS.directives')
+
+.directive('tooltip', function (TypeToChart) {
+    return {
+        restrict: 'A',
+        scope: {
+            title: '@',
+            placement: '@',
+            container: '@',
+            html: '@'
+        },
+        link: function (scope, element, attrs) {
+            scope.tooltip_props = ['title', 'placement', 'container'];
+
+            scope.$watchCollection('tooltip_props', function(newValue) {
+                var title = scope.title,
+                    placement = scope.placement || 'top',
+                    container = scope.container || 'body';
+
+                $(element).tooltip({
+                    title: title,
+                    placement: placement,
+                    container: container,
+                    html: scope.html
+                });
+            });
+        }
     };
 });;(function ($) {
     PICS.define('layout.menu.Menu', {
