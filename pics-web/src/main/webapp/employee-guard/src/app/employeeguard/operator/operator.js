@@ -17,9 +17,6 @@ angular.module('PICS.employeeguard')
         .when('/employee-guard/operators/assignments', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
-        .when('/employee-guard/operators/roles', {
-            templateUrl: '/employee-guard/src/app/employeeguard/operator/role/role_list.tpl.html'
-        })
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
