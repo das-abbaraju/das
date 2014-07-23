@@ -1,17 +1,17 @@
 <div ng-controller="roleListCtrl" class="rolelist">
     <div class="container">
-        <pagetitle title="Job Roles"></pagetitle>
+        <pagetitle title="{{ 'ROLES_LIST.TITLE' | translate }}"></pagetitle>
         <div class="page-subheader">
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/operators/dashboard">EmployeeGUARD</a></li>
-                        <li class="active">Job Roles</li>
+                        <li><a href="/employee-guard/operators/dashboard" translate="ROLES_LIST.BREADCRUMB.EMPLOYEEGUARD"></a></li>
+                        <li class="active" translate="ROLES_LIST.BREADCRUMB.JOB_ROLES"></li>
                     </ol>
                 </div>
                 <div class="col-md-4">
                     <div class="page-actions">
-                        <a ng-if="userType === 'corporate'" href="/employee-guard/operators/role/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> Job Role</a>
+                        <a ng-if="userType === 'corporate'" href="/employee-guard/operators/role/create" class="btn btn-default" target="_self"><i class="icon-plus-sign"></i> {{'ROLES_LIST.BUTTON.ADD_JOB_ROLE' | translate }}</a>
                     </div>
                 </div>
             </div>
@@ -21,14 +21,14 @@
                 <div class="row">
                     <div class="col-md-8">
                         <h1>
-                            <i class="icon-group icon-large"></i>Job Roles
+                            <i class="icon-group icon-large"></i>{{'ROLES_LIST.JOB_ROLES.TITLE' | translate }}
                         </h1>
                     </div>
                     <div class="col-md-4">
                         <form name="operator_role_search" action="#" class="search-query" role="search">
                             <fieldset>
                                 <div class="search-wrapper">
-                                    <input name="searchTerm" type="text" class="form-control" ng-model="search" placeholder="Search Job Roles" />
+                                    <input name="searchTerm" type="text" class="form-control" ng-model="search" placeholder="{{ 'ROLES_LIST.JOB_ROLES.SEARCH' | translate }}" />
                                     <i class="icon-search"></i>
                                 </div>
                             </fieldset>
@@ -41,10 +41,10 @@
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
                         <thead>
-                                <th ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort">Job Role
+                                <th ng-class="{'sort-active' : orderByField=='name'}" ng-click="orderByField='name'; reverseSort = !reverseSort"><span translate="ROLES_LIST.JOB_ROLES.JOB_ROLE"></span>
                                     <i ng-show="orderByField == 'name'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
                                 </th>
-                                <th>Required Skills</th>
+                                <th translate="ROLES_LIST.JOB_ROLES.REQUIRED_SKILLS"></th>
                             </tr>
                         </thead>
                         <tbody>
