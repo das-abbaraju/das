@@ -13,7 +13,6 @@ class EulaAgreementDao(eulaAgreementProvider: EulaAgreementProvider = new EulaAg
 
   def insertEulaAgreement(eulaAgreement: EulaAgreement) = db.withSession { implicit session =>
     eulaAgreementProvider.insertNew(eulaAgreement)
-
   }
 
   def findByUserAndEulaId(userId: Long, eulaId: Long): EulaAgreement = db.withSession { implicit session =>
