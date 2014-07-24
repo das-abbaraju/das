@@ -50,7 +50,7 @@ public class NoteEditor extends AccountActionSupport {
 	private String fileContentType;
 	private String fileFileName;
 	private InputStream inputStream;
- //   private int defaultRestrictedViewableAccountID;
+    private int defaultRestrictedViewableAccountID;
 
 	private int employeeID;
 	public static int RESTRICTED_TO = 3;
