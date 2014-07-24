@@ -2,7 +2,7 @@ describe('A Role List', function() {
     var scope;
 
     var roles_url = '/employee-guard/roles';
-    var roles_url_dev = '/employee-guard/json/roles/role_list.json';
+    var roles_url_dev = '/employee-guard/src/app/employeeguard/roles/json/role_list.json';
     var whoami_url = '/employee-guard/who-am-i';
 
     var roles = [{
@@ -41,7 +41,6 @@ describe('A Role List', function() {
     }));
 
     it("should have roles", function() {
-        expect(scope.roles).toBeDefined();
         expect(scope.roles).toBeDefined();
     });
 

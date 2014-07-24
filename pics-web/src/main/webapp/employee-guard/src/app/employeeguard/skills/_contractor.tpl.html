@@ -39,7 +39,6 @@
         <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
             <thead>
                 <tr>
-
                     <th ng-class="{'sort-active' : orderByField=='totalEmployees'}" class="text-center" tooltip title="{{ 'SKILLS_LIST.SKILLS.EMPLOYEES' | translate }}" ng-click="orderByField='totalEmployees'; reverseSort = !reverseSort">
                         <i class="icon-large icon-user"></i>
                         <i ng-show="orderByField == 'totalEmployees'" class="pull-right" ng-class="{'icon-sort-down' : !reverseSort, 'icon-sort-up' : reverseSort}"></i>
@@ -55,7 +54,7 @@
             </thead>
             <tbody>
                 <tr ng-repeat="skill in skills | orderBy:orderByField:reverseSort | filter:search ">
-                    <td>{{ skill.totalEmployees }}</td>
+                    <td class="text-center">{{ skill.totalEmployees }}</td>
                     <td>
                         <a href="/employee-guard/contractor/skill/{{ skill.id }}" target="_self">{{ skill.name }}</a>
                     </td>

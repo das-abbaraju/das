@@ -1,4 +1,4 @@
-angular.module('PICS.employeeguard')
+angular.module('PICS.roles')
 
 .controller('roleListCtrl', function ($scope, RoleListResource, WhoAmI) {
     WhoAmI.get(function(user) {

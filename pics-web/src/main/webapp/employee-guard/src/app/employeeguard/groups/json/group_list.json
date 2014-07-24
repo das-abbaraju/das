@@ -1,0 +1,67 @@
+[{
+    "id": 8,
+    "name": "Medical",
+    "skills": [{
+            "id": 22,
+            "name": "Professional Safety Training"
+        }
+    ],
+    "employees": [{
+        "id": 3,
+        "firstName": "Bob",
+        "lastName": "Jones",
+        "companies":[
+          {
+             "id":54578,
+             "title":"Demo Op",
+             "name":"ACME Co."
+          }
+        ]
+    }, {
+        "id": 23,
+        "firstName": "Jim",
+        "lastName": "Johnson",
+        "companies":[]
+    }]
+},{
+    "id": 12,
+    "name": "Skilled Laborer",
+    "skills": [{
+            "id": 17,
+            "name": "Degree of Trade Certificate"
+        }
+    ],
+    "employees": [{
+        "id": 5,
+        "firstName": "Tim",
+        "lastName": "Kanta",
+        "companies":[]
+    }]
+},{
+    "id": 7,
+    "name": "Management",
+    "skills": [{
+            "id": 21,
+            "name": "Management Training"
+        }, {
+            "id": 23,
+            "name": "Sexual Harassment Course"
+        }
+    ],
+    "employees": [{
+        "id": 7,
+        "firstName": "Jack",
+        "lastName": "Brothers",
+        "companies":[]
+    }, {
+        "id": 1,
+        "firstName": "Bill",
+        "lastName": "Billingsworth",
+        "companies":[]
+    }, {
+        "id": 6,
+        "firstName": "Brian",
+        "lastName": "Tomac",
+        "companies":[]
+    }]
+}]

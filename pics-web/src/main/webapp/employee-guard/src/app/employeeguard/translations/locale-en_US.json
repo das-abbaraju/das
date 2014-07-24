@@ -163,5 +163,15 @@
     "ROLES_LIST.JOB_ROLES.TITLE": "Job Roles",
     "ROLES_LIST.JOB_ROLES.SEARCH": "Search Job Roles",
     "ROLES_LIST.JOB_ROLES.JOB_ROLE": "Job Role",
-    "ROLES_LIST.JOB_ROLES.REQUIRED_SKILLS": "Required Skills"
+    "ROLES_LIST.JOB_ROLES.REQUIRED_SKILLS": "Required Skills",
+
+    "GROUP_LIST.TITLE": "Employee Groups",
+    "GROUP_LIST.BREADCRUMB.EMPLOYEEGUARD": "EmployeeGUARD",
+    "GROUP_LIST.BREADCRUMB.GROUPS": "Employee Groups",
+    "GROUP_LIST.BUTTON.ADD_GROUP": "Employee Group",
+    "GROUP_LIST.GROUPS.TITLE": "Employee Groups",
+    "GROUP_LIST.GROUPS.SEARCH": "Search Employee Groups",
+    "GROUP_LIST.GROUPS.EMPLOYEES": "Employees",
+    "GROUP_LIST.GROUPS.GROUP": "Employee Group",
+    "GROUP_LIST.GROUPS.REQUIRED_SKILLS": "Required Skills"
 }
