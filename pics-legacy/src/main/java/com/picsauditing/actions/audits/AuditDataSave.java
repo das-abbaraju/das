@@ -13,6 +13,7 @@ import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.service.ContractorAuditService;
 import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AuditDataSave extends AuditActionSupport {
+
+    public static int VALID_YEARS_IN_FUTURE = 10;
 
 	private static final String NO = "No";
 
@@ -665,7 +668,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if ("Date".equals(questionType)) {
-			return isDateValid(auditData);
+			return processAndValidateDate(auditData);
 		}
 
 		if ("Money".equals(questionType) || "Decimal Number".equals(questionType) || "Number".equals(questionType)
@@ -799,45 +802,61 @@ public class AuditDataSave extends AuditActionSupport {
 
 	}
 
-	private boolean isDateValid(AuditData auditData) {
+	private boolean processAndValidateDate(AuditData auditData) {
 		if (auditData.getAnswer() == null || auditData.getAnswer().equals("")) {
 			return true;
 		}
 
-		if ("policyEffectiveDate".equals(auditData.getQuestion().getUniqueCode())
-				|| "policyExpirationDate".equals(auditData.getQuestion().getUniqueCode())) {
-			SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			Date enteredDate = null;
-			df.setLenient(true);
-			try {
-				enteredDate = df.parse(auditData.getAnswer());
-			} catch (Exception e) {
-				df = new SimpleDateFormat("yyyy-MM-dd");
-				df.setLenient(false);
-				try {
-					enteredDate = df.parse(auditData.getAnswer());
-				} catch (Exception second) {
-					addActionError(getText("Audit.message.InvalidDate"));
-					return false;
-				}
-			}
+        Date enteredDate = extractEnteredDate(auditData.getAnswer());
 
-			if (DateBean.getYearFromDate(enteredDate) < 2001) {
-				addActionError(getText("Audit.message.InvalidDate"));
-				return false;
-			}
+        if (enteredDate == null) {
+            addActionError(getText("Audit.message.InvalidDate"));
+            return false;
+        }
 
-			Calendar today = Calendar.getInstance();
-			if (DateBean.getYearFromDate(enteredDate) > today.get(Calendar.YEAR) + 10) {
-				addActionError(getText("Audit.message.InvalidDate"));
-				return false;
-			}
+        if (DateBean.getYearFromDate(enteredDate) < 2001) {
+            addActionError(getText("Audit.message.InvalidDate"));
+            return false;
+        }
 
-		}
-		return true;
+        Calendar today = Calendar.getInstance();
+        if (DateBean.getYearFromDate(enteredDate) > today.get(Calendar.YEAR) + VALID_YEARS_IN_FUTURE) {
+            addActionError(getText("Audit.message.InvalidDate"));
+            return false;
+        }
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        auditData.setAnswer(df.format(enteredDate));
+
+        return true;
 	}
 
-	private boolean isInvalidNegativeNumber(BigDecimal value, AuditQuestion question) {
+    private Date extractEnteredDate(String answer) {
+        Date date = null;
+        List<String> datePatterns = new ArrayList<>();
+
+        datePatterns.add("yyyy-MM-dd");
+        datePatterns.add("MM/dd/yyyy");
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        for (String pattern:datePatterns) {
+            try {
+                dateFormat.applyPattern(pattern);
+                date = dateFormat.parse(answer);
+                if (DateBean.getYearFromDate(date) < 2000) {
+                    throw new Exception();
+                }
+                break;
+            } catch (Exception e) {
+                date = null;
+            }
+        }
+
+        return date;
+    }
+
+    private boolean isInvalidNegativeNumber(BigDecimal value, AuditQuestion question) {
 		if (question.getId() == AuditQuestion.EMR && value.floatValue() < 0.0f) {
 			return true;
 		}
