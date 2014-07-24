@@ -14,6 +14,7 @@ angular.module('EmployeeGUARD', [
     });
 
     $translateProvider.fallbackLanguage(['en_US']);
+    $translateProvider.preferredLanguage('en_US');
 })
 
 .config(function ($routeProvider) {
