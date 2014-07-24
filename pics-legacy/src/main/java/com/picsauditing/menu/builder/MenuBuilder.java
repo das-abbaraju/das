@@ -357,12 +357,17 @@ public final class MenuBuilder {
 			return;
 		}
 
-		MenuComponent employeeGUARDMenu = menubar.addChild("EmployeeGUARD");
-		employeeGUARDMenu.addChild("Summary", EmployeeGUARDUrlUtils.OPERATOR_SUMMARY);
-		employeeGUARDMenu.addChild("Assignments", EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
-		employeeGUARDMenu.addChild("Projects", EmployeeGUARDUrlUtils.OPERATOR_PROJECTS);
-		employeeGUARDMenu.addChild("Job Roles", EmployeeGUARDUrlUtils.OPERATOR_JOB_ROLES);
-		employeeGUARDMenu.addChild("Skills", EmployeeGUARDUrlUtils.OPERATOR_SKILLS);
+		MenuComponent employeeGUARDMenu = menubar.addChild(getText("global.product.EmployeeGUARD"));
+		employeeGUARDMenu.addChild(getText("global.Menu.EmployeeGUARD.Operator_Corporate.Summary"),
+				EmployeeGUARDUrlUtils.OPERATOR_SUMMARY);
+		employeeGUARDMenu.addChild(getText("global.Menu.EmployeeGUARD.Operator_Corporate.Assignments"),
+				EmployeeGUARDUrlUtils.OPERATOR_ASSIGNMENTS);
+		employeeGUARDMenu.addChild(getText("global.Menu.EmployeeGUARD.Operator_Corporate.Projects"),
+				EmployeeGUARDUrlUtils.OPERATOR_PROJECTS);
+		employeeGUARDMenu.addChild(getText("global.Menu.EmployeeGUARD.Operator_Corporate.Job_Roles"),
+				EmployeeGUARDUrlUtils.OPERATOR_JOB_ROLES);
+		employeeGUARDMenu.addChild(getText("global.Menu.EmployeeGUARD.Operator_Corporate.Skills"),
+				EmployeeGUARDUrlUtils.OPERATOR_SKILLS);
 	}
 
 	private static void addManageMenu(MenuComponent menubar, Permissions permissions) {
