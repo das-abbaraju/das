@@ -381,25 +381,44 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		data.setQuestion(question);
 
 		// null answer
-		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
 		assertTrue(result);
 
 		// empty answer
 		data.setAnswer("");
-		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
 		assertTrue(result);
 
-		// valid policy date answer
-		question.setUniqueCode("policyEffectiveDate");
-		data.setAnswer("2001-01-01");
-		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
-		assertTrue(result);
+        // normal answer
+        data.setAnswer("2001-01-01");
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
+        assertTrue(result);
 
-		// invalid policy date answer
-		question.setUniqueCode("policyEffectiveDate");
-		data.setAnswer("1999-12-31");
-		result = Whitebox.invokeMethod(auditDataSave, "isDateValid", data);
+        // normal answer MM/dd/yyyy
+        data.setAnswer("12/31/2001");
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
+        assertTrue(result);
+
+		// date too far in past
+		data.setAnswer("2000-12-31");
+		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
 		assertFalse(result);
+
+        // valid future date
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, AuditDataSave.VALID_YEARS_IN_FUTURE);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        data.setAnswer(dateFormat.format(cal.getTime()));
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
+        assertTrue(result);
+
+        // invalid future date
+        cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, AuditDataSave.VALID_YEARS_IN_FUTURE + 1);
+        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        data.setAnswer(dateFormat.format(cal.getTime()));
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
+        assertFalse(result);
 	}
 
 	@Test
