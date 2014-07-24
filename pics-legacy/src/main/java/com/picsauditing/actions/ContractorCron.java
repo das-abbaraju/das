@@ -4,7 +4,6 @@ import com.picsauditing.PICS.*;
 import com.picsauditing.access.Anonymous;
 import com.picsauditing.actions.cron.AuditCategoryJobException;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.flagcalculator.FlagCalculator;
@@ -16,15 +15,12 @@ import com.picsauditing.messaging.MessagePublisherService;
 import com.picsauditing.model.events.ContractorOperatorWaitingOnChangedEvent;
 import com.picsauditing.models.audits.InsurancePolicySuggestionCalculator;
 import com.picsauditing.rbic.RulesRunner;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.service.AuditService;
 import com.picsauditing.service.account.WaitingOnService;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.SpringUtils;
 import com.picsauditing.util.Strings;
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +74,6 @@ public class ContractorCron extends PicsActionSupport {
 
 	static private Set<ContractorCron> manager = new HashSet<>();
 
-    private FlagDataCalculator flagDataCalculator;
 	private int conID = 0;
 	private int opID = 0;
 	private ContractorCronStep[] steps = null;
@@ -88,9 +83,6 @@ public class ContractorCron extends PicsActionSupport {
 	private String redirectUrl;
 
 	private final Logger logger = LoggerFactory.getLogger(ContractorCron.class);
-
-	// This is specifically for testing
-	private Database database;
 
 	@Anonymous
 	public String execute() throws Exception {
@@ -164,11 +156,6 @@ public class ContractorCron extends PicsActionSupport {
 			runCSRAssignment(contractor);
             runRulesBasedInsuranceCriteria(contractor);
             runEmployeeGuardRules(contractor);
-
-            Map<Integer, List<Integer>> correspondingMultiscopeCriteriaIds = getCorrespondingMultiscopeCriteriaIds();
-            flagDataCalculator = new FlagDataCalculator(contractor.getFlagCriteria());
-			flagDataCalculator.setCorrespondingMultiYearCriteria(correspondingMultiscopeCriteriaIds);
-            flagCalculatorFactory.setCorrespondingMultiscopeCriteriaIds(correspondingMultiscopeCriteriaIds);
 
 			if (runStep(ContractorCronStep.Flag) || runStep(ContractorCronStep.WaitingOn)
 					|| runStep(ContractorCronStep.Policies) || runStep(ContractorCronStep.CorporateRollup)) {
@@ -245,80 +232,6 @@ public class ContractorCron extends PicsActionSupport {
         }
 
     }
-
-    private Map<Integer, List<Integer>> getCorrespondingMultiscopeCriteriaIds() {
-		Database db = getDatabase();
-		Map<Integer, List<Integer>> resultMap = new HashMap<Integer, List<Integer>>();
-
-		SelectSQL sql = new SelectSQL("flag_criteria fc1");
-		sql.addField("fc1.id as year1_id");
-		sql.addField("fc2.id as year2_id");
-		sql.addField("fc3.id as year3_id");
-		sql.addJoin("left outer join flag_criteria fc2 on fc1.oshaType = fc2.oshaType AND fc1.oshaRateType = fc2.oshaRateType and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql.addJoin("left outer join flag_criteria fc3 on fc1.oshaType = fc3.oshaType AND fc1.oshaRateType = fc3.oshaRateType and fc3.multiYearScope = 'ThreeYearsAgo' ");
-		sql.addWhere("fc1.oshaType is not null and fc1.multiYearScope = 'LastYearOnly'");
-
-		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
-
-		sql = new SelectSQL("flag_criteria fc1");
-		sql.addField("fc1.id as year1_id");
-		sql.addField("fc2.id as year2_id");
-		sql.addField("fc3.id as year3_id");
-		sql.addJoin("left outer join flag_criteria fc2 on fc1.questionID = fc2.questionID and fc2.multiYearScope = 'TwoYearsAgo' ");
-		sql.addJoin("left outer join flag_criteria fc3 on fc1.questionID = fc3.questionID and fc3.multiYearScope = 'ThreeYearsAgo' ");
-		sql.addWhere("fc1.questionID is not null and fc1.multiYearScope = 'LastYearOnly'");
-
-		extractMultiyearCriteriaIdQueryResults(db, sql, resultMap);
-
-		return resultMap;
-	}
-
-	private Database getDatabase() {
-		if (database == null) {
-			return new Database();
-		}
-
-		return database;
-	}
-
-	private void extractMultiyearCriteriaIdQueryResults(Database db, SelectSQL sql,
-														Map<Integer, List<Integer>> resultMap) {
-		try {
-			List<BasicDynaBean> resultBDB = db.select(sql.toString(), false);
-			for (BasicDynaBean row : resultBDB) {
-				Integer year1 = (Integer) row.get("year1_id");
-				Integer year2 = (Integer) row.get("year2_id");
-				Integer year3 = (Integer) row.get("year3_id");
-
-				ArrayList<Integer> list = new ArrayList<Integer>();
-				if (year1 != null) {
-					list.add(year1);
-				}
-
-				if (year2 != null) {
-					list.add(year2);
-				}
-
-				if (year3 != null) {
-					list.add(year3);
-				}
-
-				if (year1 != null) {
-					resultMap.put(year1, list);
-				}
-
-				if (year2 != null) {
-					resultMap.put(year2, list);
-				}
-
-				if (year3 != null) {
-					resultMap.put(year3, list);
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Error while extracting multi-year criteria.", e);
-		}
-	}
 
 	private void setRecalculationToTomorrow(ContractorAccount contractor) {
 		if (contractor == null) {

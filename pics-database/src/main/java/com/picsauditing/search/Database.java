@@ -32,7 +32,7 @@ public class Database {
 
 	private static final Logger logger = LoggerFactory.getLogger(Database.class);
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
 	public List<BasicDynaBean> select(String sql, boolean countRows) throws SQLException {
         Connection connection = null;
         try {
