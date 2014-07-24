@@ -65,12 +65,7 @@ public class NoteEditor extends AccountActionSupport {
 			viewableByOther = viewableBy;
 			viewableBy = RESTRICTED_TO;
 		} else if (viewableBy == Account.NONE) {
-			viewableBy = Account.EVERYONE;
-		}
-
-		if (permissions.hasPermission(OpPerms.Billing) || permissions.isOperatorCorporate()) {
 			viewableBy = RESTRICTED_TO;
-			viewableByOther = permissions.getTopAccountID();
 		}
 
 		return mode;

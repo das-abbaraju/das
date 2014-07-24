@@ -85,8 +85,8 @@
 						<label>
 							<s:text name="ContractorNotes.ViewableBy" />:
 						</label>
-						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" value="3" />
-						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther" 
+						<s:radio list="viewableByList" name="viewableBy" theme="pics" cssClass="inline" value="viewableBy" />
+						<s:select list="facilities" listKey="id" listValue="name" name="viewableByOther"
 							value="viewableByOther || defaultRestrictedViewableAccountID" />
 					</li>
 					<li id="liAdditionalText">
