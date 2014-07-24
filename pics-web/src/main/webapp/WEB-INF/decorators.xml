@@ -55,6 +55,7 @@
         <pattern>/employee-guard/operators/assignments</pattern>
         <pattern>/employee-guard/operators/projects</pattern>
         <pattern>/employee-guard/roles</pattern>
+        <pattern>/employee-guard/groups</pattern>
         <pattern>/employee-guard/contractor/dashboard</pattern>
         <pattern>/employee-guard/employee/dashboard</pattern>
         <pattern>/employee-guard/employee/skills</pattern>
