@@ -112,8 +112,7 @@ public class EGTestDataUtil {
 
 	// ProfileDocument Mock Data
 
-	public static final Date DOCUMENT_1_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
-			DateBean.buildDate(1, 1, 2014), -1));
+	public static final Date DOCUMENT_1_CREATED_DATE = new Date(1391198400000l);
 	public static final ProfileDocument PROFILE_DOCUMENT_1 = new ProfileDocumentBuilder()
 			.id(1)
 			.name("Document 1")
@@ -122,15 +121,14 @@ public class EGTestDataUtil {
 			.endDate(DateBean.setToEndOfDay(DateBean.getEndOfTime()))
 			.build();
 
-	public static final Date DOCUMENT_2_CREATED_DATE = DateBean.setToStartOfDay(DateBean.addDays(
-			DateBean.buildDate(2, 2, 2013), -30));
-
+	public static final Date DOCUMENT_2_CREATED_DATE = new Date(1359662400000l);
+	public static final Date DOCUMENT_2_END_DATE = new Date(1425283200000l);
 	public static final ProfileDocument PROFILE_DOCUMENT_2 = new ProfileDocumentBuilder()
 			.id(2)
 			.name("Document 2")
 			.createdDate(DOCUMENT_2_CREATED_DATE)
 			.endDate(DOCUMENT_2_CREATED_DATE)
-			.endDate(DateBean.setToStartOfDay(DateBean.addYears(DateBean.buildDate(2, 2, 2013), 2)))
+			.endDate(DOCUMENT_2_END_DATE)
 			.build();
 
 	public static final Map<Project, Set<Role>> PROJECT_ROLES_MAP = new HashMap<Project, Set<Role>>() {{
