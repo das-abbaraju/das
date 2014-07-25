@@ -55969,6 +55969,18 @@ window.Modernizr = (function( window, document, undefined ) {
             templateUrl: '/employee-guard/src/app/employeeguard/roles/role_list.tpl.html'
         });
 });
+;angular.module('PICS.employees', [
+    'ngRoute'
+])
+
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider
+        .when('/employee-guard/employees', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employees/employee_list.tpl.html'
+        });
+});
 ;angular.module('PICS.employeeguard.skills', [
     'ngRoute'
 ])
@@ -55987,6 +55999,7 @@ window.Modernizr = (function( window, document, undefined ) {
     'PICS.charts',
     'PICS.groups',
     'PICS.roles',
+    'PICS.employees',
     'PICS.breadcrumb',
     'PICS.employeeguard.skills',
     'PICS.filters',
@@ -56007,7 +56020,6 @@ window.Modernizr = (function( window, document, undefined ) {
 });
 ;angular.module('EmployeeGUARD', [
     'PICS.employeeguard',
-    'PICS.employeeguard.skills',
     'ProfileService'
 ])
 .config(['$httpProvider', function($httpProvider) {
@@ -56563,6 +56575,18 @@ window.Modernizr = (function( window, document, undefined ) {
     };
 
     return Model;
+});;angular.module('PICS.employees')
+
+.controller('employeeListCtrl', function ($scope, EmployeeListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+    });
+
+    $scope.employees = EmployeeListResource.query();
+});;angular.module('PICS.employees')
+
+.factory('EmployeeListResource', function($resource) {
+    return $resource('/employee-guard/src/app/employeeguard/employees/json/employee_list.json');
 });;angular.module('PICS.groups')
 
 .controller('groupListCtrl', function ($scope, GroupListResource, WhoAmI) {
