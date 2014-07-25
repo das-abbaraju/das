@@ -395,11 +395,16 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         assertTrue(result);
 
         // normal answer MM/dd/yyyy
+        data.setAnswer("2014/06/30");
+        result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
+        assertTrue(result);
+
+        // normal answer yyyy/MM/dd
         data.setAnswer("12/31/2001");
         result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
         assertTrue(result);
 
-		// date too far in past
+        // date too far in past
 		data.setAnswer("2000-12-31");
 		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
 		assertFalse(result);

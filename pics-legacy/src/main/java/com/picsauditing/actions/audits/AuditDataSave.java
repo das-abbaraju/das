@@ -836,6 +836,7 @@ public class AuditDataSave extends AuditActionSupport {
         List<String> datePatterns = new ArrayList<>();
 
         datePatterns.add("yyyy-MM-dd");
+        datePatterns.add("yyyy/MM/dd");
         datePatterns.add("MM/dd/yyyy");
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
