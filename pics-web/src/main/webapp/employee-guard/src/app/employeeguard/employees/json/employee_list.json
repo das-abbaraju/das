@@ -1,0 +1,67 @@
+[{
+    "id": 1,
+    "firstName": "Bob",
+    "lastName": "Roberts",
+    "title": "Forklift Operator",
+    "companies":[{
+        "id":54578,
+        "title":"Forklift Operator",
+        "name":"ACME Co."
+    }],
+    "skills": {
+        "expired": 23,
+        "expiring": 0,
+        "completed": 0
+    },
+    "groups": [{
+        "id": 10,
+        "name": "On-Site Laborer"
+    }]
+}, {
+    "id": 5,
+    "firstName": "Carl",
+    "lastName": "Carlson",
+    "title": "Safety Coordinator",
+    "companies":[{
+        "id":54578,
+        "title":"Safety Coordinator",
+        "name":"ACME Co."
+    }],
+    "skills": {
+        "expired": 2,
+        "expiring": 1,
+        "completed": 0
+    },
+    "groups": [{
+        "id": 11,
+        "name": "Safety"
+    }, {
+        "id": 10,
+        "name": "On-Site Laborer"
+    }, {
+        "id": 260,
+        "name": "Employee Group 24"
+    }]
+},{
+    "id": 27,
+    "firstName": "Jimbo",
+    "lastName": "Jones",
+    "title": "Construction Worker",
+    "companies":[{
+        "id":54578,
+        "title":"Construction Worker",
+        "name":"ACME Co."
+    }],
+    "skills": {
+        "expired": 0,
+        "expiring": 20,
+        "completed": 0
+    },
+    "groups": [{
+        "id": 10,
+        "name": "On-Site Laborer"
+    }, {
+        "id": 260,
+        "name": "Employee Group 24"
+    }]
+}]
