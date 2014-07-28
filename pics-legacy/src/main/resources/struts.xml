@@ -1350,10 +1350,6 @@
             <result>/struts/eula/login-eula.jsp</result>
         </action>
 
-        <action name="ConvertToLatLong"
-                class="com.picsauditing.struts.controller.ConvertToLatLong">
-        </action>
-
         <action name="registration/address-validation/advanced-edit" class="com.picsauditing.struts.controller.AngularLoaderAction" method="load">
         </action>
         <action name="registration" class="com.picsauditing.angular.controller.AngularLoader" method="load"></action>
