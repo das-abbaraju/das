@@ -6,6 +6,7 @@ angular.module('PICS.employeeguard', [
     'PICS.charts',
     'PICS.groups',
     'PICS.roles',
+    'PICS.employees',
     'PICS.breadcrumb',
     'PICS.employeeguard.skills',
     'PICS.filters',

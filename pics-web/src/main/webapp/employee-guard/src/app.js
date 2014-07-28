@@ -1,6 +1,5 @@
 angular.module('EmployeeGUARD', [
     'PICS.employeeguard',
-    'PICS.employeeguard.skills',
     'ProfileService'
 ])
 .config(['$httpProvider', function($httpProvider) {
