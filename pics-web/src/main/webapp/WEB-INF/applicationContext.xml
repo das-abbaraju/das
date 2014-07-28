@@ -144,7 +144,6 @@
     <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
     <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
     <bean id="ContractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
-    <bean id="ContractorLocationDao" class="com.picsauditing.dao.ProdContractorLocationDao"/>
     <bean id="idpUserDAO" class="com.picsauditing.dao.IdpUserDAO"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.audits.AuditBuilder"/>
