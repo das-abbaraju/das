@@ -12,8 +12,6 @@ target/
 *.tmp
 *.bak
 *.jtl
-*.rej
-*.orig
 *.hprof
 rebel.xml
 rebel-remote.xml
