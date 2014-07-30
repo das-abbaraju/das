@@ -1,4 +1,9 @@
 @mixin employee-image {
+
+	.lt-ie9 .employee-image {
+		display: block;
+	}
+
 	.employee-image {
 		position: relative;
 		max-width: 270px;

@@ -16299,23 +16299,28 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin-top: 0;
 }
 
-/* line 2, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 3, ../src/app/employeeguard/mixins/_employee-image.scss */
+.lt-ie9 .employee-image {
+  display: block;
+}
+
+/* line 7, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 12, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image input[type="file"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 19, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 23, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -16325,7 +16330,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 32, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -16334,7 +16339,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 40, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -16346,7 +16351,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 
 @media (max-width: 991px) {
-  /* line 48, ../src/app/employeeguard/mixins/_employee-image.scss */
+  /* line 53, ../src/app/employeeguard/mixins/_employee-image.scss */
   #edit_employee_photo {
     text-align: center;
   }
@@ -16568,23 +16573,27 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   font-size: 28px;
 }
 
-/* line 2, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 3, ../src/app/employeeguard/mixins/_employee-image.scss */
+.employee_guard_contractor_employee-page .lt-ie9 .employee-image {
+  display: block;
+}
+/* line 7, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image {
   position: relative;
   max-width: 270px;
 }
-/* line 7, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 12, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image input[type="file"] {
   height: 0;
   position: absolute;
   visibility: hidden;
   width: 0;
 }
-/* line 14, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 19, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image .overlay-container {
   display: none;
 }
-/* line 18, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 23, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container {
   cursor: pointer;
   display: block;
@@ -16594,7 +16603,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
   width: 100%;
 }
-/* line 27, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 32, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container .overlay {
   background-color: #000;
   height: 100%;
@@ -16603,7 +16612,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   position: absolute;
   width: 100%;
 }
-/* line 35, ../src/app/employeeguard/mixins/_employee-image.scss */
+/* line 40, ../src/app/employeeguard/mixins/_employee-image.scss */
 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container span {
   bottom: 20%;
   color: #fff;
@@ -16614,7 +16623,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   width: 100%;
 }
 @media (max-width: 991px) {
-  /* line 48, ../src/app/employeeguard/mixins/_employee-image.scss */
+  /* line 53, ../src/app/employeeguard/mixins/_employee-image.scss */
   .employee_guard_contractor_employee-page #edit_employee_photo {
     text-align: center;
   }

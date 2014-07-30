@@ -5,7 +5,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <ol class="breadcrumb">
-                        <li><a href="/employee-guard/operators/dashboard" translate="GROUP_LIST.BREADCRUMB.EMPLOYEEGUARD"></a></li>
+                        <li><a href="/employee-guard/contractor/dashboard" translate="GROUP_LIST.BREADCRUMB.EMPLOYEEGUARD"></a></li>
                         <li class="active" translate="GROUP_LIST.BREADCRUMB.GROUPS"></li>
                     </ol>
                 </div>
@@ -24,7 +24,7 @@
                             <i class="icon-group icon-large"></i>{{'GROUP_LIST.GROUPS.TITLE' | translate }}
                         </h1>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" ng-show="groups.length">
                         <form name="group_search" action="#" class="search-query" role="search">
                             <fieldset>
                                 <div class="search-wrapper">
@@ -36,7 +36,7 @@
                     </div>
                 </div>
             </header>
-            <div class="content no_padding">
+            <div ng-if="groups.length" class="content no_padding">
                 <div class="table-responsive">
                     <table class="table table-striped table-condensed table-hover table-sort" ng-init="orderByField = 'name'; reverseSort = false;" >
                         <thead>
@@ -67,6 +67,20 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div ng-if="!groups.length" class="content">
+                <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="alert alert-info">
+                            <h4 translate="GROUP_LIST.EMPLOYEE_GROUPS.NO_GROUPS.TITLE"></h4>
+                            <p translate="GROUP_LIST.EMPLOYEE_GROUPS.NO_GROUPS.MESSAGE"></p>
+                            <p translate="GROUP_LIST.EMPLOYEE_GROUPS.NO_GROUPS.MESSAGE2"></p>
+                            <p>
+                                <a href="#"><i class="icon-question-sign"></i> <span translate="GROUP_LIST.EMPLOYEE_GROUPS.NO_GROUPS.LEARN_MORE"></span></a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
