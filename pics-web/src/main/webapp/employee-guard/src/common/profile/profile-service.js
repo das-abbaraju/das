@@ -48,7 +48,7 @@ angular.module('ProfileService', [
         } else if (language && !dialect) {
             $translate.use(language.id);
         } else {
-            $translate.use('en_US');
+            $translate.use('en_GB');
         }
     };
 

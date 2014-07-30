@@ -55909,7 +55909,7 @@ window.Modernizr = (function( window, document, undefined ) {
         } else if (language && !dialect) {
             $translate.use(language.id);
         } else {
-            $translate.use('en_US');
+            $translate.use('en_GB');
         }
     };
 
@@ -56032,8 +56032,8 @@ window.Modernizr = (function( window, document, undefined ) {
         suffix: '.json'
     });
 
-    $translateProvider.fallbackLanguage(['en_US']);
-    $translateProvider.preferredLanguage('en_US');
+    $translateProvider.fallbackLanguage(['en_GB']);
+    $translateProvider.preferredLanguage('en_GB');
 })
 
 .config(function ($routeProvider) {
@@ -56050,7 +56050,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
-        $translate.use('en_US');
+        $translate.use('en_GB');
     });
 });;angular.module('PICS.employeeguard')
 
