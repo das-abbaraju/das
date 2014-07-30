@@ -6,6 +6,7 @@ import com.picsauditing.jpa.entities.AppProperty;
 import com.picsauditing.jpa.entities.EmailTemplate;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
+import com.picsauditing.model.i18n.ThreadLocalLocale;
 import com.picsauditing.service.AppPropertyService;
 import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ public class EmailService {
 				EmailTemplate.EMPLOYEE_GUARD_WELCOME_TEMPLATE));
 		emailBuilder.addToken("hash", new EmailHashWrapper(emailHash));
 		emailBuilder.addToken("CompanyName", accountName);
+		emailBuilder.addToken(EmailBuilder.LOCALE, ThreadLocalLocale.INSTANCE.load());
 
 		emailSender.sendNow(emailBuilder.build());
 	}
