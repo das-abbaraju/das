@@ -28,7 +28,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 			}
 		}
 
-		return convertToUTF8(breadcrumbLabel);
+		return breadcrumbLabel;
 	}
 
 	public static String getTextFromResourceBundle(String aTextName){
@@ -36,7 +36,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 		ActionInvocation actionInvocation = actionContext.getActionInvocation();
 		ActionSupport actionSupport = (ActionSupport)actionInvocation.getAction();
 		ValueStack valueStack = actionContext.getValueStack();
-		return convertToUTF8(actionSupport.getText(aTextName,aTextName,new ArrayList<Object>(),valueStack));
+		return actionSupport.getText(aTextName,aTextName,new ArrayList<Object>(),valueStack);
 	}
 
 	@Override
@@ -132,7 +132,8 @@ public class EGI18n implements TextProvider, LocaleProvider {
 
 	private static String convertToUTF8(String val){
 		try {
-			return new String(val.getBytes("ISO-8859-1"), "UTF-8");
+			String utf8Value= new String(val.getBytes(), "UTF-8");
+			return utf8Value;
 		} catch (UnsupportedEncodingException e) {
 			log.warn(String.format("Failed to convert [%s] to UTF-8 for translations", val));
 		}
