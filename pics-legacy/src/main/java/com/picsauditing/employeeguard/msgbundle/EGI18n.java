@@ -5,13 +5,17 @@ import com.opensymphony.xwork2.inject.Container;
 import com.opensymphony.xwork2.util.ValueStack;
 import com.picsauditing.model.i18n.ThreadLocalLocale;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class EGI18n implements TextProvider, LocaleProvider {
+	private static Logger log = LoggerFactory.getLogger(EGI18n.class);
 
 	private transient TextProvider textProvider;
 	private Container container;
@@ -24,7 +28,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 			}
 		}
 
-		return breadcrumbLabel;
+		return convertToUTF8(breadcrumbLabel);
 	}
 
 	public static String getTextFromResourceBundle(String aTextName){
@@ -32,7 +36,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 		ActionInvocation actionInvocation = actionContext.getActionInvocation();
 		ActionSupport actionSupport = (ActionSupport)actionInvocation.getAction();
 		ValueStack valueStack = actionContext.getValueStack();
-		return actionSupport.getText(aTextName,aTextName,new ArrayList<Object>(),valueStack);
+		return convertToUTF8(actionSupport.getText(aTextName,aTextName,new ArrayList<Object>(),valueStack));
 	}
 
 	@Override
@@ -42,47 +46,47 @@ public class EGI18n implements TextProvider, LocaleProvider {
 
 	@Override
 	public String getText(String aTextName) {
-		return getTextProvider().getText(aTextName);
+		return convertToUTF8(getTextProvider().getText(aTextName));
 	}
 
 	@Override
 	public String getText(String aTextName, String defaultValue) {
-		return getTextProvider().getText(aTextName, defaultValue);
+		return convertToUTF8(getTextProvider().getText(aTextName, defaultValue));
 	}
 
 	@Override
 	public String getText(String aTextName, String defaultValue, String obj) {
-		return getTextProvider().getText(aTextName, defaultValue, obj);
+		return convertToUTF8(getTextProvider().getText(aTextName, defaultValue, obj));
 	}
 
 	@Override
 	public String getText(String aTextName, List<?> args) {
-		return getTextProvider().getText(aTextName, args);
+		return convertToUTF8(getTextProvider().getText(aTextName, args));
 	}
 
 	@Override
 	public String getText(String key, String[] args) {
-		return getTextProvider().getText(key, args);
+		return convertToUTF8(getTextProvider().getText(key, args));
 	}
 
 	@Override
 	public String getText(String aTextName, String defaultValue, List<?> args) {
-		return getTextProvider().getText(aTextName, defaultValue, args);
+		return convertToUTF8(getTextProvider().getText(aTextName, defaultValue, args));
 	}
 
 	@Override
 	public String getText(String key, String defaultValue, String[] args) {
-		return getTextProvider().getText(key, defaultValue, args);
+		return convertToUTF8(getTextProvider().getText(key, defaultValue, args));
 	}
 
 	@Override
 	public String getText(String key, String defaultValue, List<?> args, ValueStack stack) {
-		return getTextProvider().getText(key, defaultValue, args, stack);
+		return convertToUTF8(getTextProvider().getText(key, defaultValue, args, stack));
 	}
 
 	@Override
 	public String getText(String key, String defaultValue, String[] args, ValueStack stack) {
-		return getTextProvider().getText(key, defaultValue, args, stack);
+		return convertToUTF8(getTextProvider().getText(key, defaultValue, args, stack));
 	}
 
 	@Override
@@ -124,5 +128,15 @@ public class EGI18n implements TextProvider, LocaleProvider {
 			textProvider = tpf.createInstance(getClass(), this);
 		}
 		return textProvider;
+	}
+
+	private static String convertToUTF8(String val){
+		try {
+			return new String(val.getBytes("ISO-8859-1"), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			log.warn(String.format("Failed to convert [%s] to UTF-8 for translations", val));
+		}
+
+		return val;
 	}
 }
