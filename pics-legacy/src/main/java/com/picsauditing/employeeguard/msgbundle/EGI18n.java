@@ -132,7 +132,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 
 	private static String convertToUTF8(String val){
 		try {
-			String utf8Value= new String(val.getBytes(), "UTF-8");
+			String utf8Value= new String(val.getBytes("ISO-8859-1"), "UTF-8");
 			return utf8Value;
 		} catch (UnsupportedEncodingException e) {
 			log.warn(String.format("Failed to convert [%s] to UTF-8 for translations", val));
