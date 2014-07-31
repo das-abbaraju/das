@@ -44,6 +44,7 @@ public class OperatorAccount extends Account {
 
 	private OperatorAccount inheritFlagCriteria;
 	private OperatorAccount inheritInsuranceCriteria;
+    private OperatorAccount billableEntity;
 
 	private String doContractorsPay = "Yes";
 	private YesNo canSeeInsurance = YesNo.No;
@@ -74,6 +75,7 @@ public class OperatorAccount extends Account {
 	private List<JobSite> jobSites = new ArrayList<JobSite>();
 	private List<OperatorCompetency> competencies = new ArrayList<OperatorCompetency>();
 	private Set<Integer> visibleAuditTypes = null;
+	private Set<Integer> visibleAuditTypesForReporting = null;
 	private List<Facility> linkedClients = new ArrayList<Facility>();
 	private List<Facility> linkedGeneralContractors = new ArrayList<Facility>();
 
@@ -298,6 +300,16 @@ public class OperatorAccount extends Account {
 	public void setInheritInsuranceCriteria(OperatorAccount inheritInsuranceCriteria) {
 		this.inheritInsuranceCriteria = inheritInsuranceCriteria;
 	}
+
+    @ManyToOne
+    @JoinColumn(name = "billableEntityId")
+    public OperatorAccount getBillableEntity() {
+        return billableEntity;
+    }
+
+    public void setBillableEntity(OperatorAccount billableEntity) {
+        this.billableEntity = billableEntity;
+    }
 
 	@Transient
 	public List<FlagCriteriaOperator> getFlagCriteriaInherited(boolean insurance) {
@@ -663,6 +675,20 @@ public class OperatorAccount extends Account {
 		return list;
 	}
 
+	@Transient
+	public List<Integer> getOperatorReverseHeirarchy() {
+		List<Integer> list = new ArrayList<>();
+		// Add myself
+		list.add(this.id);
+
+		for (Facility facility : getOperatorFacilities()) {
+            // Add all child sites
+            list.add(facility.getOperator().getId());
+		}
+
+		return list;
+	}
+
 	/**
 	 * Please use sparingly!! This does a call to a Spring loaded DAO
 	 *
@@ -680,6 +706,20 @@ public class OperatorAccount extends Account {
 
 	public void setVisibleAuditTypes(Set<Integer> visibleAuditTypes) {
 		this.visibleAuditTypes = visibleAuditTypes;
+	}
+
+	@Transient
+	public Set<Integer> getVisibleAuditTypesForReporting() {
+		if (visibleAuditTypesForReporting == null) {
+			// This isn't pretty but it works
+			AuditDecisionTableDAO dao = SpringUtils.getBean("AuditDecisionTableDAO");
+			visibleAuditTypesForReporting = dao.getAuditTypesForReporting(this);
+		}
+		return visibleAuditTypesForReporting;
+	}
+
+	public void setVisibleAuditTypesForReporting(Set<Integer> visibleAuditTypesForReporting) {
+		this.visibleAuditTypesForReporting = visibleAuditTypesForReporting;
 	}
 
 	public boolean isInPicsConsortium() {

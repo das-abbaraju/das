@@ -1,27 +1,20 @@
 package com.picsauditing;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.Permissions;
+import com.picsauditing.access.UserAccess;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.mail.Subscription;
+import com.picsauditing.mail.SubscriptionTimePeriod;
+import com.picsauditing.model.i18n.LanguageModel;
+import org.powermock.reflect.Whitebox;
+
+import java.util.*;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import com.picsauditing.jpa.entities.*;
-import org.powermock.reflect.Whitebox;
-
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.access.UserAccess;
-import com.picsauditing.mail.Subscription;
-import com.picsauditing.mail.SubscriptionTimePeriod;
-import com.picsauditing.model.i18n.LanguageModel;
 
 /**
  * This generates jpa objects that we can then use in our unit testing
@@ -43,6 +36,8 @@ public class EntityFactory {
 		operator.setInheritFlagCriteria(operator);
 		operator.setVisibleAuditTypes(new HashSet<Integer>());
 		operator.getVisibleAuditTypes().add(1);
+		operator.setVisibleAuditTypesForReporting(new HashSet<Integer>());
+		operator.getVisibleAuditTypesForReporting().add(1);
 		operator.setCountry(mostCommonCountries().get("US"));
 
 		return operator;
