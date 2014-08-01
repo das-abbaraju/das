@@ -3,6 +3,8 @@ package com.picsauditing.companyfinder.model.builder;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.model.general.LatLong;
 
+import java.util.List;
+
 public class ContractorLocationInfoBuilder {
     private ContractorLocationInfo contractorLocationInfo = new ContractorLocationInfo();
 
@@ -21,13 +23,18 @@ public class ContractorLocationInfoBuilder {
         return this;
     }
 
-    public ContractorLocationInfoBuilder cooridinates(LatLong coordinates) {
+    public ContractorLocationInfoBuilder coordinates(LatLong coordinates) {
         contractorLocationInfo.setCoordinates(coordinates);
         return this;
     }
 
-    public ContractorLocationInfoBuilder trade(String trade) {
-        contractorLocationInfo.setTrade(trade);
+    public ContractorLocationInfoBuilder primaryTrade(String primaryTrade) {
+        contractorLocationInfo.setPrimaryTrade(primaryTrade);
+        return this;
+    }
+
+    public ContractorLocationInfoBuilder trades(List<String> trades) {
+        contractorLocationInfo.setTrades(trades);
         return this;
     }
 
