@@ -4,15 +4,15 @@ import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.model.general.LatLong;
 
-public class LocationResponseBuilder {
+public class ViewportLocationBuilder {
     private ViewportLocation locationResponse = new ViewportLocation();
 
-    public LocationResponseBuilder address(String address) {
+    public ViewportLocationBuilder address(String address) {
         locationResponse.setAddress(address);
         return this;
     }
 
-    public LocationResponseBuilder coordinates(LatLong coordinates) {
+    public ViewportLocationBuilder coordinates(LatLong coordinates) {
         locationResponse.setCoordinates(coordinates);
         return this;
     }
@@ -21,7 +21,7 @@ public class LocationResponseBuilder {
         return locationResponse;
     }
 
-    public LocationResponseBuilder viewPort(ViewPort viewPort) {
+    public ViewportLocationBuilder viewPort(ViewPort viewPort) {
         locationResponse.setViewPort(viewPort);
         return this;
     }
