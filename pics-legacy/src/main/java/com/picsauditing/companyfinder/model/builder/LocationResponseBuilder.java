@@ -1,11 +1,11 @@
 package com.picsauditing.companyfinder.model.builder;
 
-import com.picsauditing.companyfinder.model.LocationResponse;
+import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.model.general.LatLong;
 
 public class LocationResponseBuilder {
-    private LocationResponse locationResponse = new LocationResponse();
+    private ViewportLocation locationResponse = new ViewportLocation();
 
     public LocationResponseBuilder address(String address) {
         locationResponse.setAddress(address);
@@ -17,7 +17,7 @@ public class LocationResponseBuilder {
         return this;
     }
 
-    public LocationResponse build() {
+    public ViewportLocation build() {
         return locationResponse;
     }
 

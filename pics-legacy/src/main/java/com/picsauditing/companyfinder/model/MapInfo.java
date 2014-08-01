@@ -1,9 +1,9 @@
 package com.picsauditing.companyfinder.model;
 
-import com.picsauditing.companyfinder.model.builder.MapInfoResponseBuilder;
+import com.picsauditing.companyfinder.model.builder.MapInfoBuilder;
 import com.picsauditing.model.general.LatLong;
 
-public class MapInfoResponse {
+public class MapInfo {
     private LatLong center;
     private ViewPort viewPort;
 
@@ -23,7 +23,7 @@ public class MapInfoResponse {
         this.viewPort = viewPort;
     }
 
-    public static MapInfoResponseBuilder builder() {
-        return new MapInfoResponseBuilder();
+    public static MapInfoBuilder builder() {
+        return new MapInfoBuilder();
     }
 }

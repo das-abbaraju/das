@@ -3,7 +3,7 @@ package com.picsauditing.companyfinder.model;
 import com.picsauditing.companyfinder.model.builder.LocationResponseBuilder;
 import com.picsauditing.model.general.LatLong;
 
-public class LocationResponse {
+public class ViewportLocation {
     private String address;
     private LatLong coordinates;
     private ViewPort viewPort;
