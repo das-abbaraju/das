@@ -257,7 +257,4 @@
     <include file="./liquibase/2014/Q3/dabbaraju4_US1086_TA2659_Create_New_Idp_User_Table.sql"/>
     <include file="./liquibase/2014/Q3/dabbaraju5_US1086_TA2659_Insert_Idp_User_Table.sql"/>
 
-    <!-- 7.3.3 -->
-    <include file="./liquibase/2014/Q3/cfranks8_PICS-15083_Drop_AppErrorLog_table.sql"/>
-
 </databaseChangeLog>
