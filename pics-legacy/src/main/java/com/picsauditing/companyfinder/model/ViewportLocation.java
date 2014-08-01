@@ -1,9 +1,9 @@
 package com.picsauditing.companyfinder.model;
 
-import com.picsauditing.companyfinder.model.builder.LocationResponseBuilder;
+import com.picsauditing.companyfinder.model.builder.ViewportLocationBuilder;
 import com.picsauditing.model.general.LatLong;
 
-public class LocationResponse {
+public class ViewportLocation {
     private String address;
     private LatLong coordinates;
     private ViewPort viewPort;
@@ -32,8 +32,8 @@ public class LocationResponse {
         return viewPort;
     }
 
-    public static LocationResponseBuilder builder() {
-        return new LocationResponseBuilder();
+    public static ViewportLocationBuilder builder() {
+        return new ViewportLocationBuilder();
     }
 
 }

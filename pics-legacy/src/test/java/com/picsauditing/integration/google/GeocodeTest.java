@@ -7,7 +7,7 @@ import static org.mockito.Mockito.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import com.picsauditing.companyfinder.model.MapInfoResponse;
+import com.picsauditing.companyfinder.model.MapInfo;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.json.simple.JSONObject;
@@ -77,11 +77,11 @@ public class GeocodeTest {
         when(httpMethod.getResponseBodyAsStream()).thenReturn(stream);
         when(httpClient.executeMethod(httpMethod)).thenReturn(200);
 
-        MapInfoResponse mapInfoResponse = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
+        MapInfo mapInfo = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
 
-        LatLong latLong = mapInfoResponse.getCenter();
-        LatLong northEast = mapInfoResponse.getViewPort().getNorthEast();
-        LatLong southWest = mapInfoResponse.getViewPort().getSouthWest();
+        LatLong latLong = mapInfo.getCenter();
+        LatLong northEast = mapInfo.getViewPort().getNorthEast();
+        LatLong southWest = mapInfo.getViewPort().getSouthWest();
 
         assertThat(39.71732000000001, is(equalTo(latLong.getLatitude())));
         assertThat(-105.1713450, is(equalTo(latLong.getLongitude())));
@@ -99,9 +99,9 @@ public class GeocodeTest {
         when(httpMethod.getResponseBodyAsStream()).thenReturn(stream);
         when(httpClient.executeMethod(httpMethod)).thenReturn(500);
 
-        MapInfoResponse mapInfoResponse = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
+        MapInfo mapInfo = geocode.mapInfoFromAddressUnsecure("15318 W. Ellsworth Dr., Golden CO 80401");
 
-        assertThat(mapInfoResponse, is(equalTo(null)));
+        assertThat(mapInfo, is(equalTo(null)));
     }
 
 	private static final String responseDeniedExample = "{\n" +

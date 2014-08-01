@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
-import com.picsauditing.companyfinder.model.MapInfoResponse;
+import com.picsauditing.companyfinder.model.MapInfo;
 import com.picsauditing.companyfinder.model.ViewPort;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -38,15 +38,15 @@ public class Geocode extends GoogleApiOverHttp {
         return latLong;
     }
 
-    public MapInfoResponse mapInfoFromAddressUnsecure(String address) {
-        MapInfoResponse mapInfoResponse = null;
+    public MapInfo mapInfoFromAddressUnsecure(String address) {
+        MapInfo mapInfo = null;
         if (address != null) {
             String url = createUrl(urlFormatUnsecure, address);
             InputStream response = executeUrl(url);
 
-            mapInfoResponse = mapInfoFromResponse(response);
+            mapInfo = mapInfoFromResponse(response);
         }
-        return mapInfoResponse;
+        return mapInfo;
     }
 
 
@@ -77,7 +77,7 @@ public class Geocode extends GoogleApiOverHttp {
 		return null;
 	}
 
-    private MapInfoResponse mapInfoFromResponse(InputStream responseStream) {
+    private MapInfo mapInfoFromResponse(InputStream responseStream) {
         if (responseStream != null) {
             try {
                 InputStreamReader reader = new InputStreamReader(responseStream, "UTF-8");
@@ -85,7 +85,7 @@ public class Geocode extends GoogleApiOverHttp {
                 String status = (String) response.get("status");
                 if ("OK".equalsIgnoreCase(status)) {
 
-                    return MapInfoResponse.builder()
+                    return MapInfo.builder()
                             .center(extractLatLong(response))
                             .viewPort(extractViewPort(response))
                             .build();
