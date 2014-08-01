@@ -15,15 +15,20 @@ public class AuditTypeTable extends AbstractTable {
 		addFields(AuditType.class);
 
 		Field auditTypeName = new Field("Name", "id", FieldType.AuditType);
-        auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
+		auditTypeName.setTranslationPrefixAndSuffix("AuditType", "name");
         auditTypeName.setDrillDownField(auditTypeID.getName());
-        auditTypeName.setUrl("ManageAuditType.action?id={" + ReportOnClause.ToAlias + "ID}");
-        auditTypeName.setWidth(200);
-        addField(auditTypeName);
+		auditTypeName.setUrl("ManageAuditType.action?id={" + ReportOnClause.ToAlias + "ID}");
+		auditTypeName.setImportance(FieldImportance.Low);
+		auditTypeName.setWidth(200);
+		addField(auditTypeName);
 
 		Field createdBy;
 		createdBy = new Field("CreatedBy", "createdBy", FieldType.UserID);
+		createdBy.setImportance(FieldImportance.Low);
 		addField(createdBy);
+
+        Field creationDate = addCreationDate();
+        creationDate.setImportance(FieldImportance.Low);
 	}
 
 	public void addJoins() {
