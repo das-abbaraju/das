@@ -25,11 +25,11 @@ $(function () {
 		updateCategoriesNow();
 
 		$.scrollTo(0, 800, {
-		    axis: 'y'
-        });
+			axis: 'y'
+		});
 	});
 
-	$('#auditViewArea').delegate('div.hasDependentRules', 'updateDependent', function () {
+	$('#auditViewArea').delegate('div.hasDependentRules:not(.affectsAudit)', 'updateDependent', function () {
 		updateCategoriesNow();
 	});
 
@@ -37,16 +37,16 @@ $(function () {
 		updateCategoriesNow();
 	});
 
-	$('#auditViewArea').delegate('div.question:not(.affectsAudit)', 'updateDependent', function () {
+	$('#auditViewArea').delegate('div.question:not(.affectsAudit):not(.hasDependentRules)', 'updateDependent', function () {
 		updateCategories();
 	});
 
 	$('#submitRemind').ajaxComplete(function(e, xhr, settings){
 		if(settings.headers && settings.headers.refresh && settings.headers.refresh == 'true') {
 			$.getJSON('AuditAjax.action', {
-			    auditID: auditID,
-			    button: 'SubmitRemind'
-	        }, function (json) {
+				auditID: auditID,
+				button: 'SubmitRemind'
+			}, function (json) {
 				if (json && json.remind) {
 					$('#submitRemind').html($('<div>').attr('class', 'alert').append(json.remind));
 				} else {
@@ -98,8 +98,8 @@ function _updateCategories() {
 			auditID: auditID
 		},
 		headers: {
-		    'refresh':'true'
-        },
+			'refresh':'true'
+		},
 		type: 'post',
 		success: function(text, status, xhr) {
 			if (xhr.status) {
@@ -114,15 +114,27 @@ function updateSidebarAndCaoTable(text) {
 		$sidebar = $sidebar_and_cao_table.filter('#audit_sidebar_refresh'),
 		$cao_table = $sidebar_and_cao_table.filter('#cao_table_refresh'),
 		category_id = getCategoryId();
-	
-	$('#auditHeaderSideNav').html($sidebar.html());
+
+	updateSidebarAndReloadViewAreaIfNeed($sidebar, category_id);
 
 	$('#caoTable').html($cao_table.html());
-	
+
 	$('#auditHeader').removeClass('dirty');
 
 	highlight_category(category_id);
 	showNavButtons();
+}
+
+function updateSidebarAndReloadViewAreaIfNeed($newSidebar, categoryId) {
+	var $sidebar = $('#auditHeaderSideNav');
+	if ($sidebar.find('#aCatlist .catlist.current li').length != $newSidebar.find('#aCatlist .catlist.current li').length) {
+
+		AUDIT.load_category.reload(
+			{auditID: auditID, categoryID: categoryId, button: 'load'},
+			translate('JS.Audit.LoadingCategory'));
+	}
+
+	$sidebar.html($newSidebar.html());
 }
 
 function getCategoryId() {
@@ -132,7 +144,7 @@ function getCategoryId() {
 	if (currentCategory.length > 0) {
 		categoryID = currentCategory.attr('data-category-id');
 	}
-	
+
 	return categoryID;
 }
 

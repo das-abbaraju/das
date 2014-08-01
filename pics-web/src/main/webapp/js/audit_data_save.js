@@ -1,5 +1,5 @@
 $(function(){
-	
+
 	$('div.question .fileUpload').live('click', function(e) {
 		var q = $(this).parents('form.qform:first').serialize();
 		url = 'AuditDataUpload.action?' + q;
@@ -9,25 +9,25 @@ $(function(){
 		fileUpload.focus();
 	});
 
-	$('#auditViewArea').delegate('div.hasDependentRequired', 'updateDependent', function() {
+	$('#auditViewArea').delegate('div.hasDependentRequired:not(.hasFunctions):not(.hasDependentVisible)', 'updateDependent', function() {
 		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
 		});
 	});
 
-    $('#auditViewArea').delegate('div.hasDependentVisible', 'updateDependent', function() {
-        $.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
-            reloadQuestion(v);
-        });
-    });
-	
+	$('#auditViewArea').delegate('div.hasDependentVisible:not(.hasFunctions)', 'updateDependent', function() {
+		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
+			reloadQuestion(v);
+		});
+	});
+
 	$('#auditViewArea').delegate('div.hasFunctions', 'updateDependent', function() {
-		$.each($(this).find('div.dependent-questions').text().split(','), function(i,v) {
+		$.each($(this).find('div.dependent-questions:first').text().split(','), function(i,v) {
 			reloadQuestion(v);
 			$('#node_' + v).trigger('updateDependent');
 		});
 	});
-	
+
 	// Insurance Methods
 	$('a.uploadNewCertificate').live('click',function(e) {
 		e.preventDefault();
@@ -88,14 +88,14 @@ function reloadQuestion(qid) {
 			'auditData.audit': auditID
 		};
 	}
-	
+
 	$question.block({
 		message: translate('JS.Audit.ReloadingQuestion')
 	});
 
 	$.post(url, data, function(data, textStatus, XMLHttpRequest) {
 		$wrapper.replaceWith(data);
-		
+
 		AUDIT.question.initTagit();
 	});
 }
