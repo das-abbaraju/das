@@ -4,13 +4,16 @@ package com.picsauditing.companyfinder.model;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationInfoBuilder;
 import com.picsauditing.model.general.LatLong;
 
+import java.util.List;
+
 public class ContractorLocationInfo {
 
     private int id;
     private String name;
     private String address;
     private LatLong coordinates;
-    private String trade;
+    private String primaryTrade;
+    private List<String> trades;
     private String link;
 
     public int getId() {
@@ -45,12 +48,20 @@ public class ContractorLocationInfo {
         this.coordinates = coordinates;
     }
 
-    public String getTrade() {
-        return trade;
+    public String getPrimaryTrade() {
+        return primaryTrade;
     }
 
-    public void setTrade(String trade) {
-        this.trade = trade;
+    public void setPrimaryTrade(String trade) {
+        this.primaryTrade = trade;
+    }
+
+    public void setTrades(List<String> trades) {
+        this.trades = trades;
+    }
+
+    public List<String> getTrades() {
+        return trades;
     }
 
     public String getLink() {

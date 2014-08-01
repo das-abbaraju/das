@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
@@ -87,7 +88,8 @@ public class CompanyFinderServiceTest {
         assertEquals("fulladdress1", contractorLocationInfos.get(0).getAddress());
         assertEquals(100.0, contractorLocationInfos.get(0).getCoordinates().getLatitude());
         assertEquals(101.0, contractorLocationInfos.get(0).getCoordinates().getLongitude());
-        assertEquals("trade1", contractorLocationInfos.get(0).getTrade());
+        assertEquals("trade1", contractorLocationInfos.get(0).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfos.get(0).getTrades());
         assertEquals("someUrl?id=1", contractorLocationInfos.get(0).getLink());
 
         assertEquals(2, contractorLocationInfos.get(1).getId());
@@ -95,7 +97,8 @@ public class CompanyFinderServiceTest {
         assertEquals("fulladdress2", contractorLocationInfos.get(1).getAddress());
         assertEquals(200.0, contractorLocationInfos.get(1).getCoordinates().getLatitude());
         assertEquals(201.0, contractorLocationInfos.get(1).getCoordinates().getLongitude());
-        assertEquals("trade2", contractorLocationInfos.get(1).getTrade());
+        assertEquals("trade2", contractorLocationInfos.get(1).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo2", "bar2", "car2"), contractorLocationInfos.get(1).getTrades());
         assertEquals("someUrl?id=2", contractorLocationInfos.get(1).getLink());
 
         assertEquals(3, contractorLocationInfos.get(2).getId());
@@ -103,7 +106,8 @@ public class CompanyFinderServiceTest {
         assertEquals("fulladdress3", contractorLocationInfos.get(2).getAddress());
         assertEquals(300.0, contractorLocationInfos.get(2).getCoordinates().getLatitude());
         assertEquals(301.0, contractorLocationInfos.get(2).getCoordinates().getLongitude());
-        assertEquals("trade3", contractorLocationInfos.get(2).getTrade());
+        assertEquals("trade3", contractorLocationInfos.get(2).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo3", "bar3", "car3"), contractorLocationInfos.get(2).getTrades());
         assertEquals("someUrl?id=3", contractorLocationInfos.get(2).getLink());
 
     }
@@ -111,35 +115,32 @@ public class CompanyFinderServiceTest {
     private List<ContractorLocation> buildTestContractorLocations() {
         List<ContractorLocation> contractorLocations = new ArrayList<>();
 
-        Trade trade1 = new Trade();
-        trade1.setName("trade1");
-        ContractorTrade contractorTrade1 = mock(ContractorTrade.class);
-        when(contractorTrade1.getTrade()).thenReturn(trade1);
-        
+        ContractorTrade primaryContractorTrade1 = buildTestContractorTrade("trade1");
+        List<ContractorTrade> contractorTrades1 = buildTestContractorTrades("foo1", "bar1", "car1");
+
         ContractorAccount contractorAccount1 = mock(ContractorAccount.class);
-        when(contractorAccount1.getTopTrade()).thenReturn(contractorTrade1);
+        when(contractorAccount1.getTopTrade()).thenReturn(primaryContractorTrade1);
+        when(contractorAccount1.getTradesSorted()).thenReturn(contractorTrades1);
         when(contractorAccount1.getId()).thenReturn(1);
         when(contractorAccount1.getName()).thenReturn("con1");
         when(contractorAccount1.getFullAddress()).thenReturn("fulladdress1");
 
-        Trade trade2 = new Trade();
-        trade2.setName("trade2");
-        ContractorTrade contractorTrade2 = mock(ContractorTrade.class);
-        when(contractorTrade2.getTrade()).thenReturn(trade2);
+        ContractorTrade primaryContractorTrade2 = buildTestContractorTrade("trade2");
+        List<ContractorTrade> contractorTrades2 = buildTestContractorTrades("foo2", "bar2", "car2");
 
         ContractorAccount contractorAccount2 = mock(ContractorAccount.class);
-        when(contractorAccount2.getTopTrade()).thenReturn(contractorTrade2);
+        when(contractorAccount2.getTopTrade()).thenReturn(primaryContractorTrade2);
+        when(contractorAccount2.getTradesSorted()).thenReturn(contractorTrades2);
         when(contractorAccount2.getId()).thenReturn(2);
         when(contractorAccount2.getName()).thenReturn("con2");
         when(contractorAccount2.getFullAddress()).thenReturn("fulladdress2");
 
-        Trade trade3 = new Trade();
-        trade3.setName("trade3");
-        ContractorTrade contractorTrade3 = mock(ContractorTrade.class);
-        when(contractorTrade3.getTrade()).thenReturn(trade3);
+        ContractorTrade primaryContractorTrade3 = buildTestContractorTrade("trade3");
+        List<ContractorTrade> contractorTrades3 = buildTestContractorTrades("foo3", "bar3", "car3");
 
         ContractorAccount contractorAccount3 = mock(ContractorAccount.class);
-        when(contractorAccount3.getTopTrade()).thenReturn(contractorTrade3);
+        when(contractorAccount3.getTopTrade()).thenReturn(primaryContractorTrade3);
+        when(contractorAccount3.getTradesSorted()).thenReturn(contractorTrades3);
         when(contractorAccount3.getId()).thenReturn(3);
         when(contractorAccount3.getName()).thenReturn("con3");
         when(contractorAccount3.getFullAddress()).thenReturn("fulladdress3");
@@ -169,5 +170,22 @@ public class CompanyFinderServiceTest {
         contractorLocations.add(contractorLocation3);
         
         return contractorLocations;
+    }
+
+    private List<ContractorTrade> buildTestContractorTrades(String trade1Name, String trade2Name, String trade3Name) {
+        List<ContractorTrade> testTrades = new ArrayList<>();
+        testTrades.add(buildTestContractorTrade(trade1Name));
+        testTrades.add(buildTestContractorTrade(trade2Name));
+        testTrades.add(buildTestContractorTrade(trade3Name));
+
+        return testTrades;
+    }
+
+    private ContractorTrade buildTestContractorTrade(String tradeName) {
+        Trade trade = new Trade();
+        trade.setName(tradeName);
+        ContractorTrade contractorTrade = new ContractorTrade();
+        contractorTrade.setTrade(trade);
+        return contractorTrade;
     }
 }

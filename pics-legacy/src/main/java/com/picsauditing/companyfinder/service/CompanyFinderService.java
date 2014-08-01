@@ -4,6 +4,7 @@ import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.dao.companyfinder.ContractorLocationDAO;
 import com.picsauditing.integration.google.Geocode;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
 import org.apache.commons.collections.CollectionUtils;
@@ -83,26 +84,36 @@ public class CompanyFinderService {
 
     private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, String contractorLocationLinkUrl) {
         ContractorAccount contractor = contractorLocation.getContractor();
-        String primaryTrade = getPrimaryTrade(contractor);
+        String primaryTradeName = getPrimaryTradeName(contractor);
+        List<String> tradeNames = getTradeNames(contractor);
         ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
                 .id(contractor.getId())
                 .name(contractor.getName())
                 .address(contractor.getFullAddress())
-                .cooridinates(
+                .coordinates(
                         LatLong.builder()
                                 .lat(contractorLocation.getLatitude())
                                 .lng(contractorLocation.getLongitude())
                                 .build()
                 )
-                .trade(primaryTrade)
+                .primaryTrade(primaryTradeName)
+                .trades(tradeNames)
                 .link(contractorLocationLinkUrl + "?id=" + contractor.getId())
 
                 .build();
         return contractorLocationInfo;
     }
 
-    private String getPrimaryTrade(ContractorAccount contractor) {
+    private String getPrimaryTradeName(ContractorAccount contractor) {
         return contractor.getTopTrade() == null ? null : contractor.getTopTrade().getTrade().getName();
+    }
+
+    private List<String> getTradeNames(ContractorAccount contractor) {
+        List<String> tradeNames = new ArrayList<>();
+        for (ContractorTrade contractorTrade : contractor.getTradesSorted()) {
+            tradeNames.add(contractorTrade.getTrade().getName());
+        }
+        return tradeNames;
     }
 
 }
