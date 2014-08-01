@@ -77,7 +77,9 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 
 			sql.addWhere("atype.classType = 'Policy'");
 		}
-
+        sql.addWhere("caow.notes is not null");
+        sql.addWhere("caow.notes <> ''");
+        sql.addOrderBy("caow.updateDate desc");
 		sql.addGroupBy("cao.id");
 	}
 

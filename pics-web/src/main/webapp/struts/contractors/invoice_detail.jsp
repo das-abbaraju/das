@@ -261,6 +261,10 @@
                     <s:else>
                         <s:property value="contractor.address"/>
                         <br/>
+                        <s:if test="contractor.address2 != null && contractor.address2.length() > 0">
+                            <s:property value="contractor.address2"/>
+                            <br/>
+                        </s:if>
                         <s:property value="contractor.city"/>,
                         <s:property value="%{contractor.countrySubdivision.getTwoLetterIsoCode()}"/>
                         <s:property value="contractor.zip"/>
