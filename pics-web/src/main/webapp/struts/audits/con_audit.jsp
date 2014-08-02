@@ -81,8 +81,6 @@
             <div id="problemsHide"></div>
         </s:if>
         
-        <div id="submitRemind"></div>
-        
         <div class="right noprint" id="modes">
             <s:if test="canEditAudit">
                 <a class="edit modeset" href="#mode=Edit">
