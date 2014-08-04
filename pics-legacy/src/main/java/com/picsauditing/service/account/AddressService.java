@@ -13,6 +13,7 @@ import java.util.Date;
 
 public class AddressService {
     public static final int CONFIDENCE_PERCENT_THRESHOLD = 80;
+    public static final String NEWLINE = "\n";
     @Autowired
     private ContractorAccountDAO contractorAccountDao;
 
@@ -61,5 +62,39 @@ public class AddressService {
             addressVerification.setStatus(AddressVerificationStatus.FAILED_VALIDATION);
         }
         return addressVerification;
+    }
+
+    public String formatAddressAsBlock(Account account) {
+        StringBuffer formattedAddressBuffer = new StringBuffer();
+
+        if (!Strings.isEmpty(account.getAddress())) {
+            formattedAddressBuffer.append(account.getAddress());
+            formattedAddressBuffer.append(NEWLINE);
+        }
+
+        if (!Strings.isEmpty(account.getCity())) {
+            formattedAddressBuffer.append(account.getCity());
+        }
+
+        if (account.getCountrySubdivision() != null) {
+            if (!Strings.isEmpty(account.getCity())) {
+                formattedAddressBuffer.append(", ");
+            }
+            formattedAddressBuffer.append(account.getCountrySubdivision().getIsoCode());
+        }
+
+        if (account.getCountry() != null && !account.getCountry().getIsoCode().equals("US")) {
+            if (account.getCountrySubdivision() != null) {
+                formattedAddressBuffer.append(", ");
+            }
+            formattedAddressBuffer.append(account.getCountry().getName());
+        }
+
+        if (!Strings.isEmpty(account.getZip())) {
+            // Let's assume that we have a city or subdivision or country (or it gets messy).
+            formattedAddressBuffer.append(" ").append(account.getZip());
+        }
+
+        return formattedAddressBuffer.toString();
     }
 }

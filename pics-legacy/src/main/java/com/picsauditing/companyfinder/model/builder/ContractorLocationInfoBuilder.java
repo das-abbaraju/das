@@ -23,6 +23,11 @@ public class ContractorLocationInfoBuilder {
         return this;
     }
 
+    public ContractorLocationInfoBuilder formattedAddressBlock(String formattedAddressBlock) {
+        contractorLocationInfo.setFormattedAddressBlock(formattedAddressBlock);
+        return this;
+    }
+
     public ContractorLocationInfoBuilder coordinates(LatLong coordinates) {
         contractorLocationInfo.setCoordinates(coordinates);
         return this;
