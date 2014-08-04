@@ -10,6 +10,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
+import com.picsauditing.service.account.AddressService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -22,6 +23,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -30,12 +32,17 @@ public class CompanyFinderServiceTest {
     CompanyFinderService companyFinderService;
     @Mock
     ContractorLocationDAO contractorLocationDAO;
+    @Mock
+    AddressService addressService;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         companyFinderService = new CompanyFinderService();
         Whitebox.setInternalState(companyFinderService, "contractorLocationDAO", contractorLocationDAO);
+        Whitebox.setInternalState(companyFinderService, "addressService", addressService);
+
+        when(addressService.formatAddressAsBlock(any(ContractorAccount.class))).thenReturn("someFormattedAddressBlock");
     }
 
     @Test
