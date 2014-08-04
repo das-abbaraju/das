@@ -3,6 +3,7 @@ package com.picsauditing.employeeguard.forms.factory;
 import com.picsauditing.employeeguard.entities.AccountSkillProfile;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.forms.employee.SkillDocumentForm;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.viewmodel.model.SkillInfo;
 
 import java.util.Date;
@@ -37,9 +38,9 @@ public class SkillDocumentFormBuilder {
 		if (skillInfo.getSkillType() != null && skillInfo.getSkillType().isCertification() && profileDocument != null) {
 			return profileDocument.getFileName();
 		} else if (skillInfo.getSkillType() != null && skillInfo.getSkillType().isTraining() && skillInfo.getEndDate() != null) {
-			return "I certify that I have met all requirements.";
+			return EGI18n.getTextFromResourceBundle("EMPLOYEE.SKILL.USER_CERTIFICATION_MSG");
 		}
 
-		return "None";
+		return EGI18n.getTextFromResourceBundle("EMPLOYEE.SKILL.USER_CERTIFICATION_MSG.NONE");
 	}
 }

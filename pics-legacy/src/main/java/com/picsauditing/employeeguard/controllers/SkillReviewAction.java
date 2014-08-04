@@ -9,6 +9,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.ProfileDocument;
 import com.picsauditing.employeeguard.exceptions.DocumentViewAccessDeniedException;
 import com.picsauditing.employeeguard.models.AccountModel;
+import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.AccountService;
 import com.picsauditing.employeeguard.services.AccountSkillProfileService;
 import com.picsauditing.employeeguard.services.ProfileDocumentService;
@@ -49,9 +50,6 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 	@Autowired
 	private SkillEntityService skillEntityService;
-
-	@Autowired
-	private AccountSkillProfileService accountSkillProfileService;
 
 	private int employeeId;
 	private int skillId;
@@ -179,12 +177,12 @@ public class SkillReviewAction extends PicsRestActionSupport {
 
 						}
 					} catch (Exception exception) {
-						addActionError("Could not prepare download");
+						addActionError(EGI18n.getTextFromResourceBundle("OPERATOR.EMPLOYEE.SKILL_REVIEW.DOWNLOAD_ERROR"));
 					}
 				}
 			}
 		} catch (DocumentViewAccessDeniedException e) {
-			addActionError("Could not prepare download");
+			addActionError(EGI18n.getTextFromResourceBundle("OPERATOR.EMPLOYEE.SKILL_REVIEW.DOWNLOAD_ERROR"));
 			log.warn(String.format("Illegal Access detected AccountId=[%d], employeeId=[%d], skillId=[%d]", permissions.getAccountId(), employeeId, skillId));
 		}
 

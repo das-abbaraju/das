@@ -20,7 +20,7 @@ public class EGI18n implements TextProvider, LocaleProvider {
 	private transient TextProvider textProvider;
 	private Container container;
 
-	public static String getBreadCrumbResourceBundle(String breadcrumbLabel){
+	public static String getBreadCrumbResourceBundle(String breadcrumbLabel) {
 		if(!breadcrumbLabel.contains("{")) {
 			String valueFromResourceBundle = EGI18n.getTextFromResourceBundle("BREADCRUMB.LABEL." + breadcrumbLabel);
 			if (StringUtils.isNotEmpty(valueFromResourceBundle)) {
