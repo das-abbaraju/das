@@ -4,7 +4,11 @@ angular.module('PICS.employeeguard', [
     'ngResource',
     'PICS.directives',
     'PICS.charts',
-    'PICS.skills',
+    'PICS.groups',
+    'PICS.roles',
+    'PICS.employees',
+    'PICS.breadcrumb',
+    'PICS.employeeguard.skills',
     'PICS.filters',
     'ui.select2',
     'ProfileService'

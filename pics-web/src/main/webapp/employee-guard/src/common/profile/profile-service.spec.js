@@ -66,7 +66,7 @@ describe('Profile Service', function() {
 
         it("should be set to the default language if no dialect or language", function() {
             Profile.setTranslatedLanguage();
-            expect($translate.use()).toEqual('en_US');
+            expect($translate.use()).toEqual('en_GB');
         });
     });
 });

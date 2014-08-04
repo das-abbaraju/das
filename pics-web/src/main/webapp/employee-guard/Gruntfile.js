@@ -28,7 +28,10 @@ module.exports = function(grunt) {
         'src/common/directives/directives.js',
         'src/common/services/charts/charts.js',
         'src/common/filters/filters.js',
-        'src/app/employeeguard/common/skills/skills.js',
+        'src/app/employeeguard/groups/groups.js',
+        'src/app/employeeguard/roles/roles.js',
+        'src/app/employeeguard/employees/employees.js',
+        'src/app/employeeguard/skills/skills.js',
         'src/app/employeeguard/employeeguard.js'
     ];
 

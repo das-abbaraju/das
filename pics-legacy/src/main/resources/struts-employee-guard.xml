@@ -71,6 +71,15 @@
 
         <action name="skills" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
         </action>
+
+        <action name="roles" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="groups" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
+
+        <action name="employees" class="com.picsauditing.employeeguard.controllers.AngularLoaderAction" method="load">
+        </action>
     </package>
 
     <!-- Operator -->
