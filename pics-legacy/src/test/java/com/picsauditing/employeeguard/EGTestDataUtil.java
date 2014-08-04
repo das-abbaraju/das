@@ -113,12 +113,13 @@ public class EGTestDataUtil {
 	// ProfileDocument Mock Data
 
 	public static final Date DOCUMENT_1_CREATED_DATE = new Date(1391198400000l);
+	public static final Date DOCUMENT_1_END_DATE = new Date(64060703999000l);
 	public static final ProfileDocument PROFILE_DOCUMENT_1 = new ProfileDocumentBuilder()
 			.id(1)
 			.name("Document 1")
 			.createdDate(DOCUMENT_1_CREATED_DATE)
 			.startDate(DOCUMENT_1_CREATED_DATE)
-			.endDate(DateBean.setToEndOfDay(DateBean.getEndOfTime()))
+			.endDate(DOCUMENT_1_END_DATE)
 			.build();
 
 	public static final Date DOCUMENT_2_CREATED_DATE = new Date(1359662400000l);
