@@ -113,7 +113,7 @@ public class MainSearch extends PicsActionSupport implements Preparable {
 				}
 
                 fullList = getFullResults(queryList);
-                totalRows = fullList.size();
+                //totalRows = fullList.size();
 
 				if (fullList == null)
 					return SUCCESS;
