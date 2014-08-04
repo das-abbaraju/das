@@ -11,6 +11,7 @@ public class ContractorLocationInfo {
     private int id;
     private String name;
     private String address;
+    private String formattedAddressBlock;
     private LatLong coordinates;
     private String primaryTrade;
     private List<String> trades;
@@ -38,6 +39,14 @@ public class ContractorLocationInfo {
 
     public String getAddress() {
         return address;
+    }
+
+    public void setFormattedAddressBlock(String formattedAddressBlock) {
+        this.formattedAddressBlock = formattedAddressBlock;
+    }
+
+    public String getFormattedAddressBlock() {
+        return formattedAddressBlock;
     }
 
     public LatLong getCoordinates() {

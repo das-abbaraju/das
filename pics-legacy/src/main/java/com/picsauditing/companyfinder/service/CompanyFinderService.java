@@ -7,6 +7,7 @@ import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
+import com.picsauditing.service.account.AddressService;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +19,8 @@ public class CompanyFinderService {
 
     @Autowired
     private ContractorLocationDAO contractorLocationDAO;
+    @Autowired
+    private AddressService addressService;
 
     public LatLong latLongFromAddressUnsecure(String address) {
         return new Geocode().latLongFromAddressUnsecure(address);
@@ -90,6 +93,7 @@ public class CompanyFinderService {
                 .id(contractor.getId())
                 .name(contractor.getName())
                 .address(contractor.getFullAddress())
+                .formattedAddressBlock(addressService.formatAddressAsBlock(contractor))
                 .coordinates(
                         LatLong.builder()
                                 .lat(contractorLocation.getLatitude())

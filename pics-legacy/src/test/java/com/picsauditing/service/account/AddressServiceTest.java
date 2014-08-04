@@ -2,9 +2,8 @@ package com.picsauditing.service.account;
 
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.jpa.entities.AddressVerification;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.builders.ContractorAccountBuilder;
 import com.picsauditing.model.account.AddressVerificationStatus;
 import com.picsauditing.service.addressverifier.AddressResponseHolder;
 import com.picsauditing.service.addressverifier.ResultStatus;
@@ -17,7 +16,7 @@ import org.powermock.reflect.Whitebox;
 import java.util.Date;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class AddressServiceTest {
 
@@ -36,7 +35,7 @@ public class AddressServiceTest {
         addressService = new AddressService();
         account = new ContractorAccount();
         addressVerification = new AddressVerification();
-        account.setAddressVerification(addressVerification);;
+        account.setAddressVerification(addressVerification);
 
         MockitoAnnotations.initMocks(this);
         user = User.builder().id(1).build();
@@ -96,5 +95,79 @@ public class AddressServiceTest {
                 .stateOrProvince("CA")
                 .resultStatus(resultStatus)
                 .build();
+    }
+
+    @Test
+    public void testFormatAddressAsBlock_emptyAddressShouldNotHaveRandomCommasEtc() throws Exception {
+        ContractorAccount contractorAccount = new ContractorAccountBuilder().build();
+
+        String formattedAddressBlock = addressService.formatAddressAsBlock(contractorAccount);
+
+        assertEquals("", formattedAddressBlock);
+    }
+
+    @Test
+    public void testFormatAddressAsBlock_fullAddress() throws Exception {
+        ContractorAccount contractorAccount = new ContractorAccountBuilder()
+                .address("555 Main Street")
+                .city("Anytown")
+                .countrySubdivision(new CountrySubdivision("CA"))
+                .country(new Country(Country.US_ISO_CODE))
+                .zip("99999")
+                .build();
+
+        String formattedAddressBlock = addressService.formatAddressAsBlock(contractorAccount);
+
+        assertEquals("555 Main Street\n"
+                + "Anytown, CA 99999", formattedAddressBlock);
+    }
+
+    @Test
+    public void testFormatAddressAsBlock_noCity() throws Exception {
+        ContractorAccount contractorAccount = new ContractorAccountBuilder()
+                .address("555 Main Street")
+                .countrySubdivision(new CountrySubdivision("CA"))
+                .country(new Country(Country.US_ISO_CODE))
+                .zip("99999")
+                .build();
+
+        String formattedAddressBlock = addressService.formatAddressAsBlock(contractorAccount);
+
+        assertEquals("555 Main Street\n"
+                + "CA 99999", formattedAddressBlock);
+    }
+
+
+    @Test
+    public void testFormatAddressAsBlock_noStreetOrCity() throws Exception {
+        ContractorAccount contractorAccount = new ContractorAccountBuilder()
+                .countrySubdivision(new CountrySubdivision("CA"))
+                .country(new Country(Country.US_ISO_CODE))
+                .zip("99999")
+                .build();
+
+        String formattedAddressBlock = addressService.formatAddressAsBlock(contractorAccount);
+
+        assertEquals("CA 99999", formattedAddressBlock);
+    }
+
+    @Test
+    public void testFormatAddressAsBlock_fullAddress_nonUS() throws Exception {
+        Country country = mock(Country.class);
+        when(country.getName()).thenReturn("Brazil");
+        when(country.getIsoCode()).thenReturn("BR");
+
+        ContractorAccount contractorAccount = new ContractorAccountBuilder()
+                .address("555 Main Street")
+                .city("Anytown")
+                .countrySubdivision(new CountrySubdivision("CA"))
+                .country(country)
+                .zip("99999")
+                .build();
+
+        String formattedAddressBlock = addressService.formatAddressAsBlock(contractorAccount);
+
+        assertEquals("555 Main Street\n"
+                + "Anytown, CA, Brazil 99999", formattedAddressBlock);
     }
 }

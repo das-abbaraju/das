@@ -86,6 +86,7 @@ public class CompanyFinderServiceTest {
         assertEquals(1, contractorLocationInfos.get(0).getId());
         assertEquals("con1", contractorLocationInfos.get(0).getName());
         assertEquals("fulladdress1", contractorLocationInfos.get(0).getAddress());
+        assertNotNull(contractorLocationInfos.get(0).getFormattedAddressBlock());
         assertEquals(100.0, contractorLocationInfos.get(0).getCoordinates().getLatitude());
         assertEquals(101.0, contractorLocationInfos.get(0).getCoordinates().getLongitude());
         assertEquals("trade1", contractorLocationInfos.get(0).getPrimaryTrade());
@@ -95,6 +96,7 @@ public class CompanyFinderServiceTest {
         assertEquals(2, contractorLocationInfos.get(1).getId());
         assertEquals("con2", contractorLocationInfos.get(1).getName());
         assertEquals("fulladdress2", contractorLocationInfos.get(1).getAddress());
+        assertNotNull(contractorLocationInfos.get(1).getFormattedAddressBlock());
         assertEquals(200.0, contractorLocationInfos.get(1).getCoordinates().getLatitude());
         assertEquals(201.0, contractorLocationInfos.get(1).getCoordinates().getLongitude());
         assertEquals("trade2", contractorLocationInfos.get(1).getPrimaryTrade());
@@ -104,6 +106,7 @@ public class CompanyFinderServiceTest {
         assertEquals(3, contractorLocationInfos.get(2).getId());
         assertEquals("con3", contractorLocationInfos.get(2).getName());
         assertEquals("fulladdress3", contractorLocationInfos.get(2).getAddress());
+        assertNotNull(contractorLocationInfos.get(2).getFormattedAddressBlock());
         assertEquals(300.0, contractorLocationInfos.get(2).getCoordinates().getLatitude());
         assertEquals(301.0, contractorLocationInfos.get(2).getCoordinates().getLongitude());
         assertEquals("trade3", contractorLocationInfos.get(2).getPrimaryTrade());
