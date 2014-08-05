@@ -37,7 +37,7 @@
                 <div class="primary-navigation-search">
                     <form action="${search_url}" class="navbar-search pull-right">
                         <input type="hidden" name="button" value="search"/>
-                        <input type="text" name="searchTerm" class="search-query span2" placeholder="Search"
+                        <input type="text" name="searchTerm" class="search-query span2" placeholder="<s:text name='global.Search'/>"
                                autocomplete="off"/>
                         <i class="icon-search icon-large"></i>
                     </form>
