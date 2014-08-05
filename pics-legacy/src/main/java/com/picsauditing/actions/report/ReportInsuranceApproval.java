@@ -54,8 +54,11 @@ public class ReportInsuranceApproval extends ReportContractorAuditOperator {
 		getFilter().setShowRecommendedFlag(true);
 		getFilter().setShowAMBest(true);
 
-		sql.addJoin("LEFT JOIN (select caoID, notes, updateDate from contractor_audit_operator_workflow " +
-                "where notes is not null and notes <> '' ORDER BY updateDate desc) caow ON cao.id = caow.caoID");
+		sql.addJoin(" LEFT JOIN contractor_audit_operator_workflow caow ON cao.id = caow.caoID " +
+                " AND caow.notes IS NOT NULL AND caow.notes <> '' AND NOT EXISTS  ( " +
+                " SELECT 1 FROM contractor_audit_operator_workflow caow1 " +
+                " WHERE cao.id = caow1.caoID " +
+                " AND caow1.id > caow.id and caow1.notes is not null and caow.notes <> '' ) ");
 
 		sql.addWhere("a.status IN ('Active','Demo')");
 
