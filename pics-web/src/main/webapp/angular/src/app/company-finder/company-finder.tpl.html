@@ -7,7 +7,7 @@
         <h1>
             <div class="row">
                 <div class="col-md-9 col-xs-9">
-                    <i class="icon-filter icon-large"></i> Filters
+                    <i class="icon-search icon-large"></i>Search
                 </div>
                 <div class="col-md-3 col-xs-3 edit">
                     <i ng-show="!filterEditMode" ng-click="onEditClick()"class="icon-edit icon-large"></i>
@@ -44,29 +44,27 @@
     </section>
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-5">
             <section class="employee-guard-section search-results-section">
                 <h1>
                     <div class="row">
-                        <div class="col-md-10 col-xs-10">
-                            <i class="icon-search icon-large"></i> Search Results
-                        </div>
+                        <div class="col-md-10 col-xs-10">Results</div>
                         <div class="col-md-2 col-xs-2 text-right">
                             <i class="icon-download icon-large" tooltip title="Export Results"></i>
                         </div>
                     </div>
                 </h1>
-                
+
                 <div class="content">
                     <ul class="result-list list-unstyled">
                         <li ng-repeat="location in locationsUnclustered">
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <div class="list-marker text-center">{{ $index + 1 }}</div>
+                            <div class="row result" ng-show="selectedResult != $index" ng-click="onResultClick($event)" ng-mouseover="onResultMouseOver($event)" ng-mouseout="onResultMouseOut($event)" id="{{ $index }}">
+                                <div class="col-md-1">
+                                    <div class="red-marker text-center">{{ $index + 1 }}</div>
                                 </div>
-                                <div class="col-md-10">
+                                <div class="col-md-11">
                                     <p class="contractor-name"><a href="{{ location.link }}" target="_blank">{{ location.name }}</a></p>
-                                    <p class="primary-trade">{{ location.trade }}</p>
+                                    <p class="primary-trade">{{ location.primaryTrade }}</p>
                                 </div>
                             </div>
                         </li>
@@ -74,7 +72,7 @@
                 </div>
             </section>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-7">
             <section class="employee-guard-section map-section">
                 <form name="" action="" class="search-query" role="form">
                     <fieldset>

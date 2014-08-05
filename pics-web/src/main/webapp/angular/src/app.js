@@ -1,6 +1,5 @@
 angular.module('PICSApp', [
     'PICS.registration',
-    'PICS.employeeguard',
     'PICS.directives',
     'PICS.charts',
     'ui.select2',
