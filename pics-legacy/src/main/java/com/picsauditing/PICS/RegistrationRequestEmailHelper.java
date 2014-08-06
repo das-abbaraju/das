@@ -41,8 +41,8 @@ public class RegistrationRequestEmailHelper {
     @Autowired
     private OperatorFormDAO operatorFormDAO;
 
-	private final int OLD_INITIAL_EMAIL = 83;
-	private final int INITIAL_EMAIL = 259;
+	private static final int OLD_INITIAL_EMAIL = 83;
+	private static final int INITIAL_EMAIL = 259;
 
 	private EmailBuilder builder = new EmailBuilder();
 
@@ -50,6 +50,7 @@ public class RegistrationRequestEmailHelper {
 			throws Exception {
 		if (contractor != null && contact != null && relationship != null) {
 			builder.addToken("requestedContractor", contractor);
+			builder.addToken("contractor", contractor);// support <ISRPhone> token in the email template
 			builder.addToken("primaryContact", contact);
 			builder.addToken("requestRelationship", relationship);
 			builder.setFromAddress(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS);
