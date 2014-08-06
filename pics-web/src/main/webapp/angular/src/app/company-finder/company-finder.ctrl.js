@@ -1,6 +1,6 @@
 angular.module('PICS.companyFinder')
 
-    .controller('companyFinderCtrl', function ($scope, $timeout, $q, locationService, companyFinderService, tradeService, throttle) {
+    .controller('companyFinderCtrl', function ($scope, $timeout, $q, locationService, companyFinderService, tradeService, throttle, mapMarkerService) {
         var map = {};
 
         var markerClustererConfig = {
@@ -29,7 +29,7 @@ angular.module('PICS.companyFinder')
                 "textSize": 12,
                 "fontWeight": 'normal'
             }],
-            markerImageUrl: '/angular/src/app/company-finder/img/marker.png'
+            markerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png'
         };
 
         var clusterMapLoader;
@@ -109,6 +109,7 @@ angular.module('PICS.companyFinder')
         });
 
         $scope.filterEditMode = false;
+
         $scope.googleMapConfig = {
             map: map,
             minZoom: 8
@@ -152,7 +153,7 @@ angular.module('PICS.companyFinder')
                 updateLocationsUi(locations);
                 clusterMapLoader.hide();
             }, function () {
-                clusterMapLoader.hide();                
+                clusterMapLoader.hide();
             });
         }
 
@@ -170,6 +171,24 @@ angular.module('PICS.companyFinder')
             $scope.markerClustererConfig = markerClustererConfig;
         }
 
+        $scope.onResultClick = function ($event) {
+            var markers = mapMarkerService.getMarkers();
+
+            google.maps.event.trigger(markers[$event.currentTarget.id], 'click');
+        };
+
+        $scope.onResultMouseOver = function ($event) {
+            var markers = mapMarkerService.getMarkers();
+
+            google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseover');
+        };
+
+        $scope.onResultMouseOut = function ($event) {
+            var markers = mapMarkerService.getMarkers();
+
+            google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseout');
+        };
+
         $scope.onEditClick = function () {
             $scope.filterEditMode = true;
             currentSelectedTrades = $scope.tradeSelect2El.select2('data');
@@ -181,7 +200,7 @@ angular.module('PICS.companyFinder')
 
             $scope.filterEditMode = false;
 
-            if ($scope.tradeSelect2El.select2('data').length > 0) {                
+            if ($scope.tradeSelect2El.select2('data').length > 0) {
                 $scope.selectedTrade = getTradeSelect2PropCsv('name');
             } else {
                 $scope.selectedTrade = null;

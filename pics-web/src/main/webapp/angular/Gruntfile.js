@@ -19,7 +19,7 @@ module.exports = function(grunt) {
         'vendor/angular/angular-ui-select2.js',
         'vendor/pics/core.js',
         'vendor/google-maps/markerclusterer.js',
-        // 'vendor/google-maps/markerwithlabel.js',
+        'vendor/google-maps/markerwithlabel.js',
         'vendor/angular/jasmine/angular-mocks.js'
     ];
 

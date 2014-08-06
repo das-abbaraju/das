@@ -1,6 +1,6 @@
 angular.module('PICS.directives')
 
-.directive('markerClusterMap', function () {
+.directive('markerClusterMap', function (mapMarkerService) {
     return {
         restrict: 'E',
         scope: {
@@ -11,8 +11,17 @@ angular.module('PICS.directives')
         link: function (scope, element, attrs) {
             var googleMapConfig = scope.googleMapConfig,
                 map = googleMapConfig.map,
-                markerClusterer, currentInfoWindow,
-                loader = $(element.children()[1]);
+                infoWindow = new google.maps.InfoWindow({
+                    maxWidth: 250,
+                    disableAutoPan: true,
+                    id: '',
+                    visible: false
+                }),
+                selectedMarker = null,
+                currentMarkerList = [],
+                markerClusterer,
+                loader = $(element.children()[1]),
+                markerIconBase = '/angular/src/app/company-finder/img/';
 
             scope.$emit('loader-ready', loader, scope.markerClustererConfig);
 
@@ -23,8 +32,34 @@ angular.module('PICS.directives')
             scope.$watch('markerClustererConfig', function (newConfig) {
                 if (!newConfig) return;
 
+                selectedMarker = null;
+
                 refreshMarkerClusterer(map, newConfig);
             }, true);
+
+            google.maps.event.addListener(
+                infoWindow,
+                'closeclick',
+                function () {
+                    if (selectedMarker) {
+                        useSmallMarker(currentMarkerList[selectedMarker.id]);
+
+                        infoWindow.visible = false;
+                    }
+                }
+            );
+
+            google.maps.event.addListener(
+                map,
+                'click',
+                function (event) {
+                if (selectedMarker && infoWindow.visible) {
+                    infoWindow.close();
+                    useSmallMarker(currentMarkerList[selectedMarker.id]);
+
+                    infoWindow.visible = false;
+                }
+            });
 
             function initMarkerClusterer(map, config) {
                 markerClusterer = createMarkerClusterer(map, config);
@@ -36,9 +71,11 @@ angular.module('PICS.directives')
                     new google.maps.Size(24, 32)
                 );
 
-                var markers = createMarkers(map, config.locations, markerImage);
+                currentMarkerList = createMarkers(map, config.locations, markerImage);
 
-                return new MarkerClusterer(map, markers, config);
+                mapMarkerService.setMarkers(currentMarkerList);
+
+                return new MarkerClusterer(map, currentMarkerList, config);
             }
 
             function createGoogleMap($mapOuterContainer, config) {
@@ -56,16 +93,14 @@ angular.module('PICS.directives')
                     location_index, marker;
 
                 angular.forEach(locations, function (location, index) {
-                    marker = createMarker(map, location, markerImage, index+1);
+                    marker = createMarker(map, location, markerImage, index);
                     markers.push(marker);
                 });
 
                 return markers;
             }
 
-            function createMarker(map, location, markerImage, labelContent) {
-                var infoWindow = createInfoWindow(location);
-
+            function createMarker(map, location, markerImage, index) {
                 var latLng = new google.maps.LatLng(
                     location.coordinates.latitude,
                     location.coordinates.longitude
@@ -75,49 +110,113 @@ angular.module('PICS.directives')
                     map: map,
                     position: latLng,
                     icon: markerImage,
-                    labelContent: labelContent,
+                    labelContent: index + 1,
                     labelInBackground: false,
-                    labelAnchor: new google.maps.Point(6, 30),
-                    labelClass: 'marker-label'
+                    labelAnchor: new google.maps.Point(6, 27),
+                    labelClass: 'marker-label',
+                    id: index
                 });
 
                 google.maps.event.addListener(
                     googleMarker,
                     'click',
-                    createMarkerClickHandler(map, googleMarker, infoWindow)
+                    createMarkerClickHandler(map, googleMarker, location, index)
+                );
+
+                google.maps.event.addListener(
+                    googleMarker,
+                    'mouseover',
+                    createMouseOverHandler(googleMarker)
+                );
+
+                var mouseoutListener = google.maps.event.addListener(
+                    googleMarker,
+                    'mouseout',
+                    createMouseOutHandler(googleMarker)
                 );
 
                 return googleMarker;
             }
 
             // TODO: Make contentString a configuration option
-            function createInfoWindow(location) {
+            function getInfoWindowContent(location) {
+                var otherTrades = getOtherTradesLabel(location),
+                    address = location.formattedAddressBlock.replace('\n', '<br>');
+
                 var contentString = [
                     '<p class="contractor-name">',
                         '<a href="' + location.link + '" target="_blank">' + location.name + '</a>',
                     '</p>',
-                    '<p class="address-and-trade">' + location.address + '</p>',
-                    '<p class="address-and-trade">',
-                      location.trade,
-                    '</p>'
+                    '<p class="primary-trade">',
+                        location.primaryTrade,
+                    '</p>',
+                    '<p class="other-trades">',
+                        '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
+                    '</p>',
+                    '<p class="address">' + address + '</p>'
                 ].join('');
 
-                return new google.maps.InfoWindow({
-                    content: contentString,
-                    maxWidth: 250
-                });
+                return contentString;
             }
 
-            function createMarkerClickHandler(map, googleMarker, infoWindow) {
+            function getOtherTradesLabel(location) {
+                var nonPrimaryTrades = location.trades.length - 1;
+
+                if (nonPrimaryTrades == 1) {
+                    return nonPrimaryTrades + ' other trade&hellip;';
+                } else if (nonPrimaryTrades > 1) {
+                    return nonPrimaryTrades + ' other trades&hellip;';
+                } else {
+                    return '';
+                }
+            }
+
+            function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    if (typeof currentInfoWindow != 'undefined') {
-                        currentInfoWindow.close();
-                    }
+                    infoWindow.setContent(getInfoWindowContent(location));
+
+                    infoWindow.id = index;
 
                     infoWindow.open(map, googleMarker);
 
-                    currentInfoWindow = infoWindow;          
+                    infoWindow.visible = true;
+
+                    if (selectedMarker) {
+                        google.maps.event.trigger(currentMarkerList[selectedMarker.id], 'mouseout');
+                    }
+
+                    selectedMarker = googleMarker;
                 };
+            }
+
+            function createMouseOverHandler(googleMarker) {
+                return function () {
+                    googleMarker.labelAnchor = new google.maps.Point(5, 37);
+                    googleMarker.label.setAnchor();
+
+                    googleMarker.labelClass = 'marker-label-large';
+                    googleMarker.label.setStyles();
+
+                    googleMarker.setIcon(markerIconBase + 'marker-danger-light-large.png');
+                };
+            }
+
+            function createMouseOutHandler(googleMarker) {
+                return function () {
+                    if ((infoWindow.id != googleMarker.id) || (!infoWindow.visible)) {
+                        useSmallMarker(googleMarker);
+                    }
+                };
+            }
+
+            function useSmallMarker(googleMarker) {
+                googleMarker.labelAnchor = new google.maps.Point(5, 28);
+                googleMarker.label.setAnchor();
+
+                googleMarker.labelClass = 'marker-label';
+                googleMarker.label.setStyles();
+
+                googleMarker.setIcon(markerIconBase + 'marker-danger-light.png');
             }
 
             function refreshMarkerClusterer(map, config) {
@@ -126,7 +225,7 @@ angular.module('PICS.directives')
                 }
 
                 initMarkerClusterer(map, config);
-            }   
+            }
 
             function isEmptyObject(obj){
                 for(var prop in obj){ return false;}
