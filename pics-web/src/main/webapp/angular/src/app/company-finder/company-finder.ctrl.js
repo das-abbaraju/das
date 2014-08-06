@@ -34,8 +34,6 @@ angular.module('PICS.companyFinder')
 
         var clusterMapLoader;
 
-        var markers;
-
         // Override ClusterIcon.onAdd to limit icon text to 1-100+
         // TODO: Restore this function when the route changes
         ClusterIcon.prototype.onAdd = function() {
@@ -174,19 +172,19 @@ angular.module('PICS.companyFinder')
         }
 
         $scope.onResultClick = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'click');
         };
 
         $scope.onResultMouseOver = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseover');
         };
 
         $scope.onResultMouseOut = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseout');
         };

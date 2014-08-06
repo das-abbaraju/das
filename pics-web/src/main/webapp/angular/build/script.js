@@ -63712,8 +63712,6 @@ if(window.jasmine || window.mocha) {
 
         var clusterMapLoader;
 
-        var markers;
-
         // Override ClusterIcon.onAdd to limit icon text to 1-100+
         // TODO: Restore this function when the route changes
         ClusterIcon.prototype.onAdd = function() {
@@ -63852,19 +63850,19 @@ if(window.jasmine || window.mocha) {
         }
 
         $scope.onResultClick = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'click');
         };
 
         $scope.onResultMouseOver = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseover');
         };
 
         $scope.onResultMouseOut = function ($event) {
-            markers = mapMarkerService.getMarkers();
+            var markers = mapMarkerService.getMarkers();
 
             google.maps.event.trigger(markers[$event.currentTarget.id], 'mouseout');
         };
@@ -64460,7 +64458,7 @@ if(window.jasmine || window.mocha) {
             }
 
             // TODO: Make contentString a configuration option
-            function getInfoWindowContent(location, id) {
+            function getInfoWindowContent(location) {
                 var otherTrades = getOtherTradesLabel(location),
                     address = location.formattedAddressBlock.replace('\n', '<br>');
 
@@ -64471,7 +64469,6 @@ if(window.jasmine || window.mocha) {
                     '<p class="primary-trade">',
                         location.primaryTrade,
                     '</p>',
-                    // take another look at this
                     '<p class="other-trades">',
                         '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
                     '</p>',
@@ -64482,12 +64479,11 @@ if(window.jasmine || window.mocha) {
             }
 
             function getOtherTradesLabel(location) {
-                var totalTrades = location.trades.length,
-                    nonPrimaryTrades = totalTrades - 1;
+                var nonPrimaryTrades = location.trades.length - 1;
 
-                if (totalTrades == 2) {
+                if (nonPrimaryTrades == 1) {
                     return nonPrimaryTrades + ' other trade&hellip;';
-                } else if (totalTrades > 2) {
+                } else if (nonPrimaryTrades > 1) {
                     return nonPrimaryTrades + ' other trades&hellip;';
                 } else {
                     return '';
@@ -64496,7 +64492,7 @@ if(window.jasmine || window.mocha) {
 
             function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    infoWindow.setContent(getInfoWindowContent(location, index));
+                    infoWindow.setContent(getInfoWindowContent(location));
 
                     infoWindow.id = index;
 
@@ -64526,7 +64522,7 @@ if(window.jasmine || window.mocha) {
 
             function createMouseOutHandler(googleMarker) {
                 return function () {
-                    if ((infoWindow.id != googleMarker.id) || (infoWindow.visible === false)) {
+                    if ((infoWindow.id != googleMarker.id) || (!infoWindow.visible)) {
                         useSmallMarker(googleMarker);
                     }
                 };

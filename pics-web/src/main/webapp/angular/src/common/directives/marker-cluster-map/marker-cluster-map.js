@@ -139,7 +139,7 @@ angular.module('PICS.directives')
             }
 
             // TODO: Make contentString a configuration option
-            function getInfoWindowContent(location, id) {
+            function getInfoWindowContent(location) {
                 var otherTrades = getOtherTradesLabel(location),
                     address = location.formattedAddressBlock.replace('\n', '<br>');
 
@@ -160,12 +160,11 @@ angular.module('PICS.directives')
             }
 
             function getOtherTradesLabel(location) {
-                var totalTrades = location.trades.length,
-                    nonPrimaryTrades = totalTrades - 1;
+                var nonPrimaryTrades = location.trades.length - 1;
 
-                if (totalTrades == 2) {
+                if (nonPrimaryTrades == 1) {
                     return nonPrimaryTrades + ' other trade&hellip;';
-                } else if (totalTrades > 2) {
+                } else if (nonPrimaryTrades > 1) {
                     return nonPrimaryTrades + ' other trades&hellip;';
                 } else {
                     return '';
@@ -174,7 +173,7 @@ angular.module('PICS.directives')
 
             function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    infoWindow.setContent(getInfoWindowContent(location, index));
+                    infoWindow.setContent(getInfoWindowContent(location));
 
                     infoWindow.id = index;
 
@@ -204,7 +203,7 @@ angular.module('PICS.directives')
 
             function createMouseOutHandler(googleMarker) {
                 return function () {
-                    if ((infoWindow.id != googleMarker.id) || (infoWindow.visible === false)) {
+                    if ((infoWindow.id != googleMarker.id) || (!infoWindow.visible)) {
                         useSmallMarker(googleMarker);
                     }
                 };
