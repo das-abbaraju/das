@@ -1,3 +1,4 @@
+<%@ page autoFlush="true" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags"%>
 <%@ taglib prefix="pics" uri="http://picsauditing.com/taglibs" %>
 <table class="report" style="position: static">
