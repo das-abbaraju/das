@@ -169,6 +169,7 @@
 									</ul>
 								</div>
 							</s:if>
+                            <br/>
 							<s:if test="nonCorporateFreeOperators.size() > 0">
 								<div style="float: left; padding-top: 5px;">
 									<s:text name="BillingDetail.NonPayingOperators">
