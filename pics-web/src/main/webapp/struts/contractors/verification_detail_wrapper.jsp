@@ -205,18 +205,18 @@
             		$note_input = $('#addToNotes');
 
                 $.blockUI({ message:$('#noteAjax')});
-                
+
                 if($('#noteRequired').val()=='true'){
-	
+
                 	if ($note_input.val() == '') {
                 		$reject_button.addClass('disabled');
                 	} else {
                 		$reject_button.removeClass('disabled');
                 		$reject_button.removeAttr('disabled');
                 	}
-	
+
                 	$note_input.on('keyup', function(){
-	
+
                         if($(this).val()!='') {
                         	$reject_button.removeClass('disabled');
                         	$reject_button.removeAttr('disabled');
@@ -227,13 +227,13 @@
                         	$reject_button.attr('disabled', 'disabled');
                         }
                     });
-                	
+
                     $reject_button.on('click', function () {
     					if (!$(this).hasClass('disabled')) {
     						saveCao();
     					}
-                    });                	
-                	
+                    });
+
                 } else {
 					saveCao();
                 }
@@ -242,7 +242,7 @@
                     $.unblockUI();
                     return false;
                 });
-                
+
                 function saveCao() {
                     $.blockUI({message: 'Saving Status, please wait...'});
 
@@ -260,14 +260,22 @@
             return false;
         }
 
-        function previewEmail() {
-            var data= {id: <s:property value="contractor.id"/>};
-            $('#emailTemplate').html("<img src='images/ajax_process.gif' />")
-                .load('VerifyPreviewEmailAjax.action', data);
+        function previewEmail(lnk) {
+            if ($('#emailTemplate .emailTemplatePreview:empty').length) {
+                var data = {id: <s:property value="contractor.id"/>};
+                $('#emailTemplate .emailTemplatePreview').html("<img src='images/ajax_process.gif' />")
+                    .load('VerifyPreviewEmailAjax.action', data, function() { $(lnk).text('Cancel'); });
+            }
+            else {// on cancel preview
+                $('#emailTemplate .emailTemplatePreview').html('');
+                $(lnk).text('Preview Email');
+            }
+            return false;
         }
 
         function openAddNote() {
             window.open('NoteEditor.action?id=<s:property value="id"/>&note=0&mode=edit&embedded=0&note.noteCategory=Audits&note.canContractorView=true','name','toolbar=0,scrollbars=1,location=0,statusbar=0,menubar=0,resizable=1,width=770,height=550');
+            return false;
         }
 
         function copyComment(divId, commentID) {
@@ -422,11 +430,14 @@
         <br/>
         <br/>
         <div id="emailTemplate">
-            <button name=button class="picsbutton left" onclick="previewEmail();">Preview Email</button>
-            <form action="VerifyView.action?id=${id}" method="POST">
-                <s:submit cssClass="picsbutton positive left" method="sendEmail" value="Send Email" />
-            </form>
-            <button onClick="openAddNote()" class="picsbutton positive">Add Note</button>
+            <div class="emailTemplatePreview"></div>
+            <div>
+                <button name="button" class="picsbutton left" onclick="return previewEmail(this);">Preview Email</button>
+                <form action="VerifyView.action?id=${id}" method="POST">
+                    <s:submit cssClass="picsbutton positive left" method="sendEmail" value="Send Email" />
+                </form>
+                <button onclick="return openAddNote()" class="picsbutton positive">Add Note</button>
+            </div>
         </div>
         <br/>
 
