@@ -26,6 +26,7 @@ public enum ModelType {
     ContractorUsers,
     Countries,
     CreditMemos,
+    CreditMemoItems,
     Emails,
     EmployeeCompetencies,
     FlagArchive,
