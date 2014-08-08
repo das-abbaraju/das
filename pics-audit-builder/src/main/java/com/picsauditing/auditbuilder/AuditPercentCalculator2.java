@@ -514,6 +514,9 @@ public class AuditPercentCalculator2 {
 
     private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
         boolean applies = false;
+        if (!AuditService.isCurrent(data.getCategory()))
+            return false;
+
         if (data.isOverride())
             applies = data.isApplies();
         else {
