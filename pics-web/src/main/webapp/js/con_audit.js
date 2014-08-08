@@ -126,8 +126,9 @@ function updateSidebarAndCaoTable(text) {
 }
 
 function updateSidebarAndReloadViewAreaIfNeed($newSidebar, categoryId) {
-	var $sidebar = $('#auditHeaderSideNav');
-	if ($sidebar.find('#aCatlist .catlist.current li').length != $newSidebar.find('#aCatlist .catlist.current li').length) {
+	var $sidebar = $('#auditHeaderSideNav'),
+		$curCat = $sidebar.find('#aCatlist .catlist.current:first');
+	if ($curCat.find('a').length != $newSidebar.find('#aCatlist #' + $curCat.attr('id') + '.catlist a').length) {
 
 		AUDIT.load_category.reload(
 			{auditID: auditID, categoryID: categoryId, button: 'load'},
