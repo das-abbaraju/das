@@ -45,6 +45,9 @@ public class AuditPercentCalculator {
 		if (!catData.isApplies())
 			return;
 
+		if (!catData.getCategory().isCurrent())
+			return;
+
 		int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;

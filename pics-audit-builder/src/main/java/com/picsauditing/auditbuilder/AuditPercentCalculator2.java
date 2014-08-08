@@ -40,7 +40,10 @@ public class AuditPercentCalculator2 {
 		if (!catData.isApplies())
 			return;
 
-		int requiredAnsweredCount = 0;
+        if (!AuditService.isCurrent(catData.getCategory()))
+            return;
+
+        int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
 		int verifiedCount = 0;
