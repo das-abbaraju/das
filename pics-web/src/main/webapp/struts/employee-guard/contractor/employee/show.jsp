@@ -23,7 +23,7 @@
 
 <%-- Page title --%>
 <s:include value="/struts/employee-guard/_page-header.jsp">
-    <s:param name="title">Employee: ${employee.firstName} ${employee.lastName}</s:param>
+    <s:param name="title"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.EMPLOYEE" /> ${employee.firstName} ${employee.lastName}</s:param>
     <s:param name="actions">
         <button type="button" data-toggle="modal" data-target="#deleteModal" class="btn btn-danger"><s:text name="CONTRACTOR.EMPLOYEE.SHOW.DELETE_EMPLOYEE" /></button>
     </s:param>

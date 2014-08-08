@@ -134,9 +134,12 @@
 
 .table-sort {
     i {
-        color: $default_aluminum;
+        &.icon-sort-down {
+            color: $default_aluminum;
+        }
 
         &.icon-sort-up {
+            color: $default_aluminum;
             margin-top: 6px;
         }
     }

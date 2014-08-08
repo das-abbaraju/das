@@ -55909,7 +55909,7 @@ window.Modernizr = (function( window, document, undefined ) {
         } else if (language && !dialect) {
             $translate.use(language.id);
         } else {
-            $translate.use('en_US');
+            $translate.use('en_GB');
         }
     };
 
@@ -55945,46 +55945,63 @@ window.Modernizr = (function( window, document, undefined ) {
 
         return new_array;
     };
-});;angular.module('PICS.skills', [])
+});;angular.module('PICS.groups', [
+    'ngRoute'
+])
 
-.factory('SkillStatus', function() {
-    return {
-        getClassNameFromStatus: function(status) {
-            if (!status) {
-                return;
-            }
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
 
-            var classname = '';
+    $routeProvider
+        .when('/employee-guard/groups', {
+            templateUrl: '/employee-guard/src/app/employeeguard/groups/group_list.tpl.html'
+        });
+});
+;angular.module('PICS.roles', [
+    'ngRoute'
+])
 
-            status = status.toLowerCase();
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
 
-            switch (status) {
-                case 'completed':
-                    classname = 'success';
-                    break;
-                case 'pending':
-                    classname = 'success';
-                    break;
-                case 'expiring':
-                    classname = 'warning';
-                    break;
-                case 'expired':
-                    classname = 'danger';
-                    break;
-                default:
-                    break;
-            }
+    $routeProvider
+        .when('/employee-guard/roles', {
+            templateUrl: '/employee-guard/src/app/employeeguard/roles/role_list.tpl.html'
+        });
+});
+;angular.module('PICS.employees', [
+    'ngRoute'
+])
 
-            return classname;
-        }
-    };
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider
+        .when('/employee-guard/employees', {
+            templateUrl: '/employee-guard/src/app/employeeguard/employees/employee_list.tpl.html'
+        });
+});
+;angular.module('PICS.employeeguard.skills', [
+    'ngRoute'
+])
+
+.config(function ($routeProvider, $locationProvider) {
+    $locationProvider.html5Mode(true);
+
+    $routeProvider.when('/employee-guard/skills', {
+        templateUrl: '/employee-guard/src/app/employeeguard/skills/skills.tpl.html'
+    });
 });;angular.module('PICS.employeeguard', [
     'pascalprecht.translate',
     'ngRoute',
     'ngResource',
     'PICS.directives',
     'PICS.charts',
-    'PICS.skills',
+    'PICS.groups',
+    'PICS.roles',
+    'PICS.employees',
+    'PICS.breadcrumb',
+    'PICS.employeeguard.skills',
     'PICS.filters',
     'ui.select2',
     'ProfileService'
@@ -56003,7 +56020,6 @@ window.Modernizr = (function( window, document, undefined ) {
 });
 ;angular.module('EmployeeGUARD', [
     'PICS.employeeguard',
-    'PICS.employeeguard.skills',
     'ProfileService'
 ])
 .config(['$httpProvider', function($httpProvider) {
@@ -56016,7 +56032,8 @@ window.Modernizr = (function( window, document, undefined ) {
         suffix: '.json'
     });
 
-    $translateProvider.fallbackLanguage(['en_US']);
+    $translateProvider.fallbackLanguage(['en_GB']);
+    $translateProvider.preferredLanguage('en_GB');
 })
 
 .config(function ($routeProvider) {
@@ -56033,7 +56050,7 @@ window.Modernizr = (function( window, document, undefined ) {
 
     //Fix for failure of angular translate fallback for static files
     $rootScope.$on('$translateChangeError', function() {
-        $translate.use('en_US');
+        $translate.use('en_GB');
     });
 });;angular.module('PICS.employeeguard')
 
@@ -56058,6 +56075,18 @@ window.Modernizr = (function( window, document, undefined ) {
 
 .factory('Feedback', function($resource) {
     return $resource('/employee-guard/beta/feedback');
+});;angular.module('PICS.breadcrumb', [])
+
+.directive('breadcrumb', function () {
+    return {
+        restrict: 'E',
+        scope: {
+            links: '=',
+            target: '&'
+        },
+        replace: true,
+        templateUrl: '/employee-guard/src/app/employeeguard/common/breadcrumb/_breadcrumb.tpl.html'
+    };
 });;angular.module('PICS.employeeguard')
 .factory('EmployeeService', function (EmployeeServiceFactory) {
     var factory = {},
@@ -56149,10 +56178,6 @@ window.Modernizr = (function( window, document, undefined ) {
     return $resource('/employee-guard/operators/projects/list');
 });;angular.module('PICS.employeeguard')
 
-.factory('RoleList', function($resource) {
-    return $resource('/angular/json/operator/role_list.json');
-});;angular.module('PICS.employeeguard')
-
 .factory('SiteAssignments', function($resource, $routeParams) {
     return $resource('/employee-guard/operators/assignments/summary/:id');
 });;angular.module('PICS.employeeguard')
@@ -56216,10 +56241,6 @@ window.Modernizr = (function( window, document, undefined ) {
         replace: true,
         templateUrl: '/employee-guard/src/app/employeeguard/common/skill-status-icon/_skill-status-icon.tpl.html'
     };
-});;angular.module('PICS.employeeguard')
-
-.factory('OperatorSkillList', function($resource) {
-    return $resource('/employee-guard/api/skills');
 });;angular.module('PICS.employeeguard')
 
 .factory('WhoAmI', function($resource) {
@@ -56554,6 +56575,30 @@ window.Modernizr = (function( window, document, undefined ) {
     };
 
     return Model;
+});;angular.module('PICS.employees')
+
+.controller('employeeListCtrl', function ($scope, EmployeeListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+    });
+
+    $scope.employees = EmployeeListResource.query();
+});;angular.module('PICS.employees')
+
+.factory('EmployeeListResource', function($resource) {
+    return $resource('/employee-guard/src/app/employeeguard/employees/json/employee_list.json');
+});;angular.module('PICS.groups')
+
+.controller('groupListCtrl', function ($scope, GroupListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+    });
+
+    $scope.groups = GroupListResource.query();
+});;angular.module('PICS.groups')
+
+.factory('GroupListResource', function($resource) {
+    return $resource('/employee-guard/src/app/employeeguard/groups/json/group_list.json');
 });;angular.module('PICS.employeeguard')
 
 .controller('operatorAssignmentsCtrl', function ($scope, $routeParams, SiteList, SiteAssignments, ProjectAssignments, WhoAmI) {
@@ -57002,9 +57047,6 @@ window.Modernizr = (function( window, document, undefined ) {
         .when('/employee-guard/operators/assignments', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/assignmentlist/assignmentlist.tpl.html'
         })
-        .when('/employee-guard/operators/roles', {
-            templateUrl: '/employee-guard/src/app/employeeguard/operator/role/role_list.tpl.html'
-        })
         .when('/employee-guard/operators/employees/:id', {
             templateUrl: '/employee-guard/src/app/employeeguard/operator/employee/operator_employee.tpl.html'
         })
@@ -57034,34 +57076,18 @@ window.Modernizr = (function( window, document, undefined ) {
             $scope.orderByField = 'site';
         }
     });
-});;angular.module('PICS.employeeguard')
+});;angular.module('PICS.roles')
 
-.controller('operatorRoleListCtrl', function ($scope, RoleList, WhoAmI) {
-    $scope.roles = RoleList.query();
-    $scope.user = WhoAmI.get();
-});;angular.module('PICS.employeeguard.skills', [])
+.factory('RoleListResource', function($resource) {
+    return $resource('/employee-guard/src/app/employeeguard/roles/json/role_list.json');
+});;angular.module('PICS.roles')
 
-.config(function ($routeProvider, $locationProvider) {
-    $locationProvider.html5Mode(true);
-
-    $routeProvider.when('/employee-guard/skills', {
-        templateUrl: '/employee-guard/src/app/employeeguard/operator/skills/skills.tpl.html'
-    });
-});;angular.module('PICS.skills')
-
-.controller('operatorSkillListCtrl', function ($scope, OperatorSkillList, $filter, WhoAmI) {
-    $scope.user = WhoAmI.get();
-
-    $scope.user.$promise.then(function(user) {
-        if (user.type.toLowerCase() === 'corporate') {
-            $scope.orderByField = 'skill';
-        }
+.controller('roleListCtrl', function ($scope, RoleListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
     });
 
-    OperatorSkillList.query(function (skills) {
-        $scope.skills = skills;
-        $scope.requiredSkills = $filter('filter')(skills, { isRequiredSkill: true });
-    });
+    $scope.roles = RoleListResource.query();
 });;angular.module('PICS.employeeguard')
 
 .controller('serverInfoCtrl', function ($scope, ServerInfo) {
@@ -57071,6 +57097,121 @@ window.Modernizr = (function( window, document, undefined ) {
 .factory('ServerInfo', function($resource) {
     // return $resource('/angular/json/serverinfo/serverinfo.json');
     return $resource('/employee-guard/serverInfo');
+});;angular.module('PICS.employeeguard.skills')
+
+.factory('SkillListResource', function($resource) {
+    var skillListResource = $resource('/employee-guard/api/skills', {}, {
+        update: { method: 'PUT'},
+        query: { method: 'GET', isArray:true }
+    });
+
+    return skillListResource;
+});;angular.module('PICS.employeeguard.skills')
+
+/* MISSING JSON INFORMATION
+    contractor: "All Employees" group
+    contractor, operator, corp: skill type
+    operator, corp:  isRequired
+*/
+
+.controller('skillListCtrl', function ($scope, $filter, SkillListResource, WhoAmI) {
+    WhoAmI.get(function(user) {
+        $scope.userType = user.type.toLowerCase();
+
+        if (user.type.toLowerCase() === 'corporate') {
+            $scope.orderByField = 'skill';
+        }
+    });
+
+    SkillListResource.query(function (skills) {
+        var requiredSkills;
+
+        $scope.skills = skills;
+
+        requiredSkillsList = $filter('filter')(skills, { isRequiredSkill: true });
+
+        if (requiredSkillsList) {
+            $scope.requiredSkillsList = requiredSkillsList;
+            prefillSelectedSkills(requiredSkillsList);
+        }
+    });
+
+    function prefillSelectedSkills(requiredSkillsList) {
+        var selected_skills = [];
+
+        angular.forEach(requiredSkillsList, function(skill, i) {
+            selected_skills.push(skill.id);
+        });
+        $scope.selected_skills = selected_skills;
+    }
+
+    function formatRequestPayload(selected_skills) {
+        var required_skills = [];
+
+        if (selected_skills) {
+            angular.forEach($scope.skills, function(skill, i) {
+                angular.forEach(selected_skills, function(selected, i) {
+                    selected = parseInt(selected);
+                    if (skill.id === selected) {
+                        required_skills.push({
+                            id: skill.id,
+                            name: skill.name
+                        });
+                    }
+                });
+            });
+        }
+
+        return required_skills;
+    }
+
+    $scope.updateRequiredSkills = function(selected_skills) {
+        var requiredSkills = formatRequestPayload(selected_skills);
+        SkillListResource.update(requiredSkills);
+        $scope.toggleFormDisplay();
+        $scope.requiredSkillsList = requiredSkills;
+    };
+
+    $scope.toggleFormDisplay = function() {
+        $scope.showEditForm = !$scope.showEditForm;
+    };
+
+    angular.extend($scope, {
+        prefillSelectedSkills: prefillSelectedSkills
+    });
+});;angular.module('PICS.employeeguard.skills')
+
+.factory('SkillStatus', function() {
+    return {
+        getClassNameFromStatus: function(status) {
+            if (!status) {
+                return;
+            }
+
+            var classname = '';
+
+            status = status.toLowerCase();
+
+            switch (status) {
+                case 'completed':
+                    classname = 'success';
+                    break;
+                case 'pending':
+                    classname = 'success';
+                    break;
+                case 'expiring':
+                    classname = 'warning';
+                    break;
+                case 'expired':
+                    classname = 'danger';
+                    break;
+                default:
+                    break;
+            }
+
+            return classname;
+        }
+    };
 });;angular.module('PICS.directives')
 
 //overrides to drawConfig be added to the template or the controller file.  If not defined, drawConfig uses default values
@@ -57125,6 +57266,34 @@ window.Modernizr = (function( window, document, undefined ) {
             scope.progress = scope.values();
         },
         templateUrl: '/employee-guard/src/common/directives/stacked-progress-bar/_stacked-progress-bar.tpl.html'
+    };
+});;angular.module('PICS.directives')
+
+.directive('tooltip', function (TypeToChart) {
+    return {
+        restrict: 'A',
+        scope: {
+            title: '@',
+            placement: '@',
+            container: '@',
+            html: '@'
+        },
+        link: function (scope, element, attrs) {
+            scope.tooltip_props = ['title', 'placement', 'container'];
+
+            scope.$watchCollection('tooltip_props', function(newValue) {
+                var title = scope.title,
+                    placement = scope.placement || 'top',
+                    container = scope.container || 'body';
+
+                $(element).tooltip({
+                    title: title,
+                    placement: placement,
+                    container: container,
+                    html: scope.html
+                });
+            });
+        }
     };
 });;(function ($) {
     PICS.define('layout.menu.Menu', {
@@ -57541,7 +57710,76 @@ window.Modernizr = (function( window, document, undefined ) {
             };
         }())
     });
-}(jQuery));;angular.module('PICS.employeeguard')
+}(jQuery));;if (!Array.prototype.indexOf) {
+  Array.prototype.indexOf = function (searchElement, fromIndex) {
+
+    var k;
+
+    // 1. Let O be the result of calling ToObject passing
+    //    the this value as the argument.
+    if (this === null) {
+      throw new TypeError('"this" is null or not defined');
+    }
+
+    var O = Object(this);
+
+    // 2. Let lenValue be the result of calling the Get
+    //    internal method of O with the argument "length".
+    // 3. Let len be ToUint32(lenValue).
+    var len = O.length >>> 0;
+
+    // 4. If len is 0, return -1.
+    if (len === 0) {
+      return -1;
+    }
+
+    // 5. If argument fromIndex was passed let n be
+    //    ToInteger(fromIndex); else let n be 0.
+    var n = +fromIndex || 0;
+
+    if (Math.abs(n) === Infinity) {
+      n = 0;
+    }
+
+    // 6. If n >= len, return -1.
+    if (n >= len) {
+      return -1;
+    }
+
+    // 7. If n >= 0, then Let k be n.
+    // 8. Else, n<0, Let k be len - abs(n).
+    //    If k is less than 0, then let k be 0.
+    k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+
+    // 9. Repeat, while k < len
+    while (k < len) {
+      var kValue;
+      // a. Let Pk be ToString(k).
+      //   This is implicit for LHS operands of the in operator
+      // b. Let kPresent be the result of calling the
+      //    HasProperty internal method of O with argument Pk.
+      //   This step can be combined with c
+      // c. If kPresent is true, then
+      //    i.  Let elementK be the result of calling the Get
+      //        internal method of O with the argument ToString(k).
+      //   ii.  Let same be the result of applying the
+      //        Strict Equality Comparison Algorithm to
+      //        searchElement and elementK.
+      //  iii.  If same is true, return k.
+      if (k in O && O[k] === searchElement) {
+        return k;
+      }
+      k++;
+    }
+    return -1;
+  };
+}
+
+if (!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^\s+|\s+$/g, '');
+  };
+};angular.module('PICS.employeeguard')
 
 .factory('Dialect', function($resource) {
     return $resource('/employee-guard/api/dialects/:id');

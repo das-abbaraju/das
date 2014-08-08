@@ -1,0 +1,12 @@
+<div id="skills_page" ng-controller="skillListCtrl">
+    <div class="container">
+        <pagetitle title="{{ 'SKILLS_LIST.TITLE' | translate }}"></pagetitle>
+
+        <div ng-if="userType === 'corporate' || userType === 'operator'">
+            <ng-include src="'/employee-guard/src/app/employeeguard/skills/_operator.tpl.html'"></ng-include>
+        </div>
+        <div ng-if="userType === 'contractor'">
+            <ng-include src="'/employee-guard/src/app/employeeguard/skills/_contractor.tpl.html'"></ng-include>
+        </div>
+    </div>
+</div>
