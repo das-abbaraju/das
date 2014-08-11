@@ -75,7 +75,7 @@
                 </tr>
             </thead>
             <tbody>
-                <s:iterator value="cronDao.recentlyRunContractors(10)" var="con">
+                <s:iterator value="cronDao.recentlyRunContractors()" var="con">
                     <tr>
                         <td>${con.name}</td>
                         <td>${con.lastRecalculation}</td>
