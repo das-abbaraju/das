@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
+import javax.persistence.TypedQuery;
 
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,33 +38,42 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<EmailSubscription> findByAccountID(int accountID) {
-		Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.user.account.id = ?");
-		q.setParameter(1, accountID);
+		TypedQuery<EmailSubscription> q = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.user.account.id = :accountID",
+				EmailSubscription.class);
+		q.setParameter("accountID", accountID);
 		return q.getResultList();
 	}
 
 	public List<EmailSubscription> findByUserId(int userID) {
-		Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.user.id = ?");
-		q.setParameter(1, userID);
+		TypedQuery<EmailSubscription> q = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.user.id = :userID",
+				EmailSubscription.class);
+		q.setParameter("userID", userID);
 		return q.getResultList();
 	}
 
     public List<EmailSubscription> findByUserIdReportId(int userID, int reportID) {
-        Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.user.id = :userID AND e.report.id = :reportID");
+		TypedQuery<EmailSubscription> q = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.user.id = :userID AND e.report.id = :reportID",
+				EmailSubscription.class);
         q.setParameter("userID", userID);
         q.setParameter("reportID", reportID);
         return q.getResultList();
     }
 
     public List<EmailSubscription> findByReportID(int reportID) {
-        Query q = em.createQuery("SELECT e FROM EmailSubscription e WHERE e.report.id = :reportID");
+		TypedQuery<EmailSubscription> q = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.report.id = :reportID",
+				EmailSubscription.class);
         q.setParameter("reportID", reportID);
         return q.getResultList();
     }
 
 	public List<EmailSubscription> find(Subscription subscription, int opID) {
-		Query query = em
-				.createQuery("FROM EmailSubscription e WHERE e.subscription = :sub AND e.user.account.id = :opID AND e.user.isActive = 'Yes'");
+		TypedQuery<EmailSubscription> query = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.subscription = :sub AND e.user.account.id = :opID AND e.user.isActive = 'Yes'",
+				EmailSubscription.class);
 		query.setParameter("sub", subscription);
 		query.setParameter("opID", opID);
 
@@ -71,8 +81,9 @@ public class EmailSubscriptionDAO extends PicsDAO {
 	}
 
 	public List<EmailSubscription> find(Subscription subscription, SubscriptionTimePeriod timePeriod, int opID) {
-		Query query = em
-				.createQuery("FROM EmailSubscription e WHERE e.subscription = :sub AND e.timePeriod = :time AND e.user.account.id = :opID AND e.user.account.status = 'Active' AND e.user.isActive = 'Yes'");
+		TypedQuery<EmailSubscription> query = em.createQuery(
+				"SELECT e FROM EmailSubscription e WHERE e.subscription = :sub AND e.timePeriod = :time AND e.user.account.id = :opID AND e.user.account.status = 'Active' AND e.user.isActive = 'Yes'",
+				EmailSubscription.class);
 		query.setParameter("sub", subscription);
 		query.setParameter("time", timePeriod);
 		query.setParameter("opID", opID);

@@ -12,7 +12,6 @@
 	listValue="getText(i18nKey)"
 	id="timePeriod_%{subscription}"
 	value="%{timePeriod}"
-	onclick="save('%{subscription}', %{id}, this)"
+	onclick="save('%{subscription}', '%{id}', this)"
 	theme="pics"
-	cssClass="inline"
-/>
+	cssClass="inline"/>
