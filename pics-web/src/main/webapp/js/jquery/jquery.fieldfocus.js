@@ -53,7 +53,8 @@
 			var hlist = [{
 				text: translate('JS.Fieldhelp.Top'), 
 				e: $(me.selector).parents('form:first'), 
-				type: 'jump-top'
+				type: 'jump-top',
+                pos:0
 			}];
 			var type = 'jump-up';
 			
@@ -71,11 +72,12 @@
 				} else if (type == 'jump-current') {
 					type = 'jump-down';
 				}
-				
+				var hpos= h.offset().top-80;
 				hlist.push({
 					text: hTitle, 
 					e: h, 
-					type: type
+					type: type,
+                    pos:hpos
 				});
 			});
 			
@@ -93,7 +95,7 @@
 				var a = $('<a>').text(v.text).addClass(v.type).click(function(e) {
 					e.preventDefault();
 					
-					$.scrollTo(v.e, 800, {axis: 'y'});
+					$.scrollTo(v.pos, 800, {axis: 'y'});
 				});
 				
 				var l = $('<li>').append(a).hover(function() {
