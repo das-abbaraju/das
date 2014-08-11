@@ -32,7 +32,10 @@ public class MailCron extends ActionSupport {
         try {
             mailCronService.processEmailSubscription(subscriptionID);
         } catch (Exception e) {
-	        logger.error(e.getMessage());
+			if (e instanceof SubscriptionValidationException)
+				logger.warn(e.getMessage());
+			else
+				logger.error(e.getMessage());
             addActionError(e.getMessage());
         }
         return PicsActionSupport.ACTION_MESSAGES;
