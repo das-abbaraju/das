@@ -104,7 +104,7 @@ public class MainSearchTest extends PicsActionTest {
         mainSearch.setSearchTerm(searchTerm);
         mainSearch.execute();
         verify(db).getAllRows();
-        assertEquals(mainSearch.totalRows,1);
+        assertEquals(mainSearch.fullList.size(),1);
     }
 
     @Test
