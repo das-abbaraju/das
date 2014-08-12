@@ -44,6 +44,8 @@
 	}
 	
 	$.fn.jumpTo = function() {
+        var PRIMARY_MENU_HEIGHT=80;
+        var SECONDARY_MENU_HEIGHT=50;
 		var me = $(this);
 		var addInnerSpan = function(e) {
 			if ($(me.selector).size() < 3) {
@@ -53,8 +55,7 @@
 			var hlist = [{
 				text: translate('JS.Fieldhelp.Top'), 
 				e: $(me.selector).parents('form:first'), 
-				type: 'jump-top',
-                pos:0
+				type: 'jump-top'
 			}];
 			var type = 'jump-up';
 			
@@ -72,12 +73,10 @@
 				} else if (type == 'jump-current') {
 					type = 'jump-down';
 				}
-				var hpos= h.offset().top-80;
 				hlist.push({
 					text: hTitle, 
 					e: h, 
-					type: type,
-                    pos:hpos
+					type: type
 				});
 			});
 			
@@ -94,7 +93,11 @@
 			$.each(hlist, function(i, v) {
 				var a = $('<a>').text(v.text).addClass(v.type).click(function(e) {
 					e.preventDefault();
-					
+                    var target = v.e.offset().top - PRIMARY_MENU_HEIGHT;
+                    if($('#secondary_navigation').length==0){
+                        target=v.e.offset().top - SECONDARY_MENU_HEIGHT;
+                    }
+                    $.scrollTo(target, 800, {axis: 'y'});
 					$.scrollTo(v.pos, 800, {axis: 'y'});
 				});
 				
