@@ -305,6 +305,14 @@
                                             />
                                         </li>
                                     </s:if>
+
+                                    <li class="translation-js">
+                                        <s:checkbox
+                                                name="translation.js"
+                                                label="js"
+                                                theme="pics"
+                                                />
+                                    </li>
                                 </ul>
 
                                 <ul class="info">
@@ -352,6 +360,13 @@
 
 	<s:textarea name="translation.value" cols="50" />
 	<br />
+
+    <s:checkbox
+            name="translation.js"
+            label="js"
+            theme="pics"
+            />
+    <br />
 
 	<button name="button" class="save" value="save">Save</button>
 </s:form>
