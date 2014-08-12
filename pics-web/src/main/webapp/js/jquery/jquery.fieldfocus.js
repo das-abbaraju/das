@@ -93,12 +93,11 @@
 			$.each(hlist, function(i, v) {
 				var a = $('<a>').text(v.text).addClass(v.type).click(function(e) {
 					e.preventDefault();
-                    var target = v.e.offset().top - PRIMARY_MENU_HEIGHT;
-                    if($('#secondary_navigation').length==0){
-                        target=v.e.offset().top - SECONDARY_MENU_HEIGHT;
-                    }
-                    $.scrollTo(target, 800, {axis: 'y'});
-					$.scrollTo(v.pos, 800, {axis: 'y'});
+		                    	var target = v.e.offset().top - PRIMARY_MENU_HEIGHT;
+		                    	if($('#secondary_navigation').length==0){
+	                        		target=v.e.offset().top - SECONDARY_MENU_HEIGHT;
+	                    		}	
+		                    	$.scrollTo(target, 800, {axis: 'y'});
 				});
 				
 				var l = $('<li>').append(a).hover(function() {
