@@ -32,7 +32,10 @@ public class AccountEmployeeGuardDAO {
 			query.setParameter("accountId", accountId);
 			result = query.getSingleResult();
 		} catch (Exception e) {
-			LOG.info("Unable to find account {}", accountId, e);
+			if (e instanceof javax.persistence.NoResultException)
+				LOG.info("EmployeeGuard account {} did not exists: {}", accountId, e.getMessage());
+			else
+				LOG.info("Unable to find account {}", accountId, e);
 		}
 
 		return result;
