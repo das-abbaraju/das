@@ -1,11 +1,11 @@
 package com.picsauditing.dao;
 
+import com.picsauditing.jpa.entities.ContractorAccount;
+
 import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.picsauditing.jpa.entities.ContractorAccount;
 
 public class CronDAO extends PicsDAO {
     public Integer runCountGivenTimeMinutes(int minutes) {
@@ -25,14 +25,13 @@ public class CronDAO extends PicsDAO {
         return Float.parseFloat(q.getSingleResult().toString());
     }
 
-    public List<ContractorAccount> recentlyRunContractors(int limit) {
-        String sql = "SELECT a.*, c.* \n" +
-                "FROM contractor_cron_log ccl\n" +
-                "JOIN contractor_info c ON c.id = ccl.conID\n" +
-                "JOIN accounts a on a.id = c.id\n" +
-                "WHERE ccl.success = 1\n" +
-                "ORDER BY ccl.id DESC\n" +
-                "LIMIT " + limit;
+    public List<ContractorAccount> recentlyRunContractors() {
+        String sql = "SELECT a.id, a.name, c.lastRecalculation " +
+                "FROM contractor_cron_log ccl " +
+                "JOIN contractor_info c ON c.id = ccl.conID " +
+                "JOIN accounts a on a.id = ccl.conID " +
+                "ORDER BY ccl.id DESC " +
+                "LIMIT 10";
         Query q = em.createNativeQuery(sql, ContractorAccount.class);
 
         return q.getResultList();
