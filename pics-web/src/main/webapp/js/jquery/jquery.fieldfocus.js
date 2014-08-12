@@ -44,6 +44,8 @@
 	}
 	
 	$.fn.jumpTo = function() {
+        var PRIMARY_MENU_HEIGHT=80;
+        var SECONDARY_MENU_HEIGHT=50;
 		var me = $(this);
 		var addInnerSpan = function(e) {
 			if ($(me.selector).size() < 3) {
@@ -71,7 +73,6 @@
 				} else if (type == 'jump-current') {
 					type = 'jump-down';
 				}
-				
 				hlist.push({
 					text: hTitle, 
 					e: h, 
@@ -92,8 +93,11 @@
 			$.each(hlist, function(i, v) {
 				var a = $('<a>').text(v.text).addClass(v.type).click(function(e) {
 					e.preventDefault();
-					
-					$.scrollTo(v.e, 800, {axis: 'y'});
+		                    	var target = v.e.offset().top - PRIMARY_MENU_HEIGHT;
+		                    	if($('#secondary_navigation').length==0){
+	                        		target=v.e.offset().top - SECONDARY_MENU_HEIGHT;
+	                    		}	
+		                    	$.scrollTo(target, 800, {axis: 'y'});
 				});
 				
 				var l = $('<li>').append(a).hover(function() {
