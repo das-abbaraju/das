@@ -38,7 +38,13 @@ public class PaymentObserver implements Observer {
 
             paymentStrategy.processPaymentCommission(event.getData(), event.getPaymentEventType());
 		} catch (Exception e) {
-			logger.error("An error occured during processing in PaymentObserver", e);
+			// skip details log for DB constraint exceptions
+			if (e instanceof javax.persistence.PersistenceException) {
+				logger.warn("A DB error occurred during processing in PaymentObserver: {}",
+						org.apache.commons.lang.exception.ExceptionUtils.getRootCauseMessage(e));
+			} else {
+				logger.error("An error occurred during processing in PaymentObserver", e);
+			}
 		}
 	}
 }
