@@ -261,5 +261,7 @@
     <include file="./liquibase/2014/Q3/cfranks10_PICS-15650_Roll_Up_Site_User_Group_to_Corporate_Group.sql"/>
     <include file="./liquibase/2014/Q3/kchase41_PICS-14895_ChangeBackgroundTemplate132.sql"/>
 
+    <!-- 7.3.5 -->
+    <include file="./liquibase/2014/Q3/mdo62_PICS-15740.sql"/>
 
 </databaseChangeLog>
