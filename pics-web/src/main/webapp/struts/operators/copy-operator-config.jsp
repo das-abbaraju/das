@@ -51,6 +51,15 @@ td.fail {
                     headerValue="- Select the Target Client -"
                     />
         </li>
+        <li>
+            <label>
+                Copy down from Hierarchy? (Copies from Corporate and Hub):
+            </label>
+            <s:checkbox
+                    name="copyParents"
+                    theme="pics"
+                    />
+        </li>
     </ol>
 </fieldset>
 <fieldset class="form submit">
