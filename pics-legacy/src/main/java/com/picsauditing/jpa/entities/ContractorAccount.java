@@ -585,7 +585,7 @@ public class ContractorAccount extends Account implements JSONable {
 	 * @return
 	 */
 	@Enumerated(EnumType.STRING)
-	@ReportField(type = FieldType.String, requiredPermissions = OpPerms.Billing)
+	@ReportField(type = FieldType.String, requiredPermissions = OpPerms.Billing, importance = FieldImportance.Average)
 	public PaymentMethod getPaymentMethod() {
 		return paymentMethod;
 	}

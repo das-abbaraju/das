@@ -172,6 +172,15 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testInvoiceModel_Billing() throws Exception {
+        EntityFactory.addUserPermission(permissions, OpPerms.Billing);
+        model = new InvoicesModel(permissions);
+        Map<String, Field> fields = model.getAvailableFields();
+        Field accountName = fields.get("AccountName".toUpperCase());
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testPaymentModel() throws Exception {
         EntityFactory.addUserPermission(permissions, OpPerms.AllContractors);
         model = new PaymentsModel(permissions);
