@@ -3,6 +3,7 @@ package com.picsauditing.actions.operators;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.jpa.entities.Facility;
 import com.picsauditing.jpa.entities.OperatorAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +18,8 @@ public class CopyOperatorConfig extends PicsActionSupport {
     private int sourceID;
     private int targetID;
 
+    private boolean isCopyParents = false;
+
 	@Override
 	public String execute() throws Exception {
         permissions.tryPermission(OpPerms.ManageOperatorConfig);
@@ -28,6 +31,16 @@ public class CopyOperatorConfig extends PicsActionSupport {
         permissions.tryPermission(OpPerms.ManageOperatorConfig);
         permissions.tryPermission(OpPerms.DevelopmentEnvironment);
 
+        copyOperator(sourceID);
+
+        if (isCopyParents) {
+            copyOperatorParents();
+        }
+
+        return SUCCESS;
+    }
+
+    private void copyOperator(int sourceID) {
         operatorAccountDAO.copyAuditTypeRules(sourceID, targetID, permissions.getUserId());
         addActionMessage("Copied Audit Type Rules");
 
@@ -36,13 +49,18 @@ public class CopyOperatorConfig extends PicsActionSupport {
 
         operatorAccountDAO.copyFlagCriteriaOperators(sourceID, targetID, permissions.getUserId());
         addActionMessage("Copied Operator Flag Criteria");
+    }
 
-
-        return SUCCESS;
+    private void copyOperatorParents() {
+        OperatorAccount source = operatorAccountDAO.find(sourceID);
+        List<Facility> facilities = source.getCorporateFacilities();
+        for (Facility facility : facilities) {
+            copyOperator(facility.getCorporate().getId());
+        }
     }
 
     public List<OperatorAccount> getOperatorList() {
-        return operatorAccountDAO.findAll(OperatorAccount.class);
+        return operatorAccountDAO.findWhere(OperatorAccount.class, "1=1", 0, "t.name");
     }
 
     public int getSourceID() {
@@ -59,5 +77,13 @@ public class CopyOperatorConfig extends PicsActionSupport {
 
     public void setTargetID(int targetID) {
         this.targetID = targetID;
+    }
+
+    public boolean isCopyParents() {
+        return isCopyParents;
+    }
+
+    public void setCopyParents(boolean isCopyParents) {
+        this.isCopyParents = isCopyParents;
     }
 }
