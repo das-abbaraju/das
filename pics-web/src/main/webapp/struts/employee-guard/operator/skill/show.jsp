@@ -41,7 +41,7 @@
             <h1>
                 <div class="row">
                     <div class="col-md-9 col-xs-9">
-                        <i class="icon-certificate icon-large"></i> Skill
+                        <i class="icon-certificate icon-large"></i> <s:text name="OPERATOR.SKILLS.SHOW.SKILL"/>
                     </div>
                     <s:if test="permissions.accountId == skill.accountId">
                         <div class="col-md-3 col-xs-3 edit">
