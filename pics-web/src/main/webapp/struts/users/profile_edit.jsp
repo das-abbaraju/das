@@ -39,9 +39,8 @@
 		startThinking({'div': divName});
 
 		$('#' + divName).load('UserEmailSubscriptionSaveAjax.action', data, function () {
-					$(this).effect('highlight', {color: '#FFFF11'}, 1000)
-				}
-		);
+			$(this).effect('highlight', {color: '#FFFF11'}, 1000)
+		});
 	}
 
 	function showTab(tabName) {
@@ -172,8 +171,7 @@
 
 	<div id="tab_subscriptions" style="display: none;">
 		<s:iterator value="eList" status="stat">
-			<div id="td<s:property value="subscription"/>"
-			     <s:if test="#stat.even">class="shaded"</s:if>>
+			<div id="td<s:property value="subscription"/>" <s:if test="#stat.even">class="shaded"</s:if>>
 				<s:include value="../mail/user_email_subscription.jsp"/>
 			</div>
 		</s:iterator>

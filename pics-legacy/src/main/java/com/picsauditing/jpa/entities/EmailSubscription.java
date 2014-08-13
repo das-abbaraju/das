@@ -2,15 +2,7 @@ package com.picsauditing.jpa.entities;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.mail.Subscription;
@@ -22,7 +14,9 @@ import com.picsauditing.service.ReportService;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "email_subscription")
+@Table(name = "email_subscription", uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"userID", "subscription", "reportID"})
+})
 public class EmailSubscription extends BaseTable {
 	private User user;
 	private Subscription subscription;
@@ -31,7 +25,7 @@ public class EmailSubscription extends BaseTable {
 	private OpPerms permission;
     private Report report;
 
-	@ManyToOne
+	@ManyToOne(optional = false)
 	@JoinColumn(name = "userID", nullable = false, updatable = false)
 	public User getUser() {
 		return user;
@@ -97,7 +91,7 @@ public class EmailSubscription extends BaseTable {
 		setTimePeriod(SubscriptionTimePeriod.None);
 	}
 
-    @ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reportID")
     public Report getReport() {
         if (report == null) {
