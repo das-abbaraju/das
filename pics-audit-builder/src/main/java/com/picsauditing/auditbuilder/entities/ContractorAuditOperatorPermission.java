@@ -3,16 +3,30 @@ package com.picsauditing.auditbuilder.entities;
 import javax.persistence.*;
 import java.io.Serializable;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorAuditOperatorPermission")
 @Table(name = "contractor_audit_operator_permission")
 public class ContractorAuditOperatorPermission implements Serializable {
 
+    private int id;
 	private ContractorAuditOperator cao;
 	private OperatorAccount operator;
 	private ContractorAuditOperator previousCao;
 
-	@ManyToOne
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(nullable = false)
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @ManyToOne
 	@JoinColumn(name = "caoID")
 	public ContractorAuditOperator getCao() {
 		return cao;

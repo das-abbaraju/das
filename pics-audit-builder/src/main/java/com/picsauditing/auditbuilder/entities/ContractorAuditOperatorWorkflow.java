@@ -3,7 +3,7 @@ package com.picsauditing.auditbuilder.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorAuditOperatorWorkflow")
 @Table(name = "contractor_audit_operator_workflow")
 public class ContractorAuditOperatorWorkflow extends BaseTable {
 

@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.Account")
 @Table(name = "accounts")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Account extends BaseTable implements Comparable<Account> {
@@ -18,6 +18,10 @@ public class Account extends BaseTable implements Comparable<Account> {
         Arrays.asList(4, 5, 6, 7, 8, 9, 10, 11));
 
     public static final String ADMIN_ACCOUNT_TYPE = "Admin";
+    public static final String ASSESSMENT_ACCOUNT_TYPE = "Assessment";
+    public static final String CONTRACTOR_ACCOUNT_TYPE = "Contractor";
+    public static final String CORPORATE_ACCOUNT_TYPE = "Corporate";
+    public static final String OPERATOR_ACCOUNT_TYPE = "Operator";
 
     protected String name;
     protected AccountStatus status = AccountStatus.Pending;

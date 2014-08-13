@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorTag")
 @Table(name = "contractor_tag")
 public class ContractorTag extends BaseTable implements java.io.Serializable {
 

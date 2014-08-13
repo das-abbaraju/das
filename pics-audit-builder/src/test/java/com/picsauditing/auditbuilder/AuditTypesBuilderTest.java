@@ -33,7 +33,9 @@ public class AuditTypesBuilderTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		auditTypesBuilder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
+		auditTypesBuilder = new AuditTypesBuilder();
+        auditTypesBuilder.setRuleCache(auditTypeRuleCache);
+        auditTypesBuilder.setContractor(contractor);
 
 		Whitebox.setInternalState(auditTypesBuilder, "auditDataDAO", auditDataDAO);
 

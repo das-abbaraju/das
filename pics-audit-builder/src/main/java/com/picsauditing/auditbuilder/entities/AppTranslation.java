@@ -5,7 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AppTranslation")
 @Table(name = "app_translation")
 public class AppTranslation extends BaseTable implements java.io.Serializable {
 

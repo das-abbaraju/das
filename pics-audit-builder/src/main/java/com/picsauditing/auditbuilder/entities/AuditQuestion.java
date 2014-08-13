@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditQuestion")
 @Table(name = "audit_question")
 public class AuditQuestion extends BaseHistory {
 
@@ -13,6 +13,7 @@ public class AuditQuestion extends BaseHistory {
 	static public final int COR = 2954;
 	static public final int IEC = 10330;
 
+    private int number;
 	private int scoreWeight;
 	private boolean hasRequirement;
 	private boolean required;
@@ -28,6 +29,14 @@ public class AuditQuestion extends BaseHistory {
 	private List<AuditQuestionFunction> functions = new ArrayList<>();
 	private List<AuditQuestionFunctionWatcher> functionWatchers = new ArrayList<>();
 
+    @Column(nullable = false)
+    public int getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "categoryID", nullable = false)
 	public AuditCategory getCategory() {

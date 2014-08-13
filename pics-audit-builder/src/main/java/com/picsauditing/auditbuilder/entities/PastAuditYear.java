@@ -17,4 +17,22 @@ public enum PastAuditYear {
 		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 		return currentYear - dbValue;
 	}
+
+    public int getDbValue() {
+        return dbValue;
+    }
+
+    public void setDbValue(int dbValue) {
+        this.dbValue = dbValue;
+    }
+
+    public static PastAuditYear fromDbValue(int dbValue) {
+        for (PastAuditYear pastAuditYear : PastAuditYear.values()) {
+            if (pastAuditYear.dbValue == dbValue) {
+                return pastAuditYear;
+            }
+        }
+
+        return PastAuditYear.Any;
+    }
 }

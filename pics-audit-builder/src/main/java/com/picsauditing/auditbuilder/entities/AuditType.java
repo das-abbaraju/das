@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditType")
 @Table(name = "audit_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class AuditType extends BaseTable implements java.io.Serializable {
@@ -26,6 +26,7 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 	public static final int SSIP = 514;
 
 	protected AuditTypeClass classType = AuditTypeClass.Audit;
+    protected int displayOrder = 100;
 	protected boolean hasMultiple;
 	protected boolean canOperatorView;
 	protected boolean renewable = true;
@@ -37,6 +38,8 @@ public class AuditType extends BaseTable implements java.io.Serializable {
     protected int anchorMonth = 1;
     protected int advanceDays = 0;
     protected int maximumActive = 1;
+    protected AuditType parent = null;
+    protected AuditStatus rollbackStatus = null;
 
 	protected List<AuditCategory> categories = new ArrayList<>();
 
@@ -52,7 +55,15 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 		this.classType = classType;
 	}
 
-	public boolean isHasMultiple() {
+    public int getDisplayOrder() {
+        return displayOrder;
+    }
+
+    public void setDisplayOrder(int displayOrder) {
+        this.displayOrder = displayOrder;
+    }
+
+    public boolean isHasMultiple() {
 		return hasMultiple;
 	}
 
@@ -153,4 +164,26 @@ public class AuditType extends BaseTable implements java.io.Serializable {
     public void setMaximumActive(int maximumActive) {
         this.maximumActive = maximumActive;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "parentID", nullable = true)
+    public AuditType getParent() {
+        return parent;
+    }
+
+    public void setParent(AuditType parent) {
+        this.parent = parent;
+    }
+
+    @Column(name = "rollbackStatus", nullable = false)
+    @Enumerated(EnumType.STRING)
+    public AuditStatus getRollbackStatus() {
+        return rollbackStatus;
+    }
+
+    public void setRollbackStatus(AuditStatus rollbackStatus) {
+        this.rollbackStatus = rollbackStatus;
+    }
+
+
 }

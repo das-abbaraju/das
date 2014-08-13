@@ -7,12 +7,16 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.User")
 @Table(name = "users")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class User extends BaseTable implements java.io.Serializable {
 
 	public static int SYSTEM = 1;
+
+    public User() {
+
+    }
 
 	public User(int id) {
 		this.id = id;

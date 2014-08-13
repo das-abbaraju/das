@@ -13,8 +13,7 @@ public class AuditTypeDAO2 extends PicsDAO {
 		if (where.length() > 0)
 			where = "WHERE " + where;
 
-		Query query = em
-				.createQuery("FROM AuditType t " + where + " ORDER BY t.classType, t.displayOrder");
+		Query query = em.createQuery("FROM com.picsauditing.auditbuilder.entities.AuditType t " + where + " ORDER BY t.classType, t.displayOrder");
 		return query.getResultList();
 	}
 }

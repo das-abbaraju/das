@@ -41,7 +41,7 @@ public class ContractorAuditDAO2 extends PicsDAO {
 	}
 
     public List<ContractorAudit> findAuditsByContractorAuditTypeAuditFors(int conID, int auditTypeID, List<String> auditFors) {
-        String sql = "SELECT t FROM ContractorAudit t "
+        String sql = "SELECT t FROM com.picsauditing.auditbuilder.entities.ContractorAudit t "
                 + " WHERE t.contractorAccount.id = " + conID
                 + " AND t.auditType.id = " + auditTypeID
                 + " AND t.auditFor in (";
@@ -62,7 +62,7 @@ public class ContractorAuditDAO2 extends PicsDAO {
 	}
 
 	public ContractorAudit findMostRecentAuditByContractorAuditType(int conId, int auditTypeId) {
-		String hql = "SELECT ca FROM ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + conId
+		String hql = "SELECT ca FROM com.picsauditing.auditbuilder.entities.ContractorAudit ca " + "WHERE ca.contractorAccount.id = " + conId
 				+ " AND ca.auditType.id = " + auditTypeId + " order by ca.expiresDate DESC";
 
 		List<ContractorAudit> audits = em.createQuery(hql).getResultList();
@@ -83,7 +83,7 @@ public class ContractorAuditDAO2 extends PicsDAO {
 			return null;
 		}
 
-		Query query = em.createQuery("SELECT t FROM ContractorAudit t " + "WHERE t.contractorAccount.id = :conId "
+		Query query = em.createQuery("SELECT t FROM com.picsauditing.auditbuilder.entities.ContractorAudit t " + "WHERE t.contractorAccount.id = :conId "
 				+ " AND t.auditType.id = :auditTypeId AND t.creationDate < :creationDate "
 				+ " ORDER BY t.creationDate DESC");
 		query.setParameter("conId", audit.getContractorAccount().getId());
@@ -98,7 +98,7 @@ public class ContractorAuditDAO2 extends PicsDAO {
 	}
 
 	public List<ContractorAudit> findSubsequentAudits(ContractorAudit conAudit) {
-		Query query = em.createQuery("SELECT ca FROM ContractorAudit ca WHERE ca.previousAudit = :conAudit " +
+		Query query = em.createQuery("SELECT ca FROM com.picsauditing.auditbuilder.entities.ContractorAudit ca WHERE ca.previousAudit = :conAudit " +
 				"ORDER BY ca.creationDate DESC");
 		query.setParameter("conAudit", conAudit);
 

@@ -194,8 +194,8 @@ public class AuditRule extends BaseDecisionTreeRule {
 	}
 
 	@Enumerated(EnumType.STRING)
-	@Type(type = "com.picsauditing.jpa.entities.EnumMapperWithEmptyStrings", parameters = {
-			@Parameter(name = "enumClass", value = "com.picsauditing.jpa.entities.PastAuditYear"),
+	@Type(type = "com.picsauditing.auditbuilder.entities.EnumMapperWithEmptyStrings", parameters = {
+			@Parameter(name = "enumClass", value = "com.picsauditing.auditbuilder.entities.PastAuditYear"),
 			@Parameter(name = "identifierMethod", value = "getDbValue"),
 			@Parameter(name = "valueOfMethod", value = "fromDbValue")})
 	public PastAuditYear getYearToCheck() {

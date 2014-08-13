@@ -5,13 +5,16 @@ import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
 import com.picsauditing.auditbuilder.service.AuditService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public class AuditTypesBuilder extends AuditBuilderBase {
+public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypesBuilder {
+    @Autowired
+    private AuditDataDAO2 auditDataDAO;
+
 	private AuditTypeRuleCache2 ruleCache;
 	private List<AuditTypeRule> rules;
-	private AuditDataDAO2 auditDataDAO;
 
     public void setAuditDataDAO(AuditDataDAO2 auditDataDAO) {
         this.auditDataDAO = auditDataDAO;
@@ -22,10 +25,14 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		public Set<OperatorAccount> operators = new HashSet<>();
 	}
 
-	public AuditTypesBuilder(AuditTypeRuleCache2 ruleCache, ContractorAccount contractor) {
-		super(contractor);
-		this.ruleCache = ruleCache;
-	}
+    public void setRuleCache(AuditTypeRuleCache2 ruleCache) {
+        this.ruleCache = ruleCache;
+    }
+
+    public void setContractorId(int contractorId) {
+        ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
+        this.setContractor(contractor);
+    }
 
 	public Set<AuditTypeDetail> calculate() {
 		Set<AuditTypeDetail> types = new HashSet<>();
@@ -189,6 +196,6 @@ public class AuditTypesBuilder extends AuditBuilderBase {
     }
 
     private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
-		return auditDataDAO.findAnswersByContractorAndQuestion(contractor, question);
+	    return auditDataDAO.findAnswersByContractorAndQuestion(contractor, question);
 	}
 }
