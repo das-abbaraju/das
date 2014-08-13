@@ -5,10 +5,7 @@ import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.tables.AccountTable;
-import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.report.tables.UserGroupTable;
-import com.picsauditing.report.tables.UserTable;
+import com.picsauditing.report.tables.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,8 +24,12 @@ public class ContractorUsersModel extends AbstractModel {
         ModelSpec account = spec.join(UserTable.Account);
         account.alias = "Account";
 
-        ModelSpec operator = account.join(AccountTable.Contractor);
-        operator.minimumImportance = FieldImportance.Low;
+        ModelSpec contractor = account.join(AccountTable.Contractor);
+        contractor.minimumImportance = FieldImportance.Low;
+
+        if (permissions.isOperatorCorporate()) {
+            ModelSpec flag = contractor.join(ContractorTable.Flag);
+        }
 
         ModelSpec loginLog = spec.join(UserTable.LoginLog);
         loginLog.alias = "LoginLog";
