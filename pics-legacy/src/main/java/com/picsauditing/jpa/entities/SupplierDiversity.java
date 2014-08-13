@@ -1,7 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 public enum SupplierDiversity implements Translatable, ReportEnum {
-    SmallBusiness(2340),WomenOwned(2373),DisabledVeteranOwned(3543),UnionPersonnel(66),NonUnionPersonnel(77),
+    SmallBusiness(2340),MinorityOwned(2354),WomenOwned(2373),DisabledVeteranOwned(3543),UnionPersonnel(66),NonUnionPersonnel(77),
     AboriginalOwned(9672),AboriginalEmployees(9675);
 
     private int value;
