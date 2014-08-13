@@ -7,7 +7,9 @@ angular.module('PICS.directives')
             googleMapsAutocomplete: '='
         },
         link: function (scope, element, attrs) {
-            scope.googleMapsAutocomplete = new google.maps.places.Autocomplete(element[0], {});
+            scope.googleMapsAutocomplete = new google.maps.places.Autocomplete(element[0], {
+                types: ['geocode']
+            });
         }
     };
 });
