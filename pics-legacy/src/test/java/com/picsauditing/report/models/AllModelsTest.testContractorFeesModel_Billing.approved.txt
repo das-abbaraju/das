@@ -28,6 +28,7 @@ ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
 ContractorOriginalMembershipDate
+ContractorPaymentMethod
 ContractorProductRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
