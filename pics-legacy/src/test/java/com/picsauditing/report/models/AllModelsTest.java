@@ -85,6 +85,13 @@ public class AllModelsTest {
     }
 
     @Test
+    public void testContractorUsersModel_Operator() throws Exception {
+        permissions.setAccountType("Corporate");
+        model = new ContractorUsersModel(permissions);
+        Approvals.verify(getJoin());
+    }
+
+    @Test
     public void testContractorsModelWhereClause_ArchivedReportDeactivatedContractorsVisibleForOperator() throws Exception {
         permissions.setAccountType("Corporate");
         model = new ContractorsModel(permissions);
