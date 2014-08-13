@@ -1,22 +1,10 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.TreeSet;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import org.apache.commons.lang3.StringUtils;
+import javax.persistence.*;
+import java.util.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -30,6 +18,7 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	private TranslationQualityRating qualityRating;
 	private boolean applicable;
 	private String sourceLanguage;
+	private boolean js;
 	private boolean contentDriven;
 
 	private static List<Locale> locales = null;
@@ -151,4 +140,12 @@ public class AppTranslation extends BaseTable implements java.io.Serializable {
 	public void setContentDriven(boolean contentDriven) {
 		this.contentDriven = contentDriven;
 	}
+
+    public boolean isJs() {
+        return js;
+    }
+
+    public void setJs(boolean js) {
+        this.js = js;
+    }
 }
