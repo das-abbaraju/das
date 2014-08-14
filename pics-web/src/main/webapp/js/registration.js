@@ -303,6 +303,9 @@
                         this.bindSelect2EventstoPopover();
 
                         $country_select.on('change', $.proxy(this.updateCountryFields, this));
+                        var $country = $('.country select'),
+                            selected_country = $country.val() || '';
+                        this.updateTaxId(selected_country);
 
                     } else if ($('.RegistrationServiceEvaluation-page').length) {
                         $('.service-evaluation').on('click', '#autofill', this.autofillRegistrationServiceEvaluationFormForDev);
@@ -564,11 +567,11 @@
                             if (tax_id_required) {
                                 if (!visible_tax_id_el) {
                                     tax_id_el.slideDown(400);
-                                    visible_tax_id_el = tax_id_el;                                    
+                                    visible_tax_id_el = tax_id_el;
                                 } else {
-                                    visible_tax_id_el.hide();
+
                                     tax_id_el.show();
-                                    visible_tax_id_el = tax_id_el;                                    
+                                    visible_tax_id_el = tax_id_el;
                                 }
                             } else if (visible_tax_id_el) {
                                 visible_tax_id_el.slideUp(400);
