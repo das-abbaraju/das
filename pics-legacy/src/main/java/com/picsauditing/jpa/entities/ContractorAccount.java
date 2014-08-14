@@ -631,7 +631,7 @@ public class ContractorAccount extends Account implements JSONable {
      */
 	@Temporal(TemporalType.DATE)
 	@Column(nullable = false)
-	@ReportField(type = FieldType.Date, requiredPermissions = OpPerms.AllOperators, importance = FieldImportance.Average)
+	@ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getPaymentExpires() {
 		return this.paymentExpires;
 	}

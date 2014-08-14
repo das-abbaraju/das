@@ -533,7 +533,7 @@ public class Account extends AbstractIndexableTable implements Comparable<Accoun
         this.type = type;
     }
 
-    @ReportField(width = 200, requiredPermissions = OpPerms.AllOperators)
+    @ReportField(width = 200)
     public String getReason() {
         return reason;
     }

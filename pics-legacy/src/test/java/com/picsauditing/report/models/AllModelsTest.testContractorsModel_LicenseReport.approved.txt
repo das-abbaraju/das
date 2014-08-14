@@ -28,6 +28,7 @@ AccountName
 AccountOffsiteServices
 AccountOnsiteServices
 AccountPhone
+AccountReason
 AccountRequiresCompetencyReview
 AccountRequiresOQ
 AccountStatus
@@ -66,6 +67,7 @@ ContractorPQFCALicenseNumberAnswer
 ContractorPQFID
 ContractorPQFTypeName
 ContractorPQFTypeNameString
+ContractorPaymentExpires
 ContractorProductRisk
 ContractorProductRiskVerified
 ContractorProfessionalIndemnityPROILimitAnswer
