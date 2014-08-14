@@ -15,7 +15,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private OperatorAccount auditFor = null;
 
 	public AuditCategoriesBuilder(AuditCategoryRuleCache2 auditCategoryRuleCache, ContractorAccount contractor) {
-		super(contractor);
+		setContractor(contractor);
 		this.ruleCache = auditCategoryRuleCache;
 	}
 

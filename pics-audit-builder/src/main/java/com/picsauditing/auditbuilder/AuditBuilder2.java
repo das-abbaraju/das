@@ -43,6 +43,8 @@ public class AuditBuilder2 {
     AuditPeriodService2 auditPeriodService;
     @Autowired
     private AuditTypeDAO2 auditTypeDao;
+    @Autowired
+    private AuditTypesBuilder typesBuilder;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder2.class);
 
@@ -62,9 +64,9 @@ public class AuditBuilder2 {
     }
 
 	public void buildAudits(ContractorAccount contractor) {
-		AuditTypesBuilder typesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
+        typesBuilder.setRuleCache(typeRuleCache);
+        typesBuilder.setContractor(contractor);
         typesBuilder.setContractorTagDAO(contractorTagDAO);
-        typesBuilder.setAuditDataDAO(auditDataDAO);
 
 		Set<AuditTypeDetail> requiredAuditTypeDetails = typesBuilder.calculate();
 		Set<AuditType> requiredAuditTypes = new HashSet<>();

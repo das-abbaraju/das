@@ -3,9 +3,8 @@ package com.picsauditing.auditbuilder.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.Trade")
 @Table(name = "ref_trade")
-@SqlResultSetMapping(name = "matchingTradeResults", entities = @EntityResult(entityClass = Trade.class), columns = @ColumnResult(name = "matching"))
 public class Trade extends BaseTable {
 
 	static public final int TOP_ID = 5;

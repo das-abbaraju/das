@@ -9,7 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.Country")
 @Table(name = "ref_country")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class Country implements Serializable {

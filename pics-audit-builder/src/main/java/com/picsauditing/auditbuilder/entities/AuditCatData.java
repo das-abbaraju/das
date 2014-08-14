@@ -3,7 +3,7 @@ package com.picsauditing.auditbuilder.entities;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditCatData")
 @Table(name = "audit_cat_data")
 public class AuditCatData extends BaseTable implements java.io.Serializable {
 

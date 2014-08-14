@@ -128,6 +128,40 @@
         <class>com.picsauditing.flagcalculator.entities.Workflow</class>
         <class>com.picsauditing.flagcalculator.entities.WorkflowStep</class>
 
+        <class>com.picsauditing.auditbuilder.entities.Account</class>
+        <class>com.picsauditing.auditbuilder.entities.AppTranslation</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditCatData</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditCategory</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditCategoryRule</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditData</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditOptionGroup</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditOptionValue</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditQuestion</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditQuestionFunction</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditQuestionFunctionWatcher</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditRule</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditType</class>
+        <class>com.picsauditing.auditbuilder.entities.AuditTypeRule</class>
+        <class>com.picsauditing.auditbuilder.entities.BaseDecisionTreeRule</class>
+        <class>com.picsauditing.auditbuilder.entities.BaseHistory</class>
+        <class>com.picsauditing.auditbuilder.entities.BaseTable</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorAccount</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorAudit</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperator</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperatorPermission</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperatorWorkflow</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorOperator</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorTag</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorTrade</class>
+        <class>com.picsauditing.auditbuilder.entities.Country</class>
+        <class>com.picsauditing.auditbuilder.entities.Facility</class>
+        <class>com.picsauditing.auditbuilder.entities.OperatorAccount</class>
+        <class>com.picsauditing.auditbuilder.entities.OperatorTag</class>
+        <class>com.picsauditing.auditbuilder.entities.Trade</class>
+        <class>com.picsauditing.auditbuilder.entities.User</class>
+        <class>com.picsauditing.auditbuilder.entities.Workflow</class>
+        <class>com.picsauditing.auditbuilder.entities.WorkflowStep</class>
+
         <properties>
             <property name="hibernate.hbm2ddl.auto" value=""/>
             <property name="hibernate.max_fetch_depth" value="1"/>

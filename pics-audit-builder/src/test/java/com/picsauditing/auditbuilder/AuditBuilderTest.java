@@ -80,7 +80,10 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.setInternalState(auditBuilder, "conAuditDao", conAuditDao);
 		Whitebox.setInternalState(auditBuilder, "contractorAuditFileDAO", contractorAuditFileDAO);
 
-		typeRules.clear();
+        AuditTypesBuilder typesBuilder = new AuditTypesBuilder();
+        Whitebox.setInternalState(auditBuilder, "typesBuilder", typesBuilder);
+
+        typeRules.clear();
 		typeRuleCache.clear();
 		catRules.clear();
 		catRuleCache.clear();
@@ -109,56 +112,7 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	@Test
-	public void testAdjustCaoStatus() throws Exception {
-		ContractorAudit annualAudit = EntityFactory.makeAnnualUpdate(AuditType.ANNUALADDENDUM, contractor, "2011");
-		EntityFactory.addCategories(annualAudit.getAuditType(), 101, "Annual Category 1");
-
-		OperatorAccount nueOperator = EntityFactory.makeOperator();
-		OperatorAccount oldOperator = EntityFactory.makeOperator();
-		OperatorAccount childOperator = EntityFactory.makeOperator();
-
-		EntityFactory.addCao(annualAudit, oldOperator);
-		ContractorAuditOperator cao = annualAudit.getOperators().get(0);
-		cao.setStatus(AuditStatus.Complete);
-		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
-		caop.setCao(cao);
-		caop.setOperator(childOperator);
-		cao.getCaoPermissions().add(caop);
-
-		contractor.getAudits().add(annualAudit);
-
-		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.ANNUALADDENDUM));
-		for (AuditCategory category : annualAudit.getAuditType().getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(annualAudit.getAuditType()).setAuditCategory(category)
-					.setOperatorAccount(nueOperator));
-		}
-
-		when(conAuditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
-				EntityFactory.makeAuditType(AuditType.ANNUALADDENDUM));
-
-		auditBuilder.buildAudits(contractor);
-		assertEquals(3, contractor.getAudits().size());
-	}
-
-	@Test
-	public void testWelcomCalls() throws Exception {
-		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
-		EntityFactory.addCategories(auditType, 101, "Welcome Category 1");
-		// set up rules
-		addTypeRules((new RuleParameters()).setAuditType(auditType));
-		for (AuditCategory category : auditType.getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(auditType).setAuditCategory(category));
-		}
-
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
-
-		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
-		assertEquals(1, auditTypes.size());
-	}
-
-	@Test
-	public void testAuditTypeBuilderCategoryBuildere() throws Exception {
+	public void testAuditTypeBuilderCategoryBuilder() throws Exception {
 		// set up audit type
 		AuditType pqfType = EntityFactory.makeAuditType(AuditType.PQF);
 		EntityFactory.addCategories(pqfType, 101, "PQF Category 1");
@@ -170,7 +124,10 @@ public class AuditBuilderTest extends PicsTest {
 			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setAuditCategory(category));
 		}
 
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
+		AuditTypesBuilder typeBuilder = new AuditTypesBuilder();
+        typeBuilder.setRuleCache(typeRuleCache);
+        typeBuilder.setContractor(contractor);
+
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
 
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
@@ -201,6 +158,10 @@ public class AuditBuilderTest extends PicsTest {
 
 		auditBuilder.buildAudits(contractor);
 		assertEquals(1, contractor.getAudits().size());
+
+        // test no duplicates
+        auditBuilder.buildAudits(contractor);
+        assertEquals(1, contractor.getAudits().size());
 	}
 
 	@Test

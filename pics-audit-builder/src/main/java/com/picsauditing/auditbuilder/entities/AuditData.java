@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditData")
 @Table(name = "pqfdata")
 public class AuditData extends BaseTable implements java.io.Serializable {
 

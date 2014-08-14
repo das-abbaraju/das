@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditCategoryRule")
 @Table(name = "audit_category_rule")
 public class AuditCategoryRule extends AuditRule {
 

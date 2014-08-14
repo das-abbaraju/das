@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditQuestionFunctionWatcher")
 @Table(name = "audit_question_function_watcher")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public final class AuditQuestionFunctionWatcher extends BaseTable {

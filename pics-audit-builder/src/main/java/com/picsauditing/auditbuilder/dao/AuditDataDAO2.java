@@ -16,7 +16,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class AuditDataDAO2 extends PicsDAO {
 	public List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
-		Query query = em.createQuery("SELECT d FROM AuditData d " +
+		Query query = em.createQuery("SELECT d FROM com.picsauditing.auditbuilder.entities.AuditData d " +
 				"WHERE d.audit.contractorAccount.id = :contractor " +
 				"AND d.question = :question " +
 				"AND (d.audit.expiresDate IS NULL OR d.audit.expiresDate > :today)");
@@ -29,7 +29,7 @@ public class AuditDataDAO2 extends PicsDAO {
 
 	public AuditData findAnswerToQuestion(int auditId, int questionId) {
 		try {
-			Query query = em.createQuery("FROM AuditData d " + "WHERE audit.id = ? AND question.id = ? ");
+			Query query = em.createQuery("FROM com.picsauditing.auditbuilder.entities.AuditData d " + "WHERE audit.id = ? AND question.id = ? ");
 			query.setParameter(1, auditId);
 			query.setParameter(2, questionId);
 			return (AuditData) query.getSingleResult();
@@ -39,16 +39,16 @@ public class AuditDataDAO2 extends PicsDAO {
 	}
 
 	public List<AuditData> findCustomPQFVerifications(int auditID) {
-		String sqlContractor = "SELECT t.contractorAccount FROM ContractorAudit t WHERE t.id = :auditID";
+		String sqlContractor = "SELECT t.contractorAccount FROM com.picsauditing.auditbuilder.entities.ContractorAudit t WHERE t.id = :auditID";
 
-		String sqlOperators = "SELECT t.operatorAccount FROM ContractorOperator t " + "WHERE t.contractorAccount IN ("
+		String sqlOperators = "SELECT t.operatorAccount FROM com.picsauditing.auditbuilder.entities.ContractorOperator t " + "WHERE t.contractorAccount IN ("
 				+ sqlContractor + ")";
 
-		String sqlQuestions = "SELECT f.question FROM FlagCriteria f "
+		String sqlQuestions = "SELECT f.question FROM com.picsauditing.auditbuilder.entities.FlagCriteria f "
 				+ "WHERE f.requiredStatus = 'Complete' AND f.question IS NOT NULL AND f.id IN "
 				+ "(SELECT fo.criteria.id FROM FlagCriteriaOperator fo WHERE fo.operator IN  (" + sqlOperators + ")) ";
 
-		String sql = "SELECT d FROM AuditData d " + "WHERE d.audit.id = :auditID "
+		String sql = "SELECT d FROM com.picsauditing.auditbuilder.entities.AuditData d " + "WHERE d.audit.id = :auditID "
 				+ " AND (d.question.id = :safetyManual " + "	OR d.question IN (" + sqlQuestions + ")" + " )";
 		Query query = em.createQuery(sql);
 		query.setParameter("auditID", auditID);
@@ -62,7 +62,7 @@ public class AuditDataDAO2 extends PicsDAO {
 			return new AnswerMap(Collections.<AuditData> emptyList());
 		}
 
-		Query query = em.createQuery("SELECT d FROM AuditData d"
+		Query query = em.createQuery("SELECT d FROM com.picsauditing.auditbuilder.entities.AuditData d"
 				+ " WHERE d.audit.id = :auditID  AND d.question.id IN (:questionList)");
 		query.setParameter("auditID", audit.getId());
 		query.setParameter("questionList", questionIds);
@@ -74,7 +74,7 @@ public class AuditDataDAO2 extends PicsDAO {
 	}
 
 	public AuditData findAnswerByAuditQuestion(int auditID, int questionID) {
-		Query query = em.createQuery("SELECT d FROM AuditData d " + "WHERE d.audit.id = ? "
+		Query query = em.createQuery("SELECT d FROM com.picsauditing.auditbuilder.entities.AuditData d " + "WHERE d.audit.id = ? "
 				+ "AND d.question.id = ? ORDER BY d.audit.id DESC");
 		query.setParameter(1, auditID);
 		query.setParameter(2, questionID);

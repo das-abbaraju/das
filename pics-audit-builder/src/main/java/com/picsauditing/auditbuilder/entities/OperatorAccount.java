@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.OperatorAccount")
 @Table(name = "operators")
 public class OperatorAccount extends Account {
 
@@ -18,6 +18,14 @@ public class OperatorAccount extends Account {
 	private boolean inPicsConsortium = false;
 
 	private List<Facility> corporateFacilities = new ArrayList<>();
+
+    public OperatorAccount() {
+        this.type = Account.OPERATOR_ACCOUNT_TYPE;
+        this.onsiteServices = true;
+        this.offsiteServices = true;
+        this.materialSupplier = true;
+        this.transportationServices = true;
+    }
 
 	public OperatorAccount(String name) {
 		this.name = name;

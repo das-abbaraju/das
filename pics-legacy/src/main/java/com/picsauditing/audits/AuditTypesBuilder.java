@@ -1,5 +1,6 @@
 package com.picsauditing.audits;
 
+import com.picsauditing.auditbuilder.DocumentTypesBuilder;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
@@ -10,7 +11,7 @@ import java.util.*;
 /**
  * Determine which audits and categories are needed for a contractor.
  */
-public class AuditTypesBuilder extends AuditBuilderBase {
+public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypesBuilder {
 	private AuditTypeRuleCache ruleCache;
 	private List<AuditTypeRule> rules;
 	private AuditDataDAO auditDataDAO;

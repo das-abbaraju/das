@@ -2,15 +2,26 @@ package com.picsauditing.auditbuilder.entities;
 
 import javax.persistence.*;
 
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.WorkflowStep")
 @Table(name = "workflow_step")
 @SuppressWarnings("serial")
 public class WorkflowStep extends BaseTable {
+    private Workflow workflow;
 
 	private AuditStatus oldStatus;
 	private AuditStatus newStatus;
 
-	@Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "workflowID", nullable = false)
+    public Workflow getWorkflow() {
+        return workflow;
+    }
+
+    public void setWorkflow(Workflow workflow) {
+        this.workflow = workflow;
+    }
+
+    @Enumerated(EnumType.STRING)
 	public AuditStatus getOldStatus() {
 		return oldStatus;
 	}

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.AuditCategory")
 @Table(name = "audit_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "audit_cache")
 public class AuditCategory extends BaseHistory {
@@ -18,7 +18,8 @@ public class AuditCategory extends BaseHistory {
 
 	private AuditType auditType;
 	private AuditCategory parent;
-	private int numRequired;
+    private int number;
+    private int numRequired;
 	private float scoreWeight = 0f;
 
 	private List<AuditCategory> subCategories = new ArrayList<>();
@@ -44,6 +45,14 @@ public class AuditCategory extends BaseHistory {
 		this.parent = parent;
 	}
 
+    @Column(nullable = false)
+    public int getNumber() {
+        return this.number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
+    }
 	@Column(nullable = false)
 	public int getNumRequired() {
 		return numRequired;

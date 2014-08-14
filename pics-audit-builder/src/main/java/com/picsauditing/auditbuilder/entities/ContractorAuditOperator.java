@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorAuditOperator")
 @Table(name = "contractor_audit_operator")
 public class ContractorAuditOperator extends BaseTable {
 

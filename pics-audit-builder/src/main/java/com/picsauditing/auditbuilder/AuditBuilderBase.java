@@ -16,29 +16,32 @@ public abstract class AuditBuilderBase {
         this.contractorTagDAO = contractorTagDAO;
     }
 
-	public AuditBuilderBase(ContractorAccount contractor) {
-		this.contractor = contractor;
+    public void setContractor(ContractorAccount contractor) {
+        this.contractor = contractor;
+        initialize();
+    }
 
-		for (ContractorTrade ct : contractor.getTrades()) {
-			this.trades.add(ct.getTrade());
-		}
-		if (this.trades.size() == 0) {
-			Trade blank = new Trade();
-			blank.setId(-1);
-			this.trades.add(blank);
-		}
+    protected void initialize() {
+        for (ContractorTrade ct : contractor.getTrades()) {
+            this.trades.add(ct.getTrade());
+        }
+        if (this.trades.size() == 0) {
+            Trade blank = new Trade();
+            blank.setId(-1);
+            this.trades.add(blank);
+        }
 
-		if (contractor.isOnsiteServices())
-			contractorTypes.add(ContractorType.Onsite);
-		if (contractor.isOffsiteServices())
-			contractorTypes.add(ContractorType.Offsite);
-		if (contractor.isMaterialSupplier())
-			contractorTypes.add(ContractorType.Supplier);
-		if (contractor.isTransportationServices())
-			contractorTypes.add(ContractorType.Transportation);
-	}
+        if (contractor.isOnsiteServices())
+            contractorTypes.add(ContractorType.Onsite);
+        if (contractor.isOffsiteServices())
+            contractorTypes.add(ContractorType.Offsite);
+        if (contractor.isMaterialSupplier())
+            contractorTypes.add(ContractorType.Supplier);
+        if (contractor.isTransportationServices())
+            contractorTypes.add(ContractorType.Transportation);
+    }
 
-	protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
+    protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
 		Map<Integer, OperatorTag> tagsNeeded = new HashMap<>();
 		for (AuditRule rule : rules) {
 			if (rule.getTag() != null)

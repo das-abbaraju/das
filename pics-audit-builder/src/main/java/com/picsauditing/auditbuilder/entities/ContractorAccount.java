@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorAccount")
 @Table(name = "contractor_info")
 public class ContractorAccount extends Account {
 
@@ -72,7 +72,6 @@ public class ContractorAccount extends Account {
 	}
 
 	@OneToMany(mappedBy = "contractor")
-	@Sort(type = SortType.NATURAL)
 	public Set<ContractorTrade> getTrades() {
 		return trades;
 	}

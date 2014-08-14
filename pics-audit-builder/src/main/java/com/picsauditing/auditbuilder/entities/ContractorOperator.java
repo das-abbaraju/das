@@ -9,11 +9,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity
+@Entity(name = "com.picsauditing.auditbuilder.entities.ContractorOperator")
 @Table(name = "contractor_operator")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class ContractorOperator extends BaseTable implements java.io.Serializable {
 	private OperatorAccount operatorAccount;
+    private ContractorAccount contractorAccount;
 
 	@ManyToOne
 	@JoinColumn(name = "opID", nullable = false, updatable = false)
@@ -24,4 +25,14 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 	public void setOperatorAccount(OperatorAccount operator) {
 		this.operatorAccount = operator;
 	}
+
+    @ManyToOne
+    @JoinColumn(name = "conID", nullable = false, updatable = false)
+    public ContractorAccount getContractorAccount() {
+        return contractorAccount;
+    }
+
+    public void setContractorAccount(ContractorAccount contractor) {
+        this.contractorAccount = contractor;
+    }
 }

@@ -1,7 +1,6 @@
 package com.picsauditing.audits;
 
-import com.picsauditing.auditbuilder.AuditBuilder2;
-import com.picsauditing.auditbuilder.AuditPercentCalculator2;
+import com.picsauditing.auditbuilder.*;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorAudit;
@@ -10,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AuditBuilderFactory {
 
     @Autowired
+    DocumentService documentService;
+    @Autowired
     AuditBuilder auditBuilder;
     @Autowired
     AuditPercentCalculator auditPercentCalculator;
@@ -17,6 +18,14 @@ public class AuditBuilderFactory {
     AuditBuilder2 newAuditBuilder;
     @Autowired
     AuditPercentCalculator2 newAuditPercentCalculator;
+    @Autowired
+    private AuditTypeRuleCache2 typeRuleCache2;
+    @Autowired
+    private AuditTypeRuleCache typeRuleCache;
+    @Autowired
+    private com.picsauditing.auditbuilder.AuditTypesBuilder auditTypesBuilder2;
+    @Autowired
+    private com.picsauditing.auditbuilder.dao.AuditDataDAO2 auditDataDao;
 
     public void buildAudits(ContractorAccount contractorAccount) {
         if (newAuditBuilderEnabled()) {
@@ -39,6 +48,14 @@ public class AuditBuilderFactory {
             newAuditBuilder.recalculateCategories(audit.getId());
         } else {
             auditBuilder.recalculateCategories(audit);
+        }
+    }
+
+    public DocumentTypesBuilder documentTypesBuilder(ContractorAccount contractor) {
+        if (newAuditBuilderEnabled()) {
+            return documentService.documentTypesBuilder(contractor.getId());
+        } else {
+            return new AuditTypesBuilder(typeRuleCache, contractor);
         }
     }
 
