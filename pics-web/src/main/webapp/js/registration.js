@@ -569,7 +569,7 @@
                                     tax_id_el.slideDown(400);
                                     visible_tax_id_el = tax_id_el;
                                 } else {
-
+                                    visible_tax_id_el.hide();
                                     tax_id_el.show();
                                     visible_tax_id_el = tax_id_el;
                                 }
