@@ -141,7 +141,7 @@
 											${nonCorporatePayingOperators.size()}
 										</s:param>
 									</s:text>
-									<ul style="position: relative; left: 1em; list-style-type: disc;">
+									<ul style="position: relative; left: 1em; list-style-type: disc; width: 100%">
 										<s:iterator value="nonCorporatePayingOperators" var="paying_operator">
 											<li style="padding: 5px 0 5px 0;">
 												<s:if test="permissions.admin">
@@ -177,7 +177,7 @@
 											${nonCorporateFreeOperators.size()}
 										</s:param>
 									</s:text>
-									<ul style="position: relative; left: 1em; list-style-type: disc;">
+									<ul style="position: relative; left: 1em; list-style-type: disc; width: 100%">
 										<s:iterator value="nonCorporateFreeOperators" var="free_operator">
 											<li style="padding: 5px 0 5px 0;">
 												<s:if test="permissions.admin">
