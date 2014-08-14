@@ -33,6 +33,7 @@ ContractorInsideSalesUserName
 ContractorInsureGUARD
 ContractorMembershipDate
 ContractorOriginalMembershipDate
+ContractorPaymentExpires
 ContractorProductRisk
 ContractorRenew
 ContractorSafetyRisk

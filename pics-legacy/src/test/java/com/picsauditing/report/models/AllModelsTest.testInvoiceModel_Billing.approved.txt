@@ -39,6 +39,7 @@ ContractorLastUpgradeDate
 ContractorMembershipDate
 ContractorMustPay
 ContractorOriginalMembershipDate
+ContractorPaymentExpires
 ContractorPaymentMethod
 ContractorProductRisk
 ContractorSafetySensitive
