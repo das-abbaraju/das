@@ -28,6 +28,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLat;
     private double swLong;
     private Trade trade;
+    private int safetySensitive = -1;
 
 
     public String findLocation() {
@@ -56,7 +57,7 @@ public class CompanyFinderController extends PicsActionSupport {
                         .build())
                 .build();
 
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, ContractorDashboard.URL);
+        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, safetySensitive, ContractorDashboard.URL);
 
         jsonString = new Gson().toJson(contractorLocationInfos);
 
@@ -126,5 +127,13 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setSwLong(double swLong) {
         this.swLong = swLong;
+    }
+
+    public int getSafetySensitive() {
+        return safetySensitive;
+    }
+
+    public void setSafetySensitive(int safetySensitive) {
+        this.safetySensitive = safetySensitive;
     }
 }

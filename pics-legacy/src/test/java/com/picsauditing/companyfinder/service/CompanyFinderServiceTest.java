@@ -8,6 +8,7 @@ import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
 import com.picsauditing.dao.companyfinder.ContractorLocationDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
+import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
 import com.picsauditing.service.account.AddressService;
@@ -70,6 +71,7 @@ public class CompanyFinderServiceTest {
         double neLong = -96.76751698364262;
         double swLat = 32.73922009003447;
         double swLong = -96.89626301635747;
+        boolean safetySensitive = true;
 
         ViewPort viewPort = ViewPort.builder()
                 .northEast(LatLong.builder()
@@ -85,8 +87,9 @@ public class CompanyFinderServiceTest {
 
         List<ContractorLocation> contractorLocations = buildTestContractorLocations();
         when(contractorLocationDAO.findByViewPort(neLat, neLong, swLat, swLong)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findByViewPort(neLat, neLong, swLat, swLong, safetySensitive)).thenReturn(contractorLocations);
 
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, "someUrl");
+        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, 1, "someUrl");
 
         assertEquals(3, contractorLocationInfos.size());
 
@@ -132,6 +135,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount1.getTopTrade()).thenReturn(primaryContractorTrade1);
         when(contractorAccount1.getTradesSorted()).thenReturn(contractorTrades1);
         when(contractorAccount1.getId()).thenReturn(1);
+        when(contractorAccount1.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount1.getName()).thenReturn("con1");
         when(contractorAccount1.getFullAddress()).thenReturn("fulladdress1");
 
@@ -143,6 +147,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount2.getTradesSorted()).thenReturn(contractorTrades2);
         when(contractorAccount2.getId()).thenReturn(2);
         when(contractorAccount2.getName()).thenReturn("con2");
+        when(contractorAccount2.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount2.getFullAddress()).thenReturn("fulladdress2");
 
         ContractorTrade primaryContractorTrade3 = buildTestContractorTrade("trade3");
@@ -152,6 +157,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount3.getTopTrade()).thenReturn(primaryContractorTrade3);
         when(contractorAccount3.getTradesSorted()).thenReturn(contractorTrades3);
         when(contractorAccount3.getId()).thenReturn(3);
+        when(contractorAccount2.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount3.getName()).thenReturn("con3");
         when(contractorAccount3.getFullAddress()).thenReturn("fulladdress3");
         
