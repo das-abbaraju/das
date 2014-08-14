@@ -227,7 +227,7 @@ public class ContractorCron extends PicsActionSupport {
             } catch (RuntimeException e) {
                 logger.error(e.getMessage() + " for contractor " + contractor.getName()
                         + " working for " + operatorAccount.getName());
-                continue;
+                //continue;
             }
         }
 
@@ -239,6 +239,8 @@ public class ContractorCron extends PicsActionSupport {
 		}
 
 		try {
+			contractorDAO.refresh(contractor);// fix Hibernate exception: Found two representations of same collection
+
 			contractor.setNeedsRecalculation(0);
 			contractor.setLastRecalculation(DateBean.addDays(new Date(), 1));
 			contractorDAO.save(contractor);
