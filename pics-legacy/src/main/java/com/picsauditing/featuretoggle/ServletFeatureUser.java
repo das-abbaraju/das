@@ -3,7 +3,6 @@ package com.picsauditing.featuretoggle;
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.togglz.core.user.FeatureUser;
@@ -11,11 +10,11 @@ import org.togglz.servlet.util.HttpServletRequestHolder;
 
 public class ServletFeatureUser implements FeatureUser {
     private final Logger logger = LoggerFactory.getLogger(ServletFeatureUser.class);
-    private final static String UNKNOWN_USER_NAME = "Anonymous";
+    protected final static String UNKNOWN_USER_NAME = "Anonymous";
     private final static String PERMISSIONS_ATTRIBUTE_NAME = "permissions";
     private static final String environment = System.getProperty("pics.env");
 
-    private Permissions permissions;
+    protected Permissions permissions;
 
     public ServletFeatureUser() {
         permissions();
@@ -25,6 +24,14 @@ public class ServletFeatureUser implements FeatureUser {
     public String getName() {
         if (permissions != null) {
             return permissions.getName();
+        } else {
+            return UNKNOWN_USER_NAME;
+        }
+    }
+
+    public String getId() {
+        if (permissions != null) {
+            return String.valueOf(permissions.getAppUserID());
         } else {
             return UNKNOWN_USER_NAME;
         }
