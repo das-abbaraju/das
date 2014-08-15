@@ -1,36 +1,37 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
 import com.picsauditing.auditbuilder.service.AuditService;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypesBuilder {
-    @Autowired
-    private AuditDataDAO2 auditDataDAO;
-
-	private AuditTypeRuleCache2 ruleCache;
+    private AuditTypeRuleCache2 ruleCache;
 	private List<AuditTypeRule> rules;
-
-    public void setAuditDataDAO(AuditDataDAO2 auditDataDAO) {
-        this.auditDataDAO = auditDataDAO;
-    }
 
     public class AuditTypeDetail {
 		public AuditTypeRule rule;
 		public Set<OperatorAccount> operators = new HashSet<>();
 	}
 
+    public AuditTypesBuilder() {
+        super();
+    }
+
+    public AuditTypesBuilder(AuditTypeRuleCache2 ruleCache, ContractorAccount contractor) {
+        super();
+        this.ruleCache = ruleCache;
+        this.setContractor(contractor);
+    }
+
     public void setRuleCache(AuditTypeRuleCache2 ruleCache) {
         this.ruleCache = ruleCache;
     }
 
     public void setContractorId(int contractorId) {
-        ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
+        ContractorAccount contractor = getAuditDataDAO().find(ContractorAccount.class, contractorId);
         this.setContractor(contractor);
     }
 
@@ -166,7 +167,7 @@ public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypes
         while (iterator.hasNext()) {
             AuditData data = iterator.next();
             if (data.getQuestion().getVisibleQuestion() != null && data.getQuestion().getVisibleAnswer() != null) {
-                AuditData visibleQuestionAnswer = auditDataDAO.findAnswerToQuestion(data.getAudit().getId(), data.getQuestion().getVisibleQuestion().getId());
+                AuditData visibleQuestionAnswer = getAuditDataDAO().findAnswerToQuestion(data.getAudit().getId(), data.getQuestion().getVisibleQuestion().getId());
                 if (visibleQuestionAnswer != null && !StringUtils.equals(visibleQuestionAnswer.getAnswer(), data.getQuestion().getVisibleAnswer())) {
                     iterator.remove();
                 }
@@ -196,6 +197,10 @@ public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypes
     }
 
     private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
-	    return auditDataDAO.findAnswersByContractorAndQuestion(contractor, question);
+	    return getAuditDataDAO().findAnswersByContractorAndQuestion(contractor, question);
 	}
+
+    public List<AuditTypeRule> getRules() {
+        return rules;
+    }
 }

@@ -67,6 +67,7 @@ public class AuditBuilder2 {
         typesBuilder.setRuleCache(typeRuleCache);
         typesBuilder.setContractor(contractor);
         typesBuilder.setContractorTagDAO(contractorTagDAO);
+        typesBuilder.setAuditDataDAO(auditDataDAO);
 
 		Set<AuditTypeDetail> requiredAuditTypeDetails = typesBuilder.calculate();
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
@@ -124,6 +125,8 @@ public class AuditBuilder2 {
 		removeUnneededAudits(contractor, requiredAuditTypes);
 
 		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
+        categoriesBuilder.setContractorTagDAO(contractorTagDAO);
+        categoriesBuilder.setAuditDataDAO(auditDataDAO);
 
 		for (ContractorAudit conAudit : contractor.getAudits()) {
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());

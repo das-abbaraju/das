@@ -18,6 +18,7 @@ public class ContractorAccount extends Account {
     private boolean safetySensitive;
 	private LowMedHigh safetyRisk = LowMedHigh.None;
 	private LowMedHigh productRisk = LowMedHigh.None;
+    private LowMedHigh transportationRisk = LowMedHigh.None;
 	private boolean soleProprietor;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
@@ -70,6 +71,15 @@ public class ContractorAccount extends Account {
 	public void setProductRisk(LowMedHigh productRisk) {
 		this.productRisk = productRisk;
 	}
+
+    @Column(name = "transportationRisk", nullable = false)
+    public LowMedHigh getTransportationRisk() {
+        return transportationRisk;
+    }
+
+    public void setTransportationRisk(LowMedHigh transportationRisk) {
+        this.transportationRisk = transportationRisk;
+    }
 
 	@OneToMany(mappedBy = "contractor")
 	public Set<ContractorTrade> getTrades() {
