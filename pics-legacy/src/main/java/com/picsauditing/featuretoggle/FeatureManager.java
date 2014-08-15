@@ -10,10 +10,12 @@ import org.togglz.core.repository.FeatureState;
 import org.togglz.core.repository.StateRepository;
 import org.togglz.core.repository.jdbc.JDBCStateRepository;
 import org.togglz.core.repository.mem.InMemoryStateRepository;
+import org.togglz.core.spi.ActivationStrategy;
 import org.togglz.core.user.FeatureUser;
 import org.togglz.core.user.UserProvider;
 
 import javax.naming.NamingException;
+import java.util.List;
 import java.util.Set;
 
 public class FeatureManager implements org.togglz.core.manager.FeatureManager {
@@ -28,6 +30,11 @@ public class FeatureManager implements org.togglz.core.manager.FeatureManager {
                     .userProvider(userProvider())
                     .build();
         }
+    }
+
+    @Override
+    public boolean isActive(Feature feature) {
+        return featureManager.isActive(feature);
     }
 
     public StateRepository stateRepository() {
@@ -66,11 +73,6 @@ public class FeatureManager implements org.togglz.core.manager.FeatureManager {
     }
 
     @Override
-    public boolean isActive(Feature feature) {
-        return featureManager.isActive(feature);
-    }
-
-    @Override
     public FeatureUser getCurrentFeatureUser() {
         return featureManager.getCurrentFeatureUser();
     }
@@ -83,5 +85,10 @@ public class FeatureManager implements org.togglz.core.manager.FeatureManager {
     @Override
     public void setFeatureState(FeatureState state) {
         featureManager.setFeatureState(state);
+    }
+
+    @Override
+    public List<ActivationStrategy> getActivationStrategies() {
+        return featureManager.getActivationStrategies();
     }
 }
