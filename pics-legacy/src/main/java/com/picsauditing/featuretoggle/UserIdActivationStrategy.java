@@ -48,7 +48,6 @@ public class UserIdActivationStrategy implements ActivationStrategy {
                     }
                 }
             }
-
         }
         return false;
     }

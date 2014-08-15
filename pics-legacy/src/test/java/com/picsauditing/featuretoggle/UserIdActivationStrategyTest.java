@@ -35,6 +35,34 @@ public class UserIdActivationStrategyTest {
         FeatureUser user = new ServletFeatureUser();
         FeatureState state = new FeatureState(MyFeature.FEATURE)
                 .enable()
+                .setStrategyId(UserIdActivationStrategy.ID)
+                .setParameter(UserIdActivationStrategy.PARAM_USER_IDS, "");
+
+        boolean active = userIdActivationStrategy.isActive(state, user);
+
+        assertEquals(false, active);
+    }
+
+    @Test
+    public void testIsActive_nullUserList() {
+
+        FeatureUser user = new ServletFeatureUser();
+        FeatureState state = new FeatureState(MyFeature.FEATURE)
+                .enable()
+                .setStrategyId(UserIdActivationStrategy.ID)
+                .setParameter(UserIdActivationStrategy.PARAM_USER_IDS, null);
+
+        boolean active = userIdActivationStrategy.isActive(state, user);
+
+        assertEquals(false, active);
+    }
+
+    @Test
+    public void testIsActive_noUserList() {
+
+        FeatureUser user = new ServletFeatureUser();
+        FeatureState state = new FeatureState(MyFeature.FEATURE)
+                .enable()
                 .setStrategyId(UserIdActivationStrategy.ID);
 
         boolean active = userIdActivationStrategy.isActive(state, user);
@@ -99,6 +127,7 @@ public class UserIdActivationStrategyTest {
         assertThat(userParam, notNullValue());
         assertThat(userParam.getName(), is(UsernameActivationStrategy.PARAM_USERS));
     }
+
     private enum MyFeature implements Feature {
         FEATURE
     }
