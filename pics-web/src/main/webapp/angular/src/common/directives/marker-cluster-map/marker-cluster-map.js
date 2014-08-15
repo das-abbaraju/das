@@ -7,20 +7,18 @@ angular.module('PICS.directives')
             googleMapConfig: '=',
             markerClustererConfig: '='
         },
+        replace: true,
         templateUrl: '/angular/src/common/directives/marker-cluster-map/marker-cluster-map.tpl.html',
         link: function (scope, element, attrs) {
             var googleMapConfig = scope.googleMapConfig,
                 map = googleMapConfig.map,
-                infoWindow = new google.maps.InfoWindow({
-                    maxWidth: 250,
-                    disableAutoPan: true,
-                    id: '',
-                    visible: false
-                }),
+                info_window = $('.info-window'),
+                currentInfoWindow = null,
+                infoWindowVisible = false,
                 selectedMarker = null,
                 currentMarkerList = [],
                 markerClusterer,
-                loader = $(element.children()[1]),
+                loader = $(element.children()[2]),
                 markerIconBase = '/angular/src/app/company-finder/img/';
 
             scope.$emit('loader-ready', loader, scope.markerClustererConfig);
@@ -38,28 +36,22 @@ angular.module('PICS.directives')
             }, true);
 
             google.maps.event.addListener(
-                infoWindow,
-                'closeclick',
-                function () {
-                    if (selectedMarker) {
-                        useSmallMarker(currentMarkerList[selectedMarker.id]);
-
-                        infoWindow.visible = false;
-                    }
-                }
+                map,
+                'click',
+                closeInfoWindow()
             );
 
             google.maps.event.addListener(
                 map,
-                'click',
-                function (event) {
-                if (selectedMarker && infoWindow.visible) {
-                    infoWindow.close();
-                    useSmallMarker(currentMarkerList[selectedMarker.id]);
+                'center_changed',
+                closeInfoWindow()
+            );
 
-                    infoWindow.visible = false;
-                }
-            });
+            google.maps.event.addListener(
+                map,
+                'zoom_changed',
+                closeInfoWindow()
+            );
 
             function initMarkerClusterer(map, config) {
                 markerClusterer = createMarkerClusterer(map, config);
@@ -79,7 +71,7 @@ angular.module('PICS.directives')
             }
 
             function createGoogleMap($mapOuterContainer, config) {
-                var mapContainer = $mapOuterContainer.children()[0];
+                var mapContainer = $mapOuterContainer.children()[1];
 
                 $mapOuterContainer.addClass('map-container');
 
@@ -144,16 +136,18 @@ angular.module('PICS.directives')
                     address = location.formattedAddressBlock.replace('\n', '<br>');
 
                 var contentString = [
-                    '<p class="contractor-name">',
-                        '<a href="' + location.link + '" target="_blank">' + location.name + '</a>',
-                    '</p>',
-                    '<p class="primary-trade">',
-                        location.primaryTrade,
-                    '</p>',
-                    '<p class="other-trades">',
-                        '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
-                    '</p>',
-                    '<p class="address">' + address + '</p>'
+                    '<div class="info-window-content">' +
+                        '<p class="contractor-name">',
+                            '<a href="' + location.link + '" target="_blank">' + location.name + '</a>',
+                        '</p>',
+                        '<p class="primary-trade">',
+                            location.primaryTrade,
+                        '</p>',
+                        '<p class="other-trades">',
+                            '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
+                        '</p>',
+                        '<p class="address">' + address + '</p>' +
+                    '</div>'
                 ].join('');
 
                 return contentString;
@@ -173,13 +167,26 @@ angular.module('PICS.directives')
 
             function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    infoWindow.setContent(getInfoWindowContent(location));
+                    var MARKER_LARGE_HEIGHT = 80,
+                        overlay = new google.maps.OverlayView();
 
-                    infoWindow.id = index;
+                    overlay.draw = function() {};
+                    overlay.setMap(map);
 
-                    infoWindow.open(map, googleMarker);
+                    var proj = overlay.getProjection(),
+                        pos = googleMarker.getPosition(),
+                        p = proj.fromLatLngToContainerPixel(pos);
 
-                    infoWindow.visible = true;
+                    $('.info-window-content').remove();
+
+                    info_window.append(getInfoWindowContent(location));
+                    info_window.css('left', p.x - (info_window.width() / 2) - parseInt(info_window.css('padding-left')));
+                    info_window.css('top', p.y - info_window.height() - MARKER_LARGE_HEIGHT);
+                    info_window.css('display', 'block');
+
+                    currentInfoWindow = index;
+
+                    infoWindowVisible = true;
 
                     if (selectedMarker) {
                         google.maps.event.trigger(currentMarkerList[selectedMarker.id], 'mouseout');
@@ -203,8 +210,19 @@ angular.module('PICS.directives')
 
             function createMouseOutHandler(googleMarker) {
                 return function () {
-                    if ((infoWindow.id != googleMarker.id) || (!infoWindow.visible)) {
+                    if ((currentInfoWindow != googleMarker.id) || (!infoWindowVisible)) {
                         useSmallMarker(googleMarker);
+                    }
+                };
+            }
+
+            function closeInfoWindow() {
+                return function () {
+                    if (selectedMarker && infoWindowVisible) {
+                        info_window.css('display', 'none');
+                        useSmallMarker(currentMarkerList[selectedMarker.id]);
+
+                        infoWindowVisible = false;
                     }
                 };
             }

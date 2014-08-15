@@ -103,7 +103,7 @@ angular.module('PICS.companyFinder')
                 clusterMapLoader.show();
 
                 locationService.get({
-                    addressQuery: place.name
+                    addressQuery: place.formatted_address || place.name
                 }, setMapBounds);
             });
         });
