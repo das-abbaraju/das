@@ -1366,7 +1366,7 @@
 
         <action name="contractors/locations"
                 class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
-                method="findByViewPort">
+                method="findContractorLocationInfos">
         </action>
 
     </package>

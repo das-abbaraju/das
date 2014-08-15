@@ -242,7 +242,7 @@ angular.module('PICS.companyFinder')
                 return requestParameters;
             } else {
                 return angular.extend(requestParameters, {
-                    ss: 1,
+                    safetySensitive: 1,
                     trade: trade
                 });
             }

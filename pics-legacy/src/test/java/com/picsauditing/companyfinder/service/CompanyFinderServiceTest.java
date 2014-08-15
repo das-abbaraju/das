@@ -83,45 +83,55 @@ public class CompanyFinderServiceTest {
                         .lng(swLong)
                         .build())
                 .build();
-        Trade trade = null;
+        Trade tradeNull = null;
+        Trade tradeOk = new Trade();
+        tradeOk.setName("myTrade");
 
         List<ContractorLocation> contractorLocations = buildTestContractorLocations();
-        when(contractorLocationDAO.findByViewPort(neLat, neLong, swLat, swLong)).thenReturn(contractorLocations);
-        when(contractorLocationDAO.findByViewPort(neLat, neLong, swLat, swLong, safetySensitive)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, tradeNull)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, safetySensitive)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, tradeNull, safetySensitive)).thenReturn(contractorLocations);
 
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, 1, "someUrl");
+        List<ContractorLocationInfo> contractorLocationInfos1 = companyFinderService.findContractorLocationInfos(viewPort, tradeNull, "someUrl", -1);
+        List<ContractorLocationInfo> contractorLocationInfos2 = companyFinderService.findContractorLocationInfos(viewPort, tradeNull, "someUrl", 0);
+        List<ContractorLocationInfo> contractorLocationInfos3 = companyFinderService.findContractorLocationInfos(viewPort, tradeNull, "someUrl", 1);
 
-        assertEquals(3, contractorLocationInfos.size());
+        List<ContractorLocationInfo> contractorLocationInfos4 = companyFinderService.findContractorLocationInfos(viewPort, tradeOk, "someUrl", -1);
+        List<ContractorLocationInfo> contractorLocationInfos5 = companyFinderService.findContractorLocationInfos(viewPort, tradeOk, "someUrl", 0);
+        List<ContractorLocationInfo> contractorLocationInfos6 = companyFinderService.findContractorLocationInfos(viewPort, tradeOk, "someUrl", 1);
 
-        assertEquals(1, contractorLocationInfos.get(0).getId());
-        assertEquals("con1", contractorLocationInfos.get(0).getName());
-        assertEquals("fulladdress1", contractorLocationInfos.get(0).getAddress());
-        assertNotNull(contractorLocationInfos.get(0).getFormattedAddressBlock());
-        assertEquals(100.0, contractorLocationInfos.get(0).getCoordinates().getLatitude());
-        assertEquals(101.0, contractorLocationInfos.get(0).getCoordinates().getLongitude());
-        assertEquals("trade1", contractorLocationInfos.get(0).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfos.get(0).getTrades());
-        assertEquals("someUrl?id=1", contractorLocationInfos.get(0).getLink());
+        assertEquals(3, contractorLocationInfos1.size());
 
-        assertEquals(2, contractorLocationInfos.get(1).getId());
-        assertEquals("con2", contractorLocationInfos.get(1).getName());
-        assertEquals("fulladdress2", contractorLocationInfos.get(1).getAddress());
-        assertNotNull(contractorLocationInfos.get(1).getFormattedAddressBlock());
-        assertEquals(200.0, contractorLocationInfos.get(1).getCoordinates().getLatitude());
-        assertEquals(201.0, contractorLocationInfos.get(1).getCoordinates().getLongitude());
-        assertEquals("trade2", contractorLocationInfos.get(1).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo2", "bar2", "car2"), contractorLocationInfos.get(1).getTrades());
-        assertEquals("someUrl?id=2", contractorLocationInfos.get(1).getLink());
+        assertEquals(1, contractorLocationInfos1.get(0).getId());
+        assertEquals("con1", contractorLocationInfos1.get(0).getName());
+        assertEquals("fulladdress1", contractorLocationInfos1.get(0).getAddress());
+        assertNotNull(contractorLocationInfos1.get(0).getFormattedAddressBlock());
+        assertEquals(100.0, contractorLocationInfos1.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, contractorLocationInfos1.get(0).getCoordinates().getLongitude());
+        assertEquals("trade1", contractorLocationInfos1.get(0).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfos1.get(0).getTrades());
+        assertEquals("someUrl?id=1", contractorLocationInfos1.get(0).getLink());
 
-        assertEquals(3, contractorLocationInfos.get(2).getId());
-        assertEquals("con3", contractorLocationInfos.get(2).getName());
-        assertEquals("fulladdress3", contractorLocationInfos.get(2).getAddress());
-        assertNotNull(contractorLocationInfos.get(2).getFormattedAddressBlock());
-        assertEquals(300.0, contractorLocationInfos.get(2).getCoordinates().getLatitude());
-        assertEquals(301.0, contractorLocationInfos.get(2).getCoordinates().getLongitude());
-        assertEquals("trade3", contractorLocationInfos.get(2).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo3", "bar3", "car3"), contractorLocationInfos.get(2).getTrades());
-        assertEquals("someUrl?id=3", contractorLocationInfos.get(2).getLink());
+        assertEquals(2, contractorLocationInfos1.get(1).getId());
+        assertEquals("con2", contractorLocationInfos1.get(1).getName());
+        assertEquals("fulladdress2", contractorLocationInfos1.get(1).getAddress());
+        assertNotNull(contractorLocationInfos1.get(1).getFormattedAddressBlock());
+        assertEquals(200.0, contractorLocationInfos1.get(1).getCoordinates().getLatitude());
+        assertEquals(201.0, contractorLocationInfos1.get(1).getCoordinates().getLongitude());
+        assertEquals("trade2", contractorLocationInfos1.get(1).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo2", "bar2", "car2"), contractorLocationInfos1.get(1).getTrades());
+        assertEquals("someUrl?id=2", contractorLocationInfos1.get(1).getLink());
+
+        assertEquals(3, contractorLocationInfos1.get(2).getId());
+        assertEquals("con3", contractorLocationInfos1.get(2).getName());
+        assertEquals("fulladdress3", contractorLocationInfos1.get(2).getAddress());
+        assertNotNull(contractorLocationInfos1.get(2).getFormattedAddressBlock());
+        assertEquals(300.0, contractorLocationInfos1.get(2).getCoordinates().getLatitude());
+        assertEquals(301.0, contractorLocationInfos1.get(2).getCoordinates().getLongitude());
+        assertEquals("trade3", contractorLocationInfos1.get(2).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo3", "bar3", "car3"), contractorLocationInfos1.get(2).getTrades());
+        assertEquals("someUrl?id=3", contractorLocationInfos1.get(2).getLink());
 
     }
 
@@ -135,6 +145,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount1.getTopTrade()).thenReturn(primaryContractorTrade1);
         when(contractorAccount1.getTradesSorted()).thenReturn(contractorTrades1);
         when(contractorAccount1.getId()).thenReturn(1);
+        when(contractorAccount1.isSafetySensitive()).thenReturn(false);
         when(contractorAccount1.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount1.getName()).thenReturn("con1");
         when(contractorAccount1.getFullAddress()).thenReturn("fulladdress1");
@@ -147,6 +158,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount2.getTradesSorted()).thenReturn(contractorTrades2);
         when(contractorAccount2.getId()).thenReturn(2);
         when(contractorAccount2.getName()).thenReturn("con2");
+        when(contractorAccount1.isSafetySensitive()).thenReturn(true);
         when(contractorAccount2.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount2.getFullAddress()).thenReturn("fulladdress2");
 
@@ -157,6 +169,7 @@ public class CompanyFinderServiceTest {
         when(contractorAccount3.getTopTrade()).thenReturn(primaryContractorTrade3);
         when(contractorAccount3.getTradesSorted()).thenReturn(contractorTrades3);
         when(contractorAccount3.getId()).thenReturn(3);
+        when(contractorAccount1.isSafetySensitive()).thenReturn(true);
         when(contractorAccount2.getSafetyRisk()).thenReturn(LowMedHigh.High);
         when(contractorAccount3.getName()).thenReturn("con3");
         when(contractorAccount3.getFullAddress()).thenReturn("fulladdress3");
