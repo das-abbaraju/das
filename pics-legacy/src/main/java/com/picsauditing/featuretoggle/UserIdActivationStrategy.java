@@ -9,9 +9,6 @@ import org.togglz.core.util.Strings;
 
 import java.util.List;
 
-/**
- * Created by kishon on 8/13/14.
- */
 public class UserIdActivationStrategy implements ActivationStrategy {
 
     public static final String ID = "userid";

@@ -11,6 +11,7 @@ import org.togglz.servlet.util.HttpServletRequestHolder;
 public class ServletFeatureUser implements FeatureUser {
     private final Logger logger = LoggerFactory.getLogger(ServletFeatureUser.class);
     protected final static String UNKNOWN_USER_NAME = "Anonymous";
+    protected final static String UNKNOWN_USER_ID = "-1";
     private final static String PERMISSIONS_ATTRIBUTE_NAME = "permissions";
     private static final String environment = System.getProperty("pics.env");
 
@@ -33,7 +34,7 @@ public class ServletFeatureUser implements FeatureUser {
         if (permissions != null) {
             return String.valueOf(permissions.getAppUserID());
         } else {
-            return UNKNOWN_USER_NAME;
+            return UNKNOWN_USER_ID;
         }
     }
 
