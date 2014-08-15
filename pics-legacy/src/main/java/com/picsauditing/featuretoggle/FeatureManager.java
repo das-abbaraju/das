@@ -4,8 +4,6 @@ import com.picsauditing.PICS.DBBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.togglz.core.Feature;
-import org.togglz.core.activation.ActivationStrategyProvider;
-import org.togglz.core.activation.DefaultActivationStrategyProvider;
 import org.togglz.core.manager.FeatureManagerBuilder;
 import org.togglz.core.metadata.FeatureMetaData;
 import org.togglz.core.repository.FeatureState;
@@ -23,14 +21,13 @@ import java.util.Set;
 public class FeatureManager implements org.togglz.core.manager.FeatureManager {
     private final Logger logger = LoggerFactory.getLogger(FeatureManager.class);
     private static org.togglz.core.manager.FeatureManager featureManager;
-    private ActivationStrategyProvider strategyProvider = new DefaultActivationStrategyProvider();
+
     public FeatureManager() {
         if (featureManager == null) {
             featureManager = new FeatureManagerBuilder()
                     .featureEnum(Features.class)
                     .stateRepository(stateRepository())
                     .userProvider(userProvider())
-                    .activationStrategyProvider(strategyProvider)
                     .build();
         }
     }
@@ -92,6 +89,6 @@ public class FeatureManager implements org.togglz.core.manager.FeatureManager {
 
     @Override
     public List<ActivationStrategy> getActivationStrategies() {
-        return strategyProvider.getActivationStrategies();
+        return featureManager.getActivationStrategies();
     }
 }
