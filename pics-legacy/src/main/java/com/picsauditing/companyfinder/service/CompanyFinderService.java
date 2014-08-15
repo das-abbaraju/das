@@ -64,9 +64,9 @@ public class CompanyFinderService {
     public List<ContractorLocation> findContractorLocations(ViewPort viewPort, Trade trade, int safetySensitive) {
         List<ContractorLocation> contractorLocations;
 
-        if (shouldFilterBySafetySensitive(safetySensitive)) {
+        if (shouldIncludeSafetySensitiveFilter(safetySensitive)) {
 
-            boolean haveSafetySensitive = safetySensitiveFilter(safetySensitive);
+            boolean safetySensitiveFlag = filterSafetySensitive(safetySensitive);
 
             if (trade != null) {
                 contractorLocations = contractorLocationDAO.findContractorLocations(
@@ -75,14 +75,14 @@ public class CompanyFinderService {
                         viewPort.getSouthWest().getLatitude(),
                         viewPort.getSouthWest().getLongitude(),
                         trade,
-                        haveSafetySensitive);
+                        safetySensitiveFlag);
             } else {
                 contractorLocations = contractorLocationDAO.findContractorLocations(
                         viewPort.getNorthEast().getLatitude(),
                         viewPort.getNorthEast().getLongitude(),
                         viewPort.getSouthWest().getLatitude(),
                         viewPort.getSouthWest().getLongitude(),
-                        haveSafetySensitive);
+                        safetySensitiveFlag);
             }
 
         } else {
@@ -98,11 +98,11 @@ public class CompanyFinderService {
         return contractorLocations;
     }
 
-    private boolean safetySensitiveFilter(int safetySensitive) {
+    private boolean filterSafetySensitive(int safetySensitive) {
         return (safetySensitive == FILTER_BY_SAFETY_SENSITIVE);
     }
 
-    private boolean shouldFilterBySafetySensitive(int safetySensitive) {
+    private boolean shouldIncludeSafetySensitiveFilter(int safetySensitive) {
         return IGNORE_SAFETY_SENSITIVE != safetySensitive;
     }
 
