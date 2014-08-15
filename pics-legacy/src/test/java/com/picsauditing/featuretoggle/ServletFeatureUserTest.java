@@ -57,6 +57,12 @@ public class ServletFeatureUserTest {
         HttpServletRequestHolder.bind(request);
     }
 
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty("pics.env");
+        HttpServletRequestHolder.release();
+    }
+
     @Test
     public void testGetName_NullPermsReturnsAnonymous() throws Exception {
         Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions) null);
@@ -158,11 +164,5 @@ public class ServletFeatureUserTest {
         Whitebox.invokeMethod(servletFeatureUser, "permissions");
 
         verify(httpSession).getAttribute("permissions");
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty("pics.env");
-        HttpServletRequestHolder.release();
     }
 }
