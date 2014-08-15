@@ -28,6 +28,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLat;
     private double swLong;
     private Trade trade;
+    private int ss = CompanyFinderService.IGNORE_SAFETY_SENSITIVE;
 
 
     public String findLocation() {
@@ -44,7 +45,7 @@ public class CompanyFinderController extends PicsActionSupport {
         return JSON_STRING;
     }
 
-    public String findByViewPort() {
+    public String findContractorLocationInfos() {
         ViewPort viewPort = ViewPort.builder()
                 .northEast(LatLong.builder()
                         .lat(neLat)
@@ -56,7 +57,7 @@ public class CompanyFinderController extends PicsActionSupport {
                         .build())
                 .build();
 
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, ContractorDashboard.URL);
+        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, ContractorDashboard.URL, ss);
 
         jsonString = new Gson().toJson(contractorLocationInfos);
 
@@ -126,5 +127,13 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setSwLong(double swLong) {
         this.swLong = swLong;
+    }
+
+    public int getSs() {
+        return ss;
+    }
+
+    public void setSs(int safetySensitive) {
+        this.ss = safetySensitive;
     }
 }

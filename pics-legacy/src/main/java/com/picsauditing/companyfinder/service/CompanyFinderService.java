@@ -17,6 +17,8 @@ import java.util.List;
 
 public class CompanyFinderService {
 
+    public static final int IGNORE_SAFETY_SENSITIVE = -1;
+    public static final int FILTER_BY_SAFETY_SENSITIVE = 1;
     @Autowired
     private ContractorLocationDAO contractorLocationDAO;
     @Autowired
@@ -40,37 +42,73 @@ public class CompanyFinderService {
         return viewportLocation;
     }
 
-    public List<ContractorLocation> findByViewPort(ViewPort viewPort){
-       return contractorLocationDAO.findByViewPort(
+/*
+    private List<ContractorLocation> findByViewPort(ViewPort viewPort) {
+        return contractorLocationDAO.findContractorLocations(
                 viewPort.getNorthEast().getLatitude(),
                 viewPort.getNorthEast().getLongitude(),
                 viewPort.getSouthWest().getLatitude(),
                 viewPort.getSouthWest().getLongitude());
     }
 
-    public List<ContractorLocation> findByViewPortAndTrade(ViewPort viewPort, Trade trade){
-        return contractorLocationDAO.findByViewPortAndTrade(
-                trade,
+    private List<ContractorLocation> findByViewPortAndSafety(ViewPort viewPort, boolean safetySensitive) {
+        return contractorLocationDAO.findContractorLocations(
                 viewPort.getNorthEast().getLatitude(),
                 viewPort.getNorthEast().getLongitude(),
                 viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude());
+                viewPort.getSouthWest().getLongitude(),
+                safetySensitive);
     }
+*/
 
-    public List<ContractorLocationInfo> findContractorLocationInfos(ViewPort viewPort, Trade trade, String contractorLocationLinkUrl) {
-        List<ContractorLocation> contractorLocations = findContractorLocations(viewPort, trade);
-        List<ContractorLocationInfo> contractorLocationInfos = buildContractorLocationsInfos(contractorLocations, contractorLocationLinkUrl);
-        return contractorLocationInfos;
-    }
-
-    private List<ContractorLocation> findContractorLocations(ViewPort viewPort, Trade trade) {
+    public List<ContractorLocation> findContractorLocations(ViewPort viewPort, Trade trade, int safetySensitive) {
         List<ContractorLocation> contractorLocations;
-        if (trade != null) {
-            contractorLocations = findByViewPortAndTrade(viewPort, trade);
+
+        if (shouldIncludeSafetySensitiveFilter(safetySensitive)) {
+
+            boolean safetySensitiveFlag = filterSafetySensitive(safetySensitive);
+
+            if (trade != null) {
+                contractorLocations = contractorLocationDAO.findContractorLocations(
+                        viewPort.getNorthEast().getLatitude(),
+                        viewPort.getNorthEast().getLongitude(),
+                        viewPort.getSouthWest().getLatitude(),
+                        viewPort.getSouthWest().getLongitude(),
+                        trade,
+                        safetySensitiveFlag);
+            } else {
+                contractorLocations = contractorLocationDAO.findContractorLocations(
+                        viewPort.getNorthEast().getLatitude(),
+                        viewPort.getNorthEast().getLongitude(),
+                        viewPort.getSouthWest().getLatitude(),
+                        viewPort.getSouthWest().getLongitude(),
+                        safetySensitiveFlag);
+            }
+
         } else {
-            contractorLocations = findByViewPort(viewPort);
+
+            contractorLocations = contractorLocationDAO.findContractorLocations(
+                    viewPort.getNorthEast().getLatitude(),
+                    viewPort.getNorthEast().getLongitude(),
+                    viewPort.getSouthWest().getLatitude(),
+                    viewPort.getSouthWest().getLongitude()
+                    ,trade);
+
         }
         return contractorLocations;
+    }
+
+    private boolean filterSafetySensitive(int safetySensitive) {
+        return (safetySensitive == FILTER_BY_SAFETY_SENSITIVE);
+    }
+
+    private boolean shouldIncludeSafetySensitiveFilter(int safetySensitive) {
+        return IGNORE_SAFETY_SENSITIVE != safetySensitive;
+    }
+
+    public List<ContractorLocationInfo> findContractorLocationInfos(ViewPort viewPort, Trade trade, String contractorLocationLinkUrl, int safetySensitive) {
+        List<ContractorLocation> contractorLocations = findContractorLocations(viewPort, trade, safetySensitive);
+        return buildContractorLocationsInfos(contractorLocations, contractorLocationLinkUrl);
     }
 
     private List<ContractorLocationInfo> buildContractorLocationsInfos(List<ContractorLocation> contractorLocations, String contractorLocationLinkUrl) {

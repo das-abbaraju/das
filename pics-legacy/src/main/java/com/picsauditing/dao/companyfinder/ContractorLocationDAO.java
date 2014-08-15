@@ -8,9 +8,12 @@ import com.picsauditing.jpa.entities.Trade;
 import javax.persistence.Query;
 import java.util.List;
 
-public class ContractorLocationDAO extends PicsDAO{
+public class ContractorLocationDAO extends PicsDAO {
 
-    public List<ContractorLocation> findByViewPort(double neLat, double neLong, double swLat, double swLong ) {
+    public ContractorLocationDAO() {
+    }
+
+    public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong) {
         Query query = em.createQuery("SELECT cl FROM ContractorLocation cl " +
                 " JOIN cl.contractor ca " +
                 " WHERE " +
@@ -19,38 +22,91 @@ public class ContractorLocationDAO extends PicsDAO{
                 " cl.latitude < :neLat AND " +
                 " cl.longitude < :neLong AND " +
                 " (ca.status = :active OR ca.status = :pending ) ");
-        query.setParameter("swLat", swLat);
-        query.setParameter("swLong", swLong);
-        query.setParameter("neLat", neLat);
-        query.setParameter("neLong", neLong);
+        viewPortParams(neLat, neLong, swLat, swLong, query);
         query.setParameter("active", AccountStatus.Active);
         query.setParameter("pending", AccountStatus.Pending);
 
         return query.getResultList();
     }
 
-    public List<ContractorLocation> findByViewPortAndTrade(Trade trade, double neLat, double neLong, double swLat, double swLong) {
+    public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, Trade trade) {
         Query query = em.createQuery("SELECT cl FROM ContractorLocation cl" +
-                " JOIN cl.contractor ca "+
+                " JOIN cl.contractor ca " +
                 " JOIN ca.trades ct " +
                 " WHERE " +
-                " ct.trade.indexStart <= :tradeStart  AND " +
-                " :tradeEnd <= ct.trade.indexEnd AND " +
+                getTradeWhere(trade) +
                 " cl.latitude > :swLat AND " +
                 " cl.longitude > :swLong AND" +
                 " cl.latitude < :neLat AND " +
                 " cl.longitude < :neLong AND " +
                 " (ca.status = :active OR ca.status = :pending ) ");
+        viewPortParams(neLat, neLong, swLat, swLong, query);
+        query.setParameter("active", AccountStatus.Active);
+        query.setParameter("pending", AccountStatus.Pending);
+        includeTradeParam(trade, query);
+
+        return query.getResultList();
+    }
+
+
+    public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, boolean safetySensitive) {
+        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl " +
+                " JOIN cl.contractor ca " +
+                " WHERE " +
+                " cl.latitude > :swLat AND " +
+                " cl.longitude > :swLong AND " +
+                " cl.latitude < :neLat AND " +
+                " cl.longitude < :neLong AND " +
+                " ca.safetySensitive = :safetySensitive AND " +
+                " (ca.status = :active OR ca.status = :pending ) ");
+        viewPortParams(neLat, neLong, swLat, swLong, query);
+        query.setParameter("safetySensitive", safetySensitive);
+        query.setParameter("active", AccountStatus.Active);
+        query.setParameter("pending", AccountStatus.Pending);
+
+        return query.getResultList();
+    }
+
+    public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, Trade trade, boolean safetySensitive) {
+        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl" +
+                " JOIN cl.contractor ca " +
+                " JOIN ca.trades ct " +
+                " WHERE " +
+                getTradeWhere(trade) +
+                " cl.latitude > :swLat AND " +
+                " cl.longitude > :swLong AND" +
+                " cl.latitude < :neLat AND " +
+                " cl.longitude < :neLong AND " +
+                " ca.safetySensitive = :safetySensitive AND " +
+                " (ca.status = :active OR ca.status = :pending ) ");
+        viewPortParams(neLat, neLong, swLat, swLong, query);
+        query.setParameter("safetySensitive", safetySensitive);
+        query.setParameter("active", AccountStatus.Active);
+        query.setParameter("pending", AccountStatus.Pending);
+        includeTradeParam(trade, query);
+
+        return query.getResultList();
+    }
+
+    private String getTradeWhere(Trade trade) {
+        if (trade == null) {
+            return " ";
+        }
+        return " ct.trade.indexStart <= :tradeStart  AND :tradeEnd <= ct.trade.indexEnd AND ";
+    }
+
+    private void includeTradeParam(Trade trade, Query query) {
+        if (trade != null) {
+            query.setParameter("tradeStart", trade.getIndexStart());
+            query.setParameter("tradeEnd", trade.getIndexEnd());
+        }
+    }
+
+    private void viewPortParams(double neLat, double neLong, double swLat, double swLong, Query query) {
         query.setParameter("swLat", swLat);
         query.setParameter("swLong", swLong);
         query.setParameter("neLat", neLat);
         query.setParameter("neLong", neLong);
-        query.setParameter("active", AccountStatus.Active);
-        query.setParameter("pending", AccountStatus.Pending);
-        query.setParameter("tradeStart", trade.getIndexStart());
-        query.setParameter("tradeEnd", trade.getIndexEnd());
-
-        return query.getResultList();
     }
 
 }
