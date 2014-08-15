@@ -25,24 +25,24 @@ public class UserIdActivationStrategy implements ActivationStrategy {
 
     @Override
     public String getName() {
-        return "Users by AppId";
+        return "Users by App User Id";
     }
 
     @Override
     public boolean isActive(FeatureState state, FeatureUser user) {
 
-        if(!(user instanceof ServletFeatureUser)) return false;
+        if (!(user instanceof ServletFeatureUser)) return false;
 
         String userIdsAsString = state.getParameter(PARAM_USER_IDS);
 
         if (Strings.isNotBlank(userIdsAsString)) {
 
-            String userId = ((ServletFeatureUser)user).getId();
+            String userId = ((ServletFeatureUser) user).getId();
 
-            List<String> userIds = Strings.splitAndTrim(userIdsAsString, ",");
+            List<String> userIdsStored = Strings.splitAndTrim(userIdsAsString, ",");
 
             if (user != null && Strings.isNotBlank(userId)) {
-                for (String userIdStored : userIds) {
+                for (String userIdStored : userIdsStored) {
                     if (userIdStored.equals(userId)) {
                         return true;
                     }
@@ -51,15 +51,13 @@ public class UserIdActivationStrategy implements ActivationStrategy {
 
         }
         return false;
-
     }
 
     @Override
     public Parameter[] getParameters() {
-        return new Parameter[] {
+        return new Parameter[]{
                 ParameterBuilder.create(PARAM_USER_IDS).label("Users").largeText()
                         .description("A list of users for which the feature is active.")
         };
     }
-
 }
