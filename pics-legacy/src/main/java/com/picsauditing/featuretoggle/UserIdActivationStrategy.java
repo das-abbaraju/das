@@ -25,7 +25,7 @@ public class UserIdActivationStrategy implements ActivationStrategy {
 
     @Override
     public String getName() {
-        return "Users by AppId";
+        return "Users by App User Id";
     }
 
     @Override
