@@ -32,9 +32,9 @@
 				<th>
 					<s:text name="AmBest" />
 				</th>
-				<th title="<s:text name="ReportInsuranceApproval.AdditionalRequirements" />">
+				<!--<th title="<s:text name="ReportInsuranceApproval.AdditionalRequirements" />">
 					<s:text name="ReportInsuranceApproval.AdditionalShort" />
-				</th>
+				</th>-->
 				<th>
 					<s:text name="ReportInsuranceApproval.Cert" />
 				</th>
@@ -98,14 +98,14 @@
 						<s:property value="getAMBestRatings(comment)" escape="false"/>
 					</s:iterator>
 				</td>
-				<td>
+				<!--<td>
 					<s:if test="get('valid').toString() == 'Yes'">
 						<s:text name="YesNo.Yes" />
 					</s:if>
 					<s:else>
 						<s:text name="YesNo.No" />
 					</s:else>
-				</td>
+				</td>-->
 				<td>
 					<s:if test="get('certID') != null">
 						<a 
