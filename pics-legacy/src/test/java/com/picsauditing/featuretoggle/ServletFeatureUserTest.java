@@ -119,12 +119,14 @@ public class ServletFeatureUserTest {
         verify(permissions).getCountrySubdivision();
     }
 
+    @Ignore
     @Test
     public void testGetAttribute_EnvReturnsSysProp() throws Exception {
         String env = (String)servletFeatureUser.getAttribute("env");
         assertEquals(ENV, env);
     }
 
+    @Ignore
     @Test
     public void testGetAttribute_EnvironmentReturnsSysProp() throws Exception {
         String env = (String)servletFeatureUser.getAttribute("environment");
