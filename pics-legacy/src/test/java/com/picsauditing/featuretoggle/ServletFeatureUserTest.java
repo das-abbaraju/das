@@ -57,15 +57,10 @@ public class ServletFeatureUserTest {
         HttpServletRequestHolder.bind(request);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        System.clearProperty("pics.env");
-        HttpServletRequestHolder.release();
-    }
-
     @Test
     public void testGetName_NullPermsReturnsAnonymous() throws Exception {
-        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions)null);
+        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions) null);
+
         assertTrue("Anonymous".equals(servletFeatureUser.getName()));
     }
 
@@ -78,7 +73,7 @@ public class ServletFeatureUserTest {
 
     @Test
     public void testIsFeatureAdmin_NullPermsIsFalse() throws Exception {
-        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions)null);
+        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions) null);
 
         assertFalse(servletFeatureUser.isFeatureAdmin());
     }
@@ -86,60 +81,69 @@ public class ServletFeatureUserTest {
     @Test
     public void testIsFeatureAdmin_PullsFromPermissions() throws Exception {
         assertFalse(servletFeatureUser.isFeatureAdmin());
+
         verify(permissions).has(OpPerms.DevelopmentEnvironment);
     }
 
     @Test
     public void testGetAttribute_UserIDProxiesToPermissions() throws Exception {
         servletFeatureUser.getAttribute("userID");
+
         verify(permissions, atLeastOnce()).getUserId();
     }
 
     @Test
     public void testGetAttribute_accountIDProxiesToPermissions() throws Exception {
         servletFeatureUser.getAttribute("accountID");
+
         verify(permissions, atLeastOnce()).getAccountId();
     }
 
     @Test
     public void testGetAttribute_GroupsProxiesToPermissions() throws Exception {
         servletFeatureUser.getAttribute("groups");
+
         verify(permissions).getAllInheritedGroupIds();
     }
 
     @Test
     public void testGetAttribute_countryCodeProxiesToPermissions() throws Exception {
         servletFeatureUser.getAttribute("countryCode");
+
         verify(permissions).getCountry();
     }
 
     @Test
     public void testGetAttribute_countrySubdivisionCodeProxiesToPermissions() throws Exception {
         servletFeatureUser.getAttribute("countrySubdivisionCode");
+
         verify(permissions).getCountrySubdivision();
     }
 
     @Test
     public void testGetAttribute_EnvReturnsSysProp() throws Exception {
-        String env = (String)servletFeatureUser.getAttribute("env");
+        String env = (String) servletFeatureUser.getAttribute("env");
+
         assertEquals(ENV, env);
     }
 
     @Test
     public void testGetAttribute_EnvironmentReturnsSysProp() throws Exception {
-        String env = (String)servletFeatureUser.getAttribute("environment");
+        String env = (String) servletFeatureUser.getAttribute("environment");
+
         assertEquals(ENV, env);
     }
 
     @Test
     public void testGetAttribute_UnknownAttributeReturnsNull() throws Exception {
         Object result = servletFeatureUser.getAttribute("NOT A GOOD ATTRIBUTE");
+
         assertNull(result);
     }
 
     @Test
     public void testPermissions_NullPermsPullsFromActionContext() throws Exception {
-        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions)null);
+        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions) null);
 
         Permissions permsReturned = Whitebox.invokeMethod(servletFeatureUser, "permissions");
 
@@ -148,7 +152,7 @@ public class ServletFeatureUserTest {
 
     @Test
     public void testPermissions_NullActionContextPullsFromServletRequest() throws Exception {
-        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions)null);
+        Whitebox.setInternalState(servletFeatureUser, "permissions", (Permissions) null);
         ActionContext.setContext(null);
 
         Whitebox.invokeMethod(servletFeatureUser, "permissions");
@@ -156,4 +160,9 @@ public class ServletFeatureUserTest {
         verify(httpSession).getAttribute("permissions");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        System.clearProperty("pics.env");
+        HttpServletRequestHolder.release();
+    }
 }

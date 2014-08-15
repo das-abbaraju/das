@@ -22,7 +22,7 @@ public class UserIdActivationStrategyTest {
     @Mock
     private ServletFeatureUser servletFeatureUser;
 
-    private final UserIdActivationStrategy strategy = new UserIdActivationStrategy();
+    private final UserIdActivationStrategy userIdActivationStrategy = new UserIdActivationStrategy();
 
     @Before
     public void setUp() throws Exception {
@@ -30,20 +30,20 @@ public class UserIdActivationStrategyTest {
     }
 
     @Test
-    public void shouldReturnFalseForEmptyUserlist() {
+    public void testIsActive_emptyUserList() {
 
         FeatureUser user = new ServletFeatureUser();
         FeatureState state = new FeatureState(MyFeature.FEATURE)
                 .enable()
                 .setStrategyId(UserIdActivationStrategy.ID);
 
-        boolean active = strategy.isActive(state, user);
+        boolean active = userIdActivationStrategy.isActive(state, user);
 
         assertEquals(false, active);
     }
 
     @Test
-    public void shouldReturnFalseForNonServletFeatureUser() {
+    public void testIsActive_nonServletFeatureUser() {
 
         FeatureUser user = new SimpleFeatureUser("1234", false);
         FeatureState state = new FeatureState(MyFeature.FEATURE)
@@ -51,13 +51,13 @@ public class UserIdActivationStrategyTest {
                 .setStrategyId(UsernameActivationStrategy.ID)
                 .setParameter(UserIdActivationStrategy.PARAM_USER_IDS, "1234, 3456, 34333");
 
-        boolean active = strategy.isActive(state, user);
+        boolean active = userIdActivationStrategy.isActive(state, user);
 
         assertEquals(false, active);
     }
 
     @Test
-    public void shouldReturnFalseForDifferentUserId() {
+    public void testIsActive_differentUserId() {
 
         FeatureState state = new FeatureState(MyFeature.FEATURE)
                 .enable()
@@ -66,13 +66,13 @@ public class UserIdActivationStrategyTest {
 
         when(servletFeatureUser.getId()).thenReturn("2323");
 
-        boolean active = strategy.isActive(state, servletFeatureUser);
+        boolean active = userIdActivationStrategy.isActive(state, servletFeatureUser);
 
         assertEquals(false, active);
     }
 
     @Test
-    public void shouldReturnTrueForCorrectUserId() {
+    public void testIsActive_correctUserId() {
 
         FeatureState state = new FeatureState(MyFeature.FEATURE)
                 .enable()
@@ -81,15 +81,15 @@ public class UserIdActivationStrategyTest {
 
         when(servletFeatureUser.getId()).thenReturn("34333");
 
-        boolean active = strategy.isActive(state, servletFeatureUser);
+        boolean active = userIdActivationStrategy.isActive(state, servletFeatureUser);
 
         assertEquals(true, active);
     }
 
     @Test
-    public void shouldReturnCorrectParameterList() {
+    public void testGetParameters() {
 
-        Parameter[] parameters = strategy.getParameters();
+        Parameter[] parameters = userIdActivationStrategy.getParameters();
 
         assertThat(parameters, notNullValue());
         assertThat(parameters.length, is(1));
@@ -99,9 +99,7 @@ public class UserIdActivationStrategyTest {
         assertThat(userParam, notNullValue());
         assertThat(userParam.getName(), is(UsernameActivationStrategy.PARAM_USERS));
     }
-
     private enum MyFeature implements Feature {
         FEATURE
     }
-
 }
