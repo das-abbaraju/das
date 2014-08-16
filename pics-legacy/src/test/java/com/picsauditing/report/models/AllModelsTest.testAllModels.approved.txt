@@ -1460,6 +1460,64 @@ CreditMemoSapLastSync
 CreditMemoSapSync
 CreditMemoStatus
 
+Model: CreditMemoItems
+Permission: Permissions{permissions=[]}
+----------------------------------------
+AccountCity
+AccountContactDepartment
+AccountContactEmail
+AccountContactFax
+AccountContactFirstName
+AccountContactID
+AccountContactIsActive
+AccountContactLastName
+AccountContactLocale
+AccountContactName
+AccountContactPhone
+AccountContactTimezone
+AccountCountry
+AccountCountrySubdivision
+AccountCreationDate
+AccountID
+AccountLegalName
+AccountMaterialSupplier
+AccountName
+AccountOffsiteServices
+AccountOnsiteServices
+AccountStatus
+AccountTimezone
+AccountTransportationServices
+ContractorAccountLevel
+ContractorAuditGUARD
+ContractorContractorTradeTradeChildrenId
+ContractorContractorTradeTradeChildrenName
+ContractorContractorTradeTradeId
+ContractorContractorTradeTradeName
+ContractorDocuGUARD
+ContractorEmployeeGUARD
+ContractorInsideSalesUserID
+ContractorInsideSalesUserIsActive
+ContractorInsideSalesUserName
+ContractorInsureGUARD
+ContractorMembershipDate
+ContractorOriginalMembershipDate
+ContractorProductRisk
+ContractorSafetySensitive
+ContractorSoleProprietor
+ContractorTagTagID
+ContractorTransportationRisk
+CreditMemoAmountApplied
+CreditMemoCreationDate
+CreditMemoCurrency
+CreditMemoID
+CreditMemoItemAmount
+CreditMemoItemDescription
+CreditMemoItemFeeFeeClass
+CreditMemoItemFeeId
+CreditMemoItemFeeMaxFacilities
+CreditMemoItemFeeName
+CreditMemoStatus
+
 Model: Emails
 Permission: Permissions{permissions=[]}
 ----------------------------------------
