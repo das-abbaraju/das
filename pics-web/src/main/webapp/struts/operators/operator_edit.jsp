@@ -261,12 +261,12 @@
                         </a>
                     </s:if>
                 </li>
-                <s:if test="isBillingEntityEditEnabled()">
-                    <pics:permission perm="EditBillableEntity">
-                        <li>
-                            <label>
-                                <s:text name="FacilitiesEdit.billableEntity"/>:
-                            </label>
+                <li>
+                    <label>
+                        <s:text name="FacilitiesEdit.billableEntity"/>:
+                    </label>
+                    <s:if test="isBillingEntityEditEnabled()">
+                        <pics:permission perm="EditBillableEntity">
                             <s:select
                                     name="operator.billableEntity"
                                     value="operator.billableEntity.id"
@@ -274,9 +274,12 @@
                                     listKey="id"
                                     listValue="name"
                                     />
-                        </li>
+                        </pics:permission>
+                    </s:if>
+                    <pics:permission perm="EditBillableEntity" negativeCheck="true">
+                        ${operator.billableEntity.name}
                     </pics:permission>
-                </s:if>
+                </li>
             </s:if>
             <s:if test="operator.corporateFacilities.size() > 0">
                 <li>
