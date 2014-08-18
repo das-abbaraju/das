@@ -1,0 +1,8 @@
+<div class="toggle-switch-container">
+    <div ng-class="{'toggle-hint on': showHint, 'toggle-hint': !showHint }">
+        {{ label }}
+    </div>
+    <label ng-class="{'toggle-switch on': isChecked, 'toggle-switch': !isChecked }">
+        <span><input id="switch" type="checkbox" ng-model="ngModel" ng-click="toggle($event);" /></span>
+    </label>
+</div>

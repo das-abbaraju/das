@@ -1,0 +1,14 @@
+.toggle-filter-container {
+    padding: 5px 15px;
+    @include transition(background-color, 0.5s);
+
+    &.selected {
+        background-color: $primary_tint;
+        @include transition(background-color, 0.5s);
+    }
+
+    .col-xs-7 {
+        padding-top: 7px;
+        height: 35px;
+    }
+}
