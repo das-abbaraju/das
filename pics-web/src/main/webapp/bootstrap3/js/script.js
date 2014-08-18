@@ -28952,9 +28952,10 @@ PICS.define('employee-guard.FormValidation', {
 
             if (data.fieldErrors) {
                 for (var id in data.fieldErrors) {
-
+                    var header = data.fieldErrors['PICS.OOPS.DUPLICATE'][0],
+                        message = data.fieldErrors['PICS.DUPLICATE.FIELDS'][0];
                     if (id == 'PICS.DUPLICATE') {
-                        showDuplicateMessage($form, data.fieldErrors[id][0]);
+                        showDuplicateMessage($form, data.fieldErrors[id][0], header, message);
                     }
                     field_with_error = $('[name="' + id + '"]');
                     field_with_error.closest('.form-group').addClass('has-error');
@@ -28965,14 +28966,14 @@ PICS.define('employee-guard.FormValidation', {
             }
         }
 
-        function showDuplicateMessage($form, message) {
-            var fields = message.split(','),
+        function showDuplicateMessage($form, fieldnames, header, message) {
+            var fields = fieldnames.split(','),
                 field_list = createFieldList(fields);
 
             var duplicate_message = [
                 '<div class="alert alert-danger">',
-                    '<h4>Oops! You have a duplicate.</h4>',
-                    '<p>Please check:',
+                    '<h4>' + header + '</h4>',
+                    '<p>' + message,
                         field_list,
                     '</p>',
                 '</div>'
