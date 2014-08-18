@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 
 import com.picsauditing.companyfinder.model.MapInfo;
 import com.picsauditing.companyfinder.model.ViewPort;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -28,7 +29,7 @@ public class Geocode extends GoogleApiOverHttp {
 		this.googleClientId = googleClientId;
 	}
 
-    public LatLong latLongFromAddressUnsecure(String address) {
+    public LatLong latLongFromAddressUnsecure(String address) throws Exception {
         LatLong latLong = null;
         if (address != null) {
             String url = createUrl(urlFormatUnsecure, address);
@@ -44,13 +45,17 @@ public class Geocode extends GoogleApiOverHttp {
             String url = createUrl(urlFormatUnsecure, address);
             InputStream response = executeUrl(url);
 
+          try {
             mapInfo = mapInfoFromResponse(response);
+          } catch (Exception e) {
+            logger.error("Error extracting map info from geo response.", e);
+          }
         }
         return mapInfo;
     }
 
 
-    public LatLong latLongFromAddress(String address) {
+    public LatLong latLongFromAddress(String address) throws Exception {
 		LatLong latLong = null;
 		if (address != null) {
 			String url = createUrl(urlFormat, address);
@@ -61,7 +66,7 @@ public class Geocode extends GoogleApiOverHttp {
 		return latLong;
 	}
 
-	private LatLong latLongFromResponse(InputStream responseStream) {
+	private LatLong latLongFromResponse(InputStream responseStream) throws Exception {
 		if (responseStream != null) {
 			try {
 				InputStreamReader reader = new InputStreamReader(responseStream, "UTF-8");
@@ -77,7 +82,7 @@ public class Geocode extends GoogleApiOverHttp {
 		return null;
 	}
 
-    private MapInfo mapInfoFromResponse(InputStream responseStream) {
+    private MapInfo mapInfoFromResponse(InputStream responseStream) throws Exception {
         if (responseStream != null) {
             try {
                 InputStreamReader reader = new InputStreamReader(responseStream, "UTF-8");
@@ -97,28 +102,28 @@ public class Geocode extends GoogleApiOverHttp {
         return null;
     }
 
-	private LatLong extractLatLong(JSONObject response) {
+	private LatLong extractLatLong(JSONObject response) throws Exception {
 		JSONArray results = (JSONArray) response.get("results");
 		JSONObject data = (JSONObject) results.get(0);
 		JSONObject geometry = (JSONObject) data.get("geometry");
 		JSONObject location = (JSONObject) geometry.get("location");
-		Double latitude = (Double) location.get("lat");
-		Double longitude = (Double) location.get("lng");
+		Double latitude = getDouble(location.get("lat"));
+		Double longitude = getDouble(location.get("lng"));
 		return new LatLong(latitude, longitude);
 	}
 
-    private ViewPort extractViewPort(JSONObject response) {
+    private ViewPort extractViewPort(JSONObject response) throws Exception{
         JSONArray results = (JSONArray) response.get("results");
         JSONObject data = (JSONObject) results.get(0);
         JSONObject geometry = (JSONObject) data.get("geometry");
         JSONObject viewport = (JSONObject) geometry.get("viewport");
         JSONObject northeast = (JSONObject) viewport.get("northeast");
-        Double northEastLatitude = (Double) northeast.get("lat");
-        Double northEastLongtitude = (Double) northeast.get("lng");
+        Double northEastLatitude = getDouble(northeast.get("lat"));
+        Double northEastLongtitude = getDouble(northeast.get("lng"));
 
         JSONObject southWest = (JSONObject) viewport.get("southwest");
-        Double southWestLatitude = (Double) southWest.get("lat");
-        Double southWestLongtitude = (Double) southWest.get("lng");
+        Double southWestLatitude = getDouble(southWest.get("lat"));
+        Double southWestLongtitude = getDouble(southWest.get("lng"));
 
 
         ViewPort result = ViewPort.builder()
@@ -135,4 +140,7 @@ public class Geocode extends GoogleApiOverHttp {
         return result;
     }
 
+  private static Double getDouble(Object object) throws Exception{
+    return object instanceof Number ? ((Number) object).doubleValue() : Double.parseDouble((String) object);
+  }
 }
