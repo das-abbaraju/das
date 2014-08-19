@@ -13,7 +13,6 @@ import com.picsauditing.rbic.InsuranceCriteriaDisplay;
 import com.picsauditing.service.AuditDataService;
 import com.picsauditing.service.ContractorAuditService;
 import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.PicsDateFormat;
 import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,7 +25,8 @@ import java.util.*;
 
 public class AuditDataSave extends AuditActionSupport {
 
-    public static int VALID_YEARS_IN_FUTURE = 10;
+	public static final int VALID_YEARS_IN_FUTURE = 10;
+	public static final int ANSWER_MIN_YEAR = 1950;// TODO: should be moved to app_properties[AuditData.minYear]
 
 	private static final String NO = "No";
 
@@ -789,8 +789,7 @@ public class AuditDataSave extends AuditActionSupport {
 				return true;
 			}
 		}
-		return false; // To change body of created methods use File | Settings |
-						// File Templates.
+		return false;
 	}
 
 	private void setESignatureData(String response) {
@@ -803,59 +802,44 @@ public class AuditDataSave extends AuditActionSupport {
 	}
 
 	private boolean processAndValidateDate(AuditData auditData) {
-		if (auditData.getAnswer() == null || auditData.getAnswer().equals("")) {
+		String answer = auditData.getAnswer();
+		if (answer == null || answer.length() == 0) {
 			return true;
 		}
 
-        Date enteredDate = extractEnteredDate(auditData.getAnswer());
+		Date enteredDate = extractEnteredDate(answer);
+		int enteredYear;
 
-        if (enteredDate == null) {
-            addActionError(getText("Audit.message.InvalidDate"));
-            return false;
-        }
+		if (enteredDate == null
+				|| (enteredYear = DateBean.getYearFromDate(enteredDate)) < ANSWER_MIN_YEAR
+				|| enteredYear > Calendar.getInstance().get(Calendar.YEAR) + VALID_YEARS_IN_FUTURE) {
 
-        if (DateBean.getYearFromDate(enteredDate) < 2001) {
-            addActionError(getText("Audit.message.InvalidDate"));
-            return false;
-        }
+			addActionError(getText("Audit.message.InvalidDate")
+					.replaceFirst("(\\b2000\\b|\\{\\d*\\}|#\\d+|%(\\d+\\$)?d)", Integer.toString(ANSWER_MIN_YEAR)));
+			return false;
+		}
 
-        Calendar today = Calendar.getInstance();
-        if (DateBean.getYearFromDate(enteredDate) > today.get(Calendar.YEAR) + VALID_YEARS_IN_FUTURE) {
-            addActionError(getText("Audit.message.InvalidDate"));
-            return false;
-        }
+		SimpleDateFormat df = new SimpleDateFormat(supportedDatePatterns[0]);
+		auditData.setAnswer(df.format(enteredDate));
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        auditData.setAnswer(df.format(enteredDate));
-
-        return true;
+		return true;
 	}
 
-    private Date extractEnteredDate(String answer) {
-        Date date = null;
-        List<String> datePatterns = new ArrayList<>();
+	private static final String[] supportedDatePatterns = {"yyyy-MM-dd", "yyyy/MM/dd", "MM/dd/yyyy"};
 
-        datePatterns.add("yyyy-MM-dd");
-        datePatterns.add("yyyy/MM/dd");
-        datePatterns.add("MM/dd/yyyy");
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        for (String pattern:datePatterns) {
-            try {
-                dateFormat.applyPattern(pattern);
-                date = dateFormat.parse(answer);
-                if (DateBean.getYearFromDate(date) < 2000) {
-                    throw new Exception();
-                }
-                break;
-            } catch (Exception e) {
-                date = null;
-            }
-        }
-
-        return date;
-    }
+	private static Date extractEnteredDate(String answer) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat();
+		dateFormat.setLenient(false);
+		for (String pattern : supportedDatePatterns) {
+			try {
+				dateFormat.applyPattern(pattern);
+				return dateFormat.parse(answer);
+			} catch (java.text.ParseException e) {
+				LOG.info("Could not parse answer date '#0' with pattern '#1': #2", answer, pattern, e.getMessage());
+			}
+		}
+		return null;
+	}
 
     private boolean isInvalidNegativeNumber(BigDecimal value, AuditQuestion question) {
 		if (question.getId() == AuditQuestion.EMR && value.floatValue() < 0.0f) {
