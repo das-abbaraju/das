@@ -14,7 +14,7 @@ public class ContractorLocationDAO extends PicsDAO {
     }
 
     public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong) {
-        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl " +
+        Query query = em.createQuery("SELECT distinct cl FROM ContractorLocation cl " +
                 " JOIN cl.contractor ca " +
                 " WHERE " +
                 " cl.latitude > :swLat AND " +
@@ -30,7 +30,7 @@ public class ContractorLocationDAO extends PicsDAO {
     }
 
     public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, Trade trade) {
-        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl" +
+        Query query = em.createQuery("SELECT distinct cl FROM ContractorLocation cl" +
                 " JOIN cl.contractor ca " +
                 " JOIN ca.trades ct " +
                 " WHERE " +
@@ -50,7 +50,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
 
     public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, boolean safetySensitive) {
-        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl " +
+        Query query = em.createQuery("SELECT distinct cl FROM ContractorLocation cl " +
                 " JOIN cl.contractor ca " +
                 " WHERE " +
                 " cl.latitude > :swLat AND " +
@@ -68,7 +68,7 @@ public class ContractorLocationDAO extends PicsDAO {
     }
 
     public List<ContractorLocation> findContractorLocations(double neLat, double neLong, double swLat, double swLong, Trade trade, boolean safetySensitive) {
-        Query query = em.createQuery("SELECT cl FROM ContractorLocation cl" +
+        Query query = em.createQuery("SELECT distinct cl FROM ContractorLocation cl" +
                 " JOIN cl.contractor ca " +
                 " JOIN ca.trades ct " +
                 " WHERE " +
