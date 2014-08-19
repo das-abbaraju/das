@@ -23,6 +23,11 @@ public class EmployeeBuilder {
 		return this;
 	}
 
+	public EmployeeBuilder guid(String guid) {
+		employee.setGuid(guid);
+		return this;
+	}
+
 	public EmployeeBuilder accountId(int accountId) {
 		employee.setAccountId(accountId);
 		return this;

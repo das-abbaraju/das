@@ -122,6 +122,7 @@ public class EmployeeFileRowMapperTest {
 		assertEquals(EMPLOYEE_FIRST_NAME, result.getFirstName());
 		assertEquals(EMPLOYEE_LAST_NAME, result.getLastName());
 		assertEquals(EMPLOYEE_EMAIL, result.getEmail());
+		assertNotNull(result.getGuid());
 	}
 
 }
