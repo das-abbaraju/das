@@ -1,0 +1,10 @@
+<div class="toggle-filter-container" ng-class="{ 'selected': ngModel }">
+    <div class="row">
+        <div class="col-xs-7">
+            <input type="checkbox" ng-model="ngModel"/> {{ filterLabel }}
+        </div>
+        <div class="col-xs-5" ng-show="ngModel">
+            <toggle-switch ng-model="toggleModel" yes-label="Yes" no-label="No" class="pull-right"></toggle-switch>
+        </div>
+    </div>
+</div>

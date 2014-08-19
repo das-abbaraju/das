@@ -110,6 +110,10 @@ angular.module('PICS.companyFinder')
 
         $scope.filterEditMode = false;
 
+        $scope.safetySensitiveEnabled = false;
+
+        $scope.safetySensitive = true;
+
         $scope.googleMapConfig = {
             map: map,
             minZoom: 8
@@ -235,14 +239,14 @@ angular.module('PICS.companyFinder')
                     neLat: ne.lat(),
                     neLong: ne.lng(),
                     swLat: sw.lat(),
-                    swLong: sw.lng()
+                    swLong: sw.lng(),
+                    ss: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
                 };
 
             if (!trade) {
                 return requestParameters;
             } else {
                 return angular.extend(requestParameters, {
-                    safetySensitive: 1,
                     trade: trade
                 });
             }

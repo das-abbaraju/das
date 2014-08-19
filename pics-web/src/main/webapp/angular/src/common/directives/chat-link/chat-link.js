@@ -37,7 +37,7 @@ angular.module('PICS.directives')
                 }, function (data) {
                     var mibewBaseUrl = data.name,
                         mibewUrl = getFullUrlFromBaseUrl(mibewBaseUrl);
-                    
+
                     scope.href = mibewUrl;
                     scope.openMibew = getClickHandlerFromFullUrl(mibewUrl);
                 });

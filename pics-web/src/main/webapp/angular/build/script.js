@@ -63788,6 +63788,10 @@ if(window.jasmine || window.mocha) {
 
         $scope.filterEditMode = false;
 
+        $scope.safetySensitiveEnabled = false;
+
+        $scope.safetySensitive = true;
+
         $scope.googleMapConfig = {
             map: map,
             minZoom: 8
@@ -63913,7 +63917,8 @@ if(window.jasmine || window.mocha) {
                     neLat: ne.lat(),
                     neLong: ne.lng(),
                     swLat: sw.lat(),
-                    swLong: sw.lng()
+                    swLong: sw.lng(),
+                    ss: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
                 };
 
             if (!trade) {
@@ -64227,7 +64232,7 @@ if(window.jasmine || window.mocha) {
                 phoneNumberService.get({countryId:scope.countryId}, function (data) {
                     scope.phoneNumber = data.name;
                     scope.phoneCountry = data.id;
-                });    
+                });
             });
         }
     };
@@ -64298,7 +64303,7 @@ if(window.jasmine || window.mocha) {
                 }, function (data) {
                     var mibewBaseUrl = data.name,
                         mibewUrl = getFullUrlFromBaseUrl(mibewBaseUrl);
-                    
+
                     scope.href = mibewUrl;
                     scope.openMibew = getClickHandlerFromFullUrl(mibewUrl);
                 });
@@ -64633,6 +64638,51 @@ if(window.jasmine || window.mocha) {
                     containerCssClass: 'timezone-select'
                 });
             });
+        }
+    };
+});;angular.module('PICS.directives')
+
+.directive('toggleFilter', function ($timeout) {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/angular/src/common/directives/toggle-filter/toggle-filter.tpl.html',
+        scope: {
+            ngModel: '=',
+            toggleModel: '=',
+            filterLabel: '@'
+        }
+    };
+});;angular.module('PICS.directives')
+
+.directive('toggleSwitch', function ($timeout) {
+    return {
+        restrict: 'E',
+        replace: true,
+        templateUrl: '/angular/src/common/directives/toggle-switch/toggle-switch.tpl.html',
+        scope: {
+            ngModel: '=',
+            yesLabel: '@',
+            noLabel: '@'
+        },
+        link: function (scope, element) {
+            scope.isChecked = scope.ngModel;
+
+            scope.showHint = false;
+
+            scope.label = scope.isChecked ? scope.yesLabel : scope.noLabel;
+
+            scope.toggle = function ($event) {
+                scope.isChecked = !scope.isChecked;
+
+                scope.showHint = true;
+
+                $timeout(function () {
+                    scope.showHint = false;
+                }, 1500);
+
+                scope.label = scope.isChecked ? scope.yesLabel : scope.noLabel;
+            };
         }
     };
 });;angular.module('PICS.directives')

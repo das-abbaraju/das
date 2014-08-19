@@ -14,7 +14,7 @@ angular.module('PICS.directives')
                 phoneNumberService.get({countryId:scope.countryId}, function (data) {
                     scope.phoneNumber = data.name;
                     scope.phoneCountry = data.id;
-                });    
+                });
             });
         }
     };

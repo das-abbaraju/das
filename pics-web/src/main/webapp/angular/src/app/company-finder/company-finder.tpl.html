@@ -21,22 +21,33 @@
                 <dd class="col-md-9">{{ selectedTrade }}</dd>
             </dl>
             <form ng-show="filterEditMode" ng-submit="onUpdateClick()" name="" action="" class="form-horizontal" autocomplete="off" role="form">
-                <div class="form-group">
-                    <label name="trade" class="col-md-3 control-label">Trade</label>
-                    <div class="col-md-4">
-                        <input
-                            tabindex="tabindex"
-                            autocomplete-select
-                            on-keyup="onTradeKeyup"
-                            list-items="trades"
-                            select2-el="tradeSelect2El">
-                        </input>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label name="trade" class="col-md-3 control-label">Trade</label>
+                        <div class="col-md-9">
+                            <input
+                                tabindex="tabindex"
+                                autocomplete-select
+                                on-keyup="onTradeKeyup"
+                                list-items="trades"
+                                select2-el="tradeSelect2El">
+                            </input>
+                        </div>
+                    </div>
+                     <div class="col-md-4 col-md-offset-1">
+                        <div class="filter-panel">
+                            <div class="title">Additional Filters</div>
+                            <toggle-filter ng-model="safetySensitiveEnabled" filter-label="Safety Sensitive" toggle-model='safetySensitive'></toggle-filter>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-md-9 col-md-offset-3 form-actions">
-                        <button name="update" type="submit" class="btn btn-primary">Update</button>
-                        <button ng-click="onCancelClick()" name="cancel" type="button" class="btn btn-default cancel">Cancel</button>
+
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <div class="col-md-9 col-md-offset-3 form-actions">
+                            <button name="update" type="submit" class="btn btn-primary">Update</button>
+                            <button ng-click="onCancelClick()" name="cancel" type="button" class="btn btn-default cancel">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </form>
