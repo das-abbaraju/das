@@ -200,6 +200,7 @@
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
     <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
+    <bean id="ContractorLocationService" class="com.picsauditing.companyfinder.service.ContractorLocationService" />
     <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
     <bean id="ReportQBService" class="com.picsauditing.report.service.ReportQBService"/>
 

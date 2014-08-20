@@ -19,6 +19,7 @@ import com.picsauditing.service.registration.RegistrationResult;
 import com.picsauditing.service.registration.RegistrationResult.RegistrationFailure;
 import com.picsauditing.service.registration.RegistrationResult.RegistrationSuccess;
 import com.picsauditing.service.registration.RegistrationService;
+import com.picsauditing.companyfinder.service.ContractorLocationService;
 import com.picsauditing.struts.controller.forms.RegistrationForm;
 import com.picsauditing.struts.controller.forms.RegistrationLocaleForm;
 import com.picsauditing.struts.validator.RegistrationFormValidationWrapper;
@@ -61,7 +62,8 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
     private AddressVerificationService addressVerificationService;
     @Autowired
     private AddressService addressService;
-
+    @Autowired
+    private ContractorLocationService contractorLocationService;
 
 	@Anonymous
 	@Override
@@ -136,6 +138,9 @@ public class Registration extends RegistrationAction implements AjaxValidator, P
             if (!addressVerifyFailed(addressResponseHolder)) {
                 addressService.saveAddressFieldsFromVerifiedAddress(contractor, addressResponseHolder, user);
             }
+
+            contractorLocationService.saveLocation(contractor);
+
             return setUrlForRedirect(getRegistrationStep().getUrl());
 
         } else {
