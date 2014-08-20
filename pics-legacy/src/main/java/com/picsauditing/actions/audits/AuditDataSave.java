@@ -814,8 +814,10 @@ public class AuditDataSave extends AuditActionSupport {
 				|| (enteredYear = DateBean.getYearFromDate(enteredDate)) < ANSWER_MIN_YEAR
 				|| enteredYear > Calendar.getInstance().get(Calendar.YEAR) + VALID_YEARS_IN_FUTURE) {
 
-			addActionError(getText("Audit.message.InvalidDate")
-					.replaceFirst("(\\b2000\\b|\\{\\d*\\}|#\\d+|%(\\d+\\$)?d)", Integer.toString(ANSWER_MIN_YEAR)));
+			String msg = getText("Audit.message.InvalidDate");
+			if (null != msg)
+				msg = msg.replaceFirst("(\\b2000\\b|\\{\\d*\\}|#\\d+|%(\\d+\\$)?d)", Integer.toString(ANSWER_MIN_YEAR));
+			addActionError(msg);
 			return false;
 		}
 
