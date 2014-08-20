@@ -4,6 +4,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.actions.TranslationActionSupport;
 import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
@@ -69,8 +70,9 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
 	private AnswerMap answerMap;
 	private AuditCatData catData;
+    private String testMessage = "Invalid Date";
 
-	@AfterClass
+    @AfterClass
 	public static void classTearDown() {
 		PicsTestUtil.resetSpringUtilsBeans();
 	}
@@ -407,7 +409,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         // date too far in past
 		data.setAnswer((AuditDataSave.ANSWER_MIN_YEAR - 1) + "-12-31");
 		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
-		assertFalse(result);
+		assertTrue(result);
 
         // valid future date
         Calendar cal = Calendar.getInstance();
@@ -422,6 +424,9 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         cal.add(Calendar.YEAR, AuditDataSave.VALID_YEARS_IN_FUTURE + 1);
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         data.setAnswer(dateFormat.format(cal.getTime()));
+        when(translationService.hasKey(anyString(), any(Locale.class))).thenReturn(true);
+        when(translationService.getText(eq("Audit.message.InvalidDate"), eq(Locale.ENGLISH), any())).thenReturn(
+                testMessage);
         result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
         assertFalse(result);
 	}
