@@ -78,11 +78,11 @@ public class ContractorLocationService {
                             lat = (Double) location.get("lat");
 
                             if (lng != null && lat != null) {
-                                System.out.println(address);
+                                logger.info(address);
                                 return ContractorGeoLocation.createFrom(contractorId, lat.floatValue(), lng.floatValue(), 38586);
                             }
                         } else {
-                            System.out.println("locatin null for: " + address);
+                            logger.info("location null for: " + address);
                         }
                     }
 
@@ -127,7 +127,6 @@ public class ContractorLocationService {
 
         urlStr = urlStr.replaceAll("\\s+", "+").replaceFirst("#", "");
 
-        System.out.println("url: " + urlStr);
         URL url = new URL(urlStr);
         // URLConnection conn = url.openConnection();
         String output = "";
@@ -136,7 +135,7 @@ public class ContractorLocationService {
         } catch (java.util.NoSuchElementException e) {
             //empty result
         }
-        System.out.println("output from google: " + output);
+        logger.info(output);
         return output;
     }
 }
