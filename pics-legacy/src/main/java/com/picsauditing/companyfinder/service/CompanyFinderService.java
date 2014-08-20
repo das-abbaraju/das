@@ -24,10 +24,6 @@ public class CompanyFinderService {
     @Autowired
     private AddressService addressService;
 
-    public LatLong latLongFromAddressUnsecure(String address) {
-        return new Geocode().latLongFromAddressUnsecure(address);
-    }
-
     public ViewportLocation buildViewportLocationFromAddressUnsecure(String address) {
         ViewportLocation viewportLocation = null;
 
