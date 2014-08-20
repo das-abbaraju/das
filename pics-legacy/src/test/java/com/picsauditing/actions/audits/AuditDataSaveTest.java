@@ -409,7 +409,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         // date too far in past
 		data.setAnswer((AuditDataSave.ANSWER_MIN_YEAR - 1) + "-12-31");
 		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
-		assertTrue(result);
+		assertFalse(result);
 
         // valid future date
         Calendar cal = Calendar.getInstance();
