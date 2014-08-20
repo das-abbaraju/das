@@ -405,7 +405,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         assertTrue(result);
 
         // date too far in past
-		data.setAnswer("2000-12-31");
+		data.setAnswer((AuditDataSave.ANSWER_MIN_YEAR - 1) + "-12-31");
 		result = Whitebox.invokeMethod(auditDataSave, "processAndValidateDate", data);
 		assertFalse(result);
 
