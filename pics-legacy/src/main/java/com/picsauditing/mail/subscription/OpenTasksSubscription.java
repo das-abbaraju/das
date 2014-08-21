@@ -15,26 +15,30 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class OpenTasksSubscription extends SubscriptionBuilder {
-	final static Logger logger = LoggerFactory.getLogger(OpenTasksSubscription.class); 
-	
+	private static final Logger logger = LoggerFactory.getLogger(OpenTasksSubscription.class);
+
 	@Autowired
 	private OpenTasks openTasks;
 
 	@Override
 	public Map<String, Object> process(EmailSubscription subscription) {
-		Map<String, Object> tokens = new HashMap<String, Object>();
+		assert subscription.getSubscription() == Subscription.OpenTasks;
 
 		User user = subscription.getUser();
+		assert user.isActiveB();
+		assert user.getAccount().isContractor();
+		assert user.getAccount().getStatus().isActive();
+
+		Map<String, Object> tokens = new HashMap<String, Object>();
 		try {
-			assert user.isActiveB();
-			assert user.getAccount().isContractor();
-			assert user.getAccount().getStatus().isActive();
-			assert subscription.getSubscription() == Subscription.OpenTasks;
-			List<String> tasks = openTasks.getOpenTasksEmail((ContractorAccount) user.getAccount(),user);
+			List<String> tasks;
+			synchronized (logger) {
+				tasks = openTasks.getOpenTasksEmail((ContractorAccount) user.getAccount(), user);
+			}
 			if (!tasks.isEmpty())
 				tokens.put("tasks", tasks);
 		} catch (Exception e) {
-			logger.error("Error attempting to gather the open tasks for an Open Tasks Subscription for user "+user,e);
+			logger.error("Error attempting to gather the open tasks for an Open Tasks Subscription for user " + user, e);
 		}
 
 		return tokens;

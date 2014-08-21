@@ -73,7 +73,8 @@ public class ForcedFlagsSubscription extends SqlSubscriptionBuilder {
 
 			if (forcedFlags.size() > 0) {
 				tokens.put("forcedflags", forcedFlags);
-				tokens.put("date", subscription.getTimePeriod().getComparisonDate());
+				if (null != subscription.getTimePeriod())
+					tokens.put("date", subscription.getTimePeriod().getComparisonDate());
 			}
 
 		} catch (Exception e) {

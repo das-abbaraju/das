@@ -34,7 +34,7 @@
 						<s:property value="fromAddress" />
 					</s:else>
 				</td>
-				<td align="right">
+				<td class="right <s:property value='status'/>">
 					<s:if test="sentDate == null">
 						<s:text name="ContractorNotes.Pending" />
 					</s:if>

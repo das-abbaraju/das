@@ -10,6 +10,7 @@ import com.picsauditing.dao.EmailTemplateDAO;
 import com.picsauditing.dao.ReportDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuildErrorException;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,6 @@ public abstract class SubscriptionBuilder {
 
     final static Logger logger = LoggerFactory.getLogger(SubscriptionBuilder.class);
 
-
     public void sendSubscription(EmailSubscription subscription) throws IOException, MessagingException, SubscriptionException {
         Map<String, Object> tokens = process(subscription);
         EmailQueue queue;
@@ -46,11 +46,13 @@ public abstract class SubscriptionBuilder {
 	    }
 
         if (queue != null) {
-            sender.sendNow(queue);
-        }
-        
-        subscription.setLastSent(new Date());
-        subscriptionDAO.save(subscription);
+			try {
+				sender.sendNow(queue);
+			} finally {
+				subscription.setLastSent(new Date());
+				subscriptionDAO.save(subscription);
+			}
+		}
 
         tokens.clear();
     }
@@ -103,7 +105,8 @@ public abstract class SubscriptionBuilder {
 					}
 				}
 			} catch (Exception e) {
-
+				logger.warn("Skip CSR email builder error for email subscription {}: {}",
+						subscription.getId(), ExceptionUtils.getRootCauseMessage(e));
 			}
 
 			EmailQueue email = emailBuilder.build();
@@ -114,6 +117,7 @@ public abstract class SubscriptionBuilder {
 			return email;
 		}
 
+		logger.warn("Cannot build email subscription {} from 0 {} tokens", subscription.getId(), getClass().getSimpleName());
 		return null;
 	}
 }
