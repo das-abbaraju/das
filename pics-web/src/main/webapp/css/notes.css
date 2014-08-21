@@ -137,3 +137,9 @@ a.filter:hover {
 	background-color: #FF6;
 	text-decoration: none;
 }
+
+
+/* Email history table - sending status */
+table.notes .Error { color: #900; }
+table.notes .Pending { color: #770; }
+/*table.notes .Sent { color: #272; }*/

@@ -27,27 +27,30 @@ public class EmailSender {
 		if (checkDeactivated(email))
 			return;
 
-		if (isEmailAddressValid(email.getToAddresses())) {
-			GridSender gridSender;
-			if (!Strings.isEmpty(email.getFromPassword())) {
-				// TODO We don't use Gmail anymore. SendGrid only accepts a single
-				// username (info@pics) So we should remove this section
-				// We need the password to correctly authenticate with GMail
-				gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
+		try {
+			if (isEmailAddressValid(email.getToAddresses())) {
+				GridSender gridSender;
+				if (!Strings.isEmpty(email.getFromPassword())) {
+					// TODO We don't use Gmail anymore. SendGrid only accepts a single
+					// username (info@pics) So we should remove this section
+					// We need the password to correctly authenticate with GMail
+					gridSender = new GridSender(email.getFromAddress(), email.getFromPassword());
+				} else {
+					// Use the default info@picsauditing.com address
+					gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS,
+							EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
+				}
+				gridSender.sendMail(email);
+
+				email.setStatus(EmailStatus.Sent);
 			} else {
-				// Use the default info@picsauditing.com address
-				gridSender = new GridSender(EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS,
-						EmailAddressUtils.PICS_INFO_EMAIL_ADDRESS_PASSWORD);
+				email.setStatus(EmailStatus.Error);
 			}
-			gridSender.sendMail(email);
 
-			email.setStatus(EmailStatus.Sent);
-		} else {
-			email.setStatus(EmailStatus.Error);
+			email.setSentDate(new Date());
+		} finally {
+			emailQueueDAO.save(email);
 		}
-		email.setSentDate(new Date());
-
-		emailQueueDAO.save(email);
 	}
 
 	private boolean isEmailAddressValid(String toAddresses) {
