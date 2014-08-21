@@ -104,8 +104,12 @@ public class ManageTranslations extends ReportActionSupport {
 						if (translation.getQualityRating() == null) {
 							translation.setQualityRating(TranslationQualityRating.Good);
 						}
-
-						dao.save(translation);
+                        try {
+						    dao.save(translation);
+                        }catch(Exception ex) {
+                            addActionError("Duplicate Translation Key");
+                            throw new Exception("Duplicate Translation Key");
+                        }
 						out.put("id", translation.getId());
 
 						updateOtherLanguagesToQuestionable();
