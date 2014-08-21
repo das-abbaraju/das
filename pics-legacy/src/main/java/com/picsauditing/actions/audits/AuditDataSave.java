@@ -26,7 +26,7 @@ import java.util.*;
 public class AuditDataSave extends AuditActionSupport {
 
 	public static final int VALID_YEARS_IN_FUTURE = 10;
-	public static final int ANSWER_MIN_YEAR = 1950;// TODO: should be moved to app_properties[AuditData.minYear]
+	public static final int ANSWER_MIN_YEAR = 1800;// TODO: should be moved to app_properties[AuditData.minYear]
 
 	private static final String NO = "No";
 
