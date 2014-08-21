@@ -116,15 +116,15 @@ public class ContractorLocationService {
     }
 
     private String processURL(String urlStr) throws Exception {
-        urlStr = urlStr.replaceAll("\\s+", "+").replaceFirst("#", "");
-        URL url = new URL(urlStr);
-        String output = "";
-        try {
-            output = new Scanner(url.openStream()).useDelimiter("\\A").next();
-        } catch (java.util.NoSuchElementException e) {
-            logger.error("Error in processURL() ", e);
+        if(StringUtils.isNotEmpty(urlStr)) {
+            urlStr = urlStr.replaceAll("\\s+", "+").replaceFirst("#", "");
+            URL url = new URL(urlStr);
+            try {
+                return new Scanner(url.openStream()).useDelimiter("\\A").next();
+            } catch (java.util.NoSuchElementException e) {
+                logger.error("Error in processURL() ", e);
+            }
         }
-        logger.info(output);
-        return output;
+        return null;
     }
 }
