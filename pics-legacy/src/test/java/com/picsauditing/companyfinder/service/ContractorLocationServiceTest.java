@@ -20,7 +20,7 @@ public class ContractorLocationServiceTest {
 
     public static final String VALID_ADDRESS = "17701 Cowan, Irvine CA 92618";
 
-    ContractorLocationService locationService;
+    private ContractorLocationService locationService;
 
     @Mock
     ContractorAccountDAO contractorAccountDAO;
@@ -35,6 +35,7 @@ public class ContractorLocationServiceTest {
     private ContractorLocationDao contractorLocationDao;
 
     private static final int CONTRACTOR_ID = 3;
+
     private static final int USER_ID = 12345;
 
     @Before
@@ -47,22 +48,18 @@ public class ContractorLocationServiceTest {
         when(user.getId()).thenReturn(USER_ID);
 
     }
-
     @After
     public void tearDown() throws Exception {
-
     }
-
     @Test
     public void testSaveLocation() throws Exception {
         when(contractorAccount.getAddress()).thenReturn(VALID_ADDRESS);
-        locationService.saveLocation(contractorAccount);
 
+        locationService.saveLocation(contractorAccount);
     }
 
     @Test
     public void testParseAddress() throws Exception {
-
         when(contractorAccount.getAddress()).thenReturn(VALID_ADDRESS);
         String address = Whitebox.invokeMethod(locationService, "parseAddress", contractorAccount);
 
@@ -71,7 +68,6 @@ public class ContractorLocationServiceTest {
 
     @Test
     public void testParseAddress_withLastChar() throws Exception {
-
         when(contractorAccount.getAddress()).thenReturn(VALID_ADDRESS);
         String address = Whitebox.invokeMethod(locationService, "parseAddress", contractorAccount);
 
@@ -80,7 +76,6 @@ public class ContractorLocationServiceTest {
 
     @Test
     public void testParseAddress_inValidAddress() throws Exception {
-
         when(contractorAccount.getAddress()).thenReturn(VALID_ADDRESS + "++++");
         String address = Whitebox.invokeMethod(locationService, "parseAddress", contractorAccount);
 
@@ -90,6 +85,7 @@ public class ContractorLocationServiceTest {
     @Test
     public void testFetchGeoLocation_validAddress() throws Exception {
         ContractorGeoLocation contractorGeoLocation = locationService.fetchGeoLocation(contractorAccount, VALID_ADDRESS);
+
         Assert.notNull(contractorGeoLocation);
     }
 
