@@ -73,7 +73,7 @@ public class ProfileEdit extends PicsActionSupport {
 		if (loginResult != null) {
 			return loginResult;
 		}
-
+        boolean error=false;
 		if (Strings.isNotEmpty(language)) {
             Locale locale;
             if (Strings.isNotEmpty(dialect)) {
@@ -84,13 +84,16 @@ public class ProfileEdit extends PicsActionSupport {
 
             if (!supportedLanguages.getVisibleLocales().contains(locale)) {
                 addActionError(getText(u.getLocale(), "ProfileEdit.Error.LanguageDialectUnsupported"));
-                return INPUT_ERROR;
+                error=true;
             }
 
             u.setLocale(locale);
 		}
-
-
+        if (u.getTimezone() == null) {
+            addActionError(getText(u.getLocale(), "ProfileEdit.Error.RequiredTimeZone"));
+            error=true;
+        }
+        if(error) return INPUT_ERROR;
 
         validateInput();
 		if (hasFieldErrors()) {
@@ -195,10 +198,6 @@ public class ProfileEdit extends PicsActionSupport {
 
 		errorMessageKey = inputValidator.validateLocale(u.getLocale());
 		addFieldErrorIfMessage("u.locale", errorMessageKey);
-
-		if (u.getTimezone() == null) {
-			addFieldErrorIfMessage("u.timezone", InputValidator.REQUIRED_KEY);
-		}
 	}
 
 	private String validateUserPhoneNumber() {
