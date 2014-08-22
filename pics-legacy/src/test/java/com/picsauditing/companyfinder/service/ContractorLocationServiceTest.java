@@ -21,23 +21,18 @@ import static com.picsauditing.companyfinder.service.ContractorLocationService.G
 public class ContractorLocationServiceTest {
 
     public static final String VALID_ADDRESS = "17701 Cowan, Irvine CA 92618";
-
     private ContractorLocationService locationService;
 
     @Mock
     ContractorAccountDAO contractorAccountDAO;
-
     @Mock
     ContractorAccount contractorAccount;
-
     @Mock
     private User user;
-
     @Mock
     private ContractorLocationDao contractorLocationDao;
 
     private static final int CONTRACTOR_ID = 3;
-
     private static final int USER_ID = 12345;
 
     @Before
@@ -48,7 +43,6 @@ public class ContractorLocationServiceTest {
         Whitebox.setInternalState(locationService, "contractorLocationDao", contractorLocationDao);
         when(contractorAccount.getActiveUser()).thenReturn(user);
         when(user.getId()).thenReturn(USER_ID);
-
     }
 
     @After
@@ -109,7 +103,7 @@ public class ContractorLocationServiceTest {
 
     @Test
     public void testProcessURL() throws Exception {
-        String address = Whitebox.invokeMethod(locationService, "processURL", GOOGLE_GEOCODE_URL+"#12345 Main    Street   Irvine CA   ");
+        String address = Whitebox.invokeMethod(locationService, "processURL", GOOGLE_GEOCODE_URL + "#12345 Main    Street   Irvine CA   ");
 
         assertTrue(address.contains("lat"));
     }
