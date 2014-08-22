@@ -65,8 +65,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
     private String timeoutDays;
     private String sessionTimeout;
 
-    public List<OperatorAccount> notChildOperatorList;
-    public List<OperatorAccount> childOperatorList;
+	private List<OperatorAccount> notChildOperatorList;
+	private List<OperatorAccount> childOperatorList;
 
     private List<OperatorAccount> notSelectedClients;
     private List<OperatorAccount> selectedClients;
@@ -227,58 +227,58 @@ public class FacilitiesEdit extends OperatorActionSupport {
             operator.setAutoApproveRelationships(autoApproveRelationships);
         }
 
-        if (operator.isCorporate()) {
-            if (facilities != null) {
-                List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
+		if (operator.isCorporate() && null != facilities) {
+			List<OperatorAccount> newFacilities = new ArrayList<OperatorAccount>();
 
-                for (int operatorID : facilities) {
-                    OperatorAccount opAccount = new OperatorAccount();
-                    opAccount.setId(operatorID);
-                    newFacilities.add(opAccount);
-                }
+			for (Integer operatorID : facilities) {
+				if (null != operatorID && operatorID > 0) {
+					OperatorAccount opAccount = new OperatorAccount();
+					opAccount.setId(operatorID);
+					newFacilities.add(opAccount);
+				}
+			}
 
-                // Easier to just remove all existing facilities and persist all the new ones
-                // if we have already validated the Facility?
-                Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
-                while (facList.hasNext()) {
-                    Facility opFacilities = facList.next();
-                    if (newFacilities.contains(opFacilities.getOperator())) {
-                        newFacilities.remove(opFacilities.getOperator());
-                    } else {
-                        facilitiesDAO.remove(opFacilities);
+			// Easier to just remove all existing facilities and persist all the new ones
+			// if we have already validated the Facility?
+			Iterator<Facility> facList = operator.getOperatorFacilities().iterator();
+			while (facList.hasNext()) {
+				Facility opFacilities = facList.next();
+				if (newFacilities.contains(opFacilities.getOperator())) {
+					newFacilities.remove(opFacilities.getOperator());
+				} else {
+					facilitiesDAO.remove(opFacilities);
 
-                        if (operator.equals(opFacilities.getOperator().getParent())) {
-                            opFacilities.getOperator().setParent(null);
-                            operatorDao.save(opFacilities.getOperator());
-                        }
+					if (operator.equals(opFacilities.getOperator().getParent())) {
+						opFacilities.getOperator().setParent(null);
+						operatorDao.save(opFacilities.getOperator());
+					}
 
-                        facList.remove();
-                    }
-                }
+					facList.remove();
+				}
+			}
 
-                for (OperatorAccount opAccount : newFacilities) {
-                    opAccount = operatorDao.find(opAccount.getId());
-                    if (opAccount != null) {
-                        Facility facility = new Facility();
-                        facility.setCorporate(operator);
-                        facility.setOperator(opAccount);
-                        facility.setAuditColumns(permissions);
-                        facilitiesDAO.save(facility);
+			for (OperatorAccount opAccount : newFacilities) {
+				opAccount = operatorDao.find(opAccount.getId());
+				if (opAccount != null) {
+					Facility facility = new Facility();
+					facility.setCorporate(operator);
+					facility.setOperator(opAccount);
+					facility.setAuditColumns(permissions);
+					facilitiesDAO.save(facility);
 
-                        operator.getOperatorFacilities().add(facility);
+					operator.getOperatorFacilities().add(facility);
 
-                        if (opAccount.getParent() == null) {
-                            opAccount.setParent(operator);
-                            operatorDao.save(opAccount);
-                        }
-                    }
-                }
+					if (opAccount.getParent() == null) {
+						opAccount.setParent(operator);
+						operatorDao.save(opAccount);
+					}
+				}
+			}
 
-                if (operator.getParent() != null && newFacilities.size() > 0) {
-                    linkChildOperatorsToAllParentAccounts(newFacilities);
-                }
-            }
-        }
+			if (operator.getParent() != null && newFacilities.size() > 0) {
+				linkChildOperatorsToAllParentAccounts(newFacilities);
+			}
+		}
 
         saveLinkedClientsForGeneralContractor();
 
@@ -324,20 +324,19 @@ public class FacilitiesEdit extends OperatorActionSupport {
 	private void employeeGUARDProductSubscriptionNotification(final OperatorAccount operatorAccount) {
 		int operatorId = operatorAccount.getId();
 
-    /*
-      operatorAccount.isRequiresEmployeeGuard()
-      TODO:This property is not required whenever this registration module or OperatorAccount entity is refactored
-    * whether user has EG or not is checked for somewhere else and not in operatoraccount entity
-    *
-    * */
-
+	    /*
+	      operatorAccount.isRequiresEmployeeGuard()
+	      TODO:This property is not required whenever this registration module or OperatorAccount entity is refactored
+	    * whether user has EG or not is checked for somewhere else and not in operatoraccount entity
+	    *
+	    */
 		if (operatorAccount.isRequiresEmployeeGuard()) {
 			productSubscriptionService.addEmployeeGUARD(operatorId);
 		} else {
 			productSubscriptionService.removeEmployeeGUARD(operatorId);
 		}
 
-  }
+    }
 
     private OperatorAccount saveClientSite() {
     	if (operator.getStatus().isDeactivated()) {
@@ -483,8 +482,8 @@ public class FacilitiesEdit extends OperatorActionSupport {
 				}
                 if (operator.getBillableEntity() != null) {
                     relatedFacilities.add(operator.getBillableEntity());
+                }
             }
-        }
         }
 
         return relatedFacilities;
@@ -877,12 +876,14 @@ public class FacilitiesEdit extends OperatorActionSupport {
     }
 
     public List<OperatorAccount> getNotChildOperatorList() throws Exception {
-        notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
+		if (null == notChildOperatorList)
+			notChildOperatorList = getOperatorsNotMyChildrenOrMyself();
         return notChildOperatorList;
     }
 
     public List<OperatorAccount> getChildOperatorList() {
-        childOperatorList = operator.getChildOperators();
+		if (null == childOperatorList)
+			childOperatorList = operator.getChildOperators();
         return childOperatorList;
     }
 
