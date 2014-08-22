@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
@@ -28,15 +27,19 @@ public class ContractorLocationService {
     private ContractorLocationDao contractorLocationDao;
 
     public void saveLocation(ContractorAccount contractorAccount) {
-        if (contractorAccount == null) {
-            return;
-        }
-        String address = parseAddress(contractorAccount);
-        ContractorGeoLocation geoLocation = fetchGeoLocation(contractorAccount, address);
-        if (geoLocation != null) {
-            persistToDatabase(geoLocation);
-        } else {
-            logger.error("Could not fetch geoLocation from Google Api");
+        try {
+            if (contractorAccount == null) {
+                return;
+            }
+            String address = parseAddress(contractorAccount);
+            ContractorGeoLocation geoLocation = fetchGeoLocation(contractorAccount, address);
+            if (geoLocation != null) {
+                persistToDatabase(geoLocation);
+            } else {
+                logger.error("Could not fetch geoLocation from Google Api");
+            }
+        } catch (Exception e) {
+            logger.error("Error in saveLocation()", e);
         }
     }
 
@@ -64,30 +67,25 @@ public class ContractorLocationService {
                 "+" + zip +
                 "+" + country;
         address = address.replaceAll("\\++", "+").toLowerCase().replaceFirst("no\\.", "");
-        return StringUtils.removeEnd(address,"+");
-
+        return StringUtils.removeEnd(address, "+");
     }
 
-    public ContractorGeoLocation fetchGeoLocation(ContractorAccount contractorAccount, String address) {
-        try {
-            if (StringUtils.isNotEmpty(address)) {
-                String body = sendRequestToTheGoogles(address);
-                if (StringUtils.isNotEmpty(body)) {
-                    JSONObject location = findLocationObject(body);
-                    if (location != null) {
-                        Double lng = (Double) location.get("lng");
-                        Double lat = (Double) location.get("lat");
-                        if (lng != null && lat != null) {
-                            logger.info(address);
-                            return ContractorGeoLocation.createFrom(contractorAccount.getId(), lat.floatValue(), lng.floatValue(), contractorAccount.getActiveUser().getId());
-                        }
-                    } else {
-                        logger.info("location null for: " + address);
+    public ContractorGeoLocation fetchGeoLocation(ContractorAccount contractorAccount, String address) throws Exception {
+        if (StringUtils.isNotEmpty(address)) {
+            String body = sendRequestToTheGoogles(address);
+            if (StringUtils.isNotEmpty(body)) {
+                JSONObject location = findLocationObject(body);
+                if (location != null) {
+                    Double lng = (Double) location.get("lng");
+                    Double lat = (Double) location.get("lat");
+                    if (lng != null && lat != null) {
+                        logger.info(address);
+                        return ContractorGeoLocation.createFrom(contractorAccount.getId(), lat.floatValue(), lng.floatValue(), contractorAccount.getActiveUser().getId());
                     }
+                } else {
+                    logger.info("location null for: " + address);
                 }
             }
-        } catch (Exception e) {
-            logger.error("Error in fetchGeoLocation()", e);
         }
         return null;
     }
@@ -116,7 +114,7 @@ public class ContractorLocationService {
     }
 
     private String processURL(String urlStr) throws Exception {
-        if(StringUtils.isNotEmpty(urlStr)) {
+        if (StringUtils.isNotEmpty(urlStr)) {
             urlStr = urlStr.replaceAll("\\s+", "+").replaceFirst("#", "");
             URL url = new URL(urlStr);
             try {

@@ -50,9 +50,11 @@ public class ContractorLocationServiceTest {
         when(user.getId()).thenReturn(USER_ID);
 
     }
+
     @After
     public void tearDown() throws Exception {
     }
+
     @Test
     public void testSaveLocation() throws Exception {
         when(contractorAccount.getAddress()).thenReturn(VALID_ADDRESS);
