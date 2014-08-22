@@ -145,6 +145,7 @@
     <bean id="EulaDao" class="com.picsauditing.dao.ProdEulaDao"/>
     <bean id="EulaAgreementDao" class="com.picsauditing.dao.ProdEulaAgreementDao"/>
     <bean id="ContractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
+    <bean id="ContractorLocationDao" class="com.picsauditing.companyfinder.dao.ProdContractorLocationDao"/>
     <bean id="idpUserDAO" class="com.picsauditing.dao.IdpUserDAO"/>
 
     <bean id="AuditBuilder" class="com.picsauditing.audits.AuditBuilder"/>
@@ -200,6 +201,7 @@
     <bean id="AddressVerificationService" class="com.picsauditing.service.addressverifier.StrikeIronAddressVerificationService" scope="prototype"/>
     <bean id="AddressService" class="com.picsauditing.service.account.AddressService" />
     <bean id="CompanyFinderService" class="com.picsauditing.companyfinder.service.CompanyFinderService" />
+    <bean id="ContractorLocationService" class="com.picsauditing.companyfinder.service.ContractorLocationService" />
     <bean id="AuthenticationService" class="com.picsauditing.service.authentication.AuthenticationService"/>
     <bean id="ReportQBService" class="com.picsauditing.report.service.ReportQBService"/>
 
