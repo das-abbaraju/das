@@ -90,7 +90,7 @@ public class ProfileEdit extends PicsActionSupport {
             u.setLocale(locale);
 		}
         if (u.getTimezone() == null) {
-            addActionError(getText(u.getLocale(), "ProfileEditError.RequiredTimeZone"));
+            addActionError(getText(u.getLocale(), "ProfileEdit.Error.RequiredTimeZone"));
             error=true;
         }
         if(error) return INPUT_ERROR;
