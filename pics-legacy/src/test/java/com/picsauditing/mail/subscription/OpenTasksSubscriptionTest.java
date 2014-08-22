@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,9 +19,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.*;
 import static org.powermock.reflect.Whitebox.invokeMethod;
 
@@ -29,6 +28,18 @@ public class OpenTasksSubscriptionTest {
     private EmailSubscriptionDAO subscriptionDAO;
 
     private OpenTasksSubscription openTaskSub;
+
+    @Mock
+    private EmailSubscription emailSubscription;
+
+    @Mock
+    Subscription subscription;
+
+    @Mock
+    User user;
+
+    @Mock
+    Account account;
 
     @Before
     public void setUp() throws Exception {
@@ -39,8 +50,15 @@ public class OpenTasksSubscriptionTest {
 
     @Test
     public void testSendSubscription_NoTokens() throws Exception {
-        EmailSubscription subscription = new EmailSubscription();
-        openTaskSub.sendSubscription(subscription);
-        assertNotNull(subscription.getLastSent());
+        when(emailSubscription.getSubscription()).thenReturn(Subscription.OpenTasks);
+        when(emailSubscription.getUser()).thenReturn(user);
+        when(user.isActiveB()).thenReturn(true);
+        when(user.getAccount()).thenReturn(account);
+        when(user.getAccount().isContractor()).thenReturn(true);
+        when(user.getAccount().getStatus()).thenReturn(AccountStatus.Active);
+
+        openTaskSub.sendSubscription(emailSubscription);
+
+        verify(emailSubscription, never()).setLastSent(new Date());
     }
 }

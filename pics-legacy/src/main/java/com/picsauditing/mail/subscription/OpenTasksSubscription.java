@@ -21,10 +21,10 @@ public class OpenTasksSubscription extends SubscriptionBuilder {
 	private OpenTasks openTasks;
 
 	@Override
-	public Map<String, Object> process(EmailSubscription subscription) {
-		assert subscription.getSubscription() == Subscription.OpenTasks;
+	public Map<String, Object> process(EmailSubscription emailSubscription) {
+		assert emailSubscription.getSubscription() == Subscription.OpenTasks;
 
-		User user = subscription.getUser();
+		User user = emailSubscription.getUser();
 		assert user.isActiveB();
 		assert user.getAccount().isContractor();
 		assert user.getAccount().getStatus().isActive();
