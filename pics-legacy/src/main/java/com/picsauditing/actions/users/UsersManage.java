@@ -54,7 +54,7 @@ public class UsersManage extends PicsActionSupport {
 	private boolean conSafety = false;
 	private boolean conInsurance = false;
 	private boolean newUser = false;
-	private boolean usingVersion7Menus = false;
+	private Boolean usingVersion7Menus = null;
 	// used to track whether or not this is being executed from a "Save" Action
 	private boolean isSaveAction = false;
 	private Locale selectedLanguage;
@@ -252,9 +252,15 @@ public class UsersManage extends PicsActionSupport {
 		if (setPrimaryAccount && user != null && !user.isGroup() && user.getAccount() != null) {
 			user.getAccount().setPrimaryContact(user);
 		}
-		user.setUsingVersion7Menus(isUsingVersion7Menus());
-		if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
-			user.setUsingDynamicReports(isUsingVersion7Menus());
+
+		if (null != isUsingVersion7Menus()) {
+			user.setUsingVersion7Menus(isUsingVersion7Menus());
+			if (!featureToggle.isFeatureEnabled(FeatureToggle.TOGGLE_USE_V7_MENU_COLUMN)) {
+				user.setUsingDynamicReports(isUsingVersion7Menus());
+			}
+		}
+		else if (!newUser) {
+			user.setUsingVersion7Menus(userDAO.find(user.getId()).isUsingVersion7Menus()); // from db
 		}
 
 		try {
@@ -264,9 +270,7 @@ public class UsersManage extends PicsActionSupport {
 
 			user = userManagementService.saveWithAuditColumnsAndRefresh(user, permissions);
 			addActionMessage(getText("UsersManage.UserSavedSuccessfully"));
-		} catch (ConstraintViolationException e) {
-			addActionError(getText("UsersManage.UsernameInUse"));
-		} catch (DataIntegrityViolationException e) {
+		} catch (ConstraintViolationException | DataIntegrityViolationException e) {
 			addActionError(getText("UsersManage.UsernameInUse"));
 		}
 	}
@@ -1027,11 +1031,11 @@ public class UsersManage extends PicsActionSupport {
 		this.newUser = newUser;
 	}
 
-	public boolean isUsingVersion7Menus() {
+	public Boolean isUsingVersion7Menus() {
 		return usingVersion7Menus;
 	}
 
-	public void setUsingVersion7Menus(boolean usingVersion7Menus) {
+	public void setUsingVersion7Menus(Boolean usingVersion7Menus) {
 		this.usingVersion7Menus = usingVersion7Menus;
 	}
 
