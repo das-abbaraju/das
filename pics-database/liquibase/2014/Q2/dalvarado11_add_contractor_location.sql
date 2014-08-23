@@ -14,5 +14,3 @@ CREATE TABLE IF NOT EXISTS contractor_location(
   PRIMARY KEY (id)
 );
 
-ALTER TABLE contractor_location
-  ADD CONSTRAINT FK_CON_LOC_CON_INFO FOREIGN KEY (conId) REFERENCES contractor_info(id);
