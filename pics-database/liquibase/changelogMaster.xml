@@ -266,6 +266,6 @@
 
     <!-- 7.3.6 -->
     <include file="./liquibase/2014/Q2/dalvarado11_add_contractor_location.sql"/>
-    <include file="./liquibase/2014/Q2/cfranks9_CCB-27_Copy_contractor_location_table.sql"/>
+    <include file="./liquibase/2014/Q3/cfranks9_CCB-27_Copy_contractor_location_table.sql"/>
 
 </databaseChangeLog>
