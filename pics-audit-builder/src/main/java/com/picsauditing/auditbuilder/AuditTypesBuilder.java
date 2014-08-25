@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
-public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypesBuilder {
+public class AuditTypesBuilder extends AuditBuilderBase {
     private AuditTypeRuleCache2 ruleCache;
 	private List<AuditTypeRule> rules;
 

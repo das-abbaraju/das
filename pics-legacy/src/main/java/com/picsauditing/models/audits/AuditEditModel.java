@@ -2,12 +2,9 @@ package com.picsauditing.models.audits;
 
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditCategoriesBuilder;
-import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.jpa.entities.*;
-
-import java.util.HashSet;
-import java.util.Set;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * This model determines if an audit can be edited
@@ -16,13 +13,14 @@ public class AuditEditModel {
     AuditCategory category;
 	ContractorAudit conAudit;
 	Permissions permissions;
-    AuditCategoryRuleCache auditCategoryRuleCache;
 
-    public boolean isCanEditCategory(AuditCategory category, ContractorAudit conAudit, Permissions permissions, AuditCategoryRuleCache auditCategoryRuleCache) {
+    @Autowired
+    AuditBuilderFactory auditBuilderFactory;
+
+    public boolean isCanEditCategory(AuditCategory category, ContractorAudit conAudit, Permissions permissions) {
         this.category= category;
         this.conAudit= conAudit;
         this.permissions = permissions;
-        this.auditCategoryRuleCache = auditCategoryRuleCache;
 
         boolean result = true;
 
@@ -120,10 +118,9 @@ public class AuditEditModel {
         }
 
         // check policy category fro cao after incomplete
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, conAudit.getContractorAccount());
         for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-            setCategoryBuilderToSpecificCao(builder, cao);
-            if (builder.isCategoryApplicable(category, cao) && cao.getStatus().after(AuditStatus.Incomplete)) {
+            if (auditBuilderFactory.isCategoryApplicable(category, conAudit, cao)
+                    && cao.getStatus().after(AuditStatus.Incomplete)) {
                 result = false;
             }
         }
@@ -131,25 +128,14 @@ public class AuditEditModel {
     }
 
     private boolean contractorCanEditAnnualUpdate(AuditCategory category) {
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
-                conAudit.getContractorAccount());
         for (ContractorAuditOperator cao : conAudit.getOperators()) {
-            setCategoryBuilderToSpecificCao(builder, cao);
-
-            if (cao.getStatus().before(AuditStatus.Complete) && builder.isCategoryApplicable(category, cao)) {
+            if (cao.getStatus().before(AuditStatus.Complete)
+                    && auditBuilderFactory.isCategoryApplicable(category, conAudit, cao)) {
                 return true;
             }
         }
 
         return false;
-    }
-
-    private void setCategoryBuilderToSpecificCao(AuditCategoriesBuilder builder, ContractorAuditOperator cao) {
-        Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-        for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-            operators.add(caop.getOperator());
-        }
-        builder.calculate(conAudit, operators);
     }
 
     public boolean isCanEditAudit(ContractorAudit conAudit, Permissions permissions) {

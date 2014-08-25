@@ -1,20 +1,14 @@
 package com.picsauditing.actions.rules;
 
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.audits.AuditTypeRuleCache;
-import com.picsauditing.audits.AuditTypesBuilder;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.Strings;
 
 @SuppressWarnings("serial")
 public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRule> {
@@ -23,8 +17,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 
 	private boolean includeExpired = false;
 
-	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	public AuditTypeRuleTableBuilder() {
 		this.ruleType = "Audit Type";
@@ -49,10 +43,8 @@ public class AuditTypeRuleTableBuilder extends AuditRuleTableBuilder<AuditTypeRu
 			rules = ruleDAO.getMoreGranular(ruleDAO.findAuditTypeRule(id), date);
 		} else if ("debugContractor".equals(button)) {
 			setShowWho(false);
-			ContractorAccount contractor = contractorDAO.find(conID);
-			AuditTypesBuilder builder = new AuditTypesBuilder(auditTypeRuleCache, contractor);
-			builder.calculate();
-			rules = builder.getRules();
+		    ContractorAccount contractor = contractorDAO.find(conID);
+            rules = auditBuilderFactory.getAuditTypeRules(contractor);
 		} else if ("tags".equals(button) && comparisonRule.getOperatorAccount() != null) {
 			List<OperatorTag> tags = operatorTagDAO.findByOperator(comparisonRule.getOperatorAccount().getId(), false);
 			rules = ruleDAO.findAuditTypeRulesByTags(tags);

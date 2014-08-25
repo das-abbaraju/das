@@ -1,23 +1,12 @@
 package com.picsauditing.actions.rules;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.OperatorTag;
-import com.picsauditing.jpa.entities.Trade;
-import com.picsauditing.util.Strings;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCategoryRule> {
@@ -25,8 +14,9 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 	private AuditCategoryRule comparisonRule;
 	@Autowired
 	private AuditCategoryDAO auditCategoryDAO;
-	@Autowired
-	private AuditCategoryRuleCache ruleCache;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
+
 
 	public AuditCategoryRuleTableBuilder() {
 		this.ruleType = "Category";
@@ -55,7 +45,7 @@ public class AuditCategoryRuleTableBuilder extends AuditRuleTableBuilder<AuditCa
 			rules = new ArrayList<>();
 			comparisonRule.setAuditCategory(auditCategoryDAO.find(comparisonRule.getAuditCategory().getId()));
 			ContractorAudit conAudit = auditCategoryDAO.find(ContractorAudit.class, id);
-			List<AuditCategoryRule> allRules = ruleCache.getRules(conAudit.getContractorAccount(),
+			List<AuditCategoryRule> allRules = auditBuilderFactory.getCategoryRules(conAudit.getContractorAccount(),
 					conAudit.getAuditType());
 			for (AuditCategoryRule rule : allRules) {
 				if (rule.isApplies(comparisonRule.getAuditCategory()))

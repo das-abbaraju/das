@@ -1,6 +1,7 @@
 package com.picsauditing.actions.rules;
 
 import com.picsauditing.PicsActionTest;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -31,6 +32,8 @@ public class AuditCategoryRuleTableBuilderTest extends PicsActionTest {
     private OperatorAccountDAO operatorDAO;
     @Mock
     private AuditCategoryDAO auditCategoryDAO;
+    @Mock
+    private AuditBuilderFactory auditBuilderFactory;
 
     private AuditCategoryRuleTableBuilder auditCategoryRuleTableBuilder;
 

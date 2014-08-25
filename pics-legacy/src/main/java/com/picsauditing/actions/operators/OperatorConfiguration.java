@@ -1,28 +1,21 @@
 package com.picsauditing.actions.operators;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.models.audits.InsuranceCategoryBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.audits.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditCategoryDAO;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.FacilitiesDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.models.audits.InsuranceCategoryBuilder;
 import com.picsauditing.report.RecordNotFoundException;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class OperatorConfiguration extends OperatorActionSupport implements Preparable {
@@ -42,10 +35,9 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
 	protected AuditTypeDAO typeDAO;
 	@Autowired
 	protected FacilitiesDAO facilitiesDAO;
-	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
+    @Autowired
+    protected AuditBuilderFactory auditBuilderFactory;
+
 
 	private List<OperatorAccount> allParents;
 	private List<OperatorAccount> otherCorporates;
@@ -117,7 +109,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
                     operator
                 );
 
-                auditCategoryRuleCache.clear();
+                auditBuilderFactory.clearCache();
                 flagClearCache();
                 return this.setUrlForRedirect("ManageCategory.action?id=" + cat.getId());
 			}
@@ -145,7 +137,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
         if (auditTypeID > 0) {
             AuditTypeRule rule = new AuditTypeRule();
             createAuditRule(rule, new AuditType(auditTypeID));
-            auditTypeRuleCache.clear();
+            auditBuilderFactory.clearCache();
         }
 
         return RESULT_AUDIT;
@@ -158,7 +150,7 @@ public class OperatorConfiguration extends OperatorActionSupport implements Prep
             rule.getAuditCategory().setId(catID);
 
             createAuditRule(rule, new AuditType(AuditType.PQF));
-            auditCategoryRuleCache.clear();
+            auditBuilderFactory.clearCache();
         }
 
         return RESULT_CATEGORY;

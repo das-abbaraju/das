@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditCategoriesBuilder;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
@@ -205,8 +204,6 @@ public class AuditDataSave extends AuditActionSupport {
 					auditDao.save(tempAudit);
 				}
 
-				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-
 				if (tempAudit.getAuditType().isRollback() && !toggleVerify && !commentChanged) {
 					boolean updateAudit = false;
 					for (ContractorAuditOperator cao : tempAudit.getOperators()) {
@@ -214,10 +211,10 @@ public class AuditDataSave extends AuditActionSupport {
 						for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
 							operators.add(caop.getOperator());
 						}
-						builder.calculate(auditData.getAudit(), operators);
 
+                        boolean isApplicable = auditBuilderFactory.isCategoryApplicable(auditData.getQuestion().getCategory(), auditData.getAudit(), cao);
 						if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
-								&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+								&& isApplicable) {
                             AuditStatus newStatus = getRollbackStatus(tempAudit, cao);
 
 							ContractorAuditOperatorWorkflow caow = cao

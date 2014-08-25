@@ -2,8 +2,7 @@ package com.picsauditing.actions.operators;
 
 
 import com.picsauditing.PicsActionTest;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.audits.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.*;
 import org.junit.Before;
@@ -21,9 +20,7 @@ public class OperatorConfigurationTest extends PicsActionTest {
     @Mock
     protected AuditDecisionTableDAO adtDAO;
     @Mock
-    protected AuditTypeRuleCache auditTypeRuleCache;
-    @Mock
-    protected AuditCategoryRuleCache auditCategoryRuleCache;
+    AuditBuilderFactory auditBuilderFactory;
 
     public OperatorConfiguration operatorConfiguration;
 
@@ -32,8 +29,7 @@ public class OperatorConfigurationTest extends PicsActionTest {
         MockitoAnnotations.initMocks(this);
         operatorConfiguration = new OperatorConfiguration();
         Whitebox.setInternalState(operatorConfiguration, "adtDAO", adtDAO);
-        Whitebox.setInternalState(operatorConfiguration, "auditTypeRuleCache", auditTypeRuleCache);
-        Whitebox.setInternalState(operatorConfiguration, "auditCategoryRuleCache", auditCategoryRuleCache);
+        Whitebox.setInternalState(operatorConfiguration, "auditBuilderFactory", auditBuilderFactory);
     }
 
     @Test

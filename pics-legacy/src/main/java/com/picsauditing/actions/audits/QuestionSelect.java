@@ -1,26 +1,16 @@
 package com.picsauditing.actions.audits;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.jpa.entities.AuditCategory;
 import com.picsauditing.jpa.entities.AuditQuestion;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.util.Strings;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class QuestionSelect extends PicsActionSupport {
@@ -28,10 +18,6 @@ public class QuestionSelect extends PicsActionSupport {
 	protected AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
-	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
 
 	private String questionName;
 	Set<AuditQuestion> questions;

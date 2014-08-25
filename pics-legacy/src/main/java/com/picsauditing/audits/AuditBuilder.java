@@ -1,7 +1,6 @@
 package com.picsauditing.audits;
 
 import com.picsauditing.PICS.DateBean;
-import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;

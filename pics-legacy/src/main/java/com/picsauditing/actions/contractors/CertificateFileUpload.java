@@ -1,32 +1,24 @@
 package com.picsauditing.actions.contractors;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import com.picsauditing.audits.AuditCategoriesBuilder;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.jpa.entities.*;
-import org.apache.struts2.ServletActionContext;
-
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.CertificateDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.Strings;
+import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.List;
 
 public class CertificateFileUpload extends ContractorActionSupport {
 	private static final long serialVersionUID = 2438788697676816034L;
 
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	private File file;
 	protected String fileContentType = null;
@@ -206,20 +198,11 @@ public class CertificateFileUpload extends ContractorActionSupport {
 	private void certificateUploadStatusAdjustments(AuditData auditData) {
 		ContractorAudit audit = auditData.getAudit();
 
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-
 		for (ContractorAuditOperator cao : audit.getOperators()) {
-			Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				operators.add(caop.getOperator());
-			}
-			builder.calculate(auditData.getAudit(), operators);
-
-			boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
+            boolean isApplicable = auditBuilderFactory.isCategoryApplicable(auditData.getQuestion().getCategory(), auditData.getAudit(), cao);
 
 			if (isApplicable) {
-				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)
-						&& builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao)) {
+				if (cao.getStatus().between(AuditStatus.Submitted, AuditStatus.Approved)) {
 					ContractorAuditOperatorWorkflow caow = cao
 							.changeStatus(AuditStatus.Resubmitted, permissions);
 					if (caow != null) {

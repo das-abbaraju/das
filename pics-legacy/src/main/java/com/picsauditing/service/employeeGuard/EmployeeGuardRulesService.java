@@ -1,6 +1,6 @@
 package com.picsauditing.service.employeeGuard;
 
-import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.provisioning.ProductSubscriptionService;
 import org.slf4j.Logger;

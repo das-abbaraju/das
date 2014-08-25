@@ -1,6 +1,5 @@
 package com.picsauditing.audits;
 
-import com.picsauditing.auditbuilder.DocumentTypesBuilder;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.SpringUtils;
@@ -11,23 +10,12 @@ import java.util.*;
 /**
  * Determine which audits and categories are needed for a contractor.
  */
-public class AuditTypesBuilder extends AuditBuilderBase implements DocumentTypesBuilder {
+public class AuditTypesBuilder extends AuditBuilderBase {
 	private AuditTypeRuleCache ruleCache;
 	private List<AuditTypeRule> rules;
 	private AuditDataDAO auditDataDAO;
 
-	public class AuditTypeDetail {
-		/**
-		 * The AuditTypeRule that is responsible for including this auditType for this contractor
-		 */
-		public AuditTypeRule rule;
-		/**
-		 * Operator Accounts that require this audit (CAOPs)
-		 */
-		public Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-	}
-
-	public AuditTypesBuilder(AuditTypeRuleCache ruleCache, ContractorAccount contractor) {
+    public AuditTypesBuilder(AuditTypeRuleCache ruleCache, ContractorAccount contractor) {
 		super(contractor);
 		this.ruleCache = ruleCache;
 	}

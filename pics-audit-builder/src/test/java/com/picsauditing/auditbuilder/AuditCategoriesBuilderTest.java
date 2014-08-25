@@ -9,12 +9,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.when;
 
 
@@ -23,7 +23,8 @@ public class AuditCategoriesBuilderTest {
 	OperatorAccount operator;
 	ContractorAudit audit;
 	AuditCategory cat1;
-	AuditCategory cat2;
+    AuditCategory cat2;
+    AuditCategory cat3;
 
 	@Mock
     AuditCategoryRuleCache2 ruleCache;
@@ -47,9 +48,11 @@ public class AuditCategoriesBuilderTest {
 		cat1 = EntityFactory.makeAuditCategory(1);
 		cat2 = EntityFactory.makeAuditCategory(2);
 		cat2.setParent(cat1);
+        cat3 = EntityFactory.makeAuditCategory(3);
 
 		audit.getAuditType().getCategories().add(cat1);
 		audit.getAuditType().getCategories().add(cat2);
+        audit.getAuditType().getCategories().add(cat3);
 	}
 
 	private void setupCategoryRules() throws Exception {
@@ -71,6 +74,73 @@ public class AuditCategoriesBuilderTest {
 
 		when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
 	}
+
+    @Test
+    public void testCalculate_AuditCao() throws Exception {
+        setupRules();
+        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
+        Set<AuditCategory> categories = categoryBuilder.calculate(audit, operators);
+        assertEquals(2, categories.size());
+        for(AuditCategory cat:categories) {
+            assertFalse(cat.getId() == 3);
+        }
+    }
+
+    @Test
+    public void testIsCategoryApplicable_True() throws Exception {
+        setupRules();
+        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
+        categoryBuilder.calculate(audit, operators);
+
+        assertTrue(categoryBuilder.isCategoryApplicable(cat1, audit.getOperators().get(0)));
+    }
+
+    @Test
+    public void testIsCategoryApplicable_False() throws Exception {
+        setupRules();
+        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
+        categoryBuilder.calculate(audit, operators);
+
+        OperatorAccount badOperator = EntityFactory.makeOperator();
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        caop.setOperator(badOperator);
+        caop.setCao(cao);
+        cao.setOperator(badOperator);
+        cao.getCaoPermissions().add(caop);
+
+        assertFalse(categoryBuilder.isCategoryApplicable(cat1, cao));
+    }
+
+    private void setupRules() throws Exception {
+        AuditCategoryRule rule1 = new AuditCategoryRule();
+        rule1.setAuditType(audit.getAuditType());
+        rule1.setOperatorAccount(operator);
+        rule1.setAuditCategory(cat1);
+        rule1.setRootCategory(true);
+
+        AuditCategoryRule rule2 = new AuditCategoryRule();
+        rule2.setAuditType(audit.getAuditType());
+        rule2.setOperatorAccount(operator);
+        rule2.setAuditCategory(cat2);
+        rule2.setRootCategory(false);
+
+        AuditCategoryRule rule3 = new AuditCategoryRule();
+        rule3.setAuditType(audit.getAuditType());
+        rule3.setOperatorAccount(EntityFactory.makeOperator());
+        rule3.setAuditCategory(cat3);
+        rule3.setRootCategory(true);
+
+        List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+        catRules.add(rule1);
+        catRules.add(rule2);
+        catRules.add(rule3);
+
+        when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
+    }
 
 	@Test
 	public void testFindMostRecentAudit() throws Exception {

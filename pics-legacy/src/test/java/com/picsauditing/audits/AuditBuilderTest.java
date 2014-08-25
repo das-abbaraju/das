@@ -4,7 +4,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;

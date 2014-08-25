@@ -5,6 +5,7 @@ import com.picsauditing.PICS.AccountLevelAdjuster;
 import com.picsauditing.PICS.ContractorFlagCriteriaList;
 import com.picsauditing.PICS.OshaOrganizer;
 import com.picsauditing.access.*;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -69,6 +70,8 @@ public class ContractorDashboard extends ContractorActionSupport {
     protected ContractorOperatorService contractorOperatorService;
     @Autowired
     protected ContractorCertificateService contractorCertificateService;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	public List<OperatorTag> operatorTags = new ArrayList<OperatorTag>();
 	public int tagId;
@@ -160,8 +163,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 				contractorAccountDao.save(contractor);
 				noteDAO.save(NoteFactory.generateNoteForTaggingContractor(cTag,
 						permissions));
-				for (AuditTypeRule atr : auditTypeRuleCache
-						.getRules(contractor)) {
+				for (AuditTypeRule atr : auditBuilderFactory.getAuditTypeRules(contractor)) {
 					if (Objects.equal(cTag.getTag(), atr.getTag())) {
 						runTagConCronAjax = true;
 						break;
