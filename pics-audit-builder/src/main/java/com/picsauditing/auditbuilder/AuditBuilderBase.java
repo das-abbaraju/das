@@ -1,5 +1,6 @@
 package com.picsauditing.auditbuilder;
 
+import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
 import com.picsauditing.auditbuilder.dao.ContractorTagDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AuditService;
@@ -10,10 +11,23 @@ public abstract class AuditBuilderBase {
 	protected ContractorAccount contractor;
 	protected Set<ContractorType> contractorTypes = new HashSet<>();
 	protected Set<Trade> trades = new HashSet<>();
-    protected ContractorTagDAO2 contractorTagDAO;
+    private ContractorTagDAO2 contractorTagDAO;
+    private AuditDataDAO2 auditDataDAO;
 
     public void setContractorTagDAO(ContractorTagDAO2 contractorTagDAO) {
         this.contractorTagDAO = contractorTagDAO;
+    }
+
+    public ContractorTagDAO2 getContractorTagDAO() {
+        return contractorTagDAO;
+    }
+
+    public void setAuditDataDAO(AuditDataDAO2 auditDataDAO) {
+        this.auditDataDAO = auditDataDAO;
+    }
+
+    public AuditDataDAO2 getAuditDataDAO() {
+        return auditDataDAO;
     }
 
     public void setContractor(ContractorAccount contractor) {

@@ -43,7 +43,9 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 
 	protected List<AuditCategory> categories = new ArrayList<>();
 
-	public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<>(Arrays.asList(new Integer[]{145, 146,
+    protected List<AuditCategory> topCategories;
+
+    public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<>(Arrays.asList(new Integer[]{145, 146,
         143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
     @Enumerated(EnumType.STRING)
@@ -105,7 +107,21 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 		this.categories = categories;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+    @Transient
+    public List<AuditCategory> getTopCategories() {
+        if (topCategories == null) {
+            topCategories = new ArrayList<AuditCategory>();
+            for (AuditCategory cat : categories) {
+                if (cat.getParent() == null) {
+                    topCategories.add(cat);
+                }
+            }
+        }
+
+        return topCategories;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workflowID")
 	public Workflow getWorkFlow() {
 		return workFlow;
