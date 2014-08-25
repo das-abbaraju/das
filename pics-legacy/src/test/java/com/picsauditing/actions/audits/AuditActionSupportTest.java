@@ -1,33 +1,26 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import com.google.common.collect.ArrayListMultimap;
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PICS.DateBean;
+import com.picsauditing.PicsTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
+import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.*;
-import edu.emory.mathcs.backport.java.util.Arrays;
+import com.picsauditing.models.audits.AuditEditModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.PICS.DateBean;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.access.OpType;
-import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.models.audits.AuditEditModel;
+import java.util.*;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class AuditActionSupportTest extends PicsTest {
 	private static final Integer OPERATOR_GROUP_ID = 44;
@@ -38,8 +31,6 @@ public class AuditActionSupportTest extends PicsTest {
 
 	@Mock
 	Permissions permissions;
-	@Mock
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
 	@Mock
 	protected ContractorAudit conAudit;
 	@Mock
@@ -56,8 +47,7 @@ public class AuditActionSupportTest extends PicsTest {
 		test = new AuditActionSupport();
 		autowireEMInjectedDAOs(test);
 		PicsTestUtil.forceSetPrivateField(test, "permissions", permissions);
-		PicsTestUtil.forceSetPrivateField(test, "auditCategoryRuleCache", auditCategoryRuleCache);
-		Set<Integer> groupIds = new TreeSet<Integer>();
+ 		Set<Integer> groupIds = new TreeSet<Integer>();
 		groupIds.add(OPERATOR_GROUP_ID);
 		when(permissions.getAllInheritedGroupIds()).thenReturn(groupIds);
 
@@ -208,119 +198,6 @@ public class AuditActionSupportTest extends PicsTest {
 
 	}
 
-	@Test
-	public void testIsCanEditCategory_MultipleCaosDifferentStates() throws Exception {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.ANNUALADDENDUM, contractor);
-		audit.getAuditType().setClassType(AuditTypeClass.Audit);
-		audit.getAuditType().setHasAuditor(true);
-		audit.getAuditType().setCanContractorEdit(false);
-		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-
-		OperatorAccount op1 = EntityFactory.makeOperator();
-		OperatorAccount op2 = EntityFactory.makeOperator();
-
-		ContractorAuditOperator cao1 = EntityFactory.addCao(audit, op1);
-		ContractorAuditOperator cao2 = EntityFactory.addCao(audit, op2);
-		audit.getOperators().add(cao1);
-		audit.getOperators().add(cao2);
-		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
-		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
-		caop1.setOperator(op1);
-		caop2.setOperator(op2);
-		cao1.getCaoPermissions().add(caop1);
-		cao1.getCaoPermissions().add(caop1);
-
-		AuditCategory category = EntityFactory.makeAuditCategory(100);
-		category.setAuditType(audit.getAuditType());
-		audit.getAuditType().getCategories().add(category);
-
-		AuditCategoryRule rule1 = new AuditCategoryRule();
-		AuditCategoryRule rule2 = new AuditCategoryRule();
-		List<AuditCategoryRule> rules = new ArrayList<AuditCategoryRule>();
-		rules.add(rule1);
-		rules.add(rule2);
-		rule1.setOperatorAccount(op1);
-		rule1.setAuditCategory(category);
-		rule1.setInclude(true);
-		rule2.setOperatorAccount(op2);
-		rule2.setAuditCategory(category);
-		rule2.setInclude(true);
-
-		when(permissions.isContractor()).thenReturn(true);
-		when(auditCategoryRuleCache.getRules(contractor, audit.getAuditType())).thenReturn(rules);
-
-		cao1.setStatus(AuditStatus.Pending);
-		cao2.setStatus(AuditStatus.Pending);
-		assertTrue(test.isCanEditCategory(category));
-
-		cao1.setStatus(AuditStatus.Incomplete);
-		cao2.setStatus(AuditStatus.Complete);
-		assertTrue(test.isCanEditCategory(category));
-
-		cao1.setStatus(AuditStatus.Submitted);
-		cao2.setStatus(AuditStatus.Complete);
-		assertTrue(test.isCanEditCategory(category));
-
-		cao1.setStatus(AuditStatus.Resubmit);
-		cao2.setStatus(AuditStatus.Complete);
-		assertTrue(test.isCanEditCategory(category));
-
-		cao1.setStatus(AuditStatus.Resubmitted);
-		cao2.setStatus(AuditStatus.Complete);
-		assertTrue(test.isCanEditCategory(category));
-
-		cao1.setStatus(AuditStatus.Complete);
-		cao2.setStatus(AuditStatus.Complete);
-		assertFalse(test.isCanEditCategory(category));
-	}
-
-    @Test
-    public void testIsCanEditCategory_PqfSpecific_CategoryIncomplete_CompleteAndPendingCaos() throws Exception {
-        AuditCategory category = buildPqfSpecificCategory(4, 5, AuditStatus.Complete, AuditStatus.Pending);
-        assertTrue(test.isCanEditCategory(category));
-    }
-
-    @Test
-         public void testIsCanEditCategory_PqfSpecific_CategoryComplete_CompleteAndPendingCaos() throws Exception {
-        AuditCategory category = buildPqfSpecificCategory(5, 5, AuditStatus.Complete, AuditStatus.Pending);
-
-        assertFalse(test.isCanEditCategory(category));
-    }
-
-    @Test
-    public void testIsCanEditCategory_PqfSpecific_CategoryCompleted_PendingCaos() throws Exception {
-        AuditCategory category = buildPqfSpecificCategory(5, 5, AuditStatus.Pending, AuditStatus.Pending);
-
-        assertTrue(test.isCanEditCategory(category));
-    }
-
-    private AuditCategory buildPqfSpecificCategory(int requiredCompleted, int numberRequired, AuditStatus firstCaoStatus, AuditStatus secondCaoStatus) {
-        ContractorAudit audit = EntityFactory.makeContractorAudit(111, contractor);
-        audit.getAuditType().setClassType(AuditTypeClass.PQF);
-        audit.getAuditType().setCanContractorEdit(true);
-        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
-        when(permissions.isContractor()).thenReturn(true);
-
-        ContractorAuditOperator cao1 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        ContractorAuditOperator cao2 = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-        audit.getOperators().add(cao1);
-        audit.getOperators().add(cao2);
-
-        AuditCategory category = EntityFactory.makeAuditCategory(100);
-        category.setAuditType(audit.getAuditType());
-        audit.getAuditType().getCategories().add(category);
-
-        AuditCatData auditCatData = AuditCatData.builder()
-                .category(category)
-                .requiredCompleted(requiredCompleted)
-                .numberRequired(numberRequired)
-                .build();
-        audit.setCategories(Arrays.asList(new AuditCatData[]{auditCatData}));
-
-        cao1.setStatus(firstCaoStatus);
-        cao2.setStatus(secondCaoStatus);
-        return category;
-    }
 
     @SuppressWarnings("deprecation")
 	@Test

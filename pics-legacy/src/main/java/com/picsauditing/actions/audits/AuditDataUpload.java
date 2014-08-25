@@ -1,42 +1,24 @@
 package com.picsauditing.actions.audits;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.NoResultException;
-
-import com.picsauditing.audits.AuditBuilderFactory;
-import org.apache.struts2.ServletActionContext;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
-import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.importpqf.ImportPqf;
-import com.picsauditing.importpqf.ImportPqfCanQual;
-import com.picsauditing.importpqf.ImportPqfComplyWorks;
-import com.picsauditing.importpqf.ImportPqfIsn;
-import com.picsauditing.importpqf.ImportPqfIsnUs;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.importpqf.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.model.events.AuditDataSaveEvent;
 import com.picsauditing.util.Downloader;
 import com.picsauditing.util.FileUtils;
 import com.picsauditing.util.SpringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.persistence.NoResultException;
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private static final long serialVersionUID = 2438788697676816034L;
@@ -139,7 +121,8 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 		for (AuditCatData auditCatData : getCategories().values()) {
 			if (auditCatData.getCategory().equals(auditData.getQuestion().getCategory())) {
 				auditPercentCalculator.updatePercentageCompleted(auditCatData);
-				auditDao.save(auditCatData);
+                //TODO replace aPerCalc
+                auditDao.save(auditCatData);
 			}
 		}
 
@@ -349,17 +332,13 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
         ContractorAudit audit = auditData.getAudit();
 
-        AuditCategoriesBuilder builder = initAuditCategoriesBuilder();
-
         for (ContractorAuditOperator cao : audit.getOperators()) {
             Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
             for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
                 operators.add(caop.getOperator());
             }
-            builder.calculate(auditData.getAudit(), operators);
 
-            boolean isApplicable = builder.isCategoryApplicable(auditData.getQuestion().getCategory(), cao);
-            
+            boolean isApplicable = auditBuilderFactory.isCategoryApplicable(auditData.getQuestion().getCategory(), auditData.getAudit(), cao);
 			if (isApplicable) {
                 AuditStatus newStatus = newStatusFollowingSafetyManualUpload(cao.getStatus());
 
@@ -392,10 +371,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
             return AuditStatus.Resubmit;
         }
         return currentStatus;
-    }
-
-    protected AuditCategoriesBuilder initAuditCategoriesBuilder() {
-        return new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
     }
 
     public String downloadFile() throws Exception {

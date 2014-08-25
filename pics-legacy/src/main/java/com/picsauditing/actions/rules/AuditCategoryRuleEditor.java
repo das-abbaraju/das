@@ -1,19 +1,18 @@
 package com.picsauditing.actions.rules;
 
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.List;
-
+import com.opensymphony.xwork2.ActionContext;
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.dao.AuditCategoryDAO;
+import com.picsauditing.jpa.entities.AuditCategoryRule;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.WorkflowStep;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.opensymphony.xwork2.ActionContext;
-import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategoryRule> {
@@ -23,8 +22,8 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Autowired
 	protected AuditCategoryDAO auditCategoryDAO;
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	public AuditCategoryRuleEditor() {
 		this.requiredPermission = OpPerms.ManageCategoryRules;
@@ -129,7 +128,7 @@ public class AuditCategoryRuleEditor extends AuditRuleActionSupport<AuditCategor
 
 	@Override
 	protected void clear() {
-		auditCategoryRuleCache.clear();
+        auditBuilderFactory.clearCache();
 		flagClearCache();
 
 		addActionMessage("Clearing Cache...");

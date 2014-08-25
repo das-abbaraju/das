@@ -107,20 +107,6 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 		this.categories = categories;
 	}
 
-    @Transient
-    public List<AuditCategory> getTopCategories() {
-        if (topCategories == null) {
-            topCategories = new ArrayList<AuditCategory>();
-            for (AuditCategory cat : categories) {
-                if (cat.getParent() == null) {
-                    topCategories.add(cat);
-                }
-            }
-        }
-
-        return topCategories;
-    }
-
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "workflowID")
 	public Workflow getWorkFlow() {

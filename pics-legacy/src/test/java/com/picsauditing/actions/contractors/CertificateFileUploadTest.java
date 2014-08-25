@@ -2,19 +2,26 @@ package com.picsauditing.actions.contractors;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
-import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.*;
-import com.picsauditing.jpa.entities.*;
+import com.picsauditing.jpa.entities.AuditCategory;
+import com.picsauditing.jpa.entities.AuditData;
+import com.picsauditing.jpa.entities.AuditQuestion;
+import com.picsauditing.jpa.entities.AuditStatus;
+import com.picsauditing.jpa.entities.AuditTypeClass;
+import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorAudit;
+import com.picsauditing.jpa.entities.ContractorAuditOperator;
+import com.picsauditing.jpa.entities.ContractorAuditOperatorPermission;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class CertificateFileUploadTest extends PicsTest {
@@ -31,8 +38,8 @@ public class CertificateFileUploadTest extends PicsTest {
 	AuditQuestionDAO questionDAO;
 	@Mock
 	AuditDataDAO dataDAO;
-	@Mock
-	AuditCategoryRuleCache auditCategoryRuleCache;
+    @Mock
+    AuditBuilderFactory auditBuilderFactory;
 	@Mock
 	protected BasicDAO dao;
 
@@ -48,9 +55,12 @@ public class CertificateFileUploadTest extends PicsTest {
 				questionDAO, dataDAO);
 		Whitebox.setInternalState(test, "dao", dao);
 		Whitebox.setInternalState(test, "auditDao", auditDao);
+        Whitebox.setInternalState(test, "auditBuilderFactory", auditBuilderFactory);
 
 		operator = EntityFactory.makeOperator();
 		contractor = EntityFactory.makeContractor();
+
+        when(auditBuilderFactory.isCategoryApplicable(any(AuditCategory.class), any(ContractorAudit.class), any(ContractorAuditOperator.class))).thenReturn(true);
 	}
 
 	@Test
@@ -60,9 +70,8 @@ public class CertificateFileUploadTest extends PicsTest {
 		ContractorAuditOperator cao = audit.getOperators().get(0);
 
 		Whitebox.setInternalState(test, "contractor", contractor);
-		Whitebox.setInternalState(test, "auditCategoryRuleCache", auditCategoryRuleCache);
 
-		AuditData data = setUpCategoryAndAuditData(audit);
+		AuditData data = setUpAndAuditData(audit);
 
 		// Pending
 		cao.changeStatus(AuditStatus.Pending, null);
@@ -95,7 +104,7 @@ public class CertificateFileUploadTest extends PicsTest {
 		return audit;
 	}
 
-	private AuditData setUpCategoryAndAuditData(ContractorAudit audit) {
+	private AuditData setUpAndAuditData(ContractorAudit audit) {
 		AuditCategory cat = EntityFactory.addCategories(audit.getAuditType(), 1, "Test");
 		AuditQuestion question = EntityFactory.makeAuditQuestion();
 		question.setCategory(cat);
@@ -104,18 +113,6 @@ public class CertificateFileUploadTest extends PicsTest {
 		auditData.setAudit(audit);
 		audit.getData().add(auditData);
 
-		AuditCategoryRule rule1 = new AuditCategoryRule();
-		rule1.setAuditType(audit.getAuditType());
-		rule1.setOperatorAccount(operator);
-		rule1.setAuditCategory(cat);
-		rule1.setRootCategory(true);
-		List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
-		catRules.add(rule1);
-
-		when(auditCategoryRuleCache.getRules(audit.getContractorAccount(),
-				audit.getAuditType())).thenReturn(catRules);
-
-		List<AuditCategoryRule> rules = auditCategoryRuleCache.getRules(audit.getContractorAccount(), audit.getAuditType());
 		return auditData;
 	}
 }

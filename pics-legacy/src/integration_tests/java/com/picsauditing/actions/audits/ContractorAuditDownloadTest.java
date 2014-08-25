@@ -47,8 +47,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PICS.I18nCache;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditCategoriesBuilder;
-import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.AuditCatData;
 import com.picsauditing.jpa.entities.AuditCategory;
@@ -70,10 +68,6 @@ public class ContractorAuditDownloadTest {
 	private AuditType auditType;
 	private ContractorAccount contractor;
 
-	@Mock
-	private AuditCategoryRuleCache auditCategoryRuleCache;
-	@Mock
-	private AuditCategoriesBuilder auditCategoriesBuilder;
 	@Mock
 	private AuditDecisionTableDAO auditDecisionTableDAO;
 	@Mock
@@ -296,8 +290,6 @@ public class ContractorAuditDownloadTest {
 	}
 
 	private void setPrivateVariables() {
-		Whitebox.setInternalState(auditDownload, "auditCategoryRuleCache", auditCategoryRuleCache);
-		Whitebox.setInternalState(auditDownload, "builder", auditCategoriesBuilder);
 		Whitebox.setInternalState(auditDownload, "auditDecisionTableDAO", auditDecisionTableDAO);
 		Whitebox.setInternalState(auditDownload, "permissions", permissions);
 		Whitebox.setInternalState(auditDownload, "permissionToViewContractor", permissionToViewContractor);

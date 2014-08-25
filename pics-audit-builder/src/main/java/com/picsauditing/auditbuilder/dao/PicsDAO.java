@@ -6,6 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.Collection;
+import java.util.List;
 
 @SuppressWarnings("unchecked")
 abstract public class PicsDAO {
@@ -36,4 +39,12 @@ abstract public class PicsDAO {
 	public <T extends BaseTable> T find(Class<T> clazz, int id) {
 		return em.find(clazz, id);
 	}
+
+
+    public <T extends BaseTable> List<T> findByIDs(Class<T> clazz, Collection<Integer> ids) {
+        Query q = em.createQuery("FROM " + clazz.getName() + " t WHERE t.id IN ( :ids )");
+        q.setParameter("ids", ids);
+        return q.getResultList();
+    }
+
 }

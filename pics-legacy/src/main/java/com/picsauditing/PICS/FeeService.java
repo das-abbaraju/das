@@ -2,7 +2,7 @@ package com.picsauditing.PICS;
 
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.audits.AuditTypesBuilder;
-import com.picsauditing.audits.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;

@@ -7,8 +7,7 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.audits.AuditCategoriesBuilder;
-import com.picsauditing.audits.AuditCategoryRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.ContractorAuditCategories;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -38,8 +37,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 	protected ContractorAuditOperatorDAO caoDAO;
 	@Autowired
 	protected ContractorAuditOperatorWorkflowDAO caowDAO;
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
+    @Autowired
+    private AuditBuilderFactory c;
 	@Autowired
 	private ContractorAuditDAO conAuditDAO;
 	@Autowired
@@ -198,8 +197,6 @@ public class AuditActionSupport extends ContractorActionSupport {
 		if (categories == null || reload) {
 			Set<AuditCategory> requiredCategories = null;
 			if (permissions.isOperatorCorporate() && !conAudit.getAuditType().isDesktop()) {
-				AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-
 				List<OperatorAccount> contractorOperators = new ArrayList<OperatorAccount>();
 				for (ContractorOperator co : conAudit.getContractorAccount().getOperators()) {
 					contractorOperators.add(co.getOperatorAccount());
@@ -214,7 +211,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 					operators.add(getOperatorAccount());
 				}
 
-				requiredCategories = builder.calculate(conAudit, operators);
+				requiredCategories = auditBuilderFactory.getCategories(conAudit, operators);
 			}
 
 			categories = ContractorAuditCategories.getApplicableCategories(permissions, requiredCategories, conAudit.getCategories());
@@ -881,7 +878,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 			return false;
 		}
 
-		return auditEditModel.isCanEditCategory(category, conAudit, permissions, auditCategoryRuleCache);
+		return auditEditModel.isCanEditCategory(category, conAudit, permissions);
 	}
 
 	public boolean isHasClosingAuditor() {

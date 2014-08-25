@@ -19,6 +19,15 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		this.ruleCache = auditCategoryRuleCache;
 	}
 
+    public void calculate(int auditId, Collection<Integer> operatorIds) {
+        ContractorAudit audit = getAuditDataDAO().find(ContractorAudit.class, auditId);
+        Collection<OperatorAccount> operators = new ArrayList<>();
+        for (int id:operatorIds) {
+            operators.add(getAuditDataDAO().find(OperatorAccount.class, id));
+        }
+        calculate(audit, operators);
+    }
+
 	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
 		Collection<OperatorAccount> operators = new HashSet<>();
 		for (ContractorAuditOperator cao : conAudit.getOperators()) {
@@ -29,7 +38,6 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			}
 		}
 		return calculate(conAudit, operators);
-
 	}
 
 	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
@@ -221,6 +229,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 
 		return null;
 	}
+
+    public boolean isCategoryApplicable(int categoryId, int caoId) {
+        AuditCategory category = getAuditDataDAO().find(AuditCategory.class, categoryId);
+        ContractorAuditOperator cao = getAuditDataDAO().find(ContractorAuditOperator.class, caoId);
+        return isCategoryApplicable(category, cao);
+    }
 
 	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
 		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {

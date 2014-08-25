@@ -4,8 +4,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.actions.TranslationActionSupport;
-import com.picsauditing.audits.AuditCategoryRuleCache;
 import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -52,8 +50,6 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	private AuditDecisionTableDAO auditRuleDAO;
 	@Mock
 	private AuditQuestionDAO questionDao;
-	@Mock
-	private AuditCategoryRuleCache categoryRuleCache;
 	@Mock
 	private AuditPercentCalculator auditPercentCalculatior;
 	@Mock
@@ -111,7 +107,6 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
         auditEditModel = new AuditEditModel();
 
-		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditCategoryRuleCache", categoryRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditPercentCalculator", auditPercentCalculatior);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "conAudit", audit);
         PicsTestUtil.forceSetPrivateField(auditDataSave, "auditEditModel", auditEditModel);

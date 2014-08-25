@@ -1,17 +1,11 @@
 package com.picsauditing.audits;
 
-import com.picsauditing.auditbuilder.*;
+import com.picsauditing.auditbuilder.AuditBuilder2;
+import com.picsauditing.auditbuilder.AuditPercentCalculator2;
+import com.picsauditing.auditbuilder.DocumentService;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.featuretoggle.Features;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.AuditTypeRule;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.OperatorAccount;
+import com.picsauditing.jpa.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -33,19 +27,91 @@ public class AuditBuilderFactory {
     @Autowired
     private AuditCategoryRuleCache auditCategoryRuleCache;
     @Autowired
-    private com.picsauditing.auditbuilder.AuditTypesBuilder auditTypesBuilder2;
-    @Autowired
-    private com.picsauditing.auditbuilder.dao.AuditDataDAO2 auditDataDao;
-    @Autowired
     protected BasicDAO dao;
 
     List<AuditCategory> categories = new ArrayList<>();
+
+    public void clearCache() {
+        if (newAuditBuilderEnabled()) {
+            documentService.clearCache();
+        } else {
+            typeRuleCache.clear();
+            auditCategoryRuleCache.clear();
+        }
+    }
 
     public void buildAudits(ContractorAccount contractorAccount) {
         if (newAuditBuilderEnabled()) {
             newAuditBuilder.buildAudits(contractorAccount.getId());
         } else {
             auditBuilder.buildAudits(contractorAccount);
+        }
+    }
+
+    public List<AuditTypeRule> getAuditTypeRules(ContractorAccount contractor) {
+        List<AuditTypeRule> rules = new ArrayList<>();
+
+        if (newAuditBuilderEnabled()) {
+            List<Integer> ids = documentService.getDocumentRuleIds(contractor.getId());
+            for (int id:ids) {
+                rules.add(dao.find(AuditTypeRule.class, id));
+            }
+        } else {
+            rules = typeRuleCache.getRules(contractor);
+        }
+        return rules;
+    }
+
+    //TOSO see if needed
+    public List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {
+        List<AuditCategoryRule> rules = new ArrayList<>();
+
+        if (newAuditBuilderEnabled()) {
+            List<Integer> ids = documentService.getCategoryRuleIds(contractor.getId(), auditType.getId());
+            for (int id:ids) {
+                rules.add(dao.find(AuditCategoryRule.class, id));
+            }
+        } else {
+            rules = auditCategoryRuleCache.getRules(contractor, auditType);
+        }
+        return rules;
+    }
+
+    //TOSO see if needed
+    public Set<AuditCategory> getCategories(ContractorAudit audit, Collection<OperatorAccount> operators) {
+        Set<AuditCategory> categories = new HashSet<>();
+
+        if (newAuditBuilderEnabled()) {
+            List<Integer> operatorIds = new ArrayList<>();
+            for(OperatorAccount operator:operators) {
+                operatorIds.add(operator.getId());
+            }
+            categories.addAll(dao.findByIDs(AuditCategory.class, documentService.getCategoryIds(audit.getId(), operatorIds)));
+        } else {
+            AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, audit.getContractorAccount());
+            categories = builder.calculate(audit, operators);
+        }
+
+        return categories;
+    }
+
+    public boolean isCategoryApplicable(AuditCategory category, ContractorAudit audit, ContractorAuditOperator cao) {
+        Collection<OperatorAccount> operators = new ArrayList<>();
+        Collection<Integer> operatorIds = new ArrayList<>();
+        for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+            operators.add(caop.getOperator());
+            operatorIds.add(caop.getOperator().getId());
+        }
+
+        if (newAuditBuilderEnabled()) {
+            com.picsauditing.auditbuilder.AuditCategoriesBuilder builder =
+                    documentService.getDocumentCategoriesBuilder(audit.getContractorAccount().getId());
+            builder.calculate(audit.getId(), operatorIds);
+            return builder.isCategoryApplicable(category.getId(), cao.getId());
+        } else {
+            AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, audit.getContractorAccount());
+            builder.calculate(audit, operators);
+            return builder.isCategoryApplicable(category, cao);
         }
     }
 
@@ -142,8 +208,36 @@ public class AuditBuilderFactory {
         }
     }
 
+    public Set<AuditTypeDetail> getContractorAuditTypeDetails(ContractorAccount contractor) {
+        Set<AuditTypeDetail> auditTypeDetails = new HashSet<>();
+
+        if (newAuditBuilderEnabled()) {
+            collectAuditTypeDetailsFromService(contractor, auditTypeDetails);
+        } else {
+            AuditTypesBuilder builder = new AuditTypesBuilder(typeRuleCache, contractor);
+            auditTypeDetails = builder.calculate();
+        }
+
+        return auditTypeDetails;
+    }
+
+    private void collectAuditTypeDetailsFromService(ContractorAccount contractor, Set<AuditTypeDetail> auditTypeDetails) {
+        Map<Integer, List<Integer>> detailIds = documentService.getContractorDocumentTypeDetailIds(contractor.getId());
+        for (int ruleId : detailIds.keySet()) {
+            Set<OperatorAccount> operators = new HashSet<>();
+            for (int operatorId:detailIds.get(ruleId)) {
+                operators.add(dao.find(OperatorAccount.class, operatorId));
+            }
+
+            AuditTypeDetail detail = new AuditTypeDetail();
+            detail.rule = dao.find(AuditTypeRule.class, ruleId);
+            detail.operators = operators;
+            auditTypeDetails.add(detail);
+        }
+    }
+
     public Map<AuditType, List<AuditTypeRule>> getContractorSimulatorAudits(ContractorAccount contractor) {
-        Map<AuditType, List<AuditTypeRule>> audits = new TreeMap<AuditType, List<AuditTypeRule>>();
+        Map<AuditType, List<AuditTypeRule>> audits = new TreeMap<>();
         if (newAuditBuilderEnabled()) {
             collectContractorSimulatorAuditsFromService(contractor, audits);
         } else {
@@ -208,7 +302,7 @@ public class AuditBuilderFactory {
 
     private void collectContractorSimulatorAudits(ContractorAccount contractor, Map<AuditType, List<AuditTypeRule>> audits) {
         AuditTypesBuilder builder = new AuditTypesBuilder(typeRuleCache, contractor);
-        for (AuditTypesBuilder.AuditTypeDetail detail : builder.calculate()) {
+        for (AuditTypeDetail detail : builder.calculate()) {
             AuditType auditType = detail.rule.getAuditType();
 
             List<AuditTypeRule> rules = getAuditTypeRules(builder, auditType);
@@ -218,7 +312,7 @@ public class AuditBuilderFactory {
 
     private List<AuditTypeRule> getAuditTypeRules(AuditTypesBuilder builder, AuditType auditType) {
         boolean includeAlways = false;
-        List<AuditTypeRule> rules = new ArrayList<AuditTypeRule>();
+        List<AuditTypeRule> rules = new ArrayList<>();
         for (AuditTypeRule rule : builder.getRules()) {
             if (rule.getAuditType() == null || rule.getAuditType().equals(auditType)) {
                 // We have a matching rule

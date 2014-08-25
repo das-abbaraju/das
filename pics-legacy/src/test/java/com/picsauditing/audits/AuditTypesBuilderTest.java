@@ -165,7 +165,7 @@ public class AuditTypesBuilderTest {
 
         auditTypeRules.add(auditTypeRule);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        Set<AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
         assertEquals(0, auditTypeDetails.size());
     }
 
@@ -174,10 +174,10 @@ public class AuditTypesBuilderTest {
 		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");
 		auditTypeRules.add(auditTypeRule);
 
-		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+		Set<AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
-		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+		AuditTypeDetail auditTypeDetail = (AuditTypeDetail) auditTypeDetails.toArray()[0];
 		assertEquals(auditTypeDetail.rule, auditTypeRule);
 		assertEquals(1, auditTypeDetail.operators.size());
 		assertEquals(auditTypeDetail.operators.toArray()[0], operator);
@@ -202,10 +202,10 @@ public class AuditTypesBuilderTest {
 		List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 		when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
 
-		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+		Set<AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
-		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+		AuditTypeDetail auditTypeDetail = (AuditTypeDetail) auditTypeDetails.toArray()[0];
 		assertEquals(auditTypeDetail.rule, auditTypeRule);
 	}
 
@@ -234,10 +234,10 @@ public class AuditTypesBuilderTest {
         when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
         when(auditDataDAO.findAnswerToQuestion(0, 20)).thenReturn(visibleAnswer);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        Set<AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
 
         assertEquals(1, auditTypeDetails.size());
-        AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+        AuditTypeDetail auditTypeDetail = (AuditTypeDetail) auditTypeDetails.toArray()[0];
         assertEquals(auditTypeDetail.rule, auditTypeRule);
 
         // make it invisible

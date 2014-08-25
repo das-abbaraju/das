@@ -1,20 +1,13 @@
 package com.picsauditing.actions.audits;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyCollectionOf;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
-
+import com.picsauditing.EntityFactory;
+import com.picsauditing.PicsActionTest;
+import com.picsauditing.PicsTestUtil;
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.AnswerMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -23,31 +16,15 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import com.picsauditing.EntityFactory;
-import com.picsauditing.PicsActionTest;
-import com.picsauditing.PicsTestUtil;
-import com.picsauditing.audits.AuditCategoriesBuilder;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.audits.AuditPercentCalculator;
-import com.picsauditing.dao.AuditCategoryDataDAO;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.ContractorAccountDAO;
-import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.dao.ContractorAuditOperatorWorkflowDAO;
-import com.picsauditing.jpa.entities.AuditCatData;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.OperatorAccount;
-import com.picsauditing.jpa.entities.User;
-import com.picsauditing.util.AnswerMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.*;
 
 public class AuditDataUploadTest extends PicsActionTest {
     private AuditDataUpload auditDataUpload;
@@ -70,11 +47,9 @@ public class AuditDataUploadTest extends PicsActionTest {
     @Mock
     private AuditQuestionDAO questionDao;
     @Mock
-    private AuditCategoryRuleCache categoryRuleCache;
-    @Mock
     private AuditPercentCalculator auditPercentCalculator;
     @Mock
-    private AuditCategoriesBuilder builder;
+    private AuditBuilderFactory auditBuilderFactory;
 
     private ContractorAccount contractor;
     private OperatorAccount operator;
@@ -90,9 +65,7 @@ public class AuditDataUploadTest extends PicsActionTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         auditDataUpload = Mockito.spy(new AuditDataUpload());
-        doReturn(builder).when(auditDataUpload).initAuditCategoriesBuilder();
-        when(builder.isCategoryApplicable(any(AuditCategory.class), any(ContractorAuditOperator.class))).thenReturn
-                (true);
+        when(auditBuilderFactory.isCategoryApplicable(any(AuditCategory.class), any(ContractorAudit.class), any(ContractorAuditOperator.class))).thenReturn(true);
         super.setUp(auditDataUpload);
         PicsTestUtil.autowireDAOsFromDeclaredMocks(auditDataUpload, this);
 
@@ -105,14 +78,12 @@ public class AuditDataUploadTest extends PicsActionTest {
         contractor = EntityFactory.makeContractor();
         audit = EntityFactory.makeContractorAudit(1, contractor);
 
-
-
         auditDataUpload.setAuditData(auditData);
         auditDataUpload.setContractor(contractor);
 
         catData = EntityFactory.makeAuditCatData();
 
-        PicsTestUtil.forceSetPrivateField(auditDataUpload, "auditCategoryRuleCache", categoryRuleCache);
+        PicsTestUtil.forceSetPrivateField(auditDataUpload, "auditBuilderFactory", auditBuilderFactory);
         PicsTestUtil.forceSetPrivateField(auditDataUpload, "auditPercentCalculator", auditPercentCalculator);
         PicsTestUtil.forceSetPrivateField(auditDataUpload, "conAudit", audit);
 
@@ -168,7 +139,7 @@ public class AuditDataUploadTest extends PicsActionTest {
         assertEquals(AuditStatus.Resubmit, audit.getOperators().get(3).getStatus());
         assertEquals(AuditStatus.Resubmit, audit.getOperators().get(4).getStatus());
         assertEquals(AuditStatus.Resubmit, audit.getOperators().get(5).getStatus());
-        verify(builder, times(6)).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
+        verify(auditBuilderFactory, times(6)).isCategoryApplicable(any(AuditCategory.class), any(ContractorAudit.class), any(ContractorAuditOperator.class));
         verify(caowDAO, times(3)).save(any(ContractorAuditOperatorWorkflow.class));
         verify(auditDataDao, times(1)).save(any(AuditData.class));
     }
@@ -182,7 +153,7 @@ public class AuditDataUploadTest extends PicsActionTest {
 
         Whitebox.invokeMethod(auditDataUpload, "safetyManualUploadStatusAdjustments", auditData);
         verify(auditDataDao, never()).findAnswerByAuditQuestion(anyInt(), anyInt());
-        verify(builder, never()).calculate(any(ContractorAudit.class), anyCollectionOf(OperatorAccount.class));
+        verify(auditBuilderFactory, never()).isCategoryApplicable(any(AuditCategory.class), any(ContractorAudit.class), any(ContractorAuditOperator.class));
         verify(caowDAO, never()).save(any(ContractorAuditOperatorWorkflow.class));
         verify(auditDataDao, never()).save(any(AuditData.class));
     }

@@ -1,6 +1,5 @@
 package com.picsauditing.actions.audits;
 
-import com.picsauditing.audits.AuditCategoriesBuilder;
 import com.picsauditing.jpa.entities.AuditData;
 import com.picsauditing.jpa.entities.AuditOptionValue;
 import com.picsauditing.jpa.entities.AuditQuestion;
@@ -19,8 +18,6 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings("serial")
 public class ContractorAuditDownload extends ContractorAuditController {
-	private AuditCategoriesBuilder builder;
-
 	private HSSFWorkbook workbook = new HSSFWorkbook();
 	private HSSFSheet sheet;
 	// Styles
@@ -56,10 +53,6 @@ public class ContractorAuditDownload extends ContractorAuditController {
 				+ " - " + contractor.getName();
 
 		cell.setCellValue(header);
-
-		if (builder == null) {
-			builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-		}
 
 		List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
 		if (permissions.isOperatorCorporate()) {

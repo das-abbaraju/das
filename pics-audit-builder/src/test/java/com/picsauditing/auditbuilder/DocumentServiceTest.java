@@ -28,6 +28,7 @@ public class DocumentServiceTest extends PicsTest {
     private static int NON_AUDIT_TYPE_ID = 2000;
     private static int CATEGORY_ID = 1000;
     private static int NON_CATEGORY_ID = 2000;
+    private static int CONTRACTOR_ID =100;
 
     private DocumentService service;
 
@@ -65,6 +66,18 @@ public class DocumentServiceTest extends PicsTest {
     }
 
     @Test
+    public void testGetContractorDocumentTypeDetailIds() throws Exception {
+        ContractorOperator conOp = new ContractorOperator();
+        conOp.setContractorAccount(contractor);
+        conOp.setOperatorAccount(operator);
+        conOps.add(conOp);
+
+        Map<Integer, List<Integer>> ids = service.getContractorDocumentTypeDetailIds(contractor.getId());
+        assertEquals(1, ids.size());
+        assertEquals(OPERATOR_ID, ids.get(0).get(0).intValue());
+    }
+
+    @Test
     public void testGetContractorSimulatorDocumentTypeDetailIds() throws Exception {
         Map<Integer, List<Integer>> ids = service.getContractorSimulatorDocumentTypeDetailIds(contractor, operatorIds);
         assertEquals(1, ids.size());
@@ -92,9 +105,10 @@ public class DocumentServiceTest extends PicsTest {
         when(operator.getStatus()).thenReturn(AccountStatus.Active);
 
         when(auditDataDAO.find(OperatorAccount.class, OPERATOR_ID)).thenReturn(operator);
+        when(auditDataDAO.find(ContractorAccount.class, CONTRACTOR_ID)).thenReturn(contractor);
 
         when(nonOperator.getId()).thenReturn(NON_OPERATOR_ID);
-        when(nonOperator.getType()).thenReturn(AccountService.CORPORATE_ACCOUNT_TYPE);
+        when(nonOperator.getType()).thenReturn(AccountService.OPERATOR_ACCOUNT_TYPE);
         when(nonOperator.getStatus()).thenReturn(AccountStatus.Active);
 
         when(contractor.isSafetySensitive()).thenReturn(false);
@@ -103,8 +117,9 @@ public class DocumentServiceTest extends PicsTest {
         when(contractor.getTransportationRisk()).thenReturn(LowMedHigh.None);
         when(contractor.isOnsiteServices()).thenReturn(true);
         when(contractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(contractor.getId()).thenReturn(CONTRACTOR_ID);
 
-        ContractorOperator conOp = new ContractorOperator();
+        conOps.clear();
         when(contractor.getOperators()).thenReturn(conOps);
 
         when(typeRuleCache.getRules(contractor)).thenReturn(typeRules);

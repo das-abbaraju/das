@@ -1,37 +1,26 @@
 package com.picsauditing.actions.audits;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.audits.AuditQuestionSuggestion;
-import com.picsauditing.jpa.entities.*;
-import com.picsauditing.rbic.InsuranceCriteriaChecker;
-import com.picsauditing.rbic.InvalidAuditDataAnswer;
-import com.picsauditing.service.audit.AuditPeriodService;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.picsauditing.menu.MenuComponent;
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditCategoriesBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditQuestionSuggestion;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.menu.MenuComponent;
+import com.picsauditing.rbic.InsuranceCriteriaChecker;
 import com.picsauditing.rbic.InsuranceCriteriaDisplay;
+import com.picsauditing.rbic.InvalidAuditDataAnswer;
+import com.picsauditing.service.audit.AuditPeriodService;
 import com.picsauditing.util.AnswerMap;
 import com.picsauditing.util.Strings;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * Used by Audit.action to show a list of categories for a given audit. Also
@@ -50,6 +39,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	protected AuditDecisionTableDAO auditDecisionTableDAO;
     @Autowired
     protected AuditPeriodService auditPeriodService;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	protected String mode = null;
 	static private String VIEW = "View";
@@ -101,11 +92,12 @@ public class ContractorAuditController extends AuditActionSupport {
 				contractor.getOperators().add(co);
 			}
 
-			fillAuditCategories();
+             cats.addAll(auditBuilderFactory.getContractorSimulatorCategories(auditTypeId, contractor));
 
-			for (AuditCategory auditCategory : cats) {
-				addDefaultCategory(auditCategory);
-			}
+            for (AuditCategory auditCategory : cats) {
+                addDefaultCategory(auditCategory);
+            }
+
 			return SUCCESS;
 		}
 
@@ -338,37 +330,6 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 		}
 		return auditCatData;
-	}
-
-	private void fillAuditCategories() {
-		// We're doing this step first so categories that get added or removed
-		// manually can be caught in the next block
-
-		if (auditType.getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
-			AuditCategory category = new AuditCategory();
-			category.setName("Previewing Categories is not supported for this audit");
-			cats.add(category);
-			return;
-		}
-
-		AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, contractor);
-
-		Set<AuditCategory> requiredCategories = builder.calculate(conAudit, operators);
-		for (AuditCategory category : auditType.getTopCategories()) {
-			addCategory(cats, category, requiredCategories);
-		}
-	}
-
-	private void addCategory(List<AuditCategory> list, AuditCategory category, Set<AuditCategory> requiredCategories) {
-		if (requiredCategories.contains(category)) {
-			list.add(category);
-			category.setSubCategories(new ArrayList<AuditCategory>());
-			for (AuditCategory subCategory : auditType.getCategories()) {
-				if (category.equals(subCategory.getParent())) {
-					addCategory(category.getSubCategories(), subCategory, requiredCategories);
-				}
-			}
-		}
 	}
 
 	public String importPQFYes() throws Exception {

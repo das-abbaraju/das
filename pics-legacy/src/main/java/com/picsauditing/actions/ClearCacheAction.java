@@ -1,21 +1,18 @@
 package com.picsauditing.actions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import com.picsauditing.access.Anonymous;
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.dao.AppPropertyDAO;
 import com.picsauditing.model.i18n.TranslatableString;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.picsauditing.access.Anonymous;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.audits.AuditTypeRuleCache;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 public class ClearCacheAction extends PicsActionSupport {
@@ -23,9 +20,7 @@ public class ClearCacheAction extends PicsActionSupport {
 	public static String CLEAR_CACHE_PROPERTY = "PICS.clear_cache";
 
 	@Autowired
-	private AuditTypeRuleCache auditTypeRuleCache;
-	@Autowired
-	private AuditCategoryRuleCache auditCategoryRuleCache;
+	private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private AppPropertyDAO appPropertyDAO;
 
@@ -54,8 +49,7 @@ public class ClearCacheAction extends PicsActionSupport {
 		// The Python Cron monitors the status of the App Property "clear_cache"
 		// and if it has been set, resets the cache via this Action Class on all
 		// 3 servers
-		auditTypeRuleCache.clear();
-		auditCategoryRuleCache.clear();
+        auditBuilderFactory.clearCache();
 
 		// Clear the translations from the cache
 		TranslationServiceFactory.getTranslationService().clear();

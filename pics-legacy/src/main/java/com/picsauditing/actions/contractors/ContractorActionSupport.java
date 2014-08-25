@@ -40,7 +40,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	protected OperatorAccountDAO operatorDAO;
 	@Autowired
-	private AuditBuilderFactory auditBuilderFactory;
+    protected AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
