@@ -14,6 +14,7 @@ import com.picsauditing.jpa.entities.PaymentAppliedToInvoice;
 import com.picsauditing.jpa.entities.PaymentAppliedToRefund;
 import com.picsauditing.jpa.entities.Refund;
 import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.TransactionStatus;
 
 @SuppressWarnings("unchecked")
 public class PaymentDAO extends PicsDAO {
@@ -48,6 +49,15 @@ public class PaymentDAO extends PicsDAO {
 		}
 		row = null;
 	}
+
+    @Transactional(propagation = Propagation.NESTED)
+    public void updatePaymentStatus(Payment row,TransactionStatus status) {
+        if (row != null) {
+            row.setStatus(status);
+            em.merge(row);
+        }
+        row = null;
+    }
 
 	@Transactional(propagation = Propagation.NESTED)
 	public void remove(PaymentApplied row) {
