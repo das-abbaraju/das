@@ -849,6 +849,7 @@ public class AuditPercentCalculatorTest {
         when(contractorAudit.getOperators()).thenReturn(caos);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(catData.getCategory()).thenReturn(category);
 
         calculator.percentCalculateComplete(contractorAudit, false);
 
@@ -867,6 +868,7 @@ public class AuditPercentCalculatorTest {
         when(contractorAudit.getOperators()).thenReturn(caos);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Audit);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(catData.getCategory()).thenReturn(category);
 
         calculator.percentCalculateComplete(contractorAudit, false);
 
@@ -902,6 +904,7 @@ public class AuditPercentCalculatorTest {
         when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
         when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
         when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(catData.getCategory()).thenReturn(category);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(100);
