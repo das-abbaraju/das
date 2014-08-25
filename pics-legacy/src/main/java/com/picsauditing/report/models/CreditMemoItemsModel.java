@@ -1,5 +1,6 @@
 package com.picsauditing.report.models;
 
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
@@ -28,12 +29,6 @@ public class CreditMemoItemsModel extends AbstractModel {
 		ModelSpec contractor = account.join(AccountTable.Contractor);
 		contractor.alias = "Contractor";
 
-        ModelSpec contractorTrade = contractor.join(ContractorTable.ContractorTrade);
-        ModelSpec directTrade = contractorTrade.join(ContractorTradeTable.Trade);
-        directTrade.join(TradeTable.Children);
-
-        contractor.join(ContractorTable.Tag);
-
         if (permissions.isOperatorCorporate()) {
             ModelSpec flag = contractor.join(ContractorTable.Flag);
             flag.join(ContractorOperatorTable.ForcedByUser);
@@ -57,7 +52,7 @@ public class CreditMemoItemsModel extends AbstractModel {
 		Map<String, Field> fields = super.getAvailableFields();
 
 		Field accountName = fields.get("AccountName".toUpperCase());
-        if (permissions.isAdmin())
+        if (permissions.hasPermission(OpPerms.Billing))
             accountName.setUrl("BillingDetail.action?id={AccountID}");
         else
             accountName.setUrl("ContractorView.action?id={AccountID}");
