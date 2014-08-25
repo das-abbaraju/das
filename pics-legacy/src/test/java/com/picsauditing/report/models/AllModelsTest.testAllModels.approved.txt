@@ -1465,10 +1465,6 @@ AccountTimezone
 AccountTransportationServices
 ContractorAccountLevel
 ContractorAuditGUARD
-ContractorContractorTradeTradeChildrenId
-ContractorContractorTradeTradeChildrenName
-ContractorContractorTradeTradeId
-ContractorContractorTradeTradeName
 ContractorDocuGUARD
 ContractorEmployeeGUARD
 ContractorInsideSalesUserID
@@ -1480,7 +1476,6 @@ ContractorOriginalMembershipDate
 ContractorProductRisk
 ContractorSafetySensitive
 ContractorSoleProprietor
-ContractorTagTagID
 ContractorTransportationRisk
 CreditMemoAmountApplied
 CreditMemoCreationDate
