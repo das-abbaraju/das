@@ -40,7 +40,10 @@ public class AuditPercentCalculator2 {
 		if (!catData.isApplies())
 			return;
 
-		int requiredAnsweredCount = 0;
+        if (!AuditService.isCurrent(catData.getCategory()))
+            return;
+
+        int requiredAnsweredCount = 0;
 		int answeredCount = 0;
 		int requiredCount = 0;
 		int verifiedCount = 0;
@@ -511,6 +514,9 @@ public class AuditPercentCalculator2 {
 
     private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
         boolean applies = false;
+        if (!AuditService.isCurrent(data.getCategory()))
+            return false;
+
         if (data.isOverride())
             applies = data.isApplies();
         else {
