@@ -6,6 +6,7 @@ import com.picsauditing.authentication.entities.AppUser;
 import com.picsauditing.authentication.service.AppUserService;
 import com.picsauditing.employeeguard.entities.EmailHash;
 import com.picsauditing.employeeguard.entities.Profile;
+import com.picsauditing.employeeguard.entities.Settings;
 import com.picsauditing.employeeguard.entities.builders.ProfileBuilder;
 import com.picsauditing.employeeguard.models.EntityAuditInfo;
 import com.picsauditing.employeeguard.services.email.EmailHashService;
@@ -15,6 +16,7 @@ import com.picsauditing.security.SessionCookie;
 import com.picsauditing.security.SessionSecurity;
 import com.picsauditing.service.user.UserService;
 import com.picsauditing.util.Strings;
+import com.picsauditing.web.SessionInfoProviderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.security.auth.login.AccountNotFoundException;
@@ -102,6 +104,7 @@ public class AuthenticationService {
 				.firstName(emailHash.getEmployee().getFirstName())
 				.lastName(emailHash.getEmployee().getLastName())
 				.phone(emailHash.getEmployee().getPhone())
+				.settings(new Settings(SessionInfoProviderFactory.getSessionInfoProvider().getLocale()))
 				.build();
 
 		return profileEntityService.save(profile, new EntityAuditInfo.Builder()

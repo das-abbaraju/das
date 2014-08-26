@@ -2,6 +2,7 @@ package com.picsauditing.web;
 
 import com.picsauditing.access.Permissions;
 
+import java.util.Locale;
 import java.util.Map;
 
 public interface SessionInfoProvider {
@@ -33,6 +34,8 @@ public interface SessionInfoProvider {
 
 	String getReferer();
 
-	public Map<String, Object> getRequest();
+	Map<String, Object> getRequest();
+
+	Locale getLocale();
 
 }

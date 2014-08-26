@@ -7,6 +7,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.struts2.ServletActionContext;
 
+import java.util.Locale;
 import java.util.Map;
 
 public class StrutsSessionInfoProvider implements SessionInfoProvider {
@@ -95,5 +96,10 @@ public class StrutsSessionInfoProvider implements SessionInfoProvider {
 	@Override
 	public Map<String, Object> getRequest() {
 		return (Map) ActionContext.getContext().get("request");
+	}
+
+	@Override
+	public Locale getLocale() {
+		return ActionContext.getContext().getLocale();
 	}
 }
