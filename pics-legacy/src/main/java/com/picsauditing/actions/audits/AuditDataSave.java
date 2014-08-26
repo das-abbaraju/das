@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.NaicsDAO;
 import com.picsauditing.jpa.entities.*;
@@ -58,8 +57,6 @@ public class AuditDataSave extends AuditActionSupport {
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
 	private NaicsDAO naicsDAO;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private AuditBuilderFactory auditBuilderFactory;
     @Autowired
@@ -279,7 +276,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if (toggleVerify) {
-			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            auditBuilderFactory.percentCalculateComplete(conAudit);
 			auditDao.save(catData);
 		}
 
@@ -310,13 +307,13 @@ public class AuditDataSave extends AuditActionSupport {
     private void recalculateAuditCatData(AuditCatData catData) {
         if (checkDependentQuestions() || checkOtherRules()) {
             auditBuilderFactory.recalculateCategories(conAudit);
-            auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            auditBuilderFactory.percentCalculateComplete(conAudit);
             auditDao.save(conAudit);
         } else if (catData != null) {
             if (conAudit.getAuditType().isScoreable())
-                auditPercentCalculator.percentCalculateComplete(conAudit, true);
+                auditBuilderFactory.percentCalculateComplete(conAudit);
             else
-                auditPercentCalculator.updatePercentageCompleted(catData);
+                auditBuilderFactory.updatePercentageCompleted(catData);
             catData.setAuditColumns();
             auditDao.save(catData);
         } else {
@@ -551,7 +548,7 @@ public class AuditDataSave extends AuditActionSupport {
 		}
 
 		if (recalcAudit) {
-			auditPercentCalculator.percentCalculateComplete(conAudit, true);
+            auditBuilderFactory.percentCalculateComplete(conAudit);
 		}
 
 	}

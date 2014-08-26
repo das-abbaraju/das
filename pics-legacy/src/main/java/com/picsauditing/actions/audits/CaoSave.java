@@ -4,7 +4,6 @@ import com.picsauditing.PICS.DateBean;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.*;
 import com.picsauditing.models.audits.CaoSaveModel;
@@ -25,8 +24,6 @@ import java.util.*;
 // TODO TECHNICAL DEBT: PICS-11385 CaoSave violates the Single Responsibility Principle
 @SuppressWarnings("serial")
 public class CaoSave extends AuditActionSupport {
-	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private EmailSender emailSender;
 	@Autowired
@@ -195,7 +192,7 @@ public class CaoSave extends AuditActionSupport {
 		if (auditID != 0) {
 			findConAudit();
 			auditBuilderFactory.recalculateCategories(conAudit);
-			auditPercentCalculator.percentCalculateComplete(conAudit, false);
+            auditBuilderFactory.percentCalculateComplete(conAudit);
 			getValidSteps();
 			auditDao.save(conAudit);
 		}
@@ -287,7 +284,7 @@ public class CaoSave extends AuditActionSupport {
 			throw new RecordNotFoundException("ContractorAuditOperator");
         }
 
-        auditPercentCalculator.percentCalculateComplete(cao.getAudit(), true, false);
+        auditBuilderFactory.percentCalculateComplete(cao.getAudit(), true, false);
 		WorkflowStep step = getWorkflowStep(cao);
 
 		if (hasActionErrors()) {
@@ -578,10 +575,6 @@ public class CaoSave extends AuditActionSupport {
 
 	public void setNoteID(int noteID) {
 		this.noteID = noteID;
-	}
-
-	public void setAuditPercentCalculator(AuditPercentCalculator auditPercentCalculator) {
-		this.auditPercentCalculator = auditPercentCalculator;
 	}
 
 	public boolean isViewCaoTable() {

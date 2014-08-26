@@ -4,7 +4,7 @@ import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.DateBean;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.featuretoggle.Features;
@@ -27,8 +27,6 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	@Autowired
 	private AuditQuestionDAO questionDao = null;
 	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	@Autowired
 	private BillingService billingService;
 	@Autowired
 	private FeeService feeService;
@@ -36,6 +34,8 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	private ServiceRiskCalculator serviceRiskCalculator;
 	@Autowired
 	private EmployeeGuardRulesService employeeGuardRulesService;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	private List<AuditQuestion> infoQuestions = new ArrayList<AuditQuestion>();
 
@@ -278,7 +278,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 
     private void recalculateAuditPercentages() {
 		for (ContractorAudit audit:contractor.getAudits()) {
-			auditPercentCalculator.percentCalculateComplete(audit, true);
+            auditBuilderFactory.percentCalculateComplete(audit);
 		}
 	}
 
@@ -972,7 +972,7 @@ public class RegistrationServiceEvaluation extends RegistrationAction {
 	}
 
 	public boolean shouldShowSsip() {
-		for (AuditTypeRule rule : auditTypeRuleCache.getRules(contractor)) {
+		for (AuditTypeRule rule : auditBuilderFactory.getAuditTypeRules(contractor)) {
 			if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
 				return true;
 			}

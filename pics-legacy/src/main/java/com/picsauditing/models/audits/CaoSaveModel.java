@@ -1,18 +1,17 @@
 package com.picsauditing.models.audits;
 
-import java.util.List;
-import java.util.Locale;
-
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
+import com.picsauditing.service.i18n.TranslationServiceFactory;
+import com.picsauditing.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 
-import com.picsauditing.audits.AuditPercentCalculator;
-import com.picsauditing.service.i18n.TranslationServiceFactory;
-import com.picsauditing.util.Strings;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * This class acts as a service layer for CaoSave.java. All business logic for
@@ -21,7 +20,7 @@ import com.picsauditing.util.Strings;
  */
 public class CaoSaveModel {
 	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
+	protected AuditBuilderFactory auditBuilderFactory;
     @Autowired
     protected AuditPeriodService auditPeriodService;
     @Autowired
@@ -88,7 +87,7 @@ public class CaoSaveModel {
                 if (auditFor != null) {
                     ContractorAudit parentAudit = auditPeriodService.findAudit(audits, parentAuditType, auditFor);
                     if (parentAudit != null) {
-                        auditPercentCalculator.percentCalculateComplete(parentAudit, true);
+                        auditBuilderFactory.percentCalculateComplete(parentAudit);
                         if (newStatus.isIncomplete() && parentAudit.hasCaoStatus(AuditStatus.Complete))
                             moveCompletedCaosToImcomplete(parentAudit);
                         temp = parentAudit;

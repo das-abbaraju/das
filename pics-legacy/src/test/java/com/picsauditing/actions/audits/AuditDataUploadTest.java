@@ -4,7 +4,6 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsActionTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.AnswerMap;
@@ -47,8 +46,6 @@ public class AuditDataUploadTest extends PicsActionTest {
     @Mock
     private AuditQuestionDAO questionDao;
     @Mock
-    private AuditPercentCalculator auditPercentCalculator;
-    @Mock
     private AuditBuilderFactory auditBuilderFactory;
 
     private ContractorAccount contractor;
@@ -84,7 +81,6 @@ public class AuditDataUploadTest extends PicsActionTest {
         catData = EntityFactory.makeAuditCatData();
 
         PicsTestUtil.forceSetPrivateField(auditDataUpload, "auditBuilderFactory", auditBuilderFactory);
-        PicsTestUtil.forceSetPrivateField(auditDataUpload, "auditPercentCalculator", auditPercentCalculator);
         PicsTestUtil.forceSetPrivateField(auditDataUpload, "conAudit", audit);
 
         when(auditDataDao.findAnswers(anyInt(), (Collection<Integer>) Matchers.anyObject())).thenReturn(answerMap);

@@ -1,14 +1,10 @@
 package com.picsauditing.actions.audits;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -28,11 +24,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "CaoSaveTest-context.xml" })
 public class CaoSaveTest extends PicsTest {
-	@Mock
-    private AuditPercentCalculator auditPercentCalculator;
+    @Mock
+    private AuditBuilderFactory auditBuilderFactory;
     @Mock
     private ContractorAuditDAO auditDao;
     @Mock
@@ -59,7 +59,7 @@ public class CaoSaveTest extends PicsTest {
 		MockitoAnnotations.initMocks(this);
 
 		caoSave = new CaoSave();
-		Whitebox.setInternalState(caoSave, "auditPercentCalculator", auditPercentCalculator);
+		Whitebox.setInternalState(caoSave, "auditBuilderFactory", auditBuilderFactory);
         Whitebox.setInternalState(caoSave, "caoSaveModel", caoSaveModel);
         Whitebox.setInternalState(caoSave, "caoDAO", caoDAO);
         Whitebox.setInternalState(caoSave, "caowDAO", caowDAO);

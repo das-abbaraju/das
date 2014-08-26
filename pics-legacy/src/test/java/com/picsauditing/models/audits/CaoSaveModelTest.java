@@ -3,7 +3,7 @@ package com.picsauditing.models.audits;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.audit.AuditPeriodService;
@@ -24,7 +24,7 @@ public class CaoSaveModelTest extends PicsTest {
 	private CaoSaveModel caoSaveModel;
 
 	@Mock
-	AuditPercentCalculator auditPercentCalculator;
+	private AuditBuilderFactory auditBuilderFactory;
     @Mock
     protected BasicDAO dao;
 
@@ -42,7 +42,7 @@ public class CaoSaveModelTest extends PicsTest {
         auditPeriodService = new AuditPeriodService();
         contractor = EntityFactory.makeContractor();
 
-		PicsTestUtil.forceSetPrivateField(caoSaveModel, "auditPercentCalculator", auditPercentCalculator);
+		PicsTestUtil.forceSetPrivateField(caoSaveModel, "auditBuilderFactory", auditBuilderFactory);
         PicsTestUtil.forceSetPrivateField(caoSaveModel, "auditPeriodService", auditPeriodService);
         PicsTestUtil.forceSetPrivateField(caoSaveModel, "dao", dao);
 	}
@@ -64,7 +64,7 @@ public class CaoSaveModelTest extends PicsTest {
 
         // monthly - pending, quarterly - pending, yearly - pending
         caoSaveModel.updateParentAuditOnCompleteIncomplete(monthly, AuditStatus.Incomplete);
-        verify(auditPercentCalculator, times(2)).percentCalculateComplete(org.mockito.Matchers.any(ContractorAudit.class), org.mockito.Matchers.eq(true));
+        verify(auditBuilderFactory, times(2)).percentCalculateComplete(org.mockito.Matchers.any(ContractorAudit.class));
     }
 
     private ContractorAudit createPeriodAudit(AuditTypePeriod period) {

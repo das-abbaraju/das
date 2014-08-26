@@ -1,20 +1,15 @@
 package com.picsauditing.actions.audits;
 
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.opensymphony.xwork2.ActionContext;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.OshaAudit;
-import com.picsauditing.jpa.entities.OshaType;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class OshaSave extends PicsActionSupport {
@@ -29,8 +24,8 @@ public class OshaSave extends PicsActionSupport {
 
 	@Autowired
 	private AuditDataDAO auditDataDao;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	private ContractorAuditDAO contractorAuditDao;
 
@@ -59,7 +54,7 @@ public class OshaSave extends PicsActionSupport {
 			auditDataDao.save(auditData);
 		}
 
-		auditPercentCalculator.percentCalculateComplete(audit, true);
+        auditBuilderFactory.percentCalculateComplete(audit);
 		contractorAuditDao.save(audit);
 		
 		return SUCCESS;
