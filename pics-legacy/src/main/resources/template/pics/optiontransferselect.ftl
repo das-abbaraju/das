@@ -357,3 +357,15 @@
 		</#if>
 	</div>
 </div>
+<#if parameters.sort?default(true)>
+<script type="text/javascript">
+// sort dropdowns onload
+if (jQuery) {
+	jQuery(function() {
+		jQuery("#${parameters.id?html}<#if parameters.doubleId??>,#${parameters.doubleId?html}</#if>").each(function() {
+			jQuery(this).find("option").sort(sortByText).appendTo(jQuery(this));
+		});
+	});
+}
+</script>
+</#if>
