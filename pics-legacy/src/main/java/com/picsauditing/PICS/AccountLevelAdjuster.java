@@ -18,9 +18,7 @@ public class AccountLevelAdjuster {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
-	protected AuditBuilderFactory auditBuilderFactory = null;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
+	protected AuditBuilderFactory auditBuilderFactory;
 
 	public void upgradeToFullAccount(ContractorAccount contractor, Permissions permissions) {
 		contractor.setAccountLevel(AccountLevel.Full);
@@ -44,10 +42,11 @@ public class AccountLevelAdjuster {
 						}
 					}
 				}
+
 				if (atLeastOneCaoAffected) {
                     auditBuilderFactory.recalculateCategories(cAudit);
-					auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-					auditPercentCalculator.percentCalculateComplete(cAudit);
+                    auditBuilderFactory.recalcAllAuditCatDatas(cAudit);
+                    auditBuilderFactory.percentCalculateComplete(cAudit);
 					auditDataDAO.save(cAudit);
 				}
 			}

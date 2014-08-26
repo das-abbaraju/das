@@ -1,25 +1,24 @@
 package com.picsauditing.actions.rules;
 
-import java.io.IOException;
-import java.util.LinkedHashSet;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditTypeRuleCache;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.jpa.entities.AuditStatus;
 import com.picsauditing.jpa.entities.AuditType;
 import com.picsauditing.jpa.entities.AuditTypeRule;
 import com.picsauditing.jpa.entities.WorkflowStep;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	protected Integer ruleDependentAuditTypeId;
-	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	protected AuditTypeDAO auditTypeDAO;
 
@@ -124,7 +123,7 @@ public class AuditTypeRuleEditor extends AuditRuleActionSupport<AuditTypeRule> {
 
 	@Override
 	protected void clear() {
-		auditTypeRuleCache.clear();
+        auditBuilderFactory.clearCache();
 		flagClearCache();
 
 		addActionMessage("Clearing Cache...");

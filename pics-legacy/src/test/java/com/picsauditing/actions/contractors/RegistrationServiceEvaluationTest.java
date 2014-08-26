@@ -5,6 +5,7 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
@@ -51,6 +52,8 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
     protected ServiceRiskCalculator serviceRiskCalculator;
     @Mock
     private EmployeeGuardRulesService employeeGuardRulesService;
+    @Mock
+    private AuditBuilderFactory auditBuilderFactory;
 
     @Rule
     public TogglzRule togglzRule = TogglzRule.allEnabled(Features.class);
@@ -78,7 +81,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissions", permissions);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractorAccountDao", contractorAccountDao);
 		PicsTestUtil.forceSetPrivateField(serviceEvaluation, "permissionToViewContractor", permissionToViewContractor);
-        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditTypeRuleCache", auditTypeRuleCache);
+        PicsTestUtil.forceSetPrivateField(serviceEvaluation, "auditBuilderFactory", auditBuilderFactory);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "serviceRiskCalculator", serviceRiskCalculator);
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "employeeGuardRulesService", employeeGuardRulesService);
 	}
@@ -327,7 +330,7 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
     private void setupShouldShowSsip(AuditTypeRule... rules) {
         PicsTestUtil.forceSetPrivateField(serviceEvaluation, "contractor", contractor);
         List<AuditTypeRule> listOfRules = Arrays.asList(rules);
-        when(auditTypeRuleCache.getRules(contractor)).thenReturn(listOfRules);
+        when(auditBuilderFactory.getAuditTypeRules(contractor)).thenReturn(listOfRules);
     }
 
     private AuditQuestion createQuestion(int id) {

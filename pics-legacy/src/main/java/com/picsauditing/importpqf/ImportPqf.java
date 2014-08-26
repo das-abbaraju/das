@@ -1,40 +1,30 @@
 package com.picsauditing.importpqf;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
+import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
+import com.picsauditing.audits.AuditBuilderFactory;
+import com.picsauditing.dao.AuditDataDAO;
+import com.picsauditing.dao.AuditQuestionDAO;
+import com.picsauditing.jpa.entities.*;
+import com.picsauditing.util.AnswerMap;
+import com.picsauditing.util.SpringUtils;
+import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.parser.PdfReaderContentParser;
-import com.itextpdf.text.pdf.parser.SimpleTextExtractionStrategy;
-import com.picsauditing.audits.AuditPercentCalculator;
-import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditData;
-import com.picsauditing.jpa.entities.AuditExtractOption;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditTransformOption;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.util.AnswerMap;
-import com.picsauditing.util.SpringUtils;
-import com.picsauditing.util.Strings;
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
 
 public abstract class ImportPqf {
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
 	StringBuilder log = new StringBuilder();
 
@@ -156,11 +146,11 @@ public abstract class ImportPqf {
 			}
 		}
 
-		if (auditPercentCalculator == null) {
-			auditPercentCalculator = (AuditPercentCalculator) SpringUtils.getBean("AuditPercentCalculator");
+		if (auditBuilderFactory == null) {
+            auditBuilderFactory = (AuditBuilderFactory) SpringUtils.getBean("AuditBuilderFactory");
 		}
 
-		auditPercentCalculator.percentCalculateComplete(pqfAudit, true);
+        auditBuilderFactory.percentCalculateComplete(pqfAudit);
 
 		int percent = 0;
 

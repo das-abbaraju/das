@@ -2,22 +2,12 @@ package com.picsauditing.util;
 
 import com.picsauditing.PICS.BillingService;
 import com.picsauditing.PICS.FeeService;
-import com.picsauditing.audits.AuditBuilderFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.actions.contractors.ContractorActionSupport;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorFee;
-import com.picsauditing.jpa.entities.FeeClass;
-import com.picsauditing.jpa.entities.InvoiceFee;
-import com.picsauditing.jpa.entities.LowMedHigh;
-import com.picsauditing.jpa.entities.NoteCategory;
-import com.picsauditing.jpa.entities.User;
+import com.picsauditing.jpa.entities.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
 public class CreateImportPQFAudit extends ContractorActionSupport {
@@ -27,8 +17,6 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
 	private AuditBuilderFactory auditBuilderFactory;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private BillingService billingService;
     @Autowired
@@ -63,7 +51,7 @@ public class CreateImportPQFAudit extends ContractorActionSupport {
 				auditDao.save(importAudit);
 
 				auditBuilderFactory.buildAudits(contractor);
-				auditPercentCalculator.percentCalculateComplete(importAudit);
+                auditBuilderFactory.percentCalculateComplete(importAudit);
 
 				addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true,
 						Account.EVERYONE, new User(permissions.getUserId()));

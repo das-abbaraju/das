@@ -4,7 +4,7 @@ import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
 import com.picsauditing.PicsTranslationTest;
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.AuditEditModel;
@@ -51,13 +51,13 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 	@Mock
 	private AuditQuestionDAO questionDao;
 	@Mock
-	private AuditPercentCalculator auditPercentCalculatior;
-	@Mock
 	private AuditDataService auditDataService;
 	@Mock
 	private ContractorAuditService contractorAuditService;
     @Mock
     private AuditData mockAuditData;
+    @Mock
+    private AuditBuilderFactory auditBuilderFactory;
 
 	private ContractorAccount contractor;
 	private AuditData auditData;
@@ -107,7 +107,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 
         auditEditModel = new AuditEditModel();
 
-		PicsTestUtil.forceSetPrivateField(auditDataSave, "auditPercentCalculator", auditPercentCalculatior);
+        PicsTestUtil.forceSetPrivateField(auditDataSave, "auditBuilderFactory", auditBuilderFactory);
 		PicsTestUtil.forceSetPrivateField(auditDataSave, "conAudit", audit);
         PicsTestUtil.forceSetPrivateField(auditDataSave, "auditEditModel", auditEditModel);
         PicsTestUtil.forceSetPrivateField(auditDataSave, "auditDataService", auditDataService);
@@ -120,14 +120,14 @@ public class AuditDataSaveTest extends PicsTranslationTest {
 		when(catDataDao.findAuditCatData(Matchers.anyInt(), Matchers.anyInt())).thenReturn(catData);
 		when(auditRuleDAO.findCategoryRulesByQuestion(Matchers.anyInt()))
 				.thenReturn(new ArrayList<AuditCategoryRule>());
-		doNothing().when(auditPercentCalculatior).updatePercentageCompleted(catData);
+		doNothing().when(auditBuilderFactory).updatePercentageCompleted(catData);
 	}
 
     @Test
     public void testRecalculateAuditCatData_NonScoringAudit() throws Exception {
         AuditCatData catData = EntityFactory.makeAuditCatData();
         Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
-        verify(auditPercentCalculatior).updatePercentageCompleted(catData);
+        verify(auditBuilderFactory).updatePercentageCompleted(catData);
     }
 
     @Test
@@ -135,7 +135,7 @@ public class AuditDataSaveTest extends PicsTranslationTest {
         AuditCatData catData = EntityFactory.makeAuditCatData();
         audit.getAuditType().setScoreType(ScoreType.Actual);
         Whitebox.invokeMethod(auditDataSave, "recalculateAuditCatData", catData);
-        verify(auditPercentCalculatior).percentCalculateComplete(audit, true);
+        verify(auditBuilderFactory).percentCalculateComplete(audit);
     }
 
     @Test

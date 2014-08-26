@@ -7,7 +7,6 @@ import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
@@ -61,9 +60,11 @@ public class ContractorActionSupportTest extends PicsTest {
 	@Mock
 	private NoteDAO noteDAO;
 	@Mock
-	private AuditPercentCalculator auditPercentCalculator;
-	@Mock
 	private FeatureToggle featureToggle;
+    @Mock
+    private AuditTypeRule rule;
+    @Mock
+    private AuditType auditType;
 
 	@Before
 	public void setUp() throws Exception {
@@ -81,7 +82,6 @@ public class ContractorActionSupportTest extends PicsTest {
 
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "contractor", contractor);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "permissions", permissions);
-		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditPercentCalculator", auditPercentCalculator);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "auditBuilderFactory", auditBuilderFactory);
 		PicsTestUtil.forceSetPrivateField(contractorActionSupport, "featureToggle", featureToggle);
 
@@ -297,4 +297,81 @@ public class ContractorActionSupportTest extends PicsTest {
 
 		verify(header).setName(displayText);
 	}
+
+    @Test
+    public void testGetManuallyAddAudits_None_ExcludeRule() {
+        initializeManuallyAddedAuditsTests();
+        when(rule.isInclude()).thenReturn(false);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(0, auditTypes.size());
+    }
+
+    @Test
+    public void testGetManuallyAddAudits_None_NotMultiNotManAdded() {
+        initializeManuallyAddedAuditsTests();
+        when(rule.isManuallyAdded()).thenReturn(false);
+        when(auditType.isHasMultiple()).thenReturn(false);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(0, auditTypes.size());
+    }
+
+    @Test
+    public void testGetManuallyAddAudits_None_NotMultiAlreadyHave() {
+        initializeManuallyAddedAuditsTests();
+        when(auditType.isHasMultiple()).thenReturn(false);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(0, auditTypes.size());
+    }
+
+    @Test
+    public void testGetManuallyAddAudits_Yes_Admin() {
+        initializeManuallyAddedAuditsTests();
+        when(permissions.isAdmin()).thenReturn(true);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(1, auditTypes.size());
+    }
+
+    @Test
+    public void testGetManuallyAddAudits_Yes_Operator() {
+        initializeManuallyAddedAuditsTests();
+        when(permissions.isOperator()).thenReturn(true);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(1, auditTypes.size());
+    }
+
+    @Test
+    public void testGetManuallyAddAudits_Yes_Corporate() {
+        initializeManuallyAddedAuditsTests();
+        when(permissions.isCorporate()).thenReturn(true);
+
+        Set<AuditType> auditTypes = contractorActionSupport.getManuallyAddAudits();
+        assertEquals(1, auditTypes.size());
+    }
+
+    private void initializeManuallyAddedAuditsTests() {
+        List<AuditTypeRule> rules = new ArrayList<>();
+        rules.add(rule);
+        when(auditBuilderFactory.getAuditTypeRules(any(ContractorAccount.class))).thenReturn(rules);
+
+        when(rule.isInclude()).thenReturn(true);
+        when(rule.getAuditType()).thenReturn(auditType);
+        when(rule.isManuallyAdded()).thenReturn(true);
+        when(rule.getOperatorAccount()).thenReturn(operator);
+
+        when(auditType.isHasMultiple()).thenReturn(true);
+        when(auditType.getId()).thenReturn(1000);
+
+        List<ContractorAudit> audits = new ArrayList<>();
+        audits.add(audit);
+        contractor.setAudits(audits);
+
+        when(audit.getAuditType()).thenReturn(auditType);
+
+        when(permissions.getAccountId()).thenReturn(operator.getId());
+    }
 }

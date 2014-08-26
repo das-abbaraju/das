@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.PICSFileType;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditQuestionDAO;
 import com.picsauditing.dao.AuditTypeDAO;
 import com.picsauditing.importpqf.*;
@@ -31,8 +30,6 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 	private File file;
 	protected String fileContentType = null;
 	protected String fileFileName = null;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	protected AuditQuestionDAO questionDAO;
 	@Autowired
@@ -120,7 +117,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 		for (AuditCatData auditCatData : getCategories().values()) {
 			if (auditCatData.getCategory().equals(auditData.getQuestion().getCategory())) {
-				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+                auditBuilderFactory.updatePercentageCompleted(auditCatData);
                 //TODO replace aPerCalc
                 auditDao.save(auditCatData);
 			}
@@ -317,7 +314,7 @@ public class AuditDataUpload extends AuditActionSupport implements Preparable {
 
 		for (AuditCatData auditCatData : getCategories().values()) {
 			if (auditCatData.getCategory().equals(auditData.getQuestion().getCategory())) {
-				auditPercentCalculator.updatePercentageCompleted(auditCatData);
+                auditBuilderFactory.updatePercentageCompleted(auditCatData);
 				auditDao.save(auditCatData);
 			}
 		}

@@ -1,6 +1,6 @@
 package com.picsauditing.actions.cron;
 
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.jpa.entities.ContractorAudit;
 import com.picsauditing.jpa.entities.User;
@@ -14,7 +14,7 @@ public class RecalculateAuditsTask implements CronTask {
     @Autowired
     private ContractorAuditDAO contractorAuditDAO;
     @Autowired
-    private AuditPercentCalculator auditPercentCalculator;
+    private AuditBuilderFactory auditBuilderFactory;
 
     public String getDescription() {
         return "Recalculate Audit Information";
@@ -37,7 +37,7 @@ public class RecalculateAuditsTask implements CronTask {
         results.getLogger().append("Recalculating " + conList.size() + " audits: ");
         for (ContractorAudit cAudit : conList) {
             try {
-                auditPercentCalculator.percentCalculateComplete(cAudit, true);
+                auditBuilderFactory.percentCalculateComplete(cAudit);
                 cAudit.setLastRecalculation(new Date());
                 cAudit.setAuditColumns(new User(User.SYSTEM));
                 contractorAuditDAO.save(cAudit);

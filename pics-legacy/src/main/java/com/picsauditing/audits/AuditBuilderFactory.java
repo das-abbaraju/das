@@ -115,11 +115,35 @@ public class AuditBuilderFactory {
         }
     }
 
+    public void percentCalculateComplete(ContractorAudit contractorAudit, boolean recalcCats, boolean advanceCaos) {
+        if (newAuditPercentCalculatorEnabled()) {
+            newAuditPercentCalculator.percentCalculateComplete(contractorAudit.getId(), recalcCats, advanceCaos);
+        } else {
+            auditPercentCalculator.percentCalculateComplete(contractorAudit, recalcCats, advanceCaos);
+        }
+    }
+
     public void percentCalculateComplete(ContractorAudit contractorAudit) {
         if (newAuditPercentCalculatorEnabled()) {
             newAuditPercentCalculator.percentCalculateComplete(contractorAudit.getId(), true);
         } else {
             auditPercentCalculator.percentCalculateComplete(contractorAudit, true);
+        }
+    }
+
+    public void updatePercentageCompleted(AuditCatData auditCatData) {
+        if (newAuditPercentCalculatorEnabled()) {
+            newAuditPercentCalculator.updatePercentageCompleted(auditCatData.getId());
+        } else {
+            auditPercentCalculator.updatePercentageCompleted(auditCatData);
+        }
+    }
+
+    public void recalcAllAuditCatDatas(ContractorAudit contractorAudit) {
+        if (newAuditPercentCalculatorEnabled()) {
+            newAuditPercentCalculator.recalcAllAuditCatDatas(contractorAudit.getId());
+        } else {
+            auditPercentCalculator.recalcAllAuditCatDatas(contractorAudit);
         }
     }
 

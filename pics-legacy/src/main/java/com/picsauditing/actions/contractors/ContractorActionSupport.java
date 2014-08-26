@@ -6,8 +6,6 @@ import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.AccountActionSupport;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
-import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
@@ -44,8 +42,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
 	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	@Autowired
 	private FeatureToggle featureToggle;
 
 	private List<ContractorOperator> operators;
@@ -63,8 +59,6 @@ public class ContractorActionSupport extends AccountActionSupport {
 
 	protected ContractorRegistrationStep currentStep = null;
 	protected Set<AuditType> manuallyAddAudits = null;
-	@Autowired
-	protected AuditTypeRuleCache auditTypeRuleCache;
 	@Autowired
 	protected AuditDecisionTableDAO auditRuleDAO;
 	private Map<Integer, List<Integer>> certIdToOp;
@@ -652,7 +646,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	public Set<AuditType> getManuallyAddAudits() {
 		if (manuallyAddAudits == null) {
 			manuallyAddAudits = new HashSet<AuditType>();
-			List<AuditTypeRule> applicableAuditRules = auditTypeRuleCache.getRules(contractor);
+			List<AuditTypeRule> applicableAuditRules = auditBuilderFactory.getAuditTypeRules(contractor);
 
 			for (AuditTypeRule auditTypeRule : applicableAuditRules) {
 				if (isValidManualAuditType(auditTypeRule)) {
@@ -733,7 +727,7 @@ public class ContractorActionSupport extends AccountActionSupport {
 	}
 
 	private void recalculatePQF(ContractorAudit pqf) {
-		auditPercentCalculator.percentCalculateComplete(pqf, true);
+        auditBuilderFactory.percentCalculateComplete(pqf);
 		pqf.setLastRecalculation(new Date());
 		auditDao.save(pqf);
 	}

@@ -33,6 +33,11 @@ public class AuditPercentCalculator2 {
 	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator2.class);
 
+    public void updatePercentageCompleted(int auditCatDataId) {
+        AuditCatData auditCatData = contractorAuditDAO.find(AuditCatData.class, auditCatDataId);
+        updatePercentageCompleted(auditCatData);
+    }
+
 	public void updatePercentageCompleted(AuditCatData catData) {
 		if (catData == null)
 			return;
@@ -431,6 +436,14 @@ public class AuditPercentCalculator2 {
         contractorAuditDAO.save(conAudit);
     }
 
+    public void percentCalculateComplete(int auditID, boolean recalcCats, boolean advanceCaos) {
+        ContractorAudit conAudit = contractorAuditDAO.find(auditID);
+        percentCalculateComplete(conAudit, recalcCats, advanceCaos);
+        conAudit.setLastRecalculation(new Date());
+        conAudit.setAuditColumns();
+        contractorAuditDAO.save(conAudit);
+    }
+
     public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats, boolean advanceCaos) {
         if (recalcCats)
             recalcAllAuditCatDatas(conAudit);
@@ -620,7 +633,12 @@ public class AuditPercentCalculator2 {
 		return subScore;
 	}
 
-	public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
+    public void recalcAllAuditCatDatas(int auditId) {
+        ContractorAudit audit = contractorAuditDAO.find(auditId);
+        recalcAllAuditCatDatas(audit);
+    }
+
+    public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
 		for (AuditCatData data : conAudit.getCategories()) {
 			updatePercentageCompleted(data);
 		}
