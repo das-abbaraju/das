@@ -198,8 +198,7 @@ public class ContractorCron extends PicsActionSupport {
 					contractor.setLastRecalculation(new Date());
 				}
 				contractorDAO.save(contractor);
-                addActionMessage("Successfully refreshed " + contractor.toString()
-						+ " account.");
+                addActionMessage(getTextParameterized(this.getLocale(),"ContractorCron.message.SuccessRefresh",contractor.toString()));
 			}
 
 			runPolicies(contractor);
