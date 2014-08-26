@@ -112,6 +112,9 @@ public class ContractorValidator {
                 }
             }
 		}
+        if (contractor.getTimezone() == null) {
+            errorMessages.addElement(getText("ProfileEdit.Error.RequiredTimeZone"));
+        }
 
 		return errorMessages;
 	}
