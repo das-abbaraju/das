@@ -88,3 +88,14 @@ dl {
 dd {
     display: block;
 }*/
+
+#report_edit .selected.icon-star:before {
+	content: none;
+}
+#report_edit .selected.icon-star {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+	background: transparent url(../images/star_brown_12.png) no-repeat top right;
+}
