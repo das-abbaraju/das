@@ -223,6 +223,7 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t1.qualityRating fromQualityRating");
 		sql.addField("from_user.name fromUpdatedByName");
 		sql.addField("t1.updateDate fromUpdateDate");
+        sql.addField("t1.js fromJs");
 
 		if (download) {
 			sql.addField("t1.createdBy fromCreatedBy");
@@ -238,6 +239,7 @@ public class ManageTranslations extends ReportActionSupport {
 		sql.addField("t2.qualityRating toQualityRating");
 		sql.addField("to_user.name toUpdatedByName");
 		sql.addField("t2.updateDate toUpdateDate");
+        sql.addField("t2.js toJs");
 
 		if (download) {
 			sql.addField("t2.createdBy toCreatedBy");
@@ -353,6 +355,7 @@ public class ManageTranslations extends ReportActionSupport {
 			from.setKey(row.get("msgKey").toString());
 			from.setValue(row.get("fromValue").toString());
 			from.setLocale(localeFrom.getLanguage());
+            from.setJs(row.get("fromJs").toString().equals("true")? true : false);
 			from.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 					"fromQualityRating").toString())));
 			from.setApplicable(Integer.parseInt(row.get("fromApplicable").toString()) == 1);
@@ -396,6 +399,7 @@ public class ManageTranslations extends ReportActionSupport {
 					}
 
 					to.setLocale(localeTo.getLanguage());
+                    to.setJs(row.get("toJs").toString().equals("true")? true : false);
 					to.setQualityRating(TranslationQualityRating.getRatingFromOrdinal(Integer.parseInt(row.get(
 							"toQualityRating").toString())));
 					to.setApplicable(Integer.parseInt(row.get("toApplicable").toString()) == 1);
