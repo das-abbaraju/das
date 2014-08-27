@@ -311,6 +311,7 @@
                                                 name="translation.js"
                                                 label="js"
                                                 theme="pics"
+                                                value="%{js}"
                                                 />
                                     </li>
                                 </ul>
