@@ -457,7 +457,7 @@
                     <s:text name="InvoiceDetail.InvoiceTotal"/>
                 </th>
                 <td class="big right">
-                    <s:property value="transaction.totalAmount"/>
+                    <s:if test="transactionIsCreditMemo">-</s:if><s:property value="transaction.totalAmount"/>
                     <s:property value="transaction.currency"/>
                 </td>
             </tr>
