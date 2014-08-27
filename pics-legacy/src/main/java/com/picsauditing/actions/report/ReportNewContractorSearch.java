@@ -8,23 +8,11 @@ import com.picsauditing.access.NoRightsException;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.jpa.entities.*;
-import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorOperator;
-import com.picsauditing.jpa.entities.FlagColor;
-import com.picsauditing.jpa.entities.FlagCriteriaOperator;
-import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.mail.EmailBuilder;
 import com.picsauditing.mail.EmailSender;
 import com.picsauditing.messaging.MessagePublisherService;
@@ -52,8 +40,6 @@ public class ReportNewContractorSearch extends ReportAccount {
 	private OperatorAccountDAO operatorAccountDAO;
 	@Autowired
 	private AuditBuilderFactory auditBuilderFactory;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private AuditDataDAO auditDataDAO;
 	@Autowired
@@ -293,8 +279,8 @@ public class ReportNewContractorSearch extends ReportAccount {
 						}
 
                         auditBuilderFactory.recalculateCategories(cAudit);
-						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-						auditPercentCalculator.percentCalculateComplete(cAudit);
+                        auditBuilderFactory.recalcAllAuditCatDatas(cAudit);
+                        auditBuilderFactory.percentCalculateComplete(cAudit);
 						auditDataDAO.save(cAudit);
 					}
 				}

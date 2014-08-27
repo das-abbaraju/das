@@ -7,7 +7,6 @@ import com.picsauditing.service.contractor.ContractorOperatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.picsauditing.access.OpPerms;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
 import com.picsauditing.dao.ContractorAuditOperatorDAO;
@@ -50,8 +49,6 @@ public class ReportBiddingContractors extends ReportAccount {
 	protected ContractorAuditDAO contractorAuditDAO;
 	@Autowired
 	protected ContractorAuditOperatorDAO contractorAuditOperatorDAO;
-	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	protected AuditBuilderFactory auditBuilderFactory;
 	@Autowired
@@ -103,8 +100,8 @@ public class ReportBiddingContractors extends ReportAccount {
 				}
 
 				auditBuilderFactory.recalculateCategories(cAudit);
-				auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-				auditPercentCalculator.percentCalculateComplete(cAudit);
+                auditBuilderFactory.recalcAllAuditCatDatas(cAudit);
+                auditBuilderFactory.percentCalculateComplete(cAudit);
 				contractorAuditDAO.save(cAudit);
 			}
 		}

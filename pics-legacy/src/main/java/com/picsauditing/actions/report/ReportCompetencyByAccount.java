@@ -4,7 +4,6 @@ import com.picsauditing.PICS.FacilityChanger;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -27,8 +26,6 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 	protected AuditBuilderFactory auditBuilderFactory;
 	@Autowired
 	protected AuditDataDAO auditDataDAO;
-	@Autowired
-	protected AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	protected ContractorAccountDAO contractorAccountDAO;
 	@Autowired
@@ -71,8 +68,8 @@ public class ReportCompetencyByAccount extends ReportEmployee {
 						}
 
                         auditBuilderFactory.recalculateCategories(cAudit);
-						auditPercentCalculator.recalcAllAuditCatDatas(cAudit);
-						auditPercentCalculator.percentCalculateComplete(cAudit);
+                        auditBuilderFactory.recalcAllAuditCatDatas(cAudit);
+                        auditBuilderFactory.percentCalculateComplete(cAudit);
 						auditDataDAO.save(cAudit);
 					}
 				}

@@ -3,7 +3,6 @@ package com.picsauditing.actions.audits;
 import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
 import com.picsauditing.audits.AuditQuestionSuggestion;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
@@ -28,9 +27,6 @@ import java.util.*;
  */
 @SuppressWarnings("serial")
 public class ContractorAuditController extends AuditActionSupport {
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
-	// Import PQF
 	@Autowired
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
@@ -123,7 +119,7 @@ public class ContractorAuditController extends AuditActionSupport {
 			}
 
 			if ("Recalculate".equals(button)) {
-				auditPercentCalculator.percentCalculateComplete(conAudit, true);
+                auditBuilderFactory.percentCalculateComplete(conAudit);
 				conAudit.setLastRecalculation(new Date());
 				auditDao.save(conAudit);
 				return this.setUrlForRedirect("Audit.action?auditID=" + conAudit.getId());
