@@ -291,7 +291,8 @@
             return {
                 init: function () {
                     var company_information = $('.company-information'),
-                        $country_select = $('.country select');
+                        $country_select = $('.country select'),
+                        selected_country = $country_select.val() || '';
 
                     if ($('.Registration-page').length) {
                         $('.registration').on('click', '#autofill', this.autofillRegistrationFormForDev);
@@ -303,8 +304,6 @@
                         this.bindSelect2EventstoPopover();
 
                         $country_select.on('change', $.proxy(this.updateCountryFields, this));
-                        var $country = $('.country select'),
-                            selected_country = $country.val() || '';
                         this.updateTaxId(selected_country);
 
                     } else if ($('.RegistrationServiceEvaluation-page').length) {
