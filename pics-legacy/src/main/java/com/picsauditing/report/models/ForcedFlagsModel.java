@@ -1,17 +1,13 @@
 package com.picsauditing.report.models;
 
-import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.jpa.entities.Filter;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.tables.*;
-import com.picsauditing.util.Strings;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class ForcedFlagsModel extends AbstractModel {
 
@@ -23,6 +19,8 @@ public class ForcedFlagsModel extends AbstractModel {
 		ModelSpec spec = new ModelSpec(null, "ContractorFlag");
 
 		ModelSpec contractor = spec.join(ForcedFlagView.Contractor);
+        contractor.join(ContractorTable.Tag);
+
 		ModelSpec account = contractor.join(ContractorTable.Account);
         account.alias = "Account";
         account.minimumImportance = FieldImportance.Required;

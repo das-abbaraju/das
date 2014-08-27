@@ -1587,6 +1587,7 @@ AccountManagerUserIsActive
 AccountManagerUserName
 AccountName
 AccountStatus
+ContractorFlagContractorTagTagID
 ContractorFlagForceBegin
 ContractorFlagForceEnd
 ContractorFlagForceFlag
