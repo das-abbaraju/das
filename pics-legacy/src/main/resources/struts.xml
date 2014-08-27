@@ -296,7 +296,9 @@
 			<result>struts/contact-us/contact-us.jsp</result>
 		</action>
 
-		<action name="About" class="com.picsauditing.actions.About">
+        <action name="whoAmI" class="com.picsauditing.user.controller.UserInfoController" method="whoAmI"/>
+
+        <action name="About" class="com.picsauditing.actions.About">
 			<result>/struts/general/about.jsp</result>
 		</action>
 
