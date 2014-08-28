@@ -39,9 +39,10 @@ PICS.define('employee-guard.FormValidation', {
 
             if (data.fieldErrors) {
                 for (var id in data.fieldErrors) {
-                    var header = data.fieldErrors['PICS.OOPS.DUPLICATE'][0],
-                        message = data.fieldErrors['PICS.DUPLICATE.FIELDS'][0];
                     if (id == 'PICS.DUPLICATE') {
+                        var header = data.fieldErrors['PICS.OOPS.DUPLICATE'][0],
+                            message = data.fieldErrors['PICS.DUPLICATE.FIELDS'][0];
+
                         showDuplicateMessage($form, data.fieldErrors[id][0], header, message);
                     }
                     field_with_error = $('[name="' + id + '"]');
