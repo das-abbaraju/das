@@ -5,9 +5,9 @@ PICS.define('contractor.TradeTaxonomyController', {
                 .on('click', 'input[type="submit"]', onSubmitButtonClick)
                 .on('submit', '#trade-form', onTradeFormSubmit);
 
-            $('body').on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick);
-
-            $('body').on('click', '.modal .dismiss', onModalCancelClick)
+            $('body')
+	            .on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick)
+	            .on('click', '.modal .dismiss', onModalCancelClick);
         }
 
         function onModalCancelClick(event) {
@@ -34,7 +34,7 @@ PICS.define('contractor.TradeTaxonomyController', {
                 if ($button.data('affects-safety-sensitive-status')) {
                     PICS.modal(getModalConfig());
                 } else {
-                    requestAddTrade();
+                    requestAddTrade($button);
                 }
             }
         }
@@ -42,7 +42,7 @@ PICS.define('contractor.TradeTaxonomyController', {
         function onSafetySensitiveModalConfirmClick(event) {
             var $modal = $(event.target).closest('.modal');
 
-            requestAddTrade();
+            requestAddTrade($modal.find('#addButton'));
 
             $modal.modal('hide');
         }
@@ -74,7 +74,10 @@ PICS.define('contractor.TradeTaxonomyController', {
             ].join('');
         }
 
-        function requestAddTrade() {
+        function requestAddTrade($button) {
+            if (typeof $button.attr("disabled") != "undefined") return;// prevent double click on 'add' button
+	        $button.attr("disabled", "disabled");
+
             PICS.ajax({
                 url: 'ContractorTrades!saveTradeAjax.action',
                 data: $('#trade-form').serializeArray(),
@@ -84,6 +87,7 @@ PICS.define('contractor.TradeTaxonomyController', {
 
         function onTradeFormAjaxSubmitSuccess(data) {
             $('#trade-view').html(data);
+            $("#addButton").removeAttr("disabled");
 
             loadTradeCallback();
         }
