@@ -55,7 +55,8 @@ public class CopyOperatorConfig extends PicsActionSupport {
         OperatorAccount source = operatorAccountDAO.find(sourceID);
         List<Facility> facilities = source.getCorporateFacilities();
         for (Facility facility : facilities) {
-            copyOperator(facility.getCorporate().getId());
+            if (!facility.getCorporate().isInPicsConsortium())
+                copyOperator(facility.getCorporate().getId());
         }
     }
 

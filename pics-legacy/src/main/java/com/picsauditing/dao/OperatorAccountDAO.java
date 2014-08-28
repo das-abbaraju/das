@@ -323,8 +323,7 @@ public class OperatorAccountDAO extends PicsDAO {
                 "yearToCheck,dependentAuditTypeID,dependentAuditStatus,manuallyAdded,safetyRisk,productRisk,soleProprietor," +
                 "accountLevel,safetySensitive,tradeSafetyRisk " +
                 " FROM audit_type_rule " +
-                " WHERE opID = :sourceId " +
-                "   AND tagID IS NULL ";
+                " WHERE opID = :sourceId ";
 
         Query query = em.createNativeQuery(queryString, OperatorAccount.class);
         query.setParameter("userId", userID);
@@ -347,8 +346,7 @@ public class OperatorAccountDAO extends PicsDAO {
                 " FROM audit_category_rule acr " +
                 " JOIN audit_type audt ON acr.auditTypeID = audt.id " +
                 " WHERE acr.opID = :sourceId " +
-                "   AND audt.classType != 'Policy' " +
-                "   AND acr.tagID IS NULL ";
+                "   AND audt.classType != 'Policy' ";
 
         Query query = em.createNativeQuery(queryString, OperatorAccount.class);
         query.setParameter("userId", userID);
@@ -364,8 +362,7 @@ public class OperatorAccountDAO extends PicsDAO {
                 "criteriaID,flag,hurdle,tagID) " +
                 " SELECT :userId,:userId,NOW(),NOW(),:targetId,criteriaID,flag,hurdle,tagID " +
                 " FROM flag_criteria_operator fco " +
-                " WHERE opID = :sourceId " +
-                "   AND tagID IS NULL ";
+                " WHERE opID = :sourceId ";
 
         Query query = em.createNativeQuery(queryString, OperatorAccount.class);
         query.setParameter("userId", userID);
@@ -374,5 +371,4 @@ public class OperatorAccountDAO extends PicsDAO {
 
         query.executeUpdate();
     }
-
 }
