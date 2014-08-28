@@ -202,19 +202,19 @@
 		events: {
 			submit: function (event) {
 				var element = $(this);
-				var ccName = $('#transact_ccName', element);
-				var submit_element = $('#transact_button_SubmitPayment');
+				var submit_element = element.find(':submit');//submit_payment_button
+				var waitingDiv = element.find('.processing');
 
 				// prevent double submit by "disabling" the submit button and returning false if processing
-				if (!submit_element.hasClass('disabled')) {
-				    submit_element.addClass('disabled');
+				if (waitingDiv.is(':hidden')) {
+					waitingDiv.show();
+					submit_element.attr('disabled', 'disabled');
 				} else {
+					event.preventDefault();
 				    return false;
 				}
 
-				element.find('.processing').show();
-
-				if (ccName.val() == 'Check') {
+				if (element.find('#transact_ccName').val() == 'Check') {
 					element.attr('action', 'RegistrationMakePayment.action');
 				}
 
