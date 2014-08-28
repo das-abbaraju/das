@@ -135,13 +135,29 @@ public class ContractorNotes extends ContractorActionSupport {
 	}
 
     public boolean canPreviewEmail(int emailId) {
-        if(permissions.isAdmin() || permissions.isContractor()) {
+		if (permissions.isAdmin() || permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
             return true;
         }
 
         EmailQueue email = findEmailById(emailId);
         if (email == null)
             return false;
+
+		// permissions checking must be compatible with {@link com.picsauditing.mail.EmailQueueList#previewAjax()}
+		if (permissions.isContractor()) {
+			if (Strings.isEmpty(permissions.getEmail()))
+				return Strings.isEmpty(email.getToAddresses());
+
+			boolean toContainsEmail = !Strings.isEmpty(email.getToAddresses())
+					&& email.getToAddresses().contains(permissions.getEmail());
+			boolean bccContainsEmail = !Strings.isEmpty(email.getBccAddresses())
+					&& email.getBccAddresses().contains(permissions.getEmail());
+			boolean ccContainsEmail = !Strings.isEmpty(email.getCcAddresses())
+					&& email.getCcAddresses().contains(permissions.getEmail());
+
+			if (!toContainsEmail && !bccContainsEmail && !ccContainsEmail)
+				return false;
+		}
 
         if (email.getBodyViewableBy() != null) {
             if (Account.EVERYONE == email.getBodyViewableBy().getId())
