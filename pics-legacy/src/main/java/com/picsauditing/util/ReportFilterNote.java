@@ -89,14 +89,14 @@ public class ReportFilterNote extends ReportFilter {
         return priorityList;
 	}
 
-    public Map<String, String> getCategoryList() {
+    public Map<NoteCategory, String> getCategoryList() {
         TranslationService translationService = translationService();
         Locale locale = getLocaleStatic();
 
-        Map<String, String> categoryList = new TreeMap<>();
+        Map<NoteCategory, String> categoryList = new TreeMap<>();
 
         for (NoteCategory category : NoteCategory.values()) {
-            categoryList.put(category.name(), translationService.getText(category.getI18nKey(), locale));
+            categoryList.put(category, translationService.getText(category.getI18nKey(), locale));
         }
         return categoryList;
 	}
