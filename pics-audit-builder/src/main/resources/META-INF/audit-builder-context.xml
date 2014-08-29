@@ -14,6 +14,8 @@
     <bean id="AuditCategoryRuleCache2" class="com.picsauditing.auditbuilder.AuditCategoryRuleCache2" scope="prototype"/>
     <bean id="AuditPercentCalculator2" class="com.picsauditing.auditbuilder.AuditPercentCalculator2" scope="prototype"/>
     <bean id="AuditTypeRuleCache2" class="com.picsauditing.auditbuilder.AuditTypeRuleCache2" scope="prototype"/>
+    <bean id="AuditTypesBuilder" class="com.picsauditing.auditbuilder.AuditTypesBuilder" scope="prototype"/>
+    <bean id="AuditCategoriesBuilder" class="com.picsauditing.auditbuilder.AuditCategoriesBuilder" scope="prototype"/>
 
     <bean id="AuditPeriodService2" class="com.picsauditing.auditbuilder.service.AuditPeriodService2"/>
 

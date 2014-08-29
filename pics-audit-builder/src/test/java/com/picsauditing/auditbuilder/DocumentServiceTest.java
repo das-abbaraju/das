@@ -52,15 +52,24 @@ public class DocumentServiceTest extends PicsTest {
     List<AuditTypeRule> typeRules = new ArrayList<>();
     List<AuditCategoryRule> categoryRules = new ArrayList<>();
 
+    private AuditTypesBuilder auditTypesBuilder;
+    private AuditCategoriesBuilder auditCategoriesBuilder;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
         service = new DocumentService();
+
+        auditTypesBuilder = new AuditTypesBuilder();
+        auditCategoriesBuilder = new AuditCategoriesBuilder();
+
         PicsTestUtil.forceSetPrivateField(service, "auditDataDAO", auditDataDAO);
         PicsTestUtil.forceSetPrivateField(service, "contractorTagDAO", contractorTagDAO);
         PicsTestUtil.forceSetPrivateField(service, "typeRuleCache", typeRuleCache);
         PicsTestUtil.forceSetPrivateField(service, "categoryRuleCache", categoryRuleCache);
+        PicsTestUtil.forceSetPrivateField(service, "auditTypesBuilder", auditTypesBuilder);
+        PicsTestUtil.forceSetPrivateField(service, "auditCategoriesBuilder", auditCategoriesBuilder);
 
         initialize();
     }
@@ -72,28 +81,28 @@ public class DocumentServiceTest extends PicsTest {
         conOp.setOperatorAccount(operator);
         conOps.add(conOp);
 
-        Map<Integer, List<Integer>> ids = service.getContractorDocumentTypeDetailIds(contractor.getId());
+        Map<Integer, List<Integer>> ids = service.getTypeDetailIds(contractor.getId());
         assertEquals(1, ids.size());
         assertEquals(OPERATOR_ID, ids.get(0).get(0).intValue());
     }
 
     @Test
     public void testGetContractorSimulatorDocumentTypeDetailIds() throws Exception {
-        Map<Integer, List<Integer>> ids = service.getContractorSimulatorDocumentTypeDetailIds(contractor, operatorIds);
+        Map<Integer, List<Integer>> ids = service.getSimulatorTypeDetailIds(contractor, operatorIds);
         assertEquals(1, ids.size());
         assertNotNull(ids.get(AUDIT_TYPE_ID));
     }
 
     @Test
     public void testGetContractorSimulatorCategoryIds() throws Exception {
-        List<Integer> ids = service.getContractorSimulatorCategoryIds(AUDIT_TYPE_ID, contractor, operatorIds);
+        List<Integer> ids = service.getSimulatorCategoryIds(AUDIT_TYPE_ID, contractor, operatorIds);
         assertEquals(1, ids.size());
         assertEquals(CATEGORY_ID, ids.get(0).intValue());
     }
 
     @Test
     public void testGetContractorSimulatorCategoryIds_ShellCompetency() throws Exception {
-        List<Integer> ids = service.getContractorSimulatorCategoryIds(AuditType.SHELL_COMPETENCY_REVIEW, contractor, operatorIds);
+        List<Integer> ids = service.getSimulatorCategoryIds(AuditType.SHELL_COMPETENCY_REVIEW, contractor, operatorIds);
         assertEquals(1, ids.size());
         assertEquals(0, ids.get(0).intValue());
     }

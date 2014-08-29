@@ -62,7 +62,6 @@ public class AuditBuilderFactory {
         return rules;
     }
 
-    //TOSO see if needed
     public List<AuditCategoryRule> getCategoryRules(ContractorAccount contractor, AuditType auditType) {
         List<AuditCategoryRule> rules = new ArrayList<>();
 
@@ -77,7 +76,6 @@ public class AuditBuilderFactory {
         return rules;
     }
 
-    //TOSO see if needed
     public Set<AuditCategory> getCategories(ContractorAudit audit, Collection<OperatorAccount> operators) {
         Set<AuditCategory> categories = new HashSet<>();
 
@@ -104,10 +102,7 @@ public class AuditBuilderFactory {
         }
 
         if (newAuditBuilderEnabled()) {
-            com.picsauditing.auditbuilder.AuditCategoriesBuilder builder =
-                    documentService.getDocumentCategoriesBuilder(audit.getContractorAccount().getId());
-            builder.calculate(audit.getId(), operatorIds);
-            return builder.isCategoryApplicable(category.getId(), cao.getId());
+            return documentService.isCategoryApplicable(category.getId(), audit.getId(), cao.getId());
         } else {
             AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache, audit.getContractorAccount());
             builder.calculate(audit, operators);
@@ -171,7 +166,7 @@ public class AuditBuilderFactory {
         AuditType auditType = dao.find(AuditType.class, auditTypeId);
 
         Set<AuditCategory> requiredCategories = new HashSet<>();
-        List<Integer> categoryIds = documentService.getContractorSimulatorCategoryIds(auditTypeId, createSimulatedContractor(contractor), getClientSiteIds(contractor));
+        List<Integer> categoryIds = documentService.getSimulatorCategoryIds(auditTypeId, createSimulatedContractor(contractor), getClientSiteIds(contractor));
         for(int id:categoryIds) {
             if (id == 0) {
                 AuditCategory category = new AuditCategory();
@@ -246,7 +241,7 @@ public class AuditBuilderFactory {
     }
 
     private void collectAuditTypeDetailsFromService(ContractorAccount contractor, Set<AuditTypeDetail> auditTypeDetails) {
-        Map<Integer, List<Integer>> detailIds = documentService.getContractorDocumentTypeDetailIds(contractor.getId());
+        Map<Integer, List<Integer>> detailIds = documentService.getTypeDetailIds(contractor.getId());
         for (int ruleId : detailIds.keySet()) {
             Set<OperatorAccount> operators = new HashSet<>();
             for (int operatorId:detailIds.get(ruleId)) {
@@ -272,7 +267,7 @@ public class AuditBuilderFactory {
     }
 
     private void collectContractorSimulatorAuditsFromService(ContractorAccount contractor, Map<AuditType, List<AuditTypeRule>> audits) {
-        Map<Integer, List<Integer>> detailIds = documentService.getContractorSimulatorDocumentTypeDetailIds(createSimulatedContractor(contractor), getClientSiteIds(contractor));
+        Map<Integer, List<Integer>> detailIds = documentService.getSimulatorTypeDetailIds(createSimulatedContractor(contractor), getClientSiteIds(contractor));
 
         for (int auditTypeId:detailIds.keySet()) {
             AuditType auditType = dao.find(AuditType.class, auditTypeId);
