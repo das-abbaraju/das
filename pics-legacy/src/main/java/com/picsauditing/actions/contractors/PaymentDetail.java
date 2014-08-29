@@ -2,6 +2,7 @@ package com.picsauditing.actions.contractors;
 
 import com.opensymphony.xwork2.Preparable;
 import com.picsauditing.PICS.BillingService;
+import com.picsauditing.PICS.FeeService;
 import com.picsauditing.PICS.PaymentProcessor;
 import com.picsauditing.PICS.data.DataEvent;
 import com.picsauditing.PICS.data.DataObservable;
@@ -57,6 +58,8 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
 	private BillingNoteModel billingNoteModel;
+    @Autowired
+    private FeeService feeService;
 
 
 	private Payment payment;
@@ -220,11 +223,10 @@ public class PaymentDetail extends ContractorActionSupport implements Preparable
 						PaymentApplied paymentApplied = PaymentProcessor.ApplyPaymentToInvoice(payment, txn, getUser(),
 								amountApplyMap.get(txnID));
 						paymentDAO.save(paymentApplied);
+                        feeService.syncMembershipFees(contractor);
                         emailReceiptToContractor(collected, txn);
-
-
 						notifyDataChange(new PaymentDataEvent(paymentApplied, PaymentEventType.SAVE));
-}
+                    }
 				}
 
 				applyPaymentToRefundForTransaction(txnID);

@@ -272,6 +272,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceItem1.getPaymentExpires()).thenReturn(new Date());
         when(invoiceFee1.isActivation()).thenReturn(true);
         when(invoice.getPayments()).thenReturn(paymentAppliedToInvoices);
+        when(invoiceItem1.getInvoice()).thenReturn(invoice);
 
         when(invoiceItem2.getAmount()).thenReturn(BigDecimal.TEN);
         when(invoiceItem2.getOriginalAmount()).thenReturn(BigDecimal.TEN);
@@ -279,6 +280,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         when(invoiceFee2.getFeeClass()).thenReturn(FeeClass.BidOnly);
         when(invoiceFee2.isMembership()).thenReturn(true);
         when(invoiceItem2.getPaymentExpires()).thenReturn(new Date());
+        when(invoiceItem2.getInvoice()).thenReturn(invoice);
 
         contractor.setFees(contractorFees);
         when(feeDAO.findByNumberOfOperatorsAndClass(FeeClass.BidOnly,100)).thenReturn(invoiceFee2);
