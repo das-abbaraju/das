@@ -35,6 +35,8 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	protected TaxService taxService;
 	@Autowired
 	private FeatureToggle featureToggle;
+    @Autowired
+    private FeeService feeService;
 
 	private String response_code = null;
 	private String orderid = "";
@@ -490,12 +492,12 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 			if (contractor.getStatus().isPendingOrDeactivated() && contractor.getAccountLevel().isFull()) {
 				if (contractor.getMembershipDate() == null) {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Activation, 1);
-					activationFee.setAmount(FeeService.getAdjustedFeeAmountIfNecessary(contractor,
+					activationFee.setAmount(feeService.getAdjustedFeeAmountIfNecessary(contractor,
 							activationFee));
 				} else {
 					activationFee = invoiceFeeDAO.findByNumberOfOperatorsAndClass(FeeClass.Reactivation,
 							contractor.getPayingFacilities());
-					activationFee.setAmount(FeeService.getAdjustedFeeAmountIfNecessary(contractor,
+					activationFee.setAmount(feeService.getAdjustedFeeAmountIfNecessary(contractor,
                             activationFee));
 				}
 			}

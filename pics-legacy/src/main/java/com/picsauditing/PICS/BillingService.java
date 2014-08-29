@@ -4,8 +4,6 @@ import com.picsauditing.PICS.data.DataObservable;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.RegistrationServiceEvaluation;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditPercentCalculator;
-import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.*;
 import com.picsauditing.i18n.service.TranslationService;
 import com.picsauditing.jpa.entities.*;
@@ -39,14 +37,10 @@ public class BillingService {
 	private ContractorAuditDAO conAuditDao;
     @Autowired
 	private UserAssignmentDAO uaDAO;
-    @Autowired
-	private AuditTypeRuleCache ruleCache;
-	@Autowired
+ 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
 	@Autowired
 	private AuditBuilderFactory auditBuilderFactory;
-	@Autowired
-	private AuditPercentCalculator auditPercentCalculator;
 	@Autowired
 	private DataObservable salesCommissionDataObservable;
 	@Autowired
@@ -76,7 +70,6 @@ public class BillingService {
 
         contractor.setBalance(balance.setScale(2, BigDecimal.ROUND_UP));
 
-        feeService.getRuleCache();
         feeService.syncMembershipFees(contractor);
     }
 
@@ -355,7 +348,7 @@ public class BillingService {
 	public List<InvoiceItem> createInvoiceItems(ContractorAccount contractor, BillingStatus billingStatus, User user) {
 		List<InvoiceItem> items = new ArrayList<>();
 
-		if (billingStatus.equals("Not Calculated") || billingStatus.equals("Current")) {
+		if (billingStatus.isCurrent()) {
 			return items;
 		}
 
@@ -534,7 +527,7 @@ public class BillingService {
 	}
 
     private boolean shouldAddSsipDiscount(ContractorAccount contractor) {
-        for (AuditTypeRule rule : ruleCache.getRules(contractor)) {
+        for (AuditTypeRule rule : auditBuilderFactory.getAuditTypeRules(contractor)) {
             if (rule.isInclude() && rule.getAuditType().getId() == AuditType.SSIP) {
                 return true;
             }
@@ -561,7 +554,7 @@ public class BillingService {
 
 	private InvoiceItem createLineItem(ContractorAccount contractor, FeeClass feeClass, int numberOfSites) {
 		InvoiceFee invoiceFee = feeDAO.findByNumberOfOperatorsAndClass(feeClass, numberOfSites);
-		BigDecimal adjustedFeeAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
+		BigDecimal adjustedFeeAmount = feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee);
 
 		// Activate effective today
 		return new InvoiceItem(invoiceFee, adjustedFeeAmount, adjustedFeeAmount, new Date());
@@ -642,7 +635,7 @@ public class BillingService {
 		auditTypeDAO.save(importAudit);
 
 		auditBuilderFactory.buildAudits(contractor);
-		auditPercentCalculator.percentCalculateComplete(importAudit);
+        auditBuilderFactory.percentCalculateComplete(importAudit);
 
 		addNote(contractor, "Import PQF option selected.", NoteCategory.Audits, LowMedHigh.Med, true, Account.EVERYONE);
 	}

@@ -179,7 +179,7 @@ public class BillingServiceTest extends PicsTranslationTest {
     public void testSyncBalance_requested() throws Exception {
         when(mockContractor.getStatus()).thenReturn(AccountStatus.Requested);
         billingService.syncBalance(mockContractor);
-        verify(feeService).getRuleCache();
+        verify(feeService).syncMembershipFees(mockContractor);
     }
 
     @Test
@@ -400,6 +400,9 @@ public class BillingServiceTest extends PicsTranslationTest {
 		ContractorFee contractorFee = mock(ContractorFee.class);
 		when(contractorFee.getCurrentLevel()).thenReturn(invoiceFee);
 		when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+        BigDecimal testFee = new BigDecimal(200);
+        when(invoiceFee.getAmount()).thenReturn(testFee);
+        when(feeService.getAdjustedFeeAmountIfNecessary(any(ContractorAccount.class), any(InvoiceFee.class))).thenReturn(testFee);
 
 		Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
 		contractorFees.put(FeeClass.BidOnly, contractorFee);
@@ -410,12 +413,42 @@ public class BillingServiceTest extends PicsTranslationTest {
 
 		when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
 		preparePriorHistoryForContractor();
-		billingService.createInvoice(mockContractor, BillingStatus.Current, user);
+		billingService.createInvoice(mockContractor, BillingStatus.PastDue, user);
 
 		verify(taxService).applyTax(any(Invoice.class));
 	}
 
-	@Test
+    @Test
+    public void createInvoice_currentNoApplyTax() throws Exception {
+        BigDecimal amount = new BigDecimal(100);
+        List<InvoiceFeeCountry> amountOverrides = new ArrayList<InvoiceFeeCountry>();
+        when(override.getInvoiceFee()).thenReturn(invoiceFee);
+        when(override.getAmount()).thenReturn(amount);
+        amountOverrides.add(override);
+
+        when(country.getAmountOverrides()).thenReturn(amountOverrides);
+
+        when(invoiceFee.getFeeClass()).thenReturn(FeeClass.Activation);
+
+        ContractorFee contractorFee = mock(ContractorFee.class);
+        when(contractorFee.getCurrentLevel()).thenReturn(invoiceFee);
+        when(invoiceFeeDAO.findByNumberOfOperatorsAndClass(any(FeeClass.class), anyInt())).thenReturn(invoiceFee);
+
+        Map<FeeClass, ContractorFee> contractorFees = new HashMap<FeeClass, ContractorFee>();
+        contractorFees.put(FeeClass.BidOnly, contractorFee);
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.getCountry()).thenReturn(country);
+        when(mockContractor.getFees()).thenReturn(contractorFees);
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Pending);
+
+        when(auditDataDAO.findContractorAuditAnswers(anyInt(), anyInt(), anyInt())).thenReturn(null);
+        preparePriorHistoryForContractor();
+        billingService.createInvoice(mockContractor, BillingStatus.Current, user);
+
+        verify(taxService, times(0)).applyTax(any(Invoice.class));
+    }
+
+    @Test
 	public void testAddRevRecIfAppropriate_Activation() throws Exception {
 		Date invoiceCreationDate = new Date();
 		InvoiceType invoiceType = InvoiceType.Activation;

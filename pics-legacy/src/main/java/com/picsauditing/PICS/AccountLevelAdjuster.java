@@ -1,18 +1,10 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.audits.AuditBuilderFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.Permissions;
-import com.picsauditing.audits.AuditPercentCalculator;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.dao.AuditDataDAO;
-import com.picsauditing.jpa.entities.AccountLevel;
-import com.picsauditing.jpa.entities.AuditStatus;
-import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.ContractorAudit;
-import com.picsauditing.jpa.entities.ContractorAuditOperator;
-import com.picsauditing.jpa.entities.ContractorAuditOperatorWorkflow;
-import com.picsauditing.jpa.entities.ContractorOperator;
+import com.picsauditing.jpa.entities.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class AccountLevelAdjuster {
 	@Autowired
