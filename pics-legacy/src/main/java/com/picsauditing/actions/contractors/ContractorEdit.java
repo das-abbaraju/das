@@ -8,6 +8,7 @@ import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.companyfinder.service.ContractorLocationService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.mail.EmailBuilder;
@@ -59,7 +60,10 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
     @Autowired
     private MessagePublisherService messageService;
 
-	private SapAppPropertyUtil sapAppPropertyUtil;
+    @Autowired
+    private ContractorLocationService contractorLocationService;
+
+    private SapAppPropertyUtil sapAppPropertyUtil;
 
 	private File logo = null;
 	private String logoFileName = null;

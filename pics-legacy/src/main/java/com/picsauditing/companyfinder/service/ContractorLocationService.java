@@ -1,6 +1,9 @@
 package com.picsauditing.companyfinder.service;
 
 
+import com.picsauditing.common.flow.Result;
+import com.picsauditing.common.flow.ResultFailure;
+import com.picsauditing.common.flow.ResultSuccess;
 import com.picsauditing.companyfinder.dao.ContractorLocationDao;
 import com.picsauditing.companyfinder.model.ContractorGeoLocation;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -12,8 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.*;
 
 public class ContractorLocationService {
 
@@ -26,10 +31,27 @@ public class ContractorLocationService {
     @Autowired
     private ContractorLocationDao contractorLocationDao;
 
-    public void saveLocation(ContractorAccount contractorAccount) {
+    public void saveLocation(final ContractorAccount contractorAccount) {
+        ExecutorService executor = Executors.newFixedThreadPool(1);
+        Future<?> future = executor.submit(new FutureTask<>(new Callable<Result>() {
+            @Override
+            public Result call() throws Exception {
+                try {
+
+                    return saveLocationInner(contractorAccount);
+
+                } catch (Exception e) {
+                    logger.error("Error updating geo location", e);
+                    return new ResultFailure(e);
+                }
+            }
+        }));
+    }
+
+    private Result saveLocationInner(ContractorAccount contractorAccount) {
         try {
             if (contractorAccount == null) {
-                return;
+                return new ResultFailure("Contractor account was null");
             }
             String address = parseAddress(contractorAccount);
             ContractorGeoLocation geoLocation = fetchGeoLocation(contractorAccount, address);
@@ -39,8 +61,9 @@ public class ContractorLocationService {
                 logger.error("Could not fetch geoLocation from Google Api");
             }
         } catch (Exception e) {
-            logger.error("Error in saveLocation()", e);
+            return new ResultFailure(e, "Error in saveLocation");
         }
+        return new ResultSuccess();
     }
 
     private String parseAddress(ContractorAccount contractorAccount) {
