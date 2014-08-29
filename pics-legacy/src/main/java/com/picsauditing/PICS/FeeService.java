@@ -1,5 +1,7 @@
 package com.picsauditing.PICS;
 
+import com.picsauditing.auditbuilder.util.*;
+import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.audits.AuditTypesBuilder;
 import com.picsauditing.audits.AuditTypeDetail;
@@ -88,6 +90,12 @@ public class FeeService {
 
                     if (!foundMembershipDate && (invoiceFee.isActivation() || invoiceFee.isReactivation())) {
                         foundMembershipDate = setMembershipDate(contractor, invoice);
+                    }
+                    if ((feeClass == FeeClass.Activation || feeClass==FeeClass.Reactivation)
+                            &&  invoiceItem.getInvoice().getPaidDate() != null) {
+                        Date expiration = DateBean.addMonths(invoiceItem.getInvoice().getPaidDate(),12);
+                        contractor.setPaymentExpires(expiration);
+                        foundPaymentExpires = true;
                     }
                 }
 
