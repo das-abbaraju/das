@@ -1,32 +1,19 @@
 package com.picsauditing.actions.auditType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
 import com.picsauditing.actions.PicsActionSupport;
-import com.picsauditing.audits.AuditCategoryRuleCache;
-import com.picsauditing.dao.AppPropertyDAO;
-import com.picsauditing.dao.AuditCategoryDAO;
-import com.picsauditing.dao.AuditCategoryMatrixDAO;
-import com.picsauditing.dao.AuditDecisionTableDAO;
-import com.picsauditing.dao.AuditQuestionDAO;
-import com.picsauditing.dao.AuditTypeDAO;
-import com.picsauditing.dao.OperatorCompetencyDAO;
-import com.picsauditing.jpa.entities.AuditCategory;
-import com.picsauditing.jpa.entities.AuditCategoryMatrixCompetencies;
-import com.picsauditing.jpa.entities.AuditCategoryRule;
-import com.picsauditing.jpa.entities.AuditQuestion;
-import com.picsauditing.jpa.entities.AuditType;
-import com.picsauditing.jpa.entities.OperatorCompetency;
+import com.picsauditing.dao.*;
+import com.picsauditing.jpa.entities.*;
 import com.picsauditing.util.DoubleMap;
 import com.picsauditing.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("serial")
 public class ManageAuditCategoryMatrix extends PicsActionSupport {
@@ -44,8 +31,6 @@ public class ManageAuditCategoryMatrix extends PicsActionSupport {
 	protected AuditDecisionTableDAO auditDecisionTableDAO;
 	@Autowired
 	protected AppPropertyDAO appPropertyDAO;
-	@Autowired
-	protected AuditCategoryRuleCache auditCategoryRuleCache;
 
 	protected int itemID;
 	protected boolean checked;

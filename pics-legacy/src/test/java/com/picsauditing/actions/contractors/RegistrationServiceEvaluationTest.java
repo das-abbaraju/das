@@ -6,7 +6,6 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.actions.contractors.risk.ServiceRiskCalculator;
 import com.picsauditing.audits.AuditBuilderFactory;
-import com.picsauditing.audits.AuditTypeRuleCache;
 import com.picsauditing.dao.BasicDAO;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.dao.ContractorAuditDAO;
@@ -44,8 +43,6 @@ public class RegistrationServiceEvaluationTest extends PicsTest {
 	protected ContractorAuditDAO auditDao;
 	@Mock
 	protected BasicDAO dao;
-    @Mock
-    protected AuditTypeRuleCache auditTypeRuleCache;
     @Mock
     protected OperatorAccount operator;
     @Mock

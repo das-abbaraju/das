@@ -1,13 +1,11 @@
 package com.picsauditing.PICS;
 
-import com.picsauditing.audits.AuditTypeRuleCache;
-import com.picsauditing.audits.AuditTypesBuilder;
+import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
-import com.picsauditing.util.SpringUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,17 +18,11 @@ public class FeeService {
     private InvoiceFeeDAO feeDAO;
     @Autowired
     private BillingService billingService;
+    @Autowired
+    private AuditBuilderFactory auditBuilderFactory;
 
-    protected static AuditTypeRuleCache ruleCache;
     @Autowired
     private EmployeeGuardRulesService employeeGuardRulesService;
-
-    public AuditTypeRuleCache getRuleCache() {
-        if (ruleCache == null) {
-            ruleCache = SpringUtils.getBean("AuditTypeRuleCache");
-        }
-        return ruleCache;
-    }
 
     private static final ArrayList<FeeClass> CONTRACTOR_FEE_CLASSES = new ArrayList<FeeClass>() {{
         for (FeeClass feeClass : FeeClass.values()) {
@@ -278,18 +270,18 @@ public class FeeService {
                 if (!contractor.getFees().containsKey(feeClass)) {
                     InvoiceFee currentLevel = feeDAO.find(InvoiceFee.IMPORTFEEZEROLEVEL);
 
-                    ContractorFee importConFee = buildContractorFee(contractor, currentLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor,currentLevel), payingFacilities);
+                    ContractorFee importConFee = buildContractorFee(contractor, currentLevel, getAdjustedFeeAmountIfNecessary(contractor, currentLevel), payingFacilities);
                     feeDAO.save(importConFee);
 
                     contractor.getFees().put(feeClass, importConFee);
                 }
 
-                setFee(contractor, newLevel, FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel), payingFacilities, false);
+                setFee(contractor, newLevel, getAdjustedFeeAmountIfNecessary(contractor, newLevel), payingFacilities, false);
 
             }
             else if (feeClasses.contains(feeClass) && feeClass != FeeClass.ImportFee) {
                 InvoiceFee newLevel = feeDAO.findByNumberOfOperatorsAndClass(feeClass, payingFacilities);
-                BigDecimal newAmount = FeeService.getAdjustedFeeAmountIfNecessary(contractor, newLevel);
+                BigDecimal newAmount = getAdjustedFeeAmountIfNecessary(contractor, newLevel);
 
                 if (!feeClass.isExcludedFor(contractor, newLevel, operatorsRequiringInsureGUARD))
                     setFee(contractor, newLevel, newAmount, payingFacilities, false);
@@ -442,15 +434,13 @@ public class FeeService {
         return operator.getStatus().isActive() && !"No".equals(operator.getDoContractorsPay());
     }
 
-    public static BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
+    public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
         if (fee.getFeeClass() == FeeClass.EmployeeGUARD) {
-            AuditTypesBuilder builder = new AuditTypesBuilder(ruleCache, contractor);
-
-            boolean employeeAudits = false;
+           boolean employeeAudits = false;
             boolean oq = false;
             boolean hseCompetency = false;
 
-            for (AuditTypeDetail detail : builder.calculate()) {
+            for (AuditTypeDetail detail : auditBuilderFactory.getContractorAuditTypeDetails(contractor)) {
                 AuditType auditType = detail.rule.getAuditType();
                 if (auditType == null) {
                     continue;
@@ -584,9 +574,8 @@ public class FeeService {
                 payingFacilities = 1;
             }
 
-            AuditTypesBuilder builder = new AuditTypesBuilder(getRuleCache(), contractor);
             operatorsRequiringInsureGUARD = new HashSet<>();
-            auditTypeDetails = builder.calculate();
+            auditTypeDetails = auditBuilderFactory.getContractorAuditTypeDetails(contractor);
 
             for (AuditTypeDetail detail : auditTypeDetails) {
                 AuditType auditType = detail.rule.getAuditType();
