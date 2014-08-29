@@ -366,6 +366,7 @@ public class AuditDecisionTableDAO extends PicsDAO {
 
 		Set<Integer> operatorIDs = new HashSet<>();
 
+		operatorIDs.addAll(operator.getOperatorHeirarchy());
 		operatorIDs.addAll(operator.getOperatorReverseHeirarchy());
 
 		where += " AND (opID IS NULL";
