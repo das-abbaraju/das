@@ -4,7 +4,6 @@ import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.NetworkLevel;
 import com.picsauditing.report.fields.Field;
 import com.picsauditing.report.fields.FieldType;
-import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.search.SelectCase;
 
 public class ContractorOperatorTable extends AbstractTable {
@@ -13,8 +12,13 @@ public class ContractorOperatorTable extends AbstractTable {
 	public static final String Contractor = "Contractor";
 	public static final String ForcedByUser = "ForcedByUser";
     public static final String RequestedByUser = "RequestedByUser";
+    public static final String Number = "Number";
 
-	public ContractorOperatorTable() {
+    private static final Field ORACLE_FIELD = fromContractorQuery("HasOracleNumber", "Oracle");
+    private static final Field SAP_FIELD = fromContractorQuery("HasSAPNumber", "SAP");
+    private static final Field VENDOR_FIELD = fromContractorQuery("HasVendorNumber", "Vendor");
+
+    public ContractorOperatorTable() {
 		super("contractor_operator");
 		addFields(ContractorOperator.class);
 
@@ -96,10 +100,6 @@ public class ContractorOperatorTable extends AbstractTable {
         return field;
     }
 
-    private static final Field ORACLE_FIELD = fromContractorQuery("HasOracleNumber", "Oracle");
-    private static final Field SAP_FIELD = fromContractorQuery("HasSAPNumber", "SAP");
-    private static final Field VENDOR_FIELD = fromContractorQuery("HasVendorNumber", "Vendor");
-
 	public void addJoins() {
 		ReportForeignKey operator = new ReportForeignKey(Operator, new AccountTable(), new ReportOnClause("opID"));
 		addRequiredKey(operator);
@@ -112,5 +112,9 @@ public class ContractorOperatorTable extends AbstractTable {
 
         ReportForeignKey requestedByUser = new ReportForeignKey(RequestedByUser, new UserTable(), new ReportOnClause("requestedByUserID"));
         addOptionalKey(requestedByUser);
+
+        ReportForeignKey number = new ReportForeignKey(Number, new ContractorNumberTable(), new ReportOnClause("conID","conID", ReportOnClause.ToAlias + ".opID = " + ReportOnClause.FromAlias + ".opID"));
+        number.setMinimumImportance(FieldImportance.Low);
+        addOptionalKey(number);
 	}
 }
