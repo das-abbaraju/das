@@ -4,6 +4,7 @@ import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
 import com.picsauditing.auditbuilder.dao.ContractorTagDAO2;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AuditService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
@@ -11,7 +12,9 @@ public abstract class AuditBuilderBase {
 	protected ContractorAccount contractor;
 	protected Set<ContractorType> contractorTypes = new HashSet<>();
 	protected Set<Trade> trades = new HashSet<>();
+    @Autowired
     private ContractorTagDAO2 contractorTagDAO;
+    @Autowired
     private AuditDataDAO2 auditDataDAO;
 
     public void setContractorTagDAO(ContractorTagDAO2 contractorTagDAO) {

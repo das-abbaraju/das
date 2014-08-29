@@ -17,7 +17,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 	}
 
     public AuditTypesBuilder() {
-        super();
+
     }
 
     public AuditTypesBuilder(AuditTypeRuleCache2 ruleCache, ContractorAccount contractor) {

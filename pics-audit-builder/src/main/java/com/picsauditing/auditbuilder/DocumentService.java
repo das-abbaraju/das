@@ -16,6 +16,10 @@ public class DocumentService {
     private AuditCategoryRuleCache2 categoryRuleCache;
     @Autowired
     private ContractorTagDAO2 contractorTagDAO;
+    @Autowired
+    private AuditTypesBuilder auditTypesBuilder;
+    @Autowired
+    private AuditCategoriesBuilder auditCategoriesBuilder;
 
      public List<Integer> getCategoryIds(int auditId, List<Integer> operatorIds) {
          ContractorAudit audit = auditDataDAO.find(ContractorAudit.class, auditId);
@@ -28,7 +32,7 @@ public class DocumentService {
     private List<Integer> getCategoryIds(ContractorAudit audit, List<OperatorAccount> operators) {
         List<Integer> categoryIds = new ArrayList<>();
 
-        AuditCategoriesBuilder builder = documentCategoriesBuilder(audit.getContractorAccount());
+        AuditCategoriesBuilder builder = initializeCategoriesBuilder(audit.getContractorAccount());
         Set<AuditCategory> categories = builder.calculate(audit, operators);
         for (AuditCategory category:categories) {
             categoryIds.add(category.getId());
@@ -38,7 +42,7 @@ public class DocumentService {
     }
 
     public List<Integer> getDocumentRuleIds(int contractorId) {
-        AuditTypesBuilder builder = documentTypesBuilder(contractorId);
+        AuditTypesBuilder builder = initializeTypesBuilder(contractorId);
         builder.calculate();
         List<AuditTypeRule> rules = builder.getRules();
 
@@ -63,10 +67,10 @@ public class DocumentService {
         return ids;
     }
 
-    public Map<Integer, List<Integer>> getContractorDocumentTypeDetailIds(Integer contractorId) {
+    public Map<Integer, List<Integer>> getTypeDetailIds(Integer contractorId) {
         Map<Integer, List<Integer>> documentDetailIds = new HashMap<>();
 
-        AuditTypesBuilder auditTypesBuilder = documentTypesBuilder(contractorId);
+        AuditTypesBuilder auditTypesBuilder = initializeTypesBuilder(contractorId);
 
         Set<AuditTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = auditTypesBuilder.calculate();
         for (AuditTypesBuilder.AuditTypeDetail detail:requiredAuditTypeDetails) {
@@ -80,7 +84,7 @@ public class DocumentService {
         return documentDetailIds;
     }
 
-    public List<Integer> getContractorSimulatorCategoryIds(Integer auditTypeId, ContractorAccount contractor, List<Integer> operatorIds) {
+    public List<Integer> getSimulatorCategoryIds(Integer auditTypeId, ContractorAccount contractor, List<Integer> operatorIds) {
         List<Integer> categoryIds = new ArrayList<>();
         List<OperatorAccount> operators = attachOperators(contractor, operatorIds);
 
@@ -91,7 +95,7 @@ public class DocumentService {
 
         AuditType auditType = auditDataDAO.find(AuditType.class, auditTypeId);
 
-        AuditCategoriesBuilder builder = documentCategoriesBuilder(contractor);
+        AuditCategoriesBuilder builder = initializeCategoriesBuilder(contractor);
 
         ContractorAudit conAudit = new ContractorAudit();
         conAudit.setContractorAccount(contractor);
@@ -105,10 +109,10 @@ public class DocumentService {
         return categoryIds;
     }
 
-    public Map<Integer, List<Integer>> getContractorSimulatorDocumentTypeDetailIds(ContractorAccount contractor, List<Integer> operatorIds) {
+    public Map<Integer, List<Integer>> getSimulatorTypeDetailIds(ContractorAccount contractor, List<Integer> operatorIds) {
         attachOperators(contractor, operatorIds);
 
-        AuditTypesBuilder auditTypesBuilder = documentTypesBuilder(contractor);
+        AuditTypesBuilder auditTypesBuilder = initializeTypesBuilder(contractor);
 
         Set<AuditTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = auditTypesBuilder.calculate();
 
@@ -122,6 +126,22 @@ public class DocumentService {
 
         return documents;
     }
+
+    public boolean isCategoryApplicable(int categoryId, int auditId, int caoId) {
+        AuditCategory category = auditDataDAO.find(AuditCategory.class, categoryId);
+        ContractorAudit audit = auditDataDAO.find(ContractorAudit.class, auditId);
+        ContractorAuditOperator cao = auditDataDAO.find(ContractorAuditOperator.class, caoId);
+
+        initializeCategoriesBuilder(audit.getContractorAccount());
+
+        Collection<OperatorAccount> operators = new ArrayList<>();
+        for (ContractorAuditOperatorPermission caop:cao.getCaoPermissions()) {
+            operators.add(caop.getOperator());
+        }
+
+        auditCategoriesBuilder.calculate(audit, operators);
+        return auditCategoriesBuilder.isCategoryApplicable(category, cao);
+   }
 
     public void clearCache() {
         typeRuleCache.clear();
@@ -169,30 +189,26 @@ public class DocumentService {
     return auditTypeIds;
     }
 
-    private AuditTypesBuilder documentTypesBuilder(ContractorAccount contractor) {
-        AuditTypesBuilder auditTypesBuilder = new AuditTypesBuilder(typeRuleCache, contractor);
-        auditTypesBuilder.setContractorTagDAO(contractorTagDAO);
-        auditTypesBuilder.setAuditDataDAO(auditDataDAO);
+    private AuditTypesBuilder initializeTypesBuilder(ContractorAccount contractor) {
+        auditTypesBuilder.setRuleCache(typeRuleCache);
+        auditTypesBuilder.setContractor(contractor);
 
         return auditTypesBuilder;
     }
 
-    private AuditTypesBuilder documentTypesBuilder(int contractorId) {
+    private AuditTypesBuilder initializeTypesBuilder(int contractorId) {
         ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
-
-        return documentTypesBuilder(contractor);
+       return initializeTypesBuilder(contractor);
     }
 
-    private AuditCategoriesBuilder documentCategoriesBuilder(ContractorAccount contractor) {
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
-        builder.setContractorTagDAO(contractorTagDAO);
-        builder.setAuditDataDAO(auditDataDAO);
-
-        return builder;
+    private AuditCategoriesBuilder initializeCategoriesBuilder(ContractorAccount contractor) {
+        auditCategoriesBuilder.setRuleCache(categoryRuleCache);
+        auditCategoriesBuilder.setContractor(contractor);
+        return auditCategoriesBuilder;
     }
 
-    public AuditCategoriesBuilder getDocumentCategoriesBuilder(int contractorId) {
+    public AuditCategoriesBuilder initializeCategoriesBuilder(int contractorId) {
         ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
-        return documentCategoriesBuilder(contractor);
+        return initializeCategoriesBuilder(contractor);
     }
 }

@@ -14,6 +14,10 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditType auditType = null;
 	private OperatorAccount auditFor = null;
 
+    public AuditCategoriesBuilder() {
+
+    }
+
 	public AuditCategoriesBuilder(AuditCategoryRuleCache2 auditCategoryRuleCache, ContractorAccount contractor) {
 		setContractor(contractor);
 		this.ruleCache = auditCategoryRuleCache;
@@ -245,4 +249,12 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 
 		return false;
 	}
+
+    public AuditCategoryRuleCache2 getRuleCache() {
+        return ruleCache;
+    }
+
+    public void setRuleCache(AuditCategoryRuleCache2 ruleCache) {
+        this.ruleCache = ruleCache;
+    }
 }
