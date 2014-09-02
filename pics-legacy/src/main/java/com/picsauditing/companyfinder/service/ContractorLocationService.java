@@ -7,6 +7,7 @@ import com.picsauditing.common.flow.ResultSuccess;
 import com.picsauditing.companyfinder.dao.ContractorLocationDao;
 import com.picsauditing.companyfinder.model.ContractorGeoLocation;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.util.GoogleApiService;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,21 +16,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Scanner;
 import java.util.concurrent.*;
 
 public class ContractorLocationService {
 
     public static final JSONParser JSON_PARSER = new JSONParser();
-    public static final String KEY = "AIzaSyDm5m03u2TZPDqKjXY94yTXquL9raGgYTI";
-    public static final String GOOGLE_GEOCODE_URL = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 
     private static final Logger logger = LoggerFactory.getLogger(ContractorLocationService.class);
 
     @Autowired
     private ContractorLocationDao contractorLocationDao;
+
+    @Autowired
+    private GoogleApiService googleApiService;
 
     public void saveLocation(final ContractorAccount contractorAccount) {
         ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -95,7 +94,7 @@ public class ContractorLocationService {
 
     public ContractorGeoLocation fetchGeoLocation(ContractorAccount contractorAccount, String address) throws Exception {
         if (StringUtils.isNotEmpty(address)) {
-            String body = sendRequestToTheGoogles(address);
+            String body = googleApiService.sendRequestToTheGoogles(address);
             if (StringUtils.isNotEmpty(body)) {
                 JSONObject location = findLocationObject(body);
                 if (location != null) {
@@ -131,21 +130,4 @@ public class ContractorLocationService {
         return (JSONObject) geometry.get("location");
     }
 
-    private String sendRequestToTheGoogles(String address) throws Exception {
-        String urlStr = GOOGLE_GEOCODE_URL + address + "&key=" + KEY;
-        return processURL(urlStr);
-    }
-
-    private String processURL(String urlStr) throws Exception {
-        if (StringUtils.isNotEmpty(urlStr)) {
-            urlStr = urlStr.replaceAll("\\s+", "+").replaceFirst("#", "");
-            URL url = new URL(urlStr);
-            try {
-                return new Scanner(url.openStream()).useDelimiter("\\A").next();
-            } catch (java.util.NoSuchElementException e) {
-                logger.error("Error in processURL() ", e);
-            }
-        }
-        return null;
-    }
 }

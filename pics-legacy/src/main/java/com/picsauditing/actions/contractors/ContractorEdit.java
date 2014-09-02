@@ -232,6 +232,8 @@ public class ContractorEdit extends ContractorActionSupport implements Preparabl
 			contractorAccountDao.save(contractor);
 
 			addActionMessage(this.getTextParameterized("ContractorEdit.message.SaveContractor", contractor.getName()));
+
+            contractorLocationService.saveLocation(contractor);
 		}
 
 		return SUCCESS;
