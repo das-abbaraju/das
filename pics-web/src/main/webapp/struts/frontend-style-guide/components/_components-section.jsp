@@ -12,24 +12,24 @@
 <section class="employee-guard-section" id="${section_id}">
     <h1 class="heading">
         <div class="row">
-            <div class="col-md-9 col-xs-9">
+            <div class="col-md-12">
                 ${header_title}
             </div>
         </div>
     </h1>
 
-    <p class="description">
+    <div class="description">
         ${description}
-    </p>
+    </div>
 
     <div class="row example">
-        <div class="col-md-offset-1 col-md-11">
+        <div class="col-md-offset-1 col-md-10">
             <s:include value="%{#example_url}" />
         </div>
     </div>
 
     <div class="row implementations">
-        <div class="col-md-offset-1 col-md-11">
+        <div class="col-md-offset-1 col-md-10">
             <s:include value="/struts/frontend-style-guide/components/_implementations.jsp">
                 <s:param name="parent_id">${accordian_parent_id}</s:param>
                 <s:param name="html_code">${html_code}</s:param>

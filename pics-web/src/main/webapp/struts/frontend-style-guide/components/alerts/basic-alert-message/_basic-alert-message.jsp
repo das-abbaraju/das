@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Basic Alert</s:param>
 
     <s:param name="description">
-Alert with inline header and text. Dismiss button is not available.
+Basic alerts have inline header and text. The dismiss button is not available.
     </s:param>
 
     <s:param name="example_url">
@@ -16,12 +16,20 @@ Alert with inline header and text. Dismiss button is not available.
     <s:param name="accordian_parent_id">alert-messages</s:param>
 
     <s:param name="html_code">
+&lt;div class="alert alert-primary"&gt;
+    &lt;strong&gt;This is a test.&lt;/strong&gt; Nothing more.
+&lt;/div&gt;
+&lt;div class="alert alert-info"&gt;
+    &lt;strong&gt;Hey listen!&lt;/strong&gt; Over here.
+&lt;/div&gt;
+&lt;div class="alert alert-success"&gt;
+    &lt;strong&gt;All good.&lt;/strong&gt; Nothing to see here.
+&lt;/div&gt;
+&lt;div class="alert alert-warning"&gt;
+    &lt;strong&gt;Warning!&lt;/strong&gt; Best check yo self, you're not looking too good.
+&lt;/div&gt;
 &lt;div class="alert alert-danger"&gt;
     &lt;strong&gt;Oh snap!&lt;/strong&gt; Something is broken.
 &lt;/div&gt;
-
-&lt;div class="alert alert-info"&gt;&hellip;&lt;/div&gt;
-&lt;div class="alert alert-warning"&gt;&hellip;&lt;/div&gt;
-&lt;div class="alert alert-success"&gt;&hellip;&lt;/div&gt;
     </s:param>
 </s:include>

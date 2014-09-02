@@ -21,6 +21,15 @@
                 }
             }
         }
+
+        a {
+            padding: 12px 15px;
+
+            &:active {
+                background-color: $info_dark;
+                color: #ffffff;
+            }
+        }
     }
 
     a {
@@ -83,5 +92,25 @@ ul.skill-nav {
     a {
         color: $default_steel;
         padding: 2px 0px 3px 40px;
+    }
+}
+
+/* Tabs */
+.nav-tabs {
+    > li {
+        > a {
+            background-color: $pics_cool_grey;
+            background-image: linear-gradient(to bottom, $pics_cool_grey, $default_mercury);
+            background: -webkit-linear-gradient($pics_cool_grey, $default_mercury);
+            color: $default_tin;
+            padding: 9px 15px;
+        }
+    }
+    > li.active {
+        > a {
+            color: $default_steel;
+            background: #ffffff;
+            background-image: none;
+        }
     }
 }

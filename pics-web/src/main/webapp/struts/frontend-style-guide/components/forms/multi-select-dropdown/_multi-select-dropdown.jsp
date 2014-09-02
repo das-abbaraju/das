@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Multiple Select</s:param>
 
     <s:param name="description">
-Multiple selects are used when multiple options in a list may be selected. Use dropdowns over checkboxes (link to checkboxes) when there are more than two options available.
+Multiple selects are used when multiple options in a list may be selected. Use <a href="#forms_multiple_select_dropdown">multiple selects</a> over <a href="#forms_checkbox_field">checkboxes</a> when there are more than three options available.
     </s:param>
 
     <s:param name="example_url">

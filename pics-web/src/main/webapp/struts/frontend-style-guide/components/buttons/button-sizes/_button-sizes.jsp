@@ -6,7 +6,7 @@
     <s:param name="section_id">${section_id_prefix}_button_sizes</s:param>
 
     <s:param name="description">
-Medium buttons are most often used. Small buttons should be used if nesting inside another element—most likely a Section Header.
+Medium buttons are used most often. Small buttons should be used when nested inside another element (e.g. section header).
     </s:param>
 
     <s:param name="example_url">

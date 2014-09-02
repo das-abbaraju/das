@@ -7,11 +7,11 @@ Ext.define('PICS.view.report.settings.share.ShareSearchBox', {
     cls: 'share-searchbox',
     displayField: 'name',
     emptyText: PICS.text('Report.execute.shareSetting.placeholderSearch'),
-    fieldLabel: '<i class="icon-search icon-large"></i>',
+    fieldLabel: '<i class="icon-search"></i>',
     hideTrigger: true,
     labelSeparator: '',
     labelWidth: 15,
-    
+
     listConfig: {
         cls: 'site-menu-search-list',
         loadingText: PICS.text('Report.execute.shareSetting.searchLoadingText') + '&hellip;',

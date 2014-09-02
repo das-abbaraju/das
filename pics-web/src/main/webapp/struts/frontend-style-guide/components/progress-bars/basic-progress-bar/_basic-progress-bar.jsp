@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Basic Progress Bar</s:param>
 
     <s:param name="description">
-Used when conveying progress for longer tasks. Can be color-coded to convey statuses (completed, pending, expiring, overdue, etc.)
+Progress bars are used when conveying progress for longer tasks. They are color-coded to indicate status (e.g. completed, pending, expiring, overdue, etc.)
     </s:param>
 
     <s:param name="example_url">
@@ -17,10 +17,14 @@ Used when conveying progress for longer tasks. Can be color-coded to convey stat
 
     <s:param name="html_code">
 &lt;div class="progress progress-primary"&gt;
-    &lt;div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"&gt;
-        &lt;span class="sr-only"&gt;80% Complete (primary)&lt;/span&gt;
-    &lt;/div&gt;
+    &lt;div class="progress-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"&gt;&lt;/div&gt;
 &lt;/div>
+
+&lt;div class="progress progress-primary"&gt;
+    &lt;div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 100%"&gt;
+        &lt;span&gt;Submitted&lt;/span&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
 
 &lt;div class="progress progress-info"&gt;...&lt;/div&gt;
 &lt;div class="progress progress-success"&gt;...&lt;/div&gt;

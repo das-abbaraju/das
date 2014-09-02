@@ -9,12 +9,33 @@
 	}
 
 	section {
+		&:first-child{
+			padding-top: 0;
+		}
+
 		padding-top: 68px;
+		margin-bottom: 30px;
 
 		.heading {
 			margin-top: 0;
-			margin-bottom: 10px;
+			margin-bottom: 0;
 		}
+
+		.description {
+			margin: 20px 30px;
+
+			dt {
+				text-align: right;
+			}
+		}
+	}
+
+	button:last-child {
+		margin-right: 0;
+	}
+
+	img {
+		margin-right: 20px;
 	}
 
 	.section-list-item  {
@@ -32,6 +53,10 @@
 
 	.book-title {
 		font-style: italic;
+	}
+
+	.label, .badge {
+		margin-right: 10px;
 	}
 
 	.implementations {
@@ -87,7 +112,7 @@
 			}
 		}
 
-		.panel.open .panel-heading,
+		.panel.open .panel-heading a,
 		.panel-default > .panel-heading:hover {
 			background-color: $pics_warm_grey;
 			color: #ffffff;

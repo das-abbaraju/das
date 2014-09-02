@@ -1,20 +1,38 @@
 .alert {
 	border: none;
+	border-radius: 0;
+	padding: 10px 15px;
+	text-shadow: none;
 
-	h3 {
-		font-size: 18px;
+	strong, h3, h4 {
 		font-weight: bold;
-		margin: 0;
 	}
+
+	h3, h4, p {
+		margin: 5px;
+		line-height: 18px;
+	}
+
+	h3, h4 {
+		font-size: 18px;
+	}
+
+	i {
+		margin-right: 5px;
+		cursor: auto;
+	}
+
+    .close {
+      right: 0;
+    }
 }
 
 .alert-primary {
 	background-color: $primary_tint;
 	color: $primary_med;
 
-	strong,
-	h3 {
-		color: $primary_dark;
+	strong, h3, h4 {
+		color: $primary_med;
 	}
 }
 
@@ -22,8 +40,7 @@
 	background-color: $info_tint;
 	color: $info_dark;
 
-	strong,
-	h3 {
+	strong, h3, h4 {
 		color: $info_dark;
 	}
 }
@@ -32,9 +49,8 @@
 	background-color: $success_tint;
 	color: $success_med;
 
-	strong,
-	h3 {
-		color: $success_dark;
+	strong, h3, h4 {
+		color: $success_med;
 	}
 }
 
@@ -42,8 +58,7 @@
 	background-color: $warning_tint;
 	color: $warning_med;
 
-	strong,
-	h3 {
+	strong, h3, h4 {
 		color: $warning_dark;
 	}
 }
@@ -52,8 +67,7 @@
 	background-color: $danger_tint;
 	color: $danger_med;
 
-	strong,
-	h3 {
-		color: $danger_dark;
+	strong, h3, h4 {
+		color: $danger_med;
 	}
 }

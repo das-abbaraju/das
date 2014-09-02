@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Page Header</s:param>
 
     <s:param name="description">
-The page header is below the navigation bar and consists of a page title and optional description, breadcrumbs, and page action buttons.
+The page header is below the navigation bar and consists of a page title, optional description, breadcrumbs, and optional page action buttons.
     </s:param>
 
     <s:param name="example_url">

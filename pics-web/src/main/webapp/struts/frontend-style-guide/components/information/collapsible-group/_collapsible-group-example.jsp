@@ -1,4 +1,4 @@
-<div class="panel-group" id="accordion_1">
+<div class="panel-group collapsible" id="accordion_1">
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
@@ -7,7 +7,7 @@
                 </a>
             </h4>
         </div>
-        <div id="item_1" class="panel-collapse collapse">
+        <div id="item_1" class="panel-collapse collapse in">
             <div class="panel-body">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
             </div>
@@ -16,7 +16,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <h4 class="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion_2" href="#item_2">
+                <a data-toggle="collapse" data-parent="#accordion_1" href="#item_2">
                     Item 2 Heading
                 </a>
             </h4>

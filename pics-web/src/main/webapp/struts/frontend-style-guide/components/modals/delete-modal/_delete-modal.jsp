@@ -20,8 +20,10 @@ Modals are used for user confirmation (i.e. save, delete…).
     &lt;div class="modal-dialog"&gt;
         &lt;div class="modal-content"&gt;
             &lt;div class="modal-header"&gt;
-                &lt;button type="button" class="close" data-dismiss="modal" aria-hidden="true"&gt;&times;&lt;/button&gt;
-                &lt;h4 class="modal-title"&gt;Delete Something&lt;/h4&gt;
+                &lt;button type="button" class="close" data-dismiss="modal" aria-hidden="true"&gt;
+                    &lt;i class="icon icon-remove"&gt;&lt;/i&gt;
+                &lt;/button&gt;
+                &lt;h4 class="modal-title"&gt;Confirm Delete&lt;/h4&gt;
             &lt;/div&gt;
             &lt;div class="modal-body"&gt;
                 &lt;p&gt;Message regarding what will be lost by the delete action.&lt;/p&gt;

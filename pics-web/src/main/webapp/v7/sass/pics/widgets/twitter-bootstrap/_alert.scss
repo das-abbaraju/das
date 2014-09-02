@@ -1,27 +1,40 @@
 .alert
 {
-	background: #fcf3cc;
-	border: 1px solid #e67e1c;
-	color: #e67e1c;
+	border-radius: 0;
+	border:none;
+	background-color: $warning_tint;
+	color: $warning_dark;
+	text-shadow: none;
+
+	strong, h3, h4 {
+		color: $warning_dark;
+	}
 }
 
 .alert-error
 {
-	background: #ffc6c9;
-	border: 1px solid #ac030c;
-	color: #ac030c;
+	background-color: $danger_tint;
+	color: $danger_med;
+
+	strong, h3, h4 {
+		color: $danger_med;
+	}
 }
 
-.alert-success
-{
-	background: #acf5ac;
-	border: 1px solid #229322;
-	color: #229322;
+.alert-info {
+	background-color: $info_tint;
+	color: $info_dark;
+
+	strong, h3, h4 {
+		color: $info_dark;
+	}
 }
 
-.alert-info
-{
-	background: #c3e0f9;
-	border: 1px solid #226396;
-	color: #226396;
+.alert-success {
+	background-color: $success_tint;
+	color: $success_med;
+
+	strong, h3, h4 {
+		color: $success_med;
+	}
 }

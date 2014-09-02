@@ -7,7 +7,7 @@ Ext.define('PICS.view.layout.SearchBox', {
     cls: 'site-menu-search',
     displayField: 'name',
     emptyText: 'Search',
-    fieldLabel: '<i class="icon-search icon-large"></i>',
+    fieldLabel: '<i class="icon-search"></i>',
     hideTrigger: true,
     labelSeparator: '',
     labelWidth: 15,

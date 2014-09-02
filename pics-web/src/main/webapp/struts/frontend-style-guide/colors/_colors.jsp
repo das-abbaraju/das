@@ -10,10 +10,6 @@
         </div>
     </h1>
 
-    <p class="description">
-        Description unavailable
-    </p>
-
     <div class="row example">
         <div class="col-md-offset-1 col-md-11">
             <s:include value="/struts/frontend-style-guide/colors/_color-swatches.jsp" />

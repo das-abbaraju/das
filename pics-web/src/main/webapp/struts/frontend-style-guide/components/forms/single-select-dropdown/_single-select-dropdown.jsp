@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Dropdown</s:param>
 
     <s:param name="description">
-Dropdowns are used when a list of options are available and only one may be selected. Use dropdowns over radio buttons (link to radio buttons) when there are more than two options available. Dropdowns may also be used outside of a form for view switching (e.g. changing the sort order of a list)
+Dropdowns are used when a list of options are available and only one may be selected. Use dropdowns over <a href="#forms_radio_button">radio buttons</a> when there are more than three options available. Dropdowns may also be used outside of a form for view switching (e.g. changing the sort order of a list)
     </s:param>
 
     <s:param name="example_url">

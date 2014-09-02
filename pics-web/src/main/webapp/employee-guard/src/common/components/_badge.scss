@@ -1,22 +1,19 @@
 .badge {
     color: #ffffff;
     font-weight: normal;
+    padding: 4px 7px;
 }
 
 .badge-default {
-    background-color: $default_pewter;
-}
-
-.badge-primary {
-    background-color: $primary_med;
-}
-
-.badge-success {
-    background-color: $success_med;
+    background-color: $default_aluminum;
 }
 
 .badge-info {
     background-color: $info_med;
+}
+
+.badge-success {
+    background-color: $success_light;
 }
 
 .badge-warning {
@@ -24,5 +21,18 @@
 }
 
 .badge-danger {
-    background-color: $danger_med;
+    background-color: $danger_light;
+}
+
+.badge-link {
+    background-color: $pics_link_blue;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $pics_light_blue;
+    }
+
+    &:active {
+        background-color: $pics_blue;
+    }
 }

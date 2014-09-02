@@ -3,7 +3,7 @@
     /*
      * Description
      */
-     
+
     .report-subtitle
     {
         color: #e67e1c;
@@ -13,85 +13,84 @@
         line-height: 1;
         margin: 0 0 30px;
     }
-    
+
     #manage_report_filter
 	{
 		display: block;
 		margin: 0px 0px 20px;
 		text-align: center;
 	}
-    
+
     .report-list
     {
         margin-bottom: 20px;
         text-align: left;
-        
+
         .report
         {
-            background: #f1f1f2;
-            border: 1px solid #ccc;
+            background: $pics_cool_grey;
             @include border-radius(4px);
             line-height: 38px;
-            margin-bottom: 2px;
+            margin-bottom: 8px;
         }
-        
+
         .report > .favorite,
         .report > .unfavorite
         {
-            margin: 0 5px;
+            margin: 0 5px 0 10px;
         }
-        
+
         .icon-star
         {
-            color: #ccc;
+            color: $default_silver;
         }
-        
+
         .icon-star.selected
         {
             color: #e67e1c;
         }
-        
+
         .name
         {
-        	color: #454545;
+        	color: $default_steel;
             font-size: 14px;
             font-weight: bold;
             margin-right: 10px;
         }
-        
+
         .name:hover
         {
         	color: $pics_light_blue;
         }
-        
+
         .created-by
         {
-            color: #999;
+            color: $default_dark;
             font-size: 12px;
             font-style: italic;
             white-space: nowrap;
         }
-        
+
         .btn-group
         {
         	margin-left: 10px;
         }
-        
+
         .dropdown-toggle
         {
         	padding: 9px 12px;
         }
-        
+
         .confirm-options
         {
         	margin-right: 5px;
         }
-        
+
         .report.delete
         {
         	background-color: #ffc6c9;
 	    	border: 1px solid #ac030c;
-	    	
+
 	    	a,
 	    	p
 	    	{

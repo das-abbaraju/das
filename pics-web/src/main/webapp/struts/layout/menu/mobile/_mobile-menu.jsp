@@ -9,8 +9,8 @@
 <div id="mobile_menu">
     <div id="page">
         <div class="header">
-            <a href="#mobile_menu_navigation"><i class="icon-reorder"></i></a>
-            <a href="#mobile_menu_search" class="right"><i class="icon-search"></i></a>
+            <a href="#mobile_menu_navigation"><i class="icon-reorder icon-large"></i></a>
+            <a href="#mobile_menu_search" class="right"><i class="icon-search icon-large"></i></a>
         </div>
     </div>
 

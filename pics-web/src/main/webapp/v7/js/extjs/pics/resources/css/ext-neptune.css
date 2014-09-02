@@ -1,5 +1,4 @@
 @charset "UTF-8";
-@import url("//fonts.googleapis.com/css?family=false:false");
 /**
  * @var {string} $prefix
  * The prefix to be applied to all CSS selectors. If this is changed, it must also be changed in your
@@ -85,6 +84,7 @@
  * @var {boolean} $include-highlights
  * True to include all shadows, highlights, and gradients
  */
+@import url("//fonts.googleapis.com/css?family=false:false");
 /* line 85, ../themes/stylesheets/neptune/default/accessories/scss/_pictos.scss */
 .base-pictos, .forbidden:after, .forbidden:before, .people:after, .people:before, .information:after, .information:before, .link:after, .link:before, .love:after, .love:before, .list:after, .list:before, .music:after, .music:before, .edit2:after, .edit2:before, .chat2:after, .chat2:before, .retweet:after, .retweet:before, .search:after, .search:before, .time:after, .time:before, .photo:after, .photo:before, .chat:after, .chat:before, .settings:after, .settings:before, .settings2:after, .settings2:before, .bookmark:after, .bookmark:before, .link2:after, .link2:before, .tweet:after, .tweet:before, .cloud:after, .cloud:before, .close:after, .close:before, .home:after, .home:before, .key:after, .key:before, .mail:after, .mail:before, .paste:after, .paste:before, .power:after, .power:before, .open:after, .open:before, .star:after, .star:before, .person:after, .person:before, .video:after, .video:before, .edit:after, .edit:before, .charts:after, .charts:before, .expand:after, .expand:before, .refresh:after, .refresh:before, .tick:after, .tick:before, .tick2:after, .tick2:before, .play:after, .play:before, .pause:after, .pause:before, .stop:after, .stop:before, .forward:after, .forward:before, .rewind:after, .rewind:before, .play2:after, .play2:before, .refresh2:after, .refresh2:before, .minus:after, .minus:before, .left:after, .left:before, .right:after, .right:before, .date:after, .date:before, .shuffle:after, .shuffle:before, .wifi:after, .wifi:before, .speed:after, .speed:before, .more:after, .more:before, .print:after, .print:before, .warning:after, .warning:before, .location:after, .location:before, .trash:after, .trash:before, .cart:after, .cart:before, .flag:after, .flag:before, .add:after, .add:before, .lock:after, .lock:before, .unlock:after, .unlock:before, .remove:after, .remove:before, .add2:after, .add2:before, .up:after, .up:before, .down:after, .down:before, .bell:after, .bell:before, .quote:after, .quote:before, .novolume:after, .novolume:before, .volume:after, .volume:before, .question:after, .question:before, .x-form-invalid-icon ul:after, .x-form-invalid-icon ul:before, .x-tab-close-btn:after, .x-tab-close-btn:before {
   font-family: Pictos;
@@ -7136,7 +7136,7 @@ table.x-datepicker-inner {
   left: 0;
   z-index: 0;
   width: 2px;
-  height: 100%!important;
+  height: 100% !important;
   overflow: hidden; }
 
 /* line 49, ../themes/stylesheets/neptune/default/widgets/_menu.scss */
@@ -7315,7 +7315,7 @@ table.x-datepicker-inner {
 
 /* line 74, ../themes/stylesheets/neptune/default/widgets/_grid.scss */
 .x-accordion-item .x-grid-header-ct {
-  border-width: 0 0 1px 0!important; }
+  border-width: 0 0 1px 0 !important; }
 
 /* line 78, ../themes/stylesheets/neptune/default/widgets/_grid.scss */
 .x-column-header {

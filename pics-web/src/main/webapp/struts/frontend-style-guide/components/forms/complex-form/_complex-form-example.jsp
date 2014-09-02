@@ -1,6 +1,6 @@
 <form action="#" method="post" class="form-horizontal js-validation" role="form">
     <fieldset>
-        <div class="form-group has-error">
+        <div class="form-group">
             <label name="someName1" class="col-md-3 control-label"><strong>Some Required Label</strong></label>
             <div class="col-md-4">
                 <input name="someName1" class="form-control" type="text" tabindex="1" value="Some Default Value"/>
@@ -10,10 +10,21 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group has-error">
+            <label name="someName1_5" class="col-md-3 control-label"><strong>Some Required Label</strong></label>
+            <div class="col-md-4">
+                <input name="someName1_5" class="form-control" type="text" tabindex="1" value=""/>
+                <span class="help-block">Field value is missing</span>
+            </div>
+            <div class="toolip-container col-md-1 col-xs-1">
+               <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="top" title="" data-original-title="This is a sentence that explains the purpose of the form field." data-container="body"></i>
+            </div>
+        </div>
+
+        <div class="form-group has-success">
             <label name="someName2" class="col-md-3 control-label">Some Label</label>
             <div class="col-md-4">
-                <textarea name="someName2" class="form-control" tabindex="2">Some Default Value</textarea>
+                <textarea name="someName2" class="form-control vertical-resize" tabindex="2">Some Default Value</textarea>
             </div>
             <div class="toolip-container col-md-1 col-xs-1">
                <i class="icon-info-sign icon-large" data-toggle="tooltip" data-placement="right" title="" data-original-title="This is a sentence that explains the purpose of the form field." data-container="body"></i>
@@ -50,7 +61,7 @@
         <div class="form-group">
             <div class="col-md-9 col-md-offset-3 form-actions">
                 <button name="someName6" type="submit" class="btn btn-success" tabindex="5" >Some Action</button>
-                <a href="#" class="btn btn-default" tabindex="6">Some Action</a>
+                <a href="#forms_complex_form" class="btn btn-default" tabindex="6">Some Action</a>
             </div>
         </div>
     </fieldset>

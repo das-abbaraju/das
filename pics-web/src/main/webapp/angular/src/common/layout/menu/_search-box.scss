@@ -5,7 +5,8 @@
         input[type="text"] {
             background-color: #FFFFFF !important; /* override twitter typeahead style */
             border-radius: 17px;
-            padding: 4px 14px 4px 32px;
+            font-size: 14px;
+            padding: 4px 14px 4px 30px;
 
             &:focus {
                 border: 1px solid $pics_light_blue;
@@ -14,24 +15,24 @@
             }
         }
 
-        ::-webkit-input-placeholder { /* WebKit browsers */
-        color: $default_silver;
+        input::-webkit-input-placeholder { /* WebKit browsers */
+            color: $default_silver;
         }
-        :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-        color: $default_silver;
+        input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+            color: $default_silver;
         }
-        ::-moz-placeholder { /* Mozilla Firefox 19+ */
-        color: $default_silver;
+        input::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: $default_silver;
         }
-        :-ms-input-placeholder { /* Internet Explorer 10+ */
-        color: $default_silver;
+        input:-ms-input-placeholder { /* Internet Explorer 10+ */
+            color: $default_silver;
         }
 
         .icon-search {
             color: $default_silver;
             left: 24px;
             position: absolute;
-            top: 5px;
+            top: 7px;
         }
 
         .icon-search.selected {

@@ -16,8 +16,8 @@
         <s:include value="_components-menu.jsp" />
     </div>
     <div class="col-md-9">
-        <s:include value="components/_components.jsp" />
         <s:include value="colors/_colors.jsp" />
+        <s:include value="components/_components.jsp" />
         <s:include value="_html-elements.jsp" />
     </div>
 </div>
