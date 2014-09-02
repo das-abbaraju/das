@@ -270,5 +270,6 @@
 
     <!-- 7.3.7 -->
     <include file="./liquibase/2014/Q3/mdo63_PICS-15861.sql"/>
+    <include file="./liquibase/2014/Q3/cfranks11_PICS-15839_AES_Contractor_Tags.sql"/>
 
 </databaseChangeLog>
