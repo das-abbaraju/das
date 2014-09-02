@@ -1,4 +1,4 @@
-package com.picsauditing.common.flow;
+package com.picsauditing.util.flow;
 
 public class ResultFailure<T> extends Result<T>{
 

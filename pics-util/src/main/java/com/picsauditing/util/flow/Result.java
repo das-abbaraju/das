@@ -1,4 +1,4 @@
-package com.picsauditing.common.flow;
+package com.picsauditing.util.flow;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,6 +208,7 @@ public class Result<T> implements Serializable {
         return new Result(Status.FAILURE);
     }
 
+    @SuppressWarnings("unchecked")
     public static Result success(Object obj) {
         Class c = obj.getClass();
 
@@ -254,7 +255,7 @@ public class Result<T> implements Serializable {
         return extraInfo;
     }
 
-    public boolean succeded() {
+    public boolean succeeded() {
         return status.toString().equals(Result.ok().toString());
     }
 

@@ -1,9 +1,9 @@
-package com.picsauditing.common.flow;
+package com.picsauditing.util.flow;
 
 public class ResultSuccess<T> extends Result<T>{
 
     public ResultSuccess() {
-
+        super(Status.SUCCESS);
     }
 
     public ResultSuccess(T t) {

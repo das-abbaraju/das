@@ -8,6 +8,7 @@ import com.picsauditing.PICS.FeeService;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.RequiredPermission;
+import com.picsauditing.util.flow.Result;
 import com.picsauditing.companyfinder.service.ContractorLocationService;
 import com.picsauditing.dao.*;
 import com.picsauditing.jpa.entities.*;
@@ -20,6 +21,8 @@ import com.picsauditing.util.*;
 import com.picsauditing.validator.ContractorValidator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +33,8 @@ import java.util.*;
 
 @SuppressWarnings("serial")
 public class ContractorEdit extends ContractorActionSupport implements Preparable {
+
+    private final static Logger logger = LoggerFactory.getLogger(ContractorEdit.class);
 
     @Autowired
 	protected AuditQuestionDAO auditQuestionDAO;
