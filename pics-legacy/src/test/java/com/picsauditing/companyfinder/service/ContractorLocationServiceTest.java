@@ -21,7 +21,6 @@ public class ContractorLocationServiceTest {
 
     public static final String VALID_ADDRESS = "17701 Cowan, Irvine CA 92618";
     public static final String GOOGLE_FORMATTED_ADDRESS = "17701+cowan,+irvine+ca+92618";
-
     private static final int CONTRACTOR_ID = 3;
     private static final int USER_ID = 12345;
     private static final String JSON_BODY = "{\"results\" : [{\"geometry\" : {\"location\" : {\"lat\" : 33.6954359,\"lng\" : -117.8576966}}}],\"status\" : \"OK\"}";
