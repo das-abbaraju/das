@@ -145,7 +145,7 @@ public class ContractorAccountTest {
     }
 
     @Test
-    public void testGetTopTrade_OnlySelfPerformed() {
+    public void testGetTopTrade_OnlySubContracted() {
         ContractorAccount contractor = new ContractorAccount();
         contractor.setTrades(new HashSet<ContractorTrade>());
 
@@ -158,6 +158,22 @@ public class ContractorAccountTest {
         contractor.getTrades().add(selfTrade);
 
         assertEquals(selfTrade, contractor.getTopTrade());
+    }
+
+    @Test
+    public void testGetTopTrade_OnlySelfPerformed() {
+        ContractorAccount contractor = new ContractorAccount();
+        contractor.setTrades(new HashSet<ContractorTrade>());
+
+        Trade subLowTrir = makeTrade(1, null, 4.0f);
+        ContractorTrade subLowTrade = makeContractorTrade(subLowTrir, 5, false);
+        Trade subHighTrir = makeTrade(1, null, 5.0f);
+        ContractorTrade subHighTrade = makeContractorTrade(subHighTrir, 5, false);
+
+        contractor.getTrades().add(subLowTrade);
+        contractor.getTrades().add(subHighTrade);
+
+        assertEquals(subHighTrade, contractor.getTopTrade());
     }
 
     @Test
