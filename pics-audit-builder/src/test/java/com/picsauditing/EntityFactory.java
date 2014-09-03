@@ -1,7 +1,7 @@
 package com.picsauditing;
 
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -123,23 +123,23 @@ public class EntityFactory {
 		return co;
 	}
 
-	public static ContractorAudit makeContractorAudit(int auditTypeID, ContractorAccount contractor) {
-		ContractorAudit conAudit = new ContractorAudit();
+	public static ContractorDocument makeContractorAudit(int auditTypeID, ContractorAccount contractor) {
+		ContractorDocument conAudit = new ContractorDocument();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
 		contractor.getAudits().add(conAudit);
 		return conAudit;
 	}
 
-	public static ContractorAudit makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
-		ContractorAudit conAudit = new ContractorAudit();
+	public static ContractorDocument makeContractorAudit(AuditType auditType, ContractorAccount contractor) {
+		ContractorDocument conAudit = new ContractorDocument();
 		conAudit.setAuditType(auditType);
 		conAudit.setContractorAccount(contractor);
 		return conAudit;
 	}
 
-	public static ContractorAudit makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
-		ContractorAudit conAudit = new ContractorAudit();
+	public static ContractorDocument makeAnnualUpdate(int auditTypeID, ContractorAccount contractor, String auditFor) {
+		ContractorDocument conAudit = new ContractorDocument();
 		conAudit.setAuditType(makeAuditType(auditTypeID));
 		conAudit.setContractorAccount(contractor);
 		conAudit.setAuditFor(auditFor);
@@ -153,21 +153,21 @@ public class EntityFactory {
 //		return oshaAudit;
 //	}
 //
-	public static AuditCatData addCategories(ContractorAudit conAudit, int categoryID) {
-		AuditCatData auditCatData = new AuditCatData();
-		auditCatData.setAudit(conAudit);
-		auditCatData.setCategory(new AuditCategory());
-		auditCatData.getCategory().setId(categoryID);
-		auditCatData.setNumRequired(4);
-		return auditCatData;
+	public static DocumentCatData addCategories(ContractorDocument conAudit, int categoryID) {
+		DocumentCatData documentCatData = new DocumentCatData();
+		documentCatData.setAudit(conAudit);
+		documentCatData.setCategory(new DocumentCategory());
+		documentCatData.getCategory().setId(categoryID);
+		documentCatData.setNumRequired(4);
+		return documentCatData;
 	}
 
-	public static AuditCategory addCategories(AuditType auditType, int categoryID, String name) {
-		AuditCategory auditCategory = new AuditCategory();
-		auditCategory.setId(categoryID);
-		auditCategory.setAuditType(auditType);
-		auditType.getCategories().add(auditCategory);
-		return auditCategory;
+	public static DocumentCategory addCategories(AuditType auditType, int categoryID, String name) {
+		DocumentCategory documentCategory = new DocumentCategory();
+		documentCategory.setId(categoryID);
+		documentCategory.setAuditType(auditType);
+		auditType.getCategories().add(documentCategory);
+		return documentCategory;
 	}
 
 //	// TODO: FIX ME
@@ -189,9 +189,9 @@ public class EntityFactory {
 	public static AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
-		auditType.setClassType(AuditTypeClass.Audit);
+		auditType.setClassType(DocumentTypeClass.Audit);
 		auditType.setMonthsToExpire(12);
-        auditType.setPeriod(AuditTypePeriod.None);
+        auditType.setPeriod(DocumentTypePeriod.None);
 		Workflow workFlow = makeWorkflowNoSubmitted();
 		auditType.setWorkFlow(workFlow);
 		return auditType;
@@ -200,12 +200,12 @@ public class EntityFactory {
 	public static Workflow makeWorkflowNoSubmitted() {
 		Workflow workFlow = new Workflow();
 		WorkflowStep step1 = new WorkflowStep();
-		step1.setOldStatus(AuditStatus.Pending);
-		step1.setNewStatus(AuditStatus.Complete);
+		step1.setOldStatus(DocumentStatus.Pending);
+		step1.setNewStatus(DocumentStatus.Complete);
 
 		WorkflowStep step2 = new WorkflowStep();
-		step2.setOldStatus(AuditStatus.Resubmit);
-		step2.setNewStatus(AuditStatus.Complete);
+		step2.setOldStatus(DocumentStatus.Resubmit);
+		step2.setNewStatus(DocumentStatus.Complete);
 
 		List<WorkflowStep> steps = new ArrayList<>();
 		steps.add(step1);
@@ -232,17 +232,17 @@ public class EntityFactory {
 //		return workFlow;
 //	}
 //
-	public static ContractorAuditOperator addCao(ContractorAudit conAudit, OperatorAccount operator) {
-		ContractorAuditOperator cao = new ContractorAuditOperator();
+	public static ContractorDocumentOperator addCao(ContractorDocument conAudit, OperatorAccount operator) {
+		ContractorDocumentOperator cao = new ContractorDocumentOperator();
 		cao.setAudit(conAudit);
 		cao.setOperator(operator);
-		AuditService.changeStatus(cao, AuditStatus.Approved);
+		DocumentUtilityService.changeStatus(cao, DocumentStatus.Approved);
 		conAudit.getOperators().add(cao);
 		return cao;
 	}
 
-	public static AuditQuestion makeAuditQuestion() {
-		AuditQuestion question = new AuditQuestion();
+	public static DocumentQuestion makeAuditQuestion() {
+		DocumentQuestion question = new DocumentQuestion();
 		question.setId(counter++);
 		long time = (new Date()).getTime();
 		question.setEffectiveDate(new Date(time - (24 * 60 * 60 * 1000L)));
@@ -251,25 +251,25 @@ public class EntityFactory {
 		return question;
 	}
 
-	public static AuditCategory makeAuditCategory() {
+	public static DocumentCategory makeAuditCategory() {
 		return makeAuditCategory(counter++);
 	}
 
-	public static AuditCategory makeAuditCategory(int categoryId) {
-		AuditCategory auditCategory = new AuditCategory();
-		auditCategory.setId(categoryId);
-		auditCategory.setAuditType(makeAuditType());
-		auditCategory.setEffectiveDate(new Date());
-		auditCategory.setExpirationDate(END_OF_TIME);
-		return auditCategory;
+	public static DocumentCategory makeAuditCategory(int categoryId) {
+		DocumentCategory documentCategory = new DocumentCategory();
+		documentCategory.setId(categoryId);
+		documentCategory.setAuditType(makeAuditType());
+		documentCategory.setEffectiveDate(new Date());
+		documentCategory.setExpirationDate(END_OF_TIME);
+		return documentCategory;
 	}
 
-	public static AuditData makeAuditData(String answer) {
+	public static DocumentData makeAuditData(String answer) {
 		return makeAuditData(answer, makeAuditQuestion());
 	}
 
-	public static AuditData makeAuditData(String answer, AuditQuestion question) {
-		AuditData data = new AuditData();
+	public static DocumentData makeAuditData(String answer, DocumentQuestion question) {
+		DocumentData data = new DocumentData();
 		data.setQuestion(question);
 		data.setAnswer(answer);
 		data.setId(counter++);
@@ -333,24 +333,24 @@ public class EntityFactory {
 //		return sub;
 //	}
 //
-	public static AuditCatData makeAuditCatData() {
-		AuditCategory category = new AuditCategory();
-		AuditCatData catData = new AuditCatData();
+	public static DocumentCatData makeAuditCatData() {
+		DocumentCategory category = new DocumentCategory();
+		DocumentCatData catData = new DocumentCatData();
 		catData.setCategory(category);
 		return catData;
 	}
 
 	@SuppressWarnings("deprecation")
-	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit, AuditStatus status) {
-		ContractorAuditOperator cao = new ContractorAuditOperator();
+	public static ContractorDocumentOperator makeContractorAuditOperator(ContractorDocument audit, DocumentStatus status) {
+		ContractorDocumentOperator cao = new ContractorDocumentOperator();
 		cao.setAudit(audit);
 		cao.setStatus(status);
 		cao.setVisible(true);
 		return cao;
 	}
 
-	public static ContractorAuditOperator makeContractorAuditOperator(ContractorAudit audit) {
-		return makeContractorAuditOperator(audit, AuditStatus.Complete);
+	public static ContractorDocumentOperator makeContractorAuditOperator(ContractorDocument audit) {
+		return makeContractorAuditOperator(audit, DocumentStatus.Complete);
 	}
 
 //	public static Facility makeFacility(OperatorAccount operator, OperatorAccount corporate) {

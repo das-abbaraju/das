@@ -1,7 +1,5 @@
 package com.picsauditing.auditbuilder.entities;
 
-import org.hibernate.annotations.Sort;
-import org.hibernate.annotations.SortType;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
@@ -22,17 +20,17 @@ public class ContractorAccount extends Account {
 	private boolean soleProprietor;
 	private AccountLevel accountLevel = AccountLevel.Full;
 
-	private List<ContractorAudit> audits = new ArrayList<>();
+	private List<ContractorDocument> audits = new ArrayList<>();
 	private List<ContractorOperator> operators = new ArrayList<>();
 	private Set<ContractorTrade> trades = new TreeSet<>();
 
 	@OneToMany(mappedBy = "contractorAccount", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
 	@Where(clause = "expiresDate > NOW() OR expiresDate IS NULL")
-	public List<ContractorAudit> getAudits() {
+	public List<ContractorDocument> getAudits() {
 		return this.audits;
 	}
 
-	public void setAudits(List<ContractorAudit> audits) {
+	public void setAudits(List<ContractorDocument> audits) {
 		this.audits = audits;
 	}
 

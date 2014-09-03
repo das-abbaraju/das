@@ -3,8 +3,8 @@ package com.picsauditing.auditbuilder;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
-import com.picsauditing.auditbuilder.dao.ContractorTagDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorTagDAO;
+import com.picsauditing.auditbuilder.dao.DocumentDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
 import org.junit.Before;
@@ -33,9 +33,9 @@ public class DocumentServiceTest extends PicsTest {
     private DocumentService service;
 
     @Mock
-    private AuditDataDAO2 auditDataDAO;
+    private DocumentDataDAO auditDataDAO;
     @Mock
-    private ContractorTagDAO2 contractorTagDAO;
+    private ContractorTagDAO contractorTagDAO;
     @Mock
     private OperatorAccount operator;
     @Mock
@@ -43,17 +43,17 @@ public class DocumentServiceTest extends PicsTest {
     @Mock
     private ContractorAccount contractor;
     @Mock
-    private AuditTypeRuleCache2 typeRuleCache;
+    private DocumentTypeRuleCache typeRuleCache;
     @Mock
-    private AuditCategoryRuleCache2 categoryRuleCache;
+    private DocumentCategoryRuleCache categoryRuleCache;
 
     List<Integer> operatorIds = new ArrayList<>();
     List<ContractorOperator> conOps = new ArrayList<>();
-    List<AuditTypeRule> typeRules = new ArrayList<>();
-    List<AuditCategoryRule> categoryRules = new ArrayList<>();
+    List<DocumentTypeRule> typeRules = new ArrayList<>();
+    List<DocumentCategoryRule> categoryRules = new ArrayList<>();
 
-    private AuditTypesBuilder auditTypesBuilder;
-    private AuditCategoriesBuilder auditCategoriesBuilder;
+    private DocumentTypesBuilder documentTypesBuilder;
+    private DocumentCategoriesBuilder documentCategoriesBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -61,15 +61,15 @@ public class DocumentServiceTest extends PicsTest {
 
         service = new DocumentService();
 
-        auditTypesBuilder = new AuditTypesBuilder();
-        auditCategoriesBuilder = new AuditCategoriesBuilder();
+        documentTypesBuilder = new DocumentTypesBuilder();
+        documentCategoriesBuilder = new DocumentCategoriesBuilder();
 
         PicsTestUtil.forceSetPrivateField(service, "auditDataDAO", auditDataDAO);
         PicsTestUtil.forceSetPrivateField(service, "contractorTagDAO", contractorTagDAO);
         PicsTestUtil.forceSetPrivateField(service, "typeRuleCache", typeRuleCache);
         PicsTestUtil.forceSetPrivateField(service, "categoryRuleCache", categoryRuleCache);
-        PicsTestUtil.forceSetPrivateField(service, "auditTypesBuilder", auditTypesBuilder);
-        PicsTestUtil.forceSetPrivateField(service, "auditCategoriesBuilder", auditCategoriesBuilder);
+        PicsTestUtil.forceSetPrivateField(service, "documentTypesBuilder", documentTypesBuilder);
+        PicsTestUtil.forceSetPrivateField(service, "documentCategoriesBuilder", documentCategoriesBuilder);
 
         initialize();
     }
@@ -134,15 +134,15 @@ public class DocumentServiceTest extends PicsTest {
         when(typeRuleCache.getRules(contractor)).thenReturn(typeRules);
 
         typeRules.clear();
-        AuditTypeRule rule;
+        DocumentTypeRule rule;
 
-        rule = new AuditTypeRule();
+        rule = new DocumentTypeRule();
         rule.setAuditType(new AuditType());
         rule.getAuditType().setId(AUDIT_TYPE_ID);
         rule.setOperatorAccount(operator);
         typeRules.add(rule);
 
-        rule = new AuditTypeRule();
+        rule = new DocumentTypeRule();
         rule.setAuditType(new AuditType());
         rule.getAuditType().setId(NON_AUDIT_TYPE_ID);
         rule.setOperatorAccount(nonOperator);
@@ -150,17 +150,17 @@ public class DocumentServiceTest extends PicsTest {
 
         AuditType auditType = EntityFactory.makeAuditType(AUDIT_TYPE_ID);
         when(auditDataDAO.find(AuditType.class, AUDIT_TYPE_ID)).thenReturn(auditType);
-        AuditCategory goodCat = EntityFactory.addCategories(auditType, CATEGORY_ID, "Good");
-        AuditCategory badCat = EntityFactory.addCategories(auditType, NON_CATEGORY_ID, "Bad");
+        DocumentCategory goodCat = EntityFactory.addCategories(auditType, CATEGORY_ID, "Good");
+        DocumentCategory badCat = EntityFactory.addCategories(auditType, NON_CATEGORY_ID, "Bad");
 
         categoryRules.clear();
-        AuditCategoryRule catRule;
-        catRule = new AuditCategoryRule();
-        catRule.setAuditCategory(goodCat);
+        DocumentCategoryRule catRule;
+        catRule = new DocumentCategoryRule();
+        catRule.setDocumentCategory(goodCat);
         catRule.setOperatorAccount(operator);
         categoryRules.add(catRule);
-        catRule = new AuditCategoryRule();
-        catRule.setAuditCategory(badCat);
+        catRule = new DocumentCategoryRule();
+        catRule.setDocumentCategory(badCat);
         catRule.setOperatorAccount(nonOperator);
         categoryRules.add(catRule);
 

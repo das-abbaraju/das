@@ -57,7 +57,7 @@
     <bean id="AuditQuestionTextDAO" class="com.picsauditing.dao.AuditQuestionTextDAO"/>
     <bean id="AuditRejectionCodeDAO" class="com.picsauditing.dao.AuditRejectionCodeDAO"/>
     <bean id="AuditTypeDAO" class="com.picsauditing.dao.AuditTypeDAO"/>
-    <bean id="AuditTypesBuilder" class="com.picsauditing.auditbuilder.AuditTypesBuilder"/>
+    <bean id="AuditTypesBuilder" class="com.picsauditing.auditbuilder.DocumentTypesBuilder"/>
     <bean id="AutocompleteDAO" class="com.picsauditing.dao.AutocompleteDAO"/>
     <bean id="CertificateDAO" class="com.picsauditing.dao.CertificateDAO"/>
     <bean id="ContactUsService" class="com.picsauditing.user.service.ContactUsService" scope="prototype"/>

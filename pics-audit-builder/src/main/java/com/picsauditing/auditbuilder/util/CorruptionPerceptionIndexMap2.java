@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder.util;
 
-import com.picsauditing.auditbuilder.dao.CountryDAO2;
+import com.picsauditing.auditbuilder.dao.CountryDAO;
 import com.picsauditing.auditbuilder.entities.Country;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,7 +15,7 @@ import java.util.Map;
 public class CorruptionPerceptionIndexMap2 {
 
 	@Autowired
-	protected CountryDAO2 countryDAO;
+	protected CountryDAO countryDAO;
 	private Map<String, Double> map = null;
 
 	public List<Double> findCorruptionPerceptionIndices(String unparsedJsonCountries) {

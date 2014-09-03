@@ -25,7 +25,7 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 	public static final int IEC_AUDIT = 313;
 	public static final int SSIP = 514;
 
-	protected AuditTypeClass classType = AuditTypeClass.Audit;
+	protected DocumentTypeClass classType = DocumentTypeClass.Audit;
     protected int displayOrder = 100;
 	protected boolean hasMultiple;
 	protected boolean canOperatorView;
@@ -33,27 +33,27 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 	protected Integer monthsToExpire;
 	protected Workflow workFlow;
 	protected ScoreType scoreType;
-    protected AuditTypePeriod period = AuditTypePeriod.None;
+    protected DocumentTypePeriod period = DocumentTypePeriod.None;
     protected int anchorDay = 1;
     protected int anchorMonth = 1;
     protected int advanceDays = 0;
     protected int maximumActive = 1;
     protected AuditType parent = null;
-    protected AuditStatus rollbackStatus = null;
+    protected DocumentStatus rollbackStatus = null;
 
-	protected List<AuditCategory> categories = new ArrayList<>();
+	protected List<DocumentCategory> categories = new ArrayList<>();
 
-    protected List<AuditCategory> topCategories;
+    protected List<DocumentCategory> topCategories;
 
     public static final Set<Integer> CANADIAN_PROVINCES = new HashSet<>(Arrays.asList(new Integer[]{145, 146,
         143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
     @Enumerated(EnumType.STRING)
-	public AuditTypeClass getClassType() {
+	public DocumentTypeClass getClassType() {
 		return classType;
 	}
 
-	public void setClassType(AuditTypeClass classType) {
+	public void setClassType(DocumentTypeClass classType) {
 		this.classType = classType;
 	}
 
@@ -99,11 +99,11 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 
 	@OneToMany(mappedBy = "auditType")
 	@OrderBy("number")
-	public List<AuditCategory> getCategories() {
+	public List<DocumentCategory> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<AuditCategory> categories) {
+	public void setCategories(List<DocumentCategory> categories) {
 		this.categories = categories;
 	}
 
@@ -151,11 +151,11 @@ public class AuditType extends BaseTable implements java.io.Serializable {
     }
 
     @Enumerated(EnumType.STRING)
-    public AuditTypePeriod getPeriod() {
+    public DocumentTypePeriod getPeriod() {
         return period;
     }
 
-    public void setPeriod(AuditTypePeriod period) {
+    public void setPeriod(DocumentTypePeriod period) {
         this.period = period;
     }
 
@@ -179,11 +179,11 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 
     @Column(name = "rollbackStatus", nullable = false)
     @Enumerated(EnumType.STRING)
-    public AuditStatus getRollbackStatus() {
+    public DocumentStatus getRollbackStatus() {
         return rollbackStatus;
     }
 
-    public void setRollbackStatus(AuditStatus rollbackStatus) {
+    public void setRollbackStatus(DocumentStatus rollbackStatus) {
         this.rollbackStatus = rollbackStatus;
     }
 

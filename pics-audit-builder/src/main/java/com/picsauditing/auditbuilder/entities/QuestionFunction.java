@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder.entities;
 
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2;
 import com.picsauditing.auditbuilder.util.Strings;
@@ -661,11 +661,11 @@ public enum QuestionFunction {
 		public Object calculate(FunctionInput input) {
 			float score = 0f;
 			float total = 0f;
-			for (AuditQuestionFunctionWatcher watcher : input.getWatchers()) {
-				AuditQuestion question = watcher.getQuestion();
-				AuditData auditData = input.getAnswerMap().get(question.getId());
-				if (auditData != null && AuditService.isScoreApplies(auditData)) {
-					score += AuditService.getScoreValue(auditData);
+			for (DocumentQuestionFunctionWatcher watcher : input.getWatchers()) {
+				DocumentQuestion question = watcher.getQuestion();
+				DocumentData documentData = input.getAnswerMap().get(question.getId());
+				if (documentData != null && DocumentUtilityService.isScoreApplies(documentData)) {
+					score += DocumentUtilityService.getScoreValue(documentData);
 					total += question.getScoreWeight();
 				}
 			}
@@ -985,7 +985,7 @@ public enum QuestionFunction {
 	public static class FunctionInput {
 		private final Map<String, String> params;
 		private final AnswerMap answerMap;
-		private final Collection<AuditQuestionFunctionWatcher> watchers;
+		private final Collection<DocumentQuestionFunctionWatcher> watchers;
         private String currentAnswer = null;
         private String expression = null;
         private CorruptionPerceptionIndexMap2 cpiMap = null;
@@ -1032,7 +1032,7 @@ public enum QuestionFunction {
         public static class Builder {
 			private Map<String, String> params;
 			private AnswerMap answerMap;
-			private Collection<AuditQuestionFunctionWatcher> watchers = Collections.emptyList();
+			private Collection<DocumentQuestionFunctionWatcher> watchers = Collections.emptyList();
             private CorruptionPerceptionIndexMap2 cpiMap;
 
             public Builder params(Map<String, String> params) {
@@ -1045,7 +1045,7 @@ public enum QuestionFunction {
 				return this;
 			}
 
-			public Builder watchers(Collection<AuditQuestionFunctionWatcher> watchers) {
+			public Builder watchers(Collection<DocumentQuestionFunctionWatcher> watchers) {
 				this.watchers = Collections.unmodifiableCollection(watchers);
 				return this;
 			}
@@ -1068,7 +1068,7 @@ public enum QuestionFunction {
 			return answerMap;
 		}
 
-		public Collection<AuditQuestionFunctionWatcher> getWatchers() {
+		public Collection<DocumentQuestionFunctionWatcher> getWatchers() {
 			return watchers;
 		}
 	}
@@ -1088,11 +1088,11 @@ public enum QuestionFunction {
 	protected Map<String, String> getParameterMap(FunctionInput input) {
 		Map<String, String> params = new HashMap<>();
 
-		for (AuditQuestionFunctionWatcher watcher : input.watchers) {
-			AuditData auditData = input.answerMap.get(watcher.getQuestion().getId());
+		for (DocumentQuestionFunctionWatcher watcher : input.watchers) {
+			DocumentData documentData = input.answerMap.get(watcher.getQuestion().getId());
 			String answer = "";
-			if (auditData != null) {
-				answer = auditData.getAnswer();
+			if (documentData != null) {
+				answer = documentData.getAnswer();
 			}
 			params.put(watcher.getUniqueCode(), answer);
 		}
