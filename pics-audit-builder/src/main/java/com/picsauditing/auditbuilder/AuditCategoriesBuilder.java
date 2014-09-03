@@ -1,15 +1,15 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 
 import java.util.*;
 
 public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditCategoryRuleCache2 ruleCache;
 
-	private Map<OperatorAccount, AuditCategoryRule> operators = new HashMap<>();
-	private Map<OperatorAccount, Set<AuditCategory>> categoriesPerOperator = new HashMap<>();
+	private Map<OperatorAccount, DocumentCategoryRule> operators = new HashMap<>();
+	private Map<OperatorAccount, Set<DocumentCategory>> categoriesPerOperator = new HashMap<>();
 
 	private AuditType auditType = null;
 	private OperatorAccount auditFor = null;
@@ -24,7 +24,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	}
 
     public void calculate(int auditId, Collection<Integer> operatorIds) {
-        ContractorAudit audit = getAuditDataDAO().find(ContractorAudit.class, auditId);
+        ContractorDocument audit = getAuditDataDAO().find(ContractorDocument.class, auditId);
         Collection<OperatorAccount> operators = new ArrayList<>();
         for (int id:operatorIds) {
             operators.add(getAuditDataDAO().find(OperatorAccount.class, id));
@@ -32,11 +32,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
         calculate(audit, operators);
     }
 
-	public Set<AuditCategory> calculate(ContractorAudit conAudit) {
+	public Set<DocumentCategory> calculate(ContractorDocument conAudit) {
 		Collection<OperatorAccount> operators = new HashSet<>();
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible()) {
-				for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+				for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
 					operators.add(caop.getOperator());
 				}
 			}
@@ -44,8 +44,8 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return calculate(conAudit, operators);
 	}
 
-	public Set<AuditCategory> calculate(ContractorAudit conAudit, Collection<OperatorAccount> auditOperators) {
-		Set<AuditCategory> categories = new HashSet<>();
+	public Set<DocumentCategory> calculate(ContractorDocument conAudit, Collection<OperatorAccount> auditOperators) {
+		Set<DocumentCategory> categories = new HashSet<>();
 
 		auditType = conAudit.getAuditType();
 		if (auditType.getId() == AuditType.WELCOME) {
@@ -66,27 +66,27 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 			}
 		}
 
-		List<AuditCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
+		List<DocumentCategoryRule> rules = ruleCache.getRules(contractor, conAudit.getAuditType());
 
 		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
-		Map<Integer, AuditData> answers = getAuditAnswers(rules, conAudit);
-			Iterator<AuditCategoryRule> iterator = rules.iterator();
+		Map<Integer, DocumentData> answers = getAuditAnswers(rules, conAudit);
+			Iterator<DocumentCategoryRule> iterator = rules.iterator();
 			while (iterator.hasNext()) {
-				AuditCategoryRule rule = iterator.next();
+				DocumentCategoryRule rule = iterator.next();
 				if (!isValid(rule, answers, tags))
 					iterator.remove();
 			}
 
-		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
+		for (DocumentCategory category : conAudit.getAuditType().getCategories()) {
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
 					for (OperatorAccount operator : auditOperators) {
-						AuditCategoryRule rule = getApplicable(rules, category, trade, type, operator);
+						DocumentCategoryRule rule = getApplicable(rules, category, trade, type, operator);
 						if (rule != null && rule.isInclude()) {
 							categories.add(category);
 
 							if (!categoriesPerOperator.containsKey(operator))
-								categoriesPerOperator.put(operator, new HashSet<AuditCategory>());
+								categoriesPerOperator.put(operator, new HashSet<DocumentCategory>());
 							categoriesPerOperator.get(operator).add(category);
 
 							if (rule.isMoreSpecific(operators.get(operator))) {
@@ -101,28 +101,28 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return categories;
 	}
 
-	private AuditCategoryRule getApplicable(List<AuditCategoryRule> rules, AuditCategory auditCategory, Trade trade,
+	private DocumentCategoryRule getApplicable(List<DocumentCategoryRule> rules, DocumentCategory documentCategory, Trade trade,
 			ContractorType type, OperatorAccount operator) {
-		for (AuditCategoryRule rule : rules) {
-			if (AuditService.isApplies(rule, auditCategory))
-                if (AuditService.isApplies(rule, trade))
-                    if (AuditService.isApplies(rule, type))
-                        if (AuditService.isApplies(rule, operator))
+		for (DocumentCategoryRule rule : rules) {
+			if (DocumentUtilityService.isApplies(rule, documentCategory))
+                if (DocumentUtilityService.isApplies(rule, trade))
+                    if (DocumentUtilityService.isApplies(rule, type))
+                        if (DocumentUtilityService.isApplies(rule, operator))
 							return rule;
 		}
 		return null;
 	}
 
-	protected boolean isValid(AuditCategoryRule rule, Map<Integer, AuditData> contractorAnswers,
+	protected boolean isValid(DocumentCategoryRule rule, Map<Integer, DocumentData> contractorAnswers,
 	                          Map<Integer, OperatorTag> opTags) {
-		AuditCategoryRule auditCategoryRule = rule;
-		if (auditCategoryRule.getDependentAuditType() != null && auditCategoryRule.getDependentAuditStatus() != null) {
+		DocumentCategoryRule documentCategoryRule = rule;
+		if (documentCategoryRule.getDependentAuditType() != null && documentCategoryRule.getDependentDocumentStatus() != null) {
 			boolean found = false;
-			for (ContractorAudit audit : contractor.getAudits()) {
-				if (!AuditService.isExpired(audit)
-						&& audit.getAuditType().equals(auditCategoryRule.getDependentAuditType())
-						&& (AuditService.hasCaoStatus(audit, auditCategoryRule.getDependentAuditStatus()) ||
-						AuditService.hasCaoStatusAfter(audit, auditCategoryRule.getDependentAuditStatus()))) {
+			for (ContractorDocument audit : contractor.getAudits()) {
+				if (!DocumentUtilityService.isExpired(audit)
+						&& audit.getAuditType().equals(documentCategoryRule.getDependentAuditType())
+						&& (DocumentUtilityService.hasCaoStatus(audit, documentCategoryRule.getDependentDocumentStatus()) ||
+						DocumentUtilityService.hasCaoStatusAfter(audit, documentCategoryRule.getDependentDocumentStatus()))) {
 					found = true;
 					break;
 				}
@@ -141,7 +141,7 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		picsGlobal.setId(4);
 
 		for (OperatorAccount operator : operators.keySet()) {
-			AuditCategoryRule rule = operators.get(operator);
+			DocumentCategoryRule rule = operators.get(operator);
 			if (rule == null) {
 
 			} else {
@@ -189,18 +189,18 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return governingBody;
 	}
 
-	private Map<Integer, AuditData> getAuditAnswers(List<? extends AuditRule> rules, ContractorAudit conAudit) {
-		Map<Integer, AuditData> answers = new HashMap<>();
-		for (AuditRule rule : rules) {
+	private Map<Integer, DocumentData> getAuditAnswers(List<? extends DocumentRule> rules, ContractorDocument conAudit) {
+		Map<Integer, DocumentData> answers = new HashMap<>();
+		for (DocumentRule rule : rules) {
 			if (rule.getQuestion() != null) {
 				int currentQuestionId = rule.getQuestion().getId();
-				ContractorAudit auditContainingCurrentQuestion = conAudit;
+				ContractorDocument auditContainingCurrentQuestion = conAudit;
 
-				if (!conAudit.getAuditType().equals(AuditService.getAuditType(rule.getQuestion()))) {
-					auditContainingCurrentQuestion = findMostRecentAudit(AuditService.getAuditType(rule.getQuestion()).getId());
+				if (!conAudit.getAuditType().equals(DocumentUtilityService.getAuditType(rule.getQuestion()))) {
+					auditContainingCurrentQuestion = findMostRecentAudit(DocumentUtilityService.getAuditType(rule.getQuestion()).getId());
 				}
 
-				AuditData answer = findAnswer(auditContainingCurrentQuestion, currentQuestionId);
+				DocumentData answer = findAnswer(auditContainingCurrentQuestion, currentQuestionId);
 				answers.put(currentQuestionId, answer);
 			}
 		}
@@ -208,9 +208,9 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return answers;
 	}
 
-	private ContractorAudit findMostRecentAudit(int auditTypeId) {
-		ContractorAudit mostRecentAudit = null;
-		for (ContractorAudit audit : contractor.getAudits()) {
+	private ContractorDocument findMostRecentAudit(int auditTypeId) {
+		ContractorDocument mostRecentAudit = null;
+		for (ContractorDocument audit : contractor.getAudits()) {
 			if (audit.getAuditType().getId() == auditTypeId) {
 				if (mostRecentAudit == null
 						|| mostRecentAudit.getCreationDate().before(audit.getCreationDate())) {
@@ -222,9 +222,9 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 		return mostRecentAudit;
 	}
 
-	private AuditData findAnswer(ContractorAudit auditContainingCurrentQuestion, int currentQuestionId) {
+	private DocumentData findAnswer(ContractorDocument auditContainingCurrentQuestion, int currentQuestionId) {
 		if (auditContainingCurrentQuestion != null) {
-			for (AuditData answer : auditContainingCurrentQuestion.getData()) {
+			for (DocumentData answer : auditContainingCurrentQuestion.getData()) {
 				if (answer.getQuestion().getId() == currentQuestionId) {
 					return answer;
 				}
@@ -235,14 +235,14 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	}
 
     public boolean isCategoryApplicable(int categoryId, int caoId) {
-        AuditCategory category = getAuditDataDAO().find(AuditCategory.class, categoryId);
-        ContractorAuditOperator cao = getAuditDataDAO().find(ContractorAuditOperator.class, caoId);
+        DocumentCategory category = getAuditDataDAO().find(DocumentCategory.class, categoryId);
+        ContractorDocumentOperator cao = getAuditDataDAO().find(ContractorDocumentOperator.class, caoId);
         return isCategoryApplicable(category, cao);
     }
 
-	public boolean isCategoryApplicable(AuditCategory category, ContractorAuditOperator cao) {
-		for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-			Set<AuditCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
+	public boolean isCategoryApplicable(DocumentCategory category, ContractorDocumentOperator cao) {
+		for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
+			Set<DocumentCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
 			if (operatorCategories != null && operatorCategories.contains(category) && ContractorAuditCategories.isCategoryEffective(category, cao.getAudit().getEffectiveDate()))
 				return true;
 		}

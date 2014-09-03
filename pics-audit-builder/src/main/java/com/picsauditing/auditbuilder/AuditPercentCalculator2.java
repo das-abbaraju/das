@@ -1,12 +1,12 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
-import com.picsauditing.auditbuilder.dao.ContractorAuditDAO2;
-import com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorDocumentDAO;
+import com.picsauditing.auditbuilder.dao.ContractorDocumentOperatorDAO;
+import com.picsauditing.auditbuilder.dao.DocumentDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditPeriodService2;
-import com.picsauditing.auditbuilder.service.AuditService;
-import com.picsauditing.auditbuilder.service.CaoAutoAdvancer;
+import com.picsauditing.auditbuilder.service.DocumentPeriodService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
+import com.picsauditing.auditbuilder.service.DocumentAutoAdvancer;
 import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2;
 import com.picsauditing.auditbuilder.util.Strings;
@@ -22,30 +22,30 @@ public class AuditPercentCalculator2 {
 	@Autowired
 	private CorruptionPerceptionIndexMap2 corruptionPerceptionIndexMap;
 	@Autowired
-	private AuditDataDAO2 auditDataDAO;
+	private DocumentDataDAO auditDataDAO;
 	@Autowired
-	protected ContractorAuditOperatorDAO2 caoDAO;
+	protected ContractorDocumentOperatorDAO caoDAO;
     @Autowired
-    protected AuditPeriodService2 auditPeriodService;
+    protected DocumentPeriodService auditPeriodService;
     @Autowired
-    protected ContractorAuditDAO2 contractorAuditDAO;
+    protected ContractorDocumentDAO contractorAuditDAO;
 
 	protected float subScorePossible;
 	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator2.class);
 
     public void updatePercentageCompleted(int auditCatDataId) {
-        AuditCatData auditCatData = contractorAuditDAO.find(AuditCatData.class, auditCatDataId);
-        updatePercentageCompleted(auditCatData);
+        DocumentCatData documentCatData = contractorAuditDAO.find(DocumentCatData.class, auditCatDataId);
+        updatePercentageCompleted(documentCatData);
     }
 
-	public void updatePercentageCompleted(AuditCatData catData) {
+	public void updatePercentageCompleted(DocumentCatData catData) {
 		if (catData == null)
 			return;
 
 		if (!catData.isApplies())
 			return;
 
-        if (!AuditService.isCurrent(catData.getCategory()))
+        if (!DocumentUtilityService.isCurrent(catData.getCategory()))
             return;
 
         int requiredAnsweredCount = 0;
@@ -57,7 +57,7 @@ public class AuditPercentCalculator2 {
 		HashSet<Integer> circularRequiredQuestionIds = new HashSet<>();
 		HashSet<Integer> circularVisualQuestionIds = new HashSet<>();
 
-		Date validDate = AuditService.getValidDate(catData.getAudit());
+		Date validDate = DocumentUtilityService.getValidDate(catData.getAudit());
 
 		Set<Integer> questionIDs = collectQuestionIdsFromAuditCatData(catData);
 		Collection<Integer> functionWatcherQuestionIds = collectFunctionWatcherQuestionIdsFromAuditCatData(catData);
@@ -69,19 +69,19 @@ public class AuditPercentCalculator2 {
 
         runCalculationFunctions(catData, validDate, currentWatcherAnswers);
 
-		List<AuditData> requiredAnswers = new ArrayList<>();
-		for (AuditData answer : catData.getAudit().getData())
+		List<DocumentData> requiredAnswers = new ArrayList<>();
+		for (DocumentData answer : catData.getAudit().getData())
 			if (questionIDs.contains(answer.getQuestion().getId()))
 				requiredAnswers.add(answer);
 		AnswerMap answers = new AnswerMap(requiredAnswers);
 
-		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+		for (DocumentQuestion question : catData.getCategory().getQuestions()) {
 
-			if (AuditService.isValidQuestion(question, validDate)) {
-				AuditQuestion questionBeingReviewed = question;
+			if (DocumentUtilityService.isValidQuestion(question, validDate)) {
+				DocumentQuestion questionBeingReviewed = question;
 				boolean isRequired = questionBeingReviewed.isRequired();
 
-				AuditData answer = answers.get(questionBeingReviewed.getId());
+				DocumentData answer = answers.get(questionBeingReviewed.getId());
                 boolean isVisibleToRecalculate = isVisibleToRecalculate(answers.get(question.getId()), answers);
 
 				circularRequiredQuestionIds.clear();
@@ -89,15 +89,15 @@ public class AuditPercentCalculator2 {
 					if (questionBeingReviewed.getRequiredQuestion() != null
 							&& questionBeingReviewed.getRequiredAnswer() != null) {
 						if (questionBeingReviewed.getRequiredAnswer().equals("NULL")) {
-							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							DocumentData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
 							if (otherAnswer == null || Strings.isEmpty(otherAnswer.getAnswer()))
 								isRequired = true;
 						} else if (questionBeingReviewed.getRequiredAnswer().equals("NOTNULL")) {
-							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							DocumentData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
 							if (otherAnswer != null && !Strings.isEmpty(otherAnswer.getAnswer()))
 								isRequired = true;
 						} else {
-							AuditData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
+							DocumentData otherAnswer = answers.get(questionBeingReviewed.getRequiredQuestion().getId());
 							if (otherAnswer != null
 									&& questionBeingReviewed.getRequiredAnswer().equals(otherAnswer.getAnswer()))
 								isRequired = true;
@@ -111,18 +111,18 @@ public class AuditPercentCalculator2 {
 							isRequired = false;
 						else if (questionBeingReviewed.getVisibleQuestion() != null
 								&& questionBeingReviewed.getVisibleAnswer() != null) {
-							AuditData otherAnswer = answers.get(questionBeingReviewed.getVisibleQuestion().getId());
-							if (!AuditService.isVisible(questionBeingReviewed, otherAnswer))
+							DocumentData otherAnswer = answers.get(questionBeingReviewed.getVisibleQuestion().getId());
+							if (!DocumentUtilityService.isVisible(questionBeingReviewed, otherAnswer))
 								isRequired = false;
 						}
 
-						AuditQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
+						DocumentQuestion questionVisibilityParent = questionBeingReviewed.getVisibleQuestion();
 						circularVisualQuestionIds.clear();
 						while (questionVisibilityParent != null && isRequired) {
 							if (questionVisibilityParent.getVisibleQuestion() != null
 									&& questionVisibilityParent.getVisibleAnswer() != null) {
-								if (!AuditService.isVisible(questionVisibilityParent, answers.get(questionVisibilityParent
-										.getVisibleQuestion().getId()))) {
+								if (!DocumentUtilityService.isVisible(questionVisibilityParent, answers.get(questionVisibilityParent
+                                        .getVisibleQuestion().getId()))) {
 									isRequired = false;
                                     isVisibleToRecalculate = false;
                                 }
@@ -155,10 +155,10 @@ public class AuditPercentCalculator2 {
 				}
 
 				if (answer != null) {
-					if (AuditService.isAnswered(answer)) {
-						if (AuditService.isScoreable(catData.getAudit().getAuditType())) {
-							if (AuditService.isScoreApplies(answer) && isVisibleToRecalculate) {
-								score += AuditService.getScoreValue(answer);
+					if (DocumentUtilityService.isAnswered(answer)) {
+						if (DocumentUtilityService.isScoreable(catData.getAudit().getAuditType())) {
+							if (DocumentUtilityService.isScoreApplies(answer) && isVisibleToRecalculate) {
+								score += DocumentUtilityService.getScoreValue(answer);
 								scoreWeight += question.getScoreWeight();
 							}
 						}
@@ -169,7 +169,7 @@ public class AuditPercentCalculator2 {
 					}
 
 					if (answer.getQuestion().isHasRequirement()) {
-						if (AuditService.isOK(answer))
+						if (DocumentUtilityService.isOK(answer))
 							verifiedCount++;
 					} else {
 						if (isRequired) {
@@ -188,15 +188,15 @@ public class AuditPercentCalculator2 {
 		catData.setScorePossible(scoreWeight);
 	}
 
-    private boolean isVisibleToRecalculate(AuditData data, AnswerMap answers) {
+    private boolean isVisibleToRecalculate(DocumentData data, AnswerMap answers) {
         boolean visible = true;
 
         if (data == null)
             return true;
 
         if (data.getQuestion().getVisibleQuestion() != null) {
-            AuditData answer = answers.get(data.getQuestion().getVisibleQuestion().getId());
-            if (answer == null || !AuditService.isVisible(data.getQuestion(), answer))
+            DocumentData answer = answers.get(data.getQuestion().getVisibleQuestion().getId());
+            if (answer == null || !DocumentUtilityService.isVisible(data.getQuestion(), answer))
                 return false;
 
         }
@@ -204,27 +204,27 @@ public class AuditPercentCalculator2 {
         return visible;
     }
 
-    private void runCalculationFunctions(AuditCatData catData, Date validDate, AnswerMap currentWatcherAnswers) {
-        for (AuditQuestion question : catData.getCategory().getQuestions())
-            if (AuditService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
-                AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
+    private void runCalculationFunctions(DocumentCatData catData, Date validDate, AnswerMap currentWatcherAnswers) {
+        for (DocumentQuestion question : catData.getCategory().getQuestions())
+            if (DocumentUtilityService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
+                DocumentData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
                 boolean newTarget = false;
 
                 if (target == null) {
-                    target = new AuditData();
+                    target = new DocumentData();
                     target.setAudit(catData.getAudit());
                     target.setQuestion(question);
                     newTarget = true;
                 }
 
-                for (AuditQuestionFunction function : question.getFunctions()) {
+                for (DocumentQuestionFunction function : question.getFunctions()) {
                     if (function.getType() == QuestionFunctionType.Calculation) {
                         String results = null;
-                        if (!AuditService.isAnswered(target) || function.isOverwrite()) {
+                        if (!DocumentUtilityService.isAnswered(target) || function.isOverwrite()) {
                             if (function.getFunction() == QuestionFunction.AUDIT_SCORE) {
                                 results = String.valueOf(catData.getAudit().getScore());
                             } else {
-                                Object calculation = AuditService.calculate(function, currentWatcherAnswers, corruptionPerceptionIndexMap);
+                                Object calculation = DocumentUtilityService.calculate(function, currentWatcherAnswers, corruptionPerceptionIndexMap);
                                 if (calculation != null) {
                                     results = calculation.toString();
                                 }
@@ -241,9 +241,9 @@ public class AuditPercentCalculator2 {
                     auditDataDAO.save(target);
                 }
 
-                for (AuditQuestionFunctionWatcher aqfw : question.getFunctionWatchers()) {
+                for (DocumentQuestionFunctionWatcher aqfw : question.getFunctionWatchers()) {
                     if (aqfw.getFunction().getQuestion().getCategory().getId() != question.getCategory().getId()) {
-                        AuditCatData aqfwCatData = findCatData(catData.getAudit(), aqfw.getFunction().getQuestion().getCategory());
+                        DocumentCatData aqfwCatData = findCatData(catData.getAudit(), aqfw.getFunction().getQuestion().getCategory());
                         if (aqfwCatData == null) {
                             continue;
                         }
@@ -253,20 +253,20 @@ public class AuditPercentCalculator2 {
             }
     }
 
-    private void runRollupFunctions(AuditCatData catData, Date validDate) {
-        for (AuditQuestion question : catData.getCategory().getQuestions())
-            if (AuditService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
-                AuditData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
+    private void runRollupFunctions(DocumentCatData catData, Date validDate) {
+        for (DocumentQuestion question : catData.getCategory().getQuestions())
+            if (DocumentUtilityService.isValidQuestion(question, validDate) && question.getFunctions().size() > 0) {
+                DocumentData target = auditDataDAO.findAnswerByAuditQuestion(catData.getAudit().getId(), question.getId());
 
                 if (target == null) {
-                    target = new AuditData();
+                    target = new DocumentData();
                     target.setAudit(catData.getAudit());
                     target.setQuestion(question);
                 }
 
                 String results;
 
-                for (AuditQuestionFunction function : question.getFunctions()) {
+                for (DocumentQuestionFunction function : question.getFunctions()) {
                     if (function.getType() == QuestionFunctionType.Rollup) {
                         results = calculateRollup(catData.getAudit().getContractorAccount().getId(),
                                 function, catData.getAudit().getAuditFor());
@@ -280,20 +280,20 @@ public class AuditPercentCalculator2 {
             }
     }
 
-    private String calculateRollup(int conId, AuditQuestionFunction function, String parentAuditFor) {
+    private String calculateRollup(int conId, DocumentQuestionFunction function, String parentAuditFor) {
         if (function.getWatchers().size() == 0)
             return null;
         int questionId = function.getWatchers().get(0).getQuestion().getId();
-        int auditTypeId = AuditService.getAuditType(function.getWatchers().get(0).getQuestion()).getId();
+        int auditTypeId = DocumentUtilityService.getAuditType(function.getWatchers().get(0).getQuestion()).getId();
 
         List<String> auditFors = auditPeriodService.getChildPeriodAuditFors(parentAuditFor);
-        List<ContractorAudit> sourceAudits = contractorAuditDAO.findAuditsByContractorAuditTypeAuditFors(conId, auditTypeId, auditFors);
+        List<ContractorDocument> sourceAudits = contractorAuditDAO.findAuditsByContractorAuditTypeAuditFors(conId, auditTypeId, auditFors);
 
         int sum = 0;
         boolean foundOne = false;
-        for (ContractorAudit audit:sourceAudits) {
-            if (AuditService.hasCaoStatus(audit, AuditStatus.Complete)) {
-                AuditData data = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), questionId);
+        for (ContractorDocument audit:sourceAudits) {
+            if (DocumentUtilityService.hasCaoStatus(audit, DocumentStatus.Complete)) {
+                DocumentData data = auditDataDAO.findAnswerByAuditQuestion(audit.getId(), questionId);
                 if (data != null) {
                     try {
                         sum += Integer.parseInt(data.getAnswer());
@@ -312,8 +312,8 @@ public class AuditPercentCalculator2 {
         return QuestionFunction.MISSING_PARAMETER;
     }
 
-    private AuditCatData findCatData(ContractorAudit audit, AuditCategory category) {
-		for (AuditCatData catData:audit.getCategories()) {
+    private DocumentCatData findCatData(ContractorDocument audit, DocumentCategory category) {
+		for (DocumentCatData catData:audit.getCategories()) {
 			if (catData.getCategory().getId() == category.getId()) {
 				return catData;
 			}
@@ -321,15 +321,15 @@ public class AuditPercentCalculator2 {
 		return null;
 	}
 
-	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(AuditCatData catData) {
+	private Collection<Integer> collectFunctionWatcherQuestionIdsFromAuditCatData(DocumentCatData catData) {
 		Collection<Integer> functionWatcherQuestionIds = new ArrayList<>();
-		Date validDate = AuditService.getValidDate(catData.getAudit());
+		Date validDate = DocumentUtilityService.getValidDate(catData.getAudit());
 
-		for (AuditQuestion question : catData.getCategory().getQuestions()) {
-			if (AuditService.isValidQuestion(question, validDate)) {
-				for (AuditQuestionFunction aqf : question.getFunctions())
-					for (AuditQuestionFunctionWatcher aqfw : aqf.getWatchers())
-						if (AuditService.isValidQuestion(aqfw.getQuestion(), validDate))
+		for (DocumentQuestion question : catData.getCategory().getQuestions()) {
+			if (DocumentUtilityService.isValidQuestion(question, validDate)) {
+				for (DocumentQuestionFunction aqf : question.getFunctions())
+					for (DocumentQuestionFunctionWatcher aqfw : aqf.getWatchers())
+						if (DocumentUtilityService.isValidQuestion(aqfw.getQuestion(), validDate))
 							functionWatcherQuestionIds.add(aqfw.getQuestion().getId());
 			}
 		}
@@ -337,10 +337,10 @@ public class AuditPercentCalculator2 {
 		return functionWatcherQuestionIds;
 	}
 
-	private Set<Integer> collectQuestionIdsFromAuditCatData(AuditCatData catData) {
+	private Set<Integer> collectQuestionIdsFromAuditCatData(DocumentCatData catData) {
 		Set<Integer> questionIDs = new HashSet<>();
 
-		for (AuditQuestion question : catData.getCategory().getQuestions()) {
+		for (DocumentQuestion question : catData.getCategory().getQuestions()) {
 			questionIDs.add(question.getId());
 
 			if (question.getRequiredQuestion() != null) {
@@ -354,10 +354,10 @@ public class AuditPercentCalculator2 {
 		return questionIDs;
 	}
 
-	private Set<Integer> collectChainOfRequiredQuestionIds(AuditQuestion question) {
+	private Set<Integer> collectChainOfRequiredQuestionIds(DocumentQuestion question) {
 		Set<Integer> questionIDs = new HashSet<>();
 		HashSet<Integer> requiredQuestionIdsSeen = new HashSet<>();
-		AuditQuestion q = question.getRequiredQuestion();
+		DocumentQuestion q = question.getRequiredQuestion();
 		while (q != null) {
 			questionIDs.add(q.getId());
 			if (requiredQuestionIdsSeen.contains(q.getId())) {
@@ -370,10 +370,10 @@ public class AuditPercentCalculator2 {
 		return questionIDs;
 	}
 
-	private Set<Integer> collectChainOfVisibleQuestionIds(AuditQuestion question) {
+	private Set<Integer> collectChainOfVisibleQuestionIds(DocumentQuestion question) {
 		Set<Integer> questionIDs = new HashSet<>();
 		HashSet<Integer> visibleQuestionIdsSeen = new HashSet<>();
-		AuditQuestion q = question.getVisibleQuestion();
+		DocumentQuestion q = question.getVisibleQuestion();
 		while (q != null) {
 			questionIDs.add(q.getId());
 			if (visibleQuestionIdsSeen.contains(q.getId())) {
@@ -386,10 +386,10 @@ public class AuditPercentCalculator2 {
 		return questionIDs;
 	}
 
-	private int addVerifiedCount(AuditCatData catData, int requiredCount, int verifiedCount, AuditData answer) {
-		AuditQuestion question = answer.getQuestion();
+	private int addVerifiedCount(DocumentCatData catData, int requiredCount, int verifiedCount, DocumentData answer) {
+		DocumentQuestion question = answer.getQuestion();
 
-		if (AuditService.isVerified(answer))
+		if (DocumentUtilityService.isVerified(answer))
 			verifiedCount++;
 		else if (catData.getAudit().getAuditType().getWorkFlow().isHasRequirements()) {
 			verifiedCount++;
@@ -398,8 +398,8 @@ public class AuditPercentCalculator2 {
 			verifiedCount++;
 		} else if (catData.getAudit().getAuditType().getId() == AuditType.PQF) {
 			boolean needsVerification = false;
-			for (AuditData auditData : getVerifiedPqfData(catData.getAudit().getId())) {
-				if (auditData.getQuestion().equals(answer.getQuestion())) {
+			for (DocumentData documentData : getVerifiedPqfData(catData.getAudit().getId())) {
+				if (documentData.getQuestion().equals(answer.getQuestion())) {
 					needsVerification = true;
 					break;
 				}
@@ -408,13 +408,13 @@ public class AuditPercentCalculator2 {
 				verifiedCount++;
 		} else if (catData.getAudit().getAuditType().getClassType().isPolicy()) {
 			verifiedCount = requiredCount;
-		} else if (!AuditService.isHasSubmittedStep(catData.getAudit().getAuditType().getWorkFlow())) {
+		} else if (!DocumentUtilityService.isHasSubmittedStep(catData.getAudit().getAuditType().getWorkFlow())) {
 			verifiedCount++;
 		}
 		int categoryId = catData.getCategory().getId();
 
-		if (categoryId == OshaAudit.CAT_ID_COHS || categoryId == OshaAudit.CAT_ID_OSHA_ADDITIONAL
-				|| categoryId == OshaAudit.CAT_ID_MSHA) {
+		if (categoryId == OshaDocument.CAT_ID_COHS || categoryId == OshaDocument.CAT_ID_OSHA_ADDITIONAL
+				|| categoryId == OshaDocument.CAT_ID_MSHA) {
 			verifiedCount++;
 		}
 
@@ -424,12 +424,12 @@ public class AuditPercentCalculator2 {
 		return verifiedCount;
 	}
 
-    public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats) {
+    public void percentCalculateComplete(ContractorDocument conAudit, boolean recalcCats) {
         percentCalculateComplete(conAudit, recalcCats, true);
     }
 
     public void percentCalculateComplete(int auditID, boolean recalcCats) {
-        ContractorAudit conAudit = contractorAuditDAO.find(auditID);
+        ContractorDocument conAudit = contractorAuditDAO.find(auditID);
         percentCalculateComplete(conAudit, recalcCats, true);
         conAudit.setLastRecalculation(new Date());
         conAudit.setAuditColumns();
@@ -437,14 +437,14 @@ public class AuditPercentCalculator2 {
     }
 
     public void percentCalculateComplete(int auditID, boolean recalcCats, boolean advanceCaos) {
-        ContractorAudit conAudit = contractorAuditDAO.find(auditID);
+        ContractorDocument conAudit = contractorAuditDAO.find(auditID);
         percentCalculateComplete(conAudit, recalcCats, advanceCaos);
         conAudit.setLastRecalculation(new Date());
         conAudit.setAuditColumns();
         contractorAuditDAO.save(conAudit);
     }
 
-    public void percentCalculateComplete(ContractorAudit conAudit, boolean recalcCats, boolean advanceCaos) {
+    public void percentCalculateComplete(ContractorDocument conAudit, boolean recalcCats, boolean advanceCaos) {
         if (recalcCats)
             recalcAllAuditCatDatas(conAudit);
 
@@ -453,14 +453,14 @@ public class AuditPercentCalculator2 {
 
         builder.calculate(conAudit);
 
-        for (ContractorAuditOperator cao : conAudit.getOperators()) {
+        for (ContractorDocumentOperator cao : conAudit.getOperators()) {
             int required = 0;
             int answered = 0;
             int verified = 0;
 
             float score = 0;
 
-            for (AuditCatData data : conAudit.getCategories()) {
+            for (DocumentCatData data : conAudit.getCategories()) {
                 boolean applies = doesCategoryApply(conAudit, builder, cao, data);
 
                 if (applies) {
@@ -510,7 +510,7 @@ public class AuditPercentCalculator2 {
             cao.setPercentVerified(percentVerified);
 
             if (advanceCaos) {
-                ContractorAuditOperatorWorkflow caow = CaoAutoAdvancer.advanceCaoStatus(conAudit, cao, percentComplete, percentVerified);
+                ContractorDocumentOperatorWorkflow caow = DocumentAutoAdvancer.advanceCaoStatus(conAudit, cao, percentComplete, percentVerified);
                 if (caow != null) {
                     caoDAO.save(caow);
                 }
@@ -525,16 +525,16 @@ public class AuditPercentCalculator2 {
         }
     }
 
-    private boolean doesCategoryApply(ContractorAudit conAudit, AuditCategoriesBuilder builder, ContractorAuditOperator cao, AuditCatData data) {
+    private boolean doesCategoryApply(ContractorDocument conAudit, AuditCategoriesBuilder builder, ContractorDocumentOperator cao, DocumentCatData data) {
         boolean applies = false;
-        if (!AuditService.isCurrent(data.getCategory()))
+        if (!DocumentUtilityService.isCurrent(data.getCategory()))
             return false;
 
         if (data.isOverride())
             applies = data.isApplies();
         else {
             if (data.isApplies()) {
-                if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT && cao.getStatus().after(AuditStatus.Incomplete))
+                if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT && cao.getStatus().after(DocumentStatus.Incomplete))
                     applies = true;
                 else if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF)
                     applies = true;
@@ -542,7 +542,7 @@ public class AuditPercentCalculator2 {
                     applies = true;
                 else {
                     applies = builder.isCategoryApplicable(data.getCategory(), cao);
-                    AuditCategory parent = data.getCategory().getParent();
+                    DocumentCategory parent = data.getCategory().getParent();
                     while (parent != null && applies) {
                         applies = builder.isCategoryApplicable(parent, cao);
                         parent = parent.getParent();
@@ -553,7 +553,7 @@ public class AuditPercentCalculator2 {
         return applies;
     }
 
-    private boolean shouldAdjustAuditScore(ContractorAudit conAudit, ContractorAuditOperator cao) {
+    private boolean shouldAdjustAuditScore(ContractorDocument conAudit, ContractorDocumentOperator cao) {
         if (!cao.isVisible())
             return false;
         if (conAudit.getAuditType().getScoreType() == ScoreType.Percent)
@@ -563,36 +563,36 @@ public class AuditPercentCalculator2 {
         return false;
     }
 
-    private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorAudit conAudit, ContractorAuditOperator cao) {
+    private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorDocument conAudit, ContractorDocumentOperator cao) {
         if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy) {
             return true;
         }
 
-        if (cao.getStatus().after(AuditStatus.Incomplete)) {
+        if (cao.getStatus().after(DocumentStatus.Incomplete)) {
             return false;
         }
 
         return true;
     }
 
-    private void calculateStraightAggregate(ContractorAudit scoredAudit) {
+    private void calculateStraightAggregate(ContractorDocument scoredAudit) {
 		float runningTotal = 0;
-		for (AuditData auditData : scoredAudit.getData()) {
-			runningTotal += AuditService.getStraightScoreValue(auditData);
+		for (DocumentData documentData : scoredAudit.getData()) {
+			runningTotal += DocumentUtilityService.getStraightScoreValue(documentData);
 		}
 		int score = Math.round(runningTotal);
 		scoredAudit.setScore(score);
 	}
 
-	private void calculateWeightedScore(ContractorAudit ca) {
+	private void calculateWeightedScore(ContractorDocument ca) {
 		float cumulativeScore = 0f;
 
-		Map<AuditCategory, AuditCatData> catDatas = new HashMap<>();
-		for (AuditCatData data : ca.getCategories()) {
+		Map<DocumentCategory, DocumentCatData> catDatas = new HashMap<>();
+		for (DocumentCatData data : ca.getCategories()) {
 			catDatas.put(data.getCategory(), data);
 		}
 
-		for (AuditCategory category : AuditService.getTopCategories(ca.getAuditType())) {
+		for (DocumentCategory category : DocumentUtilityService.getTopCategories(ca.getAuditType())) {
 			subScorePossible = 0f;
 			float score = calculateWeightedScore(category, catDatas);
 			if (subScorePossible > 0)
@@ -604,12 +604,12 @@ public class AuditPercentCalculator2 {
 		ca.setScore(Math.min(Math.round(cumulativeScore), 100));
 	}
 
-	private float calculateWeightedScore(AuditCategory category, Map<AuditCategory, AuditCatData> catDatas) {
+	private float calculateWeightedScore(DocumentCategory category, Map<DocumentCategory, DocumentCatData> catDatas) {
 		float subScore = 0f;
 		float scorePossible = 0f;
 
 		if (category.getSubCategories().size() > 0) {
-			for (AuditCategory subCategory : category.getSubCategories()) {
+			for (DocumentCategory subCategory : category.getSubCategories()) {
 				float runningScore = calculateWeightedScore(subCategory, catDatas);
 
 				if (catDatas.get(subCategory).getScorePossible() > 0) {
@@ -634,17 +634,17 @@ public class AuditPercentCalculator2 {
 	}
 
     public void recalcAllAuditCatDatas(int auditId) {
-        ContractorAudit audit = contractorAuditDAO.find(auditId);
+        ContractorDocument audit = contractorAuditDAO.find(auditId);
         recalcAllAuditCatDatas(audit);
     }
 
-    public void recalcAllAuditCatDatas(ContractorAudit conAudit) {
-		for (AuditCatData data : conAudit.getCategories()) {
+    public void recalcAllAuditCatDatas(ContractorDocument conAudit) {
+		for (DocumentCatData data : conAudit.getCategories()) {
 			updatePercentageCompleted(data);
 		}
 	}
 
-	public List<AuditData> getVerifiedPqfData(int auditID) {
+	public List<DocumentData> getVerifiedPqfData(int auditID) {
 		return auditDataDAO.findCustomPQFVerifications(auditID);
 	}
 }

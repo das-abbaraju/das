@@ -8,8 +8,8 @@ import javax.persistence.*;
 public class WorkflowStep extends BaseTable {
     private Workflow workflow;
 
-	private AuditStatus oldStatus;
-	private AuditStatus newStatus;
+	private DocumentStatus oldStatus;
+	private DocumentStatus newStatus;
 
     @ManyToOne
     @JoinColumn(name = "workflowID", nullable = false)
@@ -22,21 +22,21 @@ public class WorkflowStep extends BaseTable {
     }
 
     @Enumerated(EnumType.STRING)
-	public AuditStatus getOldStatus() {
+	public DocumentStatus getOldStatus() {
 		return oldStatus;
 	}
 
-	public void setOldStatus(AuditStatus oldStatus) {
+	public void setOldStatus(DocumentStatus oldStatus) {
 		this.oldStatus = oldStatus;
 	}
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	public AuditStatus getNewStatus() {
+	public DocumentStatus getNewStatus() {
 		return newStatus;
 	}
 
-	public void setNewStatus(AuditStatus newStatus) {
+	public void setNewStatus(DocumentStatus newStatus) {
 		this.newStatus = newStatus;
 	}
 }

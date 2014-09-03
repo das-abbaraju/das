@@ -2,7 +2,7 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -21,10 +21,10 @@ import static org.mockito.Mockito.when;
 public class AuditCategoriesBuilderTest {
 	ContractorAccount contractor;
 	OperatorAccount operator;
-	ContractorAudit audit;
-	AuditCategory cat1;
-    AuditCategory cat2;
-    AuditCategory cat3;
+	ContractorDocument audit;
+	DocumentCategory cat1;
+    DocumentCategory cat2;
+    DocumentCategory cat3;
 
 	@Mock
     AuditCategoryRuleCache2 ruleCache;
@@ -40,8 +40,8 @@ public class AuditCategoriesBuilderTest {
 
 	private void setupAudit() {
 		audit = EntityFactory.makeContractorAudit(200, contractor);
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
-		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		ContractorDocumentOperator cao = EntityFactory.addCao(audit, operator);
+		ContractorDocumentOperatorPermission caop = new ContractorDocumentOperatorPermission();
 		caop.setOperator(operator);
 		caop.setCao(cao);
 		cao.getCaoPermissions().add(caop);
@@ -56,19 +56,19 @@ public class AuditCategoriesBuilderTest {
 	}
 
 	private void setupCategoryRules() throws Exception {
-		AuditCategoryRule rule1 = new AuditCategoryRule();
+		DocumentCategoryRule rule1 = new DocumentCategoryRule();
 		rule1.setAuditType(audit.getAuditType());
 		rule1.setOperatorAccount(operator);
-		rule1.setAuditCategory(cat1);
+		rule1.setDocumentCategory(cat1);
 		rule1.setRootCategory(true);
 
-		AuditCategoryRule rule2 = new AuditCategoryRule();
+		DocumentCategoryRule rule2 = new DocumentCategoryRule();
 		rule2.setAuditType(audit.getAuditType());
 		rule2.setOperatorAccount(operator);
-		rule2.setAuditCategory(cat2);
+		rule2.setDocumentCategory(cat2);
 		rule2.setRootCategory(false);
 
-		List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+		List<DocumentCategoryRule> catRules = new ArrayList<DocumentCategoryRule>();
 		catRules.add(rule1);
 		catRules.add(rule2);
 
@@ -80,9 +80,9 @@ public class AuditCategoriesBuilderTest {
         setupRules();
         AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
         Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
-        Set<AuditCategory> categories = categoryBuilder.calculate(audit, operators);
+        Set<DocumentCategory> categories = categoryBuilder.calculate(audit, operators);
         assertEquals(2, categories.size());
-        for(AuditCategory cat:categories) {
+        for(DocumentCategory cat:categories) {
             assertFalse(cat.getId() == 3);
         }
     }
@@ -105,8 +105,8 @@ public class AuditCategoriesBuilderTest {
         categoryBuilder.calculate(audit, operators);
 
         OperatorAccount badOperator = EntityFactory.makeOperator();
-        ContractorAuditOperator cao = new ContractorAuditOperator();
-        ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+        ContractorDocumentOperator cao = new ContractorDocumentOperator();
+        ContractorDocumentOperatorPermission caop = new ContractorDocumentOperatorPermission();
         caop.setOperator(badOperator);
         caop.setCao(cao);
         cao.setOperator(badOperator);
@@ -116,25 +116,25 @@ public class AuditCategoriesBuilderTest {
     }
 
     private void setupRules() throws Exception {
-        AuditCategoryRule rule1 = new AuditCategoryRule();
+        DocumentCategoryRule rule1 = new DocumentCategoryRule();
         rule1.setAuditType(audit.getAuditType());
         rule1.setOperatorAccount(operator);
-        rule1.setAuditCategory(cat1);
+        rule1.setDocumentCategory(cat1);
         rule1.setRootCategory(true);
 
-        AuditCategoryRule rule2 = new AuditCategoryRule();
+        DocumentCategoryRule rule2 = new DocumentCategoryRule();
         rule2.setAuditType(audit.getAuditType());
         rule2.setOperatorAccount(operator);
-        rule2.setAuditCategory(cat2);
+        rule2.setDocumentCategory(cat2);
         rule2.setRootCategory(false);
 
-        AuditCategoryRule rule3 = new AuditCategoryRule();
+        DocumentCategoryRule rule3 = new DocumentCategoryRule();
         rule3.setAuditType(audit.getAuditType());
         rule3.setOperatorAccount(EntityFactory.makeOperator());
-        rule3.setAuditCategory(cat3);
+        rule3.setDocumentCategory(cat3);
         rule3.setRootCategory(true);
 
-        List<AuditCategoryRule> catRules = new ArrayList<AuditCategoryRule>();
+        List<DocumentCategoryRule> catRules = new ArrayList<DocumentCategoryRule>();
         catRules.add(rule1);
         catRules.add(rule2);
         catRules.add(rule3);
@@ -145,7 +145,7 @@ public class AuditCategoriesBuilderTest {
 	@Test
 	public void testFindMostRecentAudit() throws Exception {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
-		testContractor.setAudits(new ArrayList<ContractorAudit>());
+		testContractor.setAudits(new ArrayList<ContractorDocument>());
 		
 		Calendar oldAuditCreationDate = Calendar.getInstance();
 		oldAuditCreationDate.set(Calendar.YEAR, 2001);
@@ -153,12 +153,12 @@ public class AuditCategoriesBuilderTest {
 		Calendar newAuditCreationDate = Calendar.getInstance();
 		newAuditCreationDate.set(Calendar.YEAR, 2002);
 		
-		ContractorAudit auditTypeOne = EntityFactory.makeContractorAudit(1, testContractor);
+		ContractorDocument auditTypeOne = EntityFactory.makeContractorAudit(1, testContractor);
 		auditTypeOne.setId(1);
-		ContractorAudit auditTypeTwoOld = EntityFactory.makeContractorAudit(2, testContractor);
+		ContractorDocument auditTypeTwoOld = EntityFactory.makeContractorAudit(2, testContractor);
 		auditTypeTwoOld.setCreationDate(oldAuditCreationDate.getTime());
 		auditTypeTwoOld.setId(2);
-		ContractorAudit auditTypeTwoNew = EntityFactory.makeContractorAudit(2, testContractor);
+		ContractorDocument auditTypeTwoNew = EntityFactory.makeContractorAudit(2, testContractor);
 		auditTypeTwoNew.setCreationDate(newAuditCreationDate.getTime());
 		auditTypeTwoNew.setId(3);
 		
@@ -169,7 +169,7 @@ public class AuditCategoriesBuilderTest {
 		
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
 	
-		ContractorAudit result = Whitebox.invokeMethod(categoryBuilder, "findMostRecentAudit", 2);
+		ContractorDocument result = Whitebox.invokeMethod(categoryBuilder, "findMostRecentAudit", 2);
 		
 		assertEquals(3, result.getId());
 		
@@ -178,19 +178,19 @@ public class AuditCategoriesBuilderTest {
 	@Test
 	public void testFindAnswer() throws Exception {
 		ContractorAccount testContractor = EntityFactory.makeContractor();
-		ContractorAudit audit = EntityFactory.makeContractorAudit(1, testContractor);
-		audit.setData(new ArrayList<AuditData>());
+		ContractorDocument audit = EntityFactory.makeContractorAudit(1, testContractor);
+		audit.setData(new ArrayList<DocumentData>());
 		
-		AuditQuestion questionOne = makeUpQuestion(1, audit, "pink");
-		AuditQuestion questionTwo = makeUpQuestion(2, audit, "purple");
-		AuditQuestion questionThree = makeUpQuestion(3, audit, "magenta");
+		DocumentQuestion questionOne = makeUpQuestion(1, audit, "pink");
+		DocumentQuestion questionTwo = makeUpQuestion(2, audit, "purple");
+		DocumentQuestion questionThree = makeUpQuestion(3, audit, "magenta");
 		
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
 		
-		auditCatData.getCategory().setQuestions(new ArrayList<AuditQuestion>());
-		auditCatData.getCategory().getQuestions().add(questionOne);
-		auditCatData.getCategory().getQuestions().add(questionTwo);
-		auditCatData.getCategory().getQuestions().add(questionThree);
+		documentCatData.getCategory().setQuestions(new ArrayList<DocumentQuestion>());
+		documentCatData.getCategory().getQuestions().add(questionOne);
+		documentCatData.getCategory().getQuestions().add(questionTwo);
+		documentCatData.getCategory().getQuestions().add(questionThree);
 		
 		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
 	
@@ -199,14 +199,14 @@ public class AuditCategoriesBuilderTest {
 		assertEquals("magenta", wrapPrivateMethodCall(categoryBuilder, audit, 3).getAnswer());	
 	}
 
-	private AuditQuestion makeUpQuestion(int id,ContractorAudit audit, String answer) {
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
+	private DocumentQuestion makeUpQuestion(int id,ContractorDocument audit, String answer) {
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
 		question.setId(id);
 		audit.getData().add(EntityFactory.makeAuditData(answer, question));
 		return question;
 	}
 	
-	private AuditData wrapPrivateMethodCall(AuditCategoriesBuilder categoryBuilder, ContractorAudit audit, int currentQuestionId) throws Exception { 
+	private DocumentData wrapPrivateMethodCall(AuditCategoriesBuilder categoryBuilder, ContractorDocument audit, int currentQuestionId) throws Exception {
 		return Whitebox.invokeMethod(categoryBuilder, "findAnswer", audit,currentQuestionId);
 	}
 
@@ -214,27 +214,27 @@ public class AuditCategoriesBuilderTest {
 	public void testDependentAudit() throws Exception {
 		setUp();
 
-		ContractorAudit audit = makeAudit(300);
-		ContractorAudit dependentAudit = makeAudit(301);
+		ContractorDocument audit = makeAudit(300);
+		ContractorDocument dependentAudit = makeAudit(301);
 		contractor.getAudits().add(audit);
 		contractor.getAudits().add(dependentAudit);
 
-		AuditCategory cat1 = EntityFactory.makeAuditCategory(1);
-		AuditCategory cat2 = EntityFactory.makeAuditCategory(2);
+		DocumentCategory cat1 = EntityFactory.makeAuditCategory(1);
+		DocumentCategory cat2 = EntityFactory.makeAuditCategory(2);
 		audit.getAuditType().getCategories().add(cat1);
 		audit.getAuditType().getCategories().add(cat2);
 
-		AuditCategoryRule rule1 = makeRule(audit.getAuditType(), cat1);
-		AuditCategoryRule rule2 = makeRule(audit.getAuditType(), cat2);
+		DocumentCategoryRule rule1 = makeRule(audit.getAuditType(), cat1);
+		DocumentCategoryRule rule2 = makeRule(audit.getAuditType(), cat2);
 		rule2.setDependentAuditType(dependentAudit.getAuditType());
-		rule2.setDependentAuditStatus(AuditStatus.Submitted);
-		List<AuditCategoryRule> catRules = new ArrayList<>();
+		rule2.setDependentDocumentStatus(DocumentStatus.Submitted);
+		List<DocumentCategoryRule> catRules = new ArrayList<>();
 		catRules.add(rule1);
 		catRules.add(rule2);
 		when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
 
 		AuditCategoriesBuilder test = new AuditCategoriesBuilder(ruleCache, contractor);
-		Set<AuditCategory> categories;
+		Set<DocumentCategory> categories;
 
 		// dependent no there
 		categories = test.calculate(audit);
@@ -244,32 +244,32 @@ public class AuditCategoriesBuilderTest {
 		catRules.clear();
 		catRules.add(rule1);
 		catRules.add(rule2);
-		AuditService.changeStatus(dependentAudit.getOperators().get(0), AuditStatus.Submitted);
+		DocumentUtilityService.changeStatus(dependentAudit.getOperators().get(0), DocumentStatus.Submitted);
 		categories = test.calculate(audit);
 		assertEquals(2, categories.size());
 	}
 
-	private AuditCategoryRule makeRule(AuditType auditType, AuditCategory category) {
-		AuditCategoryRule rule = new AuditCategoryRule();
-		rule.setAuditCategory(category);
+	private DocumentCategoryRule makeRule(AuditType auditType, DocumentCategory category) {
+		DocumentCategoryRule rule = new DocumentCategoryRule();
+		rule.setDocumentCategory(category);
 		rule.setAuditType(auditType);
 
 		return rule;
 	}
 
-	private ContractorAudit makeAudit(int auditTypeId) {
+	private ContractorDocument makeAudit(int auditTypeId) {
 		AuditType auditType = EntityFactory.makeAuditType(auditTypeId);
 
-		ContractorAudit audit = EntityFactory.makeContractorAudit(auditTypeId, contractor);
+		ContractorDocument audit = EntityFactory.makeContractorAudit(auditTypeId, contractor);
 		audit.setAuditType(auditType);
 
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, operator);
-		ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+		ContractorDocumentOperator cao = EntityFactory.addCao(audit, operator);
+		ContractorDocumentOperatorPermission caop = new ContractorDocumentOperatorPermission();
 		caop.setOperator(operator);
 		caop.setCao(cao);
 		cao.getCaoPermissions().add(caop);
 
-		AuditService.changeStatus(cao, AuditStatus.Pending);
+		DocumentUtilityService.changeStatus(cao, DocumentStatus.Pending);
 
 		return audit;
 	}

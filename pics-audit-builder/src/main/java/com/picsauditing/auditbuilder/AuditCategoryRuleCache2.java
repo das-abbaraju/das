@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.entities.AuditCategoryRule;
+import com.picsauditing.auditbuilder.entities.DocumentCategoryRule;
 import com.picsauditing.auditbuilder.entities.AuditType;
 import com.picsauditing.auditbuilder.entities.ContractorAccount;
 import org.slf4j.Logger;
@@ -10,18 +10,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
+public class AuditCategoryRuleCache2 extends AuditRuleCache<DocumentCategoryRule> {
 	private AuditTypes data;
 	private final Logger logger = LoggerFactory.getLogger(AuditCategoryRuleCache2.class);
 
-	public List<AuditCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
+	public List<DocumentCategoryRule> getRules(ContractorAccount contractor, AuditType auditType) {
 		if (getData() == null)
 			return null;
 
 		RuleFilter contractorFilter = new RuleFilter(contractor);
 		contractorFilter.addAuditType(auditType);
 
-		List<AuditCategoryRule> rules = getData().next(contractorFilter);
+		List<DocumentCategoryRule> rules = getData().next(contractorFilter);
 
 		Collections.sort(rules);
 		Collections.reverse(rules);
@@ -29,9 +29,9 @@ public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
 		return rules;
 	}
 
-	private void initialize(List<AuditCategoryRule> rules) {
+	private void initialize(List<DocumentCategoryRule> rules) {
 		data = new AuditTypes();
-		for (AuditCategoryRule rule : rules) {
+		for (DocumentCategoryRule rule : rules) {
 			if (rule.getId() > 30470)
 				logger.info("rule# {}: {}", rule.getId(), rule);
 			data.add(rule);
@@ -41,7 +41,7 @@ public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
 	synchronized void initialize() {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(auditDecisionTableDAO.findAllRules(AuditCategoryRule.class));
+			initialize(auditDecisionTableDAO.findAllRules(DocumentCategoryRule.class));
 			long endTime = System.currentTimeMillis();
 			logger.info("Filled AuditCategoryRuleCache in {} ms", (endTime - startTime));
 		}
@@ -59,9 +59,9 @@ public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
 		return data;
 	}
 
-	private class AuditTypes extends RuleCacheLevel<AuditType, SafetyRisks, AuditCategoryRule> {
+	private class AuditTypes extends RuleCacheLevel<AuditType, SafetyRisks, DocumentCategoryRule> {
 
-		public void add(AuditCategoryRule rule) {
+		public void add(DocumentCategoryRule rule) {
 			SafetyRisks map = data.get(rule.getAuditType());
 			if (map == null) {
 				map = new SafetyRisks();
@@ -71,8 +71,8 @@ public class AuditCategoryRuleCache2 extends AuditRuleCache<AuditCategoryRule> {
 		}
 
 		@Override
-		public List<AuditCategoryRule> next(RuleFilter contractor) {
-			List<AuditCategoryRule> rules = new ArrayList<>();
+		public List<DocumentCategoryRule> next(RuleFilter contractor) {
+			List<DocumentCategoryRule> rules = new ArrayList<>();
 			for (AuditType auditType : contractor.auditTypes) {
 				SafetyRisks safetyRisks = data.get(auditType);
 				if (safetyRisks != null)

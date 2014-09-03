@@ -1,14 +1,14 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.entities.AuditCategory;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.entities.DocumentCategory;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 
 import java.util.Date;
 
 public class ContractorAuditCategories {
-    public static boolean isCategoryEffective(AuditCategory category, Date effectiveDate) {
+    public static boolean isCategoryEffective(DocumentCategory category, Date effectiveDate) {
         if (effectiveDate == null)
-            return AuditService.isCurrent(category);
-        return AuditService.isCurrent(category, effectiveDate);
+            return DocumentUtilityService.isCurrent(category);
+        return DocumentUtilityService.isCurrent(category, effectiveDate);
     }
 }

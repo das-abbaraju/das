@@ -2,8 +2,8 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
-import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
+import com.picsauditing.auditbuilder.dao.DocumentDataDAO;
+import com.picsauditing.auditbuilder.dao.DocumentDecisionTableDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.AnswerMap;
 import com.picsauditing.auditbuilder.util.DateBean;
@@ -29,29 +29,29 @@ import static org.mockito.Mockito.*;
 public class AuditPercentCalculatorTest {
 	private AuditPercentCalculator2 calculator;
 	private ContractorAccount contractor;
-	private ContractorAudit audit;
+	private ContractorDocument audit;
 	private AuditType auditType;
 
 	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
-	List<AuditCategoryRule> catRules = new ArrayList<>();
+	List<DocumentCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
-	private AuditCatData acd1;
-	private AuditCatData acd2;
-	private AuditCatData acd3;
-	private AuditCatData acd4;
-	private List<AuditCatData> auditCatDataList = new ArrayList<>();
-	private List<AuditCategory> auditCategoryList = new ArrayList<>();
+	private DocumentCatData acd1;
+	private DocumentCatData acd2;
+	private DocumentCatData acd3;
+	private DocumentCatData acd4;
+	private List<DocumentCatData> documentCatDataList = new ArrayList<>();
+	private List<DocumentCategory> documentCategoryList = new ArrayList<>();
 
 	@Mock private Logger logger;
-	@Mock private AuditDataDAO2 auditDataDAO;
-	@Mock private AuditCatData catData;
-	@Mock private AuditCategory category;
+	@Mock private DocumentDataDAO auditDataDAO;
+	@Mock private DocumentCatData catData;
+	@Mock private DocumentCategory category;
 	@Mock private AuditType mockAuditType;
-	@Mock private ContractorAudit contractorAudit;
-	@Mock private ContractorAuditOperator contractorAuditOperator;
+	@Mock private ContractorDocument contractorDocument;
+	@Mock private ContractorDocumentOperator contractorDocumentOperator;
     @Mock
-    private AuditDecisionTableDAO2 auditDecisionTableDAO;
+    private DocumentDecisionTableDAO auditDecisionTableDAO;
 
     @Before
 	public void setUp() throws Exception {
@@ -67,7 +67,7 @@ public class AuditPercentCalculatorTest {
 		catRules.clear();
 		catRuleCache.clear();
 
-		catRules.add(new AuditCategoryRule());
+		catRules.add(new DocumentCategoryRule());
 
         Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
 
@@ -82,8 +82,8 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testShouldAdjustAuditScore_NonVisibleCao() throws Exception {
-        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
-        ContractorAudit audit = mock(ContractorAudit.class);
+        ContractorDocumentOperator cao = mock(ContractorDocumentOperator.class);
+        ContractorDocument audit = mock(ContractorDocument.class);
 
         when(cao.isVisible()).thenReturn(false);
 
@@ -93,8 +93,8 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testShouldAdjustAuditScore_NonScoring() throws Exception {
-        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
-        ContractorAudit audit = mock(ContractorAudit.class);
+        ContractorDocumentOperator cao = mock(ContractorDocumentOperator.class);
+        ContractorDocument audit = mock(ContractorDocument.class);
         AuditType auditType = mock(AuditType.class);
 
         when(cao.isVisible()).thenReturn(true);
@@ -107,8 +107,8 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testShouldAdjustAuditScore_Scoring() throws Exception {
-        ContractorAuditOperator cao = mock(ContractorAuditOperator.class);
-        ContractorAudit audit = mock(ContractorAudit.class);
+        ContractorDocumentOperator cao = mock(ContractorDocumentOperator.class);
+        ContractorDocument audit = mock(ContractorDocument.class);
         AuditType auditType = mock(AuditType.class);
 
         when(cao.isVisible()).thenReturn(true);
@@ -121,8 +121,8 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testIsVisibleToRecalculate_NoAnswerYet() throws Exception {
-        AuditData data = null;
-        List<AuditData> responses = new ArrayList<>();
+        DocumentData data = null;
+        List<DocumentData> responses = new ArrayList<>();
         AnswerMap map = new AnswerMap(responses);
 
         Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
@@ -131,9 +131,9 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testIsVisibleToRecalculate_AnsweredNoVisibleRequirements() throws Exception {
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        AuditData data = EntityFactory.makeAuditData("Yes", question);
-        List<AuditData> responses = new ArrayList<>();
+        DocumentQuestion question = EntityFactory.makeAuditQuestion();
+        DocumentData data = EntityFactory.makeAuditData("Yes", question);
+        List<DocumentData> responses = new ArrayList<>();
         AnswerMap map = new AnswerMap(responses);
 
         Boolean visible = Whitebox.invokeMethod(calculator, "isVisibleToRecalculate", data, map);
@@ -142,14 +142,14 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_Yes() throws Exception {
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        DocumentQuestion question = EntityFactory.makeAuditQuestion();
+        DocumentQuestion visQuestion = EntityFactory.makeAuditQuestion();
         question.setVisibleQuestion(visQuestion);
         question.setVisibleAnswer("Yes");
-        AuditData data = EntityFactory.makeAuditData("Yes", question);
-        AuditData visData = EntityFactory.makeAuditData("Yes", visQuestion);
+        DocumentData data = EntityFactory.makeAuditData("Yes", question);
+        DocumentData visData = EntityFactory.makeAuditData("Yes", visQuestion);
 
-        List<AuditData> responses = new ArrayList<>();
+        List<DocumentData> responses = new ArrayList<>();
         responses.add(visData);
         AnswerMap map = new AnswerMap(responses);
 
@@ -160,14 +160,14 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testIsVisibleToRecalculate_AnsweredVisibleRequirements_No() throws Exception {
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        AuditQuestion visQuestion = EntityFactory.makeAuditQuestion();
+        DocumentQuestion question = EntityFactory.makeAuditQuestion();
+        DocumentQuestion visQuestion = EntityFactory.makeAuditQuestion();
         question.setVisibleQuestion(visQuestion);
         question.setVisibleAnswer("Yes");
-        AuditData data = EntityFactory.makeAuditData("Yes", question);
-        AuditData visData = EntityFactory.makeAuditData("No", visQuestion);
+        DocumentData data = EntityFactory.makeAuditData("Yes", question);
+        DocumentData visData = EntityFactory.makeAuditData("No", visQuestion);
 
-        List<AuditData> responses = new ArrayList<>();
+        List<DocumentData> responses = new ArrayList<>();
         responses.add(visData);
         AnswerMap map = new AnswerMap(responses);
 
@@ -178,13 +178,13 @@ public class AuditPercentCalculatorTest {
 
     @Test
 	public void testChainedFunctions() throws Exception {
-		ContractorAuditOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
-		cao.setStatus(AuditStatus.Pending);
+		ContractorDocumentOperator cao = EntityFactory.addCao(audit, EntityFactory.makeOperator());
+		cao.setStatus(DocumentStatus.Pending);
 		audit.getOperators().add(cao);
 
-		AuditQuestion q1 = EntityFactory.makeAuditQuestion();
-		AuditQuestion q2 = EntityFactory.makeAuditQuestion();
-		AuditQuestion q3 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q1 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q2 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q3 = EntityFactory.makeAuditQuestion();
 		q1.setId(1);
 		q2.setId(2);
 		q3.setId(3);
@@ -195,8 +195,8 @@ public class AuditPercentCalculatorTest {
         q2.setExpirationDate(DateBean.addMonths(new Date(), 1));
         q3.setExpirationDate(DateBean.addMonths(new Date(), 1));
 
-		AuditCategory ac1 = EntityFactory.makeAuditCategory(1);
-		AuditCategory ac2 = EntityFactory.makeAuditCategory(2);
+		DocumentCategory ac1 = EntityFactory.makeAuditCategory(1);
+		DocumentCategory ac2 = EntityFactory.makeAuditCategory(2);
 		ac1.getQuestions().add(q1);
 		ac1.getQuestions().add(q2);
 		ac2.getQuestions().add(q3);
@@ -206,8 +206,8 @@ public class AuditPercentCalculatorTest {
 		q2.setCategory(ac1);
 		q3.setCategory(ac2);
 
-		AuditCatData acd1 = EntityFactory.makeAuditCatData();
-		AuditCatData acd2 = EntityFactory.makeAuditCatData();
+		DocumentCatData acd1 = EntityFactory.makeAuditCatData();
+		DocumentCatData acd2 = EntityFactory.makeAuditCatData();
 		acd1.setId(1);
 		acd2.setId(2);
 		acd1.setCategory(ac1);
@@ -217,8 +217,8 @@ public class AuditPercentCalculatorTest {
 		acd1.setAudit(audit);
 		acd2.setAudit(audit);
 
-		AuditQuestionFunction aqf2 = new AuditQuestionFunction();
-		AuditQuestionFunction aqf3 = new AuditQuestionFunction();
+		DocumentQuestionFunction aqf2 = new DocumentQuestionFunction();
+		DocumentQuestionFunction aqf3 = new DocumentQuestionFunction();
 		aqf2.setType(QuestionFunctionType.Calculation);
 		aqf3.setType(QuestionFunctionType.Calculation);
 		aqf2.setFunction(QuestionFunction.DOUBLE);
@@ -230,8 +230,8 @@ public class AuditPercentCalculatorTest {
 		q2.getFunctions().add(aqf2);
 		q3.getFunctions().add(aqf3);
 
-		AuditQuestionFunctionWatcher aqfw1 = new AuditQuestionFunctionWatcher();
-		AuditQuestionFunctionWatcher aqfw2 = new AuditQuestionFunctionWatcher();
+		DocumentQuestionFunctionWatcher aqfw1 = new DocumentQuestionFunctionWatcher();
+		DocumentQuestionFunctionWatcher aqfw2 = new DocumentQuestionFunctionWatcher();
 		aqfw1.setFunction(aqf2);
 		aqfw2.setFunction(aqf3);
 		aqf2.getWatchers().add(aqfw1);
@@ -241,19 +241,19 @@ public class AuditPercentCalculatorTest {
 		q1.getFunctionWatchers().add(aqfw1);
 		q2.getFunctionWatchers().add(aqfw2);
 
-		AuditData ad1 = EntityFactory.makeAuditData("1");
-		AuditData ad2 = EntityFactory.makeAuditData("0");
-		AuditData ad3 = EntityFactory.makeAuditData("0");
+		DocumentData ad1 = EntityFactory.makeAuditData("1");
+		DocumentData ad2 = EntityFactory.makeAuditData("0");
+		DocumentData ad3 = EntityFactory.makeAuditData("0");
 		ad1.setQuestion(q1);
 		ad2.setQuestion(q2);
 		ad3.setQuestion(q3);
-		List<AuditData> answers = new ArrayList<AuditData>();
+		List<DocumentData> answers = new ArrayList<DocumentData>();
 		answers.add(ad1);
 		answers.add(ad2);
 		answers.add(ad3);
 		AnswerMap map = new AnswerMap(answers);
 
-		when(auditDataDAO.findAnswersByAuditAndQuestions(any(ContractorAudit.class), anyCollectionOf(Integer.class))).thenReturn(map);
+		when(auditDataDAO.findAnswersByAuditAndQuestions(any(ContractorDocument.class), anyCollectionOf(Integer.class))).thenReturn(map);
 		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q1.getId())).thenReturn(ad1);
 		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q2.getId())).thenReturn(ad2);
 		when(auditDataDAO.findAnswerByAuditQuestion(audit.getId(), q3.getId())).thenReturn(ad3);
@@ -266,12 +266,12 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_AllPopulatedAllValidPutsFunctionWatcherQuestionIdInReturn() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<>();
-		List<AuditQuestionFunction> functions = new ArrayList<>();
-		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<>();
+		List<DocumentQuestionFunction> functions = new ArrayList<>();
+		List<DocumentQuestionFunctionWatcher> watchers = new ArrayList<>();
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, true);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		fullFunctionWatcherQuestionStubbing(documentQuestions, functions, watchers, true);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
@@ -280,66 +280,66 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_FunctionWatcherQuestionNotValidForDateReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<>();
-		List<AuditQuestionFunction> functions = new ArrayList<>();
-		List<AuditQuestionFunctionWatcher> watchers = new ArrayList<>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<>();
+		List<DocumentQuestionFunction> functions = new ArrayList<>();
+		List<DocumentQuestionFunctionWatcher> watchers = new ArrayList<>();
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		fullFunctionWatcherQuestionStubbing(auditQuestions, functions, watchers, false);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		fullFunctionWatcherQuestionStubbing(documentQuestions, functions, watchers, false);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
 		assertTrue(ids.isEmpty());
 	}
 
-	private void fullFunctionWatcherQuestionStubbing(List<AuditQuestion> auditQuestions,
-			List<AuditQuestionFunction> functions, List<AuditQuestionFunctionWatcher> watchers,
+	private void fullFunctionWatcherQuestionStubbing(List<DocumentQuestion> documentQuestions,
+			List<DocumentQuestionFunction> functions, List<DocumentQuestionFunctionWatcher> watchers,
 			boolean isDateValid) {
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-		auditQuestions.add(auditQuestion);
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+        when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+		documentQuestions.add(documentQuestion);
 
-		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
+		DocumentQuestionFunction documentQuestionFunction = new DocumentQuestionFunction();
 		
-		functions.add(auditQuestionFunction);
+		functions.add(documentQuestionFunction);
 		
-		when(auditQuestion.getFunctions()).thenReturn(functions);
+		when(documentQuestion.getFunctions()).thenReturn(functions);
 		
-		AuditQuestion watcherAuditQuestion = mock(AuditQuestion.class);
-		when(watcherAuditQuestion.getId()).thenReturn(2);
-        when(watcherAuditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+		DocumentQuestion watcherDocumentQuestion = mock(DocumentQuestion.class);
+		when(watcherDocumentQuestion.getId()).thenReturn(2);
+        when(watcherDocumentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
         if (isDateValid) {
-            when(watcherAuditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+            when(watcherDocumentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
         }
         else {
-            when(watcherAuditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+            when(watcherDocumentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),-1));
         }
 
-		AuditQuestionFunctionWatcher aqfw = new AuditQuestionFunctionWatcher();
-		aqfw.setQuestion(watcherAuditQuestion);
+		DocumentQuestionFunctionWatcher aqfw = new DocumentQuestionFunctionWatcher();
+		aqfw.setQuestion(watcherDocumentQuestion);
 		watchers.add(aqfw);
-		auditQuestionFunction.setWatchers(watchers);
+		documentQuestionFunction.setWatchers(watchers);
 	}
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoWatchersReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<>();
-		List<AuditQuestionFunction> functions = new ArrayList<>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<>();
+		List<DocumentQuestionFunction> functions = new ArrayList<>();
 		
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-        auditQuestions.add(auditQuestion);
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+        when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        documentQuestions.add(documentQuestion);
 
-		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
-		functions.add(auditQuestionFunction);
+		DocumentQuestionFunction documentQuestionFunction = new DocumentQuestionFunction();
+		functions.add(documentQuestionFunction);
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.getFunctions()).thenReturn(functions);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		when(documentQuestion.getFunctions()).thenReturn(functions);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
@@ -348,18 +348,18 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoFunctionsReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<>();
-		List<AuditQuestionFunction> functions = new ArrayList<>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<>();
+		List<DocumentQuestionFunction> functions = new ArrayList<>();
 		
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-		when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-		when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-		auditQuestions.add(auditQuestion);
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+		when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+		when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+		documentQuestions.add(documentQuestion);
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		when(auditQuestion.getFunctions()).thenReturn(functions);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		when(documentQuestion.getFunctions()).thenReturn(functions);
 		
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
@@ -368,41 +368,41 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NotValidQuestionReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<>();
-		List<AuditQuestionFunction> functions = new ArrayList<>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<>();
+		List<DocumentQuestionFunction> functions = new ArrayList<>();
 		
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-        auditQuestions.add(auditQuestion);
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+        when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        documentQuestions.add(documentQuestion);
 
-		AuditQuestionFunction auditQuestionFunction = new AuditQuestionFunction();
-		functions.add(auditQuestionFunction);
+		DocumentQuestionFunction documentQuestionFunction = new DocumentQuestionFunction();
+		functions.add(documentQuestionFunction);
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		Date validDate = functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		Date validDate = functionWatcherQuestionIdsBasicStubbing(documentQuestions);
 
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 		
 		assertTrue(ids.isEmpty());
 	}
 
-	private Date functionWatcherQuestionIdsBasicStubbing(List<AuditQuestion> auditQuestions) {
+	private Date functionWatcherQuestionIdsBasicStubbing(List<DocumentQuestion> documentQuestions) {
 		Date validDate = new Date();
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
-		when(catData.getAudit()).thenReturn(contractorAudit);
-        when(contractorAudit.getAuditType()).thenReturn(auditType);
+		when(catData.getAudit()).thenReturn(contractorDocument);
+        when(contractorDocument.getAuditType()).thenReturn(auditType);
 		return validDate;
 	}
 	
 	@Test
 	public void testCollectFunctionWatcherQuestionIdsFromAuditCatData_NoQuestionsReturnsEmptyCollection() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>();
+		List<DocumentQuestion> documentQuestions = new ArrayList<DocumentQuestion>();
 
-        functionWatcherQuestionIdsBasicStubbing(auditQuestions);
-		functionWatcherQuestionIdsBasicStubbing(auditQuestions);
+        functionWatcherQuestionIdsBasicStubbing(documentQuestions);
+		functionWatcherQuestionIdsBasicStubbing(documentQuestions);
 
 		Collection<Integer> ids = Whitebox.invokeMethod(calculator, "collectFunctionWatcherQuestionIdsFromAuditCatData", catData);
 
@@ -411,8 +411,8 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectQuestionIdsFromAuditCatData_NoRequiredNoVisible() throws Exception {
-		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		List<DocumentQuestion> documentQuestions = mockAuditQuestions(1, 5);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		
 		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
@@ -426,14 +426,14 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testCollectQuestionIdsFromAuditCatData_WithRequiredNotCircularNoVisible() throws Exception {
-		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
-		List<AuditQuestion> requiredQuestions = mockAuditQuestions(6, 5);
-		Iterator<AuditQuestion> requiredQuestionsIterator = requiredQuestions.iterator();
-		for (AuditQuestion question : auditQuestions) {
-			AuditQuestion requiredQuestion = requiredQuestionsIterator.next();
+		List<DocumentQuestion> documentQuestions = mockAuditQuestions(1, 5);
+		List<DocumentQuestion> requiredQuestions = mockAuditQuestions(6, 5);
+		Iterator<DocumentQuestion> requiredQuestionsIterator = requiredQuestions.iterator();
+		for (DocumentQuestion question : documentQuestions) {
+			DocumentQuestion requiredQuestion = requiredQuestionsIterator.next();
 			when(question.getRequiredQuestion()).thenReturn(requiredQuestion);
 		}
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		
 		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
@@ -446,14 +446,14 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testCollectQuestionIdsFromAuditCatData_NoRequiredWithVisibleNotCircular() throws Exception {
-		List<AuditQuestion> auditQuestions = mockAuditQuestions(1, 5);
-		List<AuditQuestion> visibleQuestions = mockAuditQuestions(6, 5);
-		Iterator<AuditQuestion> visibleQuestionsIterator = visibleQuestions.iterator();
-		for (AuditQuestion question : auditQuestions) {
-			AuditQuestion visibleQuestion = visibleQuestionsIterator.next();
+		List<DocumentQuestion> documentQuestions = mockAuditQuestions(1, 5);
+		List<DocumentQuestion> visibleQuestions = mockAuditQuestions(6, 5);
+		Iterator<DocumentQuestion> visibleQuestionsIterator = visibleQuestions.iterator();
+		for (DocumentQuestion question : documentQuestions) {
+			DocumentQuestion visibleQuestion = visibleQuestionsIterator.next();
 			when(question.getVisibleQuestion()).thenReturn(visibleQuestion);
 		}
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		
 		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
@@ -465,26 +465,26 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectQuestionIdsFromAuditCatData_WithRequiredWithCircularNoVisible() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-        auditQuestions.add(auditQuestion);
+		List<DocumentQuestion> documentQuestions = new ArrayList<DocumentQuestion>();
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+        when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        documentQuestions.add(documentQuestion);
 		
-		AuditQuestion requiredQuestion = mock(AuditQuestion.class);
+		DocumentQuestion requiredQuestion = mock(DocumentQuestion.class);
 		when(requiredQuestion.getId()).thenReturn(2);
-		when(auditQuestion.getRequiredQuestion()).thenReturn(requiredQuestion);
+		when(documentQuestion.getRequiredQuestion()).thenReturn(requiredQuestion);
 		
-		AuditQuestion requiredQuestion2 = mock(AuditQuestion.class);
+		DocumentQuestion requiredQuestion2 = mock(DocumentQuestion.class);
 		when(requiredQuestion2.getId()).thenReturn(3);
 		when(requiredQuestion.getRequiredQuestion()).thenReturn(requiredQuestion2);
 		
-		AuditQuestion circularRequiredQuestion = mock(AuditQuestion.class);
+		DocumentQuestion circularRequiredQuestion = mock(DocumentQuestion.class);
 		when(circularRequiredQuestion.getId()).thenReturn(2);
 		when(requiredQuestion2.getRequiredQuestion()).thenReturn(circularRequiredQuestion);
 		
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		
 		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
@@ -497,26 +497,26 @@ public class AuditPercentCalculatorTest {
 	
 	@Test
 	public void testCollectQuestionIdsFromAuditCatData_WithVisibleWithCircularNoRequired() throws Exception {
-		List<AuditQuestion> auditQuestions = new ArrayList<AuditQuestion>(); 
-		AuditQuestion auditQuestion = mock(AuditQuestion.class);
-		when(auditQuestion.getId()).thenReturn(1);
-        when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-        when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-        auditQuestions.add(auditQuestion);
+		List<DocumentQuestion> documentQuestions = new ArrayList<DocumentQuestion>();
+		DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+		when(documentQuestion.getId()).thenReturn(1);
+        when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+        when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+        documentQuestions.add(documentQuestion);
 		
-		AuditQuestion visibleQuestion = mock(AuditQuestion.class);
+		DocumentQuestion visibleQuestion = mock(DocumentQuestion.class);
 		when(visibleQuestion.getId()).thenReturn(2);
-		when(auditQuestion.getVisibleQuestion()).thenReturn(visibleQuestion);
+		when(documentQuestion.getVisibleQuestion()).thenReturn(visibleQuestion);
 		
-		AuditQuestion visibleQuestion2 = mock(AuditQuestion.class);
+		DocumentQuestion visibleQuestion2 = mock(DocumentQuestion.class);
 		when(visibleQuestion2.getId()).thenReturn(3);
 		when(visibleQuestion.getVisibleQuestion()).thenReturn(visibleQuestion2);
 		
-		AuditQuestion circularVisibleQuestion = mock(AuditQuestion.class);
+		DocumentQuestion circularVisibleQuestion = mock(DocumentQuestion.class);
 		when(circularVisibleQuestion.getId()).thenReturn(2);
 		when(visibleQuestion2.getVisibleQuestion()).thenReturn(circularVisibleQuestion);
 		
-		when(category.getQuestions()).thenReturn(auditQuestions);
+		when(category.getQuestions()).thenReturn(documentQuestions);
 		when(catData.getCategory()).thenReturn(category);
 		
 		Set<Integer> questionIDs = Whitebox.invokeMethod(calculator, "collectQuestionIdsFromAuditCatData", catData);
@@ -528,14 +528,14 @@ public class AuditPercentCalculatorTest {
 		verify(logger).warn(startsWith("Circular visible questions detected"), anyInt());
 	}
 	
-	private List<AuditQuestion> mockAuditQuestions(int startingId, int numberToCreate) {
-		List<AuditQuestion> questions = new ArrayList<AuditQuestion>();
+	private List<DocumentQuestion> mockAuditQuestions(int startingId, int numberToCreate) {
+		List<DocumentQuestion> questions = new ArrayList<DocumentQuestion>();
 		for (int i = startingId; i < (startingId+numberToCreate); i++) {
-			AuditQuestion auditQuestion = mock(AuditQuestion.class);
-			when(auditQuestion.getId()).thenReturn(i);
-            when(auditQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
-            when(auditQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
-            questions.add(auditQuestion);
+			DocumentQuestion documentQuestion = mock(DocumentQuestion.class);
+			when(documentQuestion.getId()).thenReturn(i);
+            when(documentQuestion.getEffectiveDate()).thenReturn(DateBean.addMonths(new Date(),-1));
+            when(documentQuestion.getExpirationDate()).thenReturn(DateBean.addMonths(new Date(),1));
+            questions.add(documentQuestion);
 		}
 		return questions;
 	}
@@ -650,29 +650,29 @@ public class AuditPercentCalculatorTest {
 		acd4.getCategory().setParent(acd2.getCategory());
 
 		if (acd2.getCategory().getSubCategories() == null)
-			acd2.getCategory().setSubCategories(new ArrayList<AuditCategory>());
+			acd2.getCategory().setSubCategories(new ArrayList<DocumentCategory>());
 		acd2.getCategory().getSubCategories().clear();
 		acd2.getCategory().getSubCategories().add(acd3.getCategory());
 		acd2.getCategory().getSubCategories().add(acd4.getCategory());
 
-		auditCatDataList.clear();
-		auditCatDataList.add(acd1);
-		auditCatDataList.add(acd2);
-		auditCatDataList.add(acd3);
-		auditCatDataList.add(acd4);
-		audit.setCategories(auditCatDataList);
+		documentCatDataList.clear();
+		documentCatDataList.add(acd1);
+		documentCatDataList.add(acd2);
+		documentCatDataList.add(acd3);
+		documentCatDataList.add(acd4);
+		audit.setCategories(documentCatDataList);
 
-		auditCategoryList.clear();
-		auditCategoryList.add(acd1.getCategory());
-		auditCategoryList.add(acd2.getCategory());
-		auditCategoryList.add(acd3.getCategory());
-		auditCategoryList.add(acd4.getCategory());
-		auditType.setCategories(auditCategoryList);
+		documentCategoryList.clear();
+		documentCategoryList.add(acd1.getCategory());
+		documentCategoryList.add(acd2.getCategory());
+		documentCategoryList.add(acd3.getCategory());
+		documentCategoryList.add(acd4.getCategory());
+		auditType.setCategories(documentCategoryList);
 	}
 
-	private AuditCatData createWeightedAuditCatData(float score,
+	private DocumentCatData createWeightedAuditCatData(float score,
 			float scorePossible, float scoreWeight) {
-		AuditCatData acd = EntityFactory.makeAuditCatData();
+		DocumentCatData acd = EntityFactory.makeAuditCatData();
 		acd.setScore(score);
 		acd.setScorePossible(scorePossible);
 		acd.getCategory().setScoreWeight(scoreWeight);
@@ -685,11 +685,11 @@ public class AuditPercentCalculatorTest {
 		PicsTestUtil.forceSetPrivateField(calculator, "auditDataDAO",
 				auditDataDAO);
 
-		AuditCatData catData = EntityFactory.makeAuditCatData();
+		DocumentCatData catData = EntityFactory.makeAuditCatData();
 		catData.setAudit(audit);
 
-		AuditQuestion q1 = EntityFactory.makeAuditQuestion();
-		AuditQuestion q2 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q1 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q2 = EntityFactory.makeAuditQuestion();
 		q1.setCategory(catData.getCategory());
 		q2.setCategory(catData.getCategory());
 
@@ -702,18 +702,18 @@ public class AuditPercentCalculatorTest {
 		catData.getCategory().getQuestions().add(q1);
 		catData.getCategory().getQuestions().add(q2);
 
-		AuditData a1 = EntityFactory.makeAuditData("Yes");
-		AuditData a2 = EntityFactory.makeAuditData("Yes");
+		DocumentData a1 = EntityFactory.makeAuditData("Yes");
+		DocumentData a2 = EntityFactory.makeAuditData("Yes");
 		a1.setQuestion(q1);
 		a2.setQuestion(q2);
 
-		List<AuditData> answerList = new ArrayList<AuditData>();
+		List<DocumentData> answerList = new ArrayList<DocumentData>();
 		answerList.add(a1);
 		answerList.add(a2);
 
 		audit.setData(answerList);
 		
-		List<AuditData> pqfList = new ArrayList<AuditData>();
+		List<DocumentData> pqfList = new ArrayList<DocumentData>();
 		
 		when(auditDataDAO.findCustomPQFVerifications(Matchers.anyInt())).thenReturn(pqfList);
 
@@ -740,7 +740,7 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testUpdatePercentageCompleted_CircularRequiredQuestions() {
-		AuditCatData catData = setupCircularTest(true);
+		DocumentCatData catData = setupCircularTest(true);
 
 		calculator.updatePercentageCompleted(catData);
 		verify(logger, times(2 * 3)).warn(Matchers.anyString(), Matchers.any()); // instances
@@ -760,7 +760,7 @@ public class AuditPercentCalculatorTest {
 
 	@Test
 	public void testUpdatePercentageCompleted_CircularVisibleQuestions() {
-		AuditCatData catData = setupCircularTest(false);
+		DocumentCatData catData = setupCircularTest(false);
 
 		calculator.updatePercentageCompleted(catData);
 		verify(logger, times(2 * 3)).warn(Matchers.anyString(), Matchers.any()); // instances
@@ -774,16 +774,16 @@ public class AuditPercentCalculatorTest {
 																					// loop
 	}
 
-	private AuditCatData setupCircularTest(boolean doRequiredQuestions) {
+	private DocumentCatData setupCircularTest(boolean doRequiredQuestions) {
 		PicsTestUtil.forceSetPrivateField(calculator, "auditDataDAO",
 				auditDataDAO);
 
-		AuditCatData catData = EntityFactory.makeAuditCatData();
+		DocumentCatData catData = EntityFactory.makeAuditCatData();
 		catData.setAudit(audit);
 
-		AuditQuestion q1 = EntityFactory.makeAuditQuestion();
-		AuditQuestion q2 = EntityFactory.makeAuditQuestion();
-		AuditQuestion q3 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q1 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q2 = EntityFactory.makeAuditQuestion();
+		DocumentQuestion q3 = EntityFactory.makeAuditQuestion();
 		q1.setCategory(catData.getCategory());
 		q2.setCategory(catData.getCategory());
 		q3.setCategory(catData.getCategory());
@@ -810,9 +810,9 @@ public class AuditPercentCalculatorTest {
 		catData.getCategory().getQuestions().add(q2);
 		catData.getCategory().getQuestions().add(q3);
 
-		AuditData a1 = EntityFactory.makeAuditData("Yes");
-		AuditData a2 = EntityFactory.makeAuditData("Yes");
-		AuditData a3 = EntityFactory.makeAuditData("Yes");
+		DocumentData a1 = EntityFactory.makeAuditData("Yes");
+		DocumentData a2 = EntityFactory.makeAuditData("Yes");
+		DocumentData a3 = EntityFactory.makeAuditData("Yes");
 		a1.setQuestion(q1);
 		a2.setQuestion(q2);
 		a3.setQuestion(q3);
@@ -821,7 +821,7 @@ public class AuditPercentCalculatorTest {
 		a2.setDateVerified(new Date());
 		a3.setDateVerified(new Date());
 
-		List<AuditData> answerList = new ArrayList<AuditData>();
+		List<DocumentData> answerList = new ArrayList<DocumentData>();
 		answerList.add(a1);
 		answerList.add(a2);
 		answerList.add(a3);
@@ -830,7 +830,7 @@ public class AuditPercentCalculatorTest {
 
 		when(
 				auditDataDAO.findAnswersByAuditAndQuestions(
-						Matchers.any(ContractorAudit.class),
+						Matchers.any(ContractorDocument.class),
 						Matchers.anyCollectionOf(Integer.class))).thenReturn(
 				new AnswerMap(answerList));
 
@@ -840,47 +840,47 @@ public class AuditPercentCalculatorTest {
 
     @Test
     public void testPolicyNoRequiredQuestionsIsNotPushedTo100Percent() throws Exception {
-        List<ContractorAuditOperator> caos = new ArrayList<>();
-        caos.add(contractorAuditOperator);
-        List<AuditCatData> auditCatDatas = new ArrayList<>();
-        auditCatDatas.add(catData);
+        List<ContractorDocumentOperator> caos = new ArrayList<>();
+        caos.add(contractorDocumentOperator);
+        List<DocumentCatData> documentCatDatas = new ArrayList<>();
+        documentCatDatas.add(catData);
 
         setupMocksForZeroQuestionsRequired();
-        when(contractorAudit.getOperators()).thenReturn(caos);
+        when(contractorDocument.getOperators()).thenReturn(caos);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
-        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(contractorDocument.getCategories()).thenReturn(documentCatDatas);
         when(catData.getCategory()).thenReturn(category);
 
-        calculator.percentCalculateComplete(contractorAudit, false);
+        calculator.percentCalculateComplete(contractorDocument, false);
 
-        verify(contractorAuditOperator).setPercentComplete(0);
-        verify(contractorAuditOperator).setPercentVerified(0);
+        verify(contractorDocumentOperator).setPercentComplete(0);
+        verify(contractorDocumentOperator).setPercentVerified(0);
     }
 
     @Test
     public void testNonPolicyNoRequiredQuestionsIsNotPushedTo100Percent() throws Exception {
-        List<ContractorAuditOperator> caos = new ArrayList<>();
-        caos.add(contractorAuditOperator);
-        List<AuditCatData> auditCatDatas = new ArrayList<>();
-        auditCatDatas.add(catData);
+        List<ContractorDocumentOperator> caos = new ArrayList<>();
+        caos.add(contractorDocumentOperator);
+        List<DocumentCatData> documentCatDatas = new ArrayList<>();
+        documentCatDatas.add(catData);
 
         setupMocksForZeroQuestionsRequired();
-        when(contractorAudit.getOperators()).thenReturn(caos);
+        when(contractorDocument.getOperators()).thenReturn(caos);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Audit);
-        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(contractorDocument.getCategories()).thenReturn(documentCatDatas);
         when(catData.getCategory()).thenReturn(category);
 
-        calculator.percentCalculateComplete(contractorAudit, false);
+        calculator.percentCalculateComplete(contractorDocument, false);
 
-        verify(contractorAuditOperator).setPercentComplete(100);
-        verify(contractorAuditOperator).setPercentVerified(100);
+        verify(contractorDocumentOperator).setPercentComplete(100);
+        verify(contractorDocumentOperator).setPercentVerified(100);
     }
 
     private void setupMocksForZeroQuestionsRequired() {
-        when(contractorAudit.getContractorAccount()).thenReturn(contractor);
-        when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
-        when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Pending);
-        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
+        when(contractorDocument.getContractorAccount()).thenReturn(contractor);
+        when(contractorDocument.getAuditType()).thenReturn(mockAuditType);
+        when(contractorDocumentOperator.getStatus()).thenReturn(DocumentStatus.Pending);
+        when(contractorDocumentOperator.getPercentComplete()).thenReturn(100);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
         when(catData.getNumRequired()).thenReturn(0);
@@ -892,18 +892,18 @@ public class AuditPercentCalculatorTest {
     @Test
     public void testPercentCalculateComplete_PolicySubmittedOrAfter()
             throws Exception {
-        List<ContractorAuditOperator> caos = new ArrayList<>();
-        caos.add(contractorAuditOperator);
-        List<AuditCatData> auditCatDatas = new ArrayList<>();
-        auditCatDatas.add(catData);
+        List<ContractorDocumentOperator> caos = new ArrayList<>();
+        caos.add(contractorDocumentOperator);
+        List<DocumentCatData> documentCatDatas = new ArrayList<>();
+        documentCatDatas.add(catData);
 
-        when(contractorAudit.getContractorAccount()).thenReturn(contractor);
-        when(contractorAudit.getOperators()).thenReturn(caos);
-        when(contractorAudit.getAuditType()).thenReturn(mockAuditType);
+        when(contractorDocument.getContractorAccount()).thenReturn(contractor);
+        when(contractorDocument.getOperators()).thenReturn(caos);
+        when(contractorDocument.getAuditType()).thenReturn(mockAuditType);
         when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
-        when(contractorAuditOperator.getStatus()).thenReturn(AuditStatus.Submitted);
-        when(contractorAuditOperator.getPercentComplete()).thenReturn(100);
-        when(contractorAudit.getCategories()).thenReturn(auditCatDatas);
+        when(contractorDocumentOperator.getStatus()).thenReturn(DocumentStatus.Submitted);
+        when(contractorDocumentOperator.getPercentComplete()).thenReturn(100);
+        when(contractorDocument.getCategories()).thenReturn(documentCatDatas);
         when(catData.getCategory()).thenReturn(category);
         when(catData.isOverride()).thenReturn(true);
         when(catData.isApplies()).thenReturn(true);
@@ -913,9 +913,9 @@ public class AuditPercentCalculatorTest {
         when(catData.getNumAnswered()).thenReturn(50);
         when(catData.getCategory()).thenReturn(category);
 
-        calculator.percentCalculateComplete(contractorAudit, false);
+        calculator.percentCalculateComplete(contractorDocument, false);
 
-        verify(contractorAuditOperator).setPercentComplete(100);
-        verify(contractorAuditOperator).setPercentVerified(50);
+        verify(contractorDocumentOperator).setPercentComplete(100);
+        verify(contractorDocumentOperator).setPercentVerified(50);
     }
 }

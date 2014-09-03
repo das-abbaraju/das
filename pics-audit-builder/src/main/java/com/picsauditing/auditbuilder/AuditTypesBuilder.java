@@ -2,17 +2,17 @@ package com.picsauditing.auditbuilder;
 
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
 public class AuditTypesBuilder extends AuditBuilderBase {
     private AuditTypeRuleCache2 ruleCache;
-	private List<AuditTypeRule> rules;
+	private List<DocumentTypeRule> rules;
 
     public class AuditTypeDetail {
-		public AuditTypeRule rule;
+		public DocumentTypeRule rule;
 		public Set<OperatorAccount> operators = new HashSet<>();
 	}
 
@@ -41,11 +41,11 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		rules = ruleCache.getRules(contractor);
 
 		Map<Integer, OperatorTag> tags = getRequiredTags(rules);
-		Map<Integer, List<AuditData>> answers = buildQuestionAnswersMap(rules);
+		Map<Integer, List<DocumentData>> answers = buildQuestionAnswersMap(rules);
 		rules = evaluateRulesAndFilterOutNegatives(rules, tags, answers);
 
 		Set<AuditType> allCandidateAuditTypes = new HashSet<>();
-		for (AuditTypeRule rule : rules) {
+		for (DocumentTypeRule rule : rules) {
 			if (rule.isInclude()) {
 				allCandidateAuditTypes.add(rule.getAuditType());
 			}
@@ -59,8 +59,8 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		}
 
 		for (AuditType auditType : allCandidateAuditTypes) {
-			List<AuditTypeRule> rulesForThisAuditType = new ArrayList<>();
-			for (AuditTypeRule rule : rules) {
+			List<DocumentTypeRule> rulesForThisAuditType = new ArrayList<>();
+			for (DocumentTypeRule rule : rules) {
 				if (auditType.equals(rule.getAuditType())) {
 					rulesForThisAuditType.add(rule);
 				}
@@ -72,7 +72,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 
 				AuditTypeDetail detail = new AuditTypeDetail();
 				for (OperatorAccount operator : operatorAccounts) {
-					AuditTypeRule rule = getApplicable(rulesForThisAuditType, auditType, blank, null, operator);
+					DocumentTypeRule rule = getApplicable(rulesForThisAuditType, auditType, blank, null, operator);
 					if (rule != null && rule.isInclude()) {
 						detail.operators.add(operator);
 						if (rule.isMoreSpecific(detail.rule))
@@ -88,7 +88,7 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 			for (Trade trade : trades) {
 				for (ContractorType type : contractorTypes) {
 					for (OperatorAccount operator : operatorAccounts) {
-						AuditTypeRule rule = getApplicable(rulesForThisAuditType, auditType, trade, type, operator);
+						DocumentTypeRule rule = getApplicable(rulesForThisAuditType, auditType, trade, type, operator);
 						if (rule != null && rule.isInclude()) {
 							detail.operators.add(operator);
 							if (rule.isMoreSpecific(detail.rule))
@@ -103,10 +103,10 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		return types;
 	}
 
-	private List<AuditTypeRule> evaluateRulesAndFilterOutNegatives(List<AuditTypeRule> rules, Map<Integer, OperatorTag> tags, Map<Integer, List<AuditData>> answers) {
-		Iterator<AuditTypeRule> iterator = rules.iterator();
+	private List<DocumentTypeRule> evaluateRulesAndFilterOutNegatives(List<DocumentTypeRule> rules, Map<Integer, OperatorTag> tags, Map<Integer, List<DocumentData>> answers) {
+		Iterator<DocumentTypeRule> iterator = rules.iterator();
 		while (iterator.hasNext()) {
-			AuditTypeRule rule = iterator.next();
+			DocumentTypeRule rule = iterator.next();
 			if (!isValidRuleForDependentAuditStatus(rule) ||
                     !evaluateRule(rule, answers, tags)) {
 				iterator.remove();
@@ -115,27 +115,27 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		return rules;
 	}
 
-	private AuditTypeRule getApplicable(List<AuditTypeRule> rules, AuditType auditType, Trade trade,
+	private DocumentTypeRule getApplicable(List<DocumentTypeRule> rules, AuditType auditType, Trade trade,
 	                                    ContractorType type, OperatorAccount operator) {
-		for (AuditTypeRule rule : rules) {
+		for (DocumentTypeRule rule : rules) {
 			if (auditType.equals(rule.getAuditType()))
-				if (AuditService.isApplies(rule, trade))
-					if (AuditService.isApplies(rule, type))
-						if (AuditService.isApplies(rule, operator))
+				if (DocumentUtilityService.isApplies(rule, trade))
+					if (DocumentUtilityService.isApplies(rule, type))
+						if (DocumentUtilityService.isApplies(rule, operator))
 							return rule;
 		}
 		return null;
 	}
 
-    protected boolean isValidRuleForDependentAuditStatus(AuditRule rule) {
-        AuditTypeRule auditTypeRule = (AuditTypeRule) rule;
-        if (auditTypeRule.getDependentAuditType() != null && auditTypeRule.getDependentAuditStatus() != null) {
+    protected boolean isValidRuleForDependentAuditStatus(DocumentRule rule) {
+        DocumentTypeRule documentTypeRule = (DocumentTypeRule) rule;
+        if (documentTypeRule.getDependentAuditType() != null && documentTypeRule.getDependentDocumentStatus() != null) {
             boolean found = false;
-            for (ContractorAudit audit : contractor.getAudits()) {
-                if (!AuditService.isExpired(audit)
-                        && audit.getAuditType().equals(auditTypeRule.getDependentAuditType())
-                        && (AuditService.hasCaoStatus(audit, auditTypeRule.getDependentAuditStatus()) ||
-                        AuditService.hasCaoStatusAfter(audit, auditTypeRule.getDependentAuditStatus()))) {
+            for (ContractorDocument audit : contractor.getAudits()) {
+                if (!DocumentUtilityService.isExpired(audit)
+                        && audit.getAuditType().equals(documentTypeRule.getDependentAuditType())
+                        && (DocumentUtilityService.hasCaoStatus(audit, documentTypeRule.getDependentDocumentStatus()) ||
+                        DocumentUtilityService.hasCaoStatusAfter(audit, documentTypeRule.getDependentDocumentStatus()))) {
                     found = true;
                     break;
                 }
@@ -147,27 +147,27 @@ public class AuditTypesBuilder extends AuditBuilderBase {
         return true;
     }
 
-	private Map<Integer, List<AuditData>> buildQuestionAnswersMap(List<? extends AuditRule> rules) {
-		Map<Integer, List<AuditData>> questionAnswers = new HashMap<>();
-		for (AuditRule rule : rules) {
-			AuditQuestion auditQuestion = rule.getQuestion();
-			if (auditQuestion != null) {
-				List<AuditData> answers = findAnswersByContractorAndQuestion(contractor, auditQuestion);
+	private Map<Integer, List<DocumentData>> buildQuestionAnswersMap(List<? extends DocumentRule> rules) {
+		Map<Integer, List<DocumentData>> questionAnswers = new HashMap<>();
+		for (DocumentRule rule : rules) {
+			DocumentQuestion documentQuestion = rule.getQuestion();
+			if (documentQuestion != null) {
+				List<DocumentData> answers = findAnswersByContractorAndQuestion(contractor, documentQuestion);
                 filterNonVisibleAnswers(answers);
                 filterNonApplicableCategoryAnswers(answers);
-				questionAnswers.put(auditQuestion.getId(), answers);
+				questionAnswers.put(documentQuestion.getId(), answers);
 			}
 		}
 
 		return questionAnswers;
 	}
 
-    private void filterNonVisibleAnswers(List<AuditData> answers) {
-        Iterator<AuditData> iterator = answers.iterator();
+    private void filterNonVisibleAnswers(List<DocumentData> answers) {
+        Iterator<DocumentData> iterator = answers.iterator();
         while (iterator.hasNext()) {
-            AuditData data = iterator.next();
+            DocumentData data = iterator.next();
             if (data.getQuestion().getVisibleQuestion() != null && data.getQuestion().getVisibleAnswer() != null) {
-                AuditData visibleQuestionAnswer = getAuditDataDAO().findAnswerToQuestion(data.getAudit().getId(), data.getQuestion().getVisibleQuestion().getId());
+                DocumentData visibleQuestionAnswer = getAuditDataDAO().findAnswerToQuestion(data.getAudit().getId(), data.getQuestion().getVisibleQuestion().getId());
                 if (visibleQuestionAnswer != null && !StringUtils.equals(visibleQuestionAnswer.getAnswer(), data.getQuestion().getVisibleAnswer())) {
                     iterator.remove();
                 }
@@ -175,10 +175,10 @@ public class AuditTypesBuilder extends AuditBuilderBase {
         }
     }
 
-    private void filterNonApplicableCategoryAnswers(List<AuditData> answers) {
-        Iterator<AuditData> iterator = answers.iterator();
+    private void filterNonApplicableCategoryAnswers(List<DocumentData> answers) {
+        Iterator<DocumentData> iterator = answers.iterator();
         while (iterator.hasNext()) {
-            AuditData data = iterator.next();
+            DocumentData data = iterator.next();
 
             if (!isCategoryApplicable(data)) {
                 iterator.remove();
@@ -187,8 +187,8 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 
     }
 
-    private boolean isCategoryApplicable(AuditData data) {
-        for (AuditCatData acd : data.getAudit().getCategories()) {
+    private boolean isCategoryApplicable(DocumentData data) {
+        for (DocumentCatData acd : data.getAudit().getCategories()) {
             if (acd.getCategory().getId() == data.getQuestion().getCategory().getId())
                 return acd.isApplies();
         }
@@ -196,11 +196,11 @@ public class AuditTypesBuilder extends AuditBuilderBase {
         return true;
     }
 
-    private List<AuditData> findAnswersByContractorAndQuestion(ContractorAccount contractor, AuditQuestion question) {
+    private List<DocumentData> findAnswersByContractorAndQuestion(ContractorAccount contractor, DocumentQuestion question) {
 	    return getAuditDataDAO().findAnswersByContractorAndQuestion(contractor, question);
 	}
 
-    public List<AuditTypeRule> getRules() {
+    public List<DocumentTypeRule> getRules() {
         return rules;
     }
 }

@@ -1,7 +1,7 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
+import com.picsauditing.auditbuilder.dao.DocumentDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.util.DateBean;
 import org.junit.Before;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 public class AuditTypesBuilderTest {
 
 	private AuditTypesBuilder auditTypesBuilder;
-	List<AuditTypeRule> auditTypeRules = new ArrayList<>();
+	List<DocumentTypeRule> documentTypeRules = new ArrayList<>();
 
 	@Mock
     AuditTypeRuleCache2 auditTypeRuleCache;
@@ -27,7 +27,7 @@ public class AuditTypesBuilderTest {
 	@Mock
     OperatorAccount operator;
 	@Mock
-    AuditDataDAO2 auditDataDAO;
+    DocumentDataDAO auditDataDAO;
 
 	@Before
 	public void setUp() throws Exception {
@@ -43,7 +43,7 @@ public class AuditTypesBuilderTest {
 		contractorTypes.add(ContractorType.Onsite);
 		Whitebox.setInternalState(auditTypesBuilder, "contractorTypes", contractorTypes);
 
-		when(auditTypeRuleCache.getRules(contractor)).thenReturn(auditTypeRules);
+		when(auditTypeRuleCache.getRules(contractor)).thenReturn(documentTypeRules);
 
 		List<ContractorOperator> contractorOperatorAccounts = setupContractorOperatorWithActiveOperator();
 		when(contractor.getOperators()).thenReturn(contractorOperatorAccounts);
@@ -51,106 +51,106 @@ public class AuditTypesBuilderTest {
 
     @Test
     public void testBuildQuestionAnswersMap_NoAnswer() throws Exception {
-        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
-        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+        DocumentTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        DocumentQuestion otherQuestion = createQuestion(otherTypeRule, 100);
 
 
-        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        DocumentTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
         manualTypeRule.setQuestion(otherQuestion);
         manualTypeRule.setQuestionAnswer("Yes");
 
-        List<AuditData> auditDataList = new ArrayList<>();
+        List<DocumentData> documentDataList = new ArrayList<>();
 
-        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(documentDataList);
 
-        List<AuditTypeRule> rules = new ArrayList<>();
+        List<DocumentTypeRule> rules = new ArrayList<>();
         rules.add(manualTypeRule);
         rules.add(otherTypeRule);
 
-        Map<Integer, List<AuditData>> map;
+        Map<Integer, List<DocumentData>> map;
         map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(0, map.get(otherQuestion.getId()).size());
     }
 
     @Test
     public void testBuildQuestionAnswersMap_NonApplicableCategory() throws Exception {
-        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
-        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+        DocumentTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        DocumentQuestion otherQuestion = createQuestion(otherTypeRule, 100);
 
-        ContractorAudit audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
-        List<ContractorAudit> audits = new ArrayList<>();
+        ContractorDocument audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
+        List<ContractorDocument> audits = new ArrayList<>();
         audits.add(audit);
         when(contractor.getAudits()).thenReturn(audits);
 
-        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        DocumentTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
         manualTypeRule.setQuestion(otherQuestion);
         manualTypeRule.setQuestionAnswer("Yes");
 
-        List<AuditData> auditDataList = new ArrayList<>();
-        AuditData auditData = new AuditData();
-        auditData.setQuestion(otherQuestion);
-        auditData.setAnswer("No");
-        auditData.setAudit(audit);
-        auditDataList.add(auditData);
+        List<DocumentData> documentDataList = new ArrayList<>();
+        DocumentData documentData = new DocumentData();
+        documentData.setQuestion(otherQuestion);
+        documentData.setAnswer("No");
+        documentData.setAudit(audit);
+        documentDataList.add(documentData);
 
-        AuditCatData auditCatData = new AuditCatData();
-        auditCatData.setAudit(audit);
-        auditCatData.setCategory(otherQuestion.getCategory());
-        auditCatData.setApplies(false);
-        audit.getCategories().add(auditCatData);
+        DocumentCatData documentCatData = new DocumentCatData();
+        documentCatData.setAudit(audit);
+        documentCatData.setCategory(otherQuestion.getCategory());
+        documentCatData.setApplies(false);
+        audit.getCategories().add(documentCatData);
 
-        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(documentDataList);
 
-        List<AuditTypeRule> rules = new ArrayList<>();
+        List<DocumentTypeRule> rules = new ArrayList<>();
         rules.add(manualTypeRule);
         rules.add(otherTypeRule);
 
-        Map<Integer, List<AuditData>> map;
+        Map<Integer, List<DocumentData>> map;
         map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(0, map.get(otherQuestion.getId()).size());
     }
 
     @Test
     public void testBuildQuestionAnswersMap_ApplicableCategory() throws Exception {
-        AuditTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
-        AuditQuestion otherQuestion = createQuestion(otherTypeRule, 100);
+        DocumentTypeRule otherTypeRule = createAuditTypeRuleForTypeAndCategory(200, 102, "Test Cat 1");
+        DocumentQuestion otherQuestion = createQuestion(otherTypeRule, 100);
 
-        ContractorAudit audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
-        List<ContractorAudit> audits = new ArrayList<>();
+        ContractorDocument audit = EntityFactory.makeContractorAudit(otherTypeRule.getAuditType(), contractor);
+        List<ContractorDocument> audits = new ArrayList<>();
         audits.add(audit);
         when(contractor.getAudits()).thenReturn(audits);
 
-        AuditTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        DocumentTypeRule manualTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
         manualTypeRule.setQuestion(otherQuestion);
         manualTypeRule.setQuestionAnswer("Yes");
 
-        List<AuditData> auditDataList = new ArrayList<>();
-        AuditData auditData = new AuditData();
-        auditData.setQuestion(otherQuestion);
-        auditData.setAnswer("No");
-        auditData.setAudit(audit);
-        auditDataList.add(auditData);
+        List<DocumentData> documentDataList = new ArrayList<>();
+        DocumentData documentData = new DocumentData();
+        documentData.setQuestion(otherQuestion);
+        documentData.setAnswer("No");
+        documentData.setAudit(audit);
+        documentDataList.add(documentData);
 
-        AuditCatData auditCatData = new AuditCatData();
-        auditCatData.setAudit(audit);
-        auditCatData.setCategory(otherQuestion.getCategory());
-        auditCatData.setApplies(true);
-        audit.getCategories().add(auditCatData);
+        DocumentCatData documentCatData = new DocumentCatData();
+        documentCatData.setAudit(audit);
+        documentCatData.setCategory(otherQuestion.getCategory());
+        documentCatData.setApplies(true);
+        audit.getCategories().add(documentCatData);
 
-        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(auditDataList);
+        when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, otherQuestion)).thenReturn(documentDataList);
 
-        List<AuditTypeRule> rules = new ArrayList<>();
+        List<DocumentTypeRule> rules = new ArrayList<>();
         rules.add(manualTypeRule);
         rules.add(otherTypeRule);
 
-        Map<Integer, List<AuditData>> map;
+        Map<Integer, List<DocumentData>> map;
         map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(1, map.get(otherQuestion.getId()).size());
     }
 
-    private AuditQuestion createQuestion(AuditTypeRule typeRule, int categoryId) {
-        AuditQuestion question = EntityFactory.makeAuditQuestion();
-        for (AuditCategory category:typeRule.getAuditType().getCategories()) {
+    private DocumentQuestion createQuestion(DocumentTypeRule typeRule, int categoryId) {
+        DocumentQuestion question = EntityFactory.makeAuditQuestion();
+        for (DocumentCategory category:typeRule.getAuditType().getCategories()) {
             if (category.getId() == categoryId) {
                 question.setCategory(category);
 
@@ -161,11 +161,11 @@ public class AuditTypesBuilderTest {
 
     @Test
     public void testRulePruningForDependentAuditTypes() throws Exception {
-        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
-        auditTypeRule.setDependentAuditType(EntityFactory.makeAuditType(200));
-        auditTypeRule.setDependentAuditStatus(AuditStatus.Complete);
+        DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.MANUAL_AUDIT, 101, "Test Cat 1");
+        documentTypeRule.setDependentAuditType(EntityFactory.makeAuditType(200));
+        documentTypeRule.setDependentDocumentStatus(DocumentStatus.Complete);
 
-        auditTypeRules.add(auditTypeRule);
+        documentTypeRules.add(documentTypeRule);
 
         Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
         assertEquals(0, auditTypeDetails.size());
@@ -173,14 +173,14 @@ public class AuditTypesBuilderTest {
 
 	@Test
 	public void testCalculate_whenWelcomeRuleIsPresentAndOperatorIsActive_addAuditTypeDetail() throws Exception {
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");
-		auditTypeRules.add(auditTypeRule);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");
+		documentTypeRules.add(documentTypeRule);
 
 		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
 		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
-		assertEquals(auditTypeDetail.rule, auditTypeRule);
+		assertEquals(auditTypeDetail.rule, documentTypeRule);
 		assertEquals(1, auditTypeDetail.operators.size());
 		assertEquals(auditTypeDetail.operators.toArray()[0], operator);
 
@@ -188,10 +188,10 @@ public class AuditTypesBuilderTest {
 
 	@Test
 	public void testCalculate_whenRuleIndicatesYearToCheck_andMatchingAnswerExists_addAuditTypeDetail() throws Exception {
-		AuditQuestion question = createAuditQuestion(10);
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-		setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.ThreeYearsAgo);
-		auditTypeRules.add(auditTypeRule);
+		DocumentQuestion question = createAuditQuestion(10);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+		setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.ThreeYearsAgo);
+		documentTypeRules.add(documentTypeRule);
 
 		String[][] answerForAuditYearArray = {
 				new String[]{"1", currentYearMinus(4)},
@@ -201,28 +201,28 @@ public class AuditTypesBuilderTest {
 				new String[]{"5", currentYearMinus(0)}
 		};
 
-		List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 		when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
 
 		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
 		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
-		assertEquals(auditTypeDetail.rule, auditTypeRule);
+		assertEquals(auditTypeDetail.rule, documentTypeRule);
 	}
 
     @Test
     public void testCalculate_whenRuleIndicatesYearToCheck_andMatchingAnswerExists_dependentOnVisibleQuestions() throws Exception {
-        AuditQuestion visibleQuestion = createAuditQuestion(20);
-        AuditQuestion question = createAuditQuestion(10);
+        DocumentQuestion visibleQuestion = createAuditQuestion(20);
+        DocumentQuestion question = createAuditQuestion(10);
         question.setVisibleQuestion(visibleQuestion);
         question.setVisibleAnswer("Yes");
 
-        AuditData visibleAnswer = new AuditData();
+        DocumentData visibleAnswer = new DocumentData();
         visibleAnswer.setAnswer("Yes");
-        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-        setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.ThreeYearsAgo);
-        auditTypeRules.add(auditTypeRule);
+        DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+        setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.ThreeYearsAgo);
+        documentTypeRules.add(documentTypeRule);
 
         String[][] answerForAuditYearArray = {
                 new String[]{"1", currentYearMinus(4)},
@@ -232,7 +232,7 @@ public class AuditTypesBuilderTest {
                 new String[]{"5", currentYearMinus(0)}
         };
 
-        List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+        List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
         when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
         when(auditDataDAO.findAnswerToQuestion(0, 20)).thenReturn(visibleAnswer);
 
@@ -240,7 +240,7 @@ public class AuditTypesBuilderTest {
 
         assertEquals(1, auditTypeDetails.size());
         AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
-        assertEquals(auditTypeDetail.rule, auditTypeRule);
+        assertEquals(auditTypeDetail.rule, documentTypeRule);
 
         // make it invisible
         visibleAnswer.setAnswer("No");
@@ -251,10 +251,10 @@ public class AuditTypesBuilderTest {
 
     @Test
 	public void testChooseAnswerToEvaluate_whenRuleDoesNotApplyToASpecificYear_ChooseTheFirstAnswer() throws Exception {
-		AuditQuestion question = createAuditQuestion(10);
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-		setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.Any);
-		auditTypeRules.add(auditTypeRule);
+		DocumentQuestion question = createAuditQuestion(10);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+		setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.Any);
+		documentTypeRules.add(documentTypeRule);
 
 		String[][] answerForAuditYearArray = {
 				new String[]{"1", currentYearMinus(4)}, // first one found wins
@@ -264,20 +264,20 @@ public class AuditTypesBuilderTest {
 				new String[]{"5", currentYearMinus(0)}
 		};
 
-		List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		AuditData auditData = auditTypesBuilder.chooseAnswerToEvaluate(auditTypeRule, answers);
+		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
-		assertEquals("1", auditData.getAnswer());
-		assertEquals(currentYearMinus(4), auditData.getAudit().getAuditFor());
+		assertEquals("1", documentData.getAnswer());
+		assertEquals(currentYearMinus(4), documentData.getAudit().getAuditFor());
 	}
 
 	@Test
 	public void testChooseAnswerToEvaluate_whenRuleAppliesToASpecificYear_ChooseTheAnswerForThatYear() throws Exception {
-		AuditQuestion question = createAuditQuestion(10);
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-		setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.TwoYearsAgo);
-		auditTypeRules.add(auditTypeRule);
+		DocumentQuestion question = createAuditQuestion(10);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+		setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.TwoYearsAgo);
+		documentTypeRules.add(documentTypeRule);
 
 		String[][] answerForAuditYearArray = {
 				new String[]{"1", currentYearMinus(4)},
@@ -287,20 +287,20 @@ public class AuditTypesBuilderTest {
 				new String[]{"5", currentYearMinus(0)}
 		};
 
-		List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		AuditData auditData = auditTypesBuilder.chooseAnswerToEvaluate(auditTypeRule, answers);
+		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
-		assertEquals("3", auditData.getAnswer());
-		assertEquals(currentYearMinus(2), auditData.getAudit().getAuditFor());
+		assertEquals("3", documentData.getAnswer());
+		assertEquals(currentYearMinus(2), documentData.getAudit().getAuditFor());
 	}
 
 	@Test
 	public void testChooseAnswerToEvaluate_whenRuleAppliesToASpecificYear_ChooseTheAnswerForThatYearOrNull() throws Exception {
-		AuditQuestion question = createAuditQuestion(10);
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-		setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.TwoYearsAgo);
-		auditTypeRules.add(auditTypeRule);
+		DocumentQuestion question = createAuditQuestion(10);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+		setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.TwoYearsAgo);
+		documentTypeRules.add(documentTypeRule);
 
 		String[][] answerForAuditYearArray = {
 				new String[]{"1", currentYearMinus(4)},
@@ -310,25 +310,25 @@ public class AuditTypesBuilderTest {
 				new String[]{"5", currentYearMinus(0)}
 		};
 
-		List<AuditData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
+		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		AuditData auditData = auditTypesBuilder.chooseAnswerToEvaluate(auditTypeRule, answers);
+		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
-		assertEquals(null, auditData);
+		assertEquals(null, documentData);
 	}
 
     @Test
     public void testChooseAnswerToEvaluate_whenNoSpecificYearNoAnswer() throws Exception {
-        AuditQuestion question = createAuditQuestion(10);
-        AuditTypeRule auditTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
-        setupRuleCriteria(auditTypeRule, question, QuestionComparator.GreaterThan, "1", PastAuditYear.Any);
-        auditTypeRules.add(auditTypeRule);
+        DocumentQuestion question = createAuditQuestion(10);
+        DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(100, 200, "Test Category");
+        setupRuleCriteria(documentTypeRule, question, QuestionComparator.GreaterThan, "1", PastDocumentYear.Any);
+        documentTypeRules.add(documentTypeRule);
 
-        List<AuditData> answers = new ArrayList<>();
+        List<DocumentData> answers = new ArrayList<>();
 
-        AuditData auditData = auditTypesBuilder.chooseAnswerToEvaluate(auditTypeRule, answers);
+        DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
-        assertEquals(null, auditData);
+        assertEquals(null, documentData);
     }
 
 	private String currentYearMinus(int x) {
@@ -336,33 +336,33 @@ public class AuditTypesBuilderTest {
 		return String.valueOf(currentYear - x);
 	}
 
-	private void setupRuleCriteria(AuditTypeRule auditTypeRule, AuditQuestion question, QuestionComparator comparator, String value, PastAuditYear yearToCheck) {
-		auditTypeRule.setQuestion(question);
-		auditTypeRule.setQuestionComparator(comparator);
-		auditTypeRule.setQuestionAnswer(value);
-		auditTypeRule.setYearToCheck(yearToCheck);
+	private void setupRuleCriteria(DocumentTypeRule documentTypeRule, DocumentQuestion question, QuestionComparator comparator, String value, PastDocumentYear yearToCheck) {
+		documentTypeRule.setQuestion(question);
+		documentTypeRule.setQuestionComparator(comparator);
+		documentTypeRule.setQuestionAnswer(value);
+		documentTypeRule.setYearToCheck(yearToCheck);
 	}
 
-	private List<AuditData> buildAnswersForQuestion(AuditQuestion question, String[][] answerForAuditYearArray) {
-		List<AuditData> answers = new ArrayList<>();
+	private List<DocumentData> buildAnswersForQuestion(DocumentQuestion question, String[][] answerForAuditYearArray) {
+		List<DocumentData> answers = new ArrayList<>();
 		for (String[] answerAndYear : answerForAuditYearArray) {
 
-			AuditData auditData = new AuditData();
-			auditData.setQuestion(question);
-			auditData.setAnswer(answerAndYear[0]);
+			DocumentData documentData = new DocumentData();
+			documentData.setQuestion(question);
+			documentData.setAnswer(answerAndYear[0]);
 
-			ContractorAudit audit = new ContractorAudit();
+			ContractorDocument audit = new ContractorDocument();
 			audit.setAuditFor(answerAndYear[1]);
-			auditData.setAudit(audit);
+			documentData.setAudit(audit);
 
-			answers.add(auditData);
+			answers.add(documentData);
 		}
 
 		return answers;
 	}
 
-	private AuditQuestion createAuditQuestion(int questionId) {
-		AuditQuestion question = new AuditQuestion();
+	private DocumentQuestion createAuditQuestion(int questionId) {
+		DocumentQuestion question = new DocumentQuestion();
 		question.setId(questionId);
 		question.setEffectiveDate(DateBean.parseDate("2000-01-01"));
 		question.setExpirationDate(DateBean.parseDate("4000-01-01"));
@@ -370,35 +370,35 @@ public class AuditTypesBuilderTest {
 		return question;
 	}
 
-	private AuditTypeRule createAuditTypeRuleForTypeAndCategory(int auditTypeId, int categoryId, String categoryName) {
+	private DocumentTypeRule createAuditTypeRuleForTypeAndCategory(int auditTypeId, int categoryId, String categoryName) {
 		AuditType auditType = EntityFactory.makeAuditType(auditTypeId);
-		AuditCategory auditCategory = createAuditCategory(categoryId, categoryName);
-		addAuditCategoryToAuditType(auditCategory, auditType);
-		AuditTypeRule auditTypeRule = createAuditTypeRuleForAuditType(auditType);
+		DocumentCategory documentCategory = createAuditCategory(categoryId, categoryName);
+		addAuditCategoryToAuditType(documentCategory, auditType);
+		DocumentTypeRule documentTypeRule = createAuditTypeRuleForAuditType(auditType);
 
-		return auditTypeRule;
+		return documentTypeRule;
 	}
 
-	private AuditCategory createAuditCategory(int categoryId, String categoryName) {
-		AuditCategory auditCategory = new AuditCategory();
-		auditCategory.setId(categoryId);
+	private DocumentCategory createAuditCategory(int categoryId, String categoryName) {
+		DocumentCategory documentCategory = new DocumentCategory();
+		documentCategory.setId(categoryId);
 
-		return auditCategory;
+		return documentCategory;
 	}
 
-	public AuditType addAuditCategoryToAuditType(AuditCategory auditCategory, AuditType auditType) {
-		auditCategory.setAuditType(auditType);
-		auditType.getCategories().add(auditCategory);
+	public AuditType addAuditCategoryToAuditType(DocumentCategory documentCategory, AuditType auditType) {
+		documentCategory.setAuditType(auditType);
+		auditType.getCategories().add(documentCategory);
 
 		return auditType;
 	}
 
-	private AuditTypeRule createAuditTypeRuleForAuditType(AuditType auditType) {
-		AuditTypeRule auditTypeRule = new AuditTypeRule();
-		auditTypeRule.setAuditType(auditType);
-		auditTypeRule.setInclude(true);
+	private DocumentTypeRule createAuditTypeRuleForAuditType(AuditType auditType) {
+		DocumentTypeRule documentTypeRule = new DocumentTypeRule();
+		documentTypeRule.setAuditType(auditType);
+		documentTypeRule.setInclude(true);
 
-		return auditTypeRule;
+		return documentTypeRule;
 	}
 
 	private List<ContractorOperator> setupContractorOperatorWithActiveOperator() {

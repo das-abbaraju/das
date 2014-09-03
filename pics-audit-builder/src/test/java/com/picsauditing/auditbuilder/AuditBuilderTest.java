@@ -7,7 +7,7 @@ import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
-import com.picsauditing.auditbuilder.service.AuditPeriodService2;
+import com.picsauditing.auditbuilder.service.DocumentPeriodService;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
 import org.junit.Before;
@@ -29,30 +29,30 @@ public class AuditBuilderTest extends PicsTest {
 	AuditBuilder2 auditBuilder;
 
 	AuditTypeRuleCache2 typeRuleCache = new AuditTypeRuleCache2();
-	List<AuditTypeRule> typeRules = new ArrayList<>();
+	List<DocumentTypeRule> typeRules = new ArrayList<>();
 	AuditTypesBuilder typeBuilder;
-    AuditPeriodService2 auditPeriodService = new AuditPeriodService2();
+    DocumentPeriodService auditPeriodService = new DocumentPeriodService();
 
 	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
-	List<AuditCategoryRule> catRules = new ArrayList<>();
+	List<DocumentCategoryRule> catRules = new ArrayList<>();
 	AuditCategoriesBuilder catBuilder;
 
 	@Mock
     AuditPercentCalculator2 auditPercentCalculator;
 	@Mock
-    AuditDataDAO2 auditDataDao;
+    DocumentDataDAO auditDataDao;
 	@Mock
-    ContractorAuditDAO2 conAuditDao;
+    ContractorDocumentDAO conAuditDao;
     @Mock
-    ContractorAuditFileDAO2 contractorAuditFileDAO;
+    ContractorDocumentFileDAO contractorAuditFileDAO;
 	@Mock
-	private AuditDecisionTableDAO2 auditDecisionTableDAO;
+	private DocumentDecisionTableDAO auditDecisionTableDAO;
 	@Mock
-	private AppTranslationDAO2 appTranslationDAO;
+	private AppTranslationDAO appTranslationDAO;
     @Mock
-    AuditTypeDAO2 auditTypeDao;
+    DocumentTypeDAO auditTypeDao;
     @Mock
-    ContractorAudit audit;
+    ContractorDocument audit;
     @Mock
     AuditType auditType;
 
@@ -120,8 +120,8 @@ public class AuditBuilderTest extends PicsTest {
 
 		// set up rules
 		addTypeRules((new RuleParameters()).setAuditType(pqfType));
-		for (AuditCategory category : pqfType.getCategories()) {
-			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setAuditCategory(category));
+		for (DocumentCategory category : pqfType.getCategories()) {
+			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setDocumentCategory(category));
 		}
 
 		AuditTypesBuilder typeBuilder = new AuditTypesBuilder();
@@ -133,8 +133,8 @@ public class AuditBuilderTest extends PicsTest {
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
 		assertEquals(1, auditTypes.size());
 
-		ContractorAudit conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
-		Set<AuditCategory> categories = categoryBuilder.calculate(conAudit, AccountService.getOperatorAccounts(contractor));
+		ContractorDocument conAudit = EntityFactory.makeContractorAudit(pqfType, contractor);
+		Set<DocumentCategory> categories = categoryBuilder.calculate(conAudit, AccountService.getOperatorAccounts(contractor));
 		assertEquals(2, categories.size());
 	}
 
@@ -142,7 +142,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void testBuildAudits_WelcomeCall() throws Exception {
 		AuditType auditType = EntityFactory.makeAuditType(AuditType.WELCOME);
 		WorkflowStep pendingStep = new WorkflowStep();
-		pendingStep.setNewStatus(AuditStatus.Pending);
+		pendingStep.setNewStatus(DocumentStatus.Pending);
 
 		Workflow workflow = new Workflow();
 		workflow.getSteps().add(pendingStep);
@@ -179,7 +179,7 @@ public class AuditBuilderTest extends PicsTest {
     @Test
     public void testBuildAudits_Monthly() throws Exception {
         AuditType auditType = EntityFactory.makeAuditType(1000);
-        auditType.setPeriod(AuditTypePeriod.Monthly);
+        auditType.setPeriod(DocumentTypePeriod.Monthly);
         when(conAuditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
 		        auditType);
 
@@ -208,7 +208,7 @@ public class AuditBuilderTest extends PicsTest {
     @Test
     public void testBuildAudits_Quarterly() throws Exception {
         AuditType auditType = EntityFactory.makeAuditType(1000);
-        auditType.setPeriod(AuditTypePeriod.Quarterly);
+        auditType.setPeriod(DocumentTypePeriod.Quarterly);
         when(conAuditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
 		        auditType);
 
@@ -249,7 +249,7 @@ public class AuditBuilderTest extends PicsTest {
     @Test
     public void testBuildAudits_Yearly() throws Exception {
         AuditType auditType = EntityFactory.makeAuditType(1000);
-        auditType.setPeriod(AuditTypePeriod.Yearly);
+        auditType.setPeriod(DocumentTypePeriod.Yearly);
         when(conAuditDao.find(Matchers.argThat(equalTo(AuditType.class)), anyInt())).thenReturn(
 		        auditType);
 
@@ -312,19 +312,19 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_NullData() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
-		ContractorAudit pqfAudit = setupTestAudit();
+		ContractorDocument corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
+		ContractorDocument pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
 		EntityFactory.addCao(corAudit, operator);
 
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		question.setId(AuditQuestion.COR);
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
-		auditCatData.setCategory(question.getCategory());
-		auditCatData.setApplies(true);
-		pqfAudit.getCategories().add(auditCatData);
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
+		question.setId(DocumentQuestion.COR);
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
+		documentCatData.setCategory(question.getCategory());
+		documentCatData.setApplies(true);
+		pqfAudit.getCategories().add(documentCatData);
 		pqfAudit.setCreationDate(new Date());
 
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
@@ -341,25 +341,25 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Cor_Yes() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
-		ContractorAudit pqfAudit = setupTestAudit();
+		ContractorDocument corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
+		ContractorDocument pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
 		EntityFactory.addCao(corAudit, operator);
 
-		AuditData auditData = EntityFactory.makeAuditData("Yes");
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
+		DocumentData documentData = EntityFactory.makeAuditData("Yes");
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
 
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
-		auditCatData.setCategory(question.getCategory());
-		auditCatData.setApplies(false);
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
+		documentCatData.setCategory(question.getCategory());
+		documentCatData.setApplies(false);
 
-		question.setId(AuditQuestion.COR);
-		auditData.setQuestion(question);
-		pqfAudit.getCategories().add(auditCatData);
+		question.setId(DocumentQuestion.COR);
+		documentData.setQuestion(question);
+		pqfAudit.getCategories().add(documentCatData);
 		pqfAudit.setCreationDate(new Date());
-		pqfAudit.getData().add(auditData);
+		pqfAudit.getData().add(documentData);
 
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
@@ -373,24 +373,24 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Cor_No() throws Exception {
-		ContractorAudit corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
-		ContractorAudit pqfAudit = setupTestAudit();
+		ContractorDocument corAudit = EntityFactory.makeContractorAudit(AuditType.COR, contractor);
+		ContractorDocument pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(corAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
 		EntityFactory.addCao(corAudit, operator);
 
-		AuditData auditData = EntityFactory.makeAuditData("No");
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		DocumentData documentData = EntityFactory.makeAuditData("No");
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
 
-		question.setId(AuditQuestion.COR);
-		auditData.setQuestion(question);
-		auditCatData.setCategory(question.getCategory());
-		auditCatData.setApplies(true);
-		pqfAudit.getCategories().add(auditCatData);
+		question.setId(DocumentQuestion.COR);
+		documentData.setQuestion(question);
+		documentCatData.setCategory(question.getCategory());
+		documentCatData.setApplies(true);
+		pqfAudit.getCategories().add(documentCatData);
 		pqfAudit.setCreationDate(new Date());
-		pqfAudit.getData().add(auditData);
+		pqfAudit.getData().add(documentData);
 
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
@@ -404,24 +404,24 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Iec_Yes() throws Exception {
-		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
-		ContractorAudit pqfAudit = setupTestAudit();
+		ContractorDocument iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
+		ContractorDocument pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
 		EntityFactory.addCao(iecAudit, operator);
 
-		AuditData auditData = EntityFactory.makeAuditData("Yes");
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		DocumentData documentData = EntityFactory.makeAuditData("Yes");
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
 
-		question.setId(AuditQuestion.IEC);
-		auditData.setQuestion(question);
-		auditCatData.setCategory(question.getCategory());
-		auditCatData.setApplies(false);
-		pqfAudit.getCategories().add(auditCatData);
+		question.setId(DocumentQuestion.IEC);
+		documentData.setQuestion(question);
+		documentCatData.setCategory(question.getCategory());
+		documentCatData.setApplies(false);
+		pqfAudit.getCategories().add(documentCatData);
 		pqfAudit.setCreationDate(new Date());
-		pqfAudit.getData().add(auditData);
+		pqfAudit.getData().add(documentData);
 
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
@@ -435,7 +435,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testWelcomeCallValidity() throws Exception {
-		ContractorAudit audit;
+		ContractorDocument audit;
 		Calendar creationDate;
 		Boolean result;
 
@@ -461,24 +461,24 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testBuildAudits_IsValidAudit_Iec__No() throws Exception {
-		ContractorAudit iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
-		ContractorAudit pqfAudit = setupTestAudit();
+		ContractorDocument iecAudit = EntityFactory.makeContractorAudit(AuditType.IEC_AUDIT, contractor);
+		ContractorDocument pqfAudit = setupTestAudit();
 		contractor.getAudits().add(pqfAudit);
 		contractor.getAudits().add(iecAudit);
 		OperatorAccount operator = EntityFactory.makeOperator();
 		EntityFactory.addCao(iecAudit, operator);
 
-		AuditData auditData = EntityFactory.makeAuditData("No");
-		AuditQuestion question = EntityFactory.makeAuditQuestion();
-		AuditCatData auditCatData = EntityFactory.makeAuditCatData();
+		DocumentData documentData = EntityFactory.makeAuditData("No");
+		DocumentQuestion question = EntityFactory.makeAuditQuestion();
+		DocumentCatData documentCatData = EntityFactory.makeAuditCatData();
 
-		question.setId(AuditQuestion.IEC);
-		auditData.setQuestion(question);
-		auditCatData.setCategory(question.getCategory());
-		auditCatData.setApplies(true);
-		pqfAudit.getCategories().add(auditCatData);
+		question.setId(DocumentQuestion.IEC);
+		documentData.setQuestion(question);
+		documentCatData.setCategory(question.getCategory());
+		documentCatData.setApplies(true);
+		pqfAudit.getCategories().add(documentCatData);
 		pqfAudit.setCreationDate(new Date());
-		pqfAudit.getData().add(auditData);
+		pqfAudit.getData().add(documentData);
 
 		addTypeRules((new RuleParameters()).setAuditTypeId(AuditType.PQF));
 		addCategoryRules(null);
@@ -492,23 +492,23 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testCaoSplit() throws Exception {
-		ContractorAudit conAudit = setupTestAudit();
+		ContractorDocument conAudit = setupTestAudit();
 		conAudit.getAuditType().setCanOperatorView(true);
 
-		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorDocumentOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
 		// ContractorAuditOperator cao2 =
 		// EntityFactory.makeContractorAuditOperator(conAudit,
 		// AuditStatus.Pending);
 		// cao2.setOperator(EntityFactory.makeOperator());
 		cao1.setId(52);
 
-		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
-		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+		ContractorDocumentOperatorPermission caop1 = new ContractorDocumentOperatorPermission();
+		ContractorDocumentOperatorPermission caop2 = new ContractorDocumentOperatorPermission();
 
-		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
-		setupCaoCaop(cao1, caop2, AuditStatus.Complete);
+		setupCaoCaop(cao1, caop1, DocumentStatus.Complete);
+		setupCaoCaop(cao1, caop2, DocumentStatus.Complete);
 		caop2.setOperator(EntityFactory.makeOperator());
-		cao1.setStatus(AuditStatus.Approved);
+		cao1.setStatus(DocumentStatus.Approved);
 
 		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
 		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
@@ -520,24 +520,24 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(2, conAudit.getOperators().size());
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			assertEquals(AuditStatus.Approved, cao.getStatus());
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
+			assertEquals(DocumentStatus.Approved, cao.getStatus());
 		}
 	}
 
 	@Test
 	public void testNewOperatorPrevAllComplete() throws Exception {
-		ContractorAudit conAudit = setupTestAudit();
+		ContractorDocument conAudit = setupTestAudit();
 
-		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
-		ContractorAuditOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, AuditStatus.Pending);
+		ContractorDocumentOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorDocumentOperator cao2 = EntityFactory.makeContractorAuditOperator(conAudit, DocumentStatus.Pending);
 		cao2.setOperator(EntityFactory.makeOperator());
 
-		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
-		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+		ContractorDocumentOperatorPermission caop1 = new ContractorDocumentOperatorPermission();
+		ContractorDocumentOperatorPermission caop2 = new ContractorDocumentOperatorPermission();
 
-		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
-		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
+		setupCaoCaop(cao1, caop1, DocumentStatus.Complete);
+		setupCaoCaop(cao2, caop2, DocumentStatus.Pending);
 
 		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<>();
 		Set<OperatorAccount> caops = new HashSet<>();
@@ -550,10 +550,10 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(2, conAudit.getOperators().size());
 
-		Set<AuditCategory> categoriesNeeded = new HashSet<>();
+		Set<DocumentCategory> categoriesNeeded = new HashSet<>();
 		categoriesNeeded.addAll(conAudit.getAuditType().getCategories());
 		Whitebox.invokeMethod(auditBuilder, "fillAuditCategories", conAudit, categoriesNeeded);
-		for (AuditCatData catData : conAudit.getCategories()) {
+		for (DocumentCatData catData : conAudit.getCategories()) {
 			assertTrue(catData.isApplies());
 		}
 
@@ -561,21 +561,21 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test
 	public void testMultipleCaoToOneCaoStatusMerge() throws Exception {
-		ContractorAudit conAudit = setupTestAudit();
+		ContractorDocument conAudit = setupTestAudit();
 		conAudit.getAuditType().setCanOperatorView(true);
 		conAudit.getAuditType().setId(AuditType.INTEGRITYMANAGEMENT);
 		conAudit.getAuditType().setClassType(AuditTypeClass.PQF);
 
-		ContractorAuditOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
-		ContractorAuditOperator cao2 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorDocumentOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
+		ContractorDocumentOperator cao2 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
 		cao1.setId(1);
 		cao2.setId(2);
 
-		ContractorAuditOperatorPermission caop1 = new ContractorAuditOperatorPermission();
-		ContractorAuditOperatorPermission caop2 = new ContractorAuditOperatorPermission();
+		ContractorDocumentOperatorPermission caop1 = new ContractorDocumentOperatorPermission();
+		ContractorDocumentOperatorPermission caop2 = new ContractorDocumentOperatorPermission();
 
-		setupCaoCaop(cao1, caop1, AuditStatus.Complete);
-		setupCaoCaop(cao2, caop2, AuditStatus.Pending);
+		setupCaoCaop(cao1, caop1, DocumentStatus.Complete);
+		setupCaoCaop(cao2, caop2, DocumentStatus.Pending);
 
 		Map<OperatorAccount, Set<OperatorAccount>> caoMap = new HashMap<OperatorAccount, Set<OperatorAccount>>();
 		Set<OperatorAccount> caops = new HashSet<OperatorAccount>();
@@ -585,22 +585,22 @@ public class AuditBuilderTest extends PicsTest {
 
 		Whitebox.invokeMethod(auditBuilder, "fillAuditOperators", conAudit, caoMap);
 		assertEquals(3, conAudit.getOperators().size());
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
 			if (cao.equals(cao1)) {
 				assertFalse(cao.isVisible());
 			} else if (cao.equals(cao2)) {
 				assertFalse(cao.isVisible());
 			} else {
 				assertTrue(cao.isVisible());
-				assertEquals(AuditStatus.Complete, cao.getStatus());
+				assertEquals(DocumentStatus.Complete, cao.getStatus());
 			}
 		}
 	}
 
-	private ContractorAudit setupTestAudit() {
-		ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
+	private ContractorDocument setupTestAudit() {
+		ContractorDocument audit = EntityFactory.makeContractorAudit(AuditType.PQF, contractor);
 		WorkflowStep pendingStep = new WorkflowStep();
-		pendingStep.setNewStatus(AuditStatus.Pending);
+		pendingStep.setNewStatus(DocumentStatus.Pending);
 
 		Workflow workflow = new Workflow();
 		workflow.getSteps().add(pendingStep);
@@ -610,14 +610,14 @@ public class AuditBuilderTest extends PicsTest {
 		cal.add(Calendar.YEAR, -1);
 		audit.setCreationDate(cal.getTime());
 
-		AuditCategory cat1 = EntityFactory.makeAuditCategory(1);
-		AuditCategory cat2 = EntityFactory.makeAuditCategory(2);
+		DocumentCategory cat1 = EntityFactory.makeAuditCategory(1);
+		DocumentCategory cat2 = EntityFactory.makeAuditCategory(2);
 
 		audit.getAuditType().getCategories().add(cat1);
 		audit.getAuditType().getCategories().add(cat2);
 
-		AuditCatData catData1 = EntityFactory.addCategories(audit, 1);
-		AuditCatData catData2 = EntityFactory.addCategories(audit, 2);
+		DocumentCatData catData1 = EntityFactory.addCategories(audit, 1);
+		DocumentCatData catData2 = EntityFactory.addCategories(audit, 2);
 
 		catData1.setNumAnswered(catData1.getNumRequired());
 		catData1.setApplies(true);
@@ -629,7 +629,7 @@ public class AuditBuilderTest extends PicsTest {
 		return audit;
 	}
 
-	private void setupCaoCaop(ContractorAuditOperator cao, ContractorAuditOperatorPermission caop, AuditStatus status) {
+	private void setupCaoCaop(ContractorDocumentOperator cao, ContractorDocumentOperatorPermission caop, DocumentStatus status) {
 		caop.setCao(cao);
 		caop.setOperator(cao.getOperator());
 		cao.getCaoPermissions().add(caop);
@@ -642,7 +642,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_NullAuditFor() throws Exception {
-		ContractorAudit audit = mock(ContractorAudit.class);
+		ContractorDocument audit = mock(ContractorDocument.class);
 		when(audit.getAuditFor()).thenReturn(null);
 
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
@@ -650,7 +650,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Test(expected = RuntimeException.class)
 	public void testFoundCurrentYearWCB_BlankAuditFor() throws Exception {
-		ContractorAudit audit = mock(ContractorAudit.class);
+		ContractorDocument audit = mock(ContractorDocument.class);
 		when(audit.getAuditFor()).thenReturn(" ");
 
 		Boolean result = Whitebox.invokeMethod(auditBuilder, "foundCurrentYearWCB", audit);
@@ -659,10 +659,10 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Ignore
 	public void testFoundCurrentYearWCB_CurrentYearAuditFor() throws Exception {
-		ContractorAudit audit = mock(ContractorAudit.class);
+		ContractorDocument audit = mock(ContractorDocument.class);
 		ContractorAccount contractor = mock(ContractorAccount.class);
 
-		List<ContractorAudit> audits = buildMockAudits();
+		List<ContractorDocument> audits = buildMockAudits();
 		when(contractor.getAudits()).thenReturn(audits);
 		when(audit.getContractorAccount()).thenReturn(contractor);
 		when(audit.getAuditFor()).thenReturn(DateBean.getWCBYear());
@@ -676,7 +676,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Ignore
 	public void testFoundCurrentYearWCB_PreviousYearAuditFor() throws Exception {
-		ContractorAudit audit = mock(ContractorAudit.class);
+		ContractorDocument audit = mock(ContractorDocument.class);
 		ContractorAccount contractor = mock(ContractorAccount.class);
 
 		when(contractor.getAudits()).thenReturn(null);
@@ -689,7 +689,7 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Ignore
 	public void testFindAllWCBAuditYears_NoAudits() throws Exception {
-		ContractorAudit audit = mock(ContractorAudit.class);
+		ContractorDocument audit = mock(ContractorDocument.class);
 		ContractorAccount contractor = mock(ContractorAccount.class);
 		when(contractor.getAudits()).thenReturn(null);
 
@@ -700,9 +700,9 @@ public class AuditBuilderTest extends PicsTest {
 
 	@Ignore
 	public void testFindAllWCBAuditYears() throws Exception {
-		ContractorAudit wcbAudit = mock(ContractorAudit.class);
+		ContractorDocument wcbAudit = mock(ContractorDocument.class);
 		ContractorAccount contractor = mock(ContractorAccount.class);
-		List<ContractorAudit> audits = buildMockAudits();
+		List<ContractorDocument> audits = buildMockAudits();
 		when(contractor.getAudits()).thenReturn(audits);
         AuditType auditType1 = new AuditType();
         auditType1.setId(145);
@@ -717,118 +717,118 @@ public class AuditBuilderTest extends PicsTest {
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveManuallyAddedAudits() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(contractorAudit.isManuallyAdded()).thenReturn(true);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
+		when(contractorDocument.isManuallyAdded()).thenReturn(true);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-		verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+		verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveRequiredAudits() throws Exception {
 		HashSet requiredAuditTypes = mock(HashSet.class);
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(requiredAuditTypes.contains(contractorAudit.getAuditType())).thenReturn(true);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
+		when(requiredAuditTypes.contains(contractorDocument.getAuditType())).thenReturn(true);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemovePqfs() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
         AuditType auditType1 = new AuditType();
         auditType1.setId(AuditType.PQF);
-        when(contractorAudit.getAuditType()).thenReturn(auditType1);
+        when(contractorDocument.getAuditType()).thenReturn(auditType1);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveWcbs() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(contractorAudit.getAuditType().getId()).thenReturn(169);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
+		when(contractorDocument.getAuditType().getId()).thenReturn(169);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveScheduledAudits() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
-		when(contractorAudit.getScheduledDate()).thenReturn(new Date());
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
+		when(contractorDocument.getScheduledDate()).thenReturn(new Date());
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemovePostPendingAudits() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Approved, 0);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Approved, 0);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemovePartiallyCompleteAudits() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 10);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 10);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemoveAuditsWithEmptyData() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
 
-		List<AuditData> emptyAuditData = new ArrayList<>();
-		when(contractorAudit.getData()).thenReturn(emptyAuditData);
+		List<DocumentData> emptyDocumentData = new ArrayList<>();
+		when(contractorDocument.getData()).thenReturn(emptyDocumentData);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
 	@Test
 	public void testRemoveUnneededAudits_dontRemovePreviousAudits() throws Exception {
 		Set<AuditType> requiredAuditTypes = new HashSet<>();
-		ContractorAudit contractorAudit = setupMockContractorAudit(AuditStatus.Pending, 0);
+		ContractorDocument contractorDocument = setupMockContractorAudit(DocumentStatus.Pending, 0);
 
-		List<AuditData> auditData = new ArrayList<>();
-		auditData.add(new AuditData());
-		when(contractorAudit.getData()).thenReturn(auditData);
+		List<DocumentData> documentData = new ArrayList<>();
+		documentData.add(new DocumentData());
+		when(contractorDocument.getData()).thenReturn(documentData);
 
-		List<ContractorAudit> subsequentAudits = new ArrayList<>();
-		subsequentAudits.add(new ContractorAudit());
-		when(conAuditDao.findSubsequentAudits(contractorAudit)).thenReturn(subsequentAudits);
+		List<ContractorDocument> subsequentAudits = new ArrayList<>();
+		subsequentAudits.add(new ContractorDocument());
+		when(conAuditDao.findSubsequentAudits(contractorDocument)).thenReturn(subsequentAudits);
 
 		Whitebox.invokeMethod(auditBuilder, "removeUnneededAudits", contractor, requiredAuditTypes);
 
         verify(contractorAuditFileDAO, never()).removeAllByAuditID(anyInt());
-        verify(conAuditDao, never()).remove(any(ContractorAudit.class));
+        verify(conAuditDao, never()).remove(any(ContractorDocument.class));
 	}
 
     @Test
@@ -840,35 +840,35 @@ public class AuditBuilderTest extends PicsTest {
         assertFalse(canAdjust);
     }
 
-    private ContractorAudit setupMockContractorAudit(AuditStatus auditStatus, int percentComplete) {
-		List<ContractorAudit> contractorAudits = new ArrayList<>();
-		ContractorAudit contractorAudit = mock(ContractorAudit.class);
-		contractorAudits.add(contractorAudit);
-		contractor.setAudits(contractorAudits);
+    private ContractorDocument setupMockContractorAudit(DocumentStatus documentStatus, int percentComplete) {
+		List<ContractorDocument> contractorDocuments = new ArrayList<>();
+		ContractorDocument contractorDocument = mock(ContractorDocument.class);
+		contractorDocuments.add(contractorDocument);
+		contractor.setAudits(contractorDocuments);
 
 		AuditType auditType = mock(AuditType.class);
-		when(contractorAudit.getAuditType()).thenReturn(auditType);
+		when(contractorDocument.getAuditType()).thenReturn(auditType);
 
-		List<ContractorAuditOperator> operators = new ArrayList<>();
-		ContractorAuditOperator operator = mock(ContractorAuditOperator.class);
+		List<ContractorDocumentOperator> operators = new ArrayList<>();
+		ContractorDocumentOperator operator = mock(ContractorDocumentOperator.class);
 		operators.add(operator);
-		when(contractorAudit.getOperators()).thenReturn(operators);
-		when(operator.getStatus()).thenReturn(auditStatus);
+		when(contractorDocument.getOperators()).thenReturn(operators);
+		when(operator.getStatus()).thenReturn(documentStatus);
 		when(operator.getPercentComplete()).thenReturn(percentComplete);
 
-		return contractorAudit;
+		return contractorDocument;
 	}
 
-	private List<ContractorAudit> buildMockAudits() {
-		List<ContractorAudit> audits = new ArrayList<ContractorAudit>();
+	private List<ContractorDocument> buildMockAudits() {
+		List<ContractorDocument> audits = new ArrayList<ContractorDocument>();
 		audits.add(buildMockWCBAudit(145, "2011"));
 		audits.add(buildMockWCBAudit(145, DateBean.getWCBYear()));
 
 		return audits;
 	}
 
-	private ContractorAudit buildMockWCBAudit(int auditTypeId, String auditFor) {
-		ContractorAudit audit = mock(ContractorAudit.class);
+	private ContractorDocument buildMockWCBAudit(int auditTypeId, String auditFor) {
+		ContractorDocument audit = mock(ContractorDocument.class);
         AuditType auditType1 = new AuditType();
         auditType1.setId(auditTypeId);
         when(audit.getAuditType()).thenReturn(auditType1);
@@ -878,11 +878,11 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	private void addTypeRules(RuleParameters params) throws Exception {
-		AuditTypeRule rule = new AuditTypeRule();
+		DocumentTypeRule rule = new DocumentTypeRule();
 		if (params != null) {
 			fillAuditRule(params, rule);
 			rule.setManuallyAdded(params.manuallyAdded);
-			rule.setDependentAuditStatus(params.dependentAuditStatus);
+			rule.setDependentDocumentStatus(params.dependentDocumentStatus);
 			rule.setDependentAuditType(params.dependentAuditType);
 		}
 
@@ -891,10 +891,10 @@ public class AuditBuilderTest extends PicsTest {
 	}
 
 	private void addCategoryRules(RuleParameters params) throws Exception {
-		AuditCategoryRule rule = new AuditCategoryRule();
+		DocumentCategoryRule rule = new DocumentCategoryRule();
 		if (params != null) {
 			fillAuditRule(params, rule);
-			rule.setAuditCategory(params.auditCategory);
+			rule.setDocumentCategory(params.documentCategory);
 			rule.setRootCategory(params.rootCategory);
 		}
 
@@ -902,7 +902,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.invokeMethod(catRuleCache, "initialize", catRules);
 	}
 
-	private void fillAuditRule(RuleParameters params, AuditRule rule) {
+	private void fillAuditRule(RuleParameters params, DocumentRule rule) {
 		rule.setPriority(params.priority);
 		rule.setInclude(params.include);
 		if (params.auditTypeId != 0) {
@@ -934,15 +934,15 @@ public class AuditBuilderTest extends PicsTest {
 		protected ContractorType contractorType;
 		protected OperatorTag tag;
 		protected Trade trade;
-		protected AuditQuestion question;
+		protected DocumentQuestion question;
 		protected QuestionComparator questionComparator;
 		protected String questionAnswer;
 		protected Boolean soleProprietor;
 		protected AccountLevel accountLevel;
 		private AuditType dependentAuditType;
-		private AuditStatus dependentAuditStatus;
+		private DocumentStatus dependentDocumentStatus;
 		private boolean manuallyAdded = false;
-		public AuditCategory auditCategory;
+		public DocumentCategory documentCategory;
 		public Boolean rootCategory;
 
 		public void setPriority(int priority) {
@@ -994,7 +994,7 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setQuestion(AuditQuestion question) {
+		public RuleParameters setQuestion(DocumentQuestion question) {
 			this.question = question;
 			return this;
 		}
@@ -1019,8 +1019,8 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setAuditCategory(AuditCategory auditCategory) {
-			this.auditCategory = auditCategory;
+		public RuleParameters setDocumentCategory(DocumentCategory documentCategory) {
+			this.documentCategory = documentCategory;
 			return this;
 		}
 
@@ -1034,8 +1034,8 @@ public class AuditBuilderTest extends PicsTest {
 			return this;
 		}
 
-		public RuleParameters setDependentAuditStatus(AuditStatus dependentAuditStatus) {
-			this.dependentAuditStatus = dependentAuditStatus;
+		public RuleParameters setDependentDocumentStatus(DocumentStatus dependentDocumentStatus) {
+			this.dependentDocumentStatus = dependentDocumentStatus;
 			return this;
 		}
 

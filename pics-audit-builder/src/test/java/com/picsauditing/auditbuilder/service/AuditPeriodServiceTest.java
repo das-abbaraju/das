@@ -15,13 +15,13 @@ import java.util.List;
 import static junit.framework.Assert.*;
 
 public class AuditPeriodServiceTest extends PicsTest {
-    private AuditPeriodService2 test;
+    private DocumentPeriodService test;
 
     @Before
     public void setUp() throws Exception {
         super.setUp();
 
-        test = new AuditPeriodService2();
+        test = new DocumentPeriodService();
     }
 
     @Test
@@ -30,11 +30,11 @@ public class AuditPeriodServiceTest extends PicsTest {
         AuditType quarterlyAuditType = EntityFactory.makeAuditType();
         AuditType monthlyAuditType = EntityFactory.makeAuditType();
 
-        yearlyAuditType.setPeriod(AuditTypePeriod.Yearly);
-        quarterlyAuditType.setPeriod(AuditTypePeriod.Quarterly);
-        monthlyAuditType.setPeriod(AuditTypePeriod.Monthly);
+        yearlyAuditType.setPeriod(DocumentTypePeriod.Yearly);
+        quarterlyAuditType.setPeriod(DocumentTypePeriod.Quarterly);
+        monthlyAuditType.setPeriod(DocumentTypePeriod.Monthly);
 
-        List<ContractorAudit> audits = new ArrayList<>();
+        List<ContractorDocument> audits = new ArrayList<>();
 
         // no child audit type
         assertTrue(test.shouldCreateAudit(audits, yearlyAuditType, "2013", null));
@@ -43,20 +43,20 @@ public class AuditPeriodServiceTest extends PicsTest {
         assertFalse(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
 
         // has child audit type but no valid children
-        audits.add(createAudit(quarterlyAuditType, "2013:1", AuditStatus.NotApplicable));
+        audits.add(createAudit(quarterlyAuditType, "2013:1", DocumentStatus.NotApplicable));
         assertFalse(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
 
         // has child audit type and a valid child
-        audits.add(createAudit(quarterlyAuditType, "2013:2", AuditStatus.Complete));
+        audits.add(createAudit(quarterlyAuditType, "2013:2", DocumentStatus.Complete));
         assertTrue(test.shouldCreateAudit(audits, yearlyAuditType, "2013", quarterlyAuditType));
     }
 
-    private ContractorAudit createAudit(AuditType auditType, String auditFor, AuditStatus status) {
-        ContractorAudit audit = new ContractorAudit();
+    private ContractorDocument createAudit(AuditType auditType, String auditFor, DocumentStatus status) {
+        ContractorDocument audit = new ContractorDocument();
         audit.setAuditType(auditType);
         audit.setAuditFor(auditFor);
 
-        ContractorAuditOperator cao = new ContractorAuditOperator();
+        ContractorDocumentOperator cao = new ContractorDocumentOperator();
         cao.setStatus(status);
         audit.getOperators().add(cao);
 
@@ -108,7 +108,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetAuditForByDate_AdvanceDays() {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Monthly);
+        auditType.setPeriod(DocumentTypePeriod.Monthly);
         auditType.setMaximumActive(1);
         auditType.setAdvanceDays(10);
 
@@ -127,7 +127,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetAuditForByDate_Monthly() {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Monthly);
+        auditType.setPeriod(DocumentTypePeriod.Monthly);
         auditType.setMaximumActive(3);
 
         Calendar date = Calendar.getInstance();
@@ -147,7 +147,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetAuditForByDate_Quarterly() {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Quarterly);
+        auditType.setPeriod(DocumentTypePeriod.Quarterly);
         auditType.setMaximumActive(3);
 
         Calendar date = Calendar.getInstance();
@@ -167,7 +167,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetAuditForByDate_Yearly() {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Yearly);
+        auditType.setPeriod(DocumentTypePeriod.Yearly);
         auditType.setMaximumActive(3);
 
         Calendar date = Calendar.getInstance();
@@ -187,7 +187,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetAuditForByDate_Custom() {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.CustomDate);
+        auditType.setPeriod(DocumentTypePeriod.CustomDate);
         auditType.setMaximumActive(3);
         auditType.setAnchorDay(1);
 
@@ -218,7 +218,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetEffectiveDateForMonthlyQuarterlyYearly_Monthly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Monthly);
+        auditType.setPeriod(DocumentTypePeriod.Monthly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -233,7 +233,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetEffectiveDateForMonthlyQuarterlyYearly_Quarterly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Quarterly);
+        auditType.setPeriod(DocumentTypePeriod.Quarterly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -254,7 +254,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetEffectiveDateForMonthlyQuarterlyYearly_Yearly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Yearly);
+        auditType.setPeriod(DocumentTypePeriod.Yearly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -266,7 +266,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetEffectiveDateForMonthlyQuarterlyYearly_CustomDate() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.CustomDate);
+        auditType.setPeriod(DocumentTypePeriod.CustomDate);
         auditType.setAnchorDay(5);
         auditType.setAnchorMonth(6);
 
@@ -280,7 +280,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetExpirationDateForMonthlyQuarterlyYearly_Monthly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Monthly);
+        auditType.setPeriod(DocumentTypePeriod.Monthly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -295,7 +295,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetExpirationDateForMonthlyQuarterlyYearly_Quarterly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Quarterly);
+        auditType.setPeriod(DocumentTypePeriod.Quarterly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -316,7 +316,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetExpirationDateForMonthlyQuarterlyYearly_Yearly() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.Yearly);
+        auditType.setPeriod(DocumentTypePeriod.Yearly);
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date result;
@@ -328,7 +328,7 @@ public class AuditPeriodServiceTest extends PicsTest {
     @Test
     public void testGetExpirationDateForMonthlyQuarterlyYearly_CustomDate() throws Exception {
         AuditType auditType = new AuditType();
-        auditType.setPeriod(AuditTypePeriod.CustomDate);
+        auditType.setPeriod(DocumentTypePeriod.CustomDate);
         auditType.setAnchorDay(5);
         auditType.setAnchorMonth(6);
 

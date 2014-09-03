@@ -4,8 +4,8 @@ import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
-import com.picsauditing.auditbuilder.service.AuditPeriodService2;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentPeriodService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import com.picsauditing.auditbuilder.util.DateBean;
 import com.picsauditing.auditbuilder.util.Strings;
 import org.apache.commons.lang.StringUtils;
@@ -20,19 +20,19 @@ import java.util.*;
 public class AuditBuilder2 {
 
 	@Autowired
-	private AuditCategoryMatrixDAO2 auditCatMatrixDAO;
+	private DocumentCategoryMatrixDAO auditCatMatrixDAO;
 	@Autowired
-	private AppTranslationDAO2 appTranslationDAO;
+	private AppTranslationDAO appTranslationDAO;
 	@Autowired
-	private ContractorAuditDAO2 conAuditDao;
+	private ContractorDocumentDAO conAuditDao;
 	@Autowired
-	private ContractorAuditOperatorDAO2 contractorAuditOperatorDAO;
+	private ContractorDocumentOperatorDAO contractorAuditOperatorDAO;
     @Autowired
-    private ContractorAuditFileDAO2 contractorAuditFileDAO;
+    private ContractorDocumentFileDAO contractorAuditFileDAO;
 	@Autowired
-	private ContractorTagDAO2 contractorTagDAO;
+	private ContractorTagDAO contractorTagDAO;
 	@Autowired
-	private AuditDataDAO2 auditDataDAO;
+	private DocumentDataDAO auditDataDAO;
 	@Autowired
 	private AuditTypeRuleCache2 typeRuleCache;
 	@Autowired
@@ -40,9 +40,9 @@ public class AuditBuilder2 {
 	@Autowired
 	private AuditPercentCalculator2 auditPercentCalculator;
     @Autowired
-    AuditPeriodService2 auditPeriodService;
+    DocumentPeriodService auditPeriodService;
     @Autowired
-    private AuditTypeDAO2 auditTypeDao;
+    private DocumentTypeDAO auditTypeDao;
     @Autowired
     private AuditTypesBuilder typesBuilder;
 
@@ -51,10 +51,10 @@ public class AuditBuilder2 {
 	private User systemUser = new User(User.SYSTEM);
     private Date today;
 
-	HashSet<ContractorAuditOperator> caosToMoveToApprove = new HashSet<>();
-	HashSet<ContractorAuditOperator> caosToMoveToComplete = new HashSet<>();
-	HashSet<ContractorAuditOperator> caosToMoveToResubmit = new HashSet<>();
-	HashSet<ContractorAuditOperator> caosToMoveToSubmit = new HashSet<>();
+	HashSet<ContractorDocumentOperator> caosToMoveToApprove = new HashSet<>();
+	HashSet<ContractorDocumentOperator> caosToMoveToComplete = new HashSet<>();
+	HashSet<ContractorDocumentOperator> caosToMoveToResubmit = new HashSet<>();
+	HashSet<ContractorDocumentOperator> caosToMoveToSubmit = new HashSet<>();
 
 	private Set<String> yearsForAllWCBs;
 
@@ -86,21 +86,21 @@ public class AuditBuilder2 {
 				if (auditType.getPeriod().isMonthlyQuarterlyAnnual()) {
 					auditType = reconnectAuditType(auditType);
                     addMonthlyQuarterlyYearly(contractor, auditType);
-                } else if (AuditService.isAnnualAddendum(auditType)) {
+                } else if (DocumentUtilityService.isAnnualAddendum(auditType)) {
                     auditType = reconnectAuditType(auditType);
                     addAnnualUpdate(contractor, year - 3, auditType);
                     addAnnualUpdate(contractor, year - 2, auditType);
                     addAnnualUpdate(contractor, year - 1, auditType);
 				} else {
 					boolean found = false;
-					for (ContractorAudit conAudit : contractor.getAudits()) {
+					for (ContractorDocument conAudit : contractor.getAudits()) {
 						if (conAudit.getAuditType().equals(auditType)) {
 							if (auditType.isRenewable()) {
 								found = true;
-							} else if (AuditService.isWCB(auditType)) {
+							} else if (DocumentUtilityService.isWCB(auditType)) {
 								found = foundCurrentYearWCB(conAudit);
 							} else {
-								if (!AuditService.isExpired(conAudit) && !AuditService.willExpireSoon(conAudit)) {
+								if (!DocumentUtilityService.isExpired(conAudit) && !DocumentUtilityService.willExpireSoon(conAudit)) {
 									found = true;
 								}
 							}
@@ -109,11 +109,11 @@ public class AuditBuilder2 {
 
 					if (!found) {
 						auditType = reconnectAuditType(auditType);
-						if (AuditService.isWCB(auditType)) {
+						if (DocumentUtilityService.isWCB(auditType)) {
 							createWCBAudits(contractor, auditType);
 						} else {
 							if (!resetRenewableAudit(contractor, auditType)) {
-								ContractorAudit audit = createNewAudit(contractor, auditType);
+								ContractorDocument audit = createNewAudit(contractor, auditType);
 								conAuditDao.save(audit);
 							}
 						}
@@ -128,11 +128,11 @@ public class AuditBuilder2 {
         categoriesBuilder.setContractorTagDAO(contractorTagDAO);
         categoriesBuilder.setAuditDataDAO(auditDataDAO);
 
-		for (ContractorAudit conAudit : contractor.getAudits()) {
+		for (ContractorDocument conAudit : contractor.getAudits()) {
 			AuditTypeDetail auditTypeDetail = findDetailForAuditType(requiredAuditTypeDetails, conAudit.getAuditType());
 			if (auditTypeDetail == null) {
 			} else {
-				Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
+				Set<DocumentCategory> categories = categoriesBuilder.calculate(conAudit, auditTypeDetail.operators);
 				if (conAudit.getAuditType().getId() == AuditType.IMPORT_PQF) {
 					categories = new HashSet<>(conAudit.getAuditType().getCategories());
 				}
@@ -142,12 +142,12 @@ public class AuditBuilder2 {
 			}
 		}
 
-		Iterator<ContractorAudit> iterator = contractor.getAudits().iterator();
+		Iterator<ContractorDocument> iterator = contractor.getAudits().iterator();
 		while (iterator.hasNext()) {
-			ContractorAudit conAudit = iterator.next();
+			ContractorDocument conAudit = iterator.next();
 			if (!conAudit.isManuallyAdded() && !requiredAuditTypes.contains(conAudit.getAuditType())) {
 				if (!isValidAudit(conAudit)) {
-					for (ContractorAuditOperator cao : conAudit.getOperators()) {
+					for (ContractorDocumentOperator cao : conAudit.getOperators()) {
 						if (cao.isVisible()) {
 							cao.setVisible(false);
 						}
@@ -160,9 +160,9 @@ public class AuditBuilder2 {
 	}
 
 	private void removeUnneededAudits(ContractorAccount contractor, Set<AuditType> requiredAuditTypes) {
-		Iterator<ContractorAudit> iter = contractor.getAudits().iterator();
+		Iterator<ContractorDocument> iter = contractor.getAudits().iterator();
 		while (iter.hasNext()) {
-			ContractorAudit conAudit = iter.next();
+			ContractorDocument conAudit = iter.next();
 			if (okToRemoveAudit(conAudit, requiredAuditTypes)) {
 				iter.remove();
                 contractorAuditFileDAO.removeAllByAuditID(conAudit.getId());
@@ -171,7 +171,7 @@ public class AuditBuilder2 {
 		}
 	}
 
-	private boolean okToRemoveAudit(ContractorAudit conAudit, Set<AuditType> requiredAuditTypes) {
+	private boolean okToRemoveAudit(ContractorDocument conAudit, Set<AuditType> requiredAuditTypes) {
 		if (conAudit.isManuallyAdded()) {
 			return false;
 		}
@@ -180,7 +180,7 @@ public class AuditBuilder2 {
 			return false;
 		}
 
-		if (conAudit.getAuditType().getId() == AuditType.PQF || AuditService.isWCB(conAudit.getAuditType())) {
+		if (conAudit.getAuditType().getId() == AuditType.PQF || DocumentUtilityService.isWCB(conAudit.getAuditType())) {
 			return false;
 		}
 
@@ -188,8 +188,8 @@ public class AuditBuilder2 {
 			return false;
 		}
 
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Pending)) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(DocumentStatus.Pending)) {
 				return false;
 			}
 			else if (cao.getPercentComplete() > 0) {
@@ -208,8 +208,8 @@ public class AuditBuilder2 {
 		return true;
 	}
 
-	private boolean isAPreviousAudit(ContractorAudit conAudit) {
-		List<ContractorAudit> subsequentAudits = conAuditDao.findSubsequentAudits(conAudit);
+	private boolean isAPreviousAudit(ContractorDocument conAudit) {
+		List<ContractorDocument> subsequentAudits = conAuditDao.findSubsequentAudits(conAudit);
 		return !subsequentAudits.isEmpty();
 	}
 
@@ -222,7 +222,7 @@ public class AuditBuilder2 {
         }
         for (String auditFor:auditFors) {
             if (auditPeriodService.shouldCreateAudit(contractor.getAudits(), auditType, auditFor, childAuditType)) {
-                ContractorAudit audit = new ContractorAudit();
+                ContractorDocument audit = new ContractorDocument();
                 audit.setContractorAccount(contractor);
                 audit.setAuditType(auditType);
                 audit.setAuditColumns(systemUser);
@@ -241,13 +241,13 @@ public class AuditBuilder2 {
 		if (!auditType.isRenewable())
 			return false;
 
-		ContractorAudit renewableAudit = conAuditDao.findMostRecentAuditByContractorAuditType(contractor.getId(), auditType.getId());
+		ContractorDocument renewableAudit = conAuditDao.findMostRecentAuditByContractorAuditType(contractor.getId(), auditType.getId());
 		if (renewableAudit != null) {
 			renewableAudit.setExpiresDate(null);
-			for (ContractorAuditOperator cao:renewableAudit.getOperators()) {
-				ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, AuditStatus.Pending);
+			for (ContractorDocumentOperator cao:renewableAudit.getOperators()) {
+				ContractorDocumentOperatorWorkflow caow = DocumentUtilityService.changeStatus(cao, DocumentStatus.Pending);
 				if (caow != null) {
-					caow.setNotes(String.format("Resetting renewable audit to %s", AuditStatus.Pending));
+					caow.setNotes(String.format("Resetting renewable audit to %s", DocumentStatus.Pending));
 					caow.setCreatedBy(systemUser);
 					contractorAuditOperatorDAO.save(caow);
 				}
@@ -258,7 +258,7 @@ public class AuditBuilder2 {
 		return false;
 	}
 
-	private boolean foundCurrentYearWCB(ContractorAudit audit) {
+	private boolean foundCurrentYearWCB(ContractorDocument audit) {
 		validateWCBAudit(audit);
 
 		buildSetOfAllWCBYears(audit.getContractorAccount(), audit.getAuditType());
@@ -269,7 +269,7 @@ public class AuditBuilder2 {
 		return yearsForAllWCBs.contains(DateBean.getWCBYear());
 	}
 
-	private void validateWCBAudit(ContractorAudit audit) {
+	private void validateWCBAudit(ContractorDocument audit) {
 		String auditFor = audit.getAuditFor();
 		if (Strings.isEmpty(auditFor) || !NumberUtils.isDigits(auditFor) || auditFor.length() != 4) {
 			throw new RuntimeException("WCBs must always have an AuditFor that is a 4-digit year.");
@@ -277,13 +277,13 @@ public class AuditBuilder2 {
 	}
 
 	private void buildSetOfAllWCBYears(ContractorAccount contractor, AuditType wcbAuditType) {
-		List<ContractorAudit> audits = contractor.getAudits();
+		List<ContractorDocument> audits = contractor.getAudits();
 		if (CollectionUtils.isEmpty(audits)) {
 			yearsForAllWCBs = Collections.unmodifiableSet(new HashSet<String>());
 		}
 
 		Set<String> years = new HashSet<>();
-		for (ContractorAudit audit : audits) {
+		for (ContractorDocument audit : audits) {
 			if (isMatchingWCBAudit(audit, wcbAuditType)) {
 				years.add(audit.getAuditFor());
 			}
@@ -310,18 +310,18 @@ public class AuditBuilder2 {
     }
 
     public void recalculateCategories(Integer auditID) {
-        ContractorAudit conAudit = conAuditDao.find(ContractorAudit.class, auditID);
+        ContractorDocument conAudit = conAuditDao.find(ContractorDocument.class, auditID);
         AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
                 conAudit.getContractorAccount());
 
         Set<OperatorAccount> operators = new HashSet<OperatorAccount>();
-        for (ContractorAuditOperator cao : conAudit.getOperatorsVisible()) {
-            for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+        for (ContractorDocumentOperator cao : conAudit.getOperatorsVisible()) {
+            for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
                 operators.add(caop.getOperator());
             }
         }
 
-        Set<AuditCategory> categories = categoriesBuilder.calculate(conAudit, operators);
+        Set<DocumentCategory> categories = categoriesBuilder.calculate(conAudit, operators);
         fillAuditCategories(conAudit, categories);
         fillAuditOperators(conAudit, categoriesBuilder.getCaos());
     }
@@ -334,7 +334,7 @@ public class AuditBuilder2 {
 		}
 
 		for (String year : yearsForWCBs) {
-			ContractorAudit audit = createNewAudit(contractor, auditType);
+			ContractorDocument audit = createNewAudit(contractor, auditType);
 			audit.setAuditFor(year);
 			audit.setExpiresDate(DateBean.getWCBExpirationDate(year));
 			audit.setPreviousAudit(conAuditDao.findPreviousAudit(audit));
@@ -358,8 +358,8 @@ public class AuditBuilder2 {
 		return years;
 	}
 
-	private ContractorAudit createNewAudit(ContractorAccount contractor, AuditType auditType) {
-		ContractorAudit audit = new ContractorAudit();
+	private ContractorDocument createNewAudit(ContractorAccount contractor, AuditType auditType) {
+		ContractorDocument audit = new ContractorDocument();
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
 		audit.setAuditColumns(systemUser);
@@ -369,21 +369,21 @@ public class AuditBuilder2 {
 		return audit;
 	}
 
-	private boolean isMatchingWCBAudit(ContractorAudit audit, AuditType wcbAuditType) {
+	private boolean isMatchingWCBAudit(ContractorDocument audit, AuditType wcbAuditType) {
 		return audit != null
 				&& audit.getAuditType() != null
 				&& AuditType.CANADIAN_PROVINCES.contains(audit.getAuditType().getId())
 				&& (audit.getAuditType().getId() == wcbAuditType.getId());
 	}
 
-	private boolean isValidAudit(ContractorAudit conAudit) {
+	private boolean isValidAudit(ContractorDocument conAudit) {
 		if (conAudit.getAuditType().getId() != AuditType.COR
 				&& conAudit.getAuditType().getId() != AuditType.IEC_AUDIT
 				&& conAudit.getAuditType().getId() != AuditType.WELCOME) {
 			return false;
 		}
 
-		if (AuditService.isExpired(conAudit)) {
+		if (DocumentUtilityService.isExpired(conAudit)) {
 			return false;
 		}
 
@@ -396,11 +396,11 @@ public class AuditBuilder2 {
 			return true;
 		}
 
-		int auditQuestionID = (conAudit.getAuditType().getId() == AuditType.COR) ? AuditQuestion.COR
-				: AuditQuestion.IEC;
+		int auditQuestionID = (conAudit.getAuditType().getId() == AuditType.COR) ? DocumentQuestion.COR
+				: DocumentQuestion.IEC;
 
-		ContractorAudit pqfAudit = null;
-		for (ContractorAudit ca : conAudit.getContractorAccount().getAudits()) {
+		ContractorDocument pqfAudit = null;
+		for (ContractorDocument ca : conAudit.getContractorAccount().getAudits()) {
 			if (ca.getAuditType().getId() == AuditType.PQF) {
 				pqfAudit = ca;
 				break;
@@ -411,16 +411,16 @@ public class AuditBuilder2 {
 			return false;
 		}
 
-		AuditData data = null;
-		for (AuditData auditData:pqfAudit.getData()) {
-			if (auditData.getQuestion().getId() == auditQuestionID) {
-				data = auditData;
+		DocumentData data = null;
+		for (DocumentData documentData :pqfAudit.getData()) {
+			if (documentData.getQuestion().getId() == auditQuestionID) {
+				data = documentData;
 				break;
 			}
 		}
 
 		if (data != null
-				&& (!StringUtils.equals(data.getAnswer(), "Yes") || !AuditService.isVisibleInAudit(data.getQuestion(), pqfAudit))) {
+				&& (!StringUtils.equals(data.getAnswer(), "Yes") || !DocumentUtilityService.isVisibleInAudit(data.getQuestion(), pqfAudit))) {
 			return false;
 		}
 
@@ -436,8 +436,8 @@ public class AuditBuilder2 {
 		return null;
 	}
 
-	private void fillAuditOperators(ContractorAudit conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
-		HashMap<OperatorAccount, ContractorAuditOperator> previousCaoMap = new HashMap<>();
+	private void fillAuditOperators(ContractorDocument conAudit, Map<OperatorAccount, Set<OperatorAccount>> caoMap) {
+		HashMap<OperatorAccount, ContractorDocumentOperator> previousCaoMap = new HashMap<>();
 		caosToMoveToApprove = new HashSet<>();
 		caosToMoveToComplete = new HashSet<>();
 		caosToMoveToResubmit = new HashSet<>();
@@ -445,7 +445,7 @@ public class AuditBuilder2 {
 		HashSet<Integer> operatorsGoingVisibleIds = new HashSet<>();
 
 		Set<OperatorAccount> caosToEnsureExist = caoMap.keySet();
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
 			boolean caoShouldBeVisible = contains(caosToEnsureExist, cao.getOperator());
 
 			if (!cao.isVisible() && caoShouldBeVisible) {
@@ -454,7 +454,7 @@ public class AuditBuilder2 {
 
 			cao.setVisible(caoShouldBeVisible);
 
-			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
+			for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
 				previousCaoMap.put(caop.getOperator(), cao);
 			}
 
@@ -465,20 +465,20 @@ public class AuditBuilder2 {
 		}
 
 		for (OperatorAccount governingBody : caosToEnsureExist) {
-			ContractorAuditOperator cao = null;
-			for (ContractorAuditOperator cao2 : conAudit.getOperators()) {
+			ContractorDocumentOperator cao = null;
+			for (ContractorDocumentOperator cao2 : conAudit.getOperators()) {
 				if (cao2.getOperator().getId() == governingBody.getId()) {
 					cao = cao2;
 					break;
 				}
 			}
 			if (cao == null) {
-				cao = new ContractorAuditOperator();
+				cao = new ContractorDocumentOperator();
 				cao.setAudit(conAudit);
 				cao.setOperator(governingBody);
 				cao.setAuditColumns(systemUser);
-				AuditStatus firstStatus = AuditService.getFirstStep(conAudit.getAuditType().getWorkFlow()).getNewStatus();
-				AuditService.changeStatus(cao, firstStatus);
+				DocumentStatus firstStatus = DocumentUtilityService.getFirstStep(conAudit.getAuditType().getWorkFlow()).getNewStatus();
+				DocumentUtilityService.changeStatus(cao, firstStatus);
 				conAudit.setLastRecalculation(null);
 
                 cao = contractorAuditOperatorDAO.save(cao);
@@ -488,9 +488,9 @@ public class AuditBuilder2 {
 			fillAuditOperatorPermissions(cao, caoMap.get(governingBody));
 		}
 
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			for (ContractorAuditOperatorPermission caop : cao.getCaoPermissions()) {
-				ContractorAuditOperator prevCao = previousCaoMap.get(caop.getOperator());
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
+			for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
+				ContractorDocumentOperator prevCao = previousCaoMap.get(caop.getOperator());
 				if (prevCao != null && cao.getId() != prevCao.getId()) {
 					caop.setPreviousCao(prevCao);
 					if (prevCao.getStatus().isApproved()
@@ -521,54 +521,54 @@ public class AuditBuilder2 {
 	}
 
 	private void removeDuplicateCaosFromLists() {
-		for (ContractorAuditOperator cao : caosToMoveToApprove){
+		for (ContractorDocumentOperator cao : caosToMoveToApprove){
 			caosToMoveToSubmit.remove(cao);
 			caosToMoveToResubmit.remove(cao);
 			caosToMoveToComplete.remove(cao);
 		}
 
-		for (ContractorAuditOperator cao : caosToMoveToComplete){
+		for (ContractorDocumentOperator cao : caosToMoveToComplete){
 			caosToMoveToSubmit.remove(cao);
 			caosToMoveToResubmit.remove(cao);
 		}
 
-		for (ContractorAuditOperator cao : caosToMoveToResubmit){
+		for (ContractorDocumentOperator cao : caosToMoveToResubmit){
 			caosToMoveToSubmit.remove(cao);
 		}
 	}
 
-	private void adjustCaoStatus(ContractorAudit conAudit) {
+	private void adjustCaoStatus(ContractorDocument conAudit) {
 		if (isAuditThatCanAdjustStatus(conAudit)) {
 			if (!caosToMoveToApprove.isEmpty()) {
-				adjustCaosToStatus(conAudit, caosToMoveToApprove, AuditStatus.Approved);
+				adjustCaosToStatus(conAudit, caosToMoveToApprove, DocumentStatus.Approved);
 			}
 			if (!caosToMoveToComplete.isEmpty()) {
-				adjustCaosToStatus(conAudit, caosToMoveToComplete, AuditStatus.Complete);
+				adjustCaosToStatus(conAudit, caosToMoveToComplete, DocumentStatus.Complete);
 			}
 			if (!caosToMoveToResubmit.isEmpty()) {
-				adjustCaosToStatus(conAudit, caosToMoveToResubmit, AuditStatus.Resubmit);
+				adjustCaosToStatus(conAudit, caosToMoveToResubmit, DocumentStatus.Resubmit);
 			}
 			if (!caosToMoveToSubmit.isEmpty()) {
-				adjustCaosToStatus(conAudit, caosToMoveToSubmit, AuditStatus.Submitted);
+				adjustCaosToStatus(conAudit, caosToMoveToSubmit, DocumentStatus.Submitted);
 			}
 		}
 	}
 
-	private boolean isAuditThatCanAdjustStatus(ContractorAudit conAudit) {
+	private boolean isAuditThatCanAdjustStatus(ContractorDocument conAudit) {
 		return conAudit.getAuditType().getId() == AuditType.PQF
 				|| conAudit.getAuditType().getId() == AuditType.INTEGRITYMANAGEMENT
 				|| conAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM;
 	}
 
-	private void adjustCaosToStatus(ContractorAudit conAudit, HashSet<ContractorAuditOperator> caosToChange, AuditStatus status) {
-		Iterator<ContractorAuditOperator> list = caosToChange.iterator();
+	private void adjustCaosToStatus(ContractorDocument conAudit, HashSet<ContractorDocumentOperator> caosToChange, DocumentStatus status) {
+		Iterator<ContractorDocumentOperator> list = caosToChange.iterator();
 		while (list.hasNext()) {
-			ContractorAuditOperator cao = list.next();
+			ContractorDocumentOperator cao = list.next();
 			if (conAudit.getAuditType().getId() == AuditType.PQF && status.isComplete() &&
-					!AuditService.pqfIsOkayToChangeCaoStatus(conAudit, cao)) {
+					!DocumentUtilityService.pqfIsOkayToChangeCaoStatus(conAudit, cao)) {
 				continue;
 			}
-			ContractorAuditOperatorWorkflow caow = AuditService.changeStatus(cao, status);
+			ContractorDocumentOperatorWorkflow caow = DocumentUtilityService.changeStatus(cao, status);
 			if (caow != null) {
                 List<AppTranslation> translations = appTranslationDAO.findWhere("t.locale = 'en' AND t.msgKey = concat('AuditType.'," + conAudit.getAuditType().getId() + ",'.name'");
 
@@ -585,14 +585,14 @@ public class AuditBuilder2 {
 		}
 	}
 
-	private void fillAuditCategories(ContractorAudit conAudit, Set<AuditCategory> categoriesNeeded) {
+	private void fillAuditCategories(ContractorDocument conAudit, Set<DocumentCategory> categoriesNeeded) {
 		if (conAudit.getAuditType().getId() == AuditType.SHELL_COMPETENCY_REVIEW) {
-			List<AuditCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
+			List<DocumentCategory> requiredCompetencies = auditCatMatrixDAO.findCategoriesForCompetencies(conAudit
 					.getContractorAccount().getId());
 			categoriesNeeded = new HashSet<>();
-			if (AuditService.hasCaoStatus(conAudit, AuditStatus.Pending)) {
-				for (AuditCategory ac : conAudit.getAuditType().getCategories()) {
-					if (requiredCompetencies.contains(AuditService.getTopParent(ac))) {
+			if (DocumentUtilityService.hasCaoStatus(conAudit, DocumentStatus.Pending)) {
+				for (DocumentCategory ac : conAudit.getAuditType().getCategories()) {
+					if (requiredCompetencies.contains(DocumentUtilityService.getTopParent(ac))) {
 						categoriesNeeded.add(ac);
 					}
 				}
@@ -603,31 +603,31 @@ public class AuditBuilder2 {
 
 		boolean hasPendingCaos = auditHasPendingCaos(conAudit);
 
-		for (AuditCatData auditCatData : conAudit.getCategories()) {
-			if (auditCatData.getCategory().getParent() == null) {
+		for (DocumentCatData documentCatData : conAudit.getCategories()) {
+			if (documentCatData.getCategory().getParent() == null) {
 				if (conAudit.getAuditType().getId() == AuditType.MANUAL_AUDIT || conAudit.getAuditType().getId() == AuditType.IMPLEMENTATION_AUDIT) {
-					if (hasAnyCaoStatusAfterIncomplete(conAudit) || auditCatData.isOverride()) {
-						if (auditCatData.isApplies()) {
-							categoriesNeeded.add(auditCatData.getCategory());
+					if (hasAnyCaoStatusAfterIncomplete(conAudit) || documentCatData.isOverride()) {
+						if (documentCatData.isApplies()) {
+							categoriesNeeded.add(documentCatData.getCategory());
 						} else {
-							categoriesNeeded.remove(auditCatData.getCategory());
+							categoriesNeeded.remove(documentCatData.getCategory());
 						}
 					}
 				} else {
-					if (!hasPendingCaos || auditCatData.isOverride()) {
-						if (auditCatData.isApplies()) {
-							categoriesNeeded.add(auditCatData.getCategory());
+					if (!hasPendingCaos || documentCatData.isOverride()) {
+						if (documentCatData.isApplies()) {
+							categoriesNeeded.add(documentCatData.getCategory());
 						} else {
-							categoriesNeeded.remove(auditCatData.getCategory());
+							categoriesNeeded.remove(documentCatData.getCategory());
 						}
 					}
 				}
 			}
 		}
 
-		for (AuditCategory category : conAudit.getAuditType().getCategories()) {
+		for (DocumentCategory category : conAudit.getAuditType().getCategories()) {
 
-			AuditCatData catData = getCatData(conAudit, category);
+			DocumentCatData catData = getCatData(conAudit, category);
 			if (catData.isOverride()) {
 			} else {
 				boolean categoryApplies = categoriesNeeded.contains(catData.getCategory());
@@ -649,7 +649,7 @@ public class AuditBuilder2 {
 		}
 	}
 
-	protected boolean areAllParentsApplicable(Set<AuditCategory> categoriesNeeded, AuditCategory category) {
+	protected boolean areAllParentsApplicable(Set<DocumentCategory> categoriesNeeded, DocumentCategory category) {
 		if (category.getParent() != null) {
 			return areAllParentsApplicable(categoriesNeeded, category.getParent())
 					&& categoriesNeeded.contains(category);
@@ -658,8 +658,8 @@ public class AuditBuilder2 {
 		}
 	}
 
-	private boolean auditHasPendingCaos(ContractorAudit conAudit) {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
+	private boolean auditHasPendingCaos(ContractorDocument conAudit) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
 			if (cao.isVisible()) {
 				if (cao.getStatus().isPending()) {
 					return true;
@@ -675,9 +675,9 @@ public class AuditBuilder2 {
 		return false;
 	}
 
-	private boolean hasAnyCaoStatusAfterIncomplete(ContractorAudit conAudit) {
-		for (ContractorAuditOperator cao : conAudit.getOperators()) {
-			if (cao.getStatus().after(AuditStatus.Incomplete) && cao.isVisible()) {
+	private boolean hasAnyCaoStatusAfterIncomplete(ContractorDocument conAudit) {
+		for (ContractorDocumentOperator cao : conAudit.getOperators()) {
+			if (cao.getStatus().after(DocumentStatus.Incomplete) && cao.isVisible()) {
 				return true;
 			}
 		}
@@ -685,13 +685,13 @@ public class AuditBuilder2 {
 		return false;
 	}
 
-	private void fillAuditOperatorPermissions(ContractorAuditOperator cao, Set<OperatorAccount> caopOperators) {
+	private void fillAuditOperatorPermissions(ContractorDocumentOperator cao, Set<OperatorAccount> caopOperators) {
 		if (cao.getAudit().getRequestingOpAccount() != null
 				&& cao.isVisible()
 				&& AccountService.getOperatorHeirarchy(cao.getAudit().getRequestingOpAccount())
 						.contains(cao.getOperator().getId())) {
 			caopOperators.add(cao.getAudit().getRequestingOpAccount());
-		} else if (cao.getAudit().getAuditType().getId() == AuditType.MANUAL_AUDIT && AuditService.hasCaoStatus(cao.getAudit(), AuditStatus.Complete)) {
+		} else if (cao.getAudit().getAuditType().getId() == AuditType.MANUAL_AUDIT && DocumentUtilityService.hasCaoStatus(cao.getAudit(), DocumentStatus.Complete)) {
 			for (ContractorOperator co : cao.getAudit().getContractorAccount().getOperators()) {
 				if (cao.isVisible()
 						&& AccountService.getOperatorHeirarchy(co.getOperatorAccount()).contains(cao.getOperator().getId())) {
@@ -704,9 +704,9 @@ public class AuditBuilder2 {
 			caopOperators.clear();
 		}
 
-		Iterator<ContractorAuditOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
+		Iterator<ContractorDocumentOperatorPermission> caopIter = cao.getCaoPermissions().iterator();
 		while (caopIter.hasNext()) {
-			ContractorAuditOperatorPermission caop = caopIter.next();
+			ContractorDocumentOperatorPermission caop = caopIter.next();
 			if (caopOperators.contains(caop.getOperator())) {
 				caopOperators.remove(caop.getOperator());
 			} else {
@@ -715,7 +715,7 @@ public class AuditBuilder2 {
 			}
 		}
 		for (OperatorAccount operator : caopOperators) {
-			ContractorAuditOperatorPermission caop = new ContractorAuditOperatorPermission();
+			ContractorDocumentOperatorPermission caop = new ContractorDocumentOperatorPermission();
 			caop.setCao(cao);
 			caop.setOperator(operator);
 			cao.getCaoPermissions().add(caop);
@@ -728,7 +728,7 @@ public class AuditBuilder2 {
 	}
 
 	private void addAnnualUpdate(ContractorAccount contractor, int year, AuditType auditType) {
-		for (ContractorAudit cAudit : contractor.getAudits()) {
+		for (ContractorDocument cAudit : contractor.getAudits()) {
 			if (cAudit.getAuditType().getId() == AuditType.ANNUALADDENDUM && year == Integer.parseInt(cAudit.getAuditFor())) {
 				return;
 			}
@@ -736,7 +736,7 @@ public class AuditBuilder2 {
 
 		Calendar startDate = Calendar.getInstance();
 		startDate.set(year, Calendar.DECEMBER, 31);
-		ContractorAudit audit = new ContractorAudit();
+		ContractorDocument audit = new ContractorDocument();
 		audit.setContractorAccount(contractor);
 		audit.setAuditType(auditType);
 		audit.setAuditColumns(systemUser);
@@ -762,14 +762,14 @@ public class AuditBuilder2 {
 		return false;
 	}
 
-	private AuditCatData getCatData(ContractorAudit conAudit, AuditCategory category) {
-		for (AuditCatData catData : conAudit.getCategories()) {
+	private DocumentCatData getCatData(ContractorDocument conAudit, DocumentCategory category) {
+		for (DocumentCatData catData : conAudit.getCategories()) {
 			if (catData.getCategory().equals(category)) {
 				return catData;
 			}
 		}
 
-		AuditCatData catData = new AuditCatData();
+		DocumentCatData catData = new DocumentCatData();
 		catData.setCategory(category);
 		catData.setAudit(conAudit);
 		catData.setApplies(true);

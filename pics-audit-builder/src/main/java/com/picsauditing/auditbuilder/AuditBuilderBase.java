@@ -1,9 +1,9 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDataDAO2;
-import com.picsauditing.auditbuilder.dao.ContractorTagDAO2;
+import com.picsauditing.auditbuilder.dao.ContractorTagDAO;
+import com.picsauditing.auditbuilder.dao.DocumentDataDAO;
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -13,23 +13,23 @@ public abstract class AuditBuilderBase {
 	protected Set<ContractorType> contractorTypes = new HashSet<>();
 	protected Set<Trade> trades = new HashSet<>();
     @Autowired
-    private ContractorTagDAO2 contractorTagDAO;
+    private ContractorTagDAO contractorTagDAO;
     @Autowired
-    private AuditDataDAO2 auditDataDAO;
+    private DocumentDataDAO auditDataDAO;
 
-    public void setContractorTagDAO(ContractorTagDAO2 contractorTagDAO) {
+    public void setContractorTagDAO(ContractorTagDAO contractorTagDAO) {
         this.contractorTagDAO = contractorTagDAO;
     }
 
-    public ContractorTagDAO2 getContractorTagDAO() {
+    public ContractorTagDAO getContractorTagDAO() {
         return contractorTagDAO;
     }
 
-    public void setAuditDataDAO(AuditDataDAO2 auditDataDAO) {
+    public void setAuditDataDAO(DocumentDataDAO auditDataDAO) {
         this.auditDataDAO = auditDataDAO;
     }
 
-    public AuditDataDAO2 getAuditDataDAO() {
+    public DocumentDataDAO getAuditDataDAO() {
         return auditDataDAO;
     }
 
@@ -58,9 +58,9 @@ public abstract class AuditBuilderBase {
             contractorTypes.add(ContractorType.Transportation);
     }
 
-    protected Map<Integer, OperatorTag> getRequiredTags(List<? extends AuditRule> rules) {
+    protected Map<Integer, OperatorTag> getRequiredTags(List<? extends DocumentRule> rules) {
 		Map<Integer, OperatorTag> tagsNeeded = new HashMap<>();
-		for (AuditRule rule : rules) {
+		for (DocumentRule rule : rules) {
 			if (rule.getTag() != null)
 				tagsNeeded.put(rule.getTag().getId(), null);
 		}
@@ -73,8 +73,8 @@ public abstract class AuditBuilderBase {
 		return tagsNeeded;
 	}
 
-	protected boolean isValid(AuditRule rule, Map<Integer, AuditData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
-		if (rule.getQuestion() != null && !AuditService.isMatchingAnswer(rule, contractorAnswers.get(rule.getQuestion().getId()))) {
+	protected boolean isValid(DocumentRule rule, Map<Integer, DocumentData> contractorAnswers, Map<Integer, OperatorTag> opTags) {
+		if (rule.getQuestion() != null && !DocumentUtilityService.isMatchingAnswer(rule, contractorAnswers.get(rule.getQuestion().getId()))) {
 			return false;
 		}
 
@@ -85,7 +85,7 @@ public abstract class AuditBuilderBase {
 		return true;
 	}
 
-	public boolean evaluateRule(AuditRule rule, Map<Integer, List<AuditData>> allQuestionAnswers, Map<Integer, OperatorTag> opTags) {
+	public boolean evaluateRule(DocumentRule rule, Map<Integer, List<DocumentData>> allQuestionAnswers, Map<Integer, OperatorTag> opTags) {
 
 		if (!evaluateRuleForQuestion(rule, allQuestionAnswers)) {
 			return false;
@@ -98,20 +98,20 @@ public abstract class AuditBuilderBase {
 		return true;
 	}
 
-	private boolean evaluateRuleForQuestion(AuditRule rule, Map<Integer, List<AuditData>> allQuestionAnswers) {
+	private boolean evaluateRuleForQuestion(DocumentRule rule, Map<Integer, List<DocumentData>> allQuestionAnswers) {
 		if (rule.getQuestion() != null) {
-			List<AuditData> questionAnswers = allQuestionAnswers.get(rule.getQuestion().getId());
+			List<DocumentData> questionAnswers = allQuestionAnswers.get(rule.getQuestion().getId());
 
-			AuditData questionAnswer = chooseAnswerToEvaluate(rule, questionAnswers);
-			if (!AuditService.isMatchingAnswer(rule, questionAnswer)) {
+			DocumentData questionAnswer = chooseAnswerToEvaluate(rule, questionAnswers);
+			if (!DocumentUtilityService.isMatchingAnswer(rule, questionAnswer)) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	AuditData chooseAnswerToEvaluate(AuditRule rule, List<AuditData> questionAnswers) {
-		AuditData questionAnswer = null;
+	DocumentData chooseAnswerToEvaluate(DocumentRule rule, List<DocumentData> questionAnswers) {
+		DocumentData questionAnswer = null;
 
 		if (rule.appliesToASpecificYear()) {
 			questionAnswer = findAnswerForSpecificYear(rule, questionAnswers);
@@ -121,8 +121,8 @@ public abstract class AuditBuilderBase {
 		return questionAnswer;
 	}
 
-	private AuditData findAnswerForSpecificYear(AuditRule rule, List<AuditData> questionAnswers) {
-		for (AuditData questionAnswer : questionAnswers) {
+	private DocumentData findAnswerForSpecificYear(DocumentRule rule, List<DocumentData> questionAnswers) {
+		for (DocumentData questionAnswer : questionAnswers) {
 			if (answerYearMatchesRuleYear(questionAnswer, rule)) {
 				return questionAnswer;
 			}
@@ -130,8 +130,8 @@ public abstract class AuditBuilderBase {
 		return null;
 	}
 
-	private boolean answerYearMatchesRuleYear(AuditData questionAnswer, AuditRule rule) {
-		int answerYear = AuditService.getAuditYear(questionAnswer.getAudit());
+	private boolean answerYearMatchesRuleYear(DocumentData questionAnswer, DocumentRule rule) {
+		int answerYear = DocumentUtilityService.getAuditYear(questionAnswer.getAudit());
 		int ruleYear = rule.getYearToCheck().getYear();
 
 		return answerYear == ruleYear;

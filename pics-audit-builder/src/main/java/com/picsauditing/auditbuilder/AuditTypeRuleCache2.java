@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.entities.AuditTypeRule;
+import com.picsauditing.auditbuilder.entities.DocumentTypeRule;
 import com.picsauditing.auditbuilder.entities.ContractorAccount;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import java.util.Collections;
 import java.util.List;
 
-public class AuditTypeRuleCache2 extends AuditRuleCache<AuditTypeRule> {
+public class AuditTypeRuleCache2 extends AuditRuleCache<DocumentTypeRule> {
 	private SafetyRisks data;
 
 	private final Logger logger = LoggerFactory.getLogger(AuditTypeRuleCache2.class);
 
-	public List<AuditTypeRule> getRules(ContractorAccount contractor) {
-		List<AuditTypeRule> rules;
+	public List<DocumentTypeRule> getRules(ContractorAccount contractor) {
+		List<DocumentTypeRule> rules;
 		if (getData() == null)
 			return null;
 
@@ -26,9 +26,9 @@ public class AuditTypeRuleCache2 extends AuditRuleCache<AuditTypeRule> {
 		return rules;
 	}
 
-	private void initialize(List<AuditTypeRule> rules) {
+	private void initialize(List<DocumentTypeRule> rules) {
 		data = new SafetyRisks();
-		for (AuditTypeRule rule : rules) {
+		for (DocumentTypeRule rule : rules) {
 			data.add(rule);
 		}
 	}
@@ -36,7 +36,7 @@ public class AuditTypeRuleCache2 extends AuditRuleCache<AuditTypeRule> {
 	synchronized void initialize() {
 		if (data == null) {
 			long startTime = System.currentTimeMillis();
-			initialize(auditDecisionTableDAO.findAllRules(AuditTypeRule.class));
+			initialize(auditDecisionTableDAO.findAllRules(DocumentTypeRule.class));
 			long endTime = System.currentTimeMillis();
 			logger.info("Filled AuditTypeRuleCache in {} ms", (endTime - startTime));
 		}

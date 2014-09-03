@@ -17,18 +17,18 @@
     <bean id="AuditTypesBuilder" class="com.picsauditing.auditbuilder.AuditTypesBuilder" scope="prototype"/>
     <bean id="AuditCategoriesBuilder" class="com.picsauditing.auditbuilder.AuditCategoriesBuilder" scope="prototype"/>
 
-    <bean id="AuditPeriodService2" class="com.picsauditing.auditbuilder.service.AuditPeriodService2"/>
+    <bean id="AuditPeriodService2" class="com.picsauditing.auditbuilder.service.DocumentPeriodService"/>
 
     <bean id="CorruptionPerceptionIndexMap2" class="com.picsauditing.auditbuilder.util.CorruptionPerceptionIndexMap2"/>
 
-    <bean id="AppTranslationDAO2" class="com.picsauditing.auditbuilder.dao.AppTranslationDAO2"/>
-    <bean id="AuditCategoryMatrixDAO2" class="com.picsauditing.auditbuilder.dao.AuditCategoryMatrixDAO2"/>
-    <bean id="AuditDataDAO2" class="com.picsauditing.auditbuilder.dao.AuditDataDAO2"/>
-    <bean id="AuditDecisionTableDAO2" class="com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2"/>
-    <bean id="AuditTypeDAO2" class="com.picsauditing.auditbuilder.dao.AuditTypeDAO2"/>
-    <bean id="ContractorAuditDAO2" class="com.picsauditing.auditbuilder.dao.ContractorAuditDAO2"/>
-    <bean id="ContractorAuditFileDAO2" class="com.picsauditing.auditbuilder.dao.ContractorAuditFileDAO2"/>
-    <bean id="ContractorAuditOperatorDAO2" class="com.picsauditing.auditbuilder.dao.ContractorAuditOperatorDAO2"/>
-    <bean id="ContractorTagDAO2" class="com.picsauditing.auditbuilder.dao.ContractorTagDAO2"/>
-    <bean id="CountryDAO2" class="com.picsauditing.auditbuilder.dao.CountryDAO2"/>
+    <bean id="AppTranslationDAO2" class="com.picsauditing.auditbuilder.dao.AppTranslationDAO"/>
+    <bean id="AuditCategoryMatrixDAO2" class="com.picsauditing.auditbuilder.dao.DocumentCategoryMatrixDAO"/>
+    <bean id="AuditDataDAO2" class="com.picsauditing.auditbuilder.dao.DocumentDataDAO"/>
+    <bean id="AuditDecisionTableDAO2" class="com.picsauditing.auditbuilder.dao.DocumentDecisionTableDAO"/>
+    <bean id="AuditTypeDAO2" class="com.picsauditing.auditbuilder.dao.DocumentTypeDAO"/>
+    <bean id="ContractorAuditDAO2" class="com.picsauditing.auditbuilder.dao.ContractorDocumentDAO"/>
+    <bean id="ContractorAuditFileDAO2" class="com.picsauditing.auditbuilder.dao.ContractorDocumentFileDAO"/>
+    <bean id="ContractorAuditOperatorDAO2" class="com.picsauditing.auditbuilder.dao.ContractorDocumentOperatorDAO"/>
+    <bean id="ContractorTagDAO2" class="com.picsauditing.auditbuilder.dao.ContractorTagDAO"/>
+    <bean id="CountryDAO2" class="com.picsauditing.auditbuilder.dao.CountryDAO"/>
 </beans>

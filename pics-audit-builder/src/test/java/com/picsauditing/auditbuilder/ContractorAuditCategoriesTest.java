@@ -1,9 +1,9 @@
 package com.picsauditing.auditbuilder;
 
 import com.picsauditing.EntityFactory;
-import com.picsauditing.auditbuilder.entities.AuditCatData;
+import com.picsauditing.auditbuilder.entities.ContractorDocument;
+import com.picsauditing.auditbuilder.entities.DocumentCatData;
 import com.picsauditing.auditbuilder.entities.AuditType;
-import com.picsauditing.auditbuilder.entities.ContractorAudit;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -14,9 +14,9 @@ import java.util.List;
 
 public class ContractorAuditCategoriesTest {
     @Mock
-    ContractorAudit audit;
+    ContractorDocument audit;
 
-	private List<AuditCatData> categories;
+	private List<DocumentCatData> categories;
 
 	private AuditType testAuditType;
 
@@ -28,12 +28,12 @@ public class ContractorAuditCategoriesTest {
 		createCategory();
 	}
 
-	private AuditCatData createCategory() {
+	private DocumentCatData createCategory() {
 		return createCategory(0);
 	}
 
-	private AuditCatData createCategory(int categoryID) {
-		AuditCatData acd = EntityFactory.makeAuditCatData();
+	private DocumentCatData createCategory(int categoryID) {
+		DocumentCatData acd = EntityFactory.makeAuditCatData();
 		acd.getCategory().setId(categoryID);
 		acd.getCategory().setAuditType(testAuditType);
         Calendar date = Calendar.getInstance();

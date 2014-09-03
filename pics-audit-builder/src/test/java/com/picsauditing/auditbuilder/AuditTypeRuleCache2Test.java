@@ -3,7 +3,7 @@ package com.picsauditing.auditbuilder;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
+import com.picsauditing.auditbuilder.dao.DocumentDecisionTableDAO;
 import com.picsauditing.auditbuilder.entities.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,14 +21,14 @@ import static org.mockito.Mockito.when;
 public class AuditTypeRuleCache2Test extends PicsTest {
     AuditTypeRuleCache2 ruleCache;
 
-    List<AuditTypeRule> rules = new ArrayList<>();
+    List<DocumentTypeRule> rules = new ArrayList<>();
 
     Set<ContractorTrade> trades = new HashSet<>();
 
     @Mock
     ContractorAccount contractor;
     @Mock
-    AuditDecisionTableDAO2 auditDecisionTableDAO;
+    DocumentDecisionTableDAO auditDecisionTableDAO;
 
     @Before
     public void setUp() throws Exception {
@@ -37,7 +37,7 @@ public class AuditTypeRuleCache2Test extends PicsTest {
         ruleCache = new AuditTypeRuleCache2();
         autowireEMInjectedDAOs(ruleCache);
 
-        when(auditDecisionTableDAO.findAllRules(AuditTypeRule.class)).thenReturn(rules);
+        when(auditDecisionTableDAO.findAllRules(DocumentTypeRule.class)).thenReturn(rules);
         when(contractor.getTrades()).thenReturn(trades);
 
         PicsTestUtil.forceSetPrivateField(ruleCache, "auditDecisionTableDAO", auditDecisionTableDAO);
@@ -45,9 +45,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_Trades() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -83,9 +83,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_TradeSafetyRisk() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -133,7 +133,7 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_NoRules() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
         when(contractor.isSafetySensitive()).thenReturn(false);
         when(contractor.getSafetyRisk()).thenReturn(LowMedHigh.None);
@@ -149,9 +149,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_SafetyRisk() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -185,9 +185,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_SafetySensitive() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -221,9 +221,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_ProductRisk() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -257,9 +257,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_OnsiteContractor() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -289,9 +289,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_SoleProprieter() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -321,9 +321,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_Operator() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);
 
@@ -359,13 +359,13 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_MultiTree() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule safetyRule = new AuditTypeRule();
-        AuditTypeRule sensitiveRule = new AuditTypeRule();
-        AuditTypeRule product1Rule = new AuditTypeRule();
-        AuditTypeRule product2Rule = new AuditTypeRule();
-        AuditTypeRule tradeSafetyRule = new AuditTypeRule();
+        DocumentTypeRule safetyRule = new DocumentTypeRule();
+        DocumentTypeRule sensitiveRule = new DocumentTypeRule();
+        DocumentTypeRule product1Rule = new DocumentTypeRule();
+        DocumentTypeRule product2Rule = new DocumentTypeRule();
+        DocumentTypeRule tradeSafetyRule = new DocumentTypeRule();
 
         safetyRule.setAuditType(EntityFactory.makeAuditType());
         sensitiveRule.setAuditType(EntityFactory.makeAuditType());
@@ -446,9 +446,9 @@ public class AuditTypeRuleCache2Test extends PicsTest {
 
     @Test
     public void testGetRules_MultiAttribute() throws Exception {
-        List<AuditTypeRule> results;
+        List<DocumentTypeRule> results;
 
-        AuditTypeRule rule = new AuditTypeRule();
+        DocumentTypeRule rule = new DocumentTypeRule();
 
         rule.setAuditType(EntityFactory.makeAuditType());
         rules.add(rule);

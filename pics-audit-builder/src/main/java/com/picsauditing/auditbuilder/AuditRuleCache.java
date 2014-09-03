@@ -1,17 +1,17 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.dao.AuditDecisionTableDAO2;
+import com.picsauditing.auditbuilder.dao.DocumentDecisionTableDAO;
 import com.picsauditing.auditbuilder.entities.*;
-import com.picsauditing.auditbuilder.service.AuditService;
+import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 import com.picsauditing.auditbuilder.service.TradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AuditRuleCache<R extends AuditRule> {
+public abstract class AuditRuleCache<R extends DocumentRule> {
     @Autowired
-    protected AuditDecisionTableDAO2 auditDecisionTableDAO;
+    protected DocumentDecisionTableDAO auditDecisionTableDAO;
 
     private class FilterRule implements RuleFilterable<R> {
 		List<R> rules;
@@ -236,7 +236,7 @@ public abstract class AuditRuleCache<R extends AuditRule> {
 				if (rule.getOperatorAccount() != null)
 					rule.getOperatorAccount().getCorporateFacilities();
 				if (rule.getQuestion() != null)
-					AuditService.getAuditType(rule.getQuestion());
+					DocumentUtilityService.getAuditType(rule.getQuestion());
 			}
 			map.add(rule);
 		}

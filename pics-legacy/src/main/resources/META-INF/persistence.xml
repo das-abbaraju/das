@@ -130,26 +130,26 @@
 
         <class>com.picsauditing.auditbuilder.entities.Account</class>
         <class>com.picsauditing.auditbuilder.entities.AppTranslation</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditCatData</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditCategory</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditCategoryRule</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditData</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditOptionGroup</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditOptionValue</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditQuestion</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditQuestionFunction</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditQuestionFunctionWatcher</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditRule</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentCatData</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentCategory</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentCategoryRule</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentData</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentOptionGroup</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentOptionValue</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentQuestion</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentQuestionFunction</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentQuestionFunctionWatcher</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentRule</class>
         <class>com.picsauditing.auditbuilder.entities.AuditType</class>
-        <class>com.picsauditing.auditbuilder.entities.AuditTypeRule</class>
+        <class>com.picsauditing.auditbuilder.entities.DocumentTypeRule</class>
         <class>com.picsauditing.auditbuilder.entities.BaseDecisionTreeRule</class>
         <class>com.picsauditing.auditbuilder.entities.BaseHistory</class>
         <class>com.picsauditing.auditbuilder.entities.BaseTable</class>
         <class>com.picsauditing.auditbuilder.entities.ContractorAccount</class>
-        <class>com.picsauditing.auditbuilder.entities.ContractorAudit</class>
-        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperator</class>
-        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperatorPermission</class>
-        <class>com.picsauditing.auditbuilder.entities.ContractorAuditOperatorWorkflow</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorDocument</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorDocumentOperator</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorDocumentOperatorPermission</class>
+        <class>com.picsauditing.auditbuilder.entities.ContractorDocumentOperatorWorkflow</class>
         <class>com.picsauditing.auditbuilder.entities.ContractorOperator</class>
         <class>com.picsauditing.auditbuilder.entities.ContractorTag</class>
         <class>com.picsauditing.auditbuilder.entities.ContractorTrade</class>
