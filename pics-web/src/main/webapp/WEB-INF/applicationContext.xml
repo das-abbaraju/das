@@ -172,6 +172,7 @@
     <bean id="ExceptionService" class="com.picsauditing.PICS.ExceptionService"/>
     <bean id="FacilityChanger" class="com.picsauditing.PICS.FacilityChanger" scope="prototype"/>
     <bean id="GoogleTranslate" class="com.picsauditing.util.GoogleTranslate"/>
+    <bean id="googleApiService" class="com.picsauditing.util.GoogleApiService"/>
     <bean id="OpenTasks" class="com.picsauditing.PICS.OpenTasks" scope="prototype"/>
     <bean id="ProductSubscriptionService"
           class="com.picsauditing.provisioning.ProductSubscriptionServiceImpl"/>
