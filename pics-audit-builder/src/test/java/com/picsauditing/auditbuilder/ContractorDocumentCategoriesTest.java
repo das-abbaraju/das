@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class ContractorAuditCategoriesTest {
+public class ContractorDocumentCategoriesTest {
     @Mock
     ContractorDocument audit;
 

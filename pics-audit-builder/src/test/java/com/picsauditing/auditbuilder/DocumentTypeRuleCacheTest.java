@@ -18,8 +18,8 @@ import java.util.Set;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class AuditTypeRuleCache2Test extends PicsTest {
-    AuditTypeRuleCache2 ruleCache;
+public class DocumentTypeRuleCacheTest extends PicsTest {
+    DocumentTypeRuleCache ruleCache;
 
     List<DocumentTypeRule> rules = new ArrayList<>();
 
@@ -34,7 +34,7 @@ public class AuditTypeRuleCache2Test extends PicsTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        ruleCache = new AuditTypeRuleCache2();
+        ruleCache = new DocumentTypeRuleCache();
         autowireEMInjectedDAOs(ruleCache);
 
         when(auditDecisionTableDAO.findAllRules(DocumentTypeRule.class)).thenReturn(rules);

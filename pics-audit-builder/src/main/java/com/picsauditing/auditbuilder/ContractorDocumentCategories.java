@@ -5,7 +5,7 @@ import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 
 import java.util.Date;
 
-public class ContractorAuditCategories {
+public class ContractorDocumentCategories {
     public static boolean isCategoryEffective(DocumentCategory category, Date effectiveDate) {
         if (effectiveDate == null)
             return DocumentUtilityService.isCurrent(category);

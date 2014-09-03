@@ -26,15 +26,15 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.startsWith;
 import static org.mockito.Mockito.*;
 
-public class AuditPercentCalculatorTest {
-	private AuditPercentCalculator2 calculator;
+public class DocumentPercentCalculatorTest {
+	private DocumentPercentCalculator calculator;
 	private ContractorAccount contractor;
 	private ContractorDocument audit;
 	private AuditType auditType;
 
-	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
+	DocumentCategoryRuleCache catRuleCache = new DocumentCategoryRuleCache();
 	List<DocumentCategoryRule> catRules = new ArrayList<>();
-	AuditCategoriesBuilder catBuilder;
+	DocumentCategoriesBuilder catBuilder;
 
 	private DocumentCatData acd1;
 	private DocumentCatData acd2;
@@ -57,7 +57,7 @@ public class AuditPercentCalculatorTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		calculator = new AuditPercentCalculator2();
+		calculator = new DocumentPercentCalculator();
 
 		Whitebox.setInternalState(calculator, "auditCategoryRuleCache", catRuleCache);
 		Whitebox.setInternalState(calculator, "logger", logger);

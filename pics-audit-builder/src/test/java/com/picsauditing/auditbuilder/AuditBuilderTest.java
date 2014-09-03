@@ -3,7 +3,7 @@ package com.picsauditing.auditbuilder;
 import com.picsauditing.EntityFactory;
 import com.picsauditing.PicsTest;
 import com.picsauditing.PicsTestUtil;
-import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.auditbuilder.DocumentTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
@@ -28,17 +28,17 @@ import static org.mockito.Mockito.*;
 public class AuditBuilderTest extends PicsTest {
 	AuditBuilder2 auditBuilder;
 
-	AuditTypeRuleCache2 typeRuleCache = new AuditTypeRuleCache2();
+	DocumentTypeRuleCache typeRuleCache = new DocumentTypeRuleCache();
 	List<DocumentTypeRule> typeRules = new ArrayList<>();
-	AuditTypesBuilder typeBuilder;
+	DocumentTypesBuilder typeBuilder;
     DocumentPeriodService auditPeriodService = new DocumentPeriodService();
 
-	AuditCategoryRuleCache2 catRuleCache = new AuditCategoryRuleCache2();
+	DocumentCategoryRuleCache catRuleCache = new DocumentCategoryRuleCache();
 	List<DocumentCategoryRule> catRules = new ArrayList<>();
-	AuditCategoriesBuilder catBuilder;
+	DocumentCategoriesBuilder catBuilder;
 
 	@Mock
-    AuditPercentCalculator2 auditPercentCalculator;
+    DocumentPercentCalculator auditPercentCalculator;
 	@Mock
     DocumentDataDAO auditDataDao;
 	@Mock
@@ -80,7 +80,7 @@ public class AuditBuilderTest extends PicsTest {
 		Whitebox.setInternalState(auditBuilder, "conAuditDao", conAuditDao);
 		Whitebox.setInternalState(auditBuilder, "contractorAuditFileDAO", contractorAuditFileDAO);
 
-        AuditTypesBuilder typesBuilder = new AuditTypesBuilder();
+        DocumentTypesBuilder typesBuilder = new DocumentTypesBuilder();
         Whitebox.setInternalState(auditBuilder, "typesBuilder", typesBuilder);
 
         typeRules.clear();
@@ -124,11 +124,11 @@ public class AuditBuilderTest extends PicsTest {
 			addCategoryRules((new RuleParameters()).setAuditType(pqfType).setDocumentCategory(category));
 		}
 
-		AuditTypesBuilder typeBuilder = new AuditTypesBuilder();
+		DocumentTypesBuilder typeBuilder = new DocumentTypesBuilder();
         typeBuilder.setRuleCache(typeRuleCache);
         typeBuilder.setContractor(contractor);
 
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(catRuleCache, contractor);
+		DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(catRuleCache, contractor);
 
 		Set<AuditTypeDetail> auditTypes = typeBuilder.calculate();
 		assertEquals(1, auditTypes.size());

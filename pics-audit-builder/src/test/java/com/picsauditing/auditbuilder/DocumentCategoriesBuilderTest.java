@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.when;
 
 
-public class AuditCategoriesBuilderTest {
+public class DocumentCategoriesBuilderTest {
 	ContractorAccount contractor;
 	OperatorAccount operator;
 	ContractorDocument audit;
@@ -27,7 +27,7 @@ public class AuditCategoriesBuilderTest {
     DocumentCategory cat3;
 
 	@Mock
-    AuditCategoryRuleCache2 ruleCache;
+    DocumentCategoryRuleCache ruleCache;
 
 	@Before
 	public void setUp() throws Exception {
@@ -78,7 +78,7 @@ public class AuditCategoriesBuilderTest {
     @Test
     public void testCalculate_AuditCao() throws Exception {
         setupRules();
-        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(ruleCache, contractor);
         Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
         Set<DocumentCategory> categories = categoryBuilder.calculate(audit, operators);
         assertEquals(2, categories.size());
@@ -90,7 +90,7 @@ public class AuditCategoriesBuilderTest {
     @Test
     public void testIsCategoryApplicable_True() throws Exception {
         setupRules();
-        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(ruleCache, contractor);
         Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
         categoryBuilder.calculate(audit, operators);
 
@@ -100,7 +100,7 @@ public class AuditCategoriesBuilderTest {
     @Test
     public void testIsCategoryApplicable_False() throws Exception {
         setupRules();
-        AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(ruleCache, contractor);
+        DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(ruleCache, contractor);
         Collection<OperatorAccount> operators = new ArrayList<OperatorAccount>(Arrays.asList(operator) );
         categoryBuilder.calculate(audit, operators);
 
@@ -167,7 +167,7 @@ public class AuditCategoriesBuilderTest {
 		testContractor.getAudits().add(auditTypeTwoNew);
 		
 		
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
+		DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(null, testContractor);
 	
 		ContractorDocument result = Whitebox.invokeMethod(categoryBuilder, "findMostRecentAudit", 2);
 		
@@ -192,7 +192,7 @@ public class AuditCategoriesBuilderTest {
 		documentCatData.getCategory().getQuestions().add(questionTwo);
 		documentCatData.getCategory().getQuestions().add(questionThree);
 		
-		AuditCategoriesBuilder categoryBuilder = new AuditCategoriesBuilder(null, testContractor);
+		DocumentCategoriesBuilder categoryBuilder = new DocumentCategoriesBuilder(null, testContractor);
 	
 		assertEquals("pink", wrapPrivateMethodCall(categoryBuilder, audit, 1).getAnswer());
 		assertEquals("purple", wrapPrivateMethodCall(categoryBuilder, audit, 2).getAnswer());
@@ -206,7 +206,7 @@ public class AuditCategoriesBuilderTest {
 		return question;
 	}
 	
-	private DocumentData wrapPrivateMethodCall(AuditCategoriesBuilder categoryBuilder, ContractorDocument audit, int currentQuestionId) throws Exception {
+	private DocumentData wrapPrivateMethodCall(DocumentCategoriesBuilder categoryBuilder, ContractorDocument audit, int currentQuestionId) throws Exception {
 		return Whitebox.invokeMethod(categoryBuilder, "findAnswer", audit,currentQuestionId);
 	}
 
@@ -233,7 +233,7 @@ public class AuditCategoriesBuilderTest {
 		catRules.add(rule2);
 		when(ruleCache.getRules(contractor, audit.getAuditType())).thenReturn(catRules);
 
-		AuditCategoriesBuilder test = new AuditCategoriesBuilder(ruleCache, contractor);
+		DocumentCategoriesBuilder test = new DocumentCategoriesBuilder(ruleCache, contractor);
 		Set<DocumentCategory> categories;
 
 		// dependent no there

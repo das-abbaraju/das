@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public class AuditPercentCalculator2 {
+public class DocumentPercentCalculator {
 	@Autowired
-	private AuditCategoryRuleCache2 auditCategoryRuleCache;
+	private DocumentCategoryRuleCache auditCategoryRuleCache;
 	@Autowired
 	private CorruptionPerceptionIndexMap2 corruptionPerceptionIndexMap;
 	@Autowired
@@ -31,7 +31,7 @@ public class AuditPercentCalculator2 {
     protected ContractorDocumentDAO contractorAuditDAO;
 
 	protected float subScorePossible;
-	private final Logger logger = LoggerFactory.getLogger(AuditPercentCalculator2.class);
+	private final Logger logger = LoggerFactory.getLogger(DocumentPercentCalculator.class);
 
     public void updatePercentageCompleted(int auditCatDataId) {
         DocumentCatData documentCatData = contractorAuditDAO.find(DocumentCatData.class, auditCatDataId);
@@ -448,7 +448,7 @@ public class AuditPercentCalculator2 {
         if (recalcCats)
             recalcAllAuditCatDatas(conAudit);
 
-        AuditCategoriesBuilder builder = new AuditCategoriesBuilder(auditCategoryRuleCache,
+        DocumentCategoriesBuilder builder = new DocumentCategoriesBuilder(auditCategoryRuleCache,
                 conAudit.getContractorAccount());
 
         builder.calculate(conAudit);
@@ -525,7 +525,7 @@ public class AuditPercentCalculator2 {
         }
     }
 
-    private boolean doesCategoryApply(ContractorDocument conAudit, AuditCategoriesBuilder builder, ContractorDocumentOperator cao, DocumentCatData data) {
+    private boolean doesCategoryApply(ContractorDocument conAudit, DocumentCategoriesBuilder builder, ContractorDocumentOperator cao, DocumentCatData data) {
         boolean applies = false;
         if (!DocumentUtilityService.isCurrent(data.getCategory()))
             return false;

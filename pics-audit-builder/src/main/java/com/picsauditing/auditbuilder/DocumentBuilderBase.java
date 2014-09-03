@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
-public abstract class AuditBuilderBase {
+public abstract class DocumentBuilderBase {
 	protected ContractorAccount contractor;
 	protected Set<ContractorType> contractorTypes = new HashSet<>();
 	protected Set<Trade> trades = new HashSet<>();

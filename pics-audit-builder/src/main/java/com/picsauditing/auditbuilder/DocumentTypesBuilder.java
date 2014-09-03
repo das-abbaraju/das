@@ -7,8 +7,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.util.*;
 
-public class AuditTypesBuilder extends AuditBuilderBase {
-    private AuditTypeRuleCache2 ruleCache;
+public class DocumentTypesBuilder extends DocumentBuilderBase {
+    private DocumentTypeRuleCache ruleCache;
 	private List<DocumentTypeRule> rules;
 
     public class AuditTypeDetail {
@@ -16,17 +16,17 @@ public class AuditTypesBuilder extends AuditBuilderBase {
 		public Set<OperatorAccount> operators = new HashSet<>();
 	}
 
-    public AuditTypesBuilder() {
+    public DocumentTypesBuilder() {
 
     }
 
-    public AuditTypesBuilder(AuditTypeRuleCache2 ruleCache, ContractorAccount contractor) {
+    public DocumentTypesBuilder(DocumentTypeRuleCache ruleCache, ContractorAccount contractor) {
         super();
         this.ruleCache = ruleCache;
         this.setContractor(contractor);
     }
 
-    public void setRuleCache(AuditTypeRuleCache2 ruleCache) {
+    public void setRuleCache(DocumentTypeRuleCache ruleCache) {
         this.ruleCache = ruleCache;
     }
 

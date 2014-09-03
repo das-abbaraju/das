@@ -43,17 +43,17 @@ public class DocumentServiceTest extends PicsTest {
     @Mock
     private ContractorAccount contractor;
     @Mock
-    private AuditTypeRuleCache2 typeRuleCache;
+    private DocumentTypeRuleCache typeRuleCache;
     @Mock
-    private AuditCategoryRuleCache2 categoryRuleCache;
+    private DocumentCategoryRuleCache categoryRuleCache;
 
     List<Integer> operatorIds = new ArrayList<>();
     List<ContractorOperator> conOps = new ArrayList<>();
     List<DocumentTypeRule> typeRules = new ArrayList<>();
     List<DocumentCategoryRule> categoryRules = new ArrayList<>();
 
-    private AuditTypesBuilder auditTypesBuilder;
-    private AuditCategoriesBuilder auditCategoriesBuilder;
+    private DocumentTypesBuilder documentTypesBuilder;
+    private DocumentCategoriesBuilder documentCategoriesBuilder;
 
     @Before
     public void setUp() throws Exception {
@@ -61,15 +61,15 @@ public class DocumentServiceTest extends PicsTest {
 
         service = new DocumentService();
 
-        auditTypesBuilder = new AuditTypesBuilder();
-        auditCategoriesBuilder = new AuditCategoriesBuilder();
+        documentTypesBuilder = new DocumentTypesBuilder();
+        documentCategoriesBuilder = new DocumentCategoriesBuilder();
 
         PicsTestUtil.forceSetPrivateField(service, "auditDataDAO", auditDataDAO);
         PicsTestUtil.forceSetPrivateField(service, "contractorTagDAO", contractorTagDAO);
         PicsTestUtil.forceSetPrivateField(service, "typeRuleCache", typeRuleCache);
         PicsTestUtil.forceSetPrivateField(service, "categoryRuleCache", categoryRuleCache);
-        PicsTestUtil.forceSetPrivateField(service, "auditTypesBuilder", auditTypesBuilder);
-        PicsTestUtil.forceSetPrivateField(service, "auditCategoriesBuilder", auditCategoriesBuilder);
+        PicsTestUtil.forceSetPrivateField(service, "documentTypesBuilder", documentTypesBuilder);
+        PicsTestUtil.forceSetPrivateField(service, "documentCategoriesBuilder", documentCategoriesBuilder);
 
         initialize();
     }

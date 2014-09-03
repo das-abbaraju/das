@@ -15,13 +15,13 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-public class AuditTypesBuilderTest {
+public class DocumentTypesBuilderTest {
 
-	private AuditTypesBuilder auditTypesBuilder;
+	private DocumentTypesBuilder documentTypesBuilder;
 	List<DocumentTypeRule> documentTypeRules = new ArrayList<>();
 
 	@Mock
-    AuditTypeRuleCache2 auditTypeRuleCache;
+    DocumentTypeRuleCache auditTypeRuleCache;
 	@Mock
     ContractorAccount contractor;
 	@Mock
@@ -33,15 +33,15 @@ public class AuditTypesBuilderTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		auditTypesBuilder = new AuditTypesBuilder();
-        auditTypesBuilder.setRuleCache(auditTypeRuleCache);
-        auditTypesBuilder.setContractor(contractor);
+		documentTypesBuilder = new DocumentTypesBuilder();
+        documentTypesBuilder.setRuleCache(auditTypeRuleCache);
+        documentTypesBuilder.setContractor(contractor);
 
-		Whitebox.setInternalState(auditTypesBuilder, "auditDataDAO", auditDataDAO);
+		Whitebox.setInternalState(documentTypesBuilder, "auditDataDAO", auditDataDAO);
 
 		Set<ContractorType> contractorTypes = new HashSet<>();
 		contractorTypes.add(ContractorType.Onsite);
-		Whitebox.setInternalState(auditTypesBuilder, "contractorTypes", contractorTypes);
+		Whitebox.setInternalState(documentTypesBuilder, "contractorTypes", contractorTypes);
 
 		when(auditTypeRuleCache.getRules(contractor)).thenReturn(documentTypeRules);
 
@@ -68,7 +68,7 @@ public class AuditTypesBuilderTest {
         rules.add(otherTypeRule);
 
         Map<Integer, List<DocumentData>> map;
-        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        map = Whitebox.invokeMethod(documentTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(0, map.get(otherQuestion.getId()).size());
     }
 
@@ -106,7 +106,7 @@ public class AuditTypesBuilderTest {
         rules.add(otherTypeRule);
 
         Map<Integer, List<DocumentData>> map;
-        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        map = Whitebox.invokeMethod(documentTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(0, map.get(otherQuestion.getId()).size());
     }
 
@@ -144,7 +144,7 @@ public class AuditTypesBuilderTest {
         rules.add(otherTypeRule);
 
         Map<Integer, List<DocumentData>> map;
-        map = Whitebox.invokeMethod(auditTypesBuilder, "buildQuestionAnswersMap", rules);
+        map = Whitebox.invokeMethod(documentTypesBuilder, "buildQuestionAnswersMap", rules);
         assertEquals(1, map.get(otherQuestion.getId()).size());
     }
 
@@ -167,7 +167,7 @@ public class AuditTypesBuilderTest {
 
         documentTypeRules.add(documentTypeRule);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        Set<DocumentTypesBuilder.AuditTypeDetail> auditTypeDetails = documentTypesBuilder.calculate();
         assertEquals(0, auditTypeDetails.size());
     }
 
@@ -176,10 +176,10 @@ public class AuditTypesBuilderTest {
 		DocumentTypeRule documentTypeRule = createAuditTypeRuleForTypeAndCategory(AuditType.WELCOME, 101, "Welcome Category 1");
 		documentTypeRules.add(documentTypeRule);
 
-		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+		Set<DocumentTypesBuilder.AuditTypeDetail> auditTypeDetails = documentTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
-		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+		DocumentTypesBuilder.AuditTypeDetail auditTypeDetail = (DocumentTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
 		assertEquals(auditTypeDetail.rule, documentTypeRule);
 		assertEquals(1, auditTypeDetail.operators.size());
 		assertEquals(auditTypeDetail.operators.toArray()[0], operator);
@@ -204,10 +204,10 @@ public class AuditTypesBuilderTest {
 		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 		when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
 
-		Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+		Set<DocumentTypesBuilder.AuditTypeDetail> auditTypeDetails = documentTypesBuilder.calculate();
 
 		assertEquals(1, auditTypeDetails.size());
-		AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+		DocumentTypesBuilder.AuditTypeDetail auditTypeDetail = (DocumentTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
 		assertEquals(auditTypeDetail.rule, documentTypeRule);
 	}
 
@@ -236,15 +236,15 @@ public class AuditTypesBuilderTest {
         when(auditDataDAO.findAnswersByContractorAndQuestion(contractor, question)).thenReturn(answers);
         when(auditDataDAO.findAnswerToQuestion(0, 20)).thenReturn(visibleAnswer);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> auditTypeDetails = auditTypesBuilder.calculate();
+        Set<DocumentTypesBuilder.AuditTypeDetail> auditTypeDetails = documentTypesBuilder.calculate();
 
         assertEquals(1, auditTypeDetails.size());
-        AuditTypesBuilder.AuditTypeDetail auditTypeDetail = (AuditTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
+        DocumentTypesBuilder.AuditTypeDetail auditTypeDetail = (DocumentTypesBuilder.AuditTypeDetail) auditTypeDetails.toArray()[0];
         assertEquals(auditTypeDetail.rule, documentTypeRule);
 
         // make it invisible
         visibleAnswer.setAnswer("No");
-        auditTypeDetails = auditTypesBuilder.calculate();
+        auditTypeDetails = documentTypesBuilder.calculate();
         assertEquals(0, auditTypeDetails.size());
 
     }
@@ -266,7 +266,7 @@ public class AuditTypesBuilderTest {
 
 		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
+		DocumentData documentData = documentTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
 		assertEquals("1", documentData.getAnswer());
 		assertEquals(currentYearMinus(4), documentData.getAudit().getAuditFor());
@@ -289,7 +289,7 @@ public class AuditTypesBuilderTest {
 
 		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
+		DocumentData documentData = documentTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
 		assertEquals("3", documentData.getAnswer());
 		assertEquals(currentYearMinus(2), documentData.getAudit().getAuditFor());
@@ -312,7 +312,7 @@ public class AuditTypesBuilderTest {
 
 		List<DocumentData> answers = buildAnswersForQuestion(question, answerForAuditYearArray);
 
-		DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
+		DocumentData documentData = documentTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
 		assertEquals(null, documentData);
 	}
@@ -326,7 +326,7 @@ public class AuditTypesBuilderTest {
 
         List<DocumentData> answers = new ArrayList<>();
 
-        DocumentData documentData = auditTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
+        DocumentData documentData = documentTypesBuilder.chooseAnswerToEvaluate(documentTypeRule, answers);
 
         assertEquals(null, documentData);
     }

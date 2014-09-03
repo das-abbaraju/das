@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AuditRuleCache<R extends DocumentRule> {
+public abstract class DocumentRuleCache<R extends DocumentRule> {
     @Autowired
     protected DocumentDecisionTableDAO auditDecisionTableDAO;
 

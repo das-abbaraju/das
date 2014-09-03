@@ -1,6 +1,6 @@
 package com.picsauditing.auditbuilder;
 
-import com.picsauditing.auditbuilder.AuditTypesBuilder.AuditTypeDetail;
+import com.picsauditing.auditbuilder.DocumentTypesBuilder.AuditTypeDetail;
 import com.picsauditing.auditbuilder.dao.*;
 import com.picsauditing.auditbuilder.entities.*;
 import com.picsauditing.auditbuilder.service.AccountService;
@@ -34,17 +34,17 @@ public class AuditBuilder2 {
 	@Autowired
 	private DocumentDataDAO auditDataDAO;
 	@Autowired
-	private AuditTypeRuleCache2 typeRuleCache;
+	private DocumentTypeRuleCache typeRuleCache;
 	@Autowired
-	private AuditCategoryRuleCache2 categoryRuleCache;
+	private DocumentCategoryRuleCache categoryRuleCache;
 	@Autowired
-	private AuditPercentCalculator2 auditPercentCalculator;
+	private DocumentPercentCalculator auditPercentCalculator;
     @Autowired
     DocumentPeriodService auditPeriodService;
     @Autowired
     private DocumentTypeDAO auditTypeDao;
     @Autowired
-    private AuditTypesBuilder typesBuilder;
+    private DocumentTypesBuilder typesBuilder;
 
 	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder2.class);
 
@@ -124,7 +124,7 @@ public class AuditBuilder2 {
 
 		removeUnneededAudits(contractor, requiredAuditTypes);
 
-		AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache, contractor);
+		DocumentCategoriesBuilder categoriesBuilder = new DocumentCategoriesBuilder(categoryRuleCache, contractor);
         categoriesBuilder.setContractorTagDAO(contractorTagDAO);
         categoriesBuilder.setAuditDataDAO(auditDataDAO);
 
@@ -311,7 +311,7 @@ public class AuditBuilder2 {
 
     public void recalculateCategories(Integer auditID) {
         ContractorDocument conAudit = conAuditDao.find(ContractorDocument.class, auditID);
-        AuditCategoriesBuilder categoriesBuilder = new AuditCategoriesBuilder(categoryRuleCache,
+        DocumentCategoriesBuilder categoriesBuilder = new DocumentCategoriesBuilder(categoryRuleCache,
                 conAudit.getContractorAccount());
 
         Set<OperatorAccount> operators = new HashSet<OperatorAccount>();

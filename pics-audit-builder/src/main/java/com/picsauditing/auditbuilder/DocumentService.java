@@ -11,15 +11,15 @@ public class DocumentService {
     @Autowired
     private DocumentDataDAO auditDataDAO;
     @Autowired
-    private AuditTypeRuleCache2 typeRuleCache;
+    private DocumentTypeRuleCache typeRuleCache;
     @Autowired
-    private AuditCategoryRuleCache2 categoryRuleCache;
+    private DocumentCategoryRuleCache categoryRuleCache;
     @Autowired
     private ContractorTagDAO contractorTagDAO;
     @Autowired
-    private AuditTypesBuilder auditTypesBuilder;
+    private DocumentTypesBuilder documentTypesBuilder;
     @Autowired
-    private AuditCategoriesBuilder auditCategoriesBuilder;
+    private DocumentCategoriesBuilder documentCategoriesBuilder;
 
      public List<Integer> getCategoryIds(int auditId, List<Integer> operatorIds) {
          ContractorDocument audit = auditDataDAO.find(ContractorDocument.class, auditId);
@@ -32,7 +32,7 @@ public class DocumentService {
     private List<Integer> getCategoryIds(ContractorDocument audit, List<OperatorAccount> operators) {
         List<Integer> categoryIds = new ArrayList<>();
 
-        AuditCategoriesBuilder builder = initializeCategoriesBuilder(audit.getContractorAccount());
+        DocumentCategoriesBuilder builder = initializeCategoriesBuilder(audit.getContractorAccount());
         Set<DocumentCategory> categories = builder.calculate(audit, operators);
         for (DocumentCategory category:categories) {
             categoryIds.add(category.getId());
@@ -42,7 +42,7 @@ public class DocumentService {
     }
 
     public List<Integer> getDocumentRuleIds(int contractorId) {
-        AuditTypesBuilder builder = initializeTypesBuilder(contractorId);
+        DocumentTypesBuilder builder = initializeTypesBuilder(contractorId);
         builder.calculate();
         List<DocumentTypeRule> rules = builder.getRules();
 
@@ -70,10 +70,10 @@ public class DocumentService {
     public Map<Integer, List<Integer>> getTypeDetailIds(Integer contractorId) {
         Map<Integer, List<Integer>> documentDetailIds = new HashMap<>();
 
-        AuditTypesBuilder auditTypesBuilder = initializeTypesBuilder(contractorId);
+        DocumentTypesBuilder documentTypesBuilder = initializeTypesBuilder(contractorId);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = auditTypesBuilder.calculate();
-        for (AuditTypesBuilder.AuditTypeDetail detail:requiredAuditTypeDetails) {
+        Set<DocumentTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = documentTypesBuilder.calculate();
+        for (DocumentTypesBuilder.AuditTypeDetail detail:requiredAuditTypeDetails) {
             List<Integer> operatorIds = new ArrayList<>();
             for (OperatorAccount operator:detail.operators) {
                 operatorIds.add(operator.getId());
@@ -95,7 +95,7 @@ public class DocumentService {
 
         AuditType auditType = auditDataDAO.find(AuditType.class, auditTypeId);
 
-        AuditCategoriesBuilder builder = initializeCategoriesBuilder(contractor);
+        DocumentCategoriesBuilder builder = initializeCategoriesBuilder(contractor);
 
         ContractorDocument conAudit = new ContractorDocument();
         conAudit.setContractorAccount(contractor);
@@ -112,15 +112,15 @@ public class DocumentService {
     public Map<Integer, List<Integer>> getSimulatorTypeDetailIds(ContractorAccount contractor, List<Integer> operatorIds) {
         attachOperators(contractor, operatorIds);
 
-        AuditTypesBuilder auditTypesBuilder = initializeTypesBuilder(contractor);
+        DocumentTypesBuilder documentTypesBuilder = initializeTypesBuilder(contractor);
 
-        Set<AuditTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = auditTypesBuilder.calculate();
+        Set<DocumentTypesBuilder.AuditTypeDetail> requiredAuditTypeDetails = documentTypesBuilder.calculate();
 
         Map<Integer, List<Integer>> documents = new HashMap<>();
 
-        for (AuditTypesBuilder.AuditTypeDetail detail : requiredAuditTypeDetails) {
+        for (DocumentTypesBuilder.AuditTypeDetail detail : requiredAuditTypeDetails) {
             AuditType auditType = detail.rule.getAuditType();
-            List<Integer> ruleIds = collectContractorSimulatorDocumentIds(auditTypesBuilder, auditType);
+            List<Integer> ruleIds = collectContractorSimulatorDocumentIds(documentTypesBuilder, auditType);
             documents.put(auditType.getId(), ruleIds);
         }
 
@@ -139,8 +139,8 @@ public class DocumentService {
             operators.add(caop.getOperator());
         }
 
-        auditCategoriesBuilder.calculate(audit, operators);
-        return auditCategoriesBuilder.isCategoryApplicable(category, cao);
+        documentCategoriesBuilder.calculate(audit, operators);
+        return documentCategoriesBuilder.isCategoryApplicable(category, cao);
    }
 
     public void clearCache() {
@@ -163,10 +163,10 @@ public class DocumentService {
         return operators;
     }
 
-    private List<Integer> collectContractorSimulatorDocumentIds(AuditTypesBuilder auditTypesBuilder, AuditType auditType) {
+    private List<Integer> collectContractorSimulatorDocumentIds(DocumentTypesBuilder documentTypesBuilder, AuditType auditType) {
         List<Integer> auditTypeIds = new ArrayList<>();
         boolean includeAlways = false;
-        for (DocumentTypeRule rule : auditTypesBuilder.getRules()) {
+        for (DocumentTypeRule rule : documentTypesBuilder.getRules()) {
             if (rule.getAuditType() == null 
                     || rule.getAuditType().equals(auditType)) {
                 // We have a matching rule
@@ -189,25 +189,25 @@ public class DocumentService {
     return auditTypeIds;
     }
 
-    private AuditTypesBuilder initializeTypesBuilder(ContractorAccount contractor) {
-        auditTypesBuilder.setRuleCache(typeRuleCache);
-        auditTypesBuilder.setContractor(contractor);
+    private DocumentTypesBuilder initializeTypesBuilder(ContractorAccount contractor) {
+        documentTypesBuilder.setRuleCache(typeRuleCache);
+        documentTypesBuilder.setContractor(contractor);
 
-        return auditTypesBuilder;
+        return documentTypesBuilder;
     }
 
-    private AuditTypesBuilder initializeTypesBuilder(int contractorId) {
+    private DocumentTypesBuilder initializeTypesBuilder(int contractorId) {
         ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
        return initializeTypesBuilder(contractor);
     }
 
-    private AuditCategoriesBuilder initializeCategoriesBuilder(ContractorAccount contractor) {
-        auditCategoriesBuilder.setRuleCache(categoryRuleCache);
-        auditCategoriesBuilder.setContractor(contractor);
-        return auditCategoriesBuilder;
+    private DocumentCategoriesBuilder initializeCategoriesBuilder(ContractorAccount contractor) {
+        documentCategoriesBuilder.setRuleCache(categoryRuleCache);
+        documentCategoriesBuilder.setContractor(contractor);
+        return documentCategoriesBuilder;
     }
 
-    public AuditCategoriesBuilder initializeCategoriesBuilder(int contractorId) {
+    public DocumentCategoriesBuilder initializeCategoriesBuilder(int contractorId) {
         ContractorAccount contractor = auditDataDAO.find(ContractorAccount.class, contractorId);
         return initializeCategoriesBuilder(contractor);
     }

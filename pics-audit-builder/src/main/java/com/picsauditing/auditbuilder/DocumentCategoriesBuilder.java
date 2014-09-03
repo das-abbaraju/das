@@ -5,8 +5,8 @@ import com.picsauditing.auditbuilder.service.DocumentUtilityService;
 
 import java.util.*;
 
-public class AuditCategoriesBuilder extends AuditBuilderBase {
-	private AuditCategoryRuleCache2 ruleCache;
+public class DocumentCategoriesBuilder extends DocumentBuilderBase {
+	private DocumentCategoryRuleCache ruleCache;
 
 	private Map<OperatorAccount, DocumentCategoryRule> operators = new HashMap<>();
 	private Map<OperatorAccount, Set<DocumentCategory>> categoriesPerOperator = new HashMap<>();
@@ -14,11 +14,11 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	private AuditType auditType = null;
 	private OperatorAccount auditFor = null;
 
-    public AuditCategoriesBuilder() {
+    public DocumentCategoriesBuilder() {
 
     }
 
-	public AuditCategoriesBuilder(AuditCategoryRuleCache2 auditCategoryRuleCache, ContractorAccount contractor) {
+	public DocumentCategoriesBuilder(DocumentCategoryRuleCache auditCategoryRuleCache, ContractorAccount contractor) {
 		setContractor(contractor);
 		this.ruleCache = auditCategoryRuleCache;
 	}
@@ -243,18 +243,18 @@ public class AuditCategoriesBuilder extends AuditBuilderBase {
 	public boolean isCategoryApplicable(DocumentCategory category, ContractorDocumentOperator cao) {
 		for (ContractorDocumentOperatorPermission caop : cao.getCaoPermissions()) {
 			Set<DocumentCategory> operatorCategories = categoriesPerOperator.get(caop.getOperator());
-			if (operatorCategories != null && operatorCategories.contains(category) && ContractorAuditCategories.isCategoryEffective(category, cao.getAudit().getEffectiveDate()))
+			if (operatorCategories != null && operatorCategories.contains(category) && ContractorDocumentCategories.isCategoryEffective(category, cao.getAudit().getEffectiveDate()))
 				return true;
 		}
 
 		return false;
 	}
 
-    public AuditCategoryRuleCache2 getRuleCache() {
+    public DocumentCategoryRuleCache getRuleCache() {
         return ruleCache;
     }
 
-    public void setRuleCache(AuditCategoryRuleCache2 ruleCache) {
+    public void setRuleCache(DocumentCategoryRuleCache ruleCache) {
         this.ruleCache = ruleCache;
     }
 }
