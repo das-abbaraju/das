@@ -17,7 +17,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
-public class AuditBuilder2 {
+public class DocumentBuilder {
 
 	@Autowired
 	private DocumentCategoryMatrixDAO auditCatMatrixDAO;
@@ -46,7 +46,7 @@ public class AuditBuilder2 {
     @Autowired
     private DocumentTypesBuilder typesBuilder;
 
-	private static final Logger logger = LoggerFactory.getLogger(AuditBuilder2.class);
+	private static final Logger logger = LoggerFactory.getLogger(DocumentBuilder.class);
 
 	private User systemUser = new User(User.SYSTEM);
     private Date today;

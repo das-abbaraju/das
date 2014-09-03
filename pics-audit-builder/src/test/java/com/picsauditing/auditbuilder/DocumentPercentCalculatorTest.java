@@ -847,7 +847,7 @@ public class DocumentPercentCalculatorTest {
 
         setupMocksForZeroQuestionsRequired();
         when(contractorDocument.getOperators()).thenReturn(caos);
-        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(mockAuditType.getClassType()).thenReturn(DocumentTypeClass.Policy);
         when(contractorDocument.getCategories()).thenReturn(documentCatDatas);
         when(catData.getCategory()).thenReturn(category);
 
@@ -866,7 +866,7 @@ public class DocumentPercentCalculatorTest {
 
         setupMocksForZeroQuestionsRequired();
         when(contractorDocument.getOperators()).thenReturn(caos);
-        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Audit);
+        when(mockAuditType.getClassType()).thenReturn(DocumentTypeClass.Audit);
         when(contractorDocument.getCategories()).thenReturn(documentCatDatas);
         when(catData.getCategory()).thenReturn(category);
 
@@ -900,7 +900,7 @@ public class DocumentPercentCalculatorTest {
         when(contractorDocument.getContractorAccount()).thenReturn(contractor);
         when(contractorDocument.getOperators()).thenReturn(caos);
         when(contractorDocument.getAuditType()).thenReturn(mockAuditType);
-        when(mockAuditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(mockAuditType.getClassType()).thenReturn(DocumentTypeClass.Policy);
         when(contractorDocumentOperator.getStatus()).thenReturn(DocumentStatus.Submitted);
         when(contractorDocumentOperator.getPercentComplete()).thenReturn(100);
         when(contractorDocument.getCategories()).thenReturn(documentCatDatas);

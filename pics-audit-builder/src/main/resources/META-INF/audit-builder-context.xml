@@ -10,7 +10,7 @@
     http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
     <bean id="DocumentService" class="com.picsauditing.auditbuilder.DocumentService" scope="prototype"/>
-    <bean id="AuditBuilder2" class="com.picsauditing.auditbuilder.AuditBuilder2" scope="prototype"/>
+    <bean id="AuditBuilder2" class="com.picsauditing.auditbuilder.DocumentBuilder" scope="prototype"/>
     <bean id="AuditCategoryRuleCache2" class="com.picsauditing.auditbuilder.DocumentCategoryRuleCache" scope="prototype"/>
     <bean id="AuditPercentCalculator2" class="com.picsauditing.auditbuilder.DocumentPercentCalculator" scope="prototype"/>
     <bean id="AuditTypeRuleCache2" class="com.picsauditing.auditbuilder.DocumentTypeRuleCache" scope="prototype"/>

@@ -564,7 +564,7 @@ public class DocumentPercentCalculator {
     }
 
     private boolean isNotSubmittedPolicySoAutoSubmitDoesNotRecalculatePercentComplete(ContractorDocument conAudit, ContractorDocumentOperator cao) {
-        if (conAudit.getAuditType().getClassType() != AuditTypeClass.Policy) {
+        if (conAudit.getAuditType().getClassType() != DocumentTypeClass.Policy) {
             return true;
         }
 

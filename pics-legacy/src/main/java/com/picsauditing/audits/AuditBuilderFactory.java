@@ -1,6 +1,6 @@
 package com.picsauditing.audits;
 
-import com.picsauditing.auditbuilder.AuditBuilder2;
+import com.picsauditing.auditbuilder.DocumentBuilder;
 import com.picsauditing.auditbuilder.DocumentPercentCalculator;
 import com.picsauditing.auditbuilder.DocumentService;
 import com.picsauditing.dao.BasicDAO;
@@ -19,7 +19,7 @@ public class AuditBuilderFactory {
     @Autowired
     AuditPercentCalculator auditPercentCalculator;
     @Autowired
-    AuditBuilder2 newAuditBuilder;
+    DocumentBuilder newAuditBuilder;
     @Autowired
     DocumentPercentCalculator newAuditPercentCalculator;
     @Autowired

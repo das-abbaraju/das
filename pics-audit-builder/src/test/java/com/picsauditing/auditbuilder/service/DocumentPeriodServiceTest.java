@@ -14,7 +14,7 @@ import java.util.List;
 
 import static junit.framework.Assert.*;
 
-public class AuditPeriodServiceTest extends PicsTest {
+public class DocumentPeriodServiceTest extends PicsTest {
     private DocumentPeriodService test;
 
     @Before

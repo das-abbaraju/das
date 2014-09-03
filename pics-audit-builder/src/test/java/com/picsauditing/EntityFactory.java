@@ -189,7 +189,7 @@ public class EntityFactory {
 	public static AuditType makeAuditType(int auditTypeID) {
 		AuditType auditType = new AuditType();
 		auditType.setId(auditTypeID);
-		auditType.setClassType(AuditTypeClass.Audit);
+		auditType.setClassType(DocumentTypeClass.Audit);
 		auditType.setMonthsToExpire(12);
         auditType.setPeriod(DocumentTypePeriod.None);
 		Workflow workFlow = makeWorkflowNoSubmitted();

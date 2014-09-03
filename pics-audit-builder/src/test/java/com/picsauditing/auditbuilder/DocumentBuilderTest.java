@@ -25,8 +25,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
-public class AuditBuilderTest extends PicsTest {
-	AuditBuilder2 auditBuilder;
+public class DocumentBuilderTest extends PicsTest {
+	DocumentBuilder auditBuilder;
 
 	DocumentTypeRuleCache typeRuleCache = new DocumentTypeRuleCache();
 	List<DocumentTypeRule> typeRules = new ArrayList<>();
@@ -66,7 +66,7 @@ public class AuditBuilderTest extends PicsTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		auditBuilder = new AuditBuilder2();
+		auditBuilder = new DocumentBuilder();
 		autowireEMInjectedDAOs(auditBuilder);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "typeRuleCache", typeRuleCache);
 		PicsTestUtil.forceSetPrivateField(auditBuilder, "categoryRuleCache", catRuleCache);
@@ -274,7 +274,7 @@ public class AuditBuilderTest extends PicsTest {
     public void testAuditBuilderDate_NoDateSet() {
         Calendar cal = Calendar.getInstance();
         Calendar compareCal = Calendar.getInstance();
-        AuditBuilder2 builder = new AuditBuilder2();
+        DocumentBuilder builder = new DocumentBuilder();
         Date date = builder.getToday();
         compareCal.setTime(date);
         assertEquals(cal.get(Calendar.YEAR), compareCal.get(Calendar.YEAR));
@@ -287,7 +287,7 @@ public class AuditBuilderTest extends PicsTest {
         cal.add(Calendar.YEAR, -1);
         cal.add(Calendar.MONTH, -1);
         Calendar compareCal = Calendar.getInstance();
-        AuditBuilder2 builder = new AuditBuilder2();
+        DocumentBuilder builder = new DocumentBuilder();
         builder.setToday(cal.getTime());
         Date date = builder.getToday();
         compareCal.setTime(date);
@@ -564,7 +564,7 @@ public class AuditBuilderTest extends PicsTest {
 		ContractorDocument conAudit = setupTestAudit();
 		conAudit.getAuditType().setCanOperatorView(true);
 		conAudit.getAuditType().setId(AuditType.INTEGRITYMANAGEMENT);
-		conAudit.getAuditType().setClassType(AuditTypeClass.PQF);
+		conAudit.getAuditType().setClassType(DocumentTypeClass.PQF);
 
 		ContractorDocumentOperator cao1 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
 		ContractorDocumentOperator cao2 = EntityFactory.addCao(conAudit, EntityFactory.makeOperator());
@@ -835,7 +835,7 @@ public class AuditBuilderTest extends PicsTest {
     public void testIsAuditThatCanAdjustStatus() throws Exception {
         AuditType auditType = mock(AuditType.class);
         when(audit.getAuditType()).thenReturn(auditType);
-        when(auditType.getClassType()).thenReturn(AuditTypeClass.Policy);
+        when(auditType.getClassType()).thenReturn(DocumentTypeClass.Policy);
         boolean canAdjust = Whitebox.invokeMethod(auditBuilder, "isAuditThatCanAdjustStatus", audit);
         assertFalse(canAdjust);
     }

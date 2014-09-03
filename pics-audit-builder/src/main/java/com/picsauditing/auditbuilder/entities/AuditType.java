@@ -25,7 +25,7 @@ public class AuditType extends BaseTable implements java.io.Serializable {
 	public static final int IEC_AUDIT = 313;
 	public static final int SSIP = 514;
 
-	protected AuditTypeClass classType = AuditTypeClass.Audit;
+	protected DocumentTypeClass classType = DocumentTypeClass.Audit;
     protected int displayOrder = 100;
 	protected boolean hasMultiple;
 	protected boolean canOperatorView;
@@ -49,11 +49,11 @@ public class AuditType extends BaseTable implements java.io.Serializable {
         143, 170, 261, 168, 148, 147, 169, 166, 167, 144}));
 
     @Enumerated(EnumType.STRING)
-	public AuditTypeClass getClassType() {
+	public DocumentTypeClass getClassType() {
 		return classType;
 	}
 
-	public void setClassType(AuditTypeClass classType) {
+	public void setClassType(DocumentTypeClass classType) {
 		this.classType = classType;
 	}
 

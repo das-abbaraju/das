@@ -180,7 +180,7 @@ public class DocumentUtilityService {
         else
             daysToExpiration = DateBean.getDateDifference(contractorDocument.getExpiresDate());
 
-        if (contractorDocument.getAuditType().getClassType() == AuditTypeClass.Policy) {
+        if (contractorDocument.getAuditType().getClassType() == DocumentTypeClass.Policy) {
             return daysToExpiration <= 15;
         } else if (contractorDocument.getAuditType().getId() == AuditType.COR) {
             return daysToExpiration <= 180;

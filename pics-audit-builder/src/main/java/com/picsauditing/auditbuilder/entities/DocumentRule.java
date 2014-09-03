@@ -185,6 +185,7 @@ public class DocumentRule extends BaseDecisionTreeRule {
 	}
 
 	@Enumerated(EnumType.STRING)
+    @Column(name = "dependentAuditStatus", nullable = false)
 	public DocumentStatus getDependentDocumentStatus() {
 		return dependentDocumentStatus;
 	}
