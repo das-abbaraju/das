@@ -6,6 +6,7 @@ import com.picsauditing.audits.AuditBuilderFactory;
 import com.picsauditing.audits.AuditQuestionSuggestion;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.dao.AuditTypeDAO;
+import com.picsauditing.dao.CountryDAO;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.menu.MenuComponent;
@@ -31,6 +32,8 @@ public class ContractorAuditController extends AuditActionSupport {
 	private InvoiceFeeDAO invoiceFeeDAO;
 	@Autowired
 	private AuditTypeDAO auditTypeDAO;
+    @Autowired
+    private CountryDAO countryDAO;
 	@Autowired
 	protected AuditDecisionTableDAO auditDecisionTableDAO;
     @Autowired
@@ -190,7 +193,25 @@ public class ContractorAuditController extends AuditActionSupport {
 				List<AuditData> requiredAnswers = new ArrayList<AuditData>();
 				for (AuditData answer : conAudit.getData()) {
 					if (questionIDs.contains(answer.getQuestion().getId())) {
-						requiredAnswers.add(answer);
+                        if(answer.getQuestion().getQuestionType().toString().equalsIgnoreCase("Tagit"))
+                        {
+                            if(answer.getAnswer() != null && answer.getAnswer().length() > 0) {
+                                String display = "";
+                                String[] ans = answer.getAnswer().split(",");
+                                for(String s : ans) {
+                                    Country country = null;
+                                    try {
+                                        country = countryDAO.findByISO(s.trim());
+                                    }catch (Exception ex) {
+                                        display=",";
+                                        break;
+                                    }
+                                    display += ", " + country.getEnglish();
+                                }
+                                answer.setAnswer(display.substring(1));
+                            }
+                        }
+                        requiredAnswers.add(answer);
 					}
 				}
 				answerMap = new AnswerMap(requiredAnswers);
