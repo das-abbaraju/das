@@ -33,8 +33,8 @@ PICS.define('contractor.TradeTaxonomyController', {
 
                 if ($button.data('affects-safety-sensitive-status')) {
                     PICS.modal(getModalConfig());
-                } else {
-                    requestAddTrade($button);
+                } else if (disableButtonIfNecessary($button)) {
+                    requestAddTrade();
                 }
             }
         }
@@ -42,9 +42,11 @@ PICS.define('contractor.TradeTaxonomyController', {
         function onSafetySensitiveModalConfirmClick(event) {
             var $modal = $(event.target).closest('.modal');
 
-            requestAddTrade($modal.find('#addButton'));
+			if (disableButtonIfNecessary($modal.find('#addButton'))) {
+				requestAddTrade();
 
-            $modal.modal('hide');
+				$modal.modal('hide');
+			}
         }
 
         function getModalConfig() {
@@ -74,16 +76,23 @@ PICS.define('contractor.TradeTaxonomyController', {
             ].join('');
         }
 
-        function requestAddTrade($button) {
-            if (typeof $button.attr("disabled") != "undefined") return;// prevent double click on 'add' button
-	        $button.attr("disabled", "disabled");
-
+        function requestAddTrade() {
             PICS.ajax({
                 url: 'ContractorTrades!saveTradeAjax.action',
                 data: $('#trade-form').serializeArray(),
                 success: onTradeFormAjaxSubmitSuccess
             });
         }
+
+		// used to prevent double click on 'add' button
+		function disableButtonIfNecessary($button) {
+			if (typeof $button.attr("disabled") != "undefined") {
+				return false;
+			} else {
+				$button.attr("disabled", "disabled");
+				return true;
+			}
+		}
 
         function onTradeFormAjaxSubmitSuccess(data) {
             $('#trade-view').html(data);
