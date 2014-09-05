@@ -3,7 +3,11 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
-import com.picsauditing.companyfinder.model.*;
+import com.picsauditing.companyfinder.model.CompanyFinderFilter;
+import com.picsauditing.companyfinder.model.ContractorLocationInfo;
+import com.picsauditing.companyfinder.model.SafetySensitive;
+import com.picsauditing.companyfinder.model.ViewPort;
+import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
@@ -30,6 +34,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLat;
     private double swLong;
     private Trade trade;
+    private int safetySensitive;
     private CompanyFinderFilter filter;
 
 
@@ -61,7 +66,7 @@ public class CompanyFinderController extends PicsActionSupport {
                                 .build())
                         .build())
                 .trade(trade)
-                .safetySensitive(SafetySensitive.IGNORE)
+                .safetySensitive(SafetySensitive.fromInteger(getSafetySensitive()))
                 .build();
 
         HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
@@ -148,10 +153,10 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public int getSafetySensitive() {
-        return filter.getSafetySensitive().getSafetySensitiveValue();
+        return safetySensitive;
     }
 
     public void setSafetySensitive(int safetySensitive) {
-        this.filter.setSafetySensitive(SafetySensitive.fromInteger(safetySensitive));
+        this.safetySensitive = safetySensitive;
     }
 }
