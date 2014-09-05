@@ -1,28 +1,44 @@
 package com.picsauditing.companyfinder.service;
 
-import com.picsauditing.companyfinder.model.*;
-import com.picsauditing.dao.companyfinder.ContractorLocationDAO;
+import com.picsauditing.PICS.FlagCalculatorFactory;
+import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
+import com.picsauditing.companyfinder.model.CompanyFinderFilter;
+import com.picsauditing.companyfinder.model.ContractorLocation;
+import com.picsauditing.companyfinder.model.ContractorLocationInfo;
+import com.picsauditing.companyfinder.model.MapInfo;
+import com.picsauditing.companyfinder.model.ViewportLocation;
+import com.picsauditing.dao.OperatorAccountDAO;
+import com.picsauditing.flagcalculator.FlagCalculator;
 import com.picsauditing.integration.google.Geocode;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.ContractorOperator;
 import com.picsauditing.jpa.entities.ContractorTrade;
-import com.picsauditing.jpa.entities.Trade;
+import com.picsauditing.jpa.entities.FlagColor;
+import com.picsauditing.jpa.entities.OperatorAccount;
 import com.picsauditing.model.general.LatLong;
 import com.picsauditing.service.account.AddressService;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class CompanyFinderService {
-
-    public static final int IGNORE_SAFETY_SENSITIVE = -1;
-    public static final int FILTER_BY_SAFETY_SENSITIVE = 1;
     @Autowired
     private ContractorLocationDAO contractorLocationDAO;
     @Autowired
     private AddressService addressService;
+    @Autowired
+    private OperatorAccountDAO operatorAccountDAO;
+    @Autowired
+    private FlagCalculatorFactory flagCalculatorFactory;
+
+    private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
 
     public ViewportLocation buildViewportLocationFromAddressUnsecure(String address) {
         ViewportLocation viewportLocation = null;
@@ -38,123 +54,44 @@ public class CompanyFinderService {
         return viewportLocation;
     }
 
-/*
-    private List<ContractorLocation> findByViewPort(ViewPort viewPort) {
-        return contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude());
-    }
+    public List<ContractorLocationInfo> findContractorLocationInfos(CompanyFinderFilter companyFinderFilter, HashMap<String, String> contractorInfoProps) {
 
-    private List<ContractorLocation> findByViewPortAndSafety(ViewPort viewPort, boolean safetySensitive) {
-        return contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                safetySensitive);
-    }
-*/
+        OperatorAccount operator = null;
 
-    public List<ContractorLocation> findContractorLocations(ViewPort viewPort, Trade trade, int safetySensitive) {
-        List<ContractorLocation> contractorLocations;
+        List<ContractorLocation> contractorLocations =  contractorLocationDAO.findContractorLocations(companyFinderFilter);
 
-        if (shouldIncludeSafetySensitiveFilter(safetySensitive)) {
+        String operatorIdStr = contractorInfoProps.get("opId");
 
-            boolean safetySensitiveFlag = filterSafetySensitive(safetySensitive);
-
-            if (trade != null) {
-                contractorLocations = findWithTradeAndSafetySensitive(viewPort, trade, safetySensitiveFlag);
-            } else {
-                contractorLocations = findWithSafetySensitive(viewPort, safetySensitiveFlag);
-            }
-
-        } else {
-
-            if (trade != null) {
-                contractorLocations = findWithTrade(viewPort, trade);
-            } else {
-                contractorLocations = findWithViewPortOnly(viewPort);
-            }
-
+        int operatorId;
+        if(StringUtils.isNotEmpty(operatorIdStr)) {
+            operatorId = Integer.parseInt(operatorIdStr);
+            operator = operatorAccountDAO.find(operatorId);
         }
-        return contractorLocations;
+
+
+        return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
     }
 
-    private List<ContractorLocation> findWithViewPortOnly(ViewPort viewPort) {
-        List<ContractorLocation> contractorLocations;
-        contractorLocations = contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude());
-        return contractorLocations;
-    }
-
-    private List<ContractorLocation> findWithTrade(ViewPort viewPort, Trade trade) {
-        List<ContractorLocation> contractorLocations;
-        contractorLocations = contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude()
-                ,trade);
-        return contractorLocations;
-    }
-
-    private List<ContractorLocation> findWithSafetySensitive(ViewPort viewPort, boolean safetySensitiveFlag) {
-        List<ContractorLocation> contractorLocations;
-        contractorLocations = contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                safetySensitiveFlag);
-        return contractorLocations;
-    }
-
-    private List<ContractorLocation> findWithTradeAndSafetySensitive(ViewPort viewPort, Trade trade, boolean safetySensitiveFlag) {
-        List<ContractorLocation> contractorLocations;
-        contractorLocations = contractorLocationDAO.findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                trade,
-                safetySensitiveFlag);
-        return contractorLocations;
-    }
-
-    private boolean filterSafetySensitive(int safetySensitive) {
-        return (safetySensitive == FILTER_BY_SAFETY_SENSITIVE);
-    }
-
-    private boolean shouldIncludeSafetySensitiveFilter(int safetySensitive) {
-        return IGNORE_SAFETY_SENSITIVE != safetySensitive;
-    }
-
-    public List<ContractorLocationInfo> findContractorLocationInfos(ViewPort viewPort, Trade trade, String contractorLocationLinkUrl, int safetySensitive) {
-        List<ContractorLocation> contractorLocations = findContractorLocations(viewPort, trade, safetySensitive);
-        return buildContractorLocationsInfos(contractorLocations, contractorLocationLinkUrl);
-    }
-
-    private List<ContractorLocationInfo> buildContractorLocationsInfos(List<ContractorLocation> contractorLocations, String contractorLocationLinkUrl) {
+    private List<ContractorLocationInfo> buildContractorLocationsInfos(List<ContractorLocation> contractorLocations, HashMap<String, String> contractorLocationProps, OperatorAccount operator) {
         if (CollectionUtils.isEmpty(contractorLocations)) {
             return Collections.EMPTY_LIST;
         }
         List<ContractorLocationInfo> contractorLocationInfos = new ArrayList<>();
         for (ContractorLocation contractorLocation : contractorLocations) {
-            ContractorLocationInfo contractorLocationInfo = buildContractorLocationInfo(contractorLocation, contractorLocationLinkUrl);
+            ContractorLocationInfo contractorLocationInfo = buildContractorLocationInfo(contractorLocation, contractorLocationProps, operator);
             contractorLocationInfos.add(contractorLocationInfo);
         }
         return contractorLocationInfos;
     }
 
-    private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, String contractorLocationLinkUrl) {
+    private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, HashMap<String, String> contrctorLocationProps, OperatorAccount operator) {
         ContractorAccount contractor = contractorLocation.getContractor();
         String primaryTradeName = getPrimaryTradeName(contractor);
         List<String> tradeNames = getTradeNames(contractor);
+        boolean isWorksForOperator = isWorksForOperator(contractor, operator);
+
+        FlagColor flagColor = calculateFlagColor(contractor, operator);
+
         ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
                 .id(contractor.getId())
                 .name(contractor.getName())
@@ -168,10 +105,18 @@ public class CompanyFinderService {
                 )
                 .primaryTrade(primaryTradeName)
                 .trades(tradeNames)
-                .link(contractorLocationLinkUrl + "?id=" + contractor.getId())
-
+                .link(contrctorLocationProps.get("linkurl") + "?id=" + contractor.getId())
+                .worksForOperator(isWorksForOperator)
+                .flagColor(flagColor)
                 .build();
         return contractorLocationInfo;
+    }
+
+    private boolean isWorksForOperator(ContractorAccount contractor, OperatorAccount operator) {
+        if(operator != null) {
+            return contractor.isWorksForOperator(operator.getId());
+        }
+        return false;
     }
 
     private String getPrimaryTradeName(ContractorAccount contractor) {
@@ -184,6 +129,52 @@ public class CompanyFinderService {
             tradeNames.add(contractorTrade.getTrade().getName());
         }
         return tradeNames;
+    }
+
+    private FlagColor calculateFlagColor(ContractorAccount contractor, OperatorAccount operator) {
+        if(operator == null) {
+           return null;
+        }
+
+        ContractorOperator contractorOperator = buildContractorOperator(contractor, operator);
+
+        FlagColor flagColor = null;
+        try {
+            FlagCalculator calculator = flagCalculatorFactory.flagCalculator(contractorOperator, null);
+            flagColor = getWorstColor(calculator.calculate());
+        } catch (Exception e) {
+            logger.warn("Unable to calculate flag color", e);
+        }
+
+        return flagColor;
+    }
+
+    private ContractorOperator buildContractorOperator(ContractorAccount contractor, OperatorAccount operator) {
+        ContractorOperator contractorOperator = new ContractorOperator();
+        contractorOperator.setContractorAccount(contractor);
+        contractorOperator.setOperatorAccount(operator);
+        return contractorOperator;
+    }
+
+    /**
+     * We may want to consider moving this into FlagDataCalculator
+     *
+     * @param flagData
+     * @return
+     */
+    private FlagColor getWorstColor(List<com.picsauditing.flagcalculator.FlagData> flagData) {
+        if (flagData == null)
+            return null;
+        com.picsauditing.flagcalculator.entities.FlagColor worst = com.picsauditing.flagcalculator.entities.FlagColor.Green;
+        for (com.picsauditing.flagcalculator.FlagData flagDatum : flagData) {
+            com.picsauditing.flagcalculator.entities.FlagData data = (com.picsauditing.flagcalculator.entities.FlagData)flagDatum;
+            if (data.getFlag() == com.picsauditing.flagcalculator.entities.FlagColor.Red)
+                return FlagColor.valueOf(data.getFlag().toString());
+            if (data.getFlag() == com.picsauditing.flagcalculator.entities.FlagColor.Amber)
+                worst = data.getFlag();
+        }
+
+        return FlagColor.valueOf(worst.toString());
     }
 
 }

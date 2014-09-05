@@ -1,9 +1,10 @@
-package com.picsauditing.struts.controller.companyFinder;
+package com.picsauditing.companyfinder.controller;
 
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.companyfinder.model.*;
+import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Account;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class CompanyFinderController extends PicsActionSupport {
@@ -28,7 +30,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLat;
     private double swLong;
     private Trade trade;
-    private int ss = CompanyFinderService.IGNORE_SAFETY_SENSITIVE;
+    private CompanyFinderFilter filter;
 
 
     public String findLocation() {
@@ -46,22 +48,38 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
-        ViewPort viewPort = ViewPort.builder()
-                .northEast(LatLong.builder()
-                        .lat(neLat)
-                        .lng(neLong)
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
+                .viewPort(
+                        ViewPort.builder()
+                        .northEast(LatLong.builder()
+                                .lat(neLat)
+                                .lng(neLong)
+                                .build())
+                        .southWest(LatLong.builder()
+                                .lat(swLat)
+                                .lng(swLong)
+                                .build())
                         .build())
-                .southWest(LatLong.builder()
-                        .lat(swLat)
-                        .lng(swLong)
-                        .build())
+                .trade(trade)
+                .safetySensitive(SafetySensitive.IGNORE)
                 .build();
 
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, ContractorDashboard.URL, ss);
+        HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
+
+        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
 
         jsonString = new Gson().toJson(contractorLocationInfos);
 
         return JSON_STRING;
+    }
+
+    private HashMap<String, String> buildContractorInfoProperties() {
+        HashMap<String, String> contractorInfoProperties = new HashMap<>();
+        contractorInfoProperties.put("linkurl", ContractorDashboard.URL);
+        if(permissions.isOperator()) {
+            contractorInfoProperties.put("opId", String.valueOf(permissions.getAccountId()));
+        }
+        return contractorInfoProperties;
     }
 
     private String getSearchAddress() {
@@ -82,7 +100,7 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public Trade getTrade() {
-        return trade;
+        return filter.getTrade();
     }
 
     public void setTrade(Trade trade) {
@@ -129,11 +147,11 @@ public class CompanyFinderController extends PicsActionSupport {
         this.swLong = swLong;
     }
 
-    public int getSs() {
-        return ss;
+    public int getSafetySensitive() {
+        return filter.getSafetySensitive().getSafetySensitiveValue();
     }
 
-    public void setSs(int safetySensitive) {
-        this.ss = safetySensitive;
+    public void setSafetySensitive(int safetySensitive) {
+        this.filter.setSafetySensitive(SafetySensitive.fromInteger(safetySensitive));
     }
 }

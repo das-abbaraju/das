@@ -2,6 +2,7 @@ package com.picsauditing.companyfinder.model;
 
 
 import com.picsauditing.companyfinder.model.builder.ContractorLocationInfoBuilder;
+import com.picsauditing.jpa.entities.FlagColor;
 import com.picsauditing.model.general.LatLong;
 
 import java.util.List;
@@ -16,6 +17,8 @@ public class ContractorLocationInfo {
     private String primaryTrade;
     private List<String> trades;
     private String link;
+    private boolean worksForOperator;
+    private FlagColor flagColor;
 
     public int getId() {
         return id;
@@ -81,8 +84,20 @@ public class ContractorLocationInfo {
         this.link = link;
     }
 
-    public static ContractorLocationInfoBuilder builder() {
+   public static ContractorLocationInfoBuilder builder() {
         return new ContractorLocationInfoBuilder();
+    }
+
+    public boolean isWorksForOperator() {
+        return worksForOperator;
+    }
+
+    public void setWorksForOperator(boolean isWorksForOperator) {
+        this.worksForOperator = isWorksForOperator;
+    }
+
+    public void setFlagColor(FlagColor flagColor) {
+        this.flagColor = flagColor;
     }
 }
 

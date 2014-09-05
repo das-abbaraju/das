@@ -26,7 +26,8 @@
         </property>
     </bean>
 
-    <bean id="contractorLocationDAO" class="com.picsauditing.dao.companyfinder.ContractorLocationDAO"/>
+    <bean id="contractorLocationDAO" class="com.picsauditing.companyfinder.dao.ContractorLocationDAO"/>
+    <bean id="contractorAccountDAO" class="com.picsauditing.dao.ContractorAccountDAO"/>
     <!-- pdd -->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="${jdbc.local.driverClassName}"/>
