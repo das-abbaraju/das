@@ -5,9 +5,9 @@ PICS.define('contractor.TradeTaxonomyController', {
                 .on('click', 'input[type="submit"]', onSubmitButtonClick)
                 .on('submit', '#trade-form', onTradeFormSubmit);
 
-            $('body').on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick);
-
-            $('body').on('click', '.modal .dismiss', onModalCancelClick)
+            $('body')
+	            .on('click', '.safety-sensitive-confirm-modal .confirm', onSafetySensitiveModalConfirmClick)
+	            .on('click', '.modal .dismiss', onModalCancelClick);
         }
 
         function onModalCancelClick(event) {
@@ -33,7 +33,7 @@ PICS.define('contractor.TradeTaxonomyController', {
 
                 if ($button.data('affects-safety-sensitive-status')) {
                     PICS.modal(getModalConfig());
-                } else {
+                } else if (disableButtonIfNecessary($button)) {
                     requestAddTrade();
                 }
             }
@@ -42,9 +42,11 @@ PICS.define('contractor.TradeTaxonomyController', {
         function onSafetySensitiveModalConfirmClick(event) {
             var $modal = $(event.target).closest('.modal');
 
-            requestAddTrade();
+			if (disableButtonIfNecessary($modal.find('#addButton'))) {
+				requestAddTrade();
 
-            $modal.modal('hide');
+				$modal.modal('hide');
+			}
         }
 
         function getModalConfig() {
@@ -82,8 +84,19 @@ PICS.define('contractor.TradeTaxonomyController', {
             });
         }
 
+		// used to prevent double click on 'add' button
+		function disableButtonIfNecessary($button) {
+			if (typeof $button.attr("disabled") != "undefined") {
+				return false;
+			} else {
+				$button.attr("disabled", "disabled");
+				return true;
+			}
+		}
+
         function onTradeFormAjaxSubmitSuccess(data) {
             $('#trade-view').html(data);
+            $("#addButton").removeAttr("disabled");
 
             loadTradeCallback();
         }
