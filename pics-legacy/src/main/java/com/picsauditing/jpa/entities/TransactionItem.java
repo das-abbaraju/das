@@ -49,6 +49,7 @@ public abstract class TransactionItem extends BaseTable{
 	}
 
 	@Temporal(TemporalType.DATE)
+    @ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getRevenueStartDate() {
 		return revenueStartDate;
 	}
@@ -58,6 +59,7 @@ public abstract class TransactionItem extends BaseTable{
 	}
 
 	@Temporal(TemporalType.DATE)
+    @ReportField(type = FieldType.Date, importance = FieldImportance.Average)
 	public Date getRevenueFinishDate() {
 		return revenueFinishDate;
 	}

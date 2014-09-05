@@ -1627,6 +1627,8 @@ CreditMemoItemFeeFeeClass
 CreditMemoItemFeeId
 CreditMemoItemFeeMaxFacilities
 CreditMemoItemFeeName
+CreditMemoItemRevenueFinishDate
+CreditMemoItemRevenueStartDate
 CreditMemoStatus
 
 Model: Emails
@@ -1780,6 +1782,8 @@ InvoiceItemFeeFeeClass
 InvoiceItemFeeId
 InvoiceItemFeeMaxFacilities
 InvoiceItemFeeName
+InvoiceItemRevenueFinishDate
+InvoiceItemRevenueStartDate
 InvoicePaidDate
 InvoiceStatus
 InvoiceTax
