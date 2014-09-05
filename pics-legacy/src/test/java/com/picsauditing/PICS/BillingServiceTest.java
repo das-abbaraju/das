@@ -863,13 +863,30 @@ public class BillingServiceTest extends PicsTranslationTest {
     }
 
     @Test
-    public void testGetBillingStatus_NoPayingFacilitiesIsCurrent() throws Exception {
+    public void testGetBillingStatus_PendingNoPayingFacilitiesIsActivation() throws Exception {
         billingStatusCommon(30);
         when(mockContractor.getPayingFacilities()).thenReturn(0);
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.pendingRequestedOrActive()).thenReturn(true);
+        when(mockContractor.newMember()).thenReturn(true);
 
         BillingStatus billingStatus = billingService.billingStatus(mockContractor);
 
-        assertTrue(billingStatus.isCurrent());
+        assertTrue(billingStatus.isActivation());
+    }
+
+    @Test
+    public void testGetBillingStatus_DeactivatedNoPayingFacilitiesIsActivation() throws Exception {
+        billingStatusCommon(30);
+        when(mockContractor.getPayingFacilities()).thenReturn(0);
+        when(mockContractor.getAccountLevel()).thenReturn(AccountLevel.Full);
+        when(mockContractor.pendingRequestedOrActive()).thenReturn(false);
+        when(mockContractor.getStatus()).thenReturn(AccountStatus.Deactivated);
+        when(mockContractor.newMember()).thenReturn(true);
+
+        BillingStatus billingStatus = billingService.billingStatus(mockContractor);
+        System.out.print(billingStatus.toString());
+        assertTrue(billingStatus.isReactivation());
     }
 
     @Test

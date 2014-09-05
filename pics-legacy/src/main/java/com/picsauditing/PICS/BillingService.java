@@ -482,11 +482,11 @@ public class BillingService {
 	private void addActivationFeeIfApplies(ContractorAccount contractor, BillingStatus billingStatus, List<InvoiceItem> items) {
 		if (contractor.getAccountLevel().isFull()) {
 			if (contractor.getMembershipDate() == null || billingStatus.isActivation()) {
-				InvoiceItem activation = createLineItem(contractor, FeeClass.Activation, 1);
+				InvoiceItem activation = createLineItem(contractor, FeeClass.Activation, contractor.getPayingFacilities());
 				items.add(activation);
 
 			} else if (billingStatus.isReactivation() || billingStatus.isCancelled()) {
-				items.add(createLineItem(contractor, FeeClass.Reactivation, 1));
+				items.add(createLineItem(contractor, FeeClass.Reactivation, contractor.getPayingFacilities()));
 			}
 		}
 	}
@@ -765,8 +765,7 @@ public class BillingService {
      */
     public BillingStatus billingStatus(ContractorAccount contractor) {
         // If contractor is Free, Deleted, or Demo, give a pass on billing
-        if (!contractor.isMustPayB() || contractor.getPayingFacilities() == 0 ||
-                contractor.getStatus().isDemo() || contractor.getStatus().isDeleted()) {
+        if (!contractor.isMustPayB() || contractor.getStatus().isDemo() || contractor.getStatus().isDeleted()) {
             return BillingStatus.Current;
         }
 
