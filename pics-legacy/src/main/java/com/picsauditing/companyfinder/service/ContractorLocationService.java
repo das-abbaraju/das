@@ -1,6 +1,5 @@
 package com.picsauditing.companyfinder.service;
 
-
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -36,7 +35,7 @@ public class ContractorLocationService {
                 return;
             }
             String address = parseAddress(contractorAccount);
-            LatLon latLon = getLatLon(contractorAccount, address);
+            LatLon latLon = getLatLong(address);
             if (latLon != null) {
                 persistToDatabase(latLon, contractorAccount);
             } else {
@@ -74,15 +73,7 @@ public class ContractorLocationService {
         return StringUtils.removeEnd(address, "+");
     }
 
-    class LatLon {
-        Double latitude, longitude;
-        LatLon(Double latitude, Double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-    }
-    
-    public LatLon getLatLon(ContractorAccount contractorAccount, String address) throws Exception {
+    public LatLon getLatLong(String address) throws Exception {
         if (StringUtils.isNotEmpty(address)) {
             String body = googleApiService.sendRequestToTheGoogles(address);
             if (StringUtils.isNotEmpty(body)) {
@@ -136,4 +127,12 @@ public class ContractorLocationService {
         return (JSONObject) geometry.get("location");
     }
 
+    class LatLon {
+        Double latitude, longitude;
+
+        LatLon(Double latitude, Double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
 }

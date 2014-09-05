@@ -2,12 +2,11 @@ package com.picsauditing.companyfinder.service;
 
 import com.atlassian.crowd.util.Assert;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.model.ContractorGeoLocation;
-import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.User;
 import com.picsauditing.util.GoogleApiService;
+import com.spun.util.Asserts;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +19,6 @@ import static org.mockito.Mockito.when;
 
 public class ContractorLocationServiceTest {
 
-    private ContractorLocationService contractorLocationService;
     public static final String VALID_ADDRESS = "17701 Cowan, Irvine CA 92618";
     public static final String GOOGLE_FORMATTED_ADDRESS = "17701+cowan,+irvine+ca+92618";
     private static final int CONTRACTOR_ID = 3;
@@ -35,9 +33,10 @@ public class ContractorLocationServiceTest {
     ContractorAccount contractorAccount;
     @Mock
     private User user;
-
     @Mock
     private GoogleApiService googleApiService;
+
+    private ContractorLocationService contractorLocationService;
 
     @Before
     public void setUp() throws Exception {
@@ -90,25 +89,23 @@ public class ContractorLocationServiceTest {
 
     @Test
     public void testFetchGeoLocation_validAddress() throws Exception {
-        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLon(contractorAccount, VALID_ADDRESS);
+        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLong(VALID_ADDRESS);
+
         Assert.notNull(latLon);
     }
 
     @Test
     public void testFetchGeoLocation_nullAddress() throws Exception {
-        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLon(contractorAccount, null);
+        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLong(null);
+
         assertTrue(latLon == null);
     }
 
-/*
     @Test
     public void testFetchGeoLocation_inValidAddress() throws Exception {
         String invalidAddress = "45%#23";
-        when(googleApiService.sendRequestToTheGoogles(invalidAddress)).thenReturn(JSON_BODY);
+        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLong(invalidAddress);
 
-        ContractorLocationService.LatLon latLon = contractorLocationService.getLatLon(contractorAccount, invalidAddress);
-
-        assertEquals(null, latLon);
+        assertEquals(null,latLon);
     }
-*/
 }
