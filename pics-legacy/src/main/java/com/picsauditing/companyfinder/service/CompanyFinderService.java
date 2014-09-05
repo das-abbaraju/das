@@ -58,7 +58,7 @@ public class CompanyFinderService {
 
         OperatorAccount operator = null;
 
-        List<ContractorLocation> contractorLocations =  contractorLocationDAO.findContractorLocations(companyFinderFilter);
+        List<ContractorLocation> contractorLocations = contractorLocationDAO.findContractorLocations(companyFinderFilter);
 
         String operatorIdStr = contractorInfoProps.get("opId");
 
@@ -67,7 +67,6 @@ public class CompanyFinderService {
             operatorId = Integer.parseInt(operatorIdStr);
             operator = operatorAccountDAO.find(operatorId);
         }
-
 
         return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
     }
@@ -84,7 +83,7 @@ public class CompanyFinderService {
         return contractorLocationInfos;
     }
 
-    private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, HashMap<String, String> contrctorLocationProps, OperatorAccount operator) {
+    private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, HashMap<String, String> contractorLocationProps, OperatorAccount operator) {
         ContractorAccount contractor = contractorLocation.getContractor();
         String primaryTradeName = getPrimaryTradeName(contractor);
         List<String> tradeNames = getTradeNames(contractor);
@@ -105,7 +104,7 @@ public class CompanyFinderService {
                 )
                 .primaryTrade(primaryTradeName)
                 .trades(tradeNames)
-                .link(contrctorLocationProps.get("linkurl") + "?id=" + contractor.getId())
+                .link(contractorLocationProps.get("linkurl") + "?id=" + contractor.getId())
                 .worksForOperator(isWorksForOperator)
                 .flagColor(flagColor)
                 .build();

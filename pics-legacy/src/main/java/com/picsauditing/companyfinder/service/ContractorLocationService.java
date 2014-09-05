@@ -1,5 +1,6 @@
 package com.picsauditing.companyfinder.service;
 
+
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.jpa.entities.ContractorAccount;
@@ -13,9 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.net.URL;
 import java.util.Date;
-import java.util.Scanner;
 
 public class ContractorLocationService {
 
@@ -35,9 +34,9 @@ public class ContractorLocationService {
                 return;
             }
             String address = parseAddress(contractorAccount);
-            LatLon latLon = getLatLong(address);
-            if (latLon != null) {
-                persistToDatabase(latLon, contractorAccount);
+            LatLong latLong = getLatLong(address);
+            if (latLong != null) {
+                persistToDatabase(latLong, contractorAccount);
             } else {
                 logger.error("Could not fetch geoLocation from Google Api");
             }
@@ -73,7 +72,15 @@ public class ContractorLocationService {
         return StringUtils.removeEnd(address, "+");
     }
 
-    public LatLon getLatLong(String address) throws Exception {
+    class LatLong {
+        Double latitude, longitude;
+        LatLong(Double latitude, Double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+    
+    public LatLong getLatLong(String address) throws Exception {
         if (StringUtils.isNotEmpty(address)) {
             String body = googleApiService.sendRequestToTheGoogles(address);
             if (StringUtils.isNotEmpty(body)) {
@@ -83,7 +90,7 @@ public class ContractorLocationService {
                     Double lat = (Double) location.get("lat");
                     if (lng != null && lat != null) {
                         logger.debug(address);
-                        return new LatLon(lat, lng);
+                        return new LatLong(lat, lng);
                     }
                 } else {
                     logger.debug("location null for: " + address);
@@ -93,19 +100,17 @@ public class ContractorLocationService {
         return null;
     }
 
-    private void persistToDatabase(LatLon latLon, ContractorAccount contractorAccount) throws NoUsersDefinedException {
+    private void persistToDatabase(LatLong latLong, ContractorAccount contractorAccount) throws NoUsersDefinedException {
         ContractorLocation contractorLocation = contractorLocationDAO.findById(contractorAccount.getId());
-
-        contractorLocation = buildContratorLocation(contractorAccount, contractorLocation, latLon);
-
+        contractorLocation = buildContratorLocation(contractorAccount, contractorLocation, latLong);
         contractorLocationDAO.save(contractorLocation);
     }
 
-    private ContractorLocation buildContratorLocation(ContractorAccount contractorAccount, ContractorLocation conLoc, LatLon latLon) throws NoUsersDefinedException {
+    private ContractorLocation buildContratorLocation(ContractorAccount contractorAccount, ContractorLocation conLoc, LatLong latLong) throws NoUsersDefinedException {
         ContractorLocation contractorLocation = (conLoc != null) ? conLoc : new ContractorLocation();
         contractorLocation.setContractor(contractorAccount);
-        contractorLocation.setLatitude(latLon.latitude);
-        contractorLocation.setLongitude(latLon.longitude);
+        contractorLocation.setLatitude(latLong.latitude);
+        contractorLocation.setLongitude(latLong.longitude);
         contractorLocation.setCreatedBy(contractorAccount.getActiveUser());
         contractorLocation.setUpdatedBy(contractorAccount.getActiveUser());
         contractorLocation.setCreationDate(new Date(System.currentTimeMillis()));
@@ -127,12 +132,4 @@ public class ContractorLocationService {
         return (JSONObject) geometry.get("location");
     }
 
-    class LatLon {
-        Double latitude, longitude;
-
-        LatLon(Double latitude, Double longitude) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-    }
 }
