@@ -102,6 +102,7 @@ public class ContractorDocumentOperator extends BaseTable {
 		this.caoWorkflow = caoWorkflow;
 	}
 
+    @Column(name = "auditSubStatus", nullable = true)
 	@Enumerated(EnumType.STRING)
 	public DocumentSubStatus getDocumentSubStatus() {
 		return documentSubStatus;
