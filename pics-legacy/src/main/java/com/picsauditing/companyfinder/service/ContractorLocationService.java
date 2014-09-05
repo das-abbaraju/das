@@ -1,12 +1,10 @@
 package com.picsauditing.companyfinder.service;
 
 
-import com.picsauditing.util.flow.Result;
-import com.picsauditing.util.flow.ResultFailure;
-import com.picsauditing.util.flow.ResultSuccess;
-import com.picsauditing.companyfinder.dao.ContractorLocationDao;
-import com.picsauditing.companyfinder.model.ContractorGeoLocation;
+import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
+import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.util.GoogleApiService;
 import org.apache.commons.lang.StringUtils;
 import org.json.simple.JSONArray;
@@ -16,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Date;
+
 public class ContractorLocationService {
 
     public static final JSONParser JSON_PARSER = new JSONParser();
@@ -23,30 +23,25 @@ public class ContractorLocationService {
     private static final Logger logger = LoggerFactory.getLogger(ContractorLocationService.class);
 
     @Autowired
-    private ContractorLocationDao contractorLocationDao;
+    private ContractorLocationDAO contractorLocationDAO;
 
     @Autowired
     private GoogleApiService googleApiService;
 
-    public Result saveLocation(final ContractorAccount contractorAccount) {
+    public void saveLocation(final ContractorAccount contractorAccount) {
         try {
             if (contractorAccount == null) {
-                return new ResultFailure("Contractor account was null");
+                return;
             }
             String address = parseAddress(contractorAccount);
-            ContractorGeoLocation geoLocation = fetchGeoLocation(contractorAccount, address);
-            if (geoLocation != null) {
-                persistToDatabase(geoLocation);
-                return new ResultSuccess();
-
+            LatLong latLong = getLatLong(address);
+            if (latLong != null) {
+                persistToDatabase(latLong, contractorAccount);
             } else {
-                String msg = "Could not fetch geoLocation from Google Api";
-                return Result.notGood(msg);
+                logger.error("Could not fetch geoLocation from Google Api");
             }
         } catch (Exception e) {
-            String msg = "Error saving geoLocation";
-            logger.error(msg, e);
-            return new ResultFailure(e, msg);
+            logger.error("Error in saveLocation()", e);
         }
     }
 
@@ -77,7 +72,15 @@ public class ContractorLocationService {
         return StringUtils.removeEnd(address, "+");
     }
 
-    public ContractorGeoLocation fetchGeoLocation(ContractorAccount contractorAccount, String address) throws Exception {
+    class LatLong {
+        Double latitude, longitude;
+        LatLong(Double latitude, Double longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
+    }
+    
+    public LatLong getLatLong(String address) throws Exception {
         if (StringUtils.isNotEmpty(address)) {
             String body = googleApiService.sendRequestToTheGoogles(address);
             if (StringUtils.isNotEmpty(body)) {
@@ -86,19 +89,33 @@ public class ContractorLocationService {
                     Double lng = (Double) location.get("lng");
                     Double lat = (Double) location.get("lat");
                     if (lng != null && lat != null) {
-                        logger.info(address);
-                        return ContractorGeoLocation.createFrom(contractorAccount.getId(), lat.floatValue(), lng.floatValue(), contractorAccount.getActiveUser().getId());
+                        logger.debug(address);
+                        return new LatLong(lat, lng);
                     }
                 } else {
-                    logger.info("location null for: " + address);
+                    logger.debug("location null for: " + address);
                 }
             }
         }
         return null;
     }
 
-    private void persistToDatabase(ContractorGeoLocation contractorLocation) {
-        contractorLocationDao.insertContractorLocation(contractorLocation);
+    private void persistToDatabase(LatLong latLong, ContractorAccount contractorAccount) throws NoUsersDefinedException {
+        ContractorLocation contractorLocation = contractorLocationDAO.findById(contractorAccount.getId());
+        contractorLocation = buildContratorLocation(contractorAccount, contractorLocation, latLong);
+        contractorLocationDAO.save(contractorLocation);
+    }
+
+    private ContractorLocation buildContratorLocation(ContractorAccount contractorAccount, ContractorLocation conLoc, LatLong latLong) throws NoUsersDefinedException {
+        ContractorLocation contractorLocation = (conLoc != null) ? conLoc : new ContractorLocation();
+        contractorLocation.setContractor(contractorAccount);
+        contractorLocation.setLatitude(latLong.latitude);
+        contractorLocation.setLongitude(latLong.longitude);
+        contractorLocation.setCreatedBy(contractorAccount.getActiveUser());
+        contractorLocation.setUpdatedBy(contractorAccount.getActiveUser());
+        contractorLocation.setCreationDate(new Date(System.currentTimeMillis()));
+        contractorLocation.setUpdateDate(new Date(System.currentTimeMillis()));
+        return contractorLocation;
     }
 
     private JSONObject findLocationObject(String body) throws Exception {

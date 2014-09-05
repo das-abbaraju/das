@@ -1,11 +1,16 @@
 package com.picsauditing.companyfinder.service;
 
+import com.picsauditing.actions.contractors.ContractorDashboard;
+import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
+import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
+import com.picsauditing.companyfinder.model.SafetySensitive;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.ViewportLocation;
+import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
-import com.picsauditing.dao.companyfinder.ContractorLocationDAO;
+import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
 import com.picsauditing.jpa.entities.LowMedHigh;
@@ -20,21 +25,26 @@ import org.mockito.internal.util.reflection.Whitebox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 public class CompanyFinderServiceTest {
 
-    private static final boolean FILTER_BY_SAFETY_SENSITIVE = true;
     CompanyFinderService companyFinderService;
+    @Mock
+    AddressService addressService;
     @Mock
     ContractorLocationDAO contractorLocationDAO;
     @Mock
-    AddressService addressService;
+    OperatorAccountDAO operatorAccountDAO;
+
     private ViewPort viewPort;
     private double neLat;
     private double neLong;
@@ -47,6 +57,7 @@ public class CompanyFinderServiceTest {
 
     @Before
     public void setUp() throws Exception {
+        companyFinderService = new CompanyFinderService();
         neLat = 32.81138652611525;
         neLong = -96.76751698364262;
         swLat = 32.73922009003447;
@@ -64,8 +75,8 @@ public class CompanyFinderServiceTest {
                 .build();
 
         MockitoAnnotations.initMocks(this);
-        companyFinderService = new CompanyFinderService();
         Whitebox.setInternalState(companyFinderService, "contractorLocationDAO", contractorLocationDAO);
+        Whitebox.setInternalState(companyFinderService, "operatorAccountDAO", operatorAccountDAO);
         Whitebox.setInternalState(companyFinderService, "addressService", addressService);
 
         when(addressService.formatAddressAsBlock(any(ContractorAccount.class))).thenReturn("someFormattedAddressBlock");
@@ -73,7 +84,6 @@ public class CompanyFinderServiceTest {
 
     @Test
     public void testBuildViewportLocationFromAddressUnsecure() throws Exception {
-
         String address = "315 Bowery New York, NY";
         ViewportLocation viewportLocation = companyFinderService.buildViewportLocationFromAddressUnsecure(address);
 
@@ -85,70 +95,16 @@ public class CompanyFinderServiceTest {
     }
 
     @Test
-    public void testFindContractorLocations_viewPortOnly() throws Exception {
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, null, "someUrl", CompanyFinderService.IGNORE_SAFETY_SENSITIVE);
-        verify(contractorLocationDAO).findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude());
-    }
-
-    @Test
-    public void testFindContractorLocations_withSafetySensitive() throws Exception {
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, null, "someUrl", CompanyFinderService.FILTER_BY_SAFETY_SENSITIVE);
-        verify(contractorLocationDAO).findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                FILTER_BY_SAFETY_SENSITIVE);
-    }
-
-    @Test
-    public void testFindContractorLocations_withTrade() throws Exception {
-        Trade trade = new Trade();
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, "someUrl", CompanyFinderService.IGNORE_SAFETY_SENSITIVE);
-        verify(contractorLocationDAO).findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                trade);
-    }
-
-    @Test
-    public void testFindContractorLocations_withTradeAndSafetySensitive() throws Exception {
-        Trade trade = new Trade();
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(viewPort, trade, "someUrl", CompanyFinderService.FILTER_BY_SAFETY_SENSITIVE);
-        verify(contractorLocationDAO).findContractorLocations(
-                viewPort.getNorthEast().getLatitude(),
-                viewPort.getNorthEast().getLongitude(),
-                viewPort.getSouthWest().getLatitude(),
-                viewPort.getSouthWest().getLongitude(),
-                trade,
-                FILTER_BY_SAFETY_SENSITIVE);
-    }
-
-    @Test
-    public void testFindContractorLocationInfos_noTrade_Dallas_TX() throws Exception {
-        boolean safetySensitive = true;
+    public void testFindContractorLocationInfos_noTrade() throws Exception {
         List<ContractorLocation> contractorLocations = buildTestContractorLocations();
-        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong)).thenReturn(contractorLocations);
-        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, null)).thenReturn(contractorLocations);
-        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, safetySensitive)).thenReturn(contractorLocations);
-        when(contractorLocationDAO.findContractorLocations(neLat, neLong, swLat, swLong, null, safetySensitive)).thenReturn(contractorLocations);
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(SafetySensitive.IGNORE).build();
+        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
 
-        List<ContractorLocationInfo> contractorLocationInfos1 = companyFinderService.findContractorLocationInfos(viewPort, null, "someUrl", CompanyFinderService.IGNORE_SAFETY_SENSITIVE);
-        List<ContractorLocationInfo> contractorLocationInfos2 = companyFinderService.findContractorLocationInfos(viewPort, null, "someUrl", 0);
-        List<ContractorLocationInfo> contractorLocationInfos3 = companyFinderService.findContractorLocationInfos(viewPort, null, "someUrl", CompanyFinderService.FILTER_BY_SAFETY_SENSITIVE);
+        HashMap<String, String> contractorInfoProps = buildContractorInfoProperties();
 
-        List<ContractorLocationInfo> contractorLocationInfos4 = companyFinderService.findContractorLocationInfos(viewPort, new Trade(), "someUrl", CompanyFinderService.IGNORE_SAFETY_SENSITIVE);
-        List<ContractorLocationInfo> contractorLocationInfos5 = companyFinderService.findContractorLocationInfos(viewPort, new Trade(), "someUrl", 0);
-        List<ContractorLocationInfo> contractorLocationInfos6 = companyFinderService.findContractorLocationInfos(viewPort, new Trade(), "someUrl", CompanyFinderService.FILTER_BY_SAFETY_SENSITIVE);
+        List<ContractorLocationInfo> contractorLocationInfos1 = companyFinderService.findContractorLocationInfos(filter, contractorInfoProps);
 
         assertEquals(3, contractorLocationInfos1.size());
-
         assertEquals(1, contractorLocationInfos1.get(0).getId());
         assertEquals("con1", contractorLocationInfos1.get(0).getName());
         assertEquals("fulladdress1", contractorLocationInfos1.get(0).getAddress());
@@ -157,28 +113,14 @@ public class CompanyFinderServiceTest {
         assertEquals(101.0, contractorLocationInfos1.get(0).getCoordinates().getLongitude());
         assertEquals("trade1", contractorLocationInfos1.get(0).getPrimaryTrade());
         assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfos1.get(0).getTrades());
-        assertEquals("someUrl?id=1", contractorLocationInfos1.get(0).getLink());
+        assertEquals("/ContractorView.action?id=1", contractorLocationInfos1.get(0).getLink());
+    }
 
-        assertEquals(2, contractorLocationInfos1.get(1).getId());
-        assertEquals("con2", contractorLocationInfos1.get(1).getName());
-        assertEquals("fulladdress2", contractorLocationInfos1.get(1).getAddress());
-        assertNotNull(contractorLocationInfos1.get(1).getFormattedAddressBlock());
-        assertEquals(200.0, contractorLocationInfos1.get(1).getCoordinates().getLatitude());
-        assertEquals(201.0, contractorLocationInfos1.get(1).getCoordinates().getLongitude());
-        assertEquals("trade2", contractorLocationInfos1.get(1).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo2", "bar2", "car2"), contractorLocationInfos1.get(1).getTrades());
-        assertEquals("someUrl?id=2", contractorLocationInfos1.get(1).getLink());
-
-        assertEquals(3, contractorLocationInfos1.get(2).getId());
-        assertEquals("con3", contractorLocationInfos1.get(2).getName());
-        assertEquals("fulladdress3", contractorLocationInfos1.get(2).getAddress());
-        assertNotNull(contractorLocationInfos1.get(2).getFormattedAddressBlock());
-        assertEquals(300.0, contractorLocationInfos1.get(2).getCoordinates().getLatitude());
-        assertEquals(301.0, contractorLocationInfos1.get(2).getCoordinates().getLongitude());
-        assertEquals("trade3", contractorLocationInfos1.get(2).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo3", "bar3", "car3"), contractorLocationInfos1.get(2).getTrades());
-        assertEquals("someUrl?id=3", contractorLocationInfos1.get(2).getLink());
-
+    private HashMap<String, String> buildContractorInfoProperties() {
+        HashMap<String, String> contractorInfoProperties = new HashMap<>();
+        contractorInfoProperties.put("linkurl", ContractorDashboard.URL);
+        contractorInfoProperties.put("opId", String.valueOf(555));
+        return contractorInfoProperties;
     }
 
     private List<ContractorLocation> buildTestContractorLocations() {

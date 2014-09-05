@@ -1362,12 +1362,12 @@
         </action>
 
         <action name="location"
-                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                class="com.picsauditing.companyfinder.controller.CompanyFinderController"
                 method="findLocation">
         </action>
 
         <action name="contractors/locations"
-                class="com.picsauditing.struts.controller.companyFinder.CompanyFinderController"
+                class="com.picsauditing.companyfinder.controller.CompanyFinderController"
                 method="findContractorLocationInfos">
         </action>
 

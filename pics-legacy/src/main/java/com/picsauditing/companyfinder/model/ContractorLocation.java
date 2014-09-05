@@ -3,11 +3,10 @@ package com.picsauditing.companyfinder.model;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
 import com.picsauditing.jpa.entities.BaseTable;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.mail.NoUsersDefinedException;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 @SuppressWarnings("serial")
 @Entity
@@ -15,7 +14,11 @@ import javax.persistence.Table;
 public class ContractorLocation extends BaseTable {
 
     private ContractorAccount contractor;
+
+    @Column
     private double latitude;
+
+    @Column
     private double longitude;
 
     @ManyToOne
