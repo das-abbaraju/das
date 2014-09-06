@@ -35,41 +35,19 @@
 
 .marker-cluster-map {
     position: relative;
+
+    .failed-add {
+        color: $danger_light;
+    }
 }
 
 .info-window {
-    background: #ffffff;
-    width: 250px;
+    background: rgba(241, 241, 242, 0.85);
     position: absolute;
     z-index: 1000;
+    right: 0;
     left: 0;
-    top: 0;
-    border-radius: 4px;
+    bottom: 0;
     padding: 10px 15px;
     display: none;
-    @include box-shadow(0px 0px 5px $default_pewter);
-}
-
-.arrow-icon:before {
-    border: solid;
-    border-color: #ffffff transparent;
-    border-width: 10px 10px 0 10px;
-    content: "";
-    display: block;
-    position: absolute;
-    z-index: 99;
-    bottom: -10px;
-    left: 45.5%;
-}
-
-.arrow-icon:after {
-    border: solid;
-    border-color: rgba(0,0,0,0.12) transparent;
-    border-width: 12px 12px 0 12px;
-    content: "";
-    display: block;
-    position: absolute;
-    z-index: 98;
-    bottom: -12px;
-    left: 45%;
 }

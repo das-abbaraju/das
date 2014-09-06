@@ -14539,75 +14539,88 @@ ul.skill-nav a {
 }
 
 /* line 1, ../src/common/components/_panel.scss */
-.panel-default {
-  border-color: #e6e6e6;
+.panel {
+  border: none;
+  box-shadow: none;
 }
-
 /* line 5, ../src/common/components/_panel.scss */
-.panel-default > .panel-heading {
+.panel > .panel-heading {
+  border: none;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+/* line 10, ../src/common/components/_panel.scss */
+.panel > .panel-heading > .panel-title {
+  font-size: 14px;
+  font-weight: normal;
+}
+/* line 17, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading {
+  color: #454545;
+  background-color: #f1f1f2;
+}
+/* line 21, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border: none;
+}
+/* line 25, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading > .panel-title a {
+  color: #4496d8;
+}
+/* line 29, ../src/common/components/_panel.scss */
+.panel.panel-default .panel-body {
   color: #454545;
   background-color: #e6e6e6;
-  border-color: #e6e6e6;
 }
-
-/* line 11, ../src/common/components/_panel.scss */
-.panel-info {
-  border-color: #9cccf9;
-}
-
-/* line 15, ../src/common/components/_panel.scss */
-.panel-info > .panel-heading {
+/* line 36, ../src/common/components/_panel.scss */
+.panel.panel-info > .panel-heading {
   color: #fff;
   background-color: #9cccf9;
-  border-color: #9cccf9;
 }
-
-/* line 21, ../src/common/components/_panel.scss */
-.panel-warning {
-  border-color: #fbcb43;
+/* line 41, ../src/common/components/_panel.scss */
+.panel.panel-info .panel-body {
+  color: #4496d8;
+  background-color: #ebf5fe;
 }
-
-/* line 25, ../src/common/components/_panel.scss */
-.panel-warning > .panel-heading {
+/* line 48, ../src/common/components/_panel.scss */
+.panel.panel-warning > .panel-heading {
   color: #fff;
   background-color: #fbcb43;
-  border-color: #fbcb43;
 }
-
-/* line 31, ../src/common/components/_panel.scss */
-.panel-primary {
-  border-color: #3498db;
+/* line 53, ../src/common/components/_panel.scss */
+.panel.panel-warning .panel-body {
+  color: #ec8c00;
+  background-color: #fef5d9;
 }
-
-/* line 35, ../src/common/components/_panel.scss */
-.panel-primary > .panel-heading {
+/* line 61, ../src/common/components/_panel.scss */
+.panel.panel-primary > .panel-heading {
   color: #fff;
   background-color: #3498db;
-  border-color: #3498db;
 }
-
-/* line 41, ../src/common/components/_panel.scss */
-.panel-success {
-  border-color: #33b679;
+/* line 66, ../src/common/components/_panel.scss */
+.panel.panel-primary .panel-body {
+  color: #105093;
+  background-color: #d6eaf8;
 }
-
-/* line 45, ../src/common/components/_panel.scss */
-.panel-success > .panel-heading {
+/* line 73, ../src/common/components/_panel.scss */
+.panel.panel-success > .panel-heading {
   color: #fff;
   background-color: #33b679;
-  border-color: #33b679;
 }
-
-/* line 51, ../src/common/components/_panel.scss */
-.panel-danger {
-  border-color: #e74c3c;
+/* line 78, ../src/common/components/_panel.scss */
+.panel.panel-success .panel-body {
+  color: #05702e;
+  background-color: #d6f0e4;
 }
-
-/* line 55, ../src/common/components/_panel.scss */
-.panel-danger > .panel-heading {
+/* line 85, ../src/common/components/_panel.scss */
+.panel.panel-danger > .panel-heading {
   color: #fff;
   background-color: #e74c3c;
-  border-color: #e74c3c;
+}
+/* line 90, ../src/common/components/_panel.scss */
+.panel.panel-danger .panel-body {
+  color: #800a06;
+  background-color: #fadbd8;
 }
 
 /* line 1, ../src/common/components/_progress-bar.scss */

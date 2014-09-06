@@ -5,54 +5,114 @@
         margin-bottom: 30px;
     }
 
-    .filter-panel {
-        background: $pics_cool_grey;
-        border-radius: 5px;
-        padding: 10px 0 15px;
-
-        .title {
-            text-align: center;
-            font-size: 16px;
-            padding-bottom: 5px;
-            color: $default_aluminum;
-        }
+    .employee-guard-section > h1 {
+        margin-top: 0;
     }
 
-    .map {
-        width: 100%;
-        height: 500px;
+    .filter-results-section {
+        .panel-body {
+            padding: 0;
+        }
 
-        .marker-label {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        .control-spacer {
+            margin-bottom: 20px;
+        }
+
+        .search-toggle {
             font-size: 12px;
-            color: #ffffff;
-        }
-
-        .marker-label-large {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            color: #ffffff;
         }
     }
 
-    .employee-guard-section.search-results-section h1,
+    .search-results-section {
+        .badge-info {
+            margin-left: 5px;
+        }
+
+        .icon-filter {
+            &:hover {
+                color: #73bbe8;
+                cursor: pointer;
+            }
+        }
+    }
+
     .employee-guard-section.map-section {
-        margin-top: 20px;
+        overflow: hidden;
+
+        h1 {
+            background-color: $default_platinum;
+            color: $pics_warm_grey;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px 0;
+            margin: 0;
+
+            i.icon-map-marker {
+                color: $pics_warm_grey;
+                font-size: 14px;
+                margin-right: 5px;
+            }
+        }
+
+        .search-wrapper {
+            padding: 4px;
+
+            input {
+                height: 30px;
+            }
+
+            .icon-search {
+                top: 12px;
+            }
+        }
+
+        .map {
+            width: 100%;
+            height: 500px;
+
+            .marker-label {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                color: #ffffff;
+            }
+
+            .marker-label-large {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                color: #ffffff;
+            }
+        }
+
     }
 
     .info-window,
     .result-list {
         .contractor-name {
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            margin-bottom: 0px;
+        }
+
+        .primary-trade {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            margin-bottom: 0;
+        }
+
+        .results-label {
             font-size: 16px;
-            margin-bottom: 3px;
+            color: $default_silver;
+            text-align: center;
         }
     }
 
     .info-window {
-        .primary-trade {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 14px;
+        p {
+            margin-bottom: 0;
+        }
+
+        i {
+            font-size: 16px;
         }
 
         .other-trades {
@@ -71,12 +131,7 @@
         .result {
             margin-left: -30px;
             margin-right: -30px;
-            padding: 10px 0;
-
-            .primary-trade {
-                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-                font-size: 14px;
-            }
+            padding: 8px 0;
 
             .red-marker {
                 background: url('/angular/src/app/company-finder/img/marker-danger-light.png') center no-repeat;
@@ -87,37 +142,40 @@
                 width: 21px;
             }
 
+            .yellow-marker {
+                background: url('/angular/src/app/company-finder/img/marker-warning-light.png') center no-repeat;
+                color: #ffffff;
+                font-size: 12px;
+                height: 32px;
+                padding-top: 2px;
+                width: 21px;
+            }
+
+            .green-marker {
+                background: url('/angular/src/app/company-finder/img/marker-success-light.png') center no-repeat;
+                color: #ffffff;
+                font-size: 12px;
+                height: 32px;
+                padding-top: 2px;
+                width: 21px;
+            }
+
+            .gray-marker {
+                background: url('/angular/src/app/company-finder/img/marker-generic.png') center no-repeat;
+                color: #ffffff;
+                font-size: 12px;
+                height: 32px;
+                padding-top: 2px;
+                width: 21px;
+            }
+
             &:hover {
                 background: #EBF5FE;
             }
-        }
-    }
 
-    .icon-map-marker {
-        color: $danger_light;
-        font-size: 34px;
-    }
-
-    .icon-download {
-        &:hover {
-            color: #73bbe8;
-            cursor: pointer;
-        }
-    }
-
-    fieldset {
-        h1 {
-            background-color: $default_platinum;
-            color: $pics_warm_grey;
-            font-size: 14px;
-            font-weight: bold;
-            padding: 13px 0;
-            margin: 0;
-
-            i.icon-map-marker {
-                color: $pics_warm_grey;
-                font-size: 14px;
+            .icon-link {
                 margin-right: 5px;
+                color: $default_silver;
             }
         }
     }
