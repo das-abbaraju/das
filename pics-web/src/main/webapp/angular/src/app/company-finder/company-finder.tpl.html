@@ -3,65 +3,79 @@
         <h1 class="title">Company Finder</h1>
     </div>
 
-    <section class="employee-guard-section">
-        <h1>
-            <div class="row">
-                <div class="col-md-9 col-xs-9">
-                    <i class="icon-search icon-large"></i>Search
-                </div>
-                <div class="col-md-3 col-xs-3 edit">
-                    <i ng-show="!filterEditMode" ng-click="onEditClick()"class="icon-edit icon-large"></i>
-                </div>
-            </div>
-        </h1>
-
-        <div ng-show="filterEditMode || selectedTrade" class="content">
-            <dl ng-show="!filterEditMode && selectedTrade" class="employee-guard-information">
-                <dt class="col-md-3">Trade</dt>
-                <dd class="col-md-9">{{ selectedTrade }}</dd>
-            </dl>
-            <form ng-show="filterEditMode" ng-submit="onUpdateClick()" name="" action="" class="form-horizontal" autocomplete="off" role="form">
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <label name="trade" class="col-md-3 control-label">Trade</label>
-                        <div class="col-md-9">
-                            <input
-                                tabindex="tabindex"
-                                autocomplete-select
-                                on-keyup="onTradeKeyup"
-                                list-items="trades"
-                                select2-el="tradeSelect2El">
-                            </input>
-                        </div>
-                    </div>
-                     <div class="col-md-4 col-md-offset-1">
-                        <div class="filter-panel">
-                            <div class="title">Additional Filters</div>
-                            <toggle-filter ng-model="safetySensitiveEnabled" filter-label="Safety Sensitive" toggle-model='safetySensitive'></toggle-filter>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-md-6">
-                        <div class="col-md-9 col-md-offset-3 form-actions">
-                            <button name="update" type="submit" class="btn btn-primary">Update</button>
-                            <button ng-click="onCancelClick()" name="cancel" type="button" class="btn btn-default cancel">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </section>
-
     <div class="row">
         <div class="col-md-5">
-            <section class="employee-guard-section search-results-section">
+            <section class="employee-guard-section filter-results-section" ng-show="filterEditMode">
                 <h1>
                     <div class="row">
-                        <div class="col-md-10 col-xs-10">Results</div>
+                        <div class="col-md-12">
+                            Filters
+                        </div>
+                    </div>
+                </h1>
+
+                <div ng-show="filterEditMode || selectedTrade" class="content">
+                    <form ng-show="filterEditMode" ng-submit="onUpdateClick()" name="" action="" autocomplete="off" role="form">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <label name="trade">Trades</label>
+                                <input
+                                    tabindex="tabindex"
+                                    autocomplete-select
+                                    on-keyup="onTradeKeyup"
+                                    list-items="trades"
+                                    select2-el="tradeSelect2El">
+                                </input>
+                            </div>
+                        </div>
+
+                        <div class="row" ng-show="!basicSearchMode">
+                            <div class="col-md-12">
+                                <div class="panel-group control-spacer">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                Additional Filters
+                                            </h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <toggle-filter ng-model="safetySensitiveEnabled" filter-label="Safety Sensitive" toggle-model='safetySensitive'></toggle-filter>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row control-spacer" ng-show="!basicSearchMode">
+                            <div class="col-md-12">
+                                <a href="#" ng-click="onBasicSearchClick($event);" class="search-toggle">Basic Search</a>
+                            </div>
+                        </div>
+
+                        <div class="row control-spacer" ng-show="basicSearchMode">
+                            <div class="col-md-12">
+                                <a href="#" ng-click="onAdvancedSearchClick($event);" class="search-toggle">Advanced Search</a>
+                            </div>
+                        </div>
+
+                        <div class="row control-spacer">
+                            <div class="form-group col-md-12">
+                                <button name="update" type="submit" class="btn btn-primary">Search</button>
+                                <button ng-click="onCancelClick()" name="cancel" type="button" class="btn btn-default cancel">Cancel</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            <section class="employee-guard-section search-results-section" ng-show="!filterEditMode">
+                <h1>
+                    <div class="row">
+                        <div class="col-md-10 col-xs-10">
+                            Results
+                            <span class="badge badge-info">{{ locationCount }}</span>
+                        </div>
                         <div class="col-md-2 col-xs-2 text-right">
-                            <i class="icon-download icon-large" tooltip title="Export Results"></i>
+                            <i ng-click="onEditClick()"class="icon-filter icon-large" tooltip title="Filter Results"></i>
                         </div>
                     </div>
                 </h1>
@@ -71,14 +85,25 @@
                         <li ng-repeat="location in locationsUnclustered">
                             <div class="row result" ng-show="selectedResult != $index" ng-click="onResultClick($event)" ng-mouseover="onResultMouseOver($event)" ng-mouseout="onResultMouseOut($event)" id="{{ $index }}">
                                 <div class="col-md-1">
-                                    <div class="red-marker text-center">{{ $index + 1 }}</div>
+                                    <div class="text-center" ng-class="getMarkerClass(location.flagColor);">{{ $index + 1 }}</div>
                                 </div>
-                                <div class="col-md-11">
+                                <div class="col-md-10">
                                     <p class="contractor-name"><a href="{{ location.link }}" target="_blank">{{ location.name }}</a></p>
                                     <p class="primary-trade">{{ location.primaryTrade }}</p>
                                 </div>
+                                <div class="col-md-1" ng-show="location.worksForOperator">
+                                    <i class="icon-link" tooltip title="Connected"></i>
+                                </div>
                             </div>
                         </li>
+
+                        <p ng-show="locationCount == 0" class="results-label">
+                            No results found
+                        </p>
+
+                        <p ng-show="locationCount > 0 && locationsUnclustered == 0" class="results-label">
+                            Please click into a cluster
+                        </p>
                     </ul>
                 </div>
             </section>
@@ -87,10 +112,10 @@
             <section class="employee-guard-section map-section">
                 <form name="" action="" class="search-query" role="form">
                     <fieldset>
-                        <div class="col-md-8">
+                        <div class="col-md-7">
                             <h1><i class="icon-map-marker icon-large"></i> Map</h1>
                         </div>
-                        <div class="search-wrapper col-md-4">
+                        <div class="search-wrapper col-md-5">
                             <input google-maps-autocomplete="autocomplete" name="searchQuery" ng-model="searchQuery" type="text" ng-Keyup="onSearchQueryKeyup($event)" class="form-control" placeholder="Search Location" value=""/>
                             <i class="icon-search"></i>
                             <ul id="" class="search-results"></ul>

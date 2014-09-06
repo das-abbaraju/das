@@ -1,6 +1,6 @@
 angular.module('PICS.directives')
 
-.directive('markerClusterMap', function (mapMarkerService) {
+.directive('markerClusterMap', function (mapMarkerService, whoAmI, $sce, addCompanyService) {
     return {
         restrict: 'E',
         scope: {
@@ -21,6 +21,12 @@ angular.module('PICS.directives')
                 loader = $(element.children()[2]),
                 markerIconBase = '/angular/src/app/company-finder/img/';
 
+            whoAmI.get(function (result) {
+                scope.userInfo = result;
+            });
+
+            scope.processingAdd = false;
+
             scope.$emit('loader-ready', loader, scope.markerClustererConfig);
 
             if (!map || isEmptyObject(map)) {
@@ -34,6 +40,29 @@ angular.module('PICS.directives')
 
                 refreshMarkerClusterer(map, newConfig);
             }, true);
+
+            scope.safeApply = function(fn) {
+                var phase = this.$root.$$phase;
+                if(phase == '$apply' || phase == '$digest') {
+                    if(fn && (typeof(fn) === 'function')) {
+                      fn();
+                    }
+                } else {
+                    this.$apply(fn);
+                }
+            };
+
+            scope.addCompany = function() {
+                scope.processingAdd = true;
+
+                addCompanyService.get({id:scope.location.id}).$promise.then(function () {
+                    scope.location.worksForOperator = true;
+                    scope.processingAdd = false;
+                }).catch(function () {
+                    scope.addFailed = true;
+                    scope.processingAdd = false;
+                });
+            };
 
             google.maps.event.addListener(
                 map,
@@ -58,12 +87,7 @@ angular.module('PICS.directives')
             }
 
             function createMarkerClusterer(map, config) {
-                var markerImage = new google.maps.MarkerImage(
-                    config.markerImageUrl,
-                    new google.maps.Size(24, 32)
-                );
-
-                currentMarkerList = createMarkers(map, config.locations, markerImage);
+                currentMarkerList = createMarkers(map, config);
 
                 mapMarkerService.setMarkers(currentMarkerList);
 
@@ -80,12 +104,38 @@ angular.module('PICS.directives')
                 return new google.maps.Map(mapContainer, config);
             }
 
-            function createMarkers(map, locations, markerImage) {
-                var markers = [],
-                    location_index, marker;
+            function createMarkers(map, config) {
+                var locations = config.locations,
+                    markers = [],
+                    location_index, marker,
+                    redMarkerImage = new google.maps.MarkerImage(
+                        config.redMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    yellowMarkerImage = new google.maps.MarkerImage(
+                        config.yellowMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    greenMarkerImage = new google.maps.MarkerImage(
+                        config.greenMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    grayMarkerImage = new google.maps.MarkerImage(
+                        config.grayMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    );
 
                 angular.forEach(locations, function (location, index) {
-                    marker = createMarker(map, location, markerImage, index);
+                    if (location.flagColor == 'Red') {
+                        marker = createMarker(map, location, redMarkerImage, index);
+                    } else if (location.flagColor == 'Amber') {
+                        marker = createMarker(map, location, yellowMarkerImage, index);
+                    } else if (location.flagColor == 'Green') {
+                        marker = createMarker(map, location, greenMarkerImage, index);
+                    } else {
+                        marker = createMarker(map, location, grayMarkerImage, index);
+                    }
+
                     markers.push(marker);
                 });
 
@@ -106,7 +156,8 @@ angular.module('PICS.directives')
                     labelInBackground: false,
                     labelAnchor: new google.maps.Point(6, 27),
                     labelClass: 'marker-label',
-                    id: index
+                    id: index,
+                    flagColor: location.flagColor
                 });
 
                 google.maps.event.addListener(
@@ -130,29 +181,6 @@ angular.module('PICS.directives')
                 return googleMarker;
             }
 
-            // TODO: Make contentString a configuration option
-            function getInfoWindowContent(location) {
-                var otherTrades = getOtherTradesLabel(location),
-                    address = location.formattedAddressBlock.replace('\n', '<br>');
-
-                var contentString = [
-                    '<div class="info-window-content">' +
-                        '<p class="contractor-name">',
-                            '<a href="' + location.link + '" target="_blank">' + location.name + '</a>',
-                        '</p>',
-                        '<p class="primary-trade">',
-                            location.primaryTrade,
-                        '</p>',
-                        '<p class="other-trades">',
-                            '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
-                        '</p>',
-                        '<p class="address">' + address + '</p>' +
-                    '</div>'
-                ].join('');
-
-                return contentString;
-            }
-
             function getOtherTradesLabel(location) {
                 var nonPrimaryTrades = location.trades.length - 1;
 
@@ -167,21 +195,14 @@ angular.module('PICS.directives')
 
             function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    var MARKER_LARGE_HEIGHT = 80,
-                        overlay = new google.maps.OverlayView();
+                    scope.addFailed = false;
 
-                    overlay.draw = function() {};
-                    overlay.setMap(map);
+                    scope.location = location;
 
-                    var proj = overlay.getProjection(),
-                        pos = googleMarker.getPosition(),
-                        p = proj.fromLatLngToContainerPixel(pos);
+                    scope.otherTrades = $sce.trustAsHtml(getOtherTradesLabel(location));
 
-                    $('.info-window-content').remove();
+                    scope.address = $sce.trustAsHtml(location.formattedAddressBlock.replace('\n', '<br/>'));
 
-                    info_window.append(getInfoWindowContent(location));
-                    info_window.css('left', p.x - (info_window.width() / 2) - parseInt(info_window.css('padding-left')));
-                    info_window.css('top', p.y - info_window.height() - MARKER_LARGE_HEIGHT);
                     info_window.css('display', 'block');
 
                     currentInfoWindow = index;
@@ -193,6 +214,8 @@ angular.module('PICS.directives')
                     }
 
                     selectedMarker = googleMarker;
+
+                    scope.safeApply();
                 };
             }
 
@@ -204,8 +227,44 @@ angular.module('PICS.directives')
                     googleMarker.labelClass = 'marker-label-large';
                     googleMarker.label.setStyles();
 
-                    googleMarker.setIcon(markerIconBase + 'marker-danger-light-large.png');
+                    googleMarker.setIcon(getMarkerIconUrl(googleMarker.flagColor, true));
                 };
+            }
+
+            function getMarkerIconUrl(flagColor, large) {
+                var marker;
+
+                switch (flagColor) {
+                    case 'Red':
+                        if (large) {
+                            marker = 'marker-danger-light-large.png';
+                        } else {
+                            marker = 'marker-danger-light.png';
+                        }
+                        break;
+                    case 'Amber':
+                        if (large) {
+                            marker = 'marker-warning-light-large.png';
+                        } else {
+                            marker = 'marker-warning-light.png';
+                        }
+                        break;
+                    case 'Green':
+                        if (large) {
+                            marker = 'marker-success-light-large.png';
+                        } else {
+                            marker = 'marker-success-light.png';
+                        }
+                        break;
+                    default:
+                        if (large) {
+                            marker = 'marker-generic-large.png';
+                        } else {
+                            marker = 'marker-generic.png';
+                        }
+                }
+
+                return markerIconBase + marker;
             }
 
             function createMouseOutHandler(googleMarker) {
@@ -234,7 +293,7 @@ angular.module('PICS.directives')
                 googleMarker.labelClass = 'marker-label';
                 googleMarker.label.setStyles();
 
-                googleMarker.setIcon(markerIconBase + 'marker-danger-light.png');
+                googleMarker.setIcon(getMarkerIconUrl(googleMarker.flagColor, false));
             }
 
             function refreshMarkerClusterer(map, config) {

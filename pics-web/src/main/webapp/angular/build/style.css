@@ -14539,75 +14539,88 @@ ul.skill-nav a {
 }
 
 /* line 1, ../src/common/components/_panel.scss */
-.panel-default {
-  border-color: #e6e6e6;
+.panel {
+  border: none;
+  box-shadow: none;
 }
-
 /* line 5, ../src/common/components/_panel.scss */
-.panel-default > .panel-heading {
+.panel > .panel-heading {
+  border: none;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+/* line 10, ../src/common/components/_panel.scss */
+.panel > .panel-heading > .panel-title {
+  font-size: 14px;
+  font-weight: normal;
+}
+/* line 17, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading {
+  color: #454545;
+  background-color: #f1f1f2;
+}
+/* line 21, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border: none;
+}
+/* line 25, ../src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading > .panel-title a {
+  color: #4496d8;
+}
+/* line 29, ../src/common/components/_panel.scss */
+.panel.panel-default .panel-body {
   color: #454545;
   background-color: #e6e6e6;
-  border-color: #e6e6e6;
 }
-
-/* line 11, ../src/common/components/_panel.scss */
-.panel-info {
-  border-color: #9cccf9;
-}
-
-/* line 15, ../src/common/components/_panel.scss */
-.panel-info > .panel-heading {
+/* line 36, ../src/common/components/_panel.scss */
+.panel.panel-info > .panel-heading {
   color: #fff;
   background-color: #9cccf9;
-  border-color: #9cccf9;
 }
-
-/* line 21, ../src/common/components/_panel.scss */
-.panel-warning {
-  border-color: #fbcb43;
+/* line 41, ../src/common/components/_panel.scss */
+.panel.panel-info .panel-body {
+  color: #4496d8;
+  background-color: #ebf5fe;
 }
-
-/* line 25, ../src/common/components/_panel.scss */
-.panel-warning > .panel-heading {
+/* line 48, ../src/common/components/_panel.scss */
+.panel.panel-warning > .panel-heading {
   color: #fff;
   background-color: #fbcb43;
-  border-color: #fbcb43;
 }
-
-/* line 31, ../src/common/components/_panel.scss */
-.panel-primary {
-  border-color: #3498db;
+/* line 53, ../src/common/components/_panel.scss */
+.panel.panel-warning .panel-body {
+  color: #ec8c00;
+  background-color: #fef5d9;
 }
-
-/* line 35, ../src/common/components/_panel.scss */
-.panel-primary > .panel-heading {
+/* line 61, ../src/common/components/_panel.scss */
+.panel.panel-primary > .panel-heading {
   color: #fff;
   background-color: #3498db;
-  border-color: #3498db;
 }
-
-/* line 41, ../src/common/components/_panel.scss */
-.panel-success {
-  border-color: #33b679;
+/* line 66, ../src/common/components/_panel.scss */
+.panel.panel-primary .panel-body {
+  color: #105093;
+  background-color: #d6eaf8;
 }
-
-/* line 45, ../src/common/components/_panel.scss */
-.panel-success > .panel-heading {
+/* line 73, ../src/common/components/_panel.scss */
+.panel.panel-success > .panel-heading {
   color: #fff;
   background-color: #33b679;
-  border-color: #33b679;
 }
-
-/* line 51, ../src/common/components/_panel.scss */
-.panel-danger {
-  border-color: #e74c3c;
+/* line 78, ../src/common/components/_panel.scss */
+.panel.panel-success .panel-body {
+  color: #05702e;
+  background-color: #d6f0e4;
 }
-
-/* line 55, ../src/common/components/_panel.scss */
-.panel-danger > .panel-heading {
+/* line 85, ../src/common/components/_panel.scss */
+.panel.panel-danger > .panel-heading {
   color: #fff;
   background-color: #e74c3c;
-  border-color: #e74c3c;
+}
+/* line 90, ../src/common/components/_panel.scss */
+.panel.panel-danger .panel-body {
+  color: #800a06;
+  background-color: #fadbd8;
 }
 
 /* line 1, ../src/common/components/_progress-bar.scss */
@@ -15299,47 +15312,21 @@ ul.skill-nav a {
 .marker-cluster-map {
   position: relative;
 }
+/* line 39, ../src/common/directives/marker-cluster-map/_marker-cluster-map.scss */
+.marker-cluster-map .failed-add {
+  color: #e74c3c;
+}
 
-/* line 40, ../src/common/directives/marker-cluster-map/_marker-cluster-map.scss */
+/* line 44, ../src/common/directives/marker-cluster-map/_marker-cluster-map.scss */
 .info-window {
-  background: #ffffff;
-  width: 250px;
+  background: rgba(241, 241, 242, 0.85);
   position: absolute;
   z-index: 1000;
+  right: 0;
   left: 0;
-  top: 0;
-  border-radius: 4px;
+  bottom: 0;
   padding: 10px 15px;
   display: none;
-  -webkit-box-shadow: 0px 0px 5px #b3b3b3;
-  -moz-box-shadow: 0px 0px 5px #b3b3b3;
-  box-shadow: 0px 0px 5px #b3b3b3;
-}
-
-/* line 53, ../src/common/directives/marker-cluster-map/_marker-cluster-map.scss */
-.arrow-icon:before {
-  border: solid;
-  border-color: #ffffff transparent;
-  border-width: 10px 10px 0 10px;
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: 99;
-  bottom: -10px;
-  left: 45.5%;
-}
-
-/* line 65, ../src/common/directives/marker-cluster-map/_marker-cluster-map.scss */
-.arrow-icon:after {
-  border: solid;
-  border-color: rgba(0, 0, 0, 0.12) transparent;
-  border-width: 12px 12px 0 12px;
-  content: "";
-  display: block;
-  position: absolute;
-  z-index: 98;
-  bottom: -12px;
-  left: 45%;
 }
 
 /* line 2, ../src/common/directives/time-zone-select/_time-zone-select.scss */
@@ -16603,75 +16590,125 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin-bottom: 30px;
 }
 /* line 8, ../src/app/company-finder/_company-finder.scss */
-#company-finder .filter-panel {
-  background: #f1f1f2;
-  border-radius: 5px;
-  padding: 10px 0 15px;
+#company-finder .employee-guard-section > h1 {
+  margin-top: 0;
 }
 /* line 13, ../src/app/company-finder/_company-finder.scss */
-#company-finder .filter-panel .title {
-  text-align: center;
-  font-size: 16px;
-  padding-bottom: 5px;
-  color: #999999;
+#company-finder .filter-results-section .panel-body {
+  padding: 0;
+}
+/* line 17, ../src/app/company-finder/_company-finder.scss */
+#company-finder .filter-results-section .control-spacer {
+  margin-bottom: 20px;
 }
 /* line 21, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map {
+#company-finder .filter-results-section .search-toggle {
+  font-size: 12px;
+}
+/* line 27, ../src/app/company-finder/_company-finder.scss */
+#company-finder .search-results-section .badge-info {
+  margin-left: 5px;
+}
+/* line 32, ../src/app/company-finder/_company-finder.scss */
+#company-finder .search-results-section .icon-filter:hover {
+  color: #73bbe8;
+  cursor: pointer;
+}
+/* line 39, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section {
+  overflow: hidden;
+}
+/* line 42, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section h1 {
+  background-color: #f1f1f1;
+  color: #808285;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 0;
+  margin: 0;
+}
+/* line 50, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section h1 i.icon-map-marker {
+  color: #808285;
+  font-size: 14px;
+  margin-right: 5px;
+}
+/* line 57, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper {
+  padding: 4px;
+}
+/* line 60, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper input {
+  height: 30px;
+}
+/* line 64, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper .icon-search {
+  top: 12px;
+}
+/* line 69, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map {
   width: 100%;
   height: 500px;
 }
-/* line 25, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .marker-label {
+/* line 73, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map .marker-label {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   color: #ffffff;
 }
-/* line 31, ../src/app/company-finder/_company-finder.scss */
-#company-finder .map .marker-label-large {
+/* line 79, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map .marker-label-large {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   color: #ffffff;
 }
-/* line 39, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.search-results-section h1,
-#company-finder .employee-guard-section.map-section {
-  margin-top: 20px;
-}
-/* line 45, ../src/app/company-finder/_company-finder.scss */
+/* line 90, ../src/app/company-finder/_company-finder.scss */
 #company-finder .info-window .contractor-name,
 #company-finder .result-list .contractor-name {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  margin-bottom: 3px;
-}
-/* line 53, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .primary-trade {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
+  margin-bottom: 0px;
 }
-/* line 58, ../src/app/company-finder/_company-finder.scss */
+/* line 96, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .primary-trade,
+#company-finder .result-list .primary-trade {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  margin-bottom: 0;
+}
+/* line 102, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .results-label,
+#company-finder .result-list .results-label {
+  font-size: 16px;
+  color: #cccccc;
+  text-align: center;
+}
+/* line 110, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window p {
+  margin-bottom: 0;
+}
+/* line 114, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window i {
+  font-size: 16px;
+}
+/* line 118, ../src/app/company-finder/_company-finder.scss */
 #company-finder .info-window .other-trades {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
 }
-/* line 63, ../src/app/company-finder/_company-finder.scss */
+/* line 123, ../src/app/company-finder/_company-finder.scss */
 #company-finder .info-window .address {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 12px;
   color: #808285;
 }
-/* line 71, ../src/app/company-finder/_company-finder.scss */
+/* line 131, ../src/app/company-finder/_company-finder.scss */
 #company-finder .result-list .result {
   margin-left: -30px;
   margin-right: -30px;
-  padding: 10px 0;
+  padding: 8px 0;
 }
-/* line 76, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .primary-trade {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-}
-/* line 81, ../src/app/company-finder/_company-finder.scss */
+/* line 136, ../src/app/company-finder/_company-finder.scss */
 #company-finder .result-list .result .red-marker {
   background: url("/angular/src/app/company-finder/img/marker-danger-light.png") center no-repeat;
   color: #ffffff;
@@ -16680,34 +16717,41 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   padding-top: 2px;
   width: 21px;
 }
-/* line 90, ../src/app/company-finder/_company-finder.scss */
+/* line 145, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .yellow-marker {
+  background: url("/angular/src/app/company-finder/img/marker-warning-light.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 154, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .green-marker {
+  background: url("/angular/src/app/company-finder/img/marker-success-light.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 163, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .gray-marker {
+  background: url("/angular/src/app/company-finder/img/marker-generic.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 172, ../src/app/company-finder/_company-finder.scss */
 #company-finder .result-list .result:hover {
   background: #EBF5FE;
 }
-/* line 96, ../src/app/company-finder/_company-finder.scss */
-#company-finder .icon-map-marker {
-  color: #e74c3c;
-  font-size: 34px;
-}
-/* line 102, ../src/app/company-finder/_company-finder.scss */
-#company-finder .icon-download:hover {
-  color: #73bbe8;
-  cursor: pointer;
-}
-/* line 109, ../src/app/company-finder/_company-finder.scss */
-#company-finder fieldset h1 {
-  background-color: #f1f1f1;
-  color: #808285;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 13px 0;
-  margin: 0;
-}
-/* line 117, ../src/app/company-finder/_company-finder.scss */
-#company-finder fieldset h1 i.icon-map-marker {
-  color: #808285;
-  font-size: 14px;
+/* line 176, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .icon-link {
   margin-right: 5px;
+  color: #cccccc;
 }
 
 /*!
@@ -31251,75 +31295,88 @@ ul.skill-nav a {
 }
 
 /* line 1, ../../employee-guard/src/common/components/_panel.scss */
-.panel-default {
-  border-color: #e6e6e6;
+.panel {
+  border: none;
+  box-shadow: none;
 }
-
 /* line 5, ../../employee-guard/src/common/components/_panel.scss */
-.panel-default > .panel-heading {
+.panel > .panel-heading {
+  border: none;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+/* line 10, ../../employee-guard/src/common/components/_panel.scss */
+.panel > .panel-heading > .panel-title {
+  font-size: 14px;
+  font-weight: normal;
+}
+/* line 17, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading {
+  color: #454545;
+  background-color: #f1f1f2;
+}
+/* line 21, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading + .panel-collapse .panel-body {
+  border: none;
+}
+/* line 25, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-default > .panel-heading > .panel-title a {
+  color: #4496d8;
+}
+/* line 29, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-default .panel-body {
   color: #454545;
   background-color: #e6e6e6;
-  border-color: #e6e6e6;
 }
-
-/* line 11, ../../employee-guard/src/common/components/_panel.scss */
-.panel-info {
-  border-color: #9cccf9;
-}
-
-/* line 15, ../../employee-guard/src/common/components/_panel.scss */
-.panel-info > .panel-heading {
+/* line 36, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-info > .panel-heading {
   color: #fff;
   background-color: #9cccf9;
-  border-color: #9cccf9;
 }
-
-/* line 21, ../../employee-guard/src/common/components/_panel.scss */
-.panel-warning {
-  border-color: #fbcb43;
+/* line 41, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-info .panel-body {
+  color: #4496d8;
+  background-color: #ebf5fe;
 }
-
-/* line 25, ../../employee-guard/src/common/components/_panel.scss */
-.panel-warning > .panel-heading {
+/* line 48, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-warning > .panel-heading {
   color: #fff;
   background-color: #fbcb43;
-  border-color: #fbcb43;
 }
-
-/* line 31, ../../employee-guard/src/common/components/_panel.scss */
-.panel-primary {
-  border-color: #3498db;
+/* line 53, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-warning .panel-body {
+  color: #ec8c00;
+  background-color: #fef5d9;
 }
-
-/* line 35, ../../employee-guard/src/common/components/_panel.scss */
-.panel-primary > .panel-heading {
+/* line 61, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-primary > .panel-heading {
   color: #fff;
   background-color: #3498db;
-  border-color: #3498db;
 }
-
-/* line 41, ../../employee-guard/src/common/components/_panel.scss */
-.panel-success {
-  border-color: #33b679;
+/* line 66, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-primary .panel-body {
+  color: #105093;
+  background-color: #d6eaf8;
 }
-
-/* line 45, ../../employee-guard/src/common/components/_panel.scss */
-.panel-success > .panel-heading {
+/* line 73, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-success > .panel-heading {
   color: #fff;
   background-color: #33b679;
-  border-color: #33b679;
 }
-
-/* line 51, ../../employee-guard/src/common/components/_panel.scss */
-.panel-danger {
-  border-color: #e74c3c;
+/* line 78, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-success .panel-body {
+  color: #05702e;
+  background-color: #d6f0e4;
 }
-
-/* line 55, ../../employee-guard/src/common/components/_panel.scss */
-.panel-danger > .panel-heading {
+/* line 85, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-danger > .panel-heading {
   color: #fff;
   background-color: #e74c3c;
-  border-color: #e74c3c;
+}
+/* line 90, ../../employee-guard/src/common/components/_panel.scss */
+.panel.panel-danger .panel-body {
+  color: #800a06;
+  background-color: #fadbd8;
 }
 
 /* line 1, ../../employee-guard/src/common/components/_progress-bar.scss */

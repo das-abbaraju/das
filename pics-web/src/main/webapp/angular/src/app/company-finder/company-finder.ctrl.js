@@ -29,7 +29,10 @@ angular.module('PICS.companyFinder')
                 "textSize": 12,
                 "fontWeight": 'normal'
             }],
-            markerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png'
+            redMarkerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png',
+            yellowMarkerImageUrl: '/angular/src/app/company-finder/img/marker-warning-light.png',
+            greenMarkerImageUrl: '/angular/src/app/company-finder/img/marker-success-light.png',
+            grayMarkerImageUrl: '/angular/src/app/company-finder/img/marker-generic.png'
         };
 
         var clusterMapLoader;
@@ -110,9 +113,13 @@ angular.module('PICS.companyFinder')
 
         $scope.filterEditMode = false;
 
+        $scope.basicSearchMode = true;
+
         $scope.safetySensitiveEnabled = false;
 
         $scope.safetySensitive = true;
+
+        $scope.locationCount = 0;
 
         $scope.googleMapConfig = {
             map: map,
@@ -142,6 +149,28 @@ angular.module('PICS.companyFinder')
             });
         });
 
+        $scope.getMarkerClass = function (flagColor) {
+            if (flagColor == 'Red') {
+                return 'red-marker';
+            } else if (flagColor == 'Amber') {
+                return 'yellow-marker';
+            } else if (flagColor == 'Green') {
+                return 'green-marker';
+            } else {
+                return 'gray-marker';
+            }
+        };
+
+        $scope.onBasicSearchClick = function ($event) {
+            $event.preventDefault();
+            $scope.basicSearchMode = true;
+        };
+
+         $scope.onAdvancedSearchClick = function ($event) {
+            $event.preventDefault();
+            $scope.basicSearchMode = false;
+        };
+
         function serverResponseLikelySlow() {
             return map.zoom < 10;
         }
@@ -155,6 +184,7 @@ angular.module('PICS.companyFinder')
 
             .then(function (locations) {
                 updateLocationsUi(locations);
+                $scope.locationCount = locations.length;
                 clusterMapLoader.hide();
             }, function () {
                 clusterMapLoader.hide();
@@ -240,7 +270,7 @@ angular.module('PICS.companyFinder')
                     neLong: ne.lng(),
                     swLat: sw.lat(),
                     swLong: sw.lng(),
-                    ss: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
+                    safetySensitive: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
                 };
 
             if (!trade) {

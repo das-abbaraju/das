@@ -63707,7 +63707,10 @@ if(window.jasmine || window.mocha) {
                 "textSize": 12,
                 "fontWeight": 'normal'
             }],
-            markerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png'
+            redMarkerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png',
+            yellowMarkerImageUrl: '/angular/src/app/company-finder/img/marker-warning-light.png',
+            greenMarkerImageUrl: '/angular/src/app/company-finder/img/marker-success-light.png',
+            grayMarkerImageUrl: '/angular/src/app/company-finder/img/marker-generic.png'
         };
 
         var clusterMapLoader;
@@ -63788,9 +63791,13 @@ if(window.jasmine || window.mocha) {
 
         $scope.filterEditMode = false;
 
+        $scope.basicSearchMode = true;
+
         $scope.safetySensitiveEnabled = false;
 
         $scope.safetySensitive = true;
+
+        $scope.locationCount = 0;
 
         $scope.googleMapConfig = {
             map: map,
@@ -63820,6 +63827,28 @@ if(window.jasmine || window.mocha) {
             });
         });
 
+        $scope.getMarkerClass = function (flagColor) {
+            if (flagColor == 'Red') {
+                return 'red-marker';
+            } else if (flagColor == 'Amber') {
+                return 'yellow-marker';
+            } else if (flagColor == 'Green') {
+                return 'green-marker';
+            } else {
+                return 'gray-marker';
+            }
+        };
+
+        $scope.onBasicSearchClick = function ($event) {
+            $event.preventDefault();
+            $scope.basicSearchMode = true;
+        };
+
+         $scope.onAdvancedSearchClick = function ($event) {
+            $event.preventDefault();
+            $scope.basicSearchMode = false;
+        };
+
         function serverResponseLikelySlow() {
             return map.zoom < 10;
         }
@@ -63833,6 +63862,7 @@ if(window.jasmine || window.mocha) {
 
             .then(function (locations) {
                 updateLocationsUi(locations);
+                $scope.locationCount = locations.length;
                 clusterMapLoader.hide();
             }, function () {
                 clusterMapLoader.hide();
@@ -63918,7 +63948,7 @@ if(window.jasmine || window.mocha) {
                     neLong: ne.lng(),
                     swLat: sw.lat(),
                     swLong: sw.lng(),
-                    ss: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
+                    safetySensitive: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
                 };
 
             if (!trade) {
@@ -64326,7 +64356,7 @@ if(window.jasmine || window.mocha) {
     };
 });;angular.module('PICS.directives')
 
-.directive('markerClusterMap', function (mapMarkerService) {
+.directive('markerClusterMap', function (mapMarkerService, whoAmI, $sce, addCompanyService) {
     return {
         restrict: 'E',
         scope: {
@@ -64347,6 +64377,12 @@ if(window.jasmine || window.mocha) {
                 loader = $(element.children()[2]),
                 markerIconBase = '/angular/src/app/company-finder/img/';
 
+            whoAmI.get(function (result) {
+                scope.userInfo = result;
+            });
+
+            scope.processingAdd = false;
+
             scope.$emit('loader-ready', loader, scope.markerClustererConfig);
 
             if (!map || isEmptyObject(map)) {
@@ -64360,6 +64396,29 @@ if(window.jasmine || window.mocha) {
 
                 refreshMarkerClusterer(map, newConfig);
             }, true);
+
+            scope.safeApply = function(fn) {
+                var phase = this.$root.$$phase;
+                if(phase == '$apply' || phase == '$digest') {
+                    if(fn && (typeof(fn) === 'function')) {
+                      fn();
+                    }
+                } else {
+                    this.$apply(fn);
+                }
+            };
+
+            scope.addCompany = function() {
+                scope.processingAdd = true;
+
+                addCompanyService.get({id:scope.location.id}).$promise.then(function () {
+                    scope.location.worksForOperator = true;
+                    scope.processingAdd = false;
+                }).catch(function () {
+                    scope.addFailed = true;
+                    scope.processingAdd = false;
+                });
+            };
 
             google.maps.event.addListener(
                 map,
@@ -64384,12 +64443,7 @@ if(window.jasmine || window.mocha) {
             }
 
             function createMarkerClusterer(map, config) {
-                var markerImage = new google.maps.MarkerImage(
-                    config.markerImageUrl,
-                    new google.maps.Size(24, 32)
-                );
-
-                currentMarkerList = createMarkers(map, config.locations, markerImage);
+                currentMarkerList = createMarkers(map, config);
 
                 mapMarkerService.setMarkers(currentMarkerList);
 
@@ -64406,12 +64460,38 @@ if(window.jasmine || window.mocha) {
                 return new google.maps.Map(mapContainer, config);
             }
 
-            function createMarkers(map, locations, markerImage) {
-                var markers = [],
-                    location_index, marker;
+            function createMarkers(map, config) {
+                var locations = config.locations,
+                    markers = [],
+                    location_index, marker,
+                    redMarkerImage = new google.maps.MarkerImage(
+                        config.redMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    yellowMarkerImage = new google.maps.MarkerImage(
+                        config.yellowMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    greenMarkerImage = new google.maps.MarkerImage(
+                        config.greenMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    ),
+                    grayMarkerImage = new google.maps.MarkerImage(
+                        config.grayMarkerImageUrl,
+                        new google.maps.Size(24, 32)
+                    );
 
                 angular.forEach(locations, function (location, index) {
-                    marker = createMarker(map, location, markerImage, index);
+                    if (location.flagColor == 'Red') {
+                        marker = createMarker(map, location, redMarkerImage, index);
+                    } else if (location.flagColor == 'Amber') {
+                        marker = createMarker(map, location, yellowMarkerImage, index);
+                    } else if (location.flagColor == 'Green') {
+                        marker = createMarker(map, location, greenMarkerImage, index);
+                    } else {
+                        marker = createMarker(map, location, grayMarkerImage, index);
+                    }
+
                     markers.push(marker);
                 });
 
@@ -64432,7 +64512,8 @@ if(window.jasmine || window.mocha) {
                     labelInBackground: false,
                     labelAnchor: new google.maps.Point(6, 27),
                     labelClass: 'marker-label',
-                    id: index
+                    id: index,
+                    flagColor: location.flagColor
                 });
 
                 google.maps.event.addListener(
@@ -64456,29 +64537,6 @@ if(window.jasmine || window.mocha) {
                 return googleMarker;
             }
 
-            // TODO: Make contentString a configuration option
-            function getInfoWindowContent(location) {
-                var otherTrades = getOtherTradesLabel(location),
-                    address = location.formattedAddressBlock.replace('\n', '<br>');
-
-                var contentString = [
-                    '<div class="info-window-content">' +
-                        '<p class="contractor-name">',
-                            '<a href="' + location.link + '" target="_blank">' + location.name + '</a>',
-                        '</p>',
-                        '<p class="primary-trade">',
-                            location.primaryTrade,
-                        '</p>',
-                        '<p class="other-trades">',
-                            '<a href="' + location.link + '#trade_cloud" target="_blank">' + otherTrades + '</a>',
-                        '</p>',
-                        '<p class="address">' + address + '</p>' +
-                    '</div>'
-                ].join('');
-
-                return contentString;
-            }
-
             function getOtherTradesLabel(location) {
                 var nonPrimaryTrades = location.trades.length - 1;
 
@@ -64493,21 +64551,14 @@ if(window.jasmine || window.mocha) {
 
             function createMarkerClickHandler(map, googleMarker, location, index) {
                 return function () {
-                    var MARKER_LARGE_HEIGHT = 80,
-                        overlay = new google.maps.OverlayView();
+                    scope.addFailed = false;
 
-                    overlay.draw = function() {};
-                    overlay.setMap(map);
+                    scope.location = location;
 
-                    var proj = overlay.getProjection(),
-                        pos = googleMarker.getPosition(),
-                        p = proj.fromLatLngToContainerPixel(pos);
+                    scope.otherTrades = $sce.trustAsHtml(getOtherTradesLabel(location));
 
-                    $('.info-window-content').remove();
+                    scope.address = $sce.trustAsHtml(location.formattedAddressBlock.replace('\n', '<br/>'));
 
-                    info_window.append(getInfoWindowContent(location));
-                    info_window.css('left', p.x - (info_window.width() / 2) - parseInt(info_window.css('padding-left')));
-                    info_window.css('top', p.y - info_window.height() - MARKER_LARGE_HEIGHT);
                     info_window.css('display', 'block');
 
                     currentInfoWindow = index;
@@ -64519,6 +64570,8 @@ if(window.jasmine || window.mocha) {
                     }
 
                     selectedMarker = googleMarker;
+
+                    scope.safeApply();
                 };
             }
 
@@ -64530,8 +64583,44 @@ if(window.jasmine || window.mocha) {
                     googleMarker.labelClass = 'marker-label-large';
                     googleMarker.label.setStyles();
 
-                    googleMarker.setIcon(markerIconBase + 'marker-danger-light-large.png');
+                    googleMarker.setIcon(getMarkerIconUrl(googleMarker.flagColor, true));
                 };
+            }
+
+            function getMarkerIconUrl(flagColor, large) {
+                var marker;
+
+                switch (flagColor) {
+                    case 'Red':
+                        if (large) {
+                            marker = 'marker-danger-light-large.png';
+                        } else {
+                            marker = 'marker-danger-light.png';
+                        }
+                        break;
+                    case 'Amber':
+                        if (large) {
+                            marker = 'marker-warning-light-large.png';
+                        } else {
+                            marker = 'marker-warning-light.png';
+                        }
+                        break;
+                    case 'Green':
+                        if (large) {
+                            marker = 'marker-success-light-large.png';
+                        } else {
+                            marker = 'marker-success-light.png';
+                        }
+                        break;
+                    default:
+                        if (large) {
+                            marker = 'marker-generic-large.png';
+                        } else {
+                            marker = 'marker-generic.png';
+                        }
+                }
+
+                return markerIconBase + marker;
             }
 
             function createMouseOutHandler(googleMarker) {
@@ -64560,7 +64649,7 @@ if(window.jasmine || window.mocha) {
                 googleMarker.labelClass = 'marker-label';
                 googleMarker.label.setStyles();
 
-                googleMarker.setIcon(markerIconBase + 'marker-danger-light.png');
+                googleMarker.setIcon(getMarkerIconUrl(googleMarker.flagColor, false));
             }
 
             function refreshMarkerClusterer(map, config) {
@@ -65324,6 +65413,10 @@ if(window.jasmine || window.mocha) {
         createAccount: createAccount,
         validateCreateAccountParams: validateCreateAccountParams
     };
+});;angular.module('PICS.services')
+
+.factory('addCompanyService', function ($resource) {
+    return $resource('/NewContractorSearch!add.action?contractor=:id');
 });;angular.module('PICS.charts', [])
 
 .factory('TypeToChart', function(AnimatedArcChart) {
@@ -65546,6 +65639,10 @@ if(window.jasmine || window.mocha) {
 
 .factory('vatService', function ($resource) {
     return $resource('/tax-id-info/:country/:language.action');
+});;angular.module('PICS.services')
+
+.factory('whoAmI', function($resource) {
+    return $resource('/whoAmI.action');
 });;// Provides an alternative to Bootstrap 3's styling of table stripes,
 // e.g., for ie8, because BS3 uses the unsupported nth-child selector.
 // Accepts an optional selector so that it may be used independently of Bootstrap 3

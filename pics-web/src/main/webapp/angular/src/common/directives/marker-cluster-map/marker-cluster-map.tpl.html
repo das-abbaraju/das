@@ -1,6 +1,33 @@
 <div class="marker-cluster-map">
     <div class="info-window">
-        <span class="arrow-icon"></span>
+        <div class="row info-window-content">
+            <div class="col-md-8">
+                <p class="contractor-name">
+                    <a href="{{ location.link }}" target="_blank">{{ location.name }}</a>
+                </p>
+            </div>
+            <div class="col-md-4 text-right">
+                <a href="#" ng-show="userInfo.type == 'OPERATOR' && !location.worksForOperator && !processingAdd && !addFailed" ng-click="addCompany();">
+                    <i class="icon-plus-sign" tooltip title="Add Company"></i>
+                </a>
+                <p ng-show="processingAdd"><i class="icon-refresh icon-spin"></i></p>
+                <p ng-show="location.worksForOperator && !processingAdd">Connected <i class="icon-link"></i></p>
+                <p ng-show="addFailed" class="failed-add">Failed. Try again later.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <p class="primary-trade">
+                    {{ location.primaryTrade }}
+                </p>
+                <p class="other-trades">
+                    <a href="{{ location.link }}#trade_cloud" target="_blank" ng-bind-html="otherTrades"></a>
+                </p>
+            </div>
+            <div class="col-md-4 text-right">
+                <p class="address" ng-bind-html="address"></p>
+            </div>
+        </div>
     </div>
 
     <div class="map"></div>
