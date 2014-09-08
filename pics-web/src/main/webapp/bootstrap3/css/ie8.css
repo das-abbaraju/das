@@ -89,10 +89,14 @@ dd {
     display: block;
 }*/
 
-#report_edit .selected.icon-star:before {
+#report_copy .selected.icon-star:before,
+#report_edit .selected.icon-star:before,
+#report_edit_no_permission .selected.icon-star:before {
 	content: none;
 }
-#report_edit .selected.icon-star {
+#report_copy .selected.icon-star,
+#report_edit .selected.icon-star,
+#report_edit_no_permission .selected.icon-star {
 	display: inline-block;
 	width: 1em;
 	height: 1em;
