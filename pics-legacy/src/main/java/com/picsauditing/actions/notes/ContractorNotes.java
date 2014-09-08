@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.picsauditing.access.OpPerms;
+import com.picsauditing.access.OpType;
 import com.picsauditing.jpa.entities.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -135,13 +137,17 @@ public class ContractorNotes extends ContractorActionSupport {
 	}
 
     public boolean canPreviewEmail(int emailId) {
-		if (permissions.isAdmin() || permissions.isOperatorCorporate() || permissions.isPicsEmployee()) {
-            return true;
-        }
-
         EmailQueue email = findEmailById(emailId);
         if (email == null)
             return false;
+
+		if (permissions.isAdmin() || permissions.isPicsEmployee()) {
+			return true;
+		}
+
+	    if (permissions.isOperatorCorporate()) {
+		    return permissions.hasPermission(OpPerms.EmailQueue, OpType.View);
+	    }
 
 		// permissions checking must be compatible with {@link com.picsauditing.mail.EmailQueueList#previewAjax()}
 		if (permissions.isContractor()) {
@@ -155,8 +161,8 @@ public class ContractorNotes extends ContractorActionSupport {
 			boolean ccContainsEmail = !Strings.isEmpty(email.getCcAddresses())
 					&& email.getCcAddresses().contains(permissions.getEmail());
 
-			if (!toContainsEmail && !bccContainsEmail && !ccContainsEmail)
-				return false;
+			if (toContainsEmail || bccContainsEmail || ccContainsEmail)
+				return true;
 		}
 
         if (email.getBodyViewableBy() != null) {
