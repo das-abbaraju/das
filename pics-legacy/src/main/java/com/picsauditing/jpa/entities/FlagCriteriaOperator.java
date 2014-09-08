@@ -15,6 +15,7 @@ import java.util.Date;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_criteria_operator")
+@PrimaryKeyJoinColumn(name = "id")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE, region = "daily")
 public class FlagCriteriaOperator extends BaseTable {
 	private OperatorAccount operator;
