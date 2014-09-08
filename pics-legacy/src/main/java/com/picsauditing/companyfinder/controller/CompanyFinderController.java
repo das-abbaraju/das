@@ -80,9 +80,9 @@ public class CompanyFinderController extends PicsActionSupport {
 
     private HashMap<String, String> buildContractorInfoProperties() {
         HashMap<String, String> contractorInfoProperties = new HashMap<>();
-        contractorInfoProperties.put("linkurl", ContractorDashboard.URL);
+        contractorInfoProperties.put(CompanyFinderService.LINK_URL, ContractorDashboard.URL);
         if(permissions.isOperator()) {
-            contractorInfoProperties.put("opId", String.valueOf(permissions.getAccountId()));
+            contractorInfoProperties.put(CompanyFinderService.OP_ID, String.valueOf(permissions.getAccountId()));
         }
         return contractorInfoProperties;
     }
