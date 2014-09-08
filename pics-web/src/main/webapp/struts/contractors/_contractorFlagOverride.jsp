@@ -48,9 +48,8 @@
 	
 								<!-- Description -->
 								<td>
-									<s:set name="opCriteria" value="#data.flagCriteriaOperator" />
+									<s:set name="opCriteria" value="getApplicableOperatorCriteria(#data)" />
 										<s:if test="#opCriteria != null">
-                                            kirkchase
 										<s:if test="#data.criteria.oshaType != null || (#data.criteria.question != null && #data.criteria.question.id == 2034)">
 											<s:property value="#opCriteria.replaceHurdle" />
 											<a
