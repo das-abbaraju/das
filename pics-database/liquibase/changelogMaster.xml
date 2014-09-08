@@ -277,6 +277,6 @@
     <!-- 7.3.8 -->
     <include file="./liquibase/2014/Q3/mdo64_PICS-15906.sql"/>
     <include file="./liquibase/2014/Q3/kchase45_US851_AddFlagCriteriaOperatorToFlagData.sql"/>
-    <include file="./liquibase/2014/Q3/mdo65_PICS-15909.sql Update Existing Fees"/>
+    <include file="./liquibase/2014/Q3/mdo65_PICS-15909.sql"/>
 
 </databaseChangeLog>
