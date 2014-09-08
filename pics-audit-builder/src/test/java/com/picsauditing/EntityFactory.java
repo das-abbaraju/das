@@ -16,7 +16,7 @@ import java.util.List;
 public class EntityFactory {
     public static final Date END_OF_TIME = new GregorianCalendar(4000, 0, 1).getTime();
 
-	private static int counter = 100;
+	private static int counter = 10000;
 //	private static HashMap<String, Country> countries;
 //	private static Map<String, CountrySubdivision> countrySubdivisions;
 //
