@@ -29,6 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CompanyFinderService {
+    private static final int INFORMATION_DISPLAY_THRESHOLD = 10;
+    public static final String OP_ID = "opId";
+    public static final String LINKURL = "linkurl";
+    public static final String LINK_URL = LINKURL;
     @Autowired
     private ContractorLocationDAO contractorLocationDAO;
     @Autowired
@@ -60,15 +64,17 @@ public class CompanyFinderService {
 
         List<ContractorLocation> contractorLocations = contractorLocationDAO.findContractorLocations(companyFinderFilter);
 
-        String operatorIdStr = contractorInfoProps.get("opId");
+        String operatorIdStr = contractorInfoProps.get(OP_ID);
 
-        int operatorId;
-        if(StringUtils.isNotEmpty(operatorIdStr)) {
-            operatorId = Integer.parseInt(operatorIdStr);
-            operator = operatorAccountDAO.find(operatorId);
+        if(shouldComputeOperatorData(contractorLocations, operatorIdStr)) {
+            operator = operatorAccountDAO.find(Integer.parseInt(operatorIdStr));
         }
 
         return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
+    }
+
+    private boolean shouldComputeOperatorData(List<ContractorLocation> contractorLocations, String operatorIdStr) {
+        return contractorLocations.size() <= INFORMATION_DISPLAY_THRESHOLD && StringUtils.isNotEmpty(operatorIdStr);
     }
 
     private List<ContractorLocationInfo> buildContractorLocationsInfos(List<ContractorLocation> contractorLocations, HashMap<String, String> contractorLocationProps, OperatorAccount operator) {
@@ -104,7 +110,7 @@ public class CompanyFinderService {
                 )
                 .primaryTrade(primaryTradeName)
                 .trades(tradeNames)
-                .link(contractorLocationProps.get("linkurl") + "?id=" + contractor.getId())
+                .link(contractorLocationProps.get(LINK_URL) + "?id=" + contractor.getId())
                 .worksForOperator(isWorksForOperator)
                 .flagColor(flagColor)
                 .build();
