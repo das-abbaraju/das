@@ -97,13 +97,14 @@ public class EmailSubscriptionDAO extends PicsDAO {
 		sql.addJoin("JOIN accounts a ON a.id = u.accountID");
 		sql.addWhere(where);
 		sql.addWhere("u.isActive = 'Yes'");
+		sql.addWhere("u.isGroup = 'No'");
 		sql.addWhere("a.status = 'Active'");
 		sql.addWhere("e.timePeriod NOT IN ('None', 'Event')");
 		sql.addWhere("e.lastSent IS NULL OR e.lastSent < CASE e.timePeriod "
 				+ "WHEN 'Daily' THEN DATE_SUB(:now, INTERVAL 1 DAY)"
 				+ "WHEN 'Weekly' THEN DATE_SUB(:now, INTERVAL 1 WEEK)"
 				+ "WHEN 'Monthly' THEN DATE_SUB(:now, INTERVAL 1 MONTH) END");
-		sql.addOrderBy("e.lastSent");
+		sql.addOrderBy("RAND()");
 
 		sql.addField("e.id");
 
