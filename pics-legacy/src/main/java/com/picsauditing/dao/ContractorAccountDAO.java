@@ -167,8 +167,7 @@ public class ContractorAccountDAO extends PicsDAO {
 				where += " AND (operatorAccount.id = " + permissions.getAccountId()
 						+ " OR operatorAccount IN (SELECT operator FROM Facility "
 						+ "WHERE corporate IN (SELECT corporate FROM Facility " + "WHERE operator.id = "
-						+ permissions.getAccountId() + " AND corporate.id NOT IN ( "
-						+ Strings.implode(Account.PICS_CORPORATE, ",") + "))))";
+						+ permissions.getAccountId() + " AND corporate.inPicsConsortium = false))))";
 			}
 		}
 
