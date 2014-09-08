@@ -1,6 +1,6 @@
 --liquibase formatted sql
 
---changeset mdo:64
+--changeset mdo:65
 INSERT INTO invoice_fee (id,fee,defaultAmount,feeClass,qbFullName,createdBy,updatedBy,creationDate,updateDate)
 VALUES (364,'Activation Fee for 0 Operators','119.00','Activation','MRKT-ACT',37951,37951,NOW(),NOW()),
 (365,'Reactivation Fee for 0 Operators','119.00','Reactivation','MRKT-REACT',37951,37951,NOW(),NOW());
