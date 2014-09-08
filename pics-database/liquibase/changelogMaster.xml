@@ -274,4 +274,7 @@
     <include file="./liquibase/2014/Q3/mdo60_PICS-15605.sql"/>
     <include file="./liquibase/2014/Q3/mdo61_PICS-15647.sql"/>
 
+    <!-- 7.3.8 -->
+    <include file="./liquibase/2014/Q3/mdo64_PICS-15906.sql"/>
+
 </databaseChangeLog>
