@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ContractorLocationDAO extends PicsDAO {
 
-    public static String SELECT_CLAUSE = "SELECT distinct cl FROM ContractorLocation cl" +
+    public static final String SELECT_CLAUSE = "SELECT distinct cl FROM ContractorLocation cl" +
             " JOIN cl.contractor ca";
 
     public List<ContractorLocation> findContractorLocations(CompanyFinderFilter filter) {
@@ -28,12 +28,11 @@ public class ContractorLocationDAO extends PicsDAO {
 
      String getSQL(CompanyFinderFilter filter) {
 
-        StringBuilder sql = new StringBuilder();
+        StringBuilder sql = new StringBuilder(SELECT_CLAUSE);
         Trade trade = filter.getTrade();
         if(trade != null){
-            SELECT_CLAUSE +=  " JOIN ca.trades ct";
+             sql.append(" JOIN ca.trades ct");
         }
-        sql.append(SELECT_CLAUSE);
 
         StringBuilder whereClause = new StringBuilder(" WHERE");
         whereClause.append(getViewPortWhere());
