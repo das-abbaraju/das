@@ -11,6 +11,7 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "flag_data")
+@PrimaryKeyJoinColumn(name = "id")
 public class FlagData extends BaseTable implements com.picsauditing.flagcalculator.FlagData, Comparable<FlagData>, UpdatableListItem {
 
 	private ContractorAccount contractor;
@@ -20,6 +21,7 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
 	private FlagColor flag;
 	private FlagColor baselineFlag;
 	private FlagCriteriaContractor criteriaContractor;
+    private FlagCriteriaOperator flagCriteriaOperator;
 
 	@ManyToOne
 	@JoinColumns(
@@ -63,7 +65,17 @@ public class FlagData extends BaseTable implements com.picsauditing.flagcalculat
 		this.criteria = criteria;
 	}
 
-	@Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "criteriaOpID", nullable = true)
+    public FlagCriteriaOperator getFlagCriteriaOperator() {
+        return flagCriteriaOperator;
+    }
+
+    public void setFlagCriteriaOperator(FlagCriteriaOperator flagCriteriaOperator) {
+        this.flagCriteriaOperator = flagCriteriaOperator;
+    }
+
+    @Enumerated(EnumType.STRING)
 	@ReportField(type = FieldType.FlagColor, i18nKeyPrefix = "FlagColor", importance = FieldImportance.Required)
 	public FlagColor getFlag() {
 		return flag;
