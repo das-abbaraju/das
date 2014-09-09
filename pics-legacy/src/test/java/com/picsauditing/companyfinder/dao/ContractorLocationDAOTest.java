@@ -1,7 +1,6 @@
 package com.picsauditing.companyfinder.dao;
 
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
-import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.SafetySensitive;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
@@ -11,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
 public class ContractorLocationDAOTest {
 
     private ContractorLocationDAO contractorLocationDAO;
@@ -29,8 +27,6 @@ public class ContractorLocationDAOTest {
 
     @Test
     public void testGetSQL_viewPortOnly() throws Exception {
-        Trade trade = new Trade();
-        trade.setName(tradeName);
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -45,7 +41,7 @@ public class ContractorLocationDAOTest {
                                 .build())
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 
@@ -74,8 +70,6 @@ public class ContractorLocationDAOTest {
 
     @Test
     public void testGetSQL_filterWithSS() throws Exception {
-        Trade trade = new Trade();
-        trade.setName(tradeName);
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -91,7 +85,7 @@ public class ContractorLocationDAOTest {
                 .safetySensitive(SafetySensitive.INCLUDE)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 
