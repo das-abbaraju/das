@@ -4,12 +4,15 @@ import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.SafetySensitive;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
-import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static junit.framework.Assert.assertEquals;
+
 public class ContractorLocationDAOTest {
 
     private ContractorLocationDAO contractorLocationDAO;
@@ -47,8 +50,8 @@ public class ContractorLocationDAOTest {
 
     @Test
     public void testGetSQL_filterWithTrade() throws Exception {
-        Trade trade = new Trade();
-        trade.setName(tradeName);
+
+        List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -61,10 +64,10 @@ public class ContractorLocationDAOTest {
                                         .lng(swLong)
                                         .build())
                                 .build())
-                .trade(trade)
+                .tradeIds(tradeIds)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.indexStart <= :tradeStart AND :tradeEnd <= ct.trade.indexEnd AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.tradeID IN (:tradeList) AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 
@@ -91,8 +94,8 @@ public class ContractorLocationDAOTest {
 
     @Test
     public void testGetSQL_filterWithTradeAndSS() throws Exception {
-        Trade trade = new Trade();
-        trade.setName(tradeName);
+        List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
+
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -105,11 +108,11 @@ public class ContractorLocationDAOTest {
                                         .lng(swLong)
                                         .build())
                                 .build())
-                .trade(trade)
+                .tradeIds(tradeIds)
                 .safetySensitive(SafetySensitive.EXCLUDE)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.indexStart <= :tradeStart AND :tradeEnd <= ct.trade.indexEnd AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.tradeID IN (:tradeList) AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 

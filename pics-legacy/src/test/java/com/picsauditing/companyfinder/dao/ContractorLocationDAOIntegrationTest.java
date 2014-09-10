@@ -9,9 +9,9 @@ import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.dao.AbstractTransactionalTest;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
-import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.mail.NoUsersDefinedException;
 import com.picsauditing.model.general.LatLong;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +23,6 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
 
 @Ignore("Uncomment me to run this test (See ApplicationContext.xml and connection_localTest.properties for db props)")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,8 +44,7 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
 
     @Test
     public void testFindByViewPortAndTradeAndSafety() throws Exception {
-        Trade trade = new Trade();
-        trade.setName(tradeName);
+        List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
 
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
@@ -60,7 +58,7 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
                                         .lng(swLong)
                                         .build())
                                 .build())
-                .trade(trade)
+                .tradeIds(tradeIds)
                 .safetySensitive(SafetySensitive.EXCLUDE)
                 .build();
 

@@ -1,21 +1,16 @@
 package com.picsauditing.companyfinder.model.builder;
 
-import com.itextpdf.text.pdf.CFFFont;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.SafetySensitive;
 import com.picsauditing.companyfinder.model.ViewPort;
-import com.picsauditing.jpa.entities.Trade;
+
+import java.util.List;
 
 public class CompanyFinderFilterBuilder {
     private CompanyFinderFilter filter = new CompanyFinderFilter();
 
     public CompanyFinderFilterBuilder viewPort(ViewPort viewPort) {
         filter.setViewPort(viewPort);
-        return this;
-    }
-
-    public CompanyFinderFilterBuilder trade(Trade trade) {
-        filter.setTrade(trade);
         return this;
     }
 
@@ -26,5 +21,10 @@ public class CompanyFinderFilterBuilder {
 
     public CompanyFinderFilter build() {
         return filter;
+    }
+
+    public CompanyFinderFilterBuilder tradeIds(List<Integer> tradeIds) {
+        filter.setTradeIds(tradeIds);
+        return this;
     }
 }

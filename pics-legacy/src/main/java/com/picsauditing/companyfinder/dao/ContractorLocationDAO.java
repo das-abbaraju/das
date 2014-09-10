@@ -6,9 +6,9 @@ import com.picsauditing.companyfinder.model.SafetySensitive;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
-import com.picsauditing.jpa.entities.Trade;
 
 import javax.persistence.Query;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContractorLocationDAO extends PicsDAO {
@@ -26,17 +26,17 @@ public class ContractorLocationDAO extends PicsDAO {
         return query.getResultList();
     }
 
-     String getSQL(CompanyFinderFilter filter) {
+    String getSQL(CompanyFinderFilter filter) {
 
         StringBuilder sql = new StringBuilder(SELECT_CLAUSE);
-        Trade trade = filter.getTrade();
-        if(trade != null){
-             sql.append(" JOIN ca.trades ct");
+        List<Integer> tradeIds = filter.getTradeIds();
+        if (tradeIds != null) {
+            sql.append(" JOIN ca.trades ct");
         }
 
         StringBuilder whereClause = new StringBuilder(" WHERE");
         whereClause.append(getViewPortWhere());
-        whereClause.append(getTradeWhere(filter.getTrade()));
+        whereClause.append(getTradeWhere(filter.getTradeIds()));
         whereClause.append(getSafetySensitiveWhere(filter.getSafetySensitive()));
         whereClause.append(getActivePendingWhere());
 
@@ -51,11 +51,11 @@ public class ContractorLocationDAO extends PicsDAO {
                 " cl.longitude < :neLong AND";
     }
 
-    private String getTradeWhere(Trade trade) {
-        if (trade == null) {
+    private String getTradeWhere(List<Integer> tradeIds) {
+        if (tradeIds == null) {
             return "";
         }
-        return " ct.trade.indexStart <= :tradeStart AND :tradeEnd <= ct.trade.indexEnd AND";
+        return " ct.tradeID IN (:tradeList) AND";
     }
 
     private String getSafetySensitiveWhere(SafetySensitive safetySensitive) {
@@ -86,9 +86,16 @@ public class ContractorLocationDAO extends PicsDAO {
     }
 
     private void setTradeQueryParams(Query query, CompanyFinderFilter filter) {
-        if (filter.getTrade() != null) {
-            query.setParameter("tradeStart", filter.getTrade().getIndexStart());
-            query.setParameter("tradeEnd", filter.getTrade().getIndexEnd());
+        List<Integer> tradeIdList = filter.getTradeIds();
+        if(tradeIdList == null) return;
+
+        List<String> stringTradeList = new ArrayList<>();
+        for (Integer tli : tradeIdList) {
+            String stli = String.valueOf(tli);
+            stringTradeList.add(stli);
+        }
+        if (tradeIdList != null) {
+            query.setParameter("tradeList", stringTradeList);
         }
     }
 
@@ -112,7 +119,7 @@ public class ContractorLocationDAO extends PicsDAO {
         Query query = em.createQuery(sql);
         query.setParameter("conId", conId);
         List<ContractorLocation> contractorLocation = query.getResultList();
-        if (!contractorLocation.isEmpty()){
+        if (!contractorLocation.isEmpty()) {
             return contractorLocation.get(0);
         }
         return null;
