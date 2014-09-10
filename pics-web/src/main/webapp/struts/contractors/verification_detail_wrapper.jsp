@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="s" uri="/struts-tags" %>
+<%@ taglib prefix="html" uri="/struts-tags" %>
 <head>
     <title><s:text name="PQFVerification.Page.Title" /></title>
 
@@ -282,6 +283,14 @@
             $('#'+commentID).val($('#'+divId).val()).focus().blur();
         }
 
+        function setValue() {
+            var subject = $('#emailTemplate .emailTemplatePreview #subject').val();
+            var body = $('#emailTemplate .emailTemplatePreview #body').val();
+
+            $('#preEmailBody').val(body);
+            $('#preEmailSubject').val(subject);
+        }
+
         $(function() {
             $('#chartEmrTrir').load('ChartEmrTrirAjax.action', {conID: <s:property value="contractor.id" />});
             $('#chartManHours').load('ChartManHoursAjax.action', {conID: <s:property value="contractor.id" />});
@@ -434,7 +443,9 @@
             <div>
                 <button name="button" class="picsbutton left" onclick="return previewEmail(this);">Preview Email</button>
                 <form action="VerifyView.action?id=${id}" method="POST">
-                    <s:submit cssClass="picsbutton positive left" method="sendEmail" value="Send Email" />
+                    <html:hidden name="preEmailBody" id="preEmailBody"></html:hidden>
+                    <html:hidden name="preEmailSubject" id="preEmailSubject"></html:hidden>
+                    <s:submit onclick="setValue();" cssClass="picsbutton positive left" method="sendEmail" value="Send Email" />
                 </form>
                 <button onclick="return openAddNote()" class="picsbutton positive">Add Note</button>
             </div>
