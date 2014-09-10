@@ -1446,7 +1446,7 @@ public class PicsActionSupport extends TranslationActionSupport implements Reque
 					Account account = user.getAccount();
 					if (account != null && account.isContractor() && account.getStatus() != null && account.getStatus().isPending()) {
 						ContractorRegistrationStep step = ContractorRegistrationStep.getStep((ContractorAccount) account);
-						if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName())) {
+						if (!step.isDone() && !ContractorRegistrationStep.pageIsARegistrationStep(getActionName()) && !getActionName().equals("InvoiceDetail")) {
 							return true;
 						}
 					}
