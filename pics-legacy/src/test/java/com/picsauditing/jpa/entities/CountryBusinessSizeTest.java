@@ -47,49 +47,42 @@ public class CountryBusinessSizeTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_US_Invalid_Zero_NumberOfEmployees() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("US", 0);
-
+        CountryBusinessSize.isSmallBusiness("US", 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_US_Invalid_NumberOfEmployees() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("US", -1);
-
+        CountryBusinessSize.isSmallBusiness("US", -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_US_Invalid_Country() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("", 0);
-
+        CountryBusinessSize.isSmallBusiness("", 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_US_Invalid_null_Country() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("null", 0);
+        CountryBusinessSize.isSmallBusiness("null", 0);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_UK_Invalid_Zero_NumberOfEmployees() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("UK", 0);
-
+        CountryBusinessSize.isSmallBusiness("UK", 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_UK_Invalid_NumberOfEmployees() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("UK", -1);
-
+        CountryBusinessSize.isSmallBusiness("UK", -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_UK_Invalid_Country() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("", 0);
-
+        CountryBusinessSize.isSmallBusiness("", 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testIsSmallBusiness_UK_Invalid_null_Country() throws Exception {
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness("null", 0);
-
+        CountryBusinessSize.isSmallBusiness("null", 0);
     }
 }
