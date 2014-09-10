@@ -1,6 +1,7 @@
 package com.picsauditing.contractor.service;
 
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.jpa.entities.CountryBusinessSize;
 import com.picsauditing.util.TriState;
 
 public class ContractorAccountService {
@@ -14,9 +15,7 @@ public class ContractorAccountService {
             return TriState.UNKNOWN;
         }
 
-        //todo: Lookup from enum
-        // return CountryBusinessSize.isSmallBusiness(contractorAccount.getBillingCountry().getIsoCode(), contractorAccount.getNumberOfEmployees())
-        return TriState.FALSE;
-
+        boolean smallBusiness = CountryBusinessSize.isSmallBusiness(contractorAccount.getBillingCountry().getIsoCode(), contractorAccount.getNumberOfEmployees());
+        return TriState.fromBoolean(smallBusiness);
     }
 }

@@ -39,7 +39,6 @@ public class ContractorAccountServiceTest {
     }
 
     @Test
-    @Ignore("Coming soon...")
     public void testIsSmallBusiness_US_smallBusiness() throws Exception {
         when(contractorAccount.getBillingCountry()).thenReturn(new Country(Country.US_ISO_CODE));
         when(contractorAccount.getNumberOfEmployees()).thenReturn(2);
@@ -50,7 +49,6 @@ public class ContractorAccountServiceTest {
     }
 
     @Test
-    @Ignore("Coming soon...")
     public void testIsSmallBusiness_US_notSmallBusiness() throws Exception {
         when(contractorAccount.getBillingCountry()).thenReturn(new Country(Country.US_ISO_CODE));
         when(contractorAccount.getNumberOfEmployees()).thenReturn(12);
