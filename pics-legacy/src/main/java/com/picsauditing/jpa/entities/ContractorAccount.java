@@ -128,6 +128,7 @@ public class ContractorAccount extends Account implements JSONable {
 	private String registrationHash;
     private String salesRepSalesForceID;
     private boolean hasEmployeeGuard;
+    private Integer numberOfEmployees;
 
 	// Agreement Changed on Release date 6/3/2010
 	private static final Date USER_AGREEMENT_CHANGED = DateBean.parseDate("06/03/2010");
@@ -1283,6 +1284,14 @@ public class ContractorAccount extends Account implements JSONable {
 
     public void setHasEmployeeGuard(boolean hasEmployeeGuard) {
         this.hasEmployeeGuard = hasEmployeeGuard;
+    }
+
+    public Integer getNumberOfEmployees() {
+        return numberOfEmployees;
+    }
+
+    public void setNumberOfEmployees(Integer numberOfEmployees) {
+        this.numberOfEmployees = numberOfEmployees;
     }
 
     @Transient
