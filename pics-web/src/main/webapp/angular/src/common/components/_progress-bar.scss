@@ -1,48 +1,62 @@
 .progress {
     box-shadow: none;
     border-radius: 15px;
-}
-
-.progress-bar {
-    box-shadow: none;
-}
-
-.progress-primary {
-    background: $primary_tint;
+    background-color: $default_mercury;
 
     .progress-bar {
-        background-color: $primary_light;
+        box-shadow: none;
+        line-height: 20px;
+
+        &.progress-bar-success {
+            background-color: $success_light;
+        }
+
+        &.progress-bar-warning {
+            background-color: $warning_light;
+        }
+
+        &.progress-bar-danger {
+            background-color: $danger_light;
+        }
     }
-}
 
-.progress-info {
-    background: $info_tint;
+    &.progress-primary {
+        background: $primary_tint;
 
-    .progress-bar {
-        background-color: $info_light;
+        .progress-bar {
+            background-color: $primary_light;
+        }
     }
-}
 
-.progress-success {
-    background: $success_tint;
+    &.progress-info {
+        background: $info_tint;
 
-    .progress-bar {
-        background-color: $success_light;
+        .progress-bar {
+            background-color: $info_light;
+        }
     }
-}
 
-.progress-warning {
-    background: $warning_tint;
+    &.progress-success {
+        background: $success_tint;
 
-    .progress-bar {
-        background-color: $warning_light;
+        .progress-bar {
+            background-color: $success_light;
+        }
     }
-}
 
-.progress-danger {
-    background: $danger_tint;
+    &.progress-warning {
+        background: $warning_tint;
 
-    .progress-bar {
-        background-color: $danger_light;
+        .progress-bar {
+            background-color: $warning_light;
+        }
+    }
+
+    &.progress-danger {
+        background: $danger_tint;
+
+        .progress-bar {
+            background-color: $danger_light;
+        }
     }
 }

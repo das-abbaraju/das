@@ -6,7 +6,7 @@
     <s:param name="section_id">search</s:param>
 
     <s:param name="description">
-Description unavailable
+The search component is used for searching or filtering. It may be embedded in a header or free-floating on the page.
     </s:param>
 
     <s:param name="example_url">

@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Alert with Heading</s:param>
 
     <s:param name="description">
-Alert with header on its own line. Used when the header is more like a sentence than an exclamation.
+Alerts with headings are used when the heading is more of a sentence than an exclamation.
     </s:param>
 
     <s:param name="example_url">
@@ -16,7 +16,7 @@ Alert with header on its own line. Used when the header is more like a sentence 
     <s:param name="accordian_parent_id">alert-message-with-heading</s:param>
 
     <s:param name="html_code">
-&lt;div class="alert alert-warning"&gt;
+&lt;div class="alert alert-info"&gt;
     &lt;h3&gt;Oh snap!&lt;/h3&gt;
     &lt;p&gt;
         Something is broken

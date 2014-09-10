@@ -2,21 +2,24 @@
 <%@ taglib prefix="s" uri="/struts-tags" %>
 
 <s:include value="/struts/frontend-style-guide/components/_components-section.jsp">
-    <s:param name="header_title">Collapsible Group</s:param>
-    <s:param name="section_id">collapsible-group</s:param>
+    <s:param name="section_id">${section_id_prefix}_collapsible_group</s:param>
+    <s:param name="header_title">${section_title}: Collapsible Group</s:param>
+
+    <!-- <s:param name="header_title">Collapsible Group</s:param>
+    <s:param name="section_id">collapsible-group</s:param> -->
 
     <s:param name="description">
 Collapsible groups are used to maintain a clean UI by initially hiding secondary information.
     </s:param>
 
     <s:param name="example_url">
-        collapsible-group/_collapsible-group-example.jsp
+        information/collapsible-group/_collapsible-group-example.jsp
     </s:param>
 
     <s:param name="accordian_parent_id">collapsible-groups-items</s:param>
 
     <s:param name="html_code">
-&lt;div class="panel-group" id="accordion_1"&gt;
+&lt;div class="panel-group collapsible" id="accordion_1"&gt;
     &lt;div class="panel panel-default"&gt;
         &lt;div class="panel-heading"&gt;
             &lt;h4 class="panel-title"&gt;
@@ -25,7 +28,7 @@ Collapsible groups are used to maintain a clean UI by initially hiding secondary
                 &lt;/a&gt;
             &lt;/h4&gt;
         &lt;/div&gt;
-        &lt;div id="item_1" class="panel-collapse collapse"&gt;
+        &lt;div id="item_1" class="panel-collapse collapse in"&gt;
             &lt;div class="panel-body"&gt;
                 Item 1 Content
             &lt;/div&gt;
@@ -34,7 +37,7 @@ Collapsible groups are used to maintain a clean UI by initially hiding secondary
     &lt;div class="panel panel-default"&gt;
         &lt;div class="panel-heading"&gt;
             &lt;h4 class="panel-title"&gt;
-                &lt;a data-toggle="collapse" data-parent="#accordion_2" href="#item_2"&gt;
+                &lt;a data-toggle="collapse" data-parent="#accordion_1" href="#item_2"&gt;
                     Item 2 Heading
                 &lt;/a&gt;
             &lt;/h4&gt;

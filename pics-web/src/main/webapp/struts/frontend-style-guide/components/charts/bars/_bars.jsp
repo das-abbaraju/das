@@ -6,7 +6,7 @@
     <s:param name="section_id">${section_id_prefix}_bar</s:param>
 
     <s:param name="description">
-Description unavailable
+Convention of usage is to be determined.
     </s:param>
 
     <s:param name="example_url">

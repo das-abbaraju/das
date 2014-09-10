@@ -22,6 +22,8 @@
 }
 
 .select2-container {
+    background-color: #ffffff;
+
     &.form-control.select2-dropdown-open {
         border-color: $pics_light_blue;
         outline: 0;
@@ -40,6 +42,10 @@
             color: $default_aluminum;
             top: 7px;
         }
+    }
+
+    .icon-remove:before {
+        content: "\F057";
     }
 }
 

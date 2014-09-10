@@ -1,36 +1,47 @@
+.help-block {
+    margin-bottom: 0;
+}
+
 .has-info .help-block,
 .has-info .control-label {
-	color: $info_med;
+    color: $info_dark;
 }
 
 .has-info .form-control {
-	border-color: $info_med;
+    border-color: $info_dark;
 }
 
 .has-success .help-block,
 .has-success .control-label {
-	color: $success_med;
+    color: $success_light;
 }
 
 .has-success .form-control {
-	border-color: $success_med;
+    border-color: $success_light;
+
+    &:focus {
+        border-color: $success_light;
+    }
 }
 
 .has-warning .help-block,
 .has-warning .control-label {
-	color: $warning_med;
+    color: $warning_med;
 }
 
 .has-warning .form-control {
-	border-color: $warning_med;
+    border-color: $warning_med;
 }
 
 .has-error .help-block,
 .has-error .control-label {
-	color: $danger_med;
+    color: $danger_light;
 }
 
 .has-error .form-control {
-	border-color: $danger_med;
-}
+    border-color: $danger_light;
 
+    &:focus {
+        border-color: $danger_light;
+    }
+}

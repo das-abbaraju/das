@@ -3,10 +3,10 @@
 
 <s:include value="/struts/frontend-style-guide/components/_components-section.jsp">
     <s:param name="section_id">${section_id_prefix}_nav_list</s:param>
-    <s:param name="header_title">${section_title}: Nav List</s:param>
+    <s:param name="header_title">${section_title}: Side Nav</s:param>
 
     <s:param name="description">
-Nav Lists are used to navigate within siloed sections of the site. Each item in the nav list loads a new page.
+UNDER CONSTRUCTION
     </s:param>
 
     <s:param name="example_url">

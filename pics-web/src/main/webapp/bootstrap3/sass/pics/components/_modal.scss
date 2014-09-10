@@ -3,16 +3,26 @@
 	overflow-y: auto;
 	outline: 0;
 
+	.modal-content {
+		border: none;
+	}
+
 	.modal-header {
 		background-color: $pics_cool_grey;
 		@include border-top-left-radius(6px);
 		@include border-top-right-radius(6px);
 		border-bottom: 0px;
-		padding-left: 20px;
+		padding: 8px 20px;
+
+		i {
+			font-size: 14px;
+			vertical-align: sub;
+		}
 	}
 
 	.modal-title {
 		font-size: 24px;
+		font-weight: bold;
 	}
 
 	.modal-body	{

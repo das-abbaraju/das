@@ -1,0 +1,28 @@
+.pagination > li > a {
+    border: none;
+    color: $default_steel;
+    background: $default_silver;
+    @include background-image(linear-gradient(to bottom, $default_mercury, $default_silver));
+    background-image: linear-gradient(to bottom, $default_mercury, $default_silver);
+    background: -webkit-linear-gradient($default_mercury, $default_silver);
+    @include box-shadow(0px 2px 0px $default_pewter);
+    text-shadow: none;
+}
+
+.pagination > li > a:hover {
+    background: $default_mercury;
+}
+
+.pagination > li > a:active {
+    background: $default_silver;
+    @include box-shadow(0px 2px 0px $default_pewter inset);
+    @include transform(translateY(2px));
+}
+
+.pagination > .active > a,
+.pagination > .active > a:hover {
+    color: $default_steel;
+    background: $default_silver;
+    @include box-shadow(0px 2px 0px $default_pewter inset);
+    @include transform(translateY(2px));
+}

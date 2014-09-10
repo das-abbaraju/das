@@ -2,7 +2,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    <i class="icon icon-remove"></i>
+                </button>
                 <h4 class="modal-title">Unsaved Changes</h4>
             </div>
             <div class="modal-body">
@@ -10,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Leave Page</button>
-                <a href="#" class="btn btn-success">Save Changes</a>
+                <a href="#modals_save" class="btn btn-success">Save Changes</a>
             </div>
         </div>
     </div>

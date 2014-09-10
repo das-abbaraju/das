@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Text Input with Tooltip</s:param>
 
     <s:param name="description">
-It is sometimes helpful to add a tooltip next to an input field to give users a bit more information about what is expected. Tooltips may also be used <a href="#forms_help_tooltip">outside of forms</a>.
+It is sometimes helpful to add a tooltip next to an input field to give users more information about what is expected. Tooltips may also be used <a href="#information_tooltip">outside of forms</a>.
     </s:param>
 
     <s:param name="example_url">

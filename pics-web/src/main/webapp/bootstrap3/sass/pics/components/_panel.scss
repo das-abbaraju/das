@@ -1,59 +1,95 @@
-.panel-default {
-    border-color: $default_mercury;
-}
+.panel {
+    border: none;
+    box-shadow: none;
 
-.panel-default > .panel-heading {
-    color: #454545;
-    background-color: $default_mercury;
-    border-color: $default_mercury;
-}
+    &> .panel-heading {
+        border: none;
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
 
-.panel-info {
-    border-color: $info_light;
-}
+        &> .panel-title {
+            font-size: 14px;
+            font-weight: normal;
+        }
+    }
 
-.panel-info > .panel-heading {
-    color: #fff;
-    background-color: $info_light;
-    border-color: $info_light;
-}
+    &.panel-default {
+        &> .panel-heading {
+            color: $default_steel;
+            background-color: $pics_cool_grey;
 
-.panel-warning {
-    border-color: $warning_light;
-}
+            &+ .panel-collapse .panel-body {
+                border: none;
+            }
 
-.panel-warning > .panel-heading {
-    color: #fff;
-    background-color: $warning_light;
-    border-color: $warning_light;
-}
+            &> .panel-title a {
+               color: $info_dark;
+            }
+        }
+        .panel-body {
+            color: $default_steel;
+            background-color: $default_mercury;
+        }
+    }
 
-.panel-primary {
-    border-color: $primary_light;
-}
+    &.panel-info {
+        &> .panel-heading {
+            color: #fff;
+            background-color: $info_light;
+        }
 
-.panel-primary > .panel-heading {
-    color: #fff;
-    background-color: $primary_light;
-    border-color: $primary_light;
-}
+        .panel-body {
+            color: $info_dark;
+            background-color: $info_tint;
+        }
+    }
 
-.panel-success {
-    border-color: $success_light;
-}
+    &.panel-warning {
+        &> .panel-heading {
+            color: #fff;
+            background-color: $warning_light;
+        }
 
-.panel-success > .panel-heading {
-    color: #fff;
-    background-color: $success_light;
-    border-color: $success_light;
-}
+        .panel-body {
+            color: $warning_dark;
+            background-color: $warning_tint;
+        }
+    }
 
-.panel-danger {
-    border-color: $danger_light;
-}
 
-.panel-danger > .panel-heading {
-    color: #fff;
-    background-color: $danger_light;
-    border-color: $danger_light;
+    &.panel-primary {
+        &> .panel-heading {
+            color: #fff;
+            background-color: $primary_light;
+        }
+
+        .panel-body {
+            color: $primary_dark;
+            background-color: $primary_tint;
+        }
+    }
+
+    &.panel-success {
+        &> .panel-heading {
+            color: #fff;
+            background-color: $success_light;
+        }
+
+        .panel-body {
+            color: $success_dark;
+            background-color: $success_tint;
+        }
+    }
+
+    &.panel-danger {
+        &> .panel-heading {
+            color: #fff;
+            background-color: $danger_light;
+        }
+
+        .panel-body {
+            color: $danger_dark;
+            background-color: $danger_tint;
+        }
+    }
 }

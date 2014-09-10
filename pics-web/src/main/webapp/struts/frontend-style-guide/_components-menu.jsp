@@ -5,6 +5,9 @@
     <nav class="sidenav navbar bs-sidenav" role="navigation">
         <ul class="nav side-navigation" role="menu">
             <li class="active">
+                <a href="#colors">Colors</a>
+            </li>
+            <li class="active">
                 <a href="#page_layout_page_header">Page Layout</a>
                 <ul class="nav">
                     <li>
@@ -16,10 +19,16 @@
                 </ul>
             </li>
             <li>
-                <a href="#navs_nav_list">Navs</a>
+                <a href="#navs_pill_nav">Navs</a>
                 <ul class="nav">
                     <li>
-                        <a href="#navs_nav_list">Nav List</a>
+                        <a href="#navs_pill_nav">Pill Nav</a>
+                    </li>
+                    <li>
+                        <a href="#navs_linked_list">Linked List</a>
+                    </li>
+                    <li>
+                        <a href="#navs_tab_nav">Tab Nav</a>
                     </li>
                 </ul>
             </li>
@@ -58,16 +67,31 @@
                         <a href="#forms_single_line_text_field">Text Input Field</a>
                     </li>
                     <li>
-                        <a href="#forms_multi_line_text_field">Text Input Box</a>
+                        <a href="#forms_single_line_text_field_with_error">Text Input Field with Error</a>
                     </li>
                     <li>
                         <a href="#forms_form_control_with_tooltip">Text Input with Tooltip</a>
                     </li>
                     <li>
+                        <a href="#forms_multi_line_text_field">Text Input Box</a>
+                    </li>
+                    <li>
                         <a href="#forms_single_select_dropdown">Dropdown</a>
                     </li>
                     <li>
+                        <a href="#forms_date_field">Date Field</a>
+                    </li>
+                    <li>
                         <a href="#forms_multi_select_dropdown">Multiple Select</a>
+                    </li>
+                    <li>
+                        <a href="#forms_radio_button">Radio Button</a>
+                    </li>
+                    <li>
+                        <a href="#forms_checkbox_field">Checkbox Field</a>
+                    </li>
+                    <li>
+                        <a href="#forms_toggle_switch">Toggle Switch</a>
                     </li>
                     <li>
                         <a href="#forms_action_buttons">Form Buttons</a>
@@ -79,9 +103,6 @@
             </li>
             <li>
                 <a href="#table">Table</a>
-            </li>
-            <li>
-                <a href="#collapsible-group">Collapsible Group</a>
             </li>
             <li>
                 <a href="#modals_save">Modals</a>
@@ -98,6 +119,9 @@
                 <a href="#labels">Labels</a>
             </li>
             <li>
+                <a href="#badges">Badges</a>
+            </li>
+            <li>
                 <a href="#image">Image</a>
             </li>
             <li>
@@ -112,7 +136,15 @@
                 </ul>
             </li>
             <li>
-                <a href="#status_list">Status List</a>
+                <a href="#status_lists_interactive">Status Lists</a>
+                <ul class="nav">
+                    <li>
+                        <a href="#status_lists_interactive">Interactive Status List</a>
+                    </li>
+                    <li>
+                        <a href="#status_lists_static">Static Status List</a>
+                    </li>
+                </ul>
             </li>
             <li>
                 <a href="#information_panels">Information</a>
@@ -121,9 +153,24 @@
                         <a href="#information_panels">Panels</a>
                     </li>
                     <li>
+                        <a href="#information_collapsible_group">Collapsible Group</a>
+                    </li>
+                    <li>
                         <a href="#information_tooltip">Tooltip</a>
                     </li>
+                    <li>
+                        <a href="#information_help_link">Help Link</a>
+                    </li>
+                    <li>
+                        <a href="#information_popover">Popover</a>
+                    </li>
+                    <li>
+                        <a href="#information_wells">Wells</a>
+                    </li>
                 </ul>
+            </li>
+            <li>
+                <a href="#pagination">Pagination</a>
             </li>
             <li>
                 <a href="#charts_pie">Charts</a>
@@ -138,9 +185,6 @@
                         <a href="#charts_bar">Bar</a>
                     </li>
                 </ul>
-            </li>
-            <li>
-                <a href="#colors">Colors</a>
             </li>
             <li>
                 <a href="#html_elements">HTML Elements</a>

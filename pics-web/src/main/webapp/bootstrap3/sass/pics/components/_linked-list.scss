@@ -1,0 +1,27 @@
+a.list-group-item {
+    color: $info_dark;
+}
+
+.list-group-item {
+    background-color: $pics_cool_grey;
+    border: none;
+}
+
+a.list-group-item:hover,
+a.list-group-item:focus {
+    background-color: $default_mercury;
+}
+
+a.list-group-item:active {
+    color: #ffffff;
+    background-color: $info_dark;
+}
+
+.list-group-item.active {
+    background-color: $pics_light_blue;
+}
+
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+    background-color: $pics_light_blue;
+}

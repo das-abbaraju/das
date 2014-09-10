@@ -3,10 +3,10 @@
 
 <s:include value="/struts/frontend-style-guide/components/_components-section.jsp">
     <s:param name="section_id">${section_id_prefix}_section_header</s:param>
-    <s:param name="header_title">${section_title}: Section Heading</s:param>
+    <s:param name="header_title">${section_title}: Section Header</s:param>
 
     <s:param name="description">
-Section headers help organize related content into sections. When these sections contain content that may be edited, an edit icon is floated to the right. Clicking the icon toggles the section between view and edit states.
+Section headers help organize related content. When these sections contain content that may be edited, an edit icon is floated to the right. Clicking the icon toggles the section between view and edit states.
     </s:param>
 
     <s:param name="example_url">
@@ -19,12 +19,21 @@ Section headers help organize related content into sections. When these sections
 &lt;section class="employee-guard-section"&gt;
     &lt;h1&gt;
         &lt;div class="row"&gt;
-            &lt;div class="col-md-9 col-xs-9"&gt;
+            &lt;div class="col-xs-9"&gt;
                 &lt;i class="icon-picture icon-large"&gt;&lt;/i&gt;
                 Some Section Heading
             &lt;/div&gt;
         &lt;/div&gt;
     &lt;/h1&gt;
+
+    &lt;h2&gt;
+        &lt;div class="row"&gt;
+            &lt;div class="col-xs-9"&gt;
+                Optional Sub-header
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/h2&gt;
 &lt;/section&gt;
+
     </s:param>
 </s:include>

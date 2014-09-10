@@ -1,18 +1,7 @@
 .well {
-  background-color: #E6E6E6;
+  background-color: $default_mercury;
   border: none;
-  -webkit-box-shadow: none;
-          box-shadow: none;
-    .title {
-        color: #666666;
-    }
-}
-
-.well-required-for {
-    border: 0px;
-}
-
-.well-required-for ul {
-    list-style-type: none;
-    padding-left: 0px;
+  padding: 20px;
+  @include box-shadow(0 0 0);
+  @include border-radius(0);
 }

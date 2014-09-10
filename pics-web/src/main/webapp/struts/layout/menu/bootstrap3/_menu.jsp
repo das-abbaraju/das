@@ -40,7 +40,7 @@
                     <form class="search-form navbar-form navbar-right" action="${search_url}" role="search">
                         <div class="form-group">
                             <input type="text" class="input-sm typeahead form-control search-box" placeholder="Search">
-                            <i class="icon-search icon-large"></i>
+                            <i class="icon-search"></i>
                         </div>
                         <s:set var="has_search_box_class">has-search-box</s:set>
                     </form>

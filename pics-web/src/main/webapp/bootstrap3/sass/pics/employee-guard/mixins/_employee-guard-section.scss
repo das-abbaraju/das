@@ -14,6 +14,16 @@
             }
         }
 
+        > h2 {
+            background-color: $default_steel;
+            color: $default_mercury;
+            font-size: 14px;
+            font-weight: normal;
+            padding: 7px 10px;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
         .edit {
             text-align: right;
 

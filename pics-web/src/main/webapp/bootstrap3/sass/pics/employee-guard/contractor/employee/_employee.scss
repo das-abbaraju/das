@@ -1,7 +1,6 @@
-.employee_guard_contractor_employee-page
-{
-	@include employee-image;
-	@include employee-skills;
+.employee_guard_contractor_employee-page {
+    @include employee-image;
+    @include employee-skills;
 
     .skill-list .operator-skill {
         @include border-radius(0px);
@@ -23,7 +22,7 @@
         }
 
         &.warning {
-            background-color: $warning_light;
+            background-color: $warning_med;
             background-image: none;
             .icon-map-marker {
                 color: $warning_dark;

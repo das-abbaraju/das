@@ -11,6 +11,10 @@
                     initClassVars();
                     initPlugins();
                     bindEvents();
+
+                    setTimeout(function() {
+                        updateScrollSpy();
+                    }, 500);
                 }
             }
 
@@ -31,6 +35,14 @@
 
                 $html_collapsibles.on('show.bs.collapse', onHtmlCollapsibleShow);
                 $html_collapsibles.on('hide.bs.collapse', onHtmlCollapsibleHide);
+
+                $('.show-markup, a[data-toggle="collapse"]').on('click', updateScrollSpy);
+            }
+
+            function updateScrollSpy() {
+                $('[data-spy="scroll"]').each(function () {
+                    $(this).scrollspy('refresh');
+                });
             }
 
             function onToggleMarkupButtonClick() {

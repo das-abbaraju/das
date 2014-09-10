@@ -6,7 +6,7 @@
     <s:param name="header_title">${section_title}: Panels</s:param>
 
     <s:param name="description">
-Description unavailable
+Convention of usage is to be determined.
     </s:param>
 
     <s:param name="example_url">

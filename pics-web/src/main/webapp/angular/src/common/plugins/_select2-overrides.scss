@@ -3,6 +3,7 @@
 */
 .select2-container {
     font-size: 13px;
+    background-color: #ffffff;
 }
 
 .select2-drop {
@@ -96,6 +97,10 @@
             color: $default_aluminum;
             top: 7px;
         }
+    }
+
+    .icon-remove:before {
+        content: "\F057";
     }
 }
 

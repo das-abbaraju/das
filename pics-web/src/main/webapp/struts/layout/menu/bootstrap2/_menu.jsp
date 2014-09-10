@@ -39,7 +39,7 @@
                         <input type="hidden" name="button" value="search"/>
                         <input type="text" name="searchTerm" class="search-query span2" placeholder="<s:text name='global.Search'/>"
                                autocomplete="off"/>
-                        <i class="icon-search icon-large"></i>
+                        <i class="icon-search"></i>
                     </form>
                 </div>
                 <s:set var="has_search_box_class">has-search-box</s:set>

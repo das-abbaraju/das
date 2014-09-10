@@ -4,4 +4,6 @@
 <s:set var="section_title">Navs</s:set>
 <s:set var="section_id_prefix">navs</s:set>
 
-<s:include value="nav-list/_nav-list.jsp" />
+<s:include value="pill-nav/_pill-nav.jsp" />
+<s:include value="linked-list/_linked-list.jsp" />
+<s:include value="tab-nav/_tab-nav.jsp" />

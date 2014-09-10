@@ -6,14 +6,14 @@
 </div>
 <div class="page-subheader">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <ol class="breadcrumb">
                 <li><a href="#">Root Page Title</a></li>
                 <li><a href="#">Previous Page Title</a></li>
                 <li class="active">Current Page Title</li>
             </ol>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-5">
             <div class="page-actions">
                 <button type="button" class="btn btn-primary">Some Action</button>
                 <button type="button" class="btn btn-danger">Some Action</button>
