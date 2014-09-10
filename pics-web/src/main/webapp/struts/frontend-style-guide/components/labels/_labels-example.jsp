@@ -1,4 +1,5 @@
 <span class="label label-default">Default</span>
+<span class="label label-primary">Primary</span>
 <span class="label label-info">Info</span>
 <span class="label label-success">Success</span>
 <span class="label label-warning">Warning</span>

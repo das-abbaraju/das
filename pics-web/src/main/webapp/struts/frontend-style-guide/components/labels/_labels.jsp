@@ -17,6 +17,7 @@ Labels are used as tags or when displaying a multi-select option in read-only mo
 
     <s:param name="html_code">
 &lt;span class="label label-default">Default&lt;/span&gt;
+&lt;span class="label label-primary">Primary&lt;/span&gt;
 &lt;span class="label label-info"&gt;Info&lt;/span&gt;
 &lt;span class="label label-success"&gt;Success&lt;/span&gt;
 &lt;span class="label label-warning"&gt;Warning&lt;/span&gt;

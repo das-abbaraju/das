@@ -1,3 +1,7 @@
+.help-block {
+    margin-bottom: 0;
+}
+
 .has-info .help-block,
 .has-info .control-label {
     color: $info_dark;
@@ -14,6 +18,10 @@
 
 .has-success .form-control {
     border-color: $success_light;
+
+    &:focus {
+        border-color: $success_light;
+    }
 }
 
 .has-warning .help-block,
@@ -32,5 +40,8 @@
 
 .has-error .form-control {
     border-color: $danger_light;
-}
 
+    &:focus {
+        border-color: $danger_light;
+    }
+}

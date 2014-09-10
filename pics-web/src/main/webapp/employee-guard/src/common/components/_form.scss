@@ -1,28 +1,26 @@
 .label-pics {
-	background-color: $pics_link_blue;
+    background-color: $pics_link_blue;
 }
 
 .label-pics:hover {
-	background-color: $pics_light_blue;
+    background-color: $pics_light_blue;
 }
 
 /* Form labels, override default bold */
 label {
-	font-weight: normal;
+    font-weight: normal;
 }
 
 /* Search Field */
 .search-query {
-	background-color: $pics_cool_grey;
-	padding-left: 0px;
+    background-color: $pics_cool_grey;
+    padding-left: 0px;
     position: relative;
 }
 
 .search-query .search-wrapper {
-	padding: 5px;
-}
+    padding: 5px;
 
-.search-wrapper {
     input::-webkit-input-placeholder { /* WebKit browsers */
         color: $default_silver;
     }
@@ -38,23 +36,23 @@ label {
 }
 
 .search-query .form-control {
-	@include border-radius(20px);
-	padding-left: 29px;
+    @include border-radius(20px);
+    padding-left: 29px;
 }
 
 .search-query .icon-search {
-	color: $default_silver;
+    color: $default_silver;
     left: 15px;
     position: absolute;
     top: 15px;
 }
 
 .search-query .form-control:focus ~ .icon-search {
-	color: $pics_light_blue;
+    color: $pics_light_blue;
 }
 
 .search-query .search-results {
-	margin: 0px;
+    margin: 0px;
 }
 
 textarea.vertical-resize {
@@ -63,27 +61,27 @@ textarea.vertical-resize {
 
 /* Form actions */
 .form-actions {
-	padding-top: 5px;
+    padding-top: 5px;
 }
 
 .form-group .date-picker {
-	min-width: 0px;
-}
+    padding-left: 0px;
 
-.form-group .date-picker {
-    min-width: 0px;
+    button {
+        min-width: 0px;
+    }
 }
 
 .form-control:focus {
-	border-color: $pics_light_blue;
+    border-color: $pics_light_blue;
 }
 
 @media (min-width: 768px) {
-	.form-group .date div {
-		padding-right: 0px;
-	}
+    .form-group .date div {
+        padding-right: 0px;
+    }
 }
 
 .filename-display p {
-	margin: 10px 0 0 0;
+    margin: 10px 0 0 0;
 }

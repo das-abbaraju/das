@@ -1,37 +1,40 @@
 .alert {
 	border: none;
 	border-radius: 0;
-	padding: 10px 15px;
 	text-shadow: none;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		font-weight: bold;
 	}
 
-	h3, h4, p {
-		margin: 5px;
+	h3,
+	h4,
+	p {
+		margin: 0px;
 		line-height: 18px;
 	}
 
-	h3, h4 {
+	h3,
+	h4 {
 		font-size: 18px;
+		margin-bottom: 5px;
 	}
 
 	i {
 		margin-right: 5px;
 		cursor: auto;
 	}
-
-    .close {
-      right: 0;
-    }
 }
 
 .alert-primary {
 	background-color: $primary_tint;
 	color: $primary_med;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		color: $primary_med;
 	}
 }
@@ -40,7 +43,9 @@
 	background-color: $info_tint;
 	color: $info_dark;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		color: $info_dark;
 	}
 }
@@ -49,16 +54,20 @@
 	background-color: $success_tint;
 	color: $success_med;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		color: $success_med;
 	}
 }
 
 .alert-warning {
 	background-color: $warning_tint;
-	color: $warning_med;
+	color: $warning_dark;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		color: $warning_dark;
 	}
 }
@@ -67,7 +76,9 @@
 	background-color: $danger_tint;
 	color: $danger_med;
 
-	strong, h3, h4 {
+	strong,
+	h3,
+	h4 {
 		color: $danger_med;
 	}
 }
