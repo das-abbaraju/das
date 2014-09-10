@@ -14105,14 +14105,14 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 2, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image {
+.employee_guard_contractor_employee-page .employee-image {
   position: relative;
   max-width: 270px;
 }
 
 /* line 6, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image input[type="submit"] {
+.employee_guard_contractor_employee-page .employee-image input[type="submit"] {
   position: absolute;
   width: 0;
   height: 0;
@@ -14121,13 +14121,13 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 13, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image .overlay-container {
+.employee_guard_contractor_employee-page .employee-image .overlay-container {
   display: none;
 }
 
 /* line 17, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image:hover .overlay-container {
+.employee_guard_contractor_employee-page .employee-image:hover .overlay-container {
   position: absolute;
   top: 0;
   left: 0;
@@ -14139,7 +14139,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 26, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image:hover .overlay-container .overlay {
+.employee_guard_contractor_employee-page .employee-image:hover .overlay-container .overlay {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -14150,7 +14150,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 34, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.employee-image:hover .overlay-container span {
+.employee_guard_contractor_employee-page .employee-image:hover .overlay-container span {
   position: absolute;
   bottom: 20%;
   left: 0;
@@ -14165,21 +14165,21 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
     /* line 47, ../sass/pics/employee-guard/mixins/_employee-image.scss */
   
   }
-  #edit_employee_photo {
+  .employee_guard_contractor_employee-page #edit_employee_photo {
     text-align: center;
   }
 }
 
 /* line 56, ../sass/pics/employee-guard/mixins/_employee-image.scss */
 
-.lt-ie11 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container,
-.lt-ie11 .employee_guard_employee_profile-page .employee-image:hover .overlay-container {
+.employee_guard_contractor_employee-page .lt-ie11 .employee_guard_contractor_employee-page .employee-image:hover .overlay-container,
+.employee_guard_contractor_employee-page .lt-ie11 .employee_guard_employee_profile-page .employee-image:hover .overlay-container {
   display: none;
 }
 
 /* line 4, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .list-group-item {
+.employee_guard_contractor_employee-page .skill-list .list-group-item {
   padding: 7px 10px;
   margin-bottom: 10px;
   color: #FFFFFF;
@@ -14193,7 +14193,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 12, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .list-group-item:first-child {
+.employee_guard_contractor_employee-page .skill-list .list-group-item:first-child {
   -webkit-border-radius: 5px;
      -moz-border-radius: 5px;
       -ms-border-radius: 5px;
@@ -14203,25 +14203,25 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 16, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .list-group-item:hover {
+.employee_guard_contractor_employee-page .skill-list .list-group-item:hover {
   color: #FFFFFF;
 }
 
 /* line 20, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .list-group-item i {
+.employee_guard_contractor_employee-page .skill-list .list-group-item i {
   margin-right: 10px;
 }
 
 /* line 24, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .success {
+.employee_guard_contractor_employee-page .skill-list .success {
   background-color: #33b679;
 }
 
 /* line 27, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .success:hover {
+.employee_guard_contractor_employee-page .skill-list .success:hover {
   background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #0f9d58), color-stop(100%, #33b679));
   background-image: -webkit-linear-gradient(to top, #0f9d58, #33b679);
   background-image: -moz-linear-gradient(to top, #0f9d58, #33b679);
@@ -14231,20 +14231,20 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 31, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .success:active {
+.employee_guard_contractor_employee-page .skill-list .success:active {
   background-color: #0f9d58;
   background-image: none;
 }
 
 /* line 37, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .warning {
+.employee_guard_contractor_employee-page .skill-list .warning {
   background-color: #f4b400;
 }
 
 /* line 40, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .warning:hover {
+.employee_guard_contractor_employee-page .skill-list .warning:hover {
   background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #f4b400), color-stop(100%, #fbcb43));
   background-image: -webkit-linear-gradient(to top, #f4b400, #fbcb43);
   background-image: -moz-linear-gradient(to top, #f4b400, #fbcb43);
@@ -14254,20 +14254,20 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 44, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .warning:active {
+.employee_guard_contractor_employee-page .skill-list .warning:active {
   background-color: #ec8c00;
   background-image: none;
 }
 
 /* line 50, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .danger {
+.employee_guard_contractor_employee-page .skill-list .danger {
   background-color: #e74c3c;
 }
 
 /* line 53, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .danger:hover {
+.employee_guard_contractor_employee-page .skill-list .danger:hover {
   background-image: -webkit-gradient(linear, to top, to bottom, color-stop(0%, #c0392b), color-stop(100%, #e74c3c));
   background-image: -webkit-linear-gradient(to top, #c0392b, #e74c3c);
   background-image: -moz-linear-gradient(to top, #c0392b, #e74c3c);
@@ -14277,26 +14277,26 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 
 /* line 57, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.skill-list .danger:active {
+.employee_guard_contractor_employee-page .skill-list .danger:active {
   background-color: #c0392b;
   background-image: none;
 }
 
 /* line 65, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.employee_guard_employee_skill-page .update {
+.employee_guard_contractor_employee-page .employee_guard_employee_skill-page .update {
   margin-top: 20px;
 }
 
 /* line 69, ../sass/pics/employee-guard/mixins/_employee-skills.scss */
 
-.employee_guard_employee_skill-page .description {
+.employee_guard_contractor_employee-page .employee_guard_employee_skill-page .description {
   margin-bottom: 20px;
 }
 
-/* line 4, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 5, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill {
+.employee_guard_contractor_employee-page .skill-list .operator-skill {
   -webkit-border-radius: 0;
      -moz-border-radius: 0;
       -ms-border-radius: 0;
@@ -14304,9 +14304,9 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
           border-radius: 0;
 }
 
-/* line 7, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 8, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill:first-child {
+.employee_guard_contractor_employee-page .skill-list .operator-skill:first-child {
   -webkit-border-radius: 0;
      -moz-border-radius: 0;
       -ms-border-radius: 0;
@@ -14314,48 +14314,48 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
           border-radius: 0;
 }
 
-/* line 11, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 12, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill .row div {
+.employee_guard_contractor_employee-page .skill-list .operator-skill .row div {
   padding-right: 0;
 }
 
-/* line 15, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 16, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.success {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.success {
   background-color: #33b679;
   background-image: none;
 }
 
-/* line 18, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 19, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.success .icon-map-marker {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.success .icon-map-marker {
   color: #05702e;
 }
 
-/* line 23, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 24, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.warning {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.warning {
   background-color: #f4b400;
   background-image: none;
 }
 
-/* line 26, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 27, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.warning .icon-map-marker {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.warning .icon-map-marker {
   color: #ec8c00;
 }
 
-/* line 31, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 32, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.danger {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.danger {
   background-color: #e74c3c;
   background-image: none;
 }
 
-/* line 34, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
+/* line 35, ../sass/pics/employee-guard/contractor/employee/_employee.scss */
 
-.skill-list .operator-skill.danger .icon-map-marker {
+.employee_guard_contractor_employee-page .skill-list .operator-skill.danger .icon-map-marker {
   color: #800a06;
 }
 
@@ -14997,13 +14997,12 @@ section.visible h1 {
 /* line 1, ../sass/pics/components/_alert.scss */
 
 .alert {
-  padding: 10px 15px;
   text-shadow: none;
   border: none;
   border-radius: 0;
 }
 
-/* line 7, ../sass/pics/components/_alert.scss */
+/* line 8, ../sass/pics/components/_alert.scss */
 
 .alert strong,
 .alert h3,
@@ -15011,43 +15010,38 @@ section.visible h1 {
   font-weight: bold;
 }
 
-/* line 11, ../sass/pics/components/_alert.scss */
+/* line 14, ../sass/pics/components/_alert.scss */
 
 .alert h3,
 .alert h4,
 .alert p {
-  margin: 5px;
+  margin: 0;
   line-height: 18px;
 }
 
-/* line 16, ../sass/pics/components/_alert.scss */
+/* line 20, ../sass/pics/components/_alert.scss */
 
 .alert h3,
 .alert h4 {
+  margin-bottom: 5px;
   font-size: 18px;
 }
 
-/* line 20, ../sass/pics/components/_alert.scss */
+/* line 25, ../sass/pics/components/_alert.scss */
 
 .alert i {
   margin-right: 5px;
   cursor: auto;
 }
 
-/* line 25, ../sass/pics/components/_alert.scss */
-
-.alert .close {
-  right: 0;
-}
-
-/* line 30, ../sass/pics/components/_alert.scss */
+/* line 31, ../sass/pics/components/_alert.scss */
 
 .alert-primary {
   color: #2980b9;
   background-color: #d6eaf8;
 }
 
-/* line 34, ../sass/pics/components/_alert.scss */
+/* line 37, ../sass/pics/components/_alert.scss */
 
 .alert-primary strong,
 .alert-primary h3,
@@ -15055,14 +15049,14 @@ section.visible h1 {
   color: #2980b9;
 }
 
-/* line 39, ../sass/pics/components/_alert.scss */
+/* line 42, ../sass/pics/components/_alert.scss */
 
 .alert-info {
   color: #4496d8;
   background-color: #ebf5fe;
 }
 
-/* line 43, ../sass/pics/components/_alert.scss */
+/* line 48, ../sass/pics/components/_alert.scss */
 
 .alert-info strong,
 .alert-info h3,
@@ -15070,14 +15064,14 @@ section.visible h1 {
   color: #4496d8;
 }
 
-/* line 48, ../sass/pics/components/_alert.scss */
+/* line 53, ../sass/pics/components/_alert.scss */
 
 .alert-success {
   color: #0f9d58;
   background-color: #d6f0e4;
 }
 
-/* line 52, ../sass/pics/components/_alert.scss */
+/* line 59, ../sass/pics/components/_alert.scss */
 
 .alert-success strong,
 .alert-success h3,
@@ -15085,14 +15079,14 @@ section.visible h1 {
   color: #0f9d58;
 }
 
-/* line 57, ../sass/pics/components/_alert.scss */
+/* line 64, ../sass/pics/components/_alert.scss */
 
 .alert-warning {
   color: #ec8c00;
   background-color: #fef5d9;
 }
 
-/* line 61, ../sass/pics/components/_alert.scss */
+/* line 70, ../sass/pics/components/_alert.scss */
 
 .alert-warning strong,
 .alert-warning h3,
@@ -15100,14 +15094,14 @@ section.visible h1 {
   color: #ec8c00;
 }
 
-/* line 66, ../sass/pics/components/_alert.scss */
+/* line 75, ../sass/pics/components/_alert.scss */
 
 .alert-danger {
   color: #c0392b;
   background-color: #fadbd8;
 }
 
-/* line 70, ../sass/pics/components/_alert.scss */
+/* line 81, ../sass/pics/components/_alert.scss */
 
 .alert-danger strong,
 .alert-danger h3,
@@ -15179,42 +15173,48 @@ section.visible h1 {
 
 /* line 11, ../sass/pics/components/_badge.scss */
 
+.badge-primary {
+  background-color: #3498db;
+}
+
+/* line 15, ../sass/pics/components/_badge.scss */
+
 .badge-info {
   background-color: #73bbe8;
 }
 
-/* line 15, ../sass/pics/components/_badge.scss */
+/* line 19, ../sass/pics/components/_badge.scss */
 
 .badge-success {
   background-color: #33b679;
 }
 
-/* line 19, ../sass/pics/components/_badge.scss */
+/* line 23, ../sass/pics/components/_badge.scss */
 
 .badge-warning {
   background-color: #f4b400;
 }
 
-/* line 23, ../sass/pics/components/_badge.scss */
+/* line 27, ../sass/pics/components/_badge.scss */
 
 .badge-danger {
   background-color: #e74c3c;
 }
 
-/* line 27, ../sass/pics/components/_badge.scss */
+/* line 31, ../sass/pics/components/_badge.scss */
 
 .badge-link {
   cursor: pointer;
   background-color: #226396;
 }
 
-/* line 31, ../sass/pics/components/_badge.scss */
+/* line 35, ../sass/pics/components/_badge.scss */
 
 .badge-link:hover {
   background-color: #73bbe8;
 }
 
-/* line 35, ../sass/pics/components/_badge.scss */
+/* line 39, ../sass/pics/components/_badge.scss */
 
 .badge-link:active {
   background-color: #002441;
@@ -15527,65 +15527,71 @@ section.visible h1 {
   }
 }
 
-/* line 2, ../sass/pics/components/_field-error.scss */
+/* line 1, ../sass/pics/components/_field-error.scss */
+
+.help-block {
+  margin-bottom: 0;
+}
+
+/* line 6, ../sass/pics/components/_field-error.scss */
 
 .has-info .help-block,
 .has-info .control-label {
   color: #4496d8;
 }
 
-/* line 6, ../sass/pics/components/_field-error.scss */
+/* line 10, ../sass/pics/components/_field-error.scss */
 
 .has-info .form-control {
   border-color: #4496d8;
 }
 
-/* line 11, ../sass/pics/components/_field-error.scss */
+/* line 15, ../sass/pics/components/_field-error.scss */
 
 .has-success .help-block,
 .has-success .control-label {
   color: #33b679;
 }
 
-/* line 15, ../sass/pics/components/_field-error.scss */
+/* line 19, ../sass/pics/components/_field-error.scss */
 
 .has-success .form-control {
   border-color: #33b679;
 }
 
-/* line 18, ../sass/pics/components/_field-error.scss */
+/* line 22, ../sass/pics/components/_field-error.scss */
 
 .has-success .form-control:focus {
   border-color: #33b679;
 }
 
-/* line 24, ../sass/pics/components/_field-error.scss */
+/* line 28, ../sass/pics/components/_field-error.scss */
 
 .has-warning .help-block,
 .has-warning .control-label {
   color: #f4b400;
 }
 
-/* line 28, ../sass/pics/components/_field-error.scss */
+/* line 32, ../sass/pics/components/_field-error.scss */
 
 .has-warning .form-control {
   border-color: #f4b400;
 }
 
-/* line 33, ../sass/pics/components/_field-error.scss */
+/* line 37, ../sass/pics/components/_field-error.scss */
 
 .has-error .help-block,
 .has-error .control-label {
   color: #e74c3c;
 }
 
-/* line 37, ../sass/pics/components/_field-error.scss */
+/* line 41, ../sass/pics/components/_field-error.scss */
 
 .has-error .form-control {
   border-color: #e74c3c;
 }
 
-/* line 40, ../sass/pics/components/_field-error.scss */
+/* line 44, ../sass/pics/components/_field-error.scss */
 
 .has-error .form-control:focus {
   border-color: #e74c3c;
@@ -15719,19 +15725,13 @@ textarea.vertical-resize {
 
 /* line 75, ../sass/pics/components/_form.scss */
 
-.form-group .date-picker {
-  min-width: 0;
-}
-
-/* line 79, ../sass/pics/components/_form.scss */
-
 .form-control:focus {
   border-color: #73bbe8;
 }
 
 @media (min-width: 768px) {
   {
-    /* line 84, ../sass/pics/components/_form.scss */
+    /* line 80, ../sass/pics/components/_form.scss */
   
   }
   .form-group .date div {
@@ -15739,7 +15739,7 @@ textarea.vertical-resize {
   }
 }
 
-/* line 89, ../sass/pics/components/_form.scss */
+/* line 85, ../sass/pics/components/_form.scss */
 
 .filename-display p {
   margin: 10px 0 0 0;
@@ -15796,29 +15796,35 @@ button i {
 
 /* line 12, ../sass/pics/components/_label.scss */
 
+.label-primary {
+  background-color: #3498db;
+}
+
+/* line 16, ../sass/pics/components/_label.scss */
+
 .label-info {
   background-color: #73bbe8;
 }
 
-/* line 16, ../sass/pics/components/_label.scss */
+/* line 20, ../sass/pics/components/_label.scss */
 
 .label-success {
   background-color: #33b679;
 }
 
-/* line 20, ../sass/pics/components/_label.scss */
+/* line 24, ../sass/pics/components/_label.scss */
 
 .label-warning {
   background-color: #f4b400;
 }
 
-/* line 24, ../sass/pics/components/_label.scss */
+/* line 28, ../sass/pics/components/_label.scss */
 
 .label-danger {
   background-color: #e74c3c;
 }
 
-/* line 28, ../sass/pics/components/_label.scss */
+/* line 32, ../sass/pics/components/_label.scss */
 
 .label-link {
   cursor: pointer;
@@ -15830,13 +15836,13 @@ button i {
           border-radius: 3px;
 }
 
-/* line 33, ../sass/pics/components/_label.scss */
+/* line 37, ../sass/pics/components/_label.scss */
 
 .label-link:hover {
   background-color: #73bbe8;
 }
 
-/* line 37, ../sass/pics/components/_label.scss */
+/* line 41, ../sass/pics/components/_label.scss */
 
 .label-link:active {
   background-color: #002441;
@@ -15899,7 +15905,7 @@ a.list-group-item:active {
 /* line 10, ../sass/pics/components/_modal.scss */
 
 .modal .modal-header {
-  padding: 8px 15px;
+  padding: 8px 20px;
   background-color: #f1f1f2;
   border-bottom: 0;
   -webkit-border-top-right-radius: 6px;
@@ -16527,7 +16533,7 @@ ul.skill-nav a {
 
 .table thead > tr > th {
   font-weight: normal;
-  color: #f1f1f2;
+  color: #e6e6e6;
   background-color: #454545;
   border: 0;
 }

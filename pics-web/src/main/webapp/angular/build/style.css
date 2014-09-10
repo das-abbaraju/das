@@ -13847,103 +13847,143 @@ a:focus {
 /* line 1, ../src/common/components/_alert.scss */
 .alert {
   border: none;
+  border-radius: 0;
+  text-shadow: none;
 }
-/* line 4, ../src/common/components/_alert.scss */
-.alert h3 {
-  font-size: 18px;
+/* line 8, ../src/common/components/_alert.scss */
+.alert strong,
+.alert h3,
+.alert h4 {
   font-weight: bold;
-  margin: 0;
+}
+/* line 14, ../src/common/components/_alert.scss */
+.alert h3,
+.alert h4,
+.alert p {
+  margin: 0px;
+  line-height: 18px;
+}
+/* line 20, ../src/common/components/_alert.scss */
+.alert h3,
+.alert h4 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+/* line 25, ../src/common/components/_alert.scss */
+.alert i {
+  margin-right: 5px;
+  cursor: auto;
 }
 
-/* line 11, ../src/common/components/_alert.scss */
+/* line 31, ../src/common/components/_alert.scss */
 .alert-primary {
   background-color: #d6eaf8;
   color: #2980b9;
 }
-/* line 16, ../src/common/components/_alert.scss */
+/* line 37, ../src/common/components/_alert.scss */
 .alert-primary strong,
-.alert-primary h3 {
-  color: #105093;
+.alert-primary h3,
+.alert-primary h4 {
+  color: #2980b9;
 }
 
-/* line 21, ../src/common/components/_alert.scss */
+/* line 42, ../src/common/components/_alert.scss */
 .alert-info {
   background-color: #ebf5fe;
-  color: #73bbe8;
+  color: #4496d8;
 }
-/* line 26, ../src/common/components/_alert.scss */
+/* line 48, ../src/common/components/_alert.scss */
 .alert-info strong,
-.alert-info h3 {
+.alert-info h3,
+.alert-info h4 {
   color: #4496d8;
 }
 
-/* line 31, ../src/common/components/_alert.scss */
+/* line 53, ../src/common/components/_alert.scss */
 .alert-success {
   background-color: #d6f0e4;
   color: #0f9d58;
 }
-/* line 36, ../src/common/components/_alert.scss */
+/* line 59, ../src/common/components/_alert.scss */
 .alert-success strong,
-.alert-success h3 {
-  color: #05702e;
+.alert-success h3,
+.alert-success h4 {
+  color: #0f9d58;
 }
 
-/* line 41, ../src/common/components/_alert.scss */
+/* line 64, ../src/common/components/_alert.scss */
 .alert-warning {
   background-color: #fef5d9;
-  color: #f4b400;
+  color: #ec8c00;
 }
-/* line 46, ../src/common/components/_alert.scss */
+/* line 70, ../src/common/components/_alert.scss */
 .alert-warning strong,
-.alert-warning h3 {
+.alert-warning h3,
+.alert-warning h4 {
   color: #ec8c00;
 }
 
-/* line 51, ../src/common/components/_alert.scss */
+/* line 75, ../src/common/components/_alert.scss */
 .alert-danger {
   background-color: #fadbd8;
   color: #c0392b;
 }
-/* line 56, ../src/common/components/_alert.scss */
+/* line 81, ../src/common/components/_alert.scss */
 .alert-danger strong,
-.alert-danger h3 {
-  color: #800a06;
+.alert-danger h3,
+.alert-danger h4 {
+  color: #c0392b;
 }
 
 /* line 1, ../src/common/components/_badge.scss */
 .badge {
   color: #ffffff;
   font-weight: normal;
+  padding: 4px 7px;
 }
 
-/* line 6, ../src/common/components/_badge.scss */
+/* line 7, ../src/common/components/_badge.scss */
 .badge-default {
-  background-color: #b3b3b3;
+  background-color: #999999;
 }
 
-/* line 10, ../src/common/components/_badge.scss */
+/* line 11, ../src/common/components/_badge.scss */
 .badge-primary {
-  background-color: #2980b9;
+  background-color: #3498db;
 }
 
-/* line 14, ../src/common/components/_badge.scss */
-.badge-success {
-  background-color: #0f9d58;
-}
-
-/* line 18, ../src/common/components/_badge.scss */
+/* line 15, ../src/common/components/_badge.scss */
 .badge-info {
   background-color: #73bbe8;
 }
 
-/* line 22, ../src/common/components/_badge.scss */
+/* line 19, ../src/common/components/_badge.scss */
+.badge-success {
+  background-color: #33b679;
+}
+
+/* line 23, ../src/common/components/_badge.scss */
 .badge-warning {
   background-color: #f4b400;
 }
 
-/* line 26, ../src/common/components/_badge.scss */
+/* line 27, ../src/common/components/_badge.scss */
 .badge-danger {
-  background-color: #c0392b;
+  background-color: #e74c3c;
+}
+
+/* line 31, ../src/common/components/_badge.scss */
+.badge-link {
+  background-color: #226396;
+  cursor: pointer;
+}
+/* line 35, ../src/common/components/_badge.scss */
+.badge-link:hover {
+  background-color: #73bbe8;
+}
+/* line 39, ../src/common/components/_badge.scss */
+.badge-link:active {
+  background-color: #002441;
 }
 
 /* line 1, ../src/common/components/_breadcrumb.scss */
@@ -14210,48 +14250,61 @@ a:focus {
     text-align: center;
   }
 }
-/* line 2, ../src/common/components/_field-error.scss */
-.has-info .help-block,
-.has-info .control-label {
-  color: #73bbe8;
+/* line 1, ../src/common/components/_field-error.scss */
+.help-block {
+  margin-bottom: 0;
 }
 
 /* line 6, ../src/common/components/_field-error.scss */
-.has-info .form-control {
-  border-color: #73bbe8;
+.has-info .help-block,
+.has-info .control-label {
+  color: #4496d8;
 }
 
-/* line 11, ../src/common/components/_field-error.scss */
-.has-success .help-block,
-.has-success .control-label {
-  color: #0f9d58;
+/* line 10, ../src/common/components/_field-error.scss */
+.has-info .form-control {
+  border-color: #4496d8;
 }
 
 /* line 15, ../src/common/components/_field-error.scss */
-.has-success .form-control {
-  border-color: #0f9d58;
+.has-success .help-block,
+.has-success .control-label {
+  color: #33b679;
 }
 
-/* line 20, ../src/common/components/_field-error.scss */
+/* line 19, ../src/common/components/_field-error.scss */
+.has-success .form-control {
+  border-color: #33b679;
+}
+/* line 22, ../src/common/components/_field-error.scss */
+.has-success .form-control:focus {
+  border-color: #33b679;
+}
+
+/* line 28, ../src/common/components/_field-error.scss */
 .has-warning .help-block,
 .has-warning .control-label {
   color: #f4b400;
 }
 
-/* line 24, ../src/common/components/_field-error.scss */
+/* line 32, ../src/common/components/_field-error.scss */
 .has-warning .form-control {
   border-color: #f4b400;
 }
 
-/* line 29, ../src/common/components/_field-error.scss */
+/* line 37, ../src/common/components/_field-error.scss */
 .has-error .help-block,
 .has-error .control-label {
-  color: #c0392b;
+  color: #e74c3c;
 }
 
-/* line 33, ../src/common/components/_field-error.scss */
+/* line 41, ../src/common/components/_field-error.scss */
 .has-error .form-control {
-  border-color: #c0392b;
+  border-color: #e74c3c;
+}
+/* line 44, ../src/common/components/_field-error.scss */
+.has-error .form-control:focus {
+  border-color: #e74c3c;
 }
 
 /* line 1, ../src/common/components/_form.scss */
@@ -14282,8 +14335,28 @@ label {
 .search-query .search-wrapper {
   padding: 5px;
 }
+/* line 24, ../src/common/components/_form.scss */
+.search-query .search-wrapper input::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #cccccc;
+}
+/* line 27, ../src/common/components/_form.scss */
+.search-query .search-wrapper input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #cccccc;
+}
+/* line 30, ../src/common/components/_form.scss */
+.search-query .search-wrapper input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #cccccc;
+}
+/* line 33, ../src/common/components/_form.scss */
+.search-query .search-wrapper input:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #cccccc;
+}
 
-/* line 25, ../src/common/components/_form.scss */
+/* line 38, ../src/common/components/_form.scss */
 .search-query .form-control {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -14293,7 +14366,7 @@ label {
   padding-left: 29px;
 }
 
-/* line 30, ../src/common/components/_form.scss */
+/* line 43, ../src/common/components/_form.scss */
 .search-query .icon-search {
   color: #cccccc;
   left: 15px;
@@ -14301,39 +14374,48 @@ label {
   top: 15px;
 }
 
-/* line 37, ../src/common/components/_form.scss */
+/* line 50, ../src/common/components/_form.scss */
 .search-query .form-control:focus ~ .icon-search {
   color: #73bbe8;
 }
 
-/* line 41, ../src/common/components/_form.scss */
+/* line 54, ../src/common/components/_form.scss */
 .search-query .search-results {
   margin: 0px;
 }
 
+/* line 58, ../src/common/components/_form.scss */
+textarea.vertical-resize {
+  max-width: 100%;
+}
+
 /* Form actions */
-/* line 46, ../src/common/components/_form.scss */
+/* line 63, ../src/common/components/_form.scss */
 .form-actions {
   padding-top: 5px;
 }
 
-/* line 50, ../src/common/components/_form.scss */
+/* line 67, ../src/common/components/_form.scss */
 .form-group .date-picker {
+  padding-left: 0px;
+}
+/* line 70, ../src/common/components/_form.scss */
+.form-group .date-picker button {
   min-width: 0px;
 }
 
-/* line 54, ../src/common/components/_form.scss */
+/* line 75, ../src/common/components/_form.scss */
 .form-control:focus {
   border-color: #73bbe8;
 }
 
 @media (min-width: 768px) {
-  /* line 59, ../src/common/components/_form.scss */
+  /* line 80, ../src/common/components/_form.scss */
   .form-group .date div {
     padding-right: 0px;
   }
 }
-/* line 64, ../src/common/components/_form.scss */
+/* line 85, ../src/common/components/_form.scss */
 .filename-display p {
   margin: 10px 0 0 0;
 }
@@ -14364,40 +14446,98 @@ button i {
 }
 
 /* line 1, ../src/common/components/_label.scss */
+.label {
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px 10px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+}
+
+/* line 8, ../src/common/components/_label.scss */
 .label-default {
-  background-color: #b3b3b3;
+  background-color: #999999;
 }
 
-/* line 5, ../src/common/components/_label.scss */
+/* line 12, ../src/common/components/_label.scss */
 .label-primary {
-  background-color: #2980b9;
+  background-color: #3498db;
 }
 
-/* line 9, ../src/common/components/_label.scss */
-.label-success {
-  background-color: #0f9d58;
-}
-
-/* line 13, ../src/common/components/_label.scss */
+/* line 16, ../src/common/components/_label.scss */
 .label-info {
   background-color: #73bbe8;
 }
 
-/* line 17, ../src/common/components/_label.scss */
+/* line 20, ../src/common/components/_label.scss */
+.label-success {
+  background-color: #33b679;
+}
+
+/* line 24, ../src/common/components/_label.scss */
 .label-warning {
   background-color: #f4b400;
 }
 
-/* line 21, ../src/common/components/_label.scss */
+/* line 28, ../src/common/components/_label.scss */
 .label-danger {
-  background-color: #c0392b;
+  background-color: #e74c3c;
 }
 
-/* line 26, ../src/common/components/_label.scss */
-.label {
-  font-weight: normal;
-  font-size: 90%;
-  padding: .3em .6em .3em;
+/* line 32, ../src/common/components/_label.scss */
+.label-link {
+  background-color: #226396;
+  cursor: pointer;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+/* line 37, ../src/common/components/_label.scss */
+.label-link:hover {
+  background-color: #73bbe8;
+}
+/* line 41, ../src/common/components/_label.scss */
+.label-link:active {
+  background-color: #002441;
+}
+
+/* line 1, ../src/common/components/_linked-list.scss */
+a.list-group-item {
+  color: #4496d8;
+}
+
+/* line 5, ../src/common/components/_linked-list.scss */
+.list-group-item {
+  background-color: #f1f1f2;
+  border: none;
+}
+
+/* line 11, ../src/common/components/_linked-list.scss */
+a.list-group-item:hover,
+a.list-group-item:focus {
+  background-color: #e6e6e6;
+}
+
+/* line 15, ../src/common/components/_linked-list.scss */
+a.list-group-item:active {
+  color: #ffffff;
+  background-color: #4496d8;
+}
+
+/* line 20, ../src/common/components/_linked-list.scss */
+.list-group-item.active {
+  background-color: #73bbe8;
+}
+
+/* line 25, ../src/common/components/_linked-list.scss */
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+  background-color: #73bbe8;
 }
 
 /* line 1, ../src/common/components/_modal.scss */
@@ -14407,6 +14547,10 @@ button i {
   outline: 0;
 }
 /* line 6, ../src/common/components/_modal.scss */
+.modal .modal-content {
+  border: none;
+}
+/* line 10, ../src/common/components/_modal.scss */
 .modal .modal-header {
   background-color: #f1f1f2;
   -moz-border-radius-topleft: 6px;
@@ -14416,17 +14560,23 @@ button i {
   -webkit-border-top-right-radius: 6px;
   border-top-right-radius: 6px;
   border-bottom: 0px;
-  padding-left: 20px;
+  padding: 8px 20px;
 }
-/* line 14, ../src/common/components/_modal.scss */
+/* line 17, ../src/common/components/_modal.scss */
+.modal .modal-header i {
+  font-size: 14px;
+  vertical-align: sub;
+}
+/* line 23, ../src/common/components/_modal.scss */
 .modal .modal-title {
   font-size: 24px;
+  font-weight: bold;
 }
-/* line 19, ../src/common/components/_modal.scss */
+/* line 29, ../src/common/components/_modal.scss */
 .modal .modal-body p:last-child {
   margin-bottom: 0px;
 }
-/* line 24, ../src/common/components/_modal.scss */
+/* line 34, ../src/common/components/_modal.scss */
 .modal .modal-footer {
   border: none;
   margin-top: 0px;
@@ -14434,7 +14584,7 @@ button i {
 }
 
 /*Override to prevent shift on modal open.  Menu issue?*/
-/* line 36, ../src/common/components/_modal.scss */
+/* line 46, ../src/common/components/_modal.scss */
 body.modal-open,
 .modal-open
 .navbar-fixed-top,
@@ -14462,27 +14612,36 @@ body.modal-open,
   background-color: #73bbe8;
   color: #ffffff;
 }
-/* line 26, ../src/common/components/_navigation.scss */
+/* line 25, ../src/common/components/_navigation.scss */
+.nav-pills li a {
+  padding: 12px 15px;
+}
+/* line 28, ../src/common/components/_navigation.scss */
+.nav-pills li a:active {
+  background-color: #4496d8;
+  color: #ffffff;
+}
+/* line 35, ../src/common/components/_navigation.scss */
 .nav-pills a {
   color: #73bbe8;
   font-size: 14px;
 }
-/* line 30, ../src/common/components/_navigation.scss */
+/* line 39, ../src/common/components/_navigation.scss */
 .nav-pills a:hover {
   background-color: #f1f1f1;
   color: #4496d8;
 }
-/* line 36, ../src/common/components/_navigation.scss */
+/* line 45, ../src/common/components/_navigation.scss */
 .nav-pills i {
   margin-right: 6px;
 }
 
-/* line 41, ../src/common/components/_navigation.scss */
+/* line 50, ../src/common/components/_navigation.scss */
 .nav .nav-divider {
   color: #e6e6e6;
 }
 
-/* line 45, ../src/common/components/_navigation.scss */
+/* line 54, ../src/common/components/_navigation.scss */
 .nav-title {
   color: #b3b3b3;
   display: block;
@@ -14491,7 +14650,7 @@ body.modal-open,
   text-transform: uppercase;
 }
 
-/* line 53, ../src/common/components/_navigation.scss */
+/* line 62, ../src/common/components/_navigation.scss */
 .nav .nav-header {
   color: #cccccc;
   display: block;
@@ -14502,7 +14661,7 @@ body.modal-open,
 }
 
 /* Skill Navigation */
-/* line 63, ../src/common/components/_navigation.scss */
+/* line 72, ../src/common/components/_navigation.scss */
 ul.skill-nav {
   background-color: #f1f1f1;
   -webkit-border-radius: 5px;
@@ -14512,30 +14671,97 @@ ul.skill-nav {
   border-radius: 5px;
   padding: 10px 0px;
 }
-/* line 68, ../src/common/components/_navigation.scss */
+/* line 77, ../src/common/components/_navigation.scss */
 ul.skill-nav .skill-nav {
   padding: 0px;
 }
-/* line 72, ../src/common/components/_navigation.scss */
+/* line 81, ../src/common/components/_navigation.scss */
 ul.skill-nav a:hover {
   background-color: #e6e6e6;
   color: #454545;
 }
-/* line 77, ../src/common/components/_navigation.scss */
+/* line 86, ../src/common/components/_navigation.scss */
 ul.skill-nav a.active {
   border-right: 2px inset #3498db;
   color: #3498db;
   font-weight: bold;
 }
-/* line 83, ../src/common/components/_navigation.scss */
+/* line 92, ../src/common/components/_navigation.scss */
 ul.skill-nav a {
   color: #454545;
   padding: 2px 0px 3px 40px;
 }
 
+/* Tabs */
+/* line 101, ../src/common/components/_navigation.scss */
+.nav-tabs > li > a {
+  background-color: #f1f1f2;
+  background-image: linear-gradient(to bottom, #f1f1f2, #e6e6e6);
+  background: -webkit-linear-gradient(#f1f1f2, #e6e6e6);
+  color: #666666;
+  padding: 9px 15px;
+}
+/* line 110, ../src/common/components/_navigation.scss */
+.nav-tabs > li.active > a {
+  color: #454545;
+  background: #ffffff;
+  background-image: none;
+}
+
 /* line 1, ../src/common/components/_no-value-text.scss */
 .no-value {
   color: #999999;
+}
+
+/* line 1, ../src/common/components/_pagination.scss */
+.pagination > li > a {
+  border: none;
+  color: #454545;
+  background: #cccccc;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #e6e6e6), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -moz-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -o-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background: -webkit-linear-gradient(#e6e6e6, #cccccc);
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3;
+  box-shadow: 0px 2px 0px #b3b3b3;
+  text-shadow: none;
+}
+
+/* line 12, ../src/common/components/_pagination.scss */
+.pagination > li > a:hover {
+  background: #e6e6e6;
+}
+
+/* line 16, ../src/common/components/_pagination.scss */
+.pagination > li > a:active {
+  background: #cccccc;
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -webkit-transform: translateY(2px);
+  -moz-transform: translateY(2px);
+  -ms-transform: translateY(2px);
+  -o-transform: translateY(2px);
+  transform: translateY(2px);
+}
+
+/* line 23, ../src/common/components/_pagination.scss */
+.pagination > .active > a,
+.pagination > .active > a:hover {
+  color: #454545;
+  background: #cccccc;
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -webkit-transform: translateY(2px);
+  -moz-transform: translateY(2px);
+  -ms-transform: translateY(2px);
+  -o-transform: translateY(2px);
+  transform: translateY(2px);
 }
 
 /* line 1, ../src/common/components/_panel.scss */
@@ -14623,59 +14849,119 @@ ul.skill-nav a {
   background-color: #fadbd8;
 }
 
+/* line 1, ../src/common/components/_popover.scss */
+.popover {
+  border: none;
+  padding: 0;
+  -webkit-box-shadow: #cccccc 0 2px 8px;
+  -moz-box-shadow: #cccccc 0 2px 8px;
+  box-shadow: #cccccc 0 2px 8px;
+  /* little popover arrows */
+}
+/* line 6, ../src/common/components/_popover.scss */
+.popover .popover-title {
+  background-color: #f1f1f2;
+  border: none;
+}
+/* line 11, ../src/common/components/_popover.scss */
+.popover .popover-content {
+  background-color: #e6e6e6;
+  border-radius: 0 0 5px 5px;
+}
+/* line 19, ../src/common/components/_popover.scss */
+.popover.left .arrow {
+  border-left: none;
+}
+/* line 23, ../src/common/components/_popover.scss */
+.popover.left .arrow:after {
+  border-left-color: #e6e6e6;
+}
+/* line 29, ../src/common/components/_popover.scss */
+.popover.right .arrow {
+  border-right: none;
+}
+/* line 33, ../src/common/components/_popover.scss */
+.popover.right .arrow:after {
+  border-right-color: #e6e6e6;
+}
+/* line 39, ../src/common/components/_popover.scss */
+.popover.top .arrow {
+  border-top: none;
+}
+/* line 43, ../src/common/components/_popover.scss */
+.popover.top .arrow:after {
+  border-top-color: #e6e6e6;
+}
+/* line 49, ../src/common/components/_popover.scss */
+.popover.bottom .arrow {
+  border-bottom: none;
+}
+/* line 53, ../src/common/components/_popover.scss */
+.popover.bottom .arrow:after {
+  border-bottom-color: #f1f1f2;
+}
+
 /* line 1, ../src/common/components/_progress-bar.scss */
 .progress {
   box-shadow: none;
   border-radius: 15px;
+  background-color: #e6e6e6;
 }
-
 /* line 6, ../src/common/components/_progress-bar.scss */
-.progress-bar {
+.progress .progress-bar {
   box-shadow: none;
+  line-height: 20px;
 }
-
 /* line 10, ../src/common/components/_progress-bar.scss */
-.progress-primary {
-  background: #d6eaf8;
-}
-/* line 13, ../src/common/components/_progress-bar.scss */
-.progress-primary .progress-bar {
-  background-color: #3498db;
-}
-
-/* line 18, ../src/common/components/_progress-bar.scss */
-.progress-info {
-  background: #ebf5fe;
-}
-/* line 21, ../src/common/components/_progress-bar.scss */
-.progress-info .progress-bar {
-  background-color: #9cccf9;
-}
-
-/* line 26, ../src/common/components/_progress-bar.scss */
-.progress-success {
-  background: #d6f0e4;
-}
-/* line 29, ../src/common/components/_progress-bar.scss */
-.progress-success .progress-bar {
+.progress .progress-bar.progress-bar-success {
   background-color: #33b679;
 }
-
-/* line 34, ../src/common/components/_progress-bar.scss */
-.progress-warning {
-  background: #fef5d9;
-}
-/* line 37, ../src/common/components/_progress-bar.scss */
-.progress-warning .progress-bar {
+/* line 14, ../src/common/components/_progress-bar.scss */
+.progress .progress-bar.progress-bar-warning {
   background-color: #fbcb43;
 }
-
+/* line 18, ../src/common/components/_progress-bar.scss */
+.progress .progress-bar.progress-bar-danger {
+  background-color: #e74c3c;
+}
+/* line 23, ../src/common/components/_progress-bar.scss */
+.progress.progress-primary {
+  background: #d6eaf8;
+}
+/* line 26, ../src/common/components/_progress-bar.scss */
+.progress.progress-primary .progress-bar {
+  background-color: #3498db;
+}
+/* line 31, ../src/common/components/_progress-bar.scss */
+.progress.progress-info {
+  background: #ebf5fe;
+}
+/* line 34, ../src/common/components/_progress-bar.scss */
+.progress.progress-info .progress-bar {
+  background-color: #9cccf9;
+}
+/* line 39, ../src/common/components/_progress-bar.scss */
+.progress.progress-success {
+  background: #d6f0e4;
+}
 /* line 42, ../src/common/components/_progress-bar.scss */
-.progress-danger {
+.progress.progress-success .progress-bar {
+  background-color: #33b679;
+}
+/* line 47, ../src/common/components/_progress-bar.scss */
+.progress.progress-warning {
+  background: #fef5d9;
+}
+/* line 50, ../src/common/components/_progress-bar.scss */
+.progress.progress-warning .progress-bar {
+  background-color: #fbcb43;
+}
+/* line 55, ../src/common/components/_progress-bar.scss */
+.progress.progress-danger {
   background: #fadbd8;
 }
-/* line 45, ../src/common/components/_progress-bar.scss */
-.progress-danger .progress-bar {
+/* line 58, ../src/common/components/_progress-bar.scss */
+.progress.progress-danger .progress-bar {
   background-color: #e74c3c;
 }
 
@@ -14732,7 +15018,7 @@ ul.skill-nav a {
 .table thead > tr > th {
   background-color: #454545;
   border: 0;
-  color: #f1f1f2;
+  color: #e6e6e6;
   font-weight: normal;
 }
 /* line 7, ../src/common/components/_table.scss */
@@ -15023,27 +15309,24 @@ ul.skill-nav a {
   color: #3498db;
 }
 
+/* line 1, ../src/common/components/_tooltip.scss */
+.tooltip-inner {
+  padding: 5px 10px;
+}
+
 /* line 1, ../src/common/components/_well.scss */
 .well {
-  background-color: #E6E6E6;
+  background-color: #e6e6e6;
   border: none;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-/* line 6, ../src/common/components/_well.scss */
-.well .title {
-  color: #666666;
-}
-
-/* line 11, ../src/common/components/_well.scss */
-.well-required-for {
-  border: 0px;
-}
-
-/* line 15, ../src/common/components/_well.scss */
-.well-required-for ul {
-  list-style-type: none;
-  padding-left: 0px;
+  padding: 20px;
+  -webkit-box-shadow: 0 0 0;
+  -moz-box-shadow: 0 0 0;
+  box-shadow: 0 0 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
 }
 
 /* line 1, ../src/common/directives/autocomplete-select/_autocomplete-select.scss */
@@ -15710,9 +15993,10 @@ body.no-menu {
   background-color: #FFFFFF !important;
   /* override twitter typeahead style */
   border-radius: 17px;
-  padding: 4px 14px 4px 32px;
+  font-size: 14px;
+  padding: 4px 14px 4px 30px;
 }
-/* line 10, ../src/common/layout/menu/_search-box.scss */
+/* line 11, ../src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form input[type="text"]:focus {
   border: 1px solid #73bbe8;
   -webkit-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
@@ -15720,34 +16004,34 @@ body.no-menu {
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
   outline: 0;
 }
-/* line 17, ../src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form ::-webkit-input-placeholder {
+/* line 18, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input::-webkit-input-placeholder {
   /* WebKit browsers */
   color: #cccccc;
 }
-/* line 20, ../src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form :-moz-placeholder {
+/* line 21, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input:-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: #cccccc;
 }
-/* line 23, ../src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form ::-moz-placeholder {
+/* line 24, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   color: #cccccc;
 }
-/* line 26, ../src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form :-ms-input-placeholder {
+/* line 27, ../src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input:-ms-input-placeholder {
   /* Internet Explorer 10+ */
   color: #cccccc;
 }
-/* line 30, ../src/common/layout/menu/_search-box.scss */
+/* line 31, ../src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form .icon-search {
   color: #cccccc;
   left: 24px;
   position: absolute;
-  top: 5px;
+  top: 7px;
 }
-/* line 37, ../src/common/layout/menu/_search-box.scss */
+/* line 38, ../src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form .icon-search.selected {
   color: #73bbe8;
 }
@@ -15787,12 +16071,11 @@ body.no-menu {
   border: 1px solid transparent;
   border-bottom: 0;
   color: #226396;
-  font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   padding: 14px 10px;
   text-decoration: none;
 }
-/* line 35, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 34, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-brand {
   background: url(/v7/img/logo/logo-icon.png) no-repeat;
   background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
@@ -15802,35 +16085,35 @@ body.no-menu {
   padding: 0;
   width: 32px;
 }
-/* line 46, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 45, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.open > .dropdown-toggle {
   background: #eaeaea;
   border-top: 1px solid #b3b3b3;
   color: #73bbe8;
   padding-top: 15px;
 }
-/* line 53, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 52, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar a:link, #primary_navigation .navbar a:visited {
   text-decoration: none;
   color: #226396;
 }
-/* line 59, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 58, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar .dropdown-menu li a:link,
 #primary_navigation .navbar .dropdown-menu li a:visited {
   color: #454545;
   text-decoration: none;
 }
-/* line 64, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 63, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar .dropdown-menu li a:hover {
   color: #ffffff;
   text-decoration: none;
 }
-/* line 69, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 68, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar a:hover {
   color: #73bbe8;
   text-decoration: none;
 }
-/* line 74, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 73, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu {
   border: 0px;
   -webkit-border-radius: 5px;
@@ -15843,7 +16126,7 @@ body.no-menu {
   box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
   top: 52px;
 }
-/* line 83, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 82, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu li > a:hover,
 #primary_navigation .dropdown-menu .active > a,
 #primary_navigation .dropdown-menu .active > a:hover {
@@ -15855,7 +16138,7 @@ body.no-menu {
   background: #2980b9;
   filter: none;
 }
-/* line 89, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 88, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .divider {
   background-color: #f1f1f2;
   border-bottom: 1px solid #ffffff;
@@ -15863,7 +16146,7 @@ body.no-menu {
   margin: 9px 1px;
   overflow: hidden;
 }
-/* line 97, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 96, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .nav-header {
   color: #cccccc;
   display: block;
@@ -15874,11 +16157,11 @@ body.no-menu {
   padding: 3px 20px;
   text-transform: uppercase;
 }
-/* line 108, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 107, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
-/* line 113, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 112, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link {
   color: #226396;
   display: inline-block;
@@ -15886,15 +16169,15 @@ body.no-menu {
   margin-right: 15px;
   margin-top: 17px;
 }
-/* line 120, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 119, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link.has-search-box {
   margin-right: 0;
 }
-/* line 124, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 123, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link:hover {
   color: #73bbe8;
 }
-/* line 132, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 131, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -15907,7 +16190,7 @@ body.no-menu {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 144, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 143, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   color: #fff;
   background-color: #3f93c0;
@@ -15927,11 +16210,11 @@ body.no-menu {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 160, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 159, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
-/* line 166, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 165, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
@@ -15943,7 +16226,7 @@ body.no-menu {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 175, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 174, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
   background-color: #3f93c0;
   background-image: none;
@@ -15952,7 +16235,7 @@ body.no-menu {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 183, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 182, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
   display: inline \9;
@@ -15960,22 +16243,22 @@ body.no-menu {
   margin-right: 5px;
   text-align: right;
 }
-/* line 191, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 190, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 197, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 196, ../src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
 @media (max-width: 991px) {
-  /* line 204, ../src/common/layout/menu/_primary-navigation.scss */
+  /* line 203, ../src/common/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: none;
   }
 }
-/* line 209, ../src/common/layout/menu/_primary-navigation.scss */
+/* line 208, ../src/common/layout/menu/_primary-navigation.scss */
 body.has-contractor-menu #primary_navigation.navbar-inner {
   border-bottom: none;
 }
@@ -16113,14 +16396,14 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 2, ../src/common/layout/menu/_mobile-menu.scss */
 #mobile_menu .header {
-  padding: 10px 15px;
+  padding: 15px;
   color: #ffffff;
   background-color: #f1f1f2;
-  background-image: url(/v7/img/logo/logo-icon.png), -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
-  background-image: url(/v7/img/logo/logo-icon.png), -webkit-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), -moz-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), -o-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
+  background-image: url(/v7/img/logo/logo-small.svg), -webkit-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -moz-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -o-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), linear-gradient(to bottom, #ffffff, #f1f1f2);
   background-repeat: no-repeat;
   background-position: center center;
   border-bottom: 2px solid #cccccc;
@@ -16284,7 +16567,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 7, ../src/common/layout/_page-header.scss */
 .page-header.pics .title {
   color: #73bbe8;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: normal;
   margin-bottom: 0;
 }
@@ -16433,33 +16716,34 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 4, ../src/common/plugins/_select2-overrides.scss */
 .select2-container {
   font-size: 13px;
+  background-color: #ffffff;
 }
 
-/* line 8, ../src/common/plugins/_select2-overrides.scss */
+/* line 9, ../src/common/plugins/_select2-overrides.scss */
 .select2-drop {
   z-index: 11000;
 }
 
-/* line 12, ../src/common/plugins/_select2-overrides.scss */
+/* line 13, ../src/common/plugins/_select2-overrides.scss */
 .select2-results {
   font-size: 13px;
 }
 
 /* Multi Select */
-/* line 17, ../src/common/plugins/_select2-overrides.scss */
+/* line 18, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   border-radius: 0px;
   padding: 3px 20px 3px 5px;
 }
 
-/* line 22, ../src/common/plugins/_select2-overrides.scss */
+/* line 23, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choices {
   font-size: 12px;
   line-height: 12px;
 }
 
 /* Styles for font awesome icons */
-/* line 28, ../src/common/plugins/_select2-overrides.scss */
+/* line 29, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   background: none !important;
   border: 0px;
@@ -16467,21 +16751,21 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
 }
 
-/* line 35, ../src/common/plugins/_select2-overrides.scss */
+/* line 36, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-search-choice-close {
   background: none !important;
   left: auto;
   top: 3px;
 }
 
-/* line 41, ../src/common/plugins/_select2-overrides.scss */
+/* line 42, ../src/common/plugins/_select2-overrides.scss */
 .select2-search .select2-input {
   background: none !important;
   padding-left: 25px;
   padding-right: 5px;
 }
 
-/* line 47, ../src/common/plugins/_select2-overrides.scss */
+/* line 48, ../src/common/plugins/_select2-overrides.scss */
 .select2-search .icon-search {
   color: #CCC;
   left: 10px;
@@ -16489,30 +16773,30 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 5px;
 }
 
-/* line 54, ../src/common/plugins/_select2-overrides.scss */
+/* line 55, ../src/common/plugins/_select2-overrides.scss */
 .select2-drop-above .select2-search .icon-search {
   top: 9px;
 }
 
 /* From V7 Select2 Overiddes scss file */
-/* line 59, ../src/common/plugins/_select2-overrides.scss */
+/* line 60, ../src/common/plugins/_select2-overrides.scss */
 .form-control.select2-container {
   color: #454545;
 }
 
 /* Single Select */
-/* line 64, ../src/common/plugins/_select2-overrides.scss */
+/* line 65, ../src/common/plugins/_select2-overrides.scss */
 .select2-results .select2-highlighted {
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
   background: -webkit-linear-gradient(#3498db, #2980b9);
 }
 
-/* line 69, ../src/common/plugins/_select2-overrides.scss */
+/* line 70, ../src/common/plugins/_select2-overrides.scss */
 .select2-drop-active {
   border-color: #73bbe8;
 }
 
-/* line 73, ../src/common/plugins/_select2-overrides.scss */
+/* line 74, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-active {
   border-color: #73bbe8;
   outline: 0;
@@ -16521,7 +16805,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 80, ../src/common/plugins/_select2-overrides.scss */
+/* line 81, ../src/common/plugins/_select2-overrides.scss */
 .select2-container.form-control.select2-dropdown-open {
   border-color: #73bbe8;
   outline: 0;
@@ -16529,7 +16813,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
-/* line 86, ../src/common/plugins/_select2-overrides.scss */
+/* line 87, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice {
   background: #ffffff;
   border-color: #cccccc;
@@ -16539,14 +16823,18 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   padding: 8px 18px 8px 12px;
   height: 34px;
 }
-/* line 95, ../src/common/plugins/_select2-overrides.scss */
+/* line 96, ../src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   color: #999999;
   top: 7px;
 }
+/* line 102, ../src/common/plugins/_select2-overrides.scss */
+.select2-container .icon-remove:before {
+  content: "\F057";
+}
 
 /* Multi Select */
-/* line 103, ../src/common/plugins/_select2-overrides.scss */
+/* line 108, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   background-color: #e6e6e6;
   background-image: none;
@@ -16557,201 +16845,28 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   -o-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 109, ../src/common/plugins/_select2-overrides.scss */
+/* line 114, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a {
   color: #999999;
   font-size: 12px;
 }
-/* line 113, ../src/common/plugins/_select2-overrides.scss */
+/* line 118, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
 }
-/* line 117, ../src/common/plugins/_select2-overrides.scss */
+/* line 122, ../src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:active {
   color: #800a06;
 }
 
 /* Styling for IE8 */
-/* line 125, ../src/common/plugins/_select2-overrides.scss */
+/* line 130, ../src/common/plugins/_select2-overrides.scss */
 .lt-ie9 .select2-container .select2-choice {
   filter: none;
 }
-/* line 128, ../src/common/plugins/_select2-overrides.scss */
+/* line 133, ../src/common/plugins/_select2-overrides.scss */
 .lt-ie9 .select2-container .select2-choice .select2-arrow {
   filter: none;
-}
-
-/* line 1, ../src/app/company-finder/_company-finder.scss */
-#company-finder {
-  margin-bottom: 20px;
-}
-/* line 4, ../src/app/company-finder/_company-finder.scss */
-#company-finder .page-header.pics {
-  margin-bottom: 30px;
-}
-/* line 8, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section > h1 {
-  margin-top: 0;
-}
-/* line 13, ../src/app/company-finder/_company-finder.scss */
-#company-finder .filter-results-section .panel-body {
-  padding: 0;
-}
-/* line 17, ../src/app/company-finder/_company-finder.scss */
-#company-finder .filter-results-section .control-spacer {
-  margin-bottom: 20px;
-}
-/* line 21, ../src/app/company-finder/_company-finder.scss */
-#company-finder .filter-results-section .search-toggle {
-  font-size: 12px;
-}
-/* line 27, ../src/app/company-finder/_company-finder.scss */
-#company-finder .search-results-section .badge-info {
-  margin-left: 5px;
-}
-/* line 32, ../src/app/company-finder/_company-finder.scss */
-#company-finder .search-results-section .icon-filter:hover {
-  color: #73bbe8;
-  cursor: pointer;
-}
-/* line 39, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section {
-  overflow: hidden;
-}
-/* line 42, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section h1 {
-  background-color: #f1f1f1;
-  color: #808285;
-  font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0;
-  margin: 0;
-}
-/* line 50, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section h1 i.icon-map-marker {
-  color: #808285;
-  font-size: 14px;
-  margin-right: 5px;
-}
-/* line 57, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .search-wrapper {
-  padding: 4px;
-}
-/* line 60, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .search-wrapper input {
-  height: 30px;
-}
-/* line 64, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .search-wrapper .icon-search {
-  top: 12px;
-}
-/* line 69, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .map {
-  width: 100%;
-  height: 500px;
-}
-/* line 73, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .map .marker-label {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  color: #ffffff;
-}
-/* line 79, ../src/app/company-finder/_company-finder.scss */
-#company-finder .employee-guard-section.map-section .map .marker-label-large {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  color: #ffffff;
-}
-/* line 90, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .contractor-name,
-#company-finder .result-list .contractor-name {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 14px;
-  margin-bottom: 0px;
-}
-/* line 96, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .primary-trade,
-#company-finder .result-list .primary-trade {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  margin-bottom: 0;
-}
-/* line 102, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .results-label,
-#company-finder .result-list .results-label {
-  font-size: 16px;
-  color: #cccccc;
-  text-align: center;
-}
-/* line 110, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window p {
-  margin-bottom: 0;
-}
-/* line 114, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window i {
-  font-size: 16px;
-}
-/* line 118, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .other-trades {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-}
-/* line 123, ../src/app/company-finder/_company-finder.scss */
-#company-finder .info-window .address {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 12px;
-  color: #808285;
-}
-/* line 131, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result {
-  margin-left: -30px;
-  margin-right: -30px;
-  padding: 8px 0;
-}
-/* line 136, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .red-marker {
-  background: url("/angular/src/app/company-finder/img/marker-danger-light.png") center no-repeat;
-  color: #ffffff;
-  font-size: 12px;
-  height: 32px;
-  padding-top: 2px;
-  width: 21px;
-}
-/* line 145, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .yellow-marker {
-  background: url("/angular/src/app/company-finder/img/marker-warning-light.png") center no-repeat;
-  color: #ffffff;
-  font-size: 12px;
-  height: 32px;
-  padding-top: 2px;
-  width: 21px;
-}
-/* line 154, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .green-marker {
-  background: url("/angular/src/app/company-finder/img/marker-success-light.png") center no-repeat;
-  color: #ffffff;
-  font-size: 12px;
-  height: 32px;
-  padding-top: 2px;
-  width: 21px;
-}
-/* line 163, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .gray-marker {
-  background: url("/angular/src/app/company-finder/img/marker-generic.png") center no-repeat;
-  color: #ffffff;
-  font-size: 12px;
-  height: 32px;
-  padding-top: 2px;
-  width: 21px;
-}
-/* line 172, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result:hover {
-  background: #EBF5FE;
-}
-/* line 176, ../src/app/company-finder/_company-finder.scss */
-#company-finder .result-list .result .icon-link {
-  margin-right: 5px;
-  color: #cccccc;
 }
 
 /*!
@@ -30603,103 +30718,143 @@ a:focus {
 /* line 1, ../../employee-guard/src/common/components/_alert.scss */
 .alert {
   border: none;
+  border-radius: 0;
+  text-shadow: none;
 }
-/* line 4, ../../employee-guard/src/common/components/_alert.scss */
-.alert h3 {
-  font-size: 18px;
+/* line 8, ../../employee-guard/src/common/components/_alert.scss */
+.alert strong,
+.alert h3,
+.alert h4 {
   font-weight: bold;
-  margin: 0;
+}
+/* line 14, ../../employee-guard/src/common/components/_alert.scss */
+.alert h3,
+.alert h4,
+.alert p {
+  margin: 0px;
+  line-height: 18px;
+}
+/* line 20, ../../employee-guard/src/common/components/_alert.scss */
+.alert h3,
+.alert h4 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+/* line 25, ../../employee-guard/src/common/components/_alert.scss */
+.alert i {
+  margin-right: 5px;
+  cursor: auto;
 }
 
-/* line 11, ../../employee-guard/src/common/components/_alert.scss */
+/* line 31, ../../employee-guard/src/common/components/_alert.scss */
 .alert-primary {
   background-color: #d6eaf8;
   color: #2980b9;
 }
-/* line 16, ../../employee-guard/src/common/components/_alert.scss */
+/* line 37, ../../employee-guard/src/common/components/_alert.scss */
 .alert-primary strong,
-.alert-primary h3 {
-  color: #105093;
+.alert-primary h3,
+.alert-primary h4 {
+  color: #2980b9;
 }
 
-/* line 21, ../../employee-guard/src/common/components/_alert.scss */
+/* line 42, ../../employee-guard/src/common/components/_alert.scss */
 .alert-info {
   background-color: #ebf5fe;
   color: #4496d8;
 }
-/* line 26, ../../employee-guard/src/common/components/_alert.scss */
+/* line 48, ../../employee-guard/src/common/components/_alert.scss */
 .alert-info strong,
-.alert-info h3 {
+.alert-info h3,
+.alert-info h4 {
   color: #4496d8;
 }
 
-/* line 31, ../../employee-guard/src/common/components/_alert.scss */
+/* line 53, ../../employee-guard/src/common/components/_alert.scss */
 .alert-success {
   background-color: #d6f0e4;
   color: #0f9d58;
 }
-/* line 36, ../../employee-guard/src/common/components/_alert.scss */
+/* line 59, ../../employee-guard/src/common/components/_alert.scss */
 .alert-success strong,
-.alert-success h3 {
-  color: #05702e;
+.alert-success h3,
+.alert-success h4 {
+  color: #0f9d58;
 }
 
-/* line 41, ../../employee-guard/src/common/components/_alert.scss */
+/* line 64, ../../employee-guard/src/common/components/_alert.scss */
 .alert-warning {
   background-color: #fef5d9;
-  color: #f4b400;
+  color: #ec8c00;
 }
-/* line 46, ../../employee-guard/src/common/components/_alert.scss */
+/* line 70, ../../employee-guard/src/common/components/_alert.scss */
 .alert-warning strong,
-.alert-warning h3 {
+.alert-warning h3,
+.alert-warning h4 {
   color: #ec8c00;
 }
 
-/* line 51, ../../employee-guard/src/common/components/_alert.scss */
+/* line 75, ../../employee-guard/src/common/components/_alert.scss */
 .alert-danger {
   background-color: #fadbd8;
   color: #c0392b;
 }
-/* line 56, ../../employee-guard/src/common/components/_alert.scss */
+/* line 81, ../../employee-guard/src/common/components/_alert.scss */
 .alert-danger strong,
-.alert-danger h3 {
-  color: #800a06;
+.alert-danger h3,
+.alert-danger h4 {
+  color: #c0392b;
 }
 
 /* line 1, ../../employee-guard/src/common/components/_badge.scss */
 .badge {
   color: #ffffff;
   font-weight: normal;
+  padding: 4px 7px;
 }
 
-/* line 6, ../../employee-guard/src/common/components/_badge.scss */
+/* line 7, ../../employee-guard/src/common/components/_badge.scss */
 .badge-default {
-  background-color: #b3b3b3;
+  background-color: #999999;
 }
 
-/* line 10, ../../employee-guard/src/common/components/_badge.scss */
+/* line 11, ../../employee-guard/src/common/components/_badge.scss */
 .badge-primary {
-  background-color: #2980b9;
+  background-color: #3498db;
 }
 
-/* line 14, ../../employee-guard/src/common/components/_badge.scss */
-.badge-success {
-  background-color: #0f9d58;
-}
-
-/* line 18, ../../employee-guard/src/common/components/_badge.scss */
+/* line 15, ../../employee-guard/src/common/components/_badge.scss */
 .badge-info {
   background-color: #73bbe8;
 }
 
-/* line 22, ../../employee-guard/src/common/components/_badge.scss */
+/* line 19, ../../employee-guard/src/common/components/_badge.scss */
+.badge-success {
+  background-color: #33b679;
+}
+
+/* line 23, ../../employee-guard/src/common/components/_badge.scss */
 .badge-warning {
   background-color: #f4b400;
 }
 
-/* line 26, ../../employee-guard/src/common/components/_badge.scss */
+/* line 27, ../../employee-guard/src/common/components/_badge.scss */
 .badge-danger {
-  background-color: #c0392b;
+  background-color: #e74c3c;
+}
+
+/* line 31, ../../employee-guard/src/common/components/_badge.scss */
+.badge-link {
+  background-color: #226396;
+  cursor: pointer;
+}
+/* line 35, ../../employee-guard/src/common/components/_badge.scss */
+.badge-link:hover {
+  background-color: #73bbe8;
+}
+/* line 39, ../../employee-guard/src/common/components/_badge.scss */
+.badge-link:active {
+  background-color: #002441;
 }
 
 /* line 1, ../../employee-guard/src/common/components/_breadcrumb.scss */
@@ -30966,48 +31121,61 @@ a:focus {
     text-align: center;
   }
 }
-/* line 2, ../../employee-guard/src/common/components/_field-error.scss */
-.has-info .help-block,
-.has-info .control-label {
-  color: #73bbe8;
+/* line 1, ../../employee-guard/src/common/components/_field-error.scss */
+.help-block {
+  margin-bottom: 0;
 }
 
 /* line 6, ../../employee-guard/src/common/components/_field-error.scss */
-.has-info .form-control {
-  border-color: #73bbe8;
+.has-info .help-block,
+.has-info .control-label {
+  color: #4496d8;
 }
 
-/* line 11, ../../employee-guard/src/common/components/_field-error.scss */
-.has-success .help-block,
-.has-success .control-label {
-  color: #0f9d58;
+/* line 10, ../../employee-guard/src/common/components/_field-error.scss */
+.has-info .form-control {
+  border-color: #4496d8;
 }
 
 /* line 15, ../../employee-guard/src/common/components/_field-error.scss */
-.has-success .form-control {
-  border-color: #0f9d58;
+.has-success .help-block,
+.has-success .control-label {
+  color: #33b679;
 }
 
-/* line 20, ../../employee-guard/src/common/components/_field-error.scss */
+/* line 19, ../../employee-guard/src/common/components/_field-error.scss */
+.has-success .form-control {
+  border-color: #33b679;
+}
+/* line 22, ../../employee-guard/src/common/components/_field-error.scss */
+.has-success .form-control:focus {
+  border-color: #33b679;
+}
+
+/* line 28, ../../employee-guard/src/common/components/_field-error.scss */
 .has-warning .help-block,
 .has-warning .control-label {
   color: #f4b400;
 }
 
-/* line 24, ../../employee-guard/src/common/components/_field-error.scss */
+/* line 32, ../../employee-guard/src/common/components/_field-error.scss */
 .has-warning .form-control {
   border-color: #f4b400;
 }
 
-/* line 29, ../../employee-guard/src/common/components/_field-error.scss */
+/* line 37, ../../employee-guard/src/common/components/_field-error.scss */
 .has-error .help-block,
 .has-error .control-label {
-  color: #c0392b;
+  color: #e74c3c;
 }
 
-/* line 33, ../../employee-guard/src/common/components/_field-error.scss */
+/* line 41, ../../employee-guard/src/common/components/_field-error.scss */
 .has-error .form-control {
-  border-color: #c0392b;
+  border-color: #e74c3c;
+}
+/* line 44, ../../employee-guard/src/common/components/_field-error.scss */
+.has-error .form-control:focus {
+  border-color: #e74c3c;
 }
 
 /* line 1, ../../employee-guard/src/common/components/_form.scss */
@@ -31038,8 +31206,28 @@ label {
 .search-query .search-wrapper {
   padding: 5px;
 }
+/* line 24, ../../employee-guard/src/common/components/_form.scss */
+.search-query .search-wrapper input::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: #cccccc;
+}
+/* line 27, ../../employee-guard/src/common/components/_form.scss */
+.search-query .search-wrapper input:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: #cccccc;
+}
+/* line 30, ../../employee-guard/src/common/components/_form.scss */
+.search-query .search-wrapper input::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: #cccccc;
+}
+/* line 33, ../../employee-guard/src/common/components/_form.scss */
+.search-query .search-wrapper input:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: #cccccc;
+}
 
-/* line 25, ../../employee-guard/src/common/components/_form.scss */
+/* line 38, ../../employee-guard/src/common/components/_form.scss */
 .search-query .form-control {
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
@@ -31049,7 +31237,7 @@ label {
   padding-left: 29px;
 }
 
-/* line 30, ../../employee-guard/src/common/components/_form.scss */
+/* line 43, ../../employee-guard/src/common/components/_form.scss */
 .search-query .icon-search {
   color: #cccccc;
   left: 15px;
@@ -31057,39 +31245,48 @@ label {
   top: 15px;
 }
 
-/* line 37, ../../employee-guard/src/common/components/_form.scss */
+/* line 50, ../../employee-guard/src/common/components/_form.scss */
 .search-query .form-control:focus ~ .icon-search {
   color: #73bbe8;
 }
 
-/* line 41, ../../employee-guard/src/common/components/_form.scss */
+/* line 54, ../../employee-guard/src/common/components/_form.scss */
 .search-query .search-results {
   margin: 0px;
 }
 
+/* line 58, ../../employee-guard/src/common/components/_form.scss */
+textarea.vertical-resize {
+  max-width: 100%;
+}
+
 /* Form actions */
-/* line 46, ../../employee-guard/src/common/components/_form.scss */
+/* line 63, ../../employee-guard/src/common/components/_form.scss */
 .form-actions {
   padding-top: 5px;
 }
 
-/* line 50, ../../employee-guard/src/common/components/_form.scss */
+/* line 67, ../../employee-guard/src/common/components/_form.scss */
 .form-group .date-picker {
+  padding-left: 0px;
+}
+/* line 70, ../../employee-guard/src/common/components/_form.scss */
+.form-group .date-picker button {
   min-width: 0px;
 }
 
-/* line 54, ../../employee-guard/src/common/components/_form.scss */
+/* line 75, ../../employee-guard/src/common/components/_form.scss */
 .form-control:focus {
   border-color: #73bbe8;
 }
 
 @media (min-width: 768px) {
-  /* line 59, ../../employee-guard/src/common/components/_form.scss */
+  /* line 80, ../../employee-guard/src/common/components/_form.scss */
   .form-group .date div {
     padding-right: 0px;
   }
 }
-/* line 64, ../../employee-guard/src/common/components/_form.scss */
+/* line 85, ../../employee-guard/src/common/components/_form.scss */
 .filename-display p {
   margin: 10px 0 0 0;
 }
@@ -31120,40 +31317,98 @@ button i {
 }
 
 /* line 1, ../../employee-guard/src/common/components/_label.scss */
+.label {
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px 10px;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
+}
+
+/* line 8, ../../employee-guard/src/common/components/_label.scss */
 .label-default {
-  background-color: #b3b3b3;
+  background-color: #999999;
 }
 
-/* line 5, ../../employee-guard/src/common/components/_label.scss */
+/* line 12, ../../employee-guard/src/common/components/_label.scss */
 .label-primary {
-  background-color: #2980b9;
+  background-color: #3498db;
 }
 
-/* line 9, ../../employee-guard/src/common/components/_label.scss */
-.label-success {
-  background-color: #0f9d58;
-}
-
-/* line 13, ../../employee-guard/src/common/components/_label.scss */
+/* line 16, ../../employee-guard/src/common/components/_label.scss */
 .label-info {
   background-color: #73bbe8;
 }
 
-/* line 17, ../../employee-guard/src/common/components/_label.scss */
+/* line 20, ../../employee-guard/src/common/components/_label.scss */
+.label-success {
+  background-color: #33b679;
+}
+
+/* line 24, ../../employee-guard/src/common/components/_label.scss */
 .label-warning {
   background-color: #f4b400;
 }
 
-/* line 21, ../../employee-guard/src/common/components/_label.scss */
+/* line 28, ../../employee-guard/src/common/components/_label.scss */
 .label-danger {
-  background-color: #c0392b;
+  background-color: #e74c3c;
 }
 
-/* line 26, ../../employee-guard/src/common/components/_label.scss */
-.label {
-  font-weight: normal;
-  font-size: 90%;
-  padding: .3em .6em .3em;
+/* line 32, ../../employee-guard/src/common/components/_label.scss */
+.label-link {
+  background-color: #226396;
+  cursor: pointer;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+}
+/* line 37, ../../employee-guard/src/common/components/_label.scss */
+.label-link:hover {
+  background-color: #73bbe8;
+}
+/* line 41, ../../employee-guard/src/common/components/_label.scss */
+.label-link:active {
+  background-color: #002441;
+}
+
+/* line 1, ../../employee-guard/src/common/components/_linked-list.scss */
+a.list-group-item {
+  color: #4496d8;
+}
+
+/* line 5, ../../employee-guard/src/common/components/_linked-list.scss */
+.list-group-item {
+  background-color: #f1f1f2;
+  border: none;
+}
+
+/* line 11, ../../employee-guard/src/common/components/_linked-list.scss */
+a.list-group-item:hover,
+a.list-group-item:focus {
+  background-color: #e6e6e6;
+}
+
+/* line 15, ../../employee-guard/src/common/components/_linked-list.scss */
+a.list-group-item:active {
+  color: #ffffff;
+  background-color: #4496d8;
+}
+
+/* line 20, ../../employee-guard/src/common/components/_linked-list.scss */
+.list-group-item.active {
+  background-color: #73bbe8;
+}
+
+/* line 25, ../../employee-guard/src/common/components/_linked-list.scss */
+.list-group-item.active:hover,
+.list-group-item.active:focus {
+  background-color: #73bbe8;
 }
 
 /* line 1, ../../employee-guard/src/common/components/_modal.scss */
@@ -31163,6 +31418,10 @@ button i {
   outline: 0;
 }
 /* line 6, ../../employee-guard/src/common/components/_modal.scss */
+.modal .modal-content {
+  border: none;
+}
+/* line 10, ../../employee-guard/src/common/components/_modal.scss */
 .modal .modal-header {
   background-color: #f1f1f2;
   -moz-border-radius-topleft: 6px;
@@ -31172,17 +31431,23 @@ button i {
   -webkit-border-top-right-radius: 6px;
   border-top-right-radius: 6px;
   border-bottom: 0px;
-  padding-left: 20px;
+  padding: 8px 20px;
 }
-/* line 14, ../../employee-guard/src/common/components/_modal.scss */
+/* line 17, ../../employee-guard/src/common/components/_modal.scss */
+.modal .modal-header i {
+  font-size: 14px;
+  vertical-align: sub;
+}
+/* line 23, ../../employee-guard/src/common/components/_modal.scss */
 .modal .modal-title {
   font-size: 24px;
+  font-weight: bold;
 }
-/* line 19, ../../employee-guard/src/common/components/_modal.scss */
+/* line 29, ../../employee-guard/src/common/components/_modal.scss */
 .modal .modal-body p:last-child {
   margin-bottom: 0px;
 }
-/* line 24, ../../employee-guard/src/common/components/_modal.scss */
+/* line 34, ../../employee-guard/src/common/components/_modal.scss */
 .modal .modal-footer {
   border: none;
   margin-top: 0px;
@@ -31190,7 +31455,7 @@ button i {
 }
 
 /*Override to prevent shift on modal open.  Menu issue?*/
-/* line 36, ../../employee-guard/src/common/components/_modal.scss */
+/* line 46, ../../employee-guard/src/common/components/_modal.scss */
 body.modal-open,
 .modal-open
 .navbar-fixed-top,
@@ -31218,27 +31483,36 @@ body.modal-open,
   background-color: #73bbe8;
   color: #ffffff;
 }
-/* line 26, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 25, ../../employee-guard/src/common/components/_navigation.scss */
+.nav-pills li a {
+  padding: 12px 15px;
+}
+/* line 28, ../../employee-guard/src/common/components/_navigation.scss */
+.nav-pills li a:active {
+  background-color: #4496d8;
+  color: #ffffff;
+}
+/* line 35, ../../employee-guard/src/common/components/_navigation.scss */
 .nav-pills a {
   color: #73bbe8;
   font-size: 14px;
 }
-/* line 30, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 39, ../../employee-guard/src/common/components/_navigation.scss */
 .nav-pills a:hover {
   background-color: #f1f1f1;
   color: #4496d8;
 }
-/* line 36, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 45, ../../employee-guard/src/common/components/_navigation.scss */
 .nav-pills i {
   margin-right: 6px;
 }
 
-/* line 41, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 50, ../../employee-guard/src/common/components/_navigation.scss */
 .nav .nav-divider {
   color: #e6e6e6;
 }
 
-/* line 45, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 54, ../../employee-guard/src/common/components/_navigation.scss */
 .nav-title {
   color: #b3b3b3;
   display: block;
@@ -31247,7 +31521,7 @@ body.modal-open,
   text-transform: uppercase;
 }
 
-/* line 53, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 62, ../../employee-guard/src/common/components/_navigation.scss */
 .nav .nav-header {
   color: #cccccc;
   display: block;
@@ -31258,7 +31532,7 @@ body.modal-open,
 }
 
 /* Skill Navigation */
-/* line 63, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 72, ../../employee-guard/src/common/components/_navigation.scss */
 ul.skill-nav {
   background-color: #f1f1f1;
   -webkit-border-radius: 5px;
@@ -31268,30 +31542,97 @@ ul.skill-nav {
   border-radius: 5px;
   padding: 10px 0px;
 }
-/* line 68, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 77, ../../employee-guard/src/common/components/_navigation.scss */
 ul.skill-nav .skill-nav {
   padding: 0px;
 }
-/* line 72, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 81, ../../employee-guard/src/common/components/_navigation.scss */
 ul.skill-nav a:hover {
   background-color: #e6e6e6;
   color: #454545;
 }
-/* line 77, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 86, ../../employee-guard/src/common/components/_navigation.scss */
 ul.skill-nav a.active {
   border-right: 2px inset #3498db;
   color: #3498db;
   font-weight: bold;
 }
-/* line 83, ../../employee-guard/src/common/components/_navigation.scss */
+/* line 92, ../../employee-guard/src/common/components/_navigation.scss */
 ul.skill-nav a {
   color: #454545;
   padding: 2px 0px 3px 40px;
 }
 
+/* Tabs */
+/* line 101, ../../employee-guard/src/common/components/_navigation.scss */
+.nav-tabs > li > a {
+  background-color: #f1f1f2;
+  background-image: linear-gradient(to bottom, #f1f1f2, #e6e6e6);
+  background: -webkit-linear-gradient(#f1f1f2, #e6e6e6);
+  color: #666666;
+  padding: 9px 15px;
+}
+/* line 110, ../../employee-guard/src/common/components/_navigation.scss */
+.nav-tabs > li.active > a {
+  color: #454545;
+  background: #ffffff;
+  background-image: none;
+}
+
 /* line 1, ../../employee-guard/src/common/components/_no-value-text.scss */
 .no-value {
   color: #999999;
+}
+
+/* line 1, ../../employee-guard/src/common/components/_pagination.scss */
+.pagination > li > a {
+  border: none;
+  color: #454545;
+  background: #cccccc;
+  background-image: -webkit-gradient(linear, to bottom, to top, color-stop(0%, #e6e6e6), color-stop(100%, #cccccc));
+  background-image: -webkit-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -moz-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: -o-linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background-image: linear-gradient(to bottom, #e6e6e6, #cccccc);
+  background: -webkit-linear-gradient(#e6e6e6, #cccccc);
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3;
+  box-shadow: 0px 2px 0px #b3b3b3;
+  text-shadow: none;
+}
+
+/* line 12, ../../employee-guard/src/common/components/_pagination.scss */
+.pagination > li > a:hover {
+  background: #e6e6e6;
+}
+
+/* line 16, ../../employee-guard/src/common/components/_pagination.scss */
+.pagination > li > a:active {
+  background: #cccccc;
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -webkit-transform: translateY(2px);
+  -moz-transform: translateY(2px);
+  -ms-transform: translateY(2px);
+  -o-transform: translateY(2px);
+  transform: translateY(2px);
+}
+
+/* line 23, ../../employee-guard/src/common/components/_pagination.scss */
+.pagination > .active > a,
+.pagination > .active > a:hover {
+  color: #454545;
+  background: #cccccc;
+  -webkit-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -moz-box-shadow: 0px 2px 0px #b3b3b3 inset;
+  box-shadow: 0px 2px 0px #b3b3b3 inset;
+  -webkit-transform: translateY(2px);
+  -moz-transform: translateY(2px);
+  -ms-transform: translateY(2px);
+  -o-transform: translateY(2px);
+  transform: translateY(2px);
 }
 
 /* line 1, ../../employee-guard/src/common/components/_panel.scss */
@@ -31379,59 +31720,119 @@ ul.skill-nav a {
   background-color: #fadbd8;
 }
 
+/* line 1, ../../employee-guard/src/common/components/_popover.scss */
+.popover {
+  border: none;
+  padding: 0;
+  -webkit-box-shadow: #cccccc 0 2px 8px;
+  -moz-box-shadow: #cccccc 0 2px 8px;
+  box-shadow: #cccccc 0 2px 8px;
+  /* little popover arrows */
+}
+/* line 6, ../../employee-guard/src/common/components/_popover.scss */
+.popover .popover-title {
+  background-color: #f1f1f2;
+  border: none;
+}
+/* line 11, ../../employee-guard/src/common/components/_popover.scss */
+.popover .popover-content {
+  background-color: #e6e6e6;
+  border-radius: 0 0 5px 5px;
+}
+/* line 19, ../../employee-guard/src/common/components/_popover.scss */
+.popover.left .arrow {
+  border-left: none;
+}
+/* line 23, ../../employee-guard/src/common/components/_popover.scss */
+.popover.left .arrow:after {
+  border-left-color: #e6e6e6;
+}
+/* line 29, ../../employee-guard/src/common/components/_popover.scss */
+.popover.right .arrow {
+  border-right: none;
+}
+/* line 33, ../../employee-guard/src/common/components/_popover.scss */
+.popover.right .arrow:after {
+  border-right-color: #e6e6e6;
+}
+/* line 39, ../../employee-guard/src/common/components/_popover.scss */
+.popover.top .arrow {
+  border-top: none;
+}
+/* line 43, ../../employee-guard/src/common/components/_popover.scss */
+.popover.top .arrow:after {
+  border-top-color: #e6e6e6;
+}
+/* line 49, ../../employee-guard/src/common/components/_popover.scss */
+.popover.bottom .arrow {
+  border-bottom: none;
+}
+/* line 53, ../../employee-guard/src/common/components/_popover.scss */
+.popover.bottom .arrow:after {
+  border-bottom-color: #f1f1f2;
+}
+
 /* line 1, ../../employee-guard/src/common/components/_progress-bar.scss */
 .progress {
   box-shadow: none;
   border-radius: 15px;
+  background-color: #e6e6e6;
 }
-
 /* line 6, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-bar {
+.progress .progress-bar {
   box-shadow: none;
+  line-height: 20px;
 }
-
 /* line 10, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-primary {
-  background: #d6eaf8;
-}
-/* line 13, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-primary .progress-bar {
-  background-color: #3498db;
-}
-
-/* line 18, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-info {
-  background: #ebf5fe;
-}
-/* line 21, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-info .progress-bar {
-  background-color: #9cccf9;
-}
-
-/* line 26, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-success {
-  background: #d6f0e4;
-}
-/* line 29, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-success .progress-bar {
+.progress .progress-bar.progress-bar-success {
   background-color: #33b679;
 }
-
-/* line 34, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-warning {
-  background: #fef5d9;
-}
-/* line 37, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-warning .progress-bar {
+/* line 14, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress .progress-bar.progress-bar-warning {
   background-color: #fbcb43;
 }
-
+/* line 18, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress .progress-bar.progress-bar-danger {
+  background-color: #e74c3c;
+}
+/* line 23, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-primary {
+  background: #d6eaf8;
+}
+/* line 26, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-primary .progress-bar {
+  background-color: #3498db;
+}
+/* line 31, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-info {
+  background: #ebf5fe;
+}
+/* line 34, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-info .progress-bar {
+  background-color: #9cccf9;
+}
+/* line 39, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-success {
+  background: #d6f0e4;
+}
 /* line 42, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-danger {
+.progress.progress-success .progress-bar {
+  background-color: #33b679;
+}
+/* line 47, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-warning {
+  background: #fef5d9;
+}
+/* line 50, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-warning .progress-bar {
+  background-color: #fbcb43;
+}
+/* line 55, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-danger {
   background: #fadbd8;
 }
-/* line 45, ../../employee-guard/src/common/components/_progress-bar.scss */
-.progress-danger .progress-bar {
+/* line 58, ../../employee-guard/src/common/components/_progress-bar.scss */
+.progress.progress-danger .progress-bar {
   background-color: #e74c3c;
 }
 
@@ -31488,7 +31889,7 @@ ul.skill-nav a {
 .table thead > tr > th {
   background-color: #454545;
   border: 0;
-  color: #f1f1f2;
+  color: #e6e6e6;
   font-weight: normal;
 }
 /* line 7, ../../employee-guard/src/common/components/_table.scss */
@@ -31780,15 +32181,24 @@ ul.skill-nav a {
   color: #3498db;
 }
 
-/* line 1, ../../employee-guard/src/common/components/_well.scss */
-.well-required-for {
-  border: 0px;
+/* line 1, ../../employee-guard/src/common/components/_tooltip.scss */
+.tooltip-inner {
+  padding: 5px 10px;
 }
 
-/* line 5, ../../employee-guard/src/common/components/_well.scss */
-.well-required-for ul {
-  list-style-type: none;
-  padding-left: 0px;
+/* line 1, ../../employee-guard/src/common/components/_well.scss */
+.well {
+  background-color: #e6e6e6;
+  border: none;
+  padding: 20px;
+  -webkit-box-shadow: 0 0 0;
+  -moz-box-shadow: 0 0 0;
+  box-shadow: 0 0 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  -ms-border-radius: 0;
+  -o-border-radius: 0;
+  border-radius: 0;
 }
 
 /* line 2, ../../employee-guard/src/common/layout/_layout.scss */
@@ -31968,9 +32378,10 @@ body {
   background-color: #FFFFFF !important;
   /* override twitter typeahead style */
   border-radius: 17px;
-  padding: 4px 14px 4px 32px;
+  font-size: 14px;
+  padding: 4px 14px 4px 30px;
 }
-/* line 10, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+/* line 11, ../../employee-guard/src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form input[type="text"]:focus {
   border: 1px solid #73bbe8;
   -webkit-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
@@ -31978,34 +32389,34 @@ body {
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px, rgba(115, 187, 232, 0.6) 0 0 8px;
   outline: 0;
 }
-/* line 17, ../../employee-guard/src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form ::-webkit-input-placeholder {
+/* line 18, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input::-webkit-input-placeholder {
   /* WebKit browsers */
   color: #cccccc;
 }
-/* line 20, ../../employee-guard/src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form :-moz-placeholder {
+/* line 21, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input:-moz-placeholder {
   /* Mozilla Firefox 4 to 18 */
   color: #cccccc;
 }
-/* line 23, ../../employee-guard/src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form ::-moz-placeholder {
+/* line 24, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input::-moz-placeholder {
   /* Mozilla Firefox 19+ */
   color: #cccccc;
 }
-/* line 26, ../../employee-guard/src/common/layout/menu/_search-box.scss */
-#primary_navigation .search-form :-ms-input-placeholder {
+/* line 27, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+#primary_navigation .search-form input:-ms-input-placeholder {
   /* Internet Explorer 10+ */
   color: #cccccc;
 }
-/* line 30, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+/* line 31, ../../employee-guard/src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form .icon-search {
   color: #cccccc;
   left: 24px;
   position: absolute;
-  top: 5px;
+  top: 7px;
 }
-/* line 37, ../../employee-guard/src/common/layout/menu/_search-box.scss */
+/* line 38, ../../employee-guard/src/common/layout/menu/_search-box.scss */
 #primary_navigation .search-form .icon-search.selected {
   color: #73bbe8;
 }
@@ -32045,12 +32456,11 @@ body {
   border: 1px solid transparent;
   border-bottom: 0;
   color: #226396;
-  font-weight: bold;
-  font-size: 13px;
+  font-size: 14px;
   padding: 14px 10px;
   text-decoration: none;
 }
-/* line 35, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 34, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar-brand {
   background: url(/v7/img/logo/logo-icon.png) no-repeat;
   background: rgba(0, 0, 0, 0) url(/v7/img/logo/logo-icon.svg) no-repeat;
@@ -32060,35 +32470,35 @@ body {
   padding: 0;
   width: 32px;
 }
-/* line 46, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 45, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.open > .dropdown-toggle {
   background: #eaeaea;
   border-top: 1px solid #b3b3b3;
   color: #73bbe8;
   padding-top: 15px;
 }
-/* line 53, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 52, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar a:link, #primary_navigation .navbar a:visited {
   text-decoration: none;
   color: #226396;
 }
-/* line 59, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 58, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar .dropdown-menu li a:link,
 #primary_navigation .navbar .dropdown-menu li a:visited {
   color: #454545;
   text-decoration: none;
 }
-/* line 64, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 63, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar .dropdown-menu li a:hover {
   color: #ffffff;
   text-decoration: none;
 }
-/* line 69, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 68, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .navbar a:hover {
   color: #73bbe8;
   text-decoration: none;
 }
-/* line 74, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 73, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu {
   border: 0px;
   -webkit-border-radius: 5px;
@@ -32101,7 +32511,7 @@ body {
   box-shadow: rgba(0, 0, 0, 0.2) 0 1px 6px;
   top: 52px;
 }
-/* line 83, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 82, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu li > a:hover,
 #primary_navigation .dropdown-menu .active > a,
 #primary_navigation .dropdown-menu .active > a:hover {
@@ -32113,7 +32523,7 @@ body {
   background: #2980b9;
   filter: none;
 }
-/* line 89, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 88, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .divider {
   background-color: #f1f1f2;
   border-bottom: 1px solid #ffffff;
@@ -32121,7 +32531,7 @@ body {
   margin: 9px 1px;
   overflow: hidden;
 }
-/* line 97, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 96, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .dropdown-menu .nav-header {
   color: #cccccc;
   display: block;
@@ -32132,11 +32542,11 @@ body {
   padding: 3px 20px;
   text-transform: uppercase;
 }
-/* line 108, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 107, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li + .nav-header {
   margin-top: 9px;
 }
-/* line 113, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 112, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link {
   color: #226396;
   display: inline-block;
@@ -32144,15 +32554,15 @@ body {
   margin-right: 15px;
   margin-top: 17px;
 }
-/* line 120, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 119, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link.has-search-box {
   margin-right: 0;
 }
-/* line 124, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 123, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .contact-us-link:hover {
   color: #73bbe8;
 }
-/* line 132, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 131, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav li.dropdown.switch-to.open > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.active > .dropdown-toggle,
 #primary_navigation .nav li.dropdown.switch-to.open.active > .dropdown-toggle {
@@ -32165,7 +32575,7 @@ body {
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   color: #fff;
 }
-/* line 144, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 143, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a.dropdown-toggle {
   color: #fff;
   background-color: #3f93c0;
@@ -32185,11 +32595,11 @@ body {
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
   padding: 6px 15px 7px;
 }
-/* line 160, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 159, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to.open a.dropdown-toggle {
   padding-top: 6px;
 }
-/* line 166, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 165, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:hover,
 #primary_navigation .nav .switch-to > a:focus {
   background-color: #3f93c0;
@@ -32201,7 +32611,7 @@ body {
   -o-transition: background-position 0.1s linear;
   transition: background-position 0.1s linear;
 }
-/* line 175, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 174, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to > a:active {
   background-color: #3f93c0;
   background-image: none;
@@ -32210,7 +32620,7 @@ body {
   -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
-/* line 183, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 182, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account {
   display: inline-block;
   display: inline \9;
@@ -32218,22 +32628,22 @@ body {
   margin-right: 5px;
   text-align: right;
 }
-/* line 191, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 190, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .account span {
   font-size: 10px;
 }
-/* line 197, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 196, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 #primary_navigation .nav .switch-to .icon-cog {
   vertical-align: 5px;
 }
 
 @media (max-width: 991px) {
-  /* line 204, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+  /* line 203, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
   #primary_navigation {
     display: none;
   }
 }
-/* line 209, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
+/* line 208, ../../employee-guard/src/common/layout/menu/_primary-navigation.scss */
 body.has-contractor-menu #primary_navigation.navbar-inner {
   border-bottom: none;
 }
@@ -32371,14 +32781,14 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 }
 /* line 2, ../../employee-guard/src/common/layout/menu/_mobile-menu.scss */
 #mobile_menu .header {
-  padding: 10px 15px;
+  padding: 15px;
   color: #ffffff;
   background-color: #f1f1f2;
-  background-image: url(/v7/img/logo/logo-icon.png), -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
-  background-image: url(/v7/img/logo/logo-icon.png), -webkit-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), -moz-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), -o-linear-gradient(to bottom, #ffffff, #f1f1f2);
-  background-image: url(/v7/img/logo/logo-icon.png), linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -webkit-gradient(linear, to bottom, to top, color-stop(0%, #ffffff), color-stop(100%, #f1f1f2));
+  background-image: url(/v7/img/logo/logo-small.svg), -webkit-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -moz-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), -o-linear-gradient(to bottom, #ffffff, #f1f1f2);
+  background-image: url(/v7/img/logo/logo-small.svg), linear-gradient(to bottom, #ffffff, #f1f1f2);
   background-repeat: no-repeat;
   background-position: center center;
   border-bottom: 2px solid #cccccc;
@@ -32542,7 +32952,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 7, ../../employee-guard/src/common/layout/_page-header.scss */
 .page-header.pics .title {
   color: #73bbe8;
-  font-size: 36px;
+  font-size: 30px;
   font-weight: normal;
   margin-bottom: 0;
 }
@@ -32723,33 +33133,34 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
 /* line 4, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container {
   font-size: 13px;
+  background-color: #ffffff;
 }
 
-/* line 8, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 9, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-drop {
   z-index: 11000;
 }
 
-/* line 12, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 13, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-results {
   font-size: 13px;
 }
 
 /*Multi Select*/
-/* line 17, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 18, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   border-radius: 0px;
   padding: 3px 20px 3px 5px;
 }
 
-/* line 22, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 23, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choices {
   font-size: 12px;
   line-height: 12px;
 }
 
 /*Styles for font awesome icons*/
-/* line 28, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 29, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   background: none !important;
   border: 0px;
@@ -32757,21 +33168,21 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 0;
 }
 
-/* line 35, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 36, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-search-choice-close {
   background: none !important;
   left: auto;
   top: 3px;
 }
 
-/* line 41, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 42, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-search .select2-input {
   background: none !important;
   padding-left: 25px;
   padding-right: 5px;
 }
 
-/* line 47, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 48, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-search .icon-search {
   color: #CCC;
   left: 10px;
@@ -32779,30 +33190,30 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   top: 5px;
 }
 
-/* line 54, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 55, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-drop-above .select2-search .icon-search {
   top: 9px;
 }
 
 /*From V7 Select2 Overiddes scss file*/
-/* line 59, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 60, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .form-control.select2-container {
   color: #454545;
 }
 
 /*Single Select*/
-/* line 64, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 65, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-results .select2-highlighted {
   background-image: linear-gradient(to bottom, #3498db, #2980b9);
   background: -webkit-linear-gradient(#3498db, #2980b9);
 }
 
-/* line 69, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 70, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-drop-active {
   border-color: #73bbe8;
 }
 
-/* line 73, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 74, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-active {
   border-color: #73bbe8;
   outline: 0;
@@ -32811,7 +33222,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
 
-/* line 80, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 81, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container.form-control.select2-dropdown-open {
   border-color: #73bbe8;
   outline: 0;
@@ -32819,7 +33230,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   -moz-box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
   box-shadow: rgba(0, 0, 0, 0.075) 0 1px 1px inset, rgba(102, 175, 233, 0.6) 0 0 8px;
 }
-/* line 86, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 87, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice {
   background: none;
   color: #454545;
@@ -32828,14 +33239,22 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   padding: 8px 18px 8px 12px;
   height: 34px;
 }
-/* line 94, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 95, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container .select2-choice .select2-arrow {
   color: #999999;
   top: 7px;
 }
+/* line 101, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+.select2-container .select2-choices {
+  background: none;
+}
+/* line 105, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+.select2-container .icon-remove:before {
+  content: "\F057";
+}
 
 /*Multi Select*/
-/* line 102, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 111, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice {
   background-color: #e6e6e6;
   background-image: none;
@@ -32846,16 +33265,16 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   -o-border-radius: 4px;
   border-radius: 4px;
 }
-/* line 108, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 117, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a {
   color: #999999;
   font-size: 12px;
 }
-/* line 112, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 121, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:hover {
   color: #c0392b;
 }
-/* line 116, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
+/* line 125, ../../employee-guard/src/common/plugins/_select2-overrides.scss */
 .select2-container-multi .select2-choices .select2-search-choice a:active {
   color: #800a06;
 }
@@ -32988,46 +33407,56 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   margin-right: 5px;
 }
 /* line 17, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+.employee-guard-section > h2 {
+  background-color: #454545;
+  color: #e6e6e6;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 7px 10px;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+/* line 27, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section .edit {
   text-align: right;
 }
-/* line 20, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 30, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section .edit i:hover {
   color: #73bbe8;
 }
-/* line 25, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 35, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section .content {
   padding: 20px 30px;
 }
-/* line 28, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 38, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section .content.no_padding {
   padding: 0px;
 }
-/* line 34, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 44, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar .row {
   line-height: 24px;
 }
-/* line 38, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 48, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar a.btn {
   margin-left: 5px;
   margin-right: 0px;
 }
-/* line 43, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 53, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar ul {
   margin-bottom: 0px;
 }
-/* line 49, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 59, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section.info-toolbar ul li.success, .employee-guard-section.info-toolbar ul li.warning, .employee-guard-section.info-toolbar ul li.danger {
   background-color: transparent;
 }
 
-/* line 57, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+/* line 67, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
 .employee-guard-section:first-child > h1 {
   margin-top: 0;
 }
 
 @media (max-width: 767px) {
-  /* line 63, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
+  /* line 73, ../../employee-guard/src/app/employeeguard/mixins/_employee-guard-section.scss */
   .employee-guard-section .content {
     padding: 20px 0px;
   }
@@ -33135,7 +33564,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   border: 0px;
   color: #FFFFFF;
   margin-bottom: 10px;
-  padding: 5px 10px;
+  padding: 7px 10px;
 }
 /* line 12, ../../employee-guard/src/app/employeeguard/mixins/_employee-skills.scss */
 .skill-list .list-group-item:first-child {
@@ -33407,7 +33836,7 @@ body.has-contractor-menu #primary_navigation.navbar-inner {
   border: 0px;
   color: #FFFFFF;
   margin-bottom: 10px;
-  padding: 5px 10px;
+  padding: 7px 10px;
 }
 /* line 12, ../../employee-guard/src/app/employeeguard/mixins/_employee-skills.scss */
 .employee_guard_contractor_employee-page .skill-list .list-group-item:first-child {
@@ -33960,6 +34389,179 @@ section.visible h1 {
 .server-info dl dd {
   color: #454545;
   text-align: left;
+}
+
+/* line 1, ../src/app/company-finder/_company-finder.scss */
+#company-finder {
+  margin-bottom: 20px;
+}
+/* line 4, ../src/app/company-finder/_company-finder.scss */
+#company-finder .page-header.pics {
+  margin-bottom: 30px;
+}
+/* line 8, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section > h1 {
+  margin-top: 0;
+}
+/* line 13, ../src/app/company-finder/_company-finder.scss */
+#company-finder .filter-results-section .panel-body {
+  padding: 0;
+}
+/* line 17, ../src/app/company-finder/_company-finder.scss */
+#company-finder .filter-results-section .control-spacer {
+  margin-bottom: 20px;
+}
+/* line 21, ../src/app/company-finder/_company-finder.scss */
+#company-finder .filter-results-section .search-toggle {
+  font-size: 12px;
+}
+/* line 27, ../src/app/company-finder/_company-finder.scss */
+#company-finder .search-results-section .badge-info {
+  margin-left: 5px;
+}
+/* line 32, ../src/app/company-finder/_company-finder.scss */
+#company-finder .search-results-section .icon-filter:hover {
+  color: #73bbe8;
+  cursor: pointer;
+}
+/* line 39, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section {
+  overflow: hidden;
+}
+/* line 42, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section h1 {
+  background-color: #f1f1f1;
+  color: #808285;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 0;
+  margin: 0;
+}
+/* line 50, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section h1 i.icon-map-marker {
+  color: #808285;
+  font-size: 14px;
+  margin-right: 5px;
+}
+/* line 57, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper {
+  padding: 4px;
+}
+/* line 60, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper input {
+  height: 30px;
+}
+/* line 64, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .search-wrapper .icon-search {
+  top: 12px;
+}
+/* line 69, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map {
+  width: 100%;
+  height: 500px;
+}
+/* line 73, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map .marker-label {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+}
+/* line 79, ../src/app/company-finder/_company-finder.scss */
+#company-finder .employee-guard-section.map-section .map .marker-label-large {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: #ffffff;
+}
+/* line 90, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .contractor-name,
+#company-finder .result-list .contractor-name {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+/* line 96, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .primary-trade,
+#company-finder .result-list .primary-trade {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  margin-bottom: 0;
+}
+/* line 102, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .results-label,
+#company-finder .result-list .results-label {
+  font-size: 16px;
+  color: #cccccc;
+  text-align: center;
+}
+/* line 110, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window p {
+  margin-bottom: 0;
+}
+/* line 114, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window i {
+  font-size: 16px;
+}
+/* line 118, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .other-trades {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+/* line 123, ../src/app/company-finder/_company-finder.scss */
+#company-finder .info-window .address {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  color: #808285;
+}
+/* line 131, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result {
+  margin-left: -30px;
+  margin-right: -30px;
+  padding: 8px 0;
+}
+/* line 136, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .red-marker {
+  background: url("/angular/src/app/company-finder/img/marker-danger-light.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 145, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .yellow-marker {
+  background: url("/angular/src/app/company-finder/img/marker-warning-light.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 154, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .green-marker {
+  background: url("/angular/src/app/company-finder/img/marker-success-light.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 163, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .gray-marker {
+  background: url("/angular/src/app/company-finder/img/marker-generic.png") center no-repeat;
+  color: #ffffff;
+  font-size: 12px;
+  height: 32px;
+  padding-top: 2px;
+  width: 21px;
+}
+/* line 172, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result:hover {
+  background: #EBF5FE;
+}
+/* line 176, ../src/app/company-finder/_company-finder.scss */
+#company-finder .result-list .result .icon-link {
+  margin-right: 5px;
+  color: #cccccc;
 }
 
 /* line 4, ../src/app/registration/_registration.scss */
