@@ -8,7 +8,6 @@ import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ContractorLocationDAO extends PicsDAO {
@@ -55,7 +54,7 @@ public class ContractorLocationDAO extends PicsDAO {
         if (tradeIds == null) {
             return "";
         }
-        return " ct.tradeID IN (:tradeList) AND";
+        return " ct.trade.id IN :tradeList AND";
     }
 
     private String getSafetySensitiveWhere(SafetySensitive safetySensitive) {
@@ -88,15 +87,7 @@ public class ContractorLocationDAO extends PicsDAO {
     private void setTradeQueryParams(Query query, CompanyFinderFilter filter) {
         List<Integer> tradeIdList = filter.getTradeIds();
         if(tradeIdList == null) return;
-
-        List<String> stringTradeList = new ArrayList<>();
-        for (Integer tli : tradeIdList) {
-            String stli = String.valueOf(tli);
-            stringTradeList.add(stli);
-        }
-        if (tradeIdList != null) {
-            query.setParameter("tradeList", stringTradeList);
-        }
+        query.setParameter("tradeList", tradeIdList);
     }
 
     private void setSafetySensitiveQueryParams(Query query, CompanyFinderFilter filter) {
