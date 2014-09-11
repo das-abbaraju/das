@@ -3,6 +3,7 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
+import com.picsauditing.auditbuilder.util.Strings;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.SafetySensitive;
@@ -12,13 +13,15 @@ import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Account;
-import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,10 +36,11 @@ public class CompanyFinderController extends PicsActionSupport {
     private double neLong;
     private double swLat;
     private double swLong;
-    private Trade trade;
-    private int safetySensitive;
-    private CompanyFinderFilter filter;
 
+    private String tradeIds;
+    private int safetySensitive;
+
+    private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
 
     public String findLocation() {
         String address = getSearchAddress();
@@ -53,19 +57,21 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
+        List<Integer> tradeIds = parseTradeIds(getTradeIds());
+
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
-                        .northEast(LatLong.builder()
-                                .lat(neLat)
-                                .lng(neLong)
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
                                 .build())
-                        .southWest(LatLong.builder()
-                                .lat(swLat)
-                                .lng(swLong)
-                                .build())
-                        .build())
-                .trade(trade)
+                .tradeIds(tradeIds)
                 .safetySensitive(SafetySensitive.fromInteger(getSafetySensitive()))
                 .build();
 
@@ -78,10 +84,26 @@ public class CompanyFinderController extends PicsActionSupport {
         return JSON_STRING;
     }
 
+    private List<Integer> parseTradeIds(String strTradeIds) {
+        if (Strings.isEmpty(strTradeIds)) return null;
+
+        List<Integer> tradeIds = new ArrayList<>();
+        String[] tradeIdList = strTradeIds.split(",");
+        for (String tId : tradeIdList) {
+            try {
+                Integer ti = Integer.valueOf(tId);
+                tradeIds.add(ti);
+            } catch (Exception e) {
+                logger.error("Invalid tradeIds, expected integer values.", e);
+            }
+        }
+        return tradeIds;
+    }
+
     private HashMap<String, String> buildContractorInfoProperties() {
         HashMap<String, String> contractorInfoProperties = new HashMap<>();
         contractorInfoProperties.put(CompanyFinderService.LINK_URL, ContractorDashboard.URL);
-        if(permissions.isOperator()) {
+        if (permissions.isOperator()) {
             contractorInfoProperties.put(CompanyFinderService.OP_ID, String.valueOf(permissions.getAccountId()));
         }
         return contractorInfoProperties;
@@ -93,7 +115,7 @@ public class CompanyFinderController extends PicsActionSupport {
 
     private String getLoggedInUserAddress() {
         Account userAccount = user.getAccount();
-        if(StringUtils.isEmpty(userAccount.getFullAddress())) {
+        if (StringUtils.isEmpty(userAccount.getFullAddress())) {
             return DEFAULT_ADDRESS;
         }
 
@@ -102,14 +124,6 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public boolean isCompanyFinderFeatureEnabled() {
         return Features.COMPANY_FINDER.isActive();
-    }
-
-    public Trade getTrade() {
-        return filter.getTrade();
-    }
-
-    public void setTrade(Trade trade) {
-        this.trade = trade;
     }
 
     public String getAddressQuery() {
@@ -150,6 +164,14 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setSwLong(double swLong) {
         this.swLong = swLong;
+    }
+
+    public String getTradeIds() {
+        return tradeIds;
+    }
+
+    public void setTradeIds(String tradeIds) {
+        this.tradeIds = tradeIds;
     }
 
     public int getSafetySensitive() {
