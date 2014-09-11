@@ -95,7 +95,7 @@ public class CompanyFinderService {
         List<String> tradeNames = getTradeNames(contractor);
         boolean isWorksForOperator = isWorksForOperator(contractor, operator);
 
-        FlagColor flagColor = calculateFlagColor(contractor, operator);
+        FlagColor flagColor = calculateFlagColor(contractor, operator, isWorksForOperator);
 
         ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
                 .id(contractor.getId())
@@ -136,7 +136,7 @@ public class CompanyFinderService {
         return tradeNames;
     }
 
-    private FlagColor calculateFlagColor(ContractorAccount contractor, OperatorAccount operator) {
+    private FlagColor calculateFlagColor(ContractorAccount contractor, OperatorAccount operator, boolean isWorksForOperator) {
         if(operator == null) {
            return null;
         }
@@ -146,6 +146,7 @@ public class CompanyFinderService {
         FlagColor flagColor = null;
         try {
             FlagCalculator calculator = flagCalculatorFactory.flagCalculator(contractorOperator, null);
+            calculator.setWorksForOperator(isWorksForOperator);
             flagColor = getWorstColor(calculator.calculate());
         } catch (Exception e) {
             logger.warn("Unable to calculate flag color", e);
