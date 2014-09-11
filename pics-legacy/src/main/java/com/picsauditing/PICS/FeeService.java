@@ -100,7 +100,7 @@ public class FeeService {
         buildFeeCurrentLevels(contractor, foundFeeClasses, payingFacilities);
 
         if (!foundPaymentExpires)
-            contractor.setPaymentExpires(contractor.getCreationDate());
+            contractor.setPaymentExpires(DateBean.addMonths(contractor.getMembershipDate(),12));
 
         if (!foundMembershipDate)
             contractor.setMembershipDate(null);
