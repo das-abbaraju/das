@@ -74,18 +74,19 @@ public class FeeService {
 
                         if (!foundPaymentExpires && invoiceItem.getPaymentExpires() != null) {
                             contractor.setPaymentExpires(invoiceItem.getPaymentExpires());
+
+                            if ((feeClass == FeeClass.Activation || feeClass==FeeClass.Reactivation)
+                                    &&  invoiceItem.getInvoice().getPaidDate() != null) {
+                                Date expiration = DateBean.addMonths(invoiceItem.getInvoice().getPaidDate(),12);
+                                contractor.setPaymentExpires(expiration);
+                            }
+
                             foundPaymentExpires = true;
                         }
                     }
 
                     if (!foundMembershipDate && (invoiceFee.isActivation() || invoiceFee.isReactivation())) {
                         foundMembershipDate = setMembershipDate(contractor, invoice);
-                    }
-                    if ((feeClass == FeeClass.Activation || feeClass==FeeClass.Reactivation)
-                            &&  invoiceItem.getInvoice().getPaidDate() != null) {
-                        Date expiration = DateBean.addMonths(invoiceItem.getInvoice().getPaidDate(),12);
-                        contractor.setPaymentExpires(expiration);
-                        foundPaymentExpires = true;
                     }
                 }
 
