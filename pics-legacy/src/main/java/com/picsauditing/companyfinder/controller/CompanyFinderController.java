@@ -62,15 +62,15 @@ public class CompanyFinderController extends PicsActionSupport {
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
-                        .northEast(LatLong.builder()
-                                .lat(neLat)
-                                .lng(neLong)
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
                                 .build())
-                        .southWest(LatLong.builder()
-                                .lat(swLat)
-                                .lng(swLong)
-                                .build())
-                        .build())
                 .tradeIds(tradeIds)
                 .safetySensitive(SafetySensitive.fromInteger(getSafetySensitive()))
                 .build();
@@ -85,26 +85,25 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     private List<Integer> parseTradeIds(String strTradeIds) {
-       if(Strings.isEmpty(strTradeIds)) return null;
+        if (Strings.isEmpty(strTradeIds)) return null;
 
-       List<Integer> tradeIds = new ArrayList<>();
-       String [] tradeIdList = strTradeIds.split(",");
-       for (String tId : tradeIdList) {
-
-           try {
-               Integer ti = Integer.valueOf(tId);
-               tradeIds.add(ti);
-           } catch (Exception e) {
-             logger.error("Invalid tradeIds, expected integer values.", e);
-           }
-       }
-       return tradeIds;
+        List<Integer> tradeIds = new ArrayList<>();
+        String[] tradeIdList = strTradeIds.split(",");
+        for (String tId : tradeIdList) {
+            try {
+                Integer ti = Integer.valueOf(tId);
+                tradeIds.add(ti);
+            } catch (Exception e) {
+                logger.error("Invalid tradeIds, expected integer values.", e);
+            }
+        }
+        return tradeIds;
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
         HashMap<String, String> contractorInfoProperties = new HashMap<>();
         contractorInfoProperties.put(CompanyFinderService.LINK_URL, ContractorDashboard.URL);
-        if(permissions.isOperator()) {
+        if (permissions.isOperator()) {
             contractorInfoProperties.put(CompanyFinderService.OP_ID, String.valueOf(permissions.getAccountId()));
         }
         return contractorInfoProperties;
@@ -116,7 +115,7 @@ public class CompanyFinderController extends PicsActionSupport {
 
     private String getLoggedInUserAddress() {
         Account userAccount = user.getAccount();
-        if(StringUtils.isEmpty(userAccount.getFullAddress())) {
+        if (StringUtils.isEmpty(userAccount.getFullAddress())) {
             return DEFAULT_ADDRESS;
         }
 

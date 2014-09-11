@@ -86,7 +86,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
     private void setTradeQueryParams(Query query, CompanyFinderFilter filter) {
         List<Integer> tradeIdList = filter.getTradeIds();
-        if(tradeIdList == null) return;
+        if (tradeIdList == null) return;
         query.setParameter("tradeList", tradeIdList);
     }
 
