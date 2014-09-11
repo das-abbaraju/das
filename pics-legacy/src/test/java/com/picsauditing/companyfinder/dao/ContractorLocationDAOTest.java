@@ -67,7 +67,7 @@ public class ContractorLocationDAOTest {
                 .tradeIds(tradeIds)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.tradeID IN (:tradeList) AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.id IN :tradeList AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 
@@ -112,7 +112,7 @@ public class ContractorLocationDAOTest {
                 .safetySensitive(SafetySensitive.EXCLUDE)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.tradeID IN (:tradeList) AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 
