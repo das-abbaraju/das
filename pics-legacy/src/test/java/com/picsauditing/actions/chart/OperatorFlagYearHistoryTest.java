@@ -1,6 +1,5 @@
 package com.picsauditing.actions.chart;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -12,8 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,11 +22,10 @@ import com.picsauditing.PicsTest;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.util.comparators.CalendarMonthAsStringComparator;
 
-
 public class OperatorFlagYearHistoryTest extends PicsTest {
 	private OperatorFlagYearHistory operatorFlagYearHistory;	
-	private final int OPERATOR_ACCOUNT_ID = 1206;
-	private final int MONTHS_IN_YEAR = 12;
+	private static final int OPERATOR_ACCOUNT_ID = 1206;
+	private static final int MONTHS_IN_YEAR = 12;
 	
 	@Mock private Permissions permissions;
 	

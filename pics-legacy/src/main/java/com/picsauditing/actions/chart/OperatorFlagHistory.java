@@ -1,6 +1,5 @@
 package com.picsauditing.actions.chart;
 
-import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -25,10 +24,10 @@ public class OperatorFlagHistory extends ChartMSAction {
 		return chart;
 	}
 
-	private List<DataRow> queryForData() throws Exception, SQLException {
+	private List<DataRow> queryForData() throws Exception {
 		String sql = buildSql();
 		ChartDAO db = getChartDAO();
-		List<DataRow> data = db.select(sql.toString());
+		List<DataRow> data = db.select(sql);
 		return data;
 	}
 
