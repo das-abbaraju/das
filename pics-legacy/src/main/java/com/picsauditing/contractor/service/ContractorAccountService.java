@@ -11,11 +11,11 @@ public class ContractorAccountService {
             throw new IllegalArgumentException("contractorAccount can not be null");
         }
 
-        if (contractorAccount.getNumberOfEmployees() == null) {
+        if (contractorAccount.getCountry() == null || contractorAccount.getNumberOfEmployees() == null ) {
             return TriState.UNKNOWN;
         }
 
-        boolean smallBusiness = CountryBusinessSize.isSmallBusiness(contractorAccount.getBillingCountry().getIsoCode(), contractorAccount.getNumberOfEmployees());
+        boolean smallBusiness = CountryBusinessSize.isSmallBusiness(contractorAccount.getCountry().getIsoCode(), contractorAccount.getNumberOfEmployees());
         return TriState.fromBoolean(smallBusiness);
     }
 }

@@ -39,6 +39,15 @@ public class ContractorAccountServiceTest {
     }
 
     @Test
+    public void testIsSmallBusiness_nullCountryShouldReturnUnknown() throws Exception {
+        when(contractorAccount.getCountry()).thenReturn(null);
+
+        TriState result = contractorAccountService.isSmallBusiness(contractorAccount);
+
+        assertEquals(result, TriState.UNKNOWN);
+    }
+
+    @Test
     public void testIsSmallBusiness_US_smallBusiness() throws Exception {
         when(contractorAccount.getBillingCountry()).thenReturn(new Country(Country.US_ISO_CODE));
         when(contractorAccount.getNumberOfEmployees()).thenReturn(2);
