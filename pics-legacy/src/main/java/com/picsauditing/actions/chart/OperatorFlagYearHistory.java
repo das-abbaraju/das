@@ -24,8 +24,8 @@ public class OperatorFlagYearHistory extends OperatorFlagHistory {
 
 		StringBuilder sql = new StringBuilder(
 				"select DATE_FORMAT(STR_TO_DATE(CONCAT(tmp.label, '-01'), '%Y-%m-%d'), '%b') as 'label',\n"
-				+ "tmp.flag as 'series', COUNT(tmp.conID) as 'value'\n"
-				+ "from (");
+				+ "fa.flag as 'series', COUNT(tmp.conID) as 'value'\n"
+				+ "from (\n");
 
 		// collects data for 12 nearest months
 		Calendar cal = Calendar.getInstance();
@@ -38,28 +38,25 @@ public class OperatorFlagYearHistory extends OperatorFlagHistory {
 
 			// don't count contractors after it was deleted
 			sql.append(String.format(
-					"select fa%1$d_.conID, fa%1$d_.flag, '%2$tY-%2$tm' as 'label', MAX(fa%1$d_.creationDate) as maxDate\n"
-					+ "from (\n"
-					+ "select fa%1$d.* from flag_archive fa%1$d\n"
-					+ "join accounts a%1$d on a%1$d.id = fa%1$d.conID\n"
+					"select fa%1$d.conID, '%2$tY-%2$tm' as 'label', MAX(fa%1$d.creationDate) as maxDate\n"
+					+ "from flag_archive fa%1$d inner join accounts a%1$d on a%1$d.id = fa%1$d.conID\n"
 					+ "where fa%1$d.opID = %4$d\n"
 					+ statusWhereClause
 					+ "and fa%1$d.flag in ('%5$s','%6$s','%7$s')\n"
 					+ "and fa%1$d.creationDate < '%3$tY-%3$tm-01'\n"
 					+ "and ((a%1$d.status <> '%8$s' and a%1$d.status <> '%9$s') or IFNULL(a%1$d.deactivationDate, a%1$d.updateDate) >= '%2$tY-%2$tm-01')\n"
-					+ "order by fa%1$d.conID, fa%1$d.creationDate desc\n"
-					+ ") as fa%1$d_\n"
-					+ "group by fa%1$d_.conID\n"
-					+ "union\n",
+					+ "group by fa%1$d.conID\n"
+					+ "union all\n",
 					i, cal.getTime(), monthCondition,
 					permissions.getAccountId(), FlagColor.Green, FlagColor.Amber, FlagColor.Red,
 					AccountStatus.Deleted, AccountStatus.Deactivated
 			));
 		}
 
-		sql.setLength(sql.length() - 6);
-		sql.append(") as tmp\n"
-				+ "group by tmp.label, tmp.flag\n"
+		sql.setLength(sql.length() - 10);
+		sql.append(") as tmp, flag_archive fa\n"
+				+ "where fa.opID = " + permissions.getAccountId() + " and fa.conID = tmp.conID and fa.creationDate = tmp.maxDate\n"
+				+ "group by tmp.label, fa.flag\n"
 				+ "order by tmp.label desc");
 
 		//System.out.println(sql);
