@@ -224,7 +224,7 @@ public class AuditMenuBuilder {
 					boolean auditUnderInsureGUARD = auditType.getClassType().equals(AuditTypeClass.Policy)
 							|| auditType.getId() == AuditType.IHG_INSURANCE_QUESTIONAIRE;
 
-					if (auditUnderInsureGUARD && audit.getOperators().size() > 0) {
+					if (auditUnderInsureGUARD && audit.getCurrentOperators().size() > 0) {
 						if (auditVisibleToUserOnMenu(audit)) {
 							MenuComponent childMenu = createAuditMenuItem(audit);
 							setInsureGUARDMenuItemName(audit, auditType, childMenu);
