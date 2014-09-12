@@ -35,7 +35,7 @@ public class EmployeeGuardRulesService {
     public void runEmployeeGuardRules(ContractorAccount contractor, Set<AuditTypeDetail> auditTypeDetails) {
         int contractorId = contractor.getId();
 
-        if (requiresEmployeeGuard(auditTypeDetails)) {
+        if (auditRuleRequiresEmployeeGuardV3(auditTypeDetails)) {
             logger.info(SET_FIELD_LOG_MESSAGE, contractorId);
 
             contractor.setHasEmployeeGuard(true);
@@ -60,7 +60,7 @@ public class EmployeeGuardRulesService {
                 && contractorAudit.getOperatorsVisible().size() >= 1;
     }
 
-    private boolean requiresEmployeeGuard(Set<AuditTypeDetail> auditTypeDetails) {
+    private boolean auditRuleRequiresEmployeeGuardV3(Set<AuditTypeDetail> auditTypeDetails) {
         for (AuditTypeDetail detail : auditTypeDetails) {
             if (detail.rule.getAuditType().getSlug().equals(EMPLOYEE_GUARD_AUDIT_SLUG)) {
                 return true;

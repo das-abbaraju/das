@@ -6,6 +6,7 @@ import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +34,7 @@ public class FeeServiceTest extends PicsTranslationTest {
     private static final BigDecimal LESS_DISCOUNTED_AMOUNT = BigDecimal.valueOf(9);
     private static final BigDecimal DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.3);
     private static final BigDecimal LESSER_DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.1);
+    public static final int REGULAR_EG_CHARGE = 10;
 
     private List<ContractorOperator> operatorList;
     private ContractorAccount contractor;
@@ -100,6 +102,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private EmployeeGuardRulesService employeeGuardRulesService;
     @Mock
     private AuditBuilderFactory auditBuilderFactory;
+    @Mock
+    private ProductSubscriptionService productSubscriptionService;
 
     Set<OperatorAccount> OAMocksSet = new HashSet<>();
 
@@ -120,6 +124,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
         Whitebox.setInternalState(feeService, "billingService", billingService);
         Whitebox.setInternalState(feeService, "employeeGuardRulesService", employeeGuardRulesService);
+        Whitebox.setInternalState(feeService, "productSubscriptionService", productSubscriptionService);
 
         contractor = setUpContractor();
 
@@ -1121,7 +1126,7 @@ public class FeeServiceTest extends PicsTranslationTest {
             InvoiceFee invoiceFee = InvoiceFee.builder()
                     .feeClass(feeClass)
                     .minFacilities(minFacilities)
-                    .amount(new BigDecimal(10))
+                    .amount(new BigDecimal(REGULAR_EG_CHARGE))
                     .build();
 
             return invoiceFee;
