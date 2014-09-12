@@ -5,7 +5,8 @@ import java.util.List;
 public class CompanyFinderFilter {
 
     private ViewPort viewPort;
-    private SafetySensitive safetySensitive = SafetySensitive.IGNORE;
+    private TriStateFlag safetySensitive = TriStateFlag.IGNORE;
+    private TriStateFlag soleProprietor = TriStateFlag.IGNORE;
     private List<Integer> tradeIds;
 
     public void setViewPort(ViewPort viewPort) {
@@ -16,11 +17,11 @@ public class CompanyFinderFilter {
         return viewPort;
     }
 
-    public SafetySensitive getSafetySensitive() {
+    public TriStateFlag getSafetySensitive() {
         return safetySensitive;
     }
 
-    public void setSafetySensitive(SafetySensitive safetySensitive) {
+    public void setSafetySensitive(TriStateFlag safetySensitive) {
         this.safetySensitive = safetySensitive;
     }
 
@@ -30,5 +31,13 @@ public class CompanyFinderFilter {
 
     public void setTradeIds(List<Integer> tradeIds) {
         this.tradeIds = tradeIds;
+    }
+
+    public TriStateFlag getSoleProprietor() {
+        return soleProprietor;
+    }
+
+    public void setSoleProprietor(TriStateFlag soleProprietor) {
+        this.soleProprietor = soleProprietor;
     }
 }

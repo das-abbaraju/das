@@ -1,7 +1,7 @@
 package com.picsauditing.companyfinder.dao;
 
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
-import com.picsauditing.companyfinder.model.SafetySensitive;
+import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.model.general.LatLong;
@@ -21,7 +21,6 @@ public class ContractorLocationDAOTest {
     double swLat = 33.791020005057;
     double swLong = -118.26842350817867;
     boolean ss = true;
-    String tradeName = "welder";
 
     @Before
     public void setUp() throws Exception {
@@ -85,7 +84,7 @@ public class ContractorLocationDAOTest {
                                         .lng(swLong)
                                         .build())
                                 .build())
-                .safetySensitive(SafetySensitive.INCLUDE)
+                .safetySensitive(TriStateFlag.INCLUDE)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
         String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
@@ -109,10 +108,57 @@ public class ContractorLocationDAOTest {
                                         .build())
                                 .build())
                 .tradeIds(tradeIds)
-                .safetySensitive(SafetySensitive.EXCLUDE)
+                .safetySensitive(TriStateFlag.EXCLUDE)
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
         String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND (ca.status = :active OR ca.status = :pending )";
+        assertEquals(expected, sql);
+    }
+
+    @Test
+    public void testGetSQL_filterWithSP() throws Exception {
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
+                .viewPort(
+                        ViewPort.builder()
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
+                                .build())
+                .soleProprietor(TriStateFlag.INCLUDE)
+                .build();
+        String sql = contractorLocationDAO.getSQL(filter);
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.soleProprietor = :soleProprietor AND (ca.status = :active OR ca.status = :pending )";
+        assertEquals(expected, sql);
+    }
+
+
+    @Test
+    public void testGetSQL_filterWithTradeAndSP() throws Exception {
+        List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
+
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
+                .viewPort(
+                        ViewPort.builder()
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
+                                .build())
+                .tradeIds(tradeIds)
+                .safetySensitive(TriStateFlag.EXCLUDE)
+                .soleProprietor(TriStateFlag.EXCLUDE)
+                .build();
+        String sql = contractorLocationDAO.getSQL(filter);
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor AND (ca.status = :active OR ca.status = :pending )";
         assertEquals(expected, sql);
     }
 

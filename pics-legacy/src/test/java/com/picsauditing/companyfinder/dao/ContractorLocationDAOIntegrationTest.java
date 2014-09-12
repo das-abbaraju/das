@@ -3,7 +3,7 @@ package com.picsauditing.companyfinder.dao;
 import com.atlassian.crowd.util.Assert;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
-import com.picsauditing.companyfinder.model.SafetySensitive;
+import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.dao.AbstractTransactionalTest;
@@ -59,7 +59,8 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
                                         .build())
                                 .build())
                 .tradeIds(tradeIds)
-                .safetySensitive(SafetySensitive.EXCLUDE)
+                .safetySensitive(TriStateFlag.EXCLUDE)
+                .soleProprietor(TriStateFlag.EXCLUDE)
                 .build();
 
         List<ContractorLocation> cList = contractorLocationDAO.findContractorLocations(filter);
@@ -95,7 +96,7 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
         assertNotNull(contractorAccount);
 
         ContractorLocation contractorLocation = new ContractorLocation();
-        buildContratorLocation(contractorAccount,contractorLocation, lat, lon);
+        buildContratorLocation(contractorAccount, contractorLocation, lat, lon);
         assertNotNull(contractorLocation);
         assertEquals(Math.round(lat), Math.round(contractorLocation.getLatitude()));
 
@@ -111,7 +112,7 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
     private void buildContratorLocation(ContractorAccount contractorAccount, ContractorLocation contractorLocation, Double latitude, Double longitude) throws NoUsersDefinedException {
         contractorLocation.setContractor(contractorAccount);
         contractorLocation.setLatitude(latitude);
-        contractorLocation.setLongitude( longitude);
+        contractorLocation.setLongitude(longitude);
         contractorLocation.setCreatedBy(contractorAccount.getActiveUser());
         contractorLocation.setUpdatedBy(contractorAccount.getActiveUser());
         contractorLocation.setCreationDate(new Date(System.currentTimeMillis()));
