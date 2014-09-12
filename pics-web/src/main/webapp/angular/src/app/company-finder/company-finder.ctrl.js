@@ -250,7 +250,7 @@ angular.module('PICS.companyFinder')
                 selectedTrades.push(trade[prop]);
             });
 
-            return selectedTrades.join(', ');
+            return selectedTrades.join(',');
         }
 
         $scope.onCancelClick = function () {
@@ -277,7 +277,7 @@ angular.module('PICS.companyFinder')
                 return requestParameters;
             } else {
                 return angular.extend(requestParameters, {
-                    trade: trade
+                    tradeIds: trade
                 });
             }
         }

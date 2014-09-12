@@ -63928,7 +63928,7 @@ if(window.jasmine || window.mocha) {
                 selectedTrades.push(trade[prop]);
             });
 
-            return selectedTrades.join(', ');
+            return selectedTrades.join(',');
         }
 
         $scope.onCancelClick = function () {
@@ -63955,7 +63955,7 @@ if(window.jasmine || window.mocha) {
                 return requestParameters;
             } else {
                 return angular.extend(requestParameters, {
-                    trade: trade
+                    tradeIds: trade
                 });
             }
         }
