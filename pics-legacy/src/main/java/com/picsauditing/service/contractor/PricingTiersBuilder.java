@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -73,8 +74,13 @@ public class PricingTiersBuilder {
             pricingAmount.setApplies(isPricingAmountApplicable(applicableFeeClasses, numberOfFacilities, invoiceFee));
             pricingTier.getPricingAmounts().add(pricingAmount);
         }
-
-        return pricingTiers;
+        List<PricingTier> depdupePricingTier =
+                new ArrayList<>(new LinkedHashSet<>(pricingTiers));
+        PricingTier pricingTier = depdupePricingTier.get(depdupePricingTier.size() -1);
+        String level = pricingTier.getLevel();
+        level = level.split("-")[0] + "+";
+        pricingTier.setLevel(level);
+        return depdupePricingTier;
     }
 
     private boolean isPricingAmountApplicable(List<FeeClass> applicableFeeClasses, int numberOfFacilities, InvoiceFee invoiceFee) {
