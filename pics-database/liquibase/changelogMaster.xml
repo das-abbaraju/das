@@ -279,4 +279,6 @@
     <include file="./liquibase/2014/Q3/kchase45_US851_AddFlagCriteriaOperatorToFlagData.sql"/>
     <include file="./liquibase/2014/Q3/mdo65_PICS-15909.sql"/>
 
+    <!-- 7.3.9 -->
+    <include file="./liquibase/2014/Q3/dalvarado13_US1396_add_numberOfEmployees.sql"/>
 </databaseChangeLog>
