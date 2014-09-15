@@ -1,17 +1,17 @@
 package com.picsauditing.companyfinder.model;
 
-public enum SafetySensitive {
+public enum TriStateFlag {
     IGNORE(-1),
     EXCLUDE(0),
     INCLUDE(1);
 
-    private int safetySensitiveValue;
+    private int value;
 
-    SafetySensitive(int value){
-        this.safetySensitiveValue = value;
+    TriStateFlag(int value){
+        this.value = value;
     }
 
-    public static SafetySensitive fromInteger(int x) {
+    public static TriStateFlag fromInteger(int x) {
         switch(x) {
             case -1:
                 return IGNORE;
@@ -23,8 +23,8 @@ public enum SafetySensitive {
         return IGNORE;
     }
 
-    public int getSafetySensitiveValue(){
-        return safetySensitiveValue;
+    public int getValue(){
+        return value;
     }
 
     public boolean toBoolean() {

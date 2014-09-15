@@ -6,7 +6,7 @@ import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.auditbuilder.util.Strings;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
-import com.picsauditing.companyfinder.model.SafetySensitive;
+import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
@@ -38,6 +38,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLong;
 
     private String tradeIds;
+    private int soleProprietor;
     private int safetySensitive;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
@@ -72,7 +73,8 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .build())
                                 .build())
                 .tradeIds(tradeIds)
-                .safetySensitive(SafetySensitive.fromInteger(getSafetySensitive()))
+                .soleProprietor(TriStateFlag.fromInteger(getSoleProprietor()))
+                .safetySensitive(TriStateFlag.fromInteger(getSafetySensitive()))
                 .build();
 
         HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
@@ -172,6 +174,14 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setTradeIds(String tradeIds) {
         this.tradeIds = tradeIds;
+    }
+
+    public int getSoleProprietor() {
+        return soleProprietor;
+    }
+
+    public void setSoleProprietor(int soleProprietor) {
+        this.soleProprietor = soleProprietor;
     }
 
     public int getSafetySensitive() {
