@@ -38,15 +38,15 @@ public class PricingTier {
         if (pricingAmounts == null || pricingAmounts.size() == 0) {
             return Strings.EMPTY_STRING;
         }
-        StringBuilder retStr = new StringBuilder();
+        StringBuilder feeAmountStr = new StringBuilder();
 
         for (PricingAmount pricingAmount : pricingAmounts) {
-            if (retStr.length() > 0) {
-                retStr.append(",");
+            if (feeAmountStr.length() > 0) {
+                feeAmountStr.append(",");
             }
-            retStr.append(pricingAmount.getFeeAmount());
+            feeAmountStr.append(pricingAmount.getFeeAmount());
         }
-        return retStr.toString();
+        return feeAmountStr.toString();
     }
 
     public int hashCode() {
