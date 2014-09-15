@@ -5,10 +5,10 @@ public enum TriStateFlag {
     EXCLUDE(0),
     INCLUDE(1);
 
-    private int safetySensitiveValue;
+    private int value;
 
     TriStateFlag(int value){
-        this.safetySensitiveValue = value;
+        this.value = value;
     }
 
     public static TriStateFlag fromInteger(int x) {
@@ -23,8 +23,8 @@ public enum TriStateFlag {
         return IGNORE;
     }
 
-    public int getSafetySensitiveValue(){
-        return safetySensitiveValue;
+    public int getValue(){
+        return value;
     }
 
     public boolean toBoolean() {
