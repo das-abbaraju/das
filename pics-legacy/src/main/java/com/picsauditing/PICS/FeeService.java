@@ -5,6 +5,7 @@ import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,10 @@ public class FeeService {
     private BillingService billingService;
     @Autowired
     private AuditBuilderFactory auditBuilderFactory;
-
     @Autowired
     private EmployeeGuardRulesService employeeGuardRulesService;
+    @Autowired
+    private ProductSubscriptionService productSubscriptionService;
 
     private static final ArrayList<FeeClass> CONTRACTOR_FEE_CLASSES = new ArrayList<FeeClass>() {{
         for (FeeClass feeClass : FeeClass.values()) {
@@ -444,7 +446,8 @@ public class FeeService {
     public BigDecimal getAdjustedFeeAmountIfNecessary(ContractorAccount contractor, InvoiceFee fee) {
         if (fee.getFeeClass() == FeeClass.EmployeeGUARD) {
            boolean employeeAudits = false;
-            boolean oq = false;
+            boolean atLeastOneOperatorRequiresOq = false;
+            boolean blockEGFreeDiscount = false;
             boolean hseCompetency = false;
 
             for (AuditTypeDetail detail : auditBuilderFactory.getContractorAuditTypeDetails(contractor)) {
@@ -463,17 +466,22 @@ public class FeeService {
 
             for (ContractorOperator co : contractor.getOperators()) {
                 if (co.getOperatorAccount().isRequiresOQ()) {
-                    oq = true;
+                    atLeastOneOperatorRequiresOq = true;
                 }
             }
 
-            if (!hseCompetency && (employeeAudits || oq)) {
-                return BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+            if (productSubscriptionService.hasEmployeeGUARD(contractor.getId())) {
+                blockEGFreeDiscount = true;
+            }
+
+            if (!blockEGFreeDiscount) {
+                if (!hseCompetency && (employeeAudits || atLeastOneOperatorRequiresOq)) {
+                    return BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
+                }
             }
 
             return FeeService.getRegionalAmountOverride(contractor, fee);
-        }
-        else if (fee.getFeeClass() == FeeClass.Activation) {
+        } else if (fee.getFeeClass() == FeeClass.Activation) {
             Set<BigDecimal> discounts = new HashSet<BigDecimal>();
             for (OperatorAccount operator : contractor.getOperatorAccounts()) {
                 if (operator.isHasDiscount()) {
@@ -504,7 +512,7 @@ public class FeeService {
         }
     }
 
-	public static List<FeeClass> NON_REFUNDABLE_FEE_CLASSES() {
+    public static List<FeeClass> NON_REFUNDABLE_FEE_CLASSES() {
 		return TaxService.TAX_FEE_CLASSES;
 	}
 

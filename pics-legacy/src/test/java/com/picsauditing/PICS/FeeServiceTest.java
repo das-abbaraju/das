@@ -6,6 +6,7 @@ import com.picsauditing.audits.AuditTypeDetail;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.provisioning.ProductSubscriptionService;
 import com.picsauditing.service.employeeGuard.EmployeeGuardRulesService;
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +34,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private static final BigDecimal LESS_DISCOUNTED_AMOUNT = BigDecimal.valueOf(9);
     private static final BigDecimal DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.3);
     private static final BigDecimal LESSER_DISCOUNT_PERCENTAGE = BigDecimal.valueOf(0.1);
+    public static final int REGULAR_EG_CHARGE = 10;
+    private static final BigDecimal ZERO_AMOUNT = BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
 
     private List<ContractorOperator> operatorList;
     private ContractorAccount contractor;
@@ -100,6 +103,8 @@ public class FeeServiceTest extends PicsTranslationTest {
     private EmployeeGuardRulesService employeeGuardRulesService;
     @Mock
     private AuditBuilderFactory auditBuilderFactory;
+    @Mock
+    private ProductSubscriptionService productSubscriptionService;
 
     Set<OperatorAccount> OAMocksSet = new HashSet<>();
 
@@ -120,6 +125,7 @@ public class FeeServiceTest extends PicsTranslationTest {
         Whitebox.setInternalState(feeService, "feeDAO", feeDAO);
         Whitebox.setInternalState(feeService, "billingService", billingService);
         Whitebox.setInternalState(feeService, "employeeGuardRulesService", employeeGuardRulesService);
+        Whitebox.setInternalState(feeService, "productSubscriptionService", productSubscriptionService);
 
         contractor = setUpContractor();
 
@@ -190,12 +196,132 @@ public class FeeServiceTest extends PicsTranslationTest {
     }
 
     @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard3_WithNonZeroFee() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(true);
+
+        assertEquals(DISCOUNTED_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard3_isRequiresOQ_false() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(true);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(false);
+
+        assertEquals(DISCOUNTED_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard3_isRequiresOQ_true() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(true);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(false);
+
+        assertEquals(DISCOUNTED_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard2_isRequiresOQ_true() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(false);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(true);
+
+
+        assertEquals(ZERO_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard2_AuditType_HSE_OQ_true() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+        operators.add(operatorAccount);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(false);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(true);
+
+        HashSet<AuditTypeDetail> details = createAuditTypeDetails(operators);
+        when(auditBuilderFactory.getContractorAuditTypeDetails(contractor)).thenReturn(details);
+
+        when(auditTypeRule.getAuditType()).thenReturn(auditType);
+        when(auditType.getClassType()).thenReturn(AuditTypeClass.Employee);
+        when(auditType.getId()).thenReturn(auditType.HSE_COMPETENCY);
+
+        assertEquals(DISCOUNTED_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard2_AuditType_isRequiresOQ_false() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+        List<OperatorAccount> operators = new ArrayList<OperatorAccount>();
+        operators.add(operatorAccount);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(false);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(false);
+
+        HashSet<AuditTypeDetail> details = createAuditTypeDetails(operators);
+        when(auditBuilderFactory.getContractorAuditTypeDetails(contractor)).thenReturn(details);
+        when(auditTypeRule.getAuditType()).thenReturn(auditType);
+        when(auditType.getClassType()).thenReturn(AuditTypeClass.Employee);
+
+        assertEquals(ZERO_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
+    public void testActivation_getAdjustedFeeAmount_EmployeeGuard2_isRequiresOQ_false() {
+        ContractorAccount contractor = setUpContractor();
+        operatorList.add(contractorOperator1);
+
+        when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithDiscount);
+        when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.EmployeeGUARD);
+        when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
+        when(invoiceFee1.getAmount()).thenReturn(DISCOUNTED_AMOUNT);
+        when(productSubscriptionService.hasEmployeeGUARD(contractorOperator1.getId())).thenReturn(false);
+        when(contractorOperator1.getOperatorAccount().isRequiresOQ()).thenReturn(false);
+
+        assertEquals(DISCOUNTED_AMOUNT, feeService.getAdjustedFeeAmountIfNecessary(contractor, invoiceFee1));
+    }
+
+    @Test
     public void testActivation_getAdjustedFeeAmount_operatorWithoutDiscount() {
         ContractorAccount contractor = setUpContractor();
         operatorList.add(contractorOperator1);
         when(contractorOperator1.getOperatorAccount()).thenReturn(mockOperatorWithoutDiscount);
         when(invoiceFee1.getFeeClass()).thenReturn(FeeClass.Activation);
-
         when(country.getAmountOverrides()).thenReturn(new ArrayList<InvoiceFeeCountry>());
         when(invoiceFee1.getAmount()).thenReturn(BigDecimal.TEN);
 
@@ -1121,7 +1247,7 @@ public class FeeServiceTest extends PicsTranslationTest {
             InvoiceFee invoiceFee = InvoiceFee.builder()
                     .feeClass(feeClass)
                     .minFacilities(minFacilities)
-                    .amount(new BigDecimal(10))
+                    .amount(new BigDecimal(REGULAR_EG_CHARGE))
                     .build();
 
             return invoiceFee;
