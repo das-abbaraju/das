@@ -38,7 +38,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLong;
 
     private String tradeIds;
-    private int soleProprietor;
+    private int soleOwner;
     private int safetySensitive;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
@@ -73,7 +73,7 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .build())
                                 .build())
                 .tradeIds(tradeIds)
-                .soleProprietor(TriStateFlag.fromInteger(getSoleProprietor()))
+                .soleProprietor(TriStateFlag.fromInteger(getSoleOwner()))
                 .safetySensitive(TriStateFlag.fromInteger(getSafetySensitive()))
                 .build();
 
@@ -176,12 +176,12 @@ public class CompanyFinderController extends PicsActionSupport {
         this.tradeIds = tradeIds;
     }
 
-    public int getSoleProprietor() {
-        return soleProprietor;
+    public int getSoleOwner() {
+        return soleOwner;
     }
 
-    public void setSoleProprietor(int soleProprietor) {
-        this.soleProprietor = soleProprietor;
+    public void setSoleOwner(int soleOwner) {
+        this.soleOwner = soleOwner;
     }
 
     public int getSafetySensitive() {
