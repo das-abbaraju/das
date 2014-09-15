@@ -82,7 +82,12 @@
     </s:elseif>
     <s:else>
         <s:if test="#q.questionType == 'MultipleChoice' && #q.option != null && !isStringsEmpty(#a.answer)">
-            <s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
+            <s:if test="#a.answer == ''">
+                
+            </s:if>
+            <s:else>
+                <s:text name="%{#q.option.i18nKey + '.' + #a.answer}" />
+            </s:else>
         </s:if>
         <s:elseif test="#q.questionType == 'Calculation'">
             <s:if test="#a.answer != null">
