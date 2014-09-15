@@ -447,7 +447,7 @@ public class FeeService {
         if (fee.getFeeClass() == FeeClass.EmployeeGUARD) {
            boolean employeeAudits = false;
             boolean atLeastOneOperatorRequiresOq = false;
-            boolean blockEgFreeDiscount = false;
+            boolean blockEGFreeDiscount = false;
             boolean hseCompetency = false;
 
             for (AuditTypeDetail detail : auditBuilderFactory.getContractorAuditTypeDetails(contractor)) {
@@ -471,18 +471,17 @@ public class FeeService {
             }
 
             if (productSubscriptionService.hasEmployeeGUARD(contractor.getId())) {
-                blockEgFreeDiscount = true;
+                blockEGFreeDiscount = true;
             }
 
-            if (!blockEgFreeDiscount) {
+            if (!blockEGFreeDiscount) {
                 if (!hseCompetency && (employeeAudits || atLeastOneOperatorRequiresOq)) {
                     return BigDecimal.ZERO.setScale(2, BigDecimal.ROUND_UP);
                 }
             }
 
             return FeeService.getRegionalAmountOverride(contractor, fee);
-        }
-        else if (fee.getFeeClass() == FeeClass.Activation) {
+        } else if (fee.getFeeClass() == FeeClass.Activation) {
             Set<BigDecimal> discounts = new HashSet<BigDecimal>();
             for (OperatorAccount operator : contractor.getOperatorAccounts()) {
                 if (operator.isHasDiscount()) {
