@@ -2,7 +2,6 @@ package com.picsauditing.service.contractor;
 
 import com.picsauditing.util.Strings;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class PricingTier {
@@ -40,9 +39,12 @@ public class PricingTier {
             return Strings.EMPTY_STRING;
         }
         StringBuilder retStr = new StringBuilder();
-        for (Iterator<PricingAmount> iterator = pricingAmounts.iterator(); iterator.hasNext(); ) {
-            PricingAmount pricingAmount = iterator.next();
-            retStr.append(pricingAmount.getFeeAmount()).append(",");
+
+        for (PricingAmount pricingAmount : pricingAmounts) {
+            if (retStr.length() > 0) {
+                retStr.append(",");
+            }
+            retStr.append(pricingAmount.getFeeAmount());
         }
         return retStr.toString();
     }
