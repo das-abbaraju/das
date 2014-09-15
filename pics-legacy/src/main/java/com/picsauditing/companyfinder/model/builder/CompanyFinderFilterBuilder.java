@@ -3,7 +3,6 @@ package com.picsauditing.companyfinder.model.builder;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
-import com.picsauditing.util.TriState;
 
 import java.util.List;
 

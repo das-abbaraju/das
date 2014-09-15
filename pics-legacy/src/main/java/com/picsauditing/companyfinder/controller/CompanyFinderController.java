@@ -4,14 +4,16 @@ import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.auditbuilder.util.Strings;
-import com.picsauditing.companyfinder.model.*;
+import com.picsauditing.companyfinder.model.CompanyFinderFilter;
+import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;
+import com.picsauditing.companyfinder.model.ViewPort;
+import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.model.general.LatLong;
-import com.picsauditing.util.TriState;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -36,7 +38,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLong;
 
     private String tradeIds;
-    private Integer soleProprietor;
+    private int soleProprietor;
     private int safetySensitive;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
@@ -174,11 +176,11 @@ public class CompanyFinderController extends PicsActionSupport {
         this.tradeIds = tradeIds;
     }
 
-    public Integer getSoleProprietor() {
+    public int getSoleProprietor() {
         return soleProprietor;
     }
 
-    public void setSoleProprietor(Integer soleProprietor) {
+    public void setSoleProprietor(int soleProprietor) {
         this.soleProprietor = soleProprietor;
     }
 
