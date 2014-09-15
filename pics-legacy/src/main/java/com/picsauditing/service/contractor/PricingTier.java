@@ -1,5 +1,7 @@
 package com.picsauditing.service.contractor;
 
+import com.picsauditing.util.Strings;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,6 +36,9 @@ public class PricingTier {
     }
 
     public String computeFeeString(){
+        if (pricingAmounts == null || pricingAmounts.size() == 0) {
+            return Strings.EMPTY_STRING;
+        }
         StringBuilder retStr = new StringBuilder();
         for (Iterator<PricingAmount> iterator = pricingAmounts.iterator(); iterator.hasNext(); ) {
             PricingAmount pricingAmount = iterator.next();

@@ -10,6 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -48,7 +49,7 @@ public class PricingTiersBuilder {
 
     private List<PricingTier> buildPricingTiersFromInvoiceFees(List<InvoiceFeeCountry> countryFees,
                                                                List<FeeClass> applicableFeeClasses, int numberOfFacilities) {
-        List<PricingTier> pricingTiers = new ArrayList<>();
+        LinkedHashMap<String, PricingTier> pricingTierMap = new LinkedHashMap<>();
         for (InvoiceFeeCountry feeCountry : countryFees) {
             InvoiceFee invoiceFee = feeCountry.getInvoiceFee();
             if (invoiceFee.getFeeClass() == FeeClass.Activation) {
@@ -57,30 +58,23 @@ public class PricingTiersBuilder {
 
             String level = invoiceFee.getMinFacilities() + "-" + invoiceFee.getMaxFacilities();
 
-            PricingTier pricingTier = null;
-            for (PricingTier inList : pricingTiers) {
-                if (inList.getLevel().equals(level)) {
-                    pricingTier = inList;
-                    break;
-                }
-            }
-
+            PricingTier pricingTier = pricingTierMap.get(level);
             if (pricingTier == null) {
                 pricingTier = new PricingTier(level, new ArrayList<PricingAmount>());
-                pricingTiers.add(pricingTier);
+                pricingTierMap.put(level, pricingTier);
             }
 
             PricingAmount pricingAmount = new PricingAmount(invoiceFee.getFeeClass(), feeCountry.getAmount());
             pricingAmount.setApplies(isPricingAmountApplicable(applicableFeeClasses, numberOfFacilities, invoiceFee));
             pricingTier.getPricingAmounts().add(pricingAmount);
         }
-        List<PricingTier> depdupePricingTier =
-                new ArrayList<>(new LinkedHashSet<>(pricingTiers));
-        PricingTier pricingTier = depdupePricingTier.get(depdupePricingTier.size() -1);
-        String level = pricingTier.getLevel();
+
+        List<PricingTier> dedupPricingTier = new ArrayList<>(new LinkedHashSet<>(pricingTierMap.values()));
+        PricingTier highestPricingTier = dedupPricingTier.get(dedupPricingTier.size() - 1);
+        String level = highestPricingTier.getLevel();
         level = level.split("-")[0] + "+";
-        pricingTier.setLevel(level);
-        return depdupePricingTier;
+        highestPricingTier.setLevel(level);
+        return dedupPricingTier;
     }
 
     private boolean isPricingAmountApplicable(List<FeeClass> applicableFeeClasses, int numberOfFacilities, InvoiceFee invoiceFee) {
