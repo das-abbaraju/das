@@ -3,7 +3,6 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
-import com.picsauditing.auditbuilder.util.Strings;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;
@@ -14,6 +13,7 @@ import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.model.general.LatLong;
+import com.picsauditing.util.Strings;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -36,10 +36,11 @@ public class CompanyFinderController extends PicsActionSupport {
     private double neLong;
     private double swLat;
     private double swLong;
-
     private String tradeIds;
     private int soleOwner;
     private int safetySensitive;
+    private boolean summary;
+    private String ids;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
 
@@ -58,8 +59,28 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
-        List<Integer> tradeIds = parseTradeIds(getTradeIds());
+        List<ContractorLocationInfo> contractorLocationInfoList = null;
+        CompanyFinderFilter filter = getCompanyFinderFilter();
 
+        if (getSummary()) {
+            contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+        } else {
+            List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
+            List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
+            filter.setTradeIds(tradeIds);
+            filter.setSoleProprietor(TriStateFlag.fromInteger(getSoleOwner()));
+            filter.setSafetySensitive(TriStateFlag.fromInteger(getSafetySensitive()));
+            filter.setContractorIds(contractorIds);
+            HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
+
+            contractorLocationInfoList = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
+        }
+        jsonString = new Gson().toJson(contractorLocationInfoList);
+
+        return JSON_STRING;
+    }
+
+    private CompanyFinderFilter getCompanyFinderFilter() {
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -72,34 +93,12 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .lng(swLong)
                                         .build())
                                 .build())
-                .tradeIds(tradeIds)
-                .soleProprietor(TriStateFlag.fromInteger(getSoleOwner()))
-                .safetySensitive(TriStateFlag.fromInteger(getSafetySensitive()))
                 .build();
-
-        HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
-
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
-
-        jsonString = new Gson().toJson(contractorLocationInfos);
-
-        return JSON_STRING;
+        return filter;
     }
 
-    private List<Integer> parseTradeIds(String strTradeIds) {
-        if (Strings.isEmpty(strTradeIds)) return null;
-
-        List<Integer> tradeIds = new ArrayList<>();
-        String[] tradeIdList = strTradeIds.split(",");
-        for (String tId : tradeIdList) {
-            try {
-                Integer ti = Integer.valueOf(tId);
-                tradeIds.add(ti);
-            } catch (Exception e) {
-                logger.error("Invalid tradeIds, expected integer values.", e);
-            }
-        }
-        return tradeIds;
+    private List<Integer> parseCommaDelimitedIds(String commaDelimitedIds) {
+        return Strings.explodeCommaDelimitedStringOfIds(commaDelimitedIds);
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
@@ -190,5 +189,21 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setSafetySensitive(int safetySensitive) {
         this.safetySensitive = safetySensitive;
+    }
+
+    public boolean getSummary() {
+        return summary;
+    }
+
+    public void setSummary(boolean summary) {
+        this.summary = summary;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
     }
 }

@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -99,18 +100,47 @@ public class CompanyFinderServiceTest {
 
         HashMap<String, String> contractorInfoProps = buildContractorInfoProperties();
 
-        List<ContractorLocationInfo> contractorLocationInfos1 = companyFinderService.findContractorLocationInfos(filter, contractorInfoProps);
+        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationInfos(filter, contractorInfoProps);
 
-        assertEquals(3, contractorLocationInfos1.size());
-        assertEquals(1, contractorLocationInfos1.get(0).getId());
-        assertEquals("con1", contractorLocationInfos1.get(0).getName());
-        assertEquals("fulladdress1", contractorLocationInfos1.get(0).getAddress());
-        assertNotNull(contractorLocationInfos1.get(0).getFormattedAddressBlock());
-        assertEquals(100.0, contractorLocationInfos1.get(0).getCoordinates().getLatitude());
-        assertEquals(101.0, contractorLocationInfos1.get(0).getCoordinates().getLongitude());
-        assertEquals("trade1", contractorLocationInfos1.get(0).getPrimaryTrade());
-        assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfos1.get(0).getTrades());
-        assertEquals("/ContractorView.action?id=1", contractorLocationInfos1.get(0).getLink());
+        assertEquals(3, contractorLocationInfoList.size());
+        assertEquals(1, contractorLocationInfoList.get(0).getId());
+        assertEquals("con1", contractorLocationInfoList.get(0).getName());
+        assertEquals("fulladdress1", contractorLocationInfoList.get(0).getAddress());
+        assertNotNull(contractorLocationInfoList.get(0).getFormattedAddressBlock());
+        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
+        assertEquals("trade1", contractorLocationInfoList.get(0).getPrimaryTrade());
+        assertEquals(Arrays.asList("foo1", "bar1", "car1"), contractorLocationInfoList.get(0).getTrades());
+        assertEquals("/ContractorView.action?id=1", contractorLocationInfoList.get(0).getLink());
+    }
+
+    @Test
+    public void testFindContractorLocationSummary() throws Exception {
+        List<ContractorLocation> contractorLocations = buildTestContractorLocations();
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
+
+        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+
+        assertEquals(3, contractorLocationInfoList.size());
+        assertEquals(1, contractorLocationInfoList.get(0).getId());
+        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
+    }
+
+    @Test
+    public void testFindContractorLocationSummary_noTrades() throws Exception {
+        List<ContractorLocation> contractorLocations = buildTestContractorLocations();
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
+
+        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+
+        assertEquals(3, contractorLocationInfoList.size());
+        assertEquals(1, contractorLocationInfoList.get(0).getId());
+        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
+        assertTrue(contractorLocationInfoList.get(0).getTrades()== null);
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {

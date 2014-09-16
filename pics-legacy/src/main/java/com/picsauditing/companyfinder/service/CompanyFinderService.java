@@ -73,6 +73,18 @@ public class CompanyFinderService {
         return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
     }
 
+    public List<ContractorLocationInfo> findContractorLocationSummaryInfo(CompanyFinderFilter companyFinderFilter) {
+        List<ContractorLocation> contractorLocations = contractorLocationDAO.findContractorLocations(companyFinderFilter);
+
+        List<ContractorLocationInfo> contractorLocationInfoList = new ArrayList<>();
+        for (ContractorLocation contractorLocation : contractorLocations) {
+            ContractorLocationInfo contractorLocationInfo = buildContractorLocationSummary(contractorLocation);
+            contractorLocationInfoList.add(contractorLocationInfo);
+        }
+        return contractorLocationInfoList;
+
+    }
+
     private boolean shouldComputeOperatorData(List<ContractorLocation> contractorLocations, String operatorIdStr) {
         return contractorLocations.size() <= INFORMATION_DISPLAY_THRESHOLD && StringUtils.isNotEmpty(operatorIdStr);
     }
@@ -89,6 +101,19 @@ public class CompanyFinderService {
         return contractorLocationInfos;
     }
 
+    private ContractorLocationInfo buildContractorLocationSummary(ContractorLocation contractorLocation) {
+        ContractorAccount contractor = contractorLocation.getContractor();
+        ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
+                .id(contractor.getId())
+                .coordinates(
+                        LatLong.builder()
+                                .lat(contractorLocation.getLatitude())
+                                .lng(contractorLocation.getLongitude())
+                                .build()
+                )
+                .build();
+        return contractorLocationInfo;
+    }
     private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, HashMap<String, String> contractorLocationProps, OperatorAccount operator) {
         ContractorAccount contractor = contractorLocation.getContractor();
         String primaryTradeName = getPrimaryTradeName(contractor);

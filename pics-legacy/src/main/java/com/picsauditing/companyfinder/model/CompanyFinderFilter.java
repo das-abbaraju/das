@@ -8,6 +8,7 @@ public class CompanyFinderFilter {
     private TriStateFlag safetySensitive = TriStateFlag.IGNORE;
     private TriStateFlag soleProprietor = TriStateFlag.IGNORE;
     private List<Integer> tradeIds;
+    private List<Integer> contractorIds;
 
     public void setViewPort(ViewPort viewPort) {
         this.viewPort = viewPort;
@@ -39,5 +40,13 @@ public class CompanyFinderFilter {
 
     public void setSoleProprietor(TriStateFlag soleProprietor) {
         this.soleProprietor = soleProprietor;
+    }
+
+    public void setContractorIds(List<Integer> contractorIds) {
+        this.contractorIds = contractorIds;
+    }
+
+    public List<Integer> getContractorIds() {
+        return contractorIds;
     }
 }
