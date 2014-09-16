@@ -7,6 +7,8 @@ import com.picsauditing.jpa.entities.InvoiceFee;
 import com.picsauditing.jpa.entities.InvoiceFeeCountry;
 import com.picsauditing.util.generic.GenericPredicate;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class PricingTiersBuilder {
     public static final int OLD_PRICING_TIER_5 = 5;
     public static final int NEW_PRICING_TIER_19 = 19;
 
+    private final Logger logger = LoggerFactory.getLogger(PricingTiersBuilder.class);
     @Autowired
     private InvoiceFeeCountryDAO invoiceFeeCountryDAO;
 
@@ -50,6 +53,8 @@ public class PricingTiersBuilder {
     private List<PricingTier> buildPricingTiersFromInvoiceFees(List<InvoiceFeeCountry> countryFees,
                                                                List<FeeClass> applicableFeeClasses, int numberOfFacilities) {
         LinkedHashMap<String, PricingTier> pricingTierMap = new LinkedHashMap<>();
+        String appliedLevel = "";
+
         for (InvoiceFeeCountry feeCountry : countryFees) {
             InvoiceFee invoiceFee = feeCountry.getInvoiceFee();
             if (invoiceFee.getFeeClass() == FeeClass.Activation) {
@@ -65,15 +70,32 @@ public class PricingTiersBuilder {
             }
 
             PricingAmount pricingAmount = new PricingAmount(invoiceFee.getFeeClass(), feeCountry.getAmount());
-            pricingAmount.setApplies(isPricingAmountApplicable(applicableFeeClasses, numberOfFacilities, invoiceFee));
+            boolean isPricingAmountApplicable = isPricingAmountApplicable(applicableFeeClasses, numberOfFacilities, invoiceFee);
+            if(isPricingAmountApplicable){
+                appliedLevel = level;
+            }
+            pricingAmount.setApplies(isPricingAmountApplicable);
             pricingTier.getPricingAmounts().add(pricingAmount);
         }
 
+        PricingTier appliedPricingTier = pricingTierMap.get(appliedLevel);
         List<PricingTier> dedupPricingTier = new ArrayList<>(new LinkedHashSet<>(pricingTierMap.values()));
+
         PricingTier highestPricingTier = dedupPricingTier.get(dedupPricingTier.size() - 1);
         String level = highestPricingTier.getLevel();
-        level = level.split("-")[0] + "+";
-        highestPricingTier.setLevel(level);
+        String minLevel = level.split("-")[0];
+        String levelStr = minLevel + "+";
+        highestPricingTier.setLevel(levelStr);
+
+        String minLevelApplied = appliedLevel.split("-")[0];
+        try {
+            if(Integer.valueOf(minLevelApplied) > Integer.valueOf(minLevel)){
+                highestPricingTier.setPricingAmounts(appliedPricingTier.getPricingAmounts());
+            }
+        } catch (NumberFormatException e) {
+            logger.error("level should be an int.", e);
+        }
+
         return dedupPricingTier;
     }
 
