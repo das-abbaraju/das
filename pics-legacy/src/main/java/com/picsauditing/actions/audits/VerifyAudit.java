@@ -15,6 +15,10 @@ public class VerifyAudit extends AuditActionSupport {
 	private static final ArrayList<String> OSHA_PROBLEMS;
 	private static final ArrayList<String> EMR_EXEMPTION_REASONS;
 	private static final ArrayList<String> OSHA_EXEMPTION_REASONS;
+    public static final List<Integer> additionalQuestionsToShow = Collections.unmodifiableList(
+            Arrays.asList(3565, 3566, 3567, 3568, 3570));
+    public static final List<Integer> neverShowQuestionsToShow = Collections.unmodifiableList(
+            Arrays.asList(2447, 2448, 15353, 15354));
 
     @Autowired
     private AuditDataService auditDataService;
@@ -183,25 +187,33 @@ public class VerifyAudit extends AuditActionSupport {
     }
 
 	public boolean isShowQuestionToVerify(AuditQuestion auditQuestion, boolean isAnswered) {
-		int questionid = auditQuestion.getId();
-		if (questionid == 2447 || questionid == 2448 || questionid == 15353 || questionid == 15354)
-			return false;
+        if (neverShowQuestionsToShow.contains(auditQuestion.getId()))
+            return false;
+
         if ("Calculation".equals(auditQuestion.getQuestionType()))
             return false;
-		for (AuditCategory ac : auditQuestion.getCategory().getChildren()) {
-			if (ac.getTopParent().getId() != AuditCategory.CITATIONS)
-				return true;
-			else {
-				if (auditQuestion.isRequired() || questionid == 3565 || questionid == 3566 || questionid == 3567
-						|| questionid == 3568)
-					return true;
-			}
-		}
 
-		return false;
-	}
+        for (AuditCategory ac : auditQuestion.getCategory().getChildren()) {
+            if (ac.getTopParent().getId() != AuditCategory.CITATIONS)
+                return true;
+            else {
+                return showQuestion(auditQuestion);
+            }
+        }
 
-	public Map<OperatorAccount, ContractorAuditOperator> getCaos() {
+        return false;
+    }
+
+    private boolean showQuestion(AuditQuestion auditQuestion) {
+        if (auditQuestion.isRequired()) return true;
+
+        if (additionalQuestionsToShow.contains(auditQuestion.getId()))
+            return true;
+
+        return false;
+    }
+
+    public Map<OperatorAccount, ContractorAuditOperator> getCaos() {
 		if (caos == null) {
 			allCaoIDs = new ArrayList<>();
 			caos = new HashMap<>();

@@ -14,10 +14,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -57,6 +54,66 @@ public class VerifyAuditTest extends PicsTranslationTest {
         PicsTestUtil.forceSetPrivateField(verifyAudit, "oshaAudit", oshaAudit);
         PicsTestUtil.forceSetPrivateField(verifyAudit, "auditDataService", auditDataService);
 	}
+
+    @Test
+    public void testIsShowQuestionToVerify_NeverShowQuestions() {
+        AuditQuestion question = new AuditQuestion();
+
+        for (Integer aNeverShowQuestionsToShow : VerifyAudit.neverShowQuestionsToShow) {
+            question.setId(aNeverShowQuestionsToShow);
+            assertFalse(verifyAudit.isShowQuestionToVerify(question, true));
+        }
+    }
+
+    @Test
+    public void testIsShowQuestionToVerify_NeverShowCalcQuestions() {
+        AuditQuestion question = new AuditQuestion();
+        question.setQuestionType("Calculation");
+        assertFalse(verifyAudit.isShowQuestionToVerify(question, true));
+    }
+
+    @Test
+    public void testIsShowQuestionToVerify_ShowNonCitationCategoryQuestions() {
+        AuditQuestion question = new AuditQuestion();
+        AuditCategory questionCategory = new AuditCategory();
+        AuditCategory childCategory = new AuditCategory();
+
+        childCategory.setParent(questionCategory);
+        questionCategory.getChildren().add(childCategory);
+        question.setCategory(questionCategory);
+
+        assertTrue(verifyAudit.isShowQuestionToVerify(question, true));
+    }
+
+    @Test
+    public void testIsShowQuestionToVerify_ShowRequiredCitationQuestions() {
+        AuditQuestion question = new AuditQuestion();
+        AuditCategory questionCategory = new AuditCategory();
+        AuditCategory childCategory = new AuditCategory();
+
+        question.setRequired(true);
+        childCategory.setParent(questionCategory);
+        questionCategory.getChildren().add(childCategory);
+        question.setCategory(questionCategory);
+
+        assertTrue(verifyAudit.isShowQuestionToVerify(question, true));
+    }
+
+    @Test
+    public void testIsShowQuestionToVerify_ShowOtherCitationQuestions() {
+        AuditQuestion question = new AuditQuestion();
+        AuditCategory questionCategory = new AuditCategory();
+        AuditCategory childCategory = new AuditCategory();
+
+        childCategory.setParent(questionCategory);
+        questionCategory.getChildren().add(childCategory);
+        question.setCategory(questionCategory);
+
+        for (Integer anAdditionalQuestionsToShow : VerifyAudit.additionalQuestionsToShow) {
+            question.setId(anAdditionalQuestionsToShow);
+            assertTrue(verifyAudit.isShowQuestionToVerify(question, true));
+        }
+    }
 
     @Test
     public void testGetVisibleOshaQuestions_IsVisible() {
