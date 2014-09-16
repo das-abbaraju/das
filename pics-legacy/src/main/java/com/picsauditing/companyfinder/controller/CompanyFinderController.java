@@ -3,7 +3,6 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
-import com.picsauditing.auditbuilder.util.Strings;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;
@@ -14,6 +13,7 @@ import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
 import com.picsauditing.jpa.entities.Account;
 import com.picsauditing.model.general.LatLong;
+import com.picsauditing.util.Strings;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.struts2.ServletActionContext;
@@ -60,7 +60,6 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public String findContractorLocationInfos() {
         List<ContractorLocationInfo> contractorLocationInfoList = null;
-        Boolean summary = isSummary();
         CompanyFinderFilter filter = getCompanyFinderFilter();
 
         if (isSummary()) {
@@ -96,22 +95,8 @@ public class CompanyFinderController extends PicsActionSupport {
                                 .build()).build();
         return filter;
     }
-
-    // todo: Consider using ?String?.explode
     private List<Integer> parseCommaDelimitedIds(String commaDelimitedIds) {
-        if (Strings.isEmpty(commaDelimitedIds)) return null;
-
-        List<Integer> ids = new ArrayList<>();
-        String[] idStrings = commaDelimitedIds.split(",");
-        for (String idString : idStrings) {
-            try {
-                Integer id = Integer.valueOf(idString);
-                ids.add(id);
-            } catch (NumberFormatException e) {
-                logger.error("Unable to parse ids from string: " + commaDelimitedIds, e);
-            }
-        }
-        return ids;
+        return Strings.explodeCommaDelimitedStringOfIds(commaDelimitedIds);
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
