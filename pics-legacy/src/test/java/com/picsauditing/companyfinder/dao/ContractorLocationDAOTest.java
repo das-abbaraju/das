@@ -5,6 +5,7 @@ import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.model.general.LatLong;
+import com.picsauditing.util.Strings;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
@@ -136,7 +137,6 @@ public class ContractorLocationDAOTest {
         assertEquals(expected, sql);
     }
 
-
     @Test
     public void testGetSQL_filterWithTradeAndSP() throws Exception {
         List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
@@ -159,6 +159,27 @@ public class ContractorLocationDAOTest {
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
         String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca JOIN ca.trades ct WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.trade.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor AND (ca.status = :active OR ca.status = :pending )";
+        assertEquals(expected, sql);
+    }
+
+    @Test
+    public void testGetSQL_filterWithContractorIds() throws Exception {
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
+                .viewPort(
+                        ViewPort.builder()
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
+                                .build())
+                .contractorIds(Strings.explodeCommaDelimitedStringOfIds("123,456,78"))
+                .build();
+        String sql = contractorLocationDAO.getSQL(filter);
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND (ca.status = :active OR ca.status = :pending ) AND ca.id IN (:contractorIds)";
         assertEquals(expected, sql);
     }
 

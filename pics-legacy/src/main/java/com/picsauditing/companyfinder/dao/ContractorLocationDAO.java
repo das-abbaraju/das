@@ -39,41 +39,49 @@ public class ContractorLocationDAO extends PicsDAO {
         whereClause.append(getSafetySensitiveWhere(filter.getSafetySensitive()));
         whereClause.append(getSoleProprietorWhere(filter.getSoleProprietor()));
         whereClause.append(getActivePendingWhere());
+        whereClause.append(getContractorIdsWhere(filter.getContractorIds()));
 
         sql.append(whereClause);
         return sql.toString();
     }
 
     private String getViewPortWhere() {
-        return " cl.latitude > :swLat AND" +
-                " cl.longitude > :swLong AND" +
-                " cl.latitude < :neLat AND" +
-                " cl.longitude < :neLong AND";
+        return " cl.latitude > :swLat" +
+                " AND cl.longitude > :swLong" +
+                " AND cl.latitude < :neLat" +
+                " AND cl.longitude < :neLong";
     }
 
     private String getTradeWhere(List<Integer> tradeIds) {
-        if (tradeIds == null) {
-            return "";
+        if (tradeIds != null) {
+            return " AND ct.trade.id IN :tradeList";
         }
-        return " ct.trade.id IN :tradeList AND";
+        return "";
     }
 
     private String getSafetySensitiveWhere(TriStateFlag safetySensitive) {
         if (hasSafetySensitive(safetySensitive)) {
-            return " ca.safetySensitive = :safetySensitive AND";
+            return " AND ca.safetySensitive = :safetySensitive";
         }
         return "";
     }
 
     private String getSoleProprietorWhere(TriStateFlag soleProprietor) {
         if (hasSoleProprietor(soleProprietor)) {
-            return " ca.soleProprietor = :soleProprietor AND";
+            return " AND ca.soleProprietor = :soleProprietor";
         }
         return "";
     }
 
     private String getActivePendingWhere() {
-        return " (ca.status = :active OR ca.status = :pending )";
+        return " AND (ca.status = :active OR ca.status = :pending )";
+    }
+
+    private String getContractorIdsWhere(List<Integer> contractorIds) {
+        if (contractorIds != null) {
+            return " AND ca.id IN (:contractorIds)";
+        }
+        return "";
     }
 
     private void setQueryParameters(Query query, CompanyFinderFilter filter) {
@@ -82,6 +90,7 @@ public class ContractorLocationDAO extends PicsDAO {
         setSoleProprietorQueryParams(query, filter);
         setSafetySensitiveQueryParams(query, filter);
         setActivePendingQueryParams(query);
+        setContractorIdsQueryParam(query, filter);
     }
 
     private void setViewPortQueryParams(Query query, CompanyFinderFilter filter) {
@@ -114,6 +123,12 @@ public class ContractorLocationDAO extends PicsDAO {
     private void setActivePendingQueryParams(Query query) {
         query.setParameter("active", AccountStatus.Active);
         query.setParameter("pending", AccountStatus.Pending);
+    }
+
+    private void setContractorIdsQueryParam(Query query, CompanyFinderFilter filter) {
+        List<Integer> contractorIdList = filter.getContractorIds();
+        if (contractorIdList == null) return;
+        query.setParameter("contractorIds", contractorIdList);
     }
 
     private boolean hasSafetySensitive(TriStateFlag safetySensitive) {
