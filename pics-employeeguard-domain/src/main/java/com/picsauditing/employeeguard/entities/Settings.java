@@ -1,20 +1,19 @@
 package com.picsauditing.employeeguard.entities;
 
-import com.picsauditing.database.domain.Identifiable;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
-
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import javax.persistence.Embeddable;
 import java.util.Locale;
 
 @Embeddable
 public class Settings {
 
-	private Locale locale=Locale.UK;
+	private Locale locale = Locale.UK;
+
+	public Settings() {
+	}
+
+	public Settings(Locale locale) {
+		this.locale = locale;
+	}
 
 	public Locale getLocale() {
 		return locale;
