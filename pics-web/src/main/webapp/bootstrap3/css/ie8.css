@@ -103,3 +103,8 @@ dd {
 	vertical-align: middle;
 	background: transparent url(../images/star_brown_12.png) no-repeat top right;
 }
+
+/* Fix positions of tab-bar on report-settings modal */
+#report_settings_modal_tabbar .x-tab span.x-tab-inner {
+	padding-top: 0 !important;
+}
