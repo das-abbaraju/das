@@ -1643,6 +1643,7 @@ EmailContractorAccountStatus
 EmailCreationDate
 EmailFromAddress
 EmailId
+EmailPriority
 EmailSentDate
 EmailStatus
 EmailSubject

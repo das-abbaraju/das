@@ -178,6 +178,7 @@ public class EmailQueue implements java.io.Serializable {
 	 * @return
 	 */
 	@Column(nullable = false, length = 4)
+    @ReportField(type = FieldType.Integer)
 	public int getPriority() {
 		return priority;
 	}
