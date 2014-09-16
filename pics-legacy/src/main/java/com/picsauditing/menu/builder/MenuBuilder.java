@@ -335,6 +335,8 @@ public final class MenuBuilder {
 			devMenu.addChild("Process QB XML", "ProcessQBResponseXML.action", "process_qb_response_xml");
 		}
 
+        devMenu.addChild("Clear Document Data", "ClearDocumentData.action", "clear-document-data");
+
 		String auditBuilder = urlUtils.getActionUrl("AuditBuilder", "id", -1);
 		devMenu.addChild(getText("AuditBuilder.header"), auditBuilder, "audit_builder");
 
