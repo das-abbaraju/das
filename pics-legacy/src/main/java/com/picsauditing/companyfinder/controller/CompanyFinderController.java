@@ -40,6 +40,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private int soleOwner;
     private int safetySensitive;
     private String summary;
+    private String ids;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
 
@@ -65,10 +66,12 @@ public class CompanyFinderController extends PicsActionSupport {
         if (isSummary()) {
             contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
         } else {
-            List<Integer> tradeIds = parseTradeIds(getTradeIds());
+            List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
+            List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
             filter.setTradeIds(tradeIds);
             filter.setSoleProprietor(TriStateFlag.fromInteger(getSoleOwner()));
             filter.setSafetySensitive(TriStateFlag.fromInteger(getSafetySensitive()));
+            filter.setContractorIds(contractorIds);
             HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
 
             contractorLocationInfoList = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
@@ -94,20 +97,21 @@ public class CompanyFinderController extends PicsActionSupport {
         return filter;
     }
 
-    private List<Integer> parseTradeIds(String strTradeIds) {
-        if (Strings.isEmpty(strTradeIds)) return null;
+    // todo: Consider using ?String?.explode
+    private List<Integer> parseCommaDelimitedIds(String commaDelimitedIds) {
+        if (Strings.isEmpty(commaDelimitedIds)) return null;
 
-        List<Integer> tradeIds = new ArrayList<>();
-        String[] tradeIdList = strTradeIds.split(",");
-        for (String tId : tradeIdList) {
+        List<Integer> ids = new ArrayList<>();
+        String[] idStrings = commaDelimitedIds.split(",");
+        for (String idString : idStrings) {
             try {
-                Integer ti = Integer.valueOf(tId);
-                tradeIds.add(ti);
-            } catch (Exception e) {
-                logger.error("Invalid tradeIds, expected integer values.", e);
+                Integer id = Integer.valueOf(idString);
+                ids.add(id);
+            } catch (NumberFormatException e) {
+                logger.error("Unable to parse ids from string: " + commaDelimitedIds, e);
             }
         }
-        return tradeIds;
+        return ids;
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
@@ -208,5 +212,13 @@ public class CompanyFinderController extends PicsActionSupport {
     }
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getIds() {
+        return ids;
+    }
+
+    public void setIds(String ids) {
+        this.ids = ids;
     }
 }

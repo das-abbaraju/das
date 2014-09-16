@@ -32,4 +32,9 @@ public class CompanyFinderFilterBuilder {
         filter.setSoleProprietor(soleProprietor);
         return this;
     }
+
+    public CompanyFinderFilterBuilder contractorIds(List<Integer> contractorIds) {
+        filter.setContractorIds(contractorIds);
+        return this;
+    }
 }
