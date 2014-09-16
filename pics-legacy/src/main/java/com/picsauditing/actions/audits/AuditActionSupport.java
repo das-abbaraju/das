@@ -228,12 +228,16 @@ public class AuditActionSupport extends ContractorActionSupport {
 	}
 
 	public Map<Integer, AuditData> getDataForSafetyManual() {
-		int questionID = AuditQuestion.MANUAL_PQF;
+        Map<Integer, AuditData> answers;
+
 		if (conAudit.getAuditType().getId() == AuditType.BPIISNCASEMGMT) {
-			questionID = 3477;
-		}
-		Map<Integer, AuditData> answers = auditDataDAO.findAnswersForSafetyManual(conAudit.getContractorAccount()
-				.getId(), questionID);
+            answers = auditDataDAO.findAnswersForCaseManagementPlan(conAudit.getContractorAccount()
+                    .getId());
+		} else {
+            answers = auditDataDAO.findAnswersForSafetyManual(conAudit.getContractorAccount()
+                    .getId(), AuditQuestion.MANUAL_PQF);
+        }
+
 		if (answers == null || answers.size() == 0) {
 			return null;
 		}

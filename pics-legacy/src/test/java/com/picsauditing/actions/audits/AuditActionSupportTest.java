@@ -8,6 +8,7 @@ import com.picsauditing.PicsTestUtil;
 import com.picsauditing.access.OpPerms;
 import com.picsauditing.access.OpType;
 import com.picsauditing.access.Permissions;
+import com.picsauditing.dao.AuditDataDAO;
 import com.picsauditing.jpa.entities.*;
 import com.picsauditing.models.audits.AuditEditModel;
 import org.junit.Before;
@@ -20,6 +21,9 @@ import java.util.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class AuditActionSupportTest extends PicsTest {
@@ -37,8 +41,11 @@ public class AuditActionSupportTest extends PicsTest {
 	protected AuditType auditType;
 	@Mock
 	protected Workflow workflow;
+    @Mock
+    protected AuditDataDAO auditDataDAO;
 
-	@Before
+
+    @Before
 	public void setUp() throws Exception {
 		super.setUp();
 
@@ -57,8 +64,28 @@ public class AuditActionSupportTest extends PicsTest {
 		EntityFactory.addContractorOperator(contractor, operator);
 
 		PicsTestUtil.forceSetPrivateField(test, "auditEditModel", new AuditEditModel());
-
+        PicsTestUtil.forceSetPrivateField(test, "auditDataDAO", auditDataDAO);
 	}
+
+    @Test
+    public void testgGetDataForSafetyManual_SafetyManual() throws Exception {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.MANUAL_AUDIT, contractor);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+        test.getDataForSafetyManual();
+        verify(auditDataDAO).findAnswersForSafetyManual(contractor.getId(), AuditQuestion.MANUAL_PQF);
+        verify(auditDataDAO, never()).findAnswersForCaseManagementPlan(contractor.getId());
+   }
+
+    @Test
+    public void testgGetDataForSafetyManual_CaseManagement() throws Exception {
+        ContractorAudit audit = EntityFactory.makeContractorAudit(AuditType.BPIISNCASEMGMT, contractor);
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
+
+        test.getDataForSafetyManual();
+        verify(auditDataDAO, never()).findAnswersForSafetyManual(contractor.getId(), AuditQuestion.MANUAL_PQF);
+        verify(auditDataDAO).findAnswersForCaseManagementPlan(contractor.getId());
+    }
 
     @Test
     public void testDisplayMultiStatusDropDown_Invalid_NotCSRGroup() {
