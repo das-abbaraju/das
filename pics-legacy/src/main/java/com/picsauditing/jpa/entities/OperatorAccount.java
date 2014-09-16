@@ -1,6 +1,7 @@
 package com.picsauditing.jpa.entities;
 
 import com.google.common.base.Strings;
+import com.picsauditing.access.OpPerms;
 import com.picsauditing.dao.AuditDecisionTableDAO;
 import com.picsauditing.jpa.entities.builders.OperatorAccountBuilder;
 import com.picsauditing.report.fields.FieldType;
@@ -242,6 +243,7 @@ public class OperatorAccount extends Account {
 	}
 
 	@Column(nullable = false)
+    @ReportField(type = FieldType.Float, requiredPermissions = OpPerms.Billing)
 	public BigDecimal getDiscountPercent() {
 		return discountPercent;
 	}
