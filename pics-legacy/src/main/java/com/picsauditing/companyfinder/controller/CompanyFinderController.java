@@ -39,7 +39,7 @@ public class CompanyFinderController extends PicsActionSupport {
     private String tradeIds;
     private int soleOwner;
     private int safetySensitive;
-    private String summary;
+    private boolean summary;
     private String ids;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
@@ -62,7 +62,7 @@ public class CompanyFinderController extends PicsActionSupport {
         List<ContractorLocationInfo> contractorLocationInfoList = null;
         CompanyFinderFilter filter = getCompanyFinderFilter();
 
-        if (isSummary()) {
+        if (getSummary()) {
             contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
         } else {
             List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
@@ -92,9 +92,11 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .lat(swLat)
                                         .lng(swLong)
                                         .build())
-                                .build()).build();
+                                .build())
+                .build();
         return filter;
     }
+
     private List<Integer> parseCommaDelimitedIds(String commaDelimitedIds) {
         return Strings.explodeCommaDelimitedStringOfIds(commaDelimitedIds);
     }
@@ -189,13 +191,11 @@ public class CompanyFinderController extends PicsActionSupport {
         this.safetySensitive = safetySensitive;
     }
 
-    private boolean isSummary() {
-        return Boolean.valueOf(summary);
-    }
-    public String getSummary() {
+    public boolean getSummary() {
         return summary;
     }
-    public void setSummary(String summary) {
+
+    public void setSummary(boolean summary) {
         this.summary = summary;
     }
 
