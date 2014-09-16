@@ -48,6 +48,9 @@ public class FlagChangesSubscription extends SqlSubscriptionBuilder {
 			sql.addWhere("f2.creationDate = '" + df.format(subscription.getTimePeriod().getNearestComparisonDate()) + "'");
 			sql.addWhere("(co.workStatus = 'Y' OR oa.autoApproveRelationships = 1)");
 			sql.addWhere("a.status = 'Active'");
+			sql.addWhere("f2.flag <> '" + FlagColor.Clear + "'");
+			sql.addWhere("co.flag <> '" + FlagColor.Clear + "'");
+
 			sql.addField("a.name AS name");
 			sql.addField("a.id AS conID");
 			sql.addField("f2.flag AS oldFlag");
