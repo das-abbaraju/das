@@ -4,6 +4,7 @@ import com.picsauditing.employeeguard.entities.Employee;
 import com.picsauditing.employeeguard.entities.builders.EmployeeBuilder;
 import com.picsauditing.employeeguard.msgbundle.EGI18n;
 import com.picsauditing.employeeguard.services.entity.util.file.FileRowMapper;
+import com.picsauditing.employeeguard.util.UUIDUtil;
 import com.picsauditing.util.Strings;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -70,6 +71,7 @@ class EmployeeFileRowMapper implements FileRowMapper<Employee> {
 				.phoneNumber(safeGetValueAtIndex(fileRow, 4, null))
 				.slug(safeGetValueAtIndex(fileRow, 5, null))
 				.accountId(contractorId)
+				.guid(UUIDUtil.newGuid())
 				.build();
 	}
 

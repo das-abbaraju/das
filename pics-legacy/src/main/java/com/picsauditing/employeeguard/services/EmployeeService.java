@@ -17,6 +17,7 @@ import com.picsauditing.employeeguard.services.email.EmailHashService;
 import com.picsauditing.employeeguard.services.email.EmailService;
 import com.picsauditing.employeeguard.services.entity.employee.EmployeeEntityService;
 import com.picsauditing.employeeguard.util.PicsCollectionUtil;
+import com.picsauditing.employeeguard.util.UUIDUtil;
 import com.picsauditing.util.Strings;
 import com.picsauditing.util.generic.IntersectionAndComplementProcess;
 import org.apache.commons.collections.CollectionUtils;
@@ -128,6 +129,8 @@ public class EmployeeService {
 		setEmployeeAuditingFields(employee, accountId, appUserId);
 		setEmployeeGroups(employee, accountId);
 		EntityHelper.setCreateAuditFields(employee.getGroups(), appUserId, now);
+
+		employee.setGuid(UUIDUtil.newGuid());
 
 		return employeeDAO.save(employee);
 	}

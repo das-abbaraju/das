@@ -11,7 +11,7 @@ import java.util.*;
 @Entity
 @Table(name = "account_employee")
 @Where(clause = "deletedDate IS NULL")
-@SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
+@SQLInsert(sql = "insert into account_employee (accountId, createdBy, createdDate, deletedBy, deletedDate, email, emailToken, firstName, guid, lastName, phone, positionName, profileID, slug, updatedBy, updatedDate) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) " +
 		"ON DUPLICATE KEY UPDATE deletedBy = 0, deletedDate = null, updatedBy = 0, updatedDate = null")
 @SQLDelete(sql = "UPDATE account_employee SET email=concat(email ,'_deleted_', now()), slug=concat(slug ,'_deleted_', now()), deletedDate = NOW() WHERE id = ?")
 public class Employee implements BaseEntity, Comparable<Employee> {
@@ -21,6 +21,8 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+
+	private String guid;
 
 	private int accountId;
 
@@ -90,6 +92,7 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 		this.updatedDate = employee.updatedDate;
 		this.deletedBy = employee.deletedBy;
 		this.deletedDate = employee.deletedDate;
+		this.guid = employee.guid;
 	}
 
 	public int getId() {
@@ -98,6 +101,14 @@ public class Employee implements BaseEntity, Comparable<Employee> {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getGuid() {
+		return guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 	public int getAccountId() {
