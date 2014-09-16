@@ -58,19 +58,22 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
+        List<ContractorLocationInfo> contractorLocationInfoList = null;
         Boolean summary = isSummary();
-        List<Integer> tradeIds = parseTradeIds(getTradeIds());
         CompanyFinderFilter filter = getCompanyFinderFilter();
-        if (!summary) {
+
+        if (isSummary()) {
+            contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+        } else {
+            List<Integer> tradeIds = parseTradeIds(getTradeIds());
             filter.setTradeIds(tradeIds);
             filter.setSoleProprietor(TriStateFlag.fromInteger(getSoleOwner()));
             filter.setSafetySensitive(TriStateFlag.fromInteger(getSafetySensitive()));
+            HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
+
+            contractorLocationInfoList = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
         }
-        HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
-
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
-
-        jsonString = new Gson().toJson(contractorLocationInfos);
+        jsonString = new Gson().toJson(contractorLocationInfoList);
 
         return JSON_STRING;
     }
