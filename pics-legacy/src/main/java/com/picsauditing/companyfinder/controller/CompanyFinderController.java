@@ -36,10 +36,10 @@ public class CompanyFinderController extends PicsActionSupport {
     private double neLong;
     private double swLat;
     private double swLong;
-
     private String tradeIds;
     private int soleOwner;
     private int safetySensitive;
+    private String summary;
 
     private final Logger logger = LoggerFactory.getLogger(CompanyFinderService.class);
 
@@ -58,8 +58,24 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
+        Boolean summary = isSummary();
         List<Integer> tradeIds = parseTradeIds(getTradeIds());
+        CompanyFinderFilter filter = getCompanyFinderFilter();
+        if (!summary) {
+            filter.setTradeIds(tradeIds);
+            filter.setSoleProprietor(TriStateFlag.fromInteger(getSoleOwner()));
+            filter.setSafetySensitive(TriStateFlag.fromInteger(getSafetySensitive()));
+        }
+        HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
 
+        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
+
+        jsonString = new Gson().toJson(contractorLocationInfos);
+
+        return JSON_STRING;
+    }
+
+    private CompanyFinderFilter getCompanyFinderFilter() {
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -71,19 +87,8 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .lat(swLat)
                                         .lng(swLong)
                                         .build())
-                                .build())
-                .tradeIds(tradeIds)
-                .soleProprietor(TriStateFlag.fromInteger(getSoleOwner()))
-                .safetySensitive(TriStateFlag.fromInteger(getSafetySensitive()))
-                .build();
-
-        HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
-
-        List<ContractorLocationInfo> contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
-
-        jsonString = new Gson().toJson(contractorLocationInfos);
-
-        return JSON_STRING;
+                                .build()).build();
+        return filter;
     }
 
     private List<Integer> parseTradeIds(String strTradeIds) {
@@ -190,5 +195,15 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public void setSafetySensitive(int safetySensitive) {
         this.safetySensitive = safetySensitive;
+    }
+
+    private boolean isSummary() {
+        return Boolean.valueOf(summary);
+    }
+    public String getSummary() {
+        return summary;
+    }
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }
