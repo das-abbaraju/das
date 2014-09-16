@@ -119,6 +119,10 @@ angular.module('PICS.companyFinder')
 
         $scope.safetySensitive = true;
 
+        $scope.soleOwnerEnabled = false;
+
+        $scope.soleOwner = true;
+
         $scope.locationCount = 0;
 
         $scope.googleMapConfig = {
@@ -270,7 +274,8 @@ angular.module('PICS.companyFinder')
                     neLong: ne.lng(),
                     swLat: sw.lat(),
                     swLong: sw.lng(),
-                    safetySensitive: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1
+                    safetySensitive: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1,
+                    soleOwner: $scope.soleOwnerEnabled ? ($scope.soleOwner ? 1 : 0) : -1
                 };
 
             if (!trade) {
