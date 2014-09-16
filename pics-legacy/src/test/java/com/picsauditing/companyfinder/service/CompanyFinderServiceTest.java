@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -119,13 +120,27 @@ public class CompanyFinderServiceTest {
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
         when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
 
-        HashMap<String, String> contractorInfoProps = buildContractorInfoProperties();
         List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
 
         assertEquals(3, contractorLocationInfoList.size());
         assertEquals(1, contractorLocationInfoList.get(0).getId());
         assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
         assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
+    }
+
+    @Test
+    public void testFindContractorLocationSummary_noTrades() throws Exception {
+        List<ContractorLocation> contractorLocations = buildTestContractorLocations();
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
+
+        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+
+        assertEquals(3, contractorLocationInfoList.size());
+        assertEquals(1, contractorLocationInfoList.get(0).getId());
+        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
+        assertTrue(contractorLocationInfoList.get(0).getTrades()== null);
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
