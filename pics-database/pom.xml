@@ -46,18 +46,6 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>2.0.1</version>
-                <configuration>
-                    <promptOnNonLocalDatabase>false</promptOnNonLocalDatabase>
-                    <propertyFileWillOverride>true</propertyFileWillOverride>
-                    <verbose>true</verbose>
-                    <propertyFile>${liquibase.propertyFile}</propertyFile>
-                    <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <executions>
