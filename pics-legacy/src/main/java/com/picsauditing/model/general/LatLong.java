@@ -34,6 +34,10 @@ public class LatLong {
 		return latitude + "," + longitude;
 	}
 
+    public boolean isEmpty(){
+        return latitude == 0.0 & longitude == 0.0;
+    }
+
     public static LatLongBuilder builder() {
         return new LatLongBuilder();
     }

@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,8 +36,8 @@ public class CompanyFinderController extends PicsActionSupport {
     private double swLat;
     private double swLong;
     private String tradeIds;
-    private int soleOwner;
-    private int safetySensitive;
+    private int soleOwner = TriStateFlag.IGNORE.getValue();
+    private int safetySensitive = TriStateFlag.IGNORE.getValue();
     private boolean summary;
     private String ids;
 

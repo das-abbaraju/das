@@ -26,4 +26,11 @@ public class ViewPort {
     public static ViewPortBuilder builder() {
         return new ViewPortBuilder();
     }
+
+    public boolean isEmpty(){
+       if(northEast.isEmpty() & southWest.isEmpty()) {
+          return true;
+       }
+       return false;
+    }
 }
