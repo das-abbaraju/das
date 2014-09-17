@@ -29,6 +29,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import com.picsauditing.PICS.FeeService;
+import com.picsauditing.dao.OperatorAccountDAO;
 import org.apache.commons.beanutils.BasicDynaBean;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -76,8 +77,11 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 	private Query query;
 	@Mock
 	private Database database;
+    @Mock
+    private OperatorAccountDAO operatorDao;
 
-	@AfterClass
+
+    @AfterClass
 	public static void tearDown() throws Exception {
 		Whitebox.setInternalState(SmartFacilitySuggest.class, "database", (Database) null);
 	}
@@ -98,6 +102,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		Whitebox.setInternalState(contractorFacilities, "facilityChanger", facilityChanger);
 		Whitebox.setInternalState(contractorFacilities, "permissionToViewContractor", permissionToViewContractor);
 		Whitebox.setInternalState(contractorFacilities, "database", database);
+        Whitebox.setInternalState(contractorFacilities, "operatorDao", operatorDao);
 
 		when(permissions.isContractor()).thenReturn(true);
 		when(permissions.getAccountStatus()).thenReturn(AccountStatus.Active);
@@ -317,6 +322,22 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		verify(query).getResultList();
 	}
 
+    @Test
+    public void testSearch_CorporateUser_NoSearchString() throws Exception {
+        ContractorAccount contractor = initializeContractor();
+        OperatorAccount corporate = initializeCorporate();
+
+        OperatorAccount site = EntityFactory.makeOperator();
+        EntityFactory.addContractorOperator(contractor, site);
+
+        when(permissions.isCorporate()).thenReturn(true);
+
+        when(operatorDao.find(anyInt())).thenReturn(corporate);
+        assertEquals("search", contractorFacilities.search());
+        assertNotNull(contractorFacilities.getSearchResults());
+        assertEquals(1, contractorFacilities.getSearchResults().size());
+    }
+
 	@Test
 	public void testSearch_NonCorporateOperatorsSizeZero_NoDataSetsActionMessageOnly() throws Exception {
 		String testMessage = "Test Message";
@@ -380,7 +401,7 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		OperatorAccount corporate = EntityFactory.makeOperator();
 		corporate.setType("Corporate");
 
-		when(entityManager.find(OperatorAccount.class, corporate.getId())).thenReturn(corporate);
+        when(operatorDao.find(anyInt())).thenReturn(corporate);
 		when(permissions.getAccountId()).thenReturn(corporate.getId());
 		when(permissions.isContractor()).thenReturn(false);
 		when(permissions.isCorporate()).thenReturn(true);
@@ -399,8 +420,6 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 		assertFalse(contractorFacilities.getSearchResults().isEmpty());
-
-		verify(entityManager).find(OperatorAccount.class, corporate.getId());
 	}
 
 	@Test
@@ -414,8 +433,8 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		OperatorAccount corporate = EntityFactory.makeOperator();
 		corporate.setType("Corporate");
 
-		when(entityManager.find(OperatorAccount.class, corporate.getId())).thenReturn(corporate);
-		when(permissions.getAccountId()).thenReturn(corporate.getId());
+        when(operatorDao.find(anyInt())).thenReturn(corporate);
+        when(permissions.getAccountId()).thenReturn(corporate.getId());
 		when(permissions.isContractor()).thenReturn(false);
 		when(permissions.isCorporate()).thenReturn(true);
 
@@ -431,8 +450,6 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		assertEquals("search", contractorFacilities.search());
 		assertNotNull(contractorFacilities.getSearchResults());
 		assertTrue(contractorFacilities.getSearchResults().isEmpty());
-
-		verify(entityManager).find(OperatorAccount.class, corporate.getId());
 	}
 
 	@Test
@@ -449,9 +466,10 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 		ContractorAccount contractor = initializeContractor();
 
 		OperatorAccount operator = EntityFactory.makeOperator();
-		when(entityManager.find(eq(OperatorAccount.class), anyInt())).thenReturn(operator);
+        when(operatorDao.find(anyInt())).thenReturn(operator);
 
-		contractorFacilities.setContractor(contractor);
+
+        contractorFacilities.setContractor(contractor);
 		contractorFacilities.setOperator(operator);
 
 		assertEquals(PicsActionSupport.JSON, contractorFacilities.validateBidOnly());
@@ -666,4 +684,43 @@ public class ContractorFacilitiesTest extends PicsActionTest {
 
 		return contractorAccount;
 	}
+
+    private OperatorAccount initializeCorporate() {
+        OperatorAccount corp = EntityFactory.makeOperator();
+        corp.setType("Corporate");
+
+        OperatorAccount onsiteOp = EntityFactory.makeOperator();
+        onsiteOp.setOnsiteServices(true);
+        onsiteOp.setOffsiteServices(false);
+        onsiteOp.setMaterialSupplier(false);
+        onsiteOp.setTransportationServices(false);
+
+        OperatorAccount offsiteOp = EntityFactory.makeOperator();
+        offsiteOp.setOnsiteServices(false);
+        offsiteOp.setOffsiteServices(true);
+        offsiteOp.setMaterialSupplier(false);
+        offsiteOp.setTransportationServices(false);
+
+        OperatorAccount hub = EntityFactory.makeOperator();
+        hub.setOnsiteServices(true);
+        hub.setOffsiteServices(true);
+        hub.setMaterialSupplier(true);
+        hub.setTransportationServices(true);
+        hub.setType("Corporate");
+
+        List<Facility> facilities = new ArrayList<>();
+        Facility facility;
+        facility = new Facility();
+        facility.setOperator(onsiteOp);
+        facilities.add(facility);
+        facility = new Facility();
+        facility.setOperator(offsiteOp);
+        facilities.add(facility);
+        facility = new Facility();
+        facility.setOperator(hub);
+        facilities.add(facility);
+        corp.setOperatorFacilities(facilities);
+
+        return corp;
+    }
 }

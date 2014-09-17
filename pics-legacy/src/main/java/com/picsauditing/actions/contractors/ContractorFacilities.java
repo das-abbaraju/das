@@ -218,7 +218,7 @@ public class ContractorFacilities extends ContractorActionSupport {
                 // their umbrella
                 OperatorAccount op = operatorDao.find(permissions.getAccountId());
                 for (Facility f : op.getOperatorFacilities()) {
-                    if (!contractor.getOperatorAccounts().contains(f.getOperator()) && f.getOperator().getStatus().isActive()) {
+                    if (isFacilityApplicableChoiceForAdding(f)) {
                         searchResults.add(f.getOperator());
                     }
                 }
@@ -228,7 +228,18 @@ public class ContractorFacilities extends ContractorActionSupport {
         return "search";
     }
 
-	private void removeNonRelatedSitesFromSearchResults() {
+    private boolean isFacilityApplicableChoiceForAdding(Facility f) {
+        if (contractor.getOperatorAccounts().contains(f.getOperator()))
+            return false;
+        if (!f.getOperator().getStatus().isActive())
+            return false;
+        if (!"Operator".equals(f.getOperator().getType()))
+            return false;
+
+        return doesOperatorTakeContractorService(f.getOperator());
+    }
+
+    private void removeNonRelatedSitesFromSearchResults() {
 		if (!permissions.isOperatorCorporate())
 			return;
 
@@ -563,11 +574,15 @@ public class ContractorFacilities extends ContractorActionSupport {
             o.setMaterialSupplier(1 == (Integer) d.get("materialSupplier"));
             o.setTransportationServices(1 == (Integer) d.get("transportationServices"));
 
-            if (contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
-                    && o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier()
-                    || contractor.isTransportationServices() && o.isTransportationServices())
+            if (doesOperatorTakeContractorService(o))
                 searchResults.add(o);
         }
+    }
+
+    private boolean doesOperatorTakeContractorService(OperatorAccount o) {
+        return contractor.isOnsiteServices() && o.isOnsiteServices() || contractor.isOffsiteServices()
+                && o.isOffsiteServices() || contractor.isMaterialSupplier() && o.isMaterialSupplier()
+                || contractor.isTransportationServices() && o.isTransportationServices();
     }
 
     private void recalculate() throws Exception {
