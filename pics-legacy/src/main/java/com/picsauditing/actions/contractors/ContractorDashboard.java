@@ -664,7 +664,7 @@ public class ContractorDashboard extends ContractorActionSupport {
 			return operatorTags;
 
         if (permissions.isPicsEmployee()) {
-            List<OperatorTag> tags = operatorTagDAO.findWhere(OperatorTag.class, "t.active = 1", 0, "t.tag");
+            List<OperatorTag> tags = operatorTagDAO.findAllForContractor(contractor.getId());
             return tags;
         }
 

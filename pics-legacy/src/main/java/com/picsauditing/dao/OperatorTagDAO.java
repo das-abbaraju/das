@@ -70,6 +70,16 @@ public class OperatorTagDAO extends PicsDAO {
 		return query.getResultList();
 	}
 
+	public List<OperatorTag> findAllForContractor(int conID) {
+		Query query = em.createNativeQuery("SELECT ot.* FROM accounts a " +
+                "JOIN contractor_operator co ON a.id = co.conID " +
+                "JOIN accounts o ON co.opID = o.id " +
+                "JOIN operator_tag ot ON (o.id = ot.opID OR ot.opID = 2723) AND ot.active = 1 " +
+                "WHERE a.id = " + conID + " " +
+                "ORDER BY a.id, o.nameIndex, ot.tag", OperatorTag.class);
+		return query.getResultList();
+	}
+
     public List<OperatorTag> findByTag(String tag) {
         Query query = em.createQuery("FROM OperatorTag o where o.tag = ?");
         query.setParameter(1, tag);

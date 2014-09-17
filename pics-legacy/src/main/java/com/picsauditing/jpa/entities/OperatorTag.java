@@ -1,22 +1,14 @@
 package com.picsauditing.jpa.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
 import org.hibernate.annotations.Where;
 import org.json.simple.JSONObject;
+
+import javax.persistence.Column;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 @Entity
@@ -45,6 +37,11 @@ public class OperatorTag extends BaseTable {
 
 	public void setTag(String tag) {
 		this.tag = tag;
+	}
+
+    @Transient
+    public String getFullTag() {
+        return operator.getName() + " - " + tag;
 	}
 
 	@Column(nullable = false)
