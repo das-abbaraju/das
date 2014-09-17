@@ -239,7 +239,22 @@ public class AuditDataDAO extends PicsDAO {
 		return data;
 	}
 
-	public List<AuditData> findServicesPerformed(int conID) {
+    public Map<Integer, AuditData> findAnswersForCaseManagementPlan(int conID) {
+        Map<Integer, AuditData> data = new HashMap<Integer, AuditData>();
+        Query query = em
+                .createQuery("FROM AuditData d "
+                        + "WHERE audit.contractorAccount.id = ? AND audit IN "
+                        + "(SELECT cao.audit FROM ContractorAuditOperator cao WHERE cao.status IN ('Complete','Submitted','Pending','Resubmit','Resubmitted') AND cao.visible = 1) "
+                        + "AND question.uniqueCode = 'CaseManagementPlan'");
+        query.setParameter(1, conID);
+        for (Object ad : query.getResultList()) {
+            AuditData auditData = (AuditData) ad;
+            data.put(auditData.getId(), auditData);
+        }
+        return data;
+    }
+
+    public List<AuditData> findServicesPerformed(int conID) {
 		Query query = em.createQuery("SELECT d FROM AuditData d "
 				+ "WHERE d.audit.contractorAccount.id = ? AND d.question.category.id = 422 "
 				+ "AND d.question.effectiveDate < NOW() AND d.question.expirationDate > NOW() ");
