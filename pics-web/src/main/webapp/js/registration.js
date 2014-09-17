@@ -339,8 +339,8 @@
                     var email = 'my.email' + new Date().getTime() + '@test.com';
 
                     // Company Info
-                    $('[name="localeForm.language"]').children().first().attr('selected','selected');
-                    $('[name="localeForm.dialect"]').children().last().attr('selected','selected');
+                    //$('[name="localeForm.language"]').children().first().attr('selected','selected');
+                    //$('[name="localeForm.dialect"]').children().last().attr('selected','selected');
                     $('[name="contractor.country.isoCode"]').children().first().attr('selected','selected');
                     $('[name="registrationForm.timezone"]').select2('val', 'America/Los_Angeles')
                     $('[name="registrationForm.legalName"]').val("My Company" +  new Date().getTime() );
@@ -509,7 +509,7 @@
                     PICS.ajax({
                         url: 'Registration!getCompanyAddressFields.action',
                         data: {
-                            'registrationForm.countryISOcode': selected_country,
+                            'registrationForm.countryISOCode': selected_country,
                             country_iso_code: selected_country
                         },
                         success: function (data, textStatus, jqXHR) {
