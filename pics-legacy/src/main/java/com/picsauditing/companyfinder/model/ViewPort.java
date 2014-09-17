@@ -28,9 +28,6 @@ public class ViewPort {
     }
 
     public boolean isEmpty(){
-       if(northEast.isEmpty() & southWest.isEmpty()) {
-          return true;
-       }
-       return false;
+        return northEast.isEmpty() & southWest.isEmpty();
     }
 }
