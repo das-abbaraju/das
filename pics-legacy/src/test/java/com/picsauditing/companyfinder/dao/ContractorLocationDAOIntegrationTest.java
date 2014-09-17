@@ -75,7 +75,7 @@ public class ContractorLocationDAOIntegrationTest extends AbstractTransactionalT
 
     @Test
     public void testUpdate() throws Exception {
-        Double lat = 33.860607;
+        Double lat = 42.913055;
         ContractorLocation contractorLocation = contractorLocationDAO.find(ContractorLocation.class, ID);
         assertNotNull(contractorLocation);
         assertEquals(lat, contractorLocation.getLatitude());

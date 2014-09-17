@@ -2,8 +2,12 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.model.*;
+import com.picsauditing.companyfinder.model.CompanyFinderFilter;
+import com.picsauditing.companyfinder.model.ContractorLocation;
+import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;
+import com.picsauditing.companyfinder.model.ViewPort;
+import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
 import com.picsauditing.dao.OperatorAccountDAO;
@@ -13,7 +17,6 @@ import com.picsauditing.jpa.entities.LowMedHigh;
 import com.picsauditing.jpa.entities.Trade;
 import com.picsauditing.model.general.LatLong;
 import com.picsauditing.service.account.AddressService;
-import com.picsauditing.util.TriState;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -117,7 +120,8 @@ public class CompanyFinderServiceTest {
     @Test
     public void testFindContractorLocationSummary() throws Exception {
         List<ContractorLocation> contractorLocations = buildTestContractorLocations();
-        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().viewPort(viewPort).safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+
         when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
 
         List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
@@ -131,7 +135,7 @@ public class CompanyFinderServiceTest {
     @Test
     public void testFindContractorLocationSummary_noTrades() throws Exception {
         List<ContractorLocation> contractorLocations = buildTestContractorLocations();
-        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().viewPort(viewPort).safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
         when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
 
         List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);

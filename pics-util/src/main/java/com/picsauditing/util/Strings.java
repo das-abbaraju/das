@@ -581,10 +581,12 @@ public class Strings {
 	}
 
     public static List<Integer> explodeCommaDelimitedStringOfIds(String stringOfIds) throws NumberFormatException {
-        String[] stringArrayIds = stringOfIds.split(",");
-        List<Integer> idsList = new ArrayList<Integer>();
+        List<Integer> idsList = new ArrayList<>();
+        if (StringUtils.isEmpty(stringOfIds)) return idsList;
 
-        for (String contractorId: stringArrayIds) {
+        String[] stringArrayIds = stringOfIds.split(",");
+
+        for (String contractorId : stringArrayIds) {
             try {
                 idsList.add(Integer.valueOf(contractorId.trim()));
             } catch (NumberFormatException e) {

@@ -6,6 +6,7 @@ import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.MapInfo;
+import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.companyfinder.model.ViewportLocation;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.flagcalculator.FlagCalculator;
@@ -74,15 +75,22 @@ public class CompanyFinderService {
     }
 
     public List<ContractorLocationInfo> findContractorLocationSummaryInfo(CompanyFinderFilter companyFinderFilter) {
+        List<ContractorLocationInfo> contractorLocationInfoList = new ArrayList<>();
+        if (isViewPortEmpty(companyFinderFilter.getViewPort())) {
+            return contractorLocationInfoList;
+        }
+
         List<ContractorLocation> contractorLocations = contractorLocationDAO.findContractorLocations(companyFinderFilter);
 
-        List<ContractorLocationInfo> contractorLocationInfoList = new ArrayList<>();
         for (ContractorLocation contractorLocation : contractorLocations) {
             ContractorLocationInfo contractorLocationInfo = buildContractorLocationSummary(contractorLocation);
             contractorLocationInfoList.add(contractorLocationInfo);
         }
         return contractorLocationInfoList;
+    }
 
+    private boolean isViewPortEmpty(ViewPort viewPort) {
+        return viewPort == null || viewPort.isEmpty();
     }
 
     private boolean shouldComputeOperatorData(List<ContractorLocation> contractorLocations, String operatorIdStr) {
