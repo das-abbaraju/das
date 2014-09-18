@@ -138,6 +138,7 @@ public class RegistrationService {
         registrant.setNaics(new Naics());
         registrant.getNaics().setCode("0");
         registrant.setNaicsValid(false);
+        registrant.setTimezone(form.getTimeZone());
 
         //FIXME: Put this logic somewhere else. Maybe another listener? Does this need to be synchronous?
         billingBean.assessInitialFees(registrant);

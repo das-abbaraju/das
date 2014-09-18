@@ -123,7 +123,7 @@
 		                    list="supportedLanguages.visibleLanguagesSansDialect"
 		                    listKey="key"
 		                    listValue="value"
-		                    name="language"
+		                    name="localeForm.language"
 		                    value="localeForm.language"
 		                    id="registration_language"
 		                    cssClass="select2Min"
