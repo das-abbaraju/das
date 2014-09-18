@@ -5,19 +5,12 @@ import com.picsauditing.jpa.entities.builders.ContractorOperatorBuilder;
 import com.picsauditing.report.fields.FieldType;
 import com.picsauditing.report.fields.ReportField;
 import com.picsauditing.report.tables.FieldImportance;
-import com.picsauditing.search.Database;
-import com.picsauditing.search.SelectSQL;
 import com.picsauditing.util.Strings;
-import org.apache.commons.beanutils.BasicDynaBean;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;
 import javax.persistence.Column;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 @SuppressWarnings("serial")
@@ -260,7 +253,7 @@ public class ContractorOperator extends BaseTable implements java.io.Serializabl
 		this.baselineFlagDetail = baselineFlagDetail;
 	}
 
-	@OneToMany(cascade = {CascadeType.ALL}, mappedBy = "contractorOperator")
+	@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "contractorOperator")
 	public Set<FlagData> getFlagDatas() {
 		return flagDatas;
 	}
