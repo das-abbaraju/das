@@ -315,7 +315,99 @@ public class AuditActionSupportTest extends PicsTest {
 		assertTrue(test.isUserPermittedToAssignAudit());
 	}
 
-	@Test
+    @Test
+    public void testCanPerformAxtion_CompleteForWorkflowsNeedingVerification_NotVerified() {
+        WorkflowStep complete = getCompleteWorkflowStep();
+        AuditType auditType = createAuditTypendWorkflow(AuditType.PQF, Workflow.PQF_WORKFLOW);
+        ContractorAuditOperator cao = getContractorAuditOperator();
+
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+        when(permissions.seesAllContractors()).thenReturn(true);
+
+        assertFalse(test.canPerformAction(cao, complete));
+    }
+
+    @Test
+    public void testCanPerformAxtion_CompleteForWorkflowsNeedingVerification_Verified() {
+        WorkflowStep complete = getCompleteWorkflowStep();
+        AuditType auditType = createAuditTypendWorkflow(AuditType.PQF, Workflow.PQF_WORKFLOW);
+        ContractorAuditOperator cao = getContractorAuditOperator();
+
+        cao.setPercentVerified(100);
+
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+        when(permissions.seesAllContractors()).thenReturn(true);
+
+        assertTrue(test.canPerformAction(cao, complete));
+    }
+
+    @Test
+    public void testCanPerformAxtion_CompleteForWorkflowsNotNeedingVerification_NotVerified() {
+        WorkflowStep complete = getCompleteWorkflowStep();
+        AuditType auditType = createAuditTypendWorkflow(AuditType.PQF, test.workflowIdsNotNeedingVerification.get(0));
+        ContractorAuditOperator cao = getContractorAuditOperator();
+
+        PicsTestUtil.forceSetPrivateField(test, "conAudit", conAudit);
+        when(permissions.seesAllContractors()).thenReturn(true);
+
+        assertTrue(test.canPerformAction(cao, complete));
+    }
+
+    private ContractorAuditOperator getContractorAuditOperator() {
+        ContractorAuditOperator cao = new ContractorAuditOperator();
+        cao.setPercentComplete(100);
+        cao.setAudit(conAudit);
+        cao.changeStatus(AuditStatus.Submitted, null);
+        return cao;
+    }
+
+    private WorkflowStep getCompleteWorkflowStep() {
+        WorkflowStep complete = new WorkflowStep();
+        complete.setOldStatus(AuditStatus.Submitted);
+        complete.setNewStatus(AuditStatus.Complete);
+        return complete;
+    }
+
+    private AuditType createAuditTypendWorkflow(int auditTypeId, int workflowId) {
+        AuditType auditType = new AuditType(auditTypeId);
+        auditType.setClassType(AuditTypeClass.PQF);
+        Workflow workflow = new Workflow();
+        workflow.setId(workflowId);
+        auditType.setWorkFlow(workflow);
+
+        WorkflowState pending = new WorkflowState();
+        pending.setStatus(AuditStatus.Pending);
+        WorkflowState submitted = new WorkflowState();
+        pending.setStatus(AuditStatus.Submitted);
+        WorkflowState complete = new WorkflowState();
+        pending.setStatus(AuditStatus.Complete);
+        List<WorkflowState> states = new ArrayList<>();
+        states.add(pending);
+        states.add(submitted);
+        states.add(complete);
+        workflow.setStates(states);
+
+        WorkflowStep initial = new WorkflowStep();
+        initial.setOldStatus(null);
+        initial.setNewStatus(AuditStatus.Pending);
+        WorkflowStep submit = new WorkflowStep();
+        submit.setOldStatus(AuditStatus.Pending);
+        submit.setNewStatus(AuditStatus.Submitted);
+        WorkflowStep completed = new WorkflowStep();
+        completed.setOldStatus(AuditStatus.Submitted);
+        completed.setNewStatus(AuditStatus.Complete);
+        List<WorkflowStep> steps = new ArrayList<>();
+        steps.add(initial);
+        steps.add(submit);
+        steps.add(completed);
+        workflow.setSteps(steps);
+
+        when(conAudit.getAuditType()).thenReturn(auditType);
+
+        return auditType;
+    }
+
+    @Test
 	public void testCanPerformAction() throws Exception {
 		ContractorAudit audit = createWCB();
 		PicsTestUtil.forceSetPrivateField(test, "conAudit", audit);
