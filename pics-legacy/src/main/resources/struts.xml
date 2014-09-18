@@ -711,7 +711,13 @@
 			</result>
 		</action>
 
-		<action name="ContractorAuditFileUpload"
+        <action name="ClearDocumentData"
+                class="com.picsauditing.actions.auditType.ClearDocumentData">
+            <result>struts/auditType/clear-document-data.jsp</result>
+            <result name="success">struts/auditType/clear-document-data.jsp</result>
+        </action>
+
+        <action name="ContractorAuditFileUpload"
 		        class="com.picsauditing.actions.audits.ContractorAuditFileUpload">
 			<result>struts/audits/con_audit_files.jsp</result>
 		</action>

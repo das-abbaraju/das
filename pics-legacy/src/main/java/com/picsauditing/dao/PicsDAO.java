@@ -260,4 +260,8 @@ abstract public class PicsDAO {
         return findWhere(clazz, "t.slug = '" + slug + "'");
     }
 
+    public <T extends BaseTable> List<T> deleteAllData(Class<T> clazz, String slug) {
+        return findWhere(clazz, "t.slug = '" + slug + "'");
+    }
+
 }
