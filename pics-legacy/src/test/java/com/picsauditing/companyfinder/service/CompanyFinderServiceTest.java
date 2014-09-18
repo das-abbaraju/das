@@ -2,14 +2,11 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.model.CompanyFinderFilter;
-import com.picsauditing.companyfinder.model.ContractorLocation;
-import com.picsauditing.companyfinder.model.ContractorLocationInfo;
-import com.picsauditing.companyfinder.model.TriStateFlag;
-import com.picsauditing.companyfinder.model.ViewPort;
-import com.picsauditing.companyfinder.model.ViewportLocation;
+import com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
+import com.picsauditing.companyfinder.model.builder.ContractorLocationSummaryInfoBuilder;
 import com.picsauditing.dao.OperatorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
 import com.picsauditing.jpa.entities.ContractorTrade;
@@ -29,7 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -118,33 +114,19 @@ public class CompanyFinderServiceTest {
     }
 
     @Test
-    public void testFindContractorLocationSummary() throws Exception {
-        List<ContractorLocation> contractorLocations = buildTestContractorLocations();
+    public void testFindContractorLocationSummary_viewPortOnly() throws Exception {
+        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos = buildTestContractorLocationSummaryInfos();
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder().viewPort(viewPort).safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
 
-        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
+        when(contractorLocationDAO.findContractorLocationsSummary(filter)).thenReturn(contractorLocationSummaryInfos);
 
-        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+        List<ContractorLocationSummaryInfo> results = companyFinderService.findContractorLocationSummaryInfo(filter);
 
-        assertEquals(3, contractorLocationInfoList.size());
-        assertEquals(1, contractorLocationInfoList.get(0).getId());
-        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
-        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
-    }
-
-    @Test
-    public void testFindContractorLocationSummary_noTrades() throws Exception {
-        List<ContractorLocation> contractorLocations = buildTestContractorLocations();
-        CompanyFinderFilter filter = new CompanyFinderFilterBuilder().viewPort(viewPort).safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
-        when(contractorLocationDAO.findContractorLocations(filter)).thenReturn(contractorLocations);
-
-        List<ContractorLocationInfo> contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
-
-        assertEquals(3, contractorLocationInfoList.size());
-        assertEquals(1, contractorLocationInfoList.get(0).getId());
-        assertEquals(100.0, contractorLocationInfoList.get(0).getCoordinates().getLatitude());
-        assertEquals(101.0, contractorLocationInfoList.get(0).getCoordinates().getLongitude());
-        assertTrue(contractorLocationInfoList.get(0).getTrades()== null);
+        assertEquals(3, results.size());
+        assertEquals(1, results.get(0).getId());
+        assertEquals(10, results.get(0).getConId());
+        assertEquals(100.0, results.get(0).getLatitude());
+        assertEquals(101.0, results.get(0).getLongitude());
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
@@ -218,6 +200,39 @@ public class CompanyFinderServiceTest {
         contractorLocations.add(contractorLocation3);
 
         return contractorLocations;
+    }
+
+    private List<ContractorLocationSummaryInfo> buildTestContractorLocationSummaryInfos() {
+        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfo = new ArrayList<>();
+
+        ContractorLocationSummaryInfo contractorLocationSummaryInfo1 =
+                new ContractorLocationSummaryInfoBuilder()
+                        .id(1)
+                        .conId(10)
+                        .lat((double) 100)
+                        .lng((double) 101)
+                        .build();
+        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo1);
+
+        ContractorLocationSummaryInfo contractorLocationSummaryInfo2 =
+                new ContractorLocationSummaryInfoBuilder()
+                        .id(2)
+                        .conId(20)
+                        .lat((double) 200)
+                        .lng((double) 202)
+                        .build();
+        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo2);
+
+        ContractorLocationSummaryInfo contractorLocationSummaryInfo3 =
+                new ContractorLocationSummaryInfoBuilder()
+                        .id(3)
+                        .conId(30)
+                        .lat((double) 300)
+                        .lng((double) 303)
+                        .build();
+        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo3);
+
+        return contractorLocationSummaryInfo;
     }
 
     private List<ContractorTrade> buildTestContractorTrades(String trade1Name, String trade2Name, String trade3Name) {

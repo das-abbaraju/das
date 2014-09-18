@@ -183,4 +183,30 @@ public class ContractorLocationDAOTest {
         assertEquals(expected, sql);
     }
 
+    @Test
+    public void testGetSQLSummaryNative_AllFilters() throws Exception {
+        List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
+
+        CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
+                .viewPort(
+                        ViewPort.builder()
+                                .northEast(LatLong.builder()
+                                        .lat(neLat)
+                                        .lng(neLong)
+                                        .build())
+                                .southWest(LatLong.builder()
+                                        .lat(swLat)
+                                        .lng(swLong)
+                                        .build())
+                                .build())
+                .tradeIds(tradeIds)
+                .safetySensitive(TriStateFlag.INCLUDE)
+                .soleProprietor(TriStateFlag.INCLUDE)
+                .build();
+        String sql = contractorLocationDAO.getSQLNativeSummary(filter);
+        String expected = "SELECT distinct cl.* FROM contractor_location cl JOIN contractor_info ca ON cl.conId = ca.id JOIN accounts a ON cl.conId = a.id JOIN contractor_trade ct ON a.id = ct.conId WHERE (a.status = :active OR a.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor";
+        assertEquals(expected, sql);
+    }
+
+
 }

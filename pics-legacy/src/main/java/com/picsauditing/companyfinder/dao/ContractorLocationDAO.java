@@ -6,6 +6,7 @@ import com.picsauditing.companyfinder.model.TriStateFlag;
 import com.picsauditing.companyfinder.model.ViewPort;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
+import com.picsauditing.util.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.persistence.Query;
@@ -15,6 +16,12 @@ public class ContractorLocationDAO extends PicsDAO {
 
     public static final String SELECT_CLAUSE = "SELECT distinct cl FROM ContractorLocation cl" +
             " JOIN cl.contractor ca";
+    public static final String NATIVE_SUMMARY_SELECT =
+            "SELECT distinct cl.* FROM contractor_location cl" +
+            " JOIN contractor_info ca" +
+            " ON cl.conId = ca.id" +
+            " JOIN accounts a" +
+            " ON cl.conId = a.id";
 
     public List<ContractorLocation> findContractorLocations(CompanyFinderFilter filter) {
         String sql = getSQL(filter);
@@ -24,6 +31,17 @@ public class ContractorLocationDAO extends PicsDAO {
         setQueryParameters(query, filter);
 
         return query.getResultList();
+    }
+
+    public List<ContractorLocationSummaryInfo> findContractorLocationsSummary(CompanyFinderFilter filter) {
+        String sql = getSQLNativeSummary(filter);
+
+        Query query = em.createNativeQuery(sql, ContractorLocationSummaryInfo.class);
+
+        setQueryParametersSummaryNative(query, filter);
+
+        List resultList = query.getResultList();
+        return resultList;
     }
 
     String getSQL(CompanyFinderFilter filter) {
@@ -38,6 +56,26 @@ public class ContractorLocationDAO extends PicsDAO {
         whereClause.append(getActivePendingWhere());
         whereClause.append(getViewPortWhere(filter.getViewPort()));
         whereClause.append(getTradeWhere(filter.getTradeIds()));
+        whereClause.append(getSafetySensitiveWhere(filter.getSafetySensitive()));
+        whereClause.append(getSoleProprietorWhere(filter.getSoleProprietor()));
+        whereClause.append(getContractorIdsWhere(filter.getContractorIds()));
+
+        sql.append(whereClause);
+        return sql.toString();
+    }
+
+    String getSQLNativeSummary(CompanyFinderFilter filter) {
+
+        StringBuilder sql = new StringBuilder(NATIVE_SUMMARY_SELECT);
+        List<Integer> tradeIds = filter.getTradeIds();
+        if (!CollectionUtils.isEmpty(tradeIds)) {
+            sql.append(" JOIN contractor_trade ct ON a.id = ct.conId");
+        }
+
+        StringBuilder whereClause = new StringBuilder(" WHERE");
+        whereClause.append(getActivePendingWhereSummaryNative());
+        whereClause.append(getViewPortWhere(filter.getViewPort()));
+        whereClause.append(getTradeWhereSummaryNative(filter.getTradeIds()));
         whereClause.append(getSafetySensitiveWhere(filter.getSafetySensitive()));
         whereClause.append(getSoleProprietorWhere(filter.getSoleProprietor()));
         whereClause.append(getContractorIdsWhere(filter.getContractorIds()));
@@ -67,6 +105,13 @@ public class ContractorLocationDAO extends PicsDAO {
         return "";
     }
 
+    private String getTradeWhereSummaryNative(List<Integer> tradeIds) {
+        if (!CollectionUtils.isEmpty(tradeIds)) {
+            return " AND ct.id IN :tradeList";
+        }
+        return "";
+    }
+
     private String getSafetySensitiveWhere(TriStateFlag safetySensitive) {
         if (hasSafetySensitive(safetySensitive)) {
             return " AND ca.safetySensitive = :safetySensitive";
@@ -85,6 +130,11 @@ public class ContractorLocationDAO extends PicsDAO {
         return " (ca.status = :active OR ca.status = :pending )";
     }
 
+
+    private String getActivePendingWhereSummaryNative() {
+        return " (a.status = :active OR a.status = :pending )";
+    }
+
     private String getContractorIdsWhere(List<Integer> contractorIds) {
         if (!CollectionUtils.isEmpty(contractorIds)) {
             return " AND ca.id IN (:contractorIds)";
@@ -99,6 +149,15 @@ public class ContractorLocationDAO extends PicsDAO {
         setSafetySensitiveQueryParam(query, filter);
         setActivePendingQueryParams(query);
         setContractorIdsQueryParam(query, filter);
+    }
+
+    private void setQueryParametersSummaryNative(Query query, CompanyFinderFilter filter) {
+        setViewPortQueryParams(query, filter);
+        setTradeQueryParamSummaryNative(query, filter);
+        setSoleProprietorQueryParamsSummaryNative(query, filter);
+        setSafetySensitiveQueryParamSummaryNative(query, filter);
+        setActivePendingQueryParamsSummaryNative(query);
+        setContractorIdsQueryParamSummaryNative(query, filter);
     }
 
     private void setViewPortQueryParams(Query query, CompanyFinderFilter filter) {
@@ -122,9 +181,23 @@ public class ContractorLocationDAO extends PicsDAO {
         query.setParameter("tradeList", tradeIdList);
     }
 
+    private void setTradeQueryParamSummaryNative(Query query, CompanyFinderFilter filter) {
+        List<Integer> tradeIdList = filter.getTradeIds();
+        if (CollectionUtils.isEmpty(tradeIdList)) return;
+        String inClauseIds = "(" + Strings.implode(tradeIdList) + ")";
+
+        query.setParameter("tradeList", inClauseIds);
+    }
+
     private void setSoleProprietorQueryParams(Query query, CompanyFinderFilter filter) {
         if (hasSoleProprietor(filter.getSoleProprietor())) {
             query.setParameter("soleProprietor", filter.getSoleProprietor().toBoolean());
+        }
+    }
+
+    private void setSoleProprietorQueryParamsSummaryNative(Query query, CompanyFinderFilter filter) {
+        if (hasSoleProprietor(filter.getSoleProprietor())) {
+            query.setParameter("soleProprietor", filter.getSoleProprietor().getValue());
         }
     }
 
@@ -134,15 +207,34 @@ public class ContractorLocationDAO extends PicsDAO {
         }
     }
 
+    private void setSafetySensitiveQueryParamSummaryNative(Query query, CompanyFinderFilter filter) {
+        if (hasSafetySensitive(filter.getSafetySensitive())) {
+            query.setParameter("safetySensitive", filter.getSafetySensitive().getValue());
+        }
+    }
+
     private void setActivePendingQueryParams(Query query) {
         query.setParameter("active", AccountStatus.Active);
         query.setParameter("pending", AccountStatus.Pending);
+    }
+
+    private void setActivePendingQueryParamsSummaryNative(Query query) {
+        query.setParameter("active", AccountStatus.Active.name());
+        query.setParameter("pending", AccountStatus.Pending.name());
     }
 
     private void setContractorIdsQueryParam(Query query, CompanyFinderFilter filter) {
         List<Integer> contractorIdList = filter.getContractorIds();
         if (CollectionUtils.isEmpty(contractorIdList)) return;
         query.setParameter("contractorIds", contractorIdList);
+    }
+
+    private void setContractorIdsQueryParamSummaryNative(Query query, CompanyFinderFilter filter) {
+        List<Integer> contractorIdList = filter.getContractorIds();
+        if (CollectionUtils.isEmpty(contractorIdList)) return;
+        String inClauseIds = "(" + Strings.implode(contractorIdList) + ")";
+
+        query.setParameter("contractorIds", inClauseIds);
     }
 
     private boolean hasSafetySensitive(TriStateFlag safetySensitive) {
