@@ -58,6 +58,8 @@ public class AuditActionSupport extends ContractorActionSupport {
 
 	protected ContractorAudit conAudit;
 
+    public List<Integer> workflowIdsNotNeedingVerification = new ArrayList<>(Arrays.asList(33, 41));
+
 	private Map<Integer, AuditData> hasManual;
 	protected Map<AuditCategory, AuditCatData> categories = null;
 	protected ArrayListMultimap<Integer, WorkflowStep> caoSteps = ArrayListMultimap.create();
@@ -337,7 +339,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		AuditType type = conAudit.getAuditType();
 		AuditStatus newStatus = workflowStep.getNewStatus();
 
-		if (newStatus.isComplete() && type.getWorkFlow().isHasSubmittedStep() && cao.getPercentVerified() < 100) {
+		if (newStatus.isComplete() && auditNeedsVerification(type) && cao.getPercentVerified() < 100) {
 			return false;
 		}
 
@@ -385,7 +387,13 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-	public List<WorkflowStep> getCurrentCaoStep(int caoID) {
+    private boolean auditNeedsVerification(AuditType type) {
+        if (workflowIdsNotNeedingVerification.contains(type.getWorkFlow().getId()))
+            return false;
+        return type.getWorkFlow().isHasSubmittedStep();
+    }
+
+    public List<WorkflowStep> getCurrentCaoStep(int caoID) {
 		if (caoSteps == null || caoSteps.isEmpty()) {
 			getValidSteps();
 		}
