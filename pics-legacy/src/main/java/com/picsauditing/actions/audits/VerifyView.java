@@ -56,6 +56,8 @@ public class VerifyView extends ContractorActionSupport {
 	protected String emailSubject;
 	protected EmailQueue previewEmail;
 	protected OshaOrganizer oshaOrganizer;
+    private String preEmailBody;
+    private String preEmailSubject;
 
 	public VerifyView() {
 		noteCategory = NoteCategory.Audits;
@@ -241,7 +243,17 @@ public class VerifyView extends ContractorActionSupport {
 		emailBuilder.setContractor(contractor, OpPerms.ContractorSafety);
 		if (previewEmail == null || Strings.isEmpty(previewEmail.getBody())
 				|| Strings.isEmpty(previewEmail.getSubject())) {
-			emailBuilder.setTemplate(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE);
+            if((getPreEmailBody() != null && getPreEmailBody().length() > 0)
+                    && (getPreEmailSubject() != null) && getPreEmailSubject().length() > 0) {
+                EmailTemplate emailTemplate = new EmailTemplate();
+                emailTemplate.setId(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE);
+                emailTemplate.setBody(getPreEmailBody());
+                emailTemplate.setSubject(getPreEmailSubject());
+                emailBuilder.setTemplate(emailTemplate);
+            }else{
+                emailBuilder.setTemplate(EmailTemplate.PQF_VERIFICATION_EMAIL_TEMPLATE);
+            }
+
 			emailBuilder.addToken("missing_items", addMissingItemsToEmail());
 			emailBuilder.setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<"
 					+ contractor.getCurrentCsr().getEmail() + ">");
@@ -252,7 +264,7 @@ public class VerifyView extends ContractorActionSupport {
 			emailTemplate.setSubject(previewEmail.getSubject());
 			emailBuilder.setEdited(true);
 			emailBuilder.setFromAddress("\"" + contractor.getCurrentCsr().getName() + "\"<"
-					+ contractor.getCurrentCsr().getEmail() + ">");
+                    + contractor.getCurrentCsr().getEmail() + ">");
 			emailBuilder.setTemplate(emailTemplate);
 		}
 		EmailQueue email = emailBuilder.build();
@@ -408,4 +420,20 @@ public class VerifyView extends ContractorActionSupport {
 						.isEmpty());
 		return hasVerifiable;
 	}
+
+    public String getPreEmailBody() {
+        return preEmailBody;
+    }
+
+    public void setPreEmailBody(String preEmailBody) {
+        this.preEmailBody = preEmailBody;
+    }
+
+    public String getPreEmailSubject() {
+        return preEmailSubject;
+    }
+
+    public void setPreEmailSubject(String preEmailSubject) {
+        this.preEmailSubject = preEmailSubject;
+    }
 }
