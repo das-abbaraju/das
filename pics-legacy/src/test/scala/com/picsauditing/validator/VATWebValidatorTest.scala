@@ -13,6 +13,32 @@ import org.mockito.invocation.InvocationOnMock
 
 @RunWith(classOf[JUnitRunner])
 class VATWebValidatorTest extends FlatSpec with BeforeAndAfterAll with MockitoSugar with ShouldMatchers {
+  "VATWebValidator" should "return true when enter valid VAT id" in new TestValidate {
+    val result = validator1.execute()
+    result should be(java.lang.Boolean.TRUE)
+  }
+  it should "return false when the enter invalid VAT id (1)" in new TestValidate {
+    val result = validator2.execute()
+    result should be(java.lang.Boolean.FALSE)
+  }
+  it should "return false when the enter invalid VAT id (2)" in new TestValidate {
+    val result = validator3.execute()
+    result should be(java.lang.Boolean.FALSE)
+  }
+  it should "return false when the enter invalid VAT id (3)" in new TestValidate {
+    val result = validator4.execute()
+    result should be(java.lang.Boolean.FALSE)
+  }
+  trait TestValidate {
+    val validVAT = "ESA79187423"
+    val invalidVAT1 = "ESA791X7423"
+    val invalidVAT2 = "A79187423"
+    val invalidVAT3 = "79187423"
+    val validator1 = new VATWebValidator(validVAT)
+    val validator2 = new VATWebValidator(invalidVAT1)
+    val validator3 = new VATWebValidator(invalidVAT2)
+    val validator4 = new VATWebValidator(invalidVAT3)
+  }
 //
 //  "VATWebValidator" should "return true when validation succeeds" in new TestSetup {
 //    when(webResource.get(classOf[String])).thenReturn("true")
