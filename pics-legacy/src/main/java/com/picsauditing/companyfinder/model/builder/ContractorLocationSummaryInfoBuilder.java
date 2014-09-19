@@ -1,31 +1,31 @@
 package com.picsauditing.companyfinder.model.builder;
 
-import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummary;
 
 public class ContractorLocationSummaryInfoBuilder {
-    private ContractorLocationSummaryInfo contractorLocationSummaryInfo = new ContractorLocationSummaryInfo();
+    private ContractorLocationSummary contractorLocationSummary = new ContractorLocationSummary();
 
     public ContractorLocationSummaryInfoBuilder id(int id) {
-        contractorLocationSummaryInfo.setId(id);
+        contractorLocationSummary.setId(id);
         return this;
     }
 
     public ContractorLocationSummaryInfoBuilder conId(int conId) {
-        contractorLocationSummaryInfo.setConId(conId);
+        contractorLocationSummary.setConId(conId);
         return this;
     }
 
     public ContractorLocationSummaryInfoBuilder lat(Double lat) {
-        contractorLocationSummaryInfo.setLatitude(lat);
+        contractorLocationSummary.setLatitude(lat);
         return this;
     }
 
     public ContractorLocationSummaryInfoBuilder lng(Double lng) {
-        contractorLocationSummaryInfo.setLongitude(lng);
+        contractorLocationSummary.setLongitude(lng);
         return this;
     }
 
-    public ContractorLocationSummaryInfo build() {
-        return contractorLocationSummaryInfo;
+    public ContractorLocationSummary build() {
+        return contractorLocationSummary;
     }
 }

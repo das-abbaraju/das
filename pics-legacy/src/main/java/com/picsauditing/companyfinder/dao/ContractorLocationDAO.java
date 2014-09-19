@@ -30,10 +30,10 @@ public class ContractorLocationDAO extends PicsDAO {
         return query.getResultList();
     }
 
-    public List<ContractorLocationSummaryInfo> findContractorLocationsSummary(CompanyFinderFilter filter) {
+    public List<ContractorLocationSummary> findContractorLocationsSummary(CompanyFinderFilter filter) {
         String sql = getSQLNativeSummary(filter);
 
-        Query query = em.createNativeQuery(sql, ContractorLocationSummaryInfo.class);
+        Query query = em.createNativeQuery(sql, ContractorLocationSummary.class);
 
         setQueryParametersSummaryNative(query, filter);
 
