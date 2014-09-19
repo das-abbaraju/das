@@ -18,10 +18,10 @@ public class ContractorLocationDAO extends PicsDAO {
             " JOIN cl.contractor ca";
     public static final String NATIVE_SUMMARY_SELECT =
             "SELECT distinct cl.* FROM contractor_location cl" +
-            " JOIN contractor_info ca" +
-            " ON cl.conId = ca.id" +
-            " JOIN accounts a" +
-            " ON cl.conId = a.id";
+                    " JOIN contractor_info ca" +
+                    " ON cl.conId = ca.id" +
+                    " JOIN accounts a" +
+                    " ON cl.conId = a.id";
 
     public List<ContractorLocation> findContractorLocations(CompanyFinderFilter filter) {
         String sql = getSQL(filter);
@@ -40,8 +40,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
         setQueryParametersSummaryNative(query, filter);
 
-        List resultList = query.getResultList();
-        return resultList;
+        return query.getResultList();
     }
 
     String getSQL(CompanyFinderFilter filter) {

@@ -1,11 +1,17 @@
 package com.picsauditing.companyfinder.dao;
 
-public class ContractorLocationSummaryInfo {
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@SuppressWarnings("serial")
+@Entity
+public class ContractorLocationSummaryInfo  {
     private int id;
     private int conId;
     private double latitude;
     private double longitude;
 
+    @javax.persistence.Id
     public int getId() {
         return id;
     }
