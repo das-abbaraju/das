@@ -401,7 +401,7 @@ public class CaoSave extends AuditActionSupport {
             addActionError("No action specified" + forString);
         else {
             if (step.getOldStatus().isSubmitted() && step.getNewStatus().isComplete()) {
-                if (cao.getPercentVerified() < 100)
+                if (auditNeedsVerification(cao.getAudit().getAuditType()) && cao.getPercentVerified() < 100)
                     addActionError("Please complete all requirements" + forString);
             }
 

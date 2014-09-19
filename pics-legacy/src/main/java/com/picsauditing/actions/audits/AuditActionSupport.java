@@ -387,7 +387,7 @@ public class AuditActionSupport extends ContractorActionSupport {
 		return false;
 	}
 
-    private boolean auditNeedsVerification(AuditType type) {
+    protected boolean auditNeedsVerification(AuditType type) {
         if (workflowIdsNotNeedingVerification.contains(type.getWorkFlow().getId()))
             return false;
         return type.getWorkFlow().isHasSubmittedStep();
