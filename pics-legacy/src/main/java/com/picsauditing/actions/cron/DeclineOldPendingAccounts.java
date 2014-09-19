@@ -3,6 +3,10 @@ package com.picsauditing.actions.cron;
 import com.picsauditing.access.Permissions;
 import com.picsauditing.dao.ContractorAccountDAO;
 import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.dao.InvoiceDAO;
+import com.picsauditing.jpa.entities.Invoice;
+import com.picsauditing.jpa.entities.InvoiceType;
+import com.picsauditing.jpa.entities.TransactionStatus;
 import com.picsauditing.model.account.AccountStatusChanges;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,10 @@ public class DeclineOldPendingAccounts implements CronTask {
     ContractorAccountDAO contractorAccountDAO;
     @Autowired
     AccountStatusChanges accountStatusChanges;
+    @Autowired
+    InvoiceDAO invoiceDAO;
+
+
 
     public String getDescription() {
         return "Decline Contractors who have not paid in 90 days of quote";
@@ -43,6 +51,12 @@ public class DeclineOldPendingAccounts implements CronTask {
             accountStatusChanges.declineContractor(contractor, permissions,
                     AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
                     AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
+            for (Invoice invoice : contractor.getInvoices()){
+                if (invoice.getStatus()==TransactionStatus.Unpaid) {
+                    invoice.setStatus(TransactionStatus.Void);
+                    invoiceDAO.save(invoice);
+                }
+            }
             results.getLogger().append(",  " + contractor.getId());
         }
         return results;
