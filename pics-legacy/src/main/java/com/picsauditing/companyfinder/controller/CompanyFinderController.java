@@ -60,14 +60,7 @@ public class CompanyFinderController extends PicsActionSupport {
         if (getSummary()) {
             contractorLocationInfos = companyFinderService.findContractorLocationInfoSummaries(filter);
         } else {
-            List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
-            List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
-            filter.setTradeIds(tradeIds);
-            filter.setSoleProprietor(TriStateFlag.fromInteger(getSoleOwner()));
-            filter.setSafetySensitive(TriStateFlag.fromInteger(getSafetySensitive()));
-            filter.setContractorIds(contractorIds);
             HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
-
             contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
         }
         jsonString = new Gson().toJson(contractorLocationInfos);
@@ -75,6 +68,8 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     private CompanyFinderFilter getCompanyFinderFilter() {
+        List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
+        List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
                         ViewPort.builder()
@@ -87,7 +82,12 @@ public class CompanyFinderController extends PicsActionSupport {
                                         .lng(swLong)
                                         .build())
                                 .build())
+                .tradeIds(tradeIds)
+                .soleProprietor(TriStateFlag.fromInteger(getSoleOwner()))
+                .safetySensitive(TriStateFlag.fromInteger(getSafetySensitive()))
+                .contractorIds(contractorIds)
                 .build();
+
         return filter;
     }
 
