@@ -5,7 +5,8 @@ angular.module('PICSApp', [
     'ui.select2',
     'PICS.services',
     'PICS.companyFinder',
-    'PICS.translations'
+    'PICS.translations',
+    'ui.bootstrap'
 ])
 
 .config(function (titleServiceProvider) {

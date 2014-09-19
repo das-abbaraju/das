@@ -134,10 +134,10 @@ angular.module('PICS.registration')
             localeForm: {},
             registrationForm: {}
         };
- 
+
         if (formKey && createAccountParams[formKey] && fieldKey) {
             if (fieldKey == 'passwordConfirmation') {
-                createAccountParams.registrationForm.password = $scope.registrationForm.password; 
+                createAccountParams.registrationForm.password = $scope.registrationForm.password;
             } else if (fieldKey == 'zip' || fieldKey == 'vatId') {
                 createAccountParams.registrationForm.countryISOCode = $scope.registrationForm.countryISOCode;
             }
@@ -151,7 +151,7 @@ angular.module('PICS.registration')
 
         return createAccountParams;
     }
-    
+
     $scope.onSubmitClick = function () {
         accountService.createAccount(getCreateAccountParams())
         .then(function () {
