@@ -1,7 +1,6 @@
 package com.picsauditing.companyfinder.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
