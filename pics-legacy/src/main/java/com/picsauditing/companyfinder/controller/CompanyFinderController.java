@@ -3,6 +3,7 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;
@@ -58,12 +59,17 @@ public class CompanyFinderController extends PicsActionSupport {
     }
 
     public String findContractorLocationInfos() {
-        List<ContractorLocationInfo> contractorLocationInfoList = null;
         CompanyFinderFilter filter = getCompanyFinderFilter();
 
         if (getSummary()) {
-            contractorLocationInfoList = companyFinderService.findContractorLocationSummaryInfo(filter);
+            List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos;
+
+            contractorLocationSummaryInfos = companyFinderService.findContractorLocationSummaryInfo(filter);
+            jsonString = new Gson().toJson(contractorLocationSummaryInfos);
+
         } else {
+            List<ContractorLocationInfo> contractorLocationInfos;
+
             List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
             List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
             filter.setTradeIds(tradeIds);
@@ -72,9 +78,9 @@ public class CompanyFinderController extends PicsActionSupport {
             filter.setContractorIds(contractorIds);
             HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
 
-            contractorLocationInfoList = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
+            contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
+            jsonString = new Gson().toJson(contractorLocationInfos);
         }
-        jsonString = new Gson().toJson(contractorLocationInfoList);
 
         return JSON_STRING;
     }

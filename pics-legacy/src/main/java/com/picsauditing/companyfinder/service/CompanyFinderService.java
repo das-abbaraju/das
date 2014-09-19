@@ -2,6 +2,7 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
@@ -74,19 +75,15 @@ public class CompanyFinderService {
         return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
     }
 
-    public List<ContractorLocationInfo> findContractorLocationSummaryInfo(CompanyFinderFilter companyFinderFilter) {
-        List<ContractorLocationInfo> contractorLocationInfoList = new ArrayList<>();
+    public List<ContractorLocationSummaryInfo> findContractorLocationSummaryInfo(CompanyFinderFilter companyFinderFilter) {
+        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos = new ArrayList<>();
         if (isViewPortEmpty(companyFinderFilter.getViewPort())) {
-            return contractorLocationInfoList;
+            return contractorLocationSummaryInfos;
         }
 
-        List<ContractorLocation> contractorLocations = contractorLocationDAO.findContractorLocations(companyFinderFilter);
+        contractorLocationSummaryInfos = contractorLocationDAO.findContractorLocationsSummary(companyFinderFilter);
 
-        for (ContractorLocation contractorLocation : contractorLocations) {
-            ContractorLocationInfo contractorLocationInfo = buildContractorLocationSummary(contractorLocation);
-            contractorLocationInfoList.add(contractorLocationInfo);
-        }
-        return contractorLocationInfoList;
+        return contractorLocationSummaryInfos;
     }
 
     private boolean isViewPortEmpty(ViewPort viewPort) {
