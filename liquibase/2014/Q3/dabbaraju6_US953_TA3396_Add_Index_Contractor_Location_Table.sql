@@ -5,4 +5,4 @@
 
 -- Below script to add index on conId to improve query performance.
 
-ALTER TABLE Contractor_location ADD INDEX ix_contractor_location_conId (conId);
+ALTER TABLE contractor_location ADD INDEX ix_contractor_location_conId (conId);

@@ -13,7 +13,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
     public static final String SELECT_CLAUSE = "SELECT distinct cl FROM ContractorLocation cl" +
             " JOIN cl.contractor ca";
-    public static final String NATIVE_SUMMARY_SELECT =
+    public static final String SELECT_CLAUSE_NATIVE =
             "SELECT distinct cl.* FROM contractor_location cl" +
                     " JOIN contractor_info ca" +
                     " ON cl.conId = ca.id" +
@@ -62,7 +62,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
     String getSQLNativeSummary(CompanyFinderFilter filter) {
 
-        StringBuilder sql = new StringBuilder(NATIVE_SUMMARY_SELECT);
+        StringBuilder sql = new StringBuilder(SELECT_CLAUSE_NATIVE);
         List<Integer> tradeIds = filter.getTradeIds();
         if (!CollectionUtils.isEmpty(tradeIds)) {
             sql.append(" JOIN contractor_trade ct ON a.id = ct.conId");
