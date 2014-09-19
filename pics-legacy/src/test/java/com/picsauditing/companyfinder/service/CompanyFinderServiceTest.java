@@ -2,7 +2,7 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;

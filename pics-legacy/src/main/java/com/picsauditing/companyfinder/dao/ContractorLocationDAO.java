@@ -1,9 +1,6 @@
 package com.picsauditing.companyfinder.dao;
 
-import com.picsauditing.companyfinder.model.CompanyFinderFilter;
-import com.picsauditing.companyfinder.model.ContractorLocation;
-import com.picsauditing.companyfinder.model.TriStateFlag;
-import com.picsauditing.companyfinder.model.ViewPort;
+import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.dao.PicsDAO;
 import com.picsauditing.jpa.entities.AccountStatus;
 import com.picsauditing.util.Strings;

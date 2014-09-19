@@ -3,7 +3,7 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
-import com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
 import com.picsauditing.companyfinder.model.TriStateFlag;

@@ -2,7 +2,7 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;

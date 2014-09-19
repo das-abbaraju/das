@@ -1,8 +1,6 @@
 package com.picsauditing.companyfinder.model.builder;
 
-import com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo;
-import com.picsauditing.companyfinder.model.ContractorLocation;
-import com.picsauditing.jpa.entities.ContractorAccount;
+import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
 
 public class ContractorLocationSummaryInfoBuilder {
     private ContractorLocationSummaryInfo contractorLocationSummaryInfo = new ContractorLocationSummaryInfo();

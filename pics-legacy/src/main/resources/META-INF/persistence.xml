@@ -75,8 +75,6 @@
         <class>com.picsauditing.jpa.entities.WidgetUser</class>
         <class>com.picsauditing.jpa.entities.YesNo</class>
 
-        <class>com.picsauditing.companyfinder.dao.ContractorLocationSummaryInfo</class>
-
         <class>com.picsauditing.employeeguard.entities.AccountEmployeeGuard</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkill</class>
         <class>com.picsauditing.employeeguard.entities.AccountSkillProfile</class>
