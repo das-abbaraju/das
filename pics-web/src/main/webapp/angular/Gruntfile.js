@@ -8,6 +8,8 @@ module.exports = function(grunt) {
         'vendor/bootstrap/bootstrap.js',
         'vendor/bootstrap/bootstrap.tooltip.js',
         'vendor/bootstrap/bootstrap-datepicker/bootstrap-datepicker.js',
+        'vendor/angular/bower_components/angular-bootstrap/ui-bootstrap.js',
+        'vendor/angular/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
         'vendor/respond.js',
         'vendor/hogan-2.0.0.js',
         'vendor/typeahead.js',

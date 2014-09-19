@@ -32,10 +32,12 @@ angular.module('PICS.companyFinder')
             redMarkerImageUrl: '/angular/src/app/company-finder/img/marker-danger-light.png',
             yellowMarkerImageUrl: '/angular/src/app/company-finder/img/marker-warning-light.png',
             greenMarkerImageUrl: '/angular/src/app/company-finder/img/marker-success-light.png',
-            grayMarkerImageUrl: '/angular/src/app/company-finder/img/marker-generic.png'
+            grayMarkerImageUrl: '/angular/src/app/company-finder/img/marker-generic.png',
+            maxZoom: 9
         };
 
-        var clusterMapLoader;
+        var clusterMapLoader,
+            locationSummaries = [];
 
         // Override ClusterIcon.onAdd to limit icon text to 1-100+
         // TODO: Restore this function when the route changes
@@ -127,8 +129,17 @@ angular.module('PICS.companyFinder')
 
         $scope.googleMapConfig = {
             map: map,
-            minZoom: 8
+            minZoom: 6,
+            maxZoom: 14
         };
+
+        $scope.currentPage = 1;
+
+        $scope.itemsPerPage = 10;
+
+        $scope.clustered = true;
+
+        $scope.loading = true;
 
         $scope.$on('loader-ready', function (event, loader, markerClustererConfig) {
             if (markerClustererConfig != $scope.markerClustererConfig) return;
@@ -176,7 +187,7 @@ angular.module('PICS.companyFinder')
         };
 
         function serverResponseLikelySlow() {
-            return map.zoom < 10;
+            return map.zoom < 15;
         }
 
         function loadContractorsForMarkerClusterer() {
@@ -184,10 +195,19 @@ angular.module('PICS.companyFinder')
                 clusterMapLoader.show();
             }
 
+            $scope.loading = true;
+
+            $scope.locationsUnclustered = [];
+
+            if ($scope.markerClustererConfig) {
+                $scope.markerClustererConfig.locations = [];
+            }
+
             fetchContractorLocations()
 
             .then(function (locations) {
-                updateLocationsUi(locations);
+                locationSummaries = locations;
+                updateLocationsUi();
                 $scope.locationCount = locations.length;
                 clusterMapLoader.hide();
             }, function () {
@@ -195,19 +215,50 @@ angular.module('PICS.companyFinder')
             });
         }
 
-        function updateLocationsUi(locations) {
-            markerClustererConfig.locations = locations;
-
-            if (locations.length < 10) {
-                markerClustererConfig.minimumClusterSize = Infinity;
-                $scope.locationsUnclustered = locations;
-            } else {
-                markerClustererConfig.minimumClusterSize = -Infinity;
+        function updateLocationsUi() {
+            if (map.zoom > markerClustererConfig.maxZoom || locationSummaries.length <= 10) {
+                // unclustered
                 $scope.locationsUnclustered = [];
+                markerClustererConfig.minimumClusterSize = Infinity;
+                updateCurrentPage();
+                $scope.totalItems = locationSummaries.length;
+                $scope.clustered = false;
+            } else {
+                // clustered
+                markerClustererConfig.minimumClusterSize = -Infinity;
+                markerClustererConfig.locations = locationSummaries;
+                $scope.locationsUnclustered = [];
+                $scope.clustered = true;
+                $scope.loading = false;
             }
 
             $scope.markerClustererConfig = markerClustererConfig;
         }
+
+        function updateCurrentPage() {
+            var startingPosition = ($scope.currentPage - 1) * $scope.itemsPerPage,
+                query_ids = locationSummaries.slice(startingPosition, startingPosition + $scope.itemsPerPage);
+
+            if (query_ids.length !== 0) {
+                $scope.loading = true;
+
+                companyFinderService.query({ids: getLocationIds(query_ids)}, function (locations) {
+                    markerClustererConfig.locations = locations;
+                    $scope.locationsUnclustered = locations;
+                    $scope.loading = false;
+                });
+            } else {
+                $scope.loading = false;
+            }
+        }
+
+        function getLocationIds(arr) {
+            return arr.map(function(item) { return item.id; }).join(',');
+        }
+
+        $scope.pageChanged = function () {
+            updateCurrentPage();
+        };
 
         $scope.onResultClick = function ($event) {
             var markers = mapMarkerService.getMarkers();
@@ -275,7 +326,8 @@ angular.module('PICS.companyFinder')
                     swLat: sw.lat(),
                     swLong: sw.lng(),
                     safetySensitive: $scope.safetySensitiveEnabled ? ($scope.safetySensitive ? 1 : 0) : -1,
-                    soleOwner: $scope.soleOwnerEnabled ? ($scope.soleOwner ? 1 : 0) : -1
+                    soleOwner: $scope.soleOwnerEnabled ? ($scope.soleOwner ? 1 : 0) : -1,
+                    summary: true
                 };
 
             if (!trade) {

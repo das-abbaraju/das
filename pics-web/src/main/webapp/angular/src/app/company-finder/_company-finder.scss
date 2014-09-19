@@ -24,6 +24,13 @@
     }
 
     .search-results-section {
+        min-height: 690px;
+
+
+        .loading {
+            opacity: 0.5;
+        }
+
         .badge-info {
             margin-left: 5px;
         }
@@ -33,6 +40,35 @@
                 color: #73bbe8;
                 cursor: pointer;
             }
+        }
+
+        .pagination-wrapper {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            bottom: 0;
+
+            .pagination > .disabled > span,
+            .pagination > .disabled > span:hover,
+            .pagination > .disabled > span:focus,
+            .pagination > .disabled > a,
+            .pagination > .disabled > a:hover,
+            .pagination > .disabled > a:focus {
+                color: $default_steel;
+                cursor: not-allowed;
+                background: $default_silver;
+                @include background-image(linear-gradient(to bottom, $default_mercury, $default_silver));
+                background-image: linear-gradient(to bottom, $default_mercury, $default_silver);
+                background: -webkit-linear-gradient($default_mercury, $default_silver);
+                @include box-shadow(0px 2px 0px $default_pewter);
+                border: none;
+                @include transform(translateY(0));
+            }
+        }
+
+        .pagination li:first-child a,
+        .pagination li:last-child a {
+            font-family: 'Fontawesome';
         }
     }
 
@@ -87,23 +123,33 @@
 
     .info-window,
     .result-list {
-        .contractor-name {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 14px;
-            margin-bottom: 0px;
-        }
+        .result {
+            height: 55px;
 
-        .primary-trade {
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            font-size: 12px;
-            margin-bottom: 0;
-        }
+            .contractor-name {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 14px;
+                margin-bottom: 0px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
 
-        .results-label {
-            font-size: 16px;
-            color: $default_silver;
-            text-align: center;
+            .primary-trade {
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                font-size: 12px;
+                margin-bottom: 0;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
         }
+    }
+
+    .results-label {
+        font-size: 16px;
+        color: $default_silver;
+        text-align: center;
     }
 
     .info-window {
@@ -175,7 +221,7 @@
 
             .icon-link {
                 margin-right: 5px;
-                color: $default_silver;
+                color: $default_aluminum;
             }
         }
     }

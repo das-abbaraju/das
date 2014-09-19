@@ -73,7 +73,7 @@
                     <div class="row">
                         <div class="col-md-10 col-xs-10">
                             Results
-                            <span class="badge badge-info">{{ locationCount }}</span>
+                            <span class="badge badge-info" ng-show="!clustered && locationCount > 0">{{ locationCount }}</span>
                         </div>
                         <div class="col-md-2 col-xs-2 text-right">
                             <i ng-click="onEditClick()"class="icon-filter icon-large" tooltip title="Filter Results"></i>
@@ -82,11 +82,11 @@
                 </h1>
 
                 <div class="content">
-                    <ul class="result-list list-unstyled">
+                    <ul class="result-list list-unstyled" ng-class="{'loading':loading}">
                         <li ng-repeat="location in locationsUnclustered">
                             <div class="row result" ng-show="selectedResult != $index" ng-click="onResultClick($event)" ng-mouseover="onResultMouseOver($event)" ng-mouseout="onResultMouseOut($event)" id="{{ $index }}">
                                 <div class="col-md-1">
-                                    <div class="text-center" ng-class="getMarkerClass(location.flagColor);">{{ $index + 1 }}</div>
+                                    <div class="text-center" ng-class="getMarkerClass(location.flagColor);" tooltip title="{{ location.flagColor }} Preflag">{{ $index + 1 }}</div>
                                 </div>
                                 <div class="col-md-10">
                                     <p class="contractor-name"><a href="{{ location.link }}" target="_blank">{{ location.name }}</a></p>
@@ -97,15 +97,21 @@
                                 </div>
                             </div>
                         </li>
-
-                        <p ng-show="locationCount == 0" class="results-label">
-                            No results found
-                        </p>
-
-                        <p ng-show="locationCount > 0 && locationsUnclustered == 0" class="results-label">
-                            Please click into a cluster
-                        </p>
                     </ul>
+                    <p ng-show="loading && (!locationsUnclustered || locationsUnclustered.length == 0)" class="results-label">
+                        Loading&hellip;
+                    </p>
+
+                    <p ng-show="locationCount == 0 && !loading" class="results-label">
+                        No results found
+                    </p>
+
+                    <p ng-show="locationCount > 0 && clustered && !loading" class="results-label">
+                        Please click into a cluster
+                    </p>
+                </div>
+                <div class="pagination-wrapper">
+                    <pagination total-items="totalItems" ng-model="currentPage" ng-change="pageChanged()" max-size="5" ng-show="!clustered && locationCount > 10" previous-text="&#xf104;" next-text="&#xf105;"></pagination>
                 </div>
             </section>
         </div>
