@@ -23,6 +23,7 @@ import com.picsauditing.mail.EmailSender;
 import com.picsauditing.mail.EventSubscriptionBuilder;
 import com.picsauditing.model.billing.AccountingSystemSynchronization;
 import com.picsauditing.model.billing.BillingNoteModel;
+import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.EmailAddressUtils;
 import com.picsauditing.util.Strings;
@@ -36,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -92,6 +94,8 @@ public class RegistrationMakePayment extends RegistrationAction {
 	private String company;
 	private CreditCard cc;
 	private String ccName;
+    private List<KeyValue<String, String>> years = new ArrayList<>();
+
 
 	private Invoice invoice;
 	private boolean processPayment = false;
@@ -128,6 +132,14 @@ public class RegistrationMakePayment extends RegistrationAction {
 		}
 
 		loadCC();
+        int currenYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        int[] arrNextYear = {currenYear, currenYear + 1, currenYear + 2,
+                currenYear + 3, currenYear + 4, currenYear + 5, currenYear + 6, currenYear + 7, currenYear + 8 , currenYear + 9};
+        for(int i = 0; i < arrNextYear.length;i ++) {
+            String key = Integer.toString(arrNextYear[i]).substring(2,4);
+            years.add(new KeyValue<String, String>(key,Integer.toString(arrNextYear[i])));
+        }
 		if (hasActionErrors()) {
 			return SUCCESS;
 		}
@@ -761,5 +773,13 @@ public class RegistrationMakePayment extends RegistrationAction {
 
     public String getPaymentUrl() {
         return paymentService.getPaymentUrl();
+    }
+
+    public List<KeyValue<String, String>> getYears() {
+        return years;
+    }
+
+    public void setYears(List<KeyValue<String, String>> years) {
+        this.years = years;
     }
 }

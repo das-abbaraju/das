@@ -120,7 +120,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
         int currenYear = Calendar.getInstance().get(Calendar.YEAR);
 
         int[] arrNextYear = {currenYear, currenYear + 1, currenYear + 2,
-                currenYear + 3, currenYear + 4, currenYear + 5, currenYear + 6, currenYear + 7, currenYear + 9 , currenYear + 10};
+                currenYear + 3, currenYear + 4, currenYear + 5, currenYear + 6, currenYear + 7, currenYear + 8 , currenYear + 9};
         for(int i = 0; i < arrNextYear.length;i ++) {
             String key = Integer.toString(arrNextYear[i]).substring(2,4);
             years.add(new KeyValue<String, String>(key,Integer.toString(arrNextYear[i])));
