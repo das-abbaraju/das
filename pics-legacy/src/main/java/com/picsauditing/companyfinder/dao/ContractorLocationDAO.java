@@ -74,7 +74,7 @@ public class ContractorLocationDAO extends PicsDAO {
         whereClause.append(getTradeWhereSummaryNative(filter.getTradeIds()));
         whereClause.append(getSafetySensitiveWhere(filter.getSafetySensitive()));
         whereClause.append(getSoleProprietorWhere(filter.getSoleProprietor()));
-        whereClause.append(getContractorIdsWhere(filter.getContractorIds()));
+        whereClause.append(getContractorIdsWhereSummaryNative(filter.getContractorIds()));
 
         sql.append(whereClause);
         return sql.toString();
@@ -103,7 +103,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
     private String getTradeWhereSummaryNative(List<Integer> tradeIds) {
         if (!CollectionUtils.isEmpty(tradeIds)) {
-            return " AND ct.id IN :tradeList";
+            return " AND ct.id IN (:tradeList)";
         }
         return "";
     }
@@ -132,6 +132,13 @@ public class ContractorLocationDAO extends PicsDAO {
     }
 
     private String getContractorIdsWhere(List<Integer> contractorIds) {
+        if (!CollectionUtils.isEmpty(contractorIds)) {
+            return " AND ca.id IN :contractorIds";
+        }
+        return "";
+    }
+
+    private String getContractorIdsWhereSummaryNative(List<Integer> contractorIds) {
         if (!CollectionUtils.isEmpty(contractorIds)) {
             return " AND ca.id IN (:contractorIds)";
         }
@@ -180,7 +187,7 @@ public class ContractorLocationDAO extends PicsDAO {
     private void setTradeQueryParamSummaryNative(Query query, CompanyFinderFilter filter) {
         List<Integer> tradeIdList = filter.getTradeIds();
         if (CollectionUtils.isEmpty(tradeIdList)) return;
-        String inClauseIds = "(" + Strings.implode(tradeIdList) + ")";
+        String inClauseIds = Strings.implode(tradeIdList);
 
         query.setParameter("tradeList", inClauseIds);
     }
@@ -228,7 +235,7 @@ public class ContractorLocationDAO extends PicsDAO {
     private void setContractorIdsQueryParamSummaryNative(Query query, CompanyFinderFilter filter) {
         List<Integer> contractorIdList = filter.getContractorIds();
         if (CollectionUtils.isEmpty(contractorIdList)) return;
-        String inClauseIds = "(" + Strings.implode(contractorIdList) + ")";
+        String inClauseIds = Strings.implode(contractorIdList);
 
         query.setParameter("contractorIds", inClauseIds);
     }

@@ -179,13 +179,14 @@ public class ContractorLocationDAOTest {
                 .contractorIds(Strings.explodeCommaDelimitedStringOfIds("123,456,78"))
                 .build();
         String sql = contractorLocationDAO.getSQL(filter);
-        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE (ca.status = :active OR ca.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.id IN (:contractorIds)";
+        String expected = "SELECT distinct cl FROM ContractorLocation cl JOIN cl.contractor ca WHERE (ca.status = :active OR ca.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ca.id IN :contractorIds";
         assertEquals(expected, sql);
     }
 
     @Test
     public void testGetSQLSummaryNative_AllFilters() throws Exception {
         List<Integer> tradeIds = Arrays.asList(new Integer[]{122, 2333, 344, 423, 545});
+        List<Integer> contractorIds = Arrays.asList(new Integer[]{55, 66, 77});
 
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder()
                 .viewPort(
@@ -202,9 +203,10 @@ public class ContractorLocationDAOTest {
                 .tradeIds(tradeIds)
                 .safetySensitive(TriStateFlag.INCLUDE)
                 .soleProprietor(TriStateFlag.INCLUDE)
+                .contractorIds(contractorIds)
                 .build();
         String sql = contractorLocationDAO.getSQLNativeSummary(filter);
-        String expected = "SELECT distinct cl.* FROM contractor_location cl JOIN contractor_info ca ON cl.conId = ca.id JOIN accounts a ON cl.conId = a.id JOIN contractor_trade ct ON a.id = ct.conId WHERE (a.status = :active OR a.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.id IN :tradeList AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor";
+        String expected = "SELECT distinct cl.* FROM contractor_location cl JOIN contractor_info ca ON cl.conId = ca.id JOIN accounts a ON cl.conId = a.id JOIN contractor_trade ct ON a.id = ct.conId WHERE (a.status = :active OR a.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.id IN (:tradeList) AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor AND ca.id IN (:contractorIds)";
         assertEquals(expected, sql);
     }
 
