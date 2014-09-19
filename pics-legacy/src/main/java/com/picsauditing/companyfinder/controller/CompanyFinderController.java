@@ -3,12 +3,7 @@ package com.picsauditing.companyfinder.controller;
 import com.google.gson.Gson;
 import com.picsauditing.actions.PicsActionSupport;
 import com.picsauditing.actions.contractors.ContractorDashboard;
-import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
-import com.picsauditing.companyfinder.model.CompanyFinderFilter;
-import com.picsauditing.companyfinder.model.ContractorLocationInfo;
-import com.picsauditing.companyfinder.model.TriStateFlag;
-import com.picsauditing.companyfinder.model.ViewPort;
-import com.picsauditing.companyfinder.model.ViewportLocation;
+import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.service.CompanyFinderService;
 import com.picsauditing.featuretoggle.Features;
@@ -60,16 +55,11 @@ public class CompanyFinderController extends PicsActionSupport {
 
     public String findContractorLocationInfos() {
         CompanyFinderFilter filter = getCompanyFinderFilter();
+        List<ContractorLocationInfo> contractorLocationInfos;
 
         if (getSummary()) {
-            List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos;
-
-            contractorLocationSummaryInfos = companyFinderService.findContractorLocationSummaryInfo(filter);
-            jsonString = new Gson().toJson(contractorLocationSummaryInfos);
-
+            contractorLocationInfos = companyFinderService.findContractorLocationInfoSummaries(filter);
         } else {
-            List<ContractorLocationInfo> contractorLocationInfos;
-
             List<Integer> tradeIds = parseCommaDelimitedIds(getTradeIds());
             List<Integer> contractorIds = parseCommaDelimitedIds(getIds());
             filter.setTradeIds(tradeIds);
@@ -79,9 +69,8 @@ public class CompanyFinderController extends PicsActionSupport {
             HashMap<String, String> contractorInfoProperties = buildContractorInfoProperties();
 
             contractorLocationInfos = companyFinderService.findContractorLocationInfos(filter, contractorInfoProperties);
-            jsonString = new Gson().toJson(contractorLocationInfos);
         }
-
+        jsonString = new Gson().toJson(contractorLocationInfos);
         return JSON_STRING;
     }
 

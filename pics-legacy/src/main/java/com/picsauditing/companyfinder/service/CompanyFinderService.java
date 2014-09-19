@@ -2,7 +2,7 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.PICS.FlagCalculatorFactory;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummary;
 import com.picsauditing.companyfinder.model.CompanyFinderFilter;
 import com.picsauditing.companyfinder.model.ContractorLocation;
 import com.picsauditing.companyfinder.model.ContractorLocationInfo;
@@ -75,15 +75,15 @@ public class CompanyFinderService {
         return buildContractorLocationsInfos(contractorLocations, contractorInfoProps, operator);
     }
 
-    public List<ContractorLocationSummaryInfo> findContractorLocationSummaryInfo(CompanyFinderFilter companyFinderFilter) {
-        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos = new ArrayList<>();
+    public List<ContractorLocationInfo> findContractorLocationInfoSummaries(CompanyFinderFilter companyFinderFilter) {
+        List<ContractorLocationInfo> contractorLocationInfoSummaries = new ArrayList<>();
         if (isViewPortEmpty(companyFinderFilter.getViewPort())) {
-            return contractorLocationSummaryInfos;
+            return contractorLocationInfoSummaries;
         }
 
-        contractorLocationSummaryInfos = contractorLocationDAO.findContractorLocationsSummary(companyFinderFilter);
+        List<ContractorLocationSummary> contractorLocationSummaries = contractorLocationDAO.findContractorLocationsSummary(companyFinderFilter);
 
-        return contractorLocationSummaryInfos;
+        return buildContractorLocationsInfos(contractorLocationSummaries);
     }
 
     private boolean isViewPortEmpty(ViewPort viewPort) {
@@ -106,19 +106,18 @@ public class CompanyFinderService {
         return contractorLocationInfos;
     }
 
-    private ContractorLocationInfo buildContractorLocationSummary(ContractorLocation contractorLocation) {
-        ContractorAccount contractor = contractorLocation.getContractor();
-        ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
-                .id(contractor.getId())
-                .coordinates(
-                        LatLong.builder()
-                                .lat(contractorLocation.getLatitude())
-                                .lng(contractorLocation.getLongitude())
-                                .build()
-                )
-                .build();
-        return contractorLocationInfo;
+    private List<ContractorLocationInfo> buildContractorLocationsInfos(List<ContractorLocationSummary> contractorLocationSummaries) {
+        if (CollectionUtils.isEmpty(contractorLocationSummaries)) {
+            return Collections.EMPTY_LIST;
+        }
+        List<ContractorLocationInfo> contractorLocationInfos = new ArrayList<>();
+        for (ContractorLocationSummary contractorLocationSummary : contractorLocationSummaries) {
+            ContractorLocationInfo contractorLocationInfo = buildContractorLocationInfo(contractorLocationSummary);
+            contractorLocationInfos.add(contractorLocationInfo);
+        }
+        return contractorLocationInfos;
     }
+
     private ContractorLocationInfo buildContractorLocationInfo(ContractorLocation contractorLocation, HashMap<String, String> contractorLocationProps, OperatorAccount operator) {
         ContractorAccount contractor = contractorLocation.getContractor();
         String primaryTradeName = getPrimaryTradeName(contractor);
@@ -143,6 +142,19 @@ public class CompanyFinderService {
                 .link(contractorLocationProps.get(LINK_URL) + "?id=" + contractor.getId())
                 .worksForOperator(isWorksForOperator)
                 .flagColor(flagColor)
+                .build();
+        return contractorLocationInfo;
+    }
+
+    private ContractorLocationInfo buildContractorLocationInfo(ContractorLocationSummary contractorLocationSummary) {
+        ContractorLocationInfo contractorLocationInfo = ContractorLocationInfo.builder()
+                .id(contractorLocationSummary.getConId())
+                .coordinates(
+                        LatLong.builder()
+                                .lat(contractorLocationSummary.getLatitude())
+                                .lng(contractorLocationSummary.getLongitude())
+                                .build()
+                )
                 .build();
         return contractorLocationInfo;
     }

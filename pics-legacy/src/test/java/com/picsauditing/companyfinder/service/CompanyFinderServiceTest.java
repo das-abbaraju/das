@@ -2,7 +2,7 @@ package com.picsauditing.companyfinder.service;
 
 import com.picsauditing.actions.contractors.ContractorDashboard;
 import com.picsauditing.companyfinder.dao.ContractorLocationDAO;
-import com.picsauditing.companyfinder.model.ContractorLocationSummaryInfo;
+import com.picsauditing.companyfinder.model.ContractorLocationSummary;
 import com.picsauditing.companyfinder.model.*;
 import com.picsauditing.companyfinder.model.builder.CompanyFinderFilterBuilder;
 import com.picsauditing.companyfinder.model.builder.ContractorLocationBuilder;
@@ -115,18 +115,18 @@ public class CompanyFinderServiceTest {
 
     @Test
     public void testFindContractorLocationSummary_viewPortOnly() throws Exception {
-        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfos = buildTestContractorLocationSummaryInfos();
+        List<ContractorLocationSummary> contractorLocationSummaries = buildTestContractorLocationSummaryInfos();
         CompanyFinderFilter filter = new CompanyFinderFilterBuilder().viewPort(viewPort).safetySensitive(TriStateFlag.IGNORE).soleProprietor(TriStateFlag.IGNORE).build();
 
-        when(contractorLocationDAO.findContractorLocationsSummary(filter)).thenReturn(contractorLocationSummaryInfos);
+        when(contractorLocationDAO.findContractorLocationsSummary(filter)).thenReturn(contractorLocationSummaries);
 
-        List<ContractorLocationSummaryInfo> results = companyFinderService.findContractorLocationSummaryInfo(filter);
+        List<ContractorLocationInfo> results = companyFinderService.findContractorLocationInfoSummaries(filter);
 
         assertEquals(3, results.size());
-        assertEquals(1, results.get(0).getId());
-        assertEquals(10, results.get(0).getConId());
-        assertEquals(100.0, results.get(0).getLatitude());
-        assertEquals(101.0, results.get(0).getLongitude());
+        assertEquals(10, results.get(0).getId());
+        assertEquals(100.0, results.get(0).getCoordinates().getLatitude());
+        assertEquals(101.0, results.get(0).getCoordinates().getLongitude());
+
     }
 
     private HashMap<String, String> buildContractorInfoProperties() {
@@ -202,37 +202,37 @@ public class CompanyFinderServiceTest {
         return contractorLocations;
     }
 
-    private List<ContractorLocationSummaryInfo> buildTestContractorLocationSummaryInfos() {
-        List<ContractorLocationSummaryInfo> contractorLocationSummaryInfo = new ArrayList<>();
+    private List<ContractorLocationSummary> buildTestContractorLocationSummaryInfos() {
+        List<ContractorLocationSummary> contractorLocationSummary = new ArrayList<>();
 
-        ContractorLocationSummaryInfo contractorLocationSummaryInfo1 =
+        ContractorLocationSummary contractorLocationSummary1 =
                 new ContractorLocationSummaryInfoBuilder()
                         .id(1)
                         .conId(10)
                         .lat((double) 100)
                         .lng((double) 101)
                         .build();
-        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo1);
+        contractorLocationSummary.add(contractorLocationSummary1);
 
-        ContractorLocationSummaryInfo contractorLocationSummaryInfo2 =
+        ContractorLocationSummary contractorLocationSummary2 =
                 new ContractorLocationSummaryInfoBuilder()
                         .id(2)
                         .conId(20)
                         .lat((double) 200)
                         .lng((double) 202)
                         .build();
-        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo2);
+        contractorLocationSummary.add(contractorLocationSummary2);
 
-        ContractorLocationSummaryInfo contractorLocationSummaryInfo3 =
+        ContractorLocationSummary contractorLocationSummary3 =
                 new ContractorLocationSummaryInfoBuilder()
                         .id(3)
                         .conId(30)
                         .lat((double) 300)
                         .lng((double) 303)
                         .build();
-        contractorLocationSummaryInfo.add(contractorLocationSummaryInfo3);
+        contractorLocationSummary.add(contractorLocationSummary3);
 
-        return contractorLocationSummaryInfo;
+        return contractorLocationSummary;
     }
 
     private List<ContractorTrade> buildTestContractorTrades(String trade1Name, String trade2Name, String trade3Name) {

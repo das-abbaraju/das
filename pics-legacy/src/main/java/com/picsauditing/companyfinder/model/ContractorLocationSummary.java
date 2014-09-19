@@ -1,11 +1,10 @@
 package com.picsauditing.companyfinder.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-public class ContractorLocationSummaryInfo  {
+public class ContractorLocationSummary {
     private int id;
     private int conId;
     private double latitude;
