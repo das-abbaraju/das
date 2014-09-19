@@ -52,10 +52,9 @@ public class DeclineOldPendingAccounts implements CronTask {
                     AccountStatusChanges.DID_NOT_COMPLETE_PICS_PROCESS_REASON,
                     AccountStatusChanges.NOTE_DID_NOT_COMPLETE_PICS_PROCESS_REASON);
             for (Invoice invoice : contractor.getInvoices()){
-                if (invoice.getInvoiceType()== InvoiceType.Activation && invoice.getStatus()==TransactionStatus.Unpaid) {
+                if (invoice.getStatus()==TransactionStatus.Unpaid) {
                     invoice.setStatus(TransactionStatus.Void);
                     invoiceDAO.save(invoice);
-                    break;
                 }
             }
             results.getLogger().append(",  " + contractor.getId());
