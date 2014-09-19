@@ -206,7 +206,7 @@ public class ContractorLocationDAOTest {
                 .contractorIds(contractorIds)
                 .build();
         String sql = contractorLocationDAO.getSQLNativeSummary(filter);
-        String expected = "SELECT distinct cl.* FROM contractor_location cl JOIN contractor_info ca ON cl.conId = ca.id JOIN accounts a ON cl.conId = a.id JOIN contractor_trade ct ON a.id = ct.conId WHERE (a.status = :active OR a.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.id IN (:tradeList) AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor AND ca.id IN (:contractorIds)";
+        String expected = "SELECT distinct cl.* FROM contractor_location cl JOIN contractor_info ca ON cl.conId = ca.id JOIN accounts a ON cl.conId = a.id JOIN contractor_trade ct ON a.id = ct.conId WHERE (a.status = :active OR a.status = :pending ) AND cl.latitude > :swLat AND cl.longitude > :swLong AND cl.latitude < :neLat AND cl.longitude < :neLong AND ct.tradeId IN (:tradeList) AND ca.safetySensitive = :safetySensitive AND ca.soleProprietor = :soleProprietor AND ca.id IN (:contractorIds)";
         assertEquals(expected, sql);
     }
 
