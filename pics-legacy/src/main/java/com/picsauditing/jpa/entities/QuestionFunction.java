@@ -1100,7 +1100,7 @@ public enum QuestionFunction {
         private String currentAnswer = null;
         private String expression = null;
 
-        String operatorPrecedence = "+-  */()";
+        String operatorPrecedence = "+-  */  ()";
         StringBuilder constant = new StringBuilder();
         StringBuilder identifier = new StringBuilder();
         boolean processingConstant = false;
@@ -1220,7 +1220,7 @@ public enum QuestionFunction {
             }
             processIdentifierOrConstant(input, params);
             while (input.operatorStack.size() > 0) {
-                evaluate(input);
+                evaluate(input, false);
             }
 
             if (input.operandStack.size() != 1) {
@@ -1236,15 +1236,17 @@ public enum QuestionFunction {
     }
 
     private void processOperator(FunctionInput input, char op) throws Exception{
-        if (op == '(') {
-            return;
-        } else if (op == ')') {
-            evaluate(input);
+        if (op == ')') {
+            if (input.operatorStack.size() > 0 && input.operatorStack.peek() == '(') {
+                input.operatorStack.pop();
+            } else {
+                evaluate(input, true);
+            }
         } else {
             if (input.operatorStack.size() == 0 || greaterPrecedence(input, op)) {
                 input.operatorStack.push(op);
             } else {
-                evaluate(input);
+                evaluate(input, false);
                 input.operatorStack.push(op);
             }
         }
@@ -1254,13 +1256,15 @@ public enum QuestionFunction {
         int opPrec = input.operatorPrecedence.indexOf(op);
         int stackPrec = input.operatorPrecedence.indexOf(input.operatorStack.peek().charValue());
 
+        if (input.operatorStack.peek().charValue() == '(')
+            return true;
         if (opPrec > stackPrec + 2)
             return true;
 
         return false;
     }
 
-    private void evaluate(FunctionInput input) throws Exception {
+    private void evaluate(FunctionInput input, boolean popParen) throws Exception {
         if (input.operatorStack.size() == 0) {
             throw new Exception("Evaluate called with no operators.");
         }
@@ -1290,6 +1294,9 @@ public enum QuestionFunction {
             default:
                 throw new Exception("Unknown operator '" + operator + "'.");
         }
+
+        if (popParen && input.operatorStack.size() > 0 && input.operatorStack.peek() == '(')
+            input.operatorStack.pop();
     }
 
     private void addToNumber(FunctionInput input, char c) {
