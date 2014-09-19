@@ -283,5 +283,6 @@
     <include file="./2014/Q3/dalvarado13_US1396_add_numberOfEmployees.sql"/>
     <include file="./2014/Q3/kchase46_PICS-15677_UpadeUniqueCodeCadeManagement.sql"/>
     <include file="./2014/Q3/mdo66_PICS-15935_Expand_Filter_Formula_size.sql"/>
+    <include file="./2014/Q3/dabbaraju6_US953_TA3396_Add_Index_Contractor_Location_Table.sql"/>
 
 </databaseChangeLog>
