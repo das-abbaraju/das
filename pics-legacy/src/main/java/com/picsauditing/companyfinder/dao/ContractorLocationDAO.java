@@ -103,7 +103,7 @@ public class ContractorLocationDAO extends PicsDAO {
 
     private String getTradeWhereSummaryNative(List<Integer> tradeIds) {
         if (!CollectionUtils.isEmpty(tradeIds)) {
-            return " AND ct.id IN (:tradeList)";
+            return " AND ct.tradeId IN (:tradeList)";
         }
         return "";
     }
