@@ -458,7 +458,7 @@
 						<li>
 							<label><s:text name="CreditCard.Expiration" /></label>
 							<s:select id="expMonth" listKey="number" listValue="%{getText(i18nKey)}" list="@com.picsauditing.jpa.entities.Month@values()" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Month')} -" />
-							<s:select id="expYear" list="#{11:2011,12:2012,13:2013,14:2014,15:2015,16:2016,17:2017,18:2018,19:2019,20:2020}" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Year')} -"></s:select>
+							<s:select id="expYear"  list="years" listKey="key" listValue="value" headerKey="" headerValue="- %{getText('ReportCsrActivity.label.Year')} -"></s:select>
 							<s:textfield id="ccexp" name="ccexp" cssStyle="display: none" />
 							<span id="ccexpError" class="Red" style="display:none"> </span>
 						</li>

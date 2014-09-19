@@ -11,6 +11,7 @@ import com.picsauditing.braintree.BrainTreeHash;
 import com.picsauditing.braintree.CreditCard;
 import com.picsauditing.dao.InvoiceFeeDAO;
 import com.picsauditing.jpa.entities.*;
+import com.picsauditing.model.i18n.KeyValue;
 import com.picsauditing.toggle.FeatureToggle;
 import com.picsauditing.util.Strings;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Calendar;
 
 @SuppressWarnings("serial")
 public class ContractorPaymentOptions extends ContractorActionSupport implements Preparable {
@@ -61,6 +63,7 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 	private String canadianTaxFeeMsgKey;
 	private InvoiceFee vatFee = new InvoiceFee();
 	private InvoiceFee importFee;
+    private List<KeyValue<String, String>> years = new ArrayList<>();
 
 	// Any time we do a get w/o an exception we set the communication status.
 	// That way we know the information switched off of in the jsp is valid
@@ -114,6 +117,14 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 		// Setup the new variables for sending the CC to braintree
 		loadCC();
 
+        int currenYear = Calendar.getInstance().get(Calendar.YEAR);
+
+        int[] arrNextYear = {currenYear, currenYear + 1, currenYear + 2,
+                currenYear + 3, currenYear + 4, currenYear + 5, currenYear + 6, currenYear + 7, currenYear + 8 , currenYear + 9};
+        for(int i = 0; i < arrNextYear.length;i ++) {
+            String key = Integer.toString(arrNextYear[i]).substring(2,4);
+            years.add(new KeyValue<String, String>(key,Integer.toString(arrNextYear[i])));
+        }
 		return SUCCESS;
 	}
 
@@ -563,5 +574,13 @@ public class ContractorPaymentOptions extends ContractorActionSupport implements
 
     public String getPaymentUrl() {
         return paymentService.getPaymentUrl();
+    }
+
+    public List<KeyValue<String, String>> getYears() {
+        return years;
+    }
+
+    public void setYears(List<KeyValue<String, String>> years) {
+        this.years = years;
     }
 }
