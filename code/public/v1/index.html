@@ -1,0 +1,81 @@
+<!-- start-excerpt doctype -->
+<!doctype html>
+<!-- end-excerpt doctype -->
+
+<html>
+  <!-- start-excerpt head -->
+  <head>
+    <title>People Server</title>
+    <link href="/images/favicon.ico" rel="icon" type="image/x-icon" />
+
+    <script src="/jquery/dist/jquery.min.js" type="text/javascript"></script>
+    <script src="/moment/moment.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap-theme.min.css">
+    <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <script src="/javascripts/ui.js" type="text/javascript"></script>
+    <link rel="stylesheet" media="screen" href="/stylesheets/style.css"/>
+  </head>
+  <!-- end-excerpt head -->
+
+
+  <body>
+
+    <div id="content">
+      <!-- start-excerpt content-top -->
+      <h1>People Server, version 1.0</h1>
+
+      <div class="logo">
+        <img src="/images/people.png">
+      </div>
+
+      <div id="warning" class="alert alert-warning alert-dismissable"
+           style="display: none">
+        <button type="button" class="close"
+                id="warning-close-button">&times;</button>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span id="warning-message"></span>
+      </div>
+      <!-- end-excerpt content-top -->
+
+      <!-- start-excerpt search -->
+      <div id="search">
+        <form action="" id="search-form">
+          <span class="glyphicon glyphicon-search"></span>
+          <input name="search" id="search-input" type="text" size="50"
+                 placeholder="Enter a last name prefix"/>
+          <button id="search-button" class="btn btn-primary">Search</button>
+        </form>
+      </div>
+      <!-- end-excerpt search -->
+
+      <!-- start-excerpt output -->
+      <table class="table" style="display: none" id="table-template">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>SSN</th>
+            <th>Date of Birth</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr id="template-row">
+            <td class="name"></td>
+            <td class="gender"></td>
+            <td class="SSN"></td>
+            <td class="DOB"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div id="output">
+      </div>
+      <!-- end-excerpt output -->
+    </div>
+
+  </body>
+</html>

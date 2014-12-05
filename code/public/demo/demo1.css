@@ -1,0 +1,13 @@
+body {
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+div {
+  margin-top: 20px;
+}
+
+div.output {
+  padding: 10px;
+  border: 1px solid #dddddd;
+}
+

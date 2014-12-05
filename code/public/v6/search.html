@@ -1,0 +1,65 @@
+
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <form action="" id="search-form">
+                <span class="glyphicon glyphicon-search"></span>
+                <input type="text" size="50"
+                       placeholder="Enter the first part of a last name"
+                       ng-change="checkSearch()"
+                       ng-model="searchPrefix"/>
+            </form>
+        </div>
+    </div>
+
+    <div id="search-results" class="row">
+        <div class="col-md-12">
+            <div ng-hide="people">No search results.</div>
+
+            <div ng-show="people">{{ people.length }} matching people</div>
+
+            <table class="table" ng-show="people" id="table-template">
+                <thead>
+                <tr>
+                    <th>
+                        <a href="" ng-click="toggleSortOrder('last')">Name</a>
+                        <span ng-show="!reverse && (predicate == 'last')">&#x25b2;</span>
+                        <span ng-show="reverse && (predicate == 'last')">&#x25bc;</span>
+                    </th>
+
+                    <th>
+                        <a href="" ng-click="toggleSortOrder('ssn')">SSN</a>
+                        <span ng-show="!reverse && (predicate == 'ssn')">&#x25b2;</span>
+                        <span ng-show="reverse && (predicate == 'ssn')">&#x25bc;</span>
+                    </th>
+
+                    <th>
+                        <a href="" ng-click="toggleSortOrder('birthDate')">Birth Date</a>
+                  <span ng-show="!reverse && (predicate == 'birthDate')">&#x25b2;</sp  an>
+                  <span ng-show="reverse && (predicate == 'birthDate')">&#x25bc;</spa  n>
+                    </th>
+
+                    <th>
+                        <a href="" ng-click="toggleSortOrder('gender')">Gender</a>
+                        <span ng-show="!reverse && (predicate == 'gender')">&#x25b2;</span>
+                        <span ng-show="reverse && (predicate == 'gender')">&#x25bc;</span>
+                    </th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr id="template-row"
+                    ng-repeat="person in people | orderBy:predicate:reverse">
+                    <td class="name">
+                        <a ng-href="#/show/{{person.id}}">{{person.name}}</a>
+                    </td>
+                    <td class="SSN">{{person.ssn}}</td>
+
+                    <td class="DOB">{{person.birthDate | date:'d MMM, yyyy'}}</td>
+                    <td class="gender">{{person.gender | gender}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div> <!-- search -->

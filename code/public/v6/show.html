@@ -1,0 +1,34 @@
+
+<div >
+    <div class="row">
+        <div class="col-sm-4">
+            <div ng-hide="editingPerson">Loading...</div>
+            <form role="form" action="" ng-show="editingPerson">
+                <!-- Bootstrap-compliant form -->
+                <div class="form-group">
+                    <label for="first">First name</label>
+                    {{editingPerson.first}}
+                </div>
+                <div class="form-group">
+                    <label for="last">Last name</label>
+                    {{editingPerson.last}}
+                </div>
+                <div class="form-group">
+                    <label for="ssn">SSN</label>
+                    {{editingPerson.ssn}}
+                </div>
+                <div class="form-group">
+                    <label for="birthDate">Birth Date</label>
+                    {{editingPerson.birthDate}}
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    {{editingPerson.gender}}
+                </div>
+                <div>
+                    <button class="btn" ng-click="cancelEdit()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

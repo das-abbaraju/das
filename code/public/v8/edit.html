@@ -1,0 +1,86 @@
+<div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div ng-hide="editingPerson">Loading...</div>
+            <form name="editForm" role="form" action="" ng-show="editingPerson" ng-submit="handleSubmission(editForm.$valid)" novalidate>
+                <!-- Bootstrap-compliant form -->
+                <div class="form-group">
+                    <label for="first">First name</label>
+
+                    <div class="form-group" ng-class="{'has-error': editForm.first.$invalid && !editForm.first.$pristine}">
+
+                    <input type="text" ng-model="editingPerson.first" name="first"
+                           id="first" class="form-control" placeholder="First name"
+                           ng-required="true" ng-minlength="2"/>
+                    <span ng-show="editForm.first.$error.required && !editForm.first.$pristine"
+                    class="help-block">First name is required.</span>
+                    <span ng-show="editForm.first.$error.minlength && !editForm.first.$pristine"
+                    class="help-block">First name must be at least 2 characters.</span>
+
+                </div>
+                <div class="form-group">
+                    <label for="last">Last name</label>
+
+                    <div class="form-group" ng-class="{'has-error': editForm.last.$invalid && !editForm.last.$pristine}">
+
+                    <input type="text" ng-model="editingPerson.last" name="last"
+                           id="last" class="form-control" placeholder="Last name"
+                           ng-required="true" ng-minlength="2"/>
+                    <span ng-show="editForm.last.$error.required && !editForm.last.$pristine"
+                          class="help-block">Last name is required.</span>
+                    <span ng-show="editForm.last.$error.minlength && !editForm.last.$pristine"
+                          class="help-block">Last name must be at least 2 characters.</span>
+
+
+
+                </div>
+                <div class="form-group">
+                    <label for="ssn">SSN</label>
+
+                    <div class="form-group" ng-class="{'has-error': editForm.ssn.$invalid && !editForm.ssn.$pristine}">
+
+                    <input type="text" ng-model="editingPerson.ssn" name="ssn"
+                           id="ssn" class="form-control" placeholder="SSN"
+                           ng-required="true" ng-minlength="2" ng-pattern="/^\d{3}-\d{2}-\d{4}$/"/>
+
+                    <span ng-show="editForm.ssn.$error.required && !editForm.ssn.$pristine"
+                          class="help-block">SSN is required.</span>
+
+                    <span ng-show="editForm.ssn.$error.pattern && !editForm.ssn.$pristine"
+                          class="help-block">SSN is not valid.</span>
+
+            </div>
+                <div class="form-group">
+                    <label for="birthDate">Birth Date</label>
+                    <quick-datepicker ng-model="editingPerson.birthDate"
+                                      disable-timepicker="true"
+                                      date-format="MMM dd, yyyy">
+                    </quick-datepicker>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select ng-model="editingPerson.gender"
+                            ng-options="value as label for (value, label) in genders">
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-primary" type="submit" ng-disable ="editForm.$invalid" ng-click="save()">Save</button>
+                    <button class="btn" ng-click="cancelEdit()">Cancel</button>
+                </div>
+
+                    <div class="form-group"
+                         ng-class="{'has-error': editForm.salary.$invalid && editForm.salary.$dirty}">
+
+                        <label for="salary">Salary</label>
+                        <input type="text" ng-model="editingPerson.salary" name="salary"
+                               id="salary" class="form-control" placeholder="Salary"
+                               ng-required="true" integer>
+  <span ng-show="editForm.salary.$error.required && !editForm.salary.$pristine"
+        class="help-block">Salary is required.</span>
+  <span ng-show="editForm.salary.$error.integer && editForm.salary.$dirty"
+        class="help-block">Salary must be an integer.</span>
+                    </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,138 @@
+<!doctype html>
+<html ng-app="peopleApp">
+<head>
+  <title>People Server</title>
+  <link href="/images/favicon.ico" rel="icon" type="image/x-icon" />
+
+  <script src="/jquery/dist/jquery.min.js" type="text/javascript"></script>
+  <script src="/angular/angular.min.js" type="text/javascript"></script>
+  <script src="/moment/moment.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap-theme.min.css">
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script src="/javascripts/ui.js" type="text/javascript"></script>
+  <script src="/javascripts/util.js" type="text/javascript"></script>
+  <link rel="stylesheet" media="screen" href="/stylesheets/style.css"/>
+
+    <script src="/javascripts/util.js" type="text/javascript"></script>
+    <script src="/javascripts/ui.js" type="text/javascript"></script>
+
+</head>
+
+<body>
+
+<div id="content" ng-controller="PeopleSearchCtrl">
+  <h1>People Server, version 5.0</h1>
+
+  <div class="logo">
+    <img src="/images/people.png">
+  </div>
+
+  <!-- start-excerpt warning -->
+  <div class="alert alert-warning alert-dismissable" ng-show="warning">
+    <button type="button" class="close" ng-click="hideWarning()">
+      &times;
+    </button>
+    <span class="glyphicon glyphicon-warning-sign"></span>
+    <span>{{warning}}</span>
+  </div>
+  <!-- end-excerpt warning -->
+
+  <div>
+
+      <form action="" id="search-form">
+          <span class="glyphicon glyphicon-search"></span>
+          <input type="text" size="50"
+                 placeholder="Enter the first part of a last name"
+                 xng-change="checkSearch()"
+                 ng-model="searchPrefix"/>
+      </form>
+
+
+    <div>
+
+    <div id="warning" class="alert alert-warning" ng-show="warning">
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <span>{{warning}}</span>
+    </div>
+
+    <div id="error" class="alert alert-danger" ng-show="error">
+        <span class="glyphicon glyphicon-ban-circle"></span>
+        <span>{{error}}</span>
+    </div>
+
+      <div ng-hide="people">
+        No search results.
+      </div>
+
+      <div ng-show="people">{{ people.length }} matching people</div>
+
+      <!-- start-excerpt results -->
+      <table class="table" ng-show="people">
+        <thead>
+        <tr>
+           <th> <a href="" ng-click="toggleSortOrder('last')">Name</a>
+            <span ng-show="!reverse && (predicate == 'last')">&#x25b2;</span>
+            <span ng-show="reverse && (predicate == 'last')">&#x25bc;</span></th>
+
+            <th> <a href="" ng-click="toggleSortOrder('ssn')">SSN</a>
+                <span ng-show="!reverse && (predicate == 'ssn')">&#x25b2;</span>
+                <span ng-show="reverse && (predicate == 'ssn')">&#x25bc;</span></th>
+
+
+            <th> <a href="" ng-click="toggleSortOrder('birthDate')">Birth Date</a>
+                <span ng-show="!reverse && (predicate == 'birthDate')">&#x25b2;</span>
+                <span ng-show="reverse && (predicate == 'birthDate')">&#x25bc;</span></th>
+
+            <th> <a href="" ng-click="toggleSortOrder('gender')">Gender</a>
+                <span ng-show="!reverse && (predicate == 'gender')">&#x25b2;</span>
+                <span ng-show="reverse && (predicate == 'gender')">&#x25bc;</span></th>
+
+        </tr>
+        </thead>
+
+        <tbody>
+          <tr ng-repeat="person in people | orderBy:predicate:reverse">
+            <td class="name">{{person.name}}</td>
+            <td class="SSN">{{person.ssn}}</td>
+            <td class="DOB"> {{ person.birthDate | date : 'longDate'}}</td>
+            <td class="gender">{{person.gender | gender}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- end-excerpt results -->
+
+    </div>
+  </div>
+
+  <pre id="debug" ng-show="debug">{{debug}}</pre>
+  </div>
+
+</div>
+
+
+<div class="modal fade" ng-controller="AlertCtrl" id="alert-modal"
+     data-backdrop="static" data-show="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Alert!</h4>
+            </div>
+            <div class="modal-body">
+                <p>{{ modalAlert }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" ng-click="closeModal()">
+                    OK
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+</body>
+</html>

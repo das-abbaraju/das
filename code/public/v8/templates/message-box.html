@@ -1,0 +1,13 @@
+<div class="alert alert-{{type}}" ng-show="ngModel">
+    <div class="row">
+        <div class="col-md-8">
+            <span class="glyphicon glyphicon-{{icon}}"></span>
+            <span>{{ngModel}}</span>
+        </div>
+        <div class="col-md-3"></div>
+        <div class="col-md-1">
+            <button type="button" class="close" id="warning-close-button"
+                    ng-click="close()">&times;</button>
+        </div>
+    </div>
+</div>

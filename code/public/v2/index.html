@@ -1,0 +1,90 @@
+<!doctype html>
+<html ng-app="peopleApp">
+<head>
+  <title>People Server</title>
+  <link href="/images/favicon.ico" rel="icon" type="image/x-icon" />
+
+  <script src="/jquery/dist/jquery.min.js" type="text/javascript"></script>
+  <script src="/angular/angular.min.js" type="text/javascript"></script>
+  <script src="/moment/moment.js" type="text/javascript"></script>
+
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/bootstrap/dist/css/bootstrap-theme.min.css">
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script src="/javascripts/ui.js" type="text/javascript"></script>
+  <link rel="stylesheet" media="screen" href="/stylesheets/style.css"/>
+</head>
+
+<body>
+
+<div id="content" ng-controller="PeopleSearchCtrl">
+  <h1>People Server, version 2.0</h1>
+
+  <div class="logo">
+    <img src="/images/people.png">
+  </div>
+
+  <!-- start-excerpt warning -->
+  <div class="alert alert-warning alert-dismissable" ng-show="warning">
+    <button type="button" class="close" ng-click="hideWarning()">
+      &times;
+    </button>
+    <span class="glyphicon glyphicon-warning-sign"></span>
+    <span>{{warning}}</span>
+  </div>
+  <!-- end-excerpt warning -->
+
+  <div>
+
+    <!-- start-excerpt form -->
+    <form action="">
+      <span class="glyphicon glyphicon-search"></span>
+      <input type="text" size="50"
+             placeholder="Enter the first part of a last name"
+             ng-model="searchPrefix"/>
+      <button class="btn btn-primary" ng-click="search()">Search</button>
+    </form>
+    <!-- end-excerpt form -->
+
+    <div>
+
+      <div ng-hide="people">
+        No search results.
+      </div>
+
+      <div ng-show="people">{{ people.length }} matching people</div>
+
+      <!-- start-excerpt results -->
+      <table class="table" ng-show="people">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>SSN</th>
+            <th>Date of Birth</th>
+            <th>Gender</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr ng-repeat="person in people">
+            <td class="name">{{person.name}}</td>
+            <td class="SSN">{{person.ssn}}</td>
+            <td class="DOB">{{person.birthDate}}</td>
+            <td class="gender">{{person.gender}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- end-excerpt results -->
+
+    </div>
+  </div>
+
+  <pre id="debug" ng-show="debug">{{debug}}</pre>
+  </div>
+
+</div>
+
+</body>
+</html>

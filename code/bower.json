@@ -1,0 +1,31 @@
+{
+  "name": "angular-course-server",
+  "version": "0.0.1",
+  "authors": [
+    "New Circle <info@thenewcircle.com>"
+  ],
+  "description": "Test REST Server for New Circle Angular.js Course",
+  "keyword": [
+    "angularjs"
+  ],
+  "dependencies": {
+    "angular": "~1.2.25",
+    "angular-cookies": "~1.2.25",
+    "angular-mocks": "~1.2.25",
+    "angular-route": "~1.2.25",
+    "bootstrap": "~3.2.0",
+    "jquery": "2.1.1",
+    "jquery-ui": "1.11.1",
+    "moment": "~2.8.1",
+    "ngQuickDate": "~1.3.0"
+  },
+  "license": "custom",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
