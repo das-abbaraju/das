@@ -1,0 +1,418 @@
+#header-wrapper {
+    background: none repeat scroll 0 0 #FFFFFF;
+    padding: 0px 0;
+}
+#my-account-container,.container{
+    /*max-width:1254px;*/
+    width:100%;
+    margin-left: auto ;
+    margin-right: auto ;
+    overflow: hidden;
+    /*background: url("/site/static/my-account/images/background.png") repeat-y scroll 0 0 rgba(0, 0, 0, 0); */
+    background: #4e4e4e;
+
+}
+
+
+#content-section{
+    width:82.3764%;
+    background: #fff;
+}
+#top-actions{
+    width:100%;
+    overflow: hidden;
+    padding-top:17.5824%;
+    padding-bottom:40px;
+
+}
+#header {
+    margin-left: 0;
+    margin-right: 0;
+    overflow: hidden;
+    width: 100%;
+
+}
+#kk-logo {
+    padding: 20px 0 20px 20px;
+}
+#add-plus-block div{
+    background: none repeat scroll 0 0 #50AEC4;
+    color: #FFFFFF;
+    font-family: "open_sansextrablack",Helvetica,Arial,"Lucida Grande",sans-serif;
+    font-size: 6em;
+    padding-bottom: 5px;
+    padding-left: 3px;
+    text-align: center;
+    width: 84px;
+
+}
+#add-plus-block a{
+    text-decoration: none;
+    color:#ffffff;
+}
+#teaser-section{
+    background: #f8f5f4;
+    padding: 20px 0 20px 20px;
+    border: 1px solid #e0dddc;
+    border-left: 0px;
+    border-right:0px;
+    overflow: hidden;
+
+}
+#body-section{
+    min-height: 500px;
+    background: #fff;
+
+}
+
+#schedule-message{
+   background: url("/site/static/my-account/images/buttons/schedule-message.png") no-repeat transparent;
+    width:312px;
+    height:64px;
+    border:0px;
+    cursor: pointer;
+}
+
+#teaser{
+    padding-left:30px;
+}
+#teaser h1{
+    padding: 20px 0;
+    font-family: "open_sanslight",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+    font-size:3rem;
+    color:#4e4e4e;
+
+}
+#side-nav-links ul li.selected{
+    background: url("/site/static/my-account/images/selected-bg-pixel.png") left top repeat-y #353535;
+    border-top: 1px solid #797979;
+}
+#side-nav-links ul li.selected div.home{
+    background: url("/site/static/my-account/images/icons/home-on.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li.selected div.messages{
+    background: url("/site/static/my-account/images/icons/messages-on.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li.selected div.beneficiaries{
+    background: url("/site/static/my-account/images/icons/beneficiary-on.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+#side-nav-links ul li div.messages{
+    background: url("/site/static/my-account/images/icons/messages-off.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li div.beneficiaries{
+    background: url("/site/static/my-account/images/icons/beneficiary-off.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li div.home{
+    background: url("/site/static/my-account/images/icons/home-off.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li div.content{
+    background: url("/site/static/my-account/images/icons/content-off.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);
+    height: 22px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+#side-nav-links ul li.selected:nth-child(2){
+    color:#fff;
+}
+#side-nav-links{
+    border-top:1px solid #797979;
+}
+
+#side-nav-links ul li div:nth-child(2){
+    width:70%;
+    text-align: center;
+    border-bottom:1px solid #797979;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 20px;
+}
+#name-of-person{
+    color:#fff;
+    padding-top:10px;
+    width:100%;
+    text-align: center;
+
+}
+#name-of-person a{
+    text-decoration: none;
+    color:#fff;
+    padding-right:15px;
+    left: 10px;
+    position: relative;
+}
+#name-of-person a img{
+    position: relative;
+    top: 4px;
+}
+#messages-settings,#benef-settings{
+    width:35.3281%;
+    overflow: hidden;
+}
+#messages-notifications,benef-notifications{
+    width:64.6719%;
+    overflow: hidden;
+
+
+}
+
+#messages-settings a h1, #benef-settings a h1{
+     font-family: "open_sanslight",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+     font-size:4em;
+    color:#a7a7a7;
+    padding: 37px 0 37px 30px;
+    text-decoration: none;
+}
+#messages-section,#benef-section{
+    overflow: hidden;
+
+}
+#messages-settings a h1 img,#benef-settings a h1 img{
+   padding-left: 10px;
+    position: relative;
+    top: 3px;
+}
+#messages-header, #benef-header{
+    background:#4e4e4e;
+    overflow: hidden;
+}
+#messages-notifications ul li, #benef-header ul li{
+    color: #a7a7a7;
+    float: left;
+    padding: 8px 30px;
+
+}
+
+#messages-notifications ul li.selected-notify{
+    background: #353535;
+    font-weight:bold;
+    border-radius: 15px;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    color:#fff;
+}
+   #messages-notifications ul{
+       padding: 37px 0 37px 0px;
+   }
+
+.image-wrap  {
+	-webkit-box-shadow: 0 1px 0 rgba(255,255,255,.2), inset 0 4px 5px rgba(0,0,0,.6), inset 0 1px 0 rgba(0,0,0,.6);
+	-moz-box-shadow: 0 1px 0 rgba(255,255,255,.2), inset 0 4px 5px rgba(0,0,0,.6), inset 0 1px 0 rgba(0,0,0,.6);
+	box-shadow: 0 1px 0 rgba(255,255,255,.2), inset 0 4px 5px rgba(0,0,0,.6), inset 0 1px 0 rgba(0,0,0,.6);
+
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+}
+.row{
+    overflow: hidden;
+}
+#left-pane{
+    overflow: hidden;
+    border-right: 1px solid #ebe9ea;
+    padding: 2%;
+    width: 31%;
+    color:#8d8d8d;
+}
+#right-pane{
+    overflow: hidden;
+
+    width:64%;
+    height:100px
+}
+#left-pane .row .sender-name h1{
+   font-family: "open_sanslight",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+   font-size:4em;
+   color:#8d8d8d;
+}
+.sender-name,.sender-subject{
+    padding-bottom: 10px;
+}
+.header-line{
+    padding:44px 0 44px 5.99%;
+}
+
+.header-line h1{
+    font-size: 3.2rem;
+    color:#4e4e4e;
+}
+#counts,#sent-messages-block{
+    padding-left:5.99%;
+    color:#4e4e4e;
+    overflow:hidden;
+}
+.count-blocks{
+     padding-right: 3%;
+    width: 30.3%;
+}
+.count-blocks .count{
+    font-family: "open_sanslight",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+    font-size:10.66rem;
+    padding-right: 10px
+}
+.count-blocks .count-label{
+    font-size: 2.1rem;
+    font-family: "open_sanslight",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+    color:#4e4e4e;
+}
+.count-blocks p{
+    line-height: 2.4rem;
+    margin-bottom:10px;
+
+}
+.count-blocks span a{
+    color:#50aec4;
+    text-decoration: none;
+}
+.count-blocks .label{
+  background: url("/site/static/my-account/images/icons/label-bg.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    color: #FFFFFF;
+    font-size: 1.3rem;
+    padding: 6px 0 8px;
+    text-align: center;
+    width: 89px;
+    margin-left:10px;
+
+}
+#schd-messages .count-blocks p{
+  padding-top: 10px;
+  color:#4e4e4e;
+
+}
+.count-blocks p{
+    margin-bottom: 10px;
+    margin-top: 10px;
+}
+
+.count-blocks p.subject{
+   color:#aaa;
+   font-size:0.95rem;
+   margin: 0
+}
+#outgoing p, #incoming p,#bene p{
+    padding-left:10px;
+}
+#outgoing,#incoming,#bene{
+     padding-top: 19px;
+}
+.count-blocks p.to{
+    font-family: "open_sansregular",Helvetica, Arial,"LUCIDA GRANDE",san-serif;
+    margin: 0px;
+    font-size:0.95rem;
+}
+#outgoing .row,#incoming .row{
+    border-bottom: 1px solid #ebe9ea;
+    padding: 0px 0 10px 0;
+}
+#bene .row{
+
+    padding-bottom: 20px;
+}
+#benef-section{
+    width: 100%;
+    overflow:hidden;
+}
+#bene-block .left{
+    width:35.3623%;
+    border: 1px solid red;
+}
+#bene-block .left .row{
+    padding-left: 9.264%;
+    padding-top:24px
+}
+#outgoing .null p, #incoming .null p,#bene div.row{
+     margin-top: 0;
+    padding-top: 0;
+}
+#outgoing .null p.heading,#incoming .null p.heading{
+    font-family: "open_sansregular",Helvetica,Arial,"LUCIDA GRANDE",san-serif;
+    font-size: 2.1rem;
+    color: #4E4E4E;
+
+}
+#null-schedule-message-button,#add-beneficiary-button{
+    background: url("/site/static/global/images/buttons/bluebutton.png")  no-repeat;
+    color: #FFFFFF;
+    height: 62px;
+    width: 203px;
+    border: 0 none;
+    font-family: "open_sansregular",Helvetica,Arial,"LUCIDA GRANDE",san-serif;
+    font-size: 1.5rem;
+    text-indent: -1000px;
+    cursor: pointer;
+}
+#add-beneficiary-button{
+    background: url("/site/static/global/images/buttons/add.png")  no-repeat;
+}
+#sent-messages-block .to,#sent-messages-block .subject,#sent-messages-block .null, #sent-messages-block .row{
+    font-size:1.6rem;
+    font-family: "open_sanslight",Helvetica,Arial,"LUCIDA GRANDE",san-serif;
+}
+#sent-messages-block .null, #sent-messages-block .row{
+color: #4E4E4E;
+}
+#sent-messages-block .row {
+    padding: 20px 0;
+}
+#outgoing, #incoming, #bene {
+    padding-top: 0px;
+}
+#sent-messages-block .null{
+    padding-top:10px;
+}
+#bene{
+    padding-top: 10px;
+}
+
+#pre-added-bene ul li{
+     background: none repeat scroll 0 0 #A7A7A7;
+     -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
+    border-radius: 8px;
+    float: left;
+    font-family: "open_sansregular",Helvetica,Arial,"LUCIDA GRANDE",san-serif;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    padding: 8px 20px;
+    color:#fff;
+}
+#pre-added-bene{
+    overflow: hidden;
+    padding: 5px 0 20px;
+}
+#pre-added-bene ul li:hover{
+    background: #353535;
+}
+.ben-selected{
+    background:#353535 !important;
+}
+p#add-ben-or{
+     font-family: "open_sansbold",Helvetica,Arial,"LUCIDA GRANDE",san-serif;
+    font-size: 1.7rem;
+    padding-bottom: 20px;
+}
+
+
+
+
+
+

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+	<definition name="master.loggedout.template"	template="/WEB-INF/jsp/layout/layout-loggedout.jsp">
+        <put-attribute name="script"            value="" />
+        <put-attribute name="style"             value="" />
+		<put-attribute name="title"             value=" " />
+		<put-attribute name="header"            value="/WEB-INF/jsp/includes/header-logged-out.jsp" />
+		<put-attribute name="body"              value="" />
+		<put-attribute name="footer"            value="/WEB-INF/jsp/includes/footer-logged-out.jsp" />
+        <put-attribute name="s_channel"         value="" />
+        <put-attribute name="s_pageName"        value="" />
+	</definition>
+    <definition name="master.onboarding.loggedin.template"	template="/WEB-INF/jsp/layout/layout-onboarding.jsp">
+        <put-attribute name="script"            value="" />
+        <put-attribute name="style"             value="" />
+		<put-attribute name="title"             value=" " />
+		<put-attribute name="header"            value="/WEB-INF/jsp/includes/header-logged-out.jsp" />
+		<put-attribute name="body"              value="" />
+		<put-attribute name="footer"            value="/WEB-INF/jsp/includes/footer-logged-out.jsp" />
+        <put-attribute name="s_channel"         value="" />
+        <put-attribute name="s_pageName"        value="" />
+	</definition>
+
+    <definition name="master.loggedin.template"	template="/WEB-INF/jsp/layout/layout-logged-in.jsp">
+        <put-attribute name="script"            value="" />
+        <put-attribute name="style"             value="" />
+		<put-attribute name="title"             value="" />
+		<put-attribute name="header"            value="/WEB-INF/jsp/includes/header-logged-in.jsp" />
+        <put-attribute name="sidenav"            value="/WEB-INF/jsp/includes/side-nav-logged-in.jsp" />
+		<put-attribute name="body"              value="" />
+		<put-attribute name="footer"            value="/WEB-INF/jsp/includes/footer-logged-in.jsp" />
+        <put-attribute name="s_channel"         value="" />
+        <put-attribute name="s_pageName"        value="" />
+	</definition>
+
+	<definition name="login" extends="master.loggedout.template">
+		<put-attribute name="title" value="The KrystalArK Project - Home" />
+		<put-attribute name="body" value="/WEB-INF/jsp/pages/homepage-body.jsp" />
+         <put-attribute name="s_channel"         value="" />
+        <put-attribute name="s_pageName"        value="homepage" />
+	</definition>
+    <definition name="myaccount" extends="master.loggedin.template">
+		<put-attribute name="title"             value="The KrystalArK Project - My Account" />
+        <put-attribute name="style"             value="static/my-account/css/myaccount.css" />
+        <put-attribute name="script"            value="static/my-account/js/myaccount.js" />
+		<put-attribute name="body" value="/WEB-INF/jsp/pages/myaccount-body.jsp" />
+         <put-attribute name="s_channel"        value="" />
+        <put-attribute name="s_pageName"        value="" />
+	</definition>
+    <definition name="onboard" extends="master.onboarding.loggedin.template">
+		<put-attribute name="title"             value="The KrystalArK Project - Invite Family and friends" />
+        <put-attribute name="style"             value="static/onboard/css/onboarding.css" />
+        <put-attribute name="script"            value="static/onboard/js/onboarding.js" />
+		<put-attribute name="body" value="/WEB-INF/jsp/pages/onboard-body.jsp" />
+         <put-attribute name="s_channel"        value="" />
+        <put-attribute name="s_pageName"        value="" />
+	</definition>
+
+</tiles-definitions>

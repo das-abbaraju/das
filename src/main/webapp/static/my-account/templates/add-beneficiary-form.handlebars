@@ -1,0 +1,64 @@
+<form id="add-beneficiary-form" action="POST" class="displayNone">
+        <div class = "form-container">
+           <div class="white-block">
+                   <div id="add-beneficiary" >
+                      <div class="head">
+                            <h2>New Message</h2>
+                      </div>
+                      <div id="add-beneficiary-block">
+                            <div class="label">
+                                Add Beneficiary:
+                            </div>
+                            <div class="subject-textbox">
+                                <input type="text" name="bname" id="bname">
+                            </div>
+                      </div>
+                      <div id="delivery-block">
+                          <div class="label">
+                                Deliver on:
+                          </div>
+                          <div id="deliver-options">
+                              <ul>
+                                  <li id="now">Now</li>
+                                  <li id="afteripass">After I pass away</li>
+                                  <li id="onselectdate">On select date</li>
+                                  <li id="reccur">Recurrently</li>
+                              </ul>
+                          </div>
+                      </div>
+                      <div id="categorize-block">
+                           <div class="label">
+                                Categorize
+                            </div>
+                           <div class="select-box-div">
+                               <select id="select-box-select">
+                                   <option value="">Select Category</option>
+                                   <option value="first">First</option>
+                                   <option value="anniversary">Anniversary</option>
+                               </select>
+                           </div>
+
+                      </div>
+                      <div id="message-preview-block">
+                              <div id="message-preview-orange">
+                                  <p id="subject-preview">
+                                    Re: {{data.userMessage.subject}}
+                                    <input type="hidden" name="message-id" id="message-id" value="{{data.userMessage.id}}"></input>
+                                    <input type="hidden" name="dateOfDelivery" id="dateOfDelivery" value=""></input>
+                                  </p>
+                                  <p id="body-preview">
+                                        {{data.userMessage.messageBody}}
+                                  </p>
+                                  <p id="file-preview">
+
+                                  </p>
+                              </div>
+                      </div>
+                   </div>
+           </div>
+           <div class="next-button">
+                 <input type="submit" name="email-submit" id="beneficiary-submit" value="Next"/>
+           </div>
+       </div>
+
+   </form>

@@ -1,0 +1,37 @@
+{{#isEqualTo statusCode 200}}
+                            {{#gt data.countReceivedMsgs 0}}
+                                     {{#forEachWithBreak data.receivedMsgs 3}}
+                                         <div class="row">
+                                                <div class="label floatLeft first">
+                                                    None
+                                                </div>
+                                                <div class="count-label floatLeft">
+                                                     <p class="to">To:
+                                                       {{#if senderFirstName}}
+                                                         {{firstLetterUpperCase senderFirstName}}
+                                                          {{#if senderLastName}}
+                                                             {{firstLetterUpperCase senderLastName}}
+                                                          {{/if}}
+                                                     {{else}}
+
+                                                     {{/if}}
+
+                                                     </p>
+                                                     <p class="subject">{{subject}}<br> on {{dateEntered}}</p>
+                                                </div>
+                                            </div>
+
+                                     {{/forEachWithBreak}}
+
+
+                            {{else}}
+                                    <div class="null">
+                                        <p>
+                                               You have not received any messages from a loved one yet
+
+                                        </p>
+                                    </div>
+                            {{/gt}}
+                      {{else}}
+                              <!-- some error -->
+                      {{/isEqualTo}}

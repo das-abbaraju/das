@@ -1,0 +1,42 @@
+                     {{#isEqualTo statusCode 200}}
+                            {{#gt data.outGoingMsgs.length 0}}
+                                           {{#forEachWithBreak data.outGoingMsgs 3}}
+                                            <div class="row">
+                                                <div class="label floatLeft first">
+                                                    No category
+                                                </div>
+                                                <div class="count-label floatLeft">
+                                                     <p class="to">To:
+                                                     {{#if recipientFirstName}}
+                                                         {{firstLetterUpperCase recipientFirstName}}
+                                                          {{#if recipientLastName}}
+                                                             {{firstLetterUpperCase recipientLastName}}
+                                                          {{/if}}
+                                                     {{else}}
+                                                         <a href="add-bene?msgId={{id}}">Add beneficiary</a>
+                                                     {{/if}}
+
+                                                     </p>
+                                                     <p class="subject"> {{subject}} <br> on {{dateEntered}} </p>
+                                                </div>
+                                            </div>
+                                           {{/forEachWithBreak}}
+
+
+                            {{else}}
+                                    <div class="null">
+                                        <p class="heading">
+                                            You have not scheduled any messages yet.
+                                        </p>
+                                        <p>
+                                               Schedule messages by type<br>
+                                               Birthdays, Life Lessons etc.
+                                        </p>
+                                        <p>
+                                            <input type="button" id="null-schedule-message-button" name="null-schedule-message-button" value="Schedule"></input>
+                                        </p>
+                                    </div>
+                            {{/gt}}
+                      {{else}}
+                              <!-- some error -->
+                      {{/isEqualTo}}

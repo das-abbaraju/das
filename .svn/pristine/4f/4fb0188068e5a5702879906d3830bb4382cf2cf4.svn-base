@@ -1,0 +1,66 @@
+{{#isEqualTo message "success"}}
+                            {{#gt data.countBeneficiaries 0}}
+                                    {{#forEachWithBreak data.beneficiaries 3}}
+                                               {{#if primaryPhoto }}
+                                                         <style>
+                                                            .round-thumb {
+                                                                    width: 50px;
+                                                                    height: 50px;
+                                                                    border-radius: 50px;
+                                                                    -webkit-border-radius: 50px;
+                                                                    -moz-border-radius: 50px;
+                                                                     background: url("/site/static/my-account/images/temp-pics/{{primaryPhoto}}") no-repeat center center;
+                                                                    }
+                                                        </style>
+                                               {{else}}
+                                                             <style>
+                                                                    .round-thumb {
+                                                                            width: 50px;
+                                                                            height: 50px;
+                                                                            border-radius: 50px;
+                                                                            -webkit-border-radius: 50px;
+                                                                            -moz-border-radius: 50px;
+                                                                             background: url("/site/static/global/images/icons/no-image1.jpg") no-repeat center center;
+                                                                            }
+                                                            </style>
+                                               {{/if}}
+
+
+                                        <div class="row">
+                                            <div class="round-thumb floatLeft first">
+
+                                            </div>
+                                            <div class="count-label floatLeft">
+                                                 <p class="to">
+                                                     <a href="beneficiary-profile?id={{id}}">
+                                                     {{#if firstName}}
+                                                        {{firstLetterUpperCase firstName}}
+                                                     {{/if}}
+                                                     {{#if middleName}}
+                                                        {{firstLetterUpperCase middleName}}
+                                                     {{/if}}
+                                                    {{#if lastName}}
+                                                        {{firstLetterUpperCase lastName}}
+                                                     {{/if}}
+
+
+                                                     </a>
+                                                 </p>
+                                                 <p class="subject">Daughter</p>
+                                            </div>
+                                        </div>
+
+                                    {{/forEachWithBreak}}
+
+                             {{else}}
+                                  <div class="null">
+                                    Add your father, mother, daughter, or son or even some friends.
+                                  </div>
+                                  <p>
+                                            <input type="button" id="add-beneficiary-button" name="add-beneficiary-button" value="ADD"></input>
+                                  </p>
+                            {{/gt}}
+
+   {{else}}
+        <!-- error -->
+{{/isEqualTo}}

@@ -1,0 +1,10 @@
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.5.0")
+
+addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
+
+implicit val n: Int = 5
+def add(x: Int)(y: Int) = x + y
+
+    implicit val n: Int = 7
+    def add(x: Int)(implicit y: Int) = x + y
+    add(5) // takes n from the current scope

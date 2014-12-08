@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+    <http auto-config="true" use-expressions="true">
+        <remember-me key="SpringSecured" services-ref="ssoRememberMeServices" />
+
+        <intercept-url pattern="/login.pubview" access="permitAll" requires-channel="https" />
+        <intercept-url pattern="/logout.html" access="permitAll" requires-channel="http" />
+        <!-- Switch back to plain connection after login: set "http" channel for "default-target-url" in "form-login" -->
+        <intercept-url pattern="/home.view" access="hasRole('ROLE_USER')" requires-channel="http" />
+        <intercept-url pattern="/user-profile.view" access="hasRole('ROLE_USER')" requires-channel="http" />
+        <intercept-url pattern="/connections.view" access="hasRole('ROLE_USER')" requires-channel="http" />
+        <intercept-url pattern="/social-dashboard.view" access="hasRole('ROLE_USER')" requires-channel="http" />
+        <!-- Provider accounts page must be secured -->
+        <intercept-url pattern="/my-account.view" access="hasRole('ROLE_USER')" requires-channel="https" />
+        <intercept-url pattern="/identity.view" access="hasRole('ROLE_USER')" requires-channel="https" />
+        <intercept-url pattern="/people-search.view" access="hasRole('ROLE_USER')" requires-channel="https" />
+
+        <intercept-url pattern="/update-request-loggedin.view" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/update-request.view" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/update-request.pubview" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/update-req-receiver-submit.view" access="permitAll" requires-channel="any" />
+       
+
+        <intercept-url pattern="/favicon.ico" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/static/**" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/api/**" access="permitAll" requires-channel="any" />
+        <intercept-url pattern="/**/*.pubview" access="permitAll" requires-channel="any" />
+
+        <intercept-url pattern="/**/*.view" access="hasRole('ROLE_USER')" requires-channel="any" />
+
+        <!-- lock down tools to internal addresses only -->
+        <intercept-url pattern="/version.html" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/toolbox" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/tool*/**" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <!-- lock down swagger docs to internal addresses only -->
+        <intercept-url pattern="/api/" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/json/resources" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+        <intercept-url pattern="/json/auth/resource/definition/*" access="hasIpAddress('192.168.0.0/24') or hasIpAddress('10.0.0.0/8') or hasIpAddress('127.0.0.0/8')" requires-channel="any" />
+
+
+        <form-login login-page="/login.pubview" login-processing-url="/login.proc"
+            authentication-failure-url="/login.pubview?login_error=1" default-target-url="/home.view" />
+        <logout logout-url="/logout.proc" logout-success-url="/logout.html" />
+
+        <!-- migrateSession -->
+        <session-management session-fixation-protection="migrateSession" />
+
+        <port-mappings>
+            <port-mapping http="80" https="443" />
+            <port-mapping http="8080" https="8443" />
+        </port-mappings>
+    </http>
+
+    <authentication-manager alias="authenticationManager">
+ 		<authentication-provider user-service-ref="userAuthService">
+    		<password-encoder ref="passwordEncoder" />
+  		</authentication-provider>  
+        <authentication-provider user-service-ref="userProfileService" />
+    </authentication-manager>
+
+
+</beans:beans>
+
