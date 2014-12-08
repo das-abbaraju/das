@@ -1,0 +1,1 @@
+ <h1>{{firstLetterUpperCase data.user.firstName}}, Welcome to your dashboard</h1>

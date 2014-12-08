@@ -1,0 +1,133 @@
+#onboarding-center-container{
+   width:1015px;
+   margin: 0 auto;
+
+}
+#onboard-container{
+      background: url("/site/static/onboard/images/bg.jpg") no-repeat ;
+      height: 890px;
+      width: 100%;
+}
+#onboard-header{
+    color:#fff;
+      background: url("/site/static/onboard/images/logo.png") no-repeat scroll 0 30px rgba(0, 0, 0, 0);
+    padding:30px 0 90px 0;
+
+}
+.onboard-form-div{
+   background: url("/site/static/onboard/images/onboardbg.png");
+  padding: 45px 62px 0;
+  width:707px;
+  overflow: hidden;
+    margin: 0 auto;
+    position: relative;
+}
+.steps{
+    font-family:"open_sanssemibold", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size:1.4rem;
+    padding-bottom: 20px;
+    color:#fff;
+}
+.heading{
+    font-family:"open_sanssemibold", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size:2.8rem;
+    color:#fff;
+    padding-bottom: 20px;
+}
+.onboard-form-div .row{
+    overflow: hidden;
+      margin: 0 0 12px;
+}
+.onboard-form-div .row .label{
+    font-family:"open_sanslight", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-size: 1.6rem;
+    color:#fff;
+    padding:25px 46px 17px 0;
+}
+.onboard-form-div .row .label.minor{
+    width:75px;
+}
+.onboard-form-div .row .label.rl{
+    padding-right: 14px;
+}
+.onboard-form-div .row .field input.input-field, .onboard-form-div .row .field select{
+    height:60px;
+    width:570px;
+    color:#454546;
+    font-size: 1.6rem;
+     font-family:"open_sansregular", Helvetica, Arial, "Lucida Grande", sans-serif;
+    padding-left: 20px;
+    width: 550px;
+}
+.onboard-form-div .row .field.minortext{
+    color:#ababab ;
+ padding: 10px 20px 0;
+}
+
+.onboard-form-div .row .field input.input-field, .onboard-form-div .row .field select option{
+    padding-left:20px;
+}
+.onboard-form-div .row .field select{
+   margin-left: 20px;
+    padding-top: 20px;
+    width: 573px;
+
+}
+.row.button-row{
+      float: right;
+    position: relative;
+    top: -30px;
+    width: 300px;
+}
+.add-button{
+    background: url("/site/static/onboard/images/add.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border: 0 none;
+    cursor: pointer;
+    float: right;
+    height: 54px;
+    width: 163px;
+}
+#onboard-form-2{
+    position: absolute;
+    right:-2000px;
+    top:50%;
+    display: none;
+}
+#photo-box{
+   background: none repeat scroll 0 0 #fff;
+    padding: 124px 250px;
+}
+#photo-box .photo-label a{
+     color: #50aec4;
+    font-family: "open_sanssemibold",Helvetica,Arial,"Lucida Grande",sans-serif;
+    font-size: 2.4rem;
+     text-decoration: none;
+}
+#photo-box .photo-label a:hover{
+    text-decoration: underline;
+}
+
+
+#onboard-form-2{
+    padding-bottom:60px;
+}
+#photo-button-div ul li{
+    float:left;
+    margin-right: 27px;
+    margin-top: 30px;
+
+}
+#photo-button-div ul li:last-child{
+    margin-right: 0px
+}
+#photo-button-div ul li a img{
+    text-decoration: none
+}
+#photo-button-div{
+    margin: 0 auto;
+    overflow: hidden;
+    width: 635px;
+}
+
+
+

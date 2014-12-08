@@ -1,0 +1,45 @@
+                           {{#isEqualTo statusCode 200}}
+
+                               <div id="schd-messages" class="count-blocks floatLeft">
+                                <div class="count floatLeft">
+                                   {{data.countOutGoingMsgs}}
+                                </div>
+                                <div class="count-label floatLeft">
+                                     <p>Scheduled <br> Messages</p>
+                                     {{#gt data.countOutGoingMsgs 0}}
+                                     <span><a href="view-all">view all</a> </span>
+                                     {{/gt}}
+
+
+                                </div>
+                            </div>
+                            <div id="rcvd-messages" class="count-blocks floatLeft">
+                                <div class="count floatLeft">
+                                    {{data.countReceivedMsgs}}
+                                </div>
+                                <div class="count-label floatLeft">
+                                     <p>Received <br> Messages</p>
+                                     {{#gt data.countReceivedMsgs 0}}
+                                     <span><a href="view-all">view all</a> </span>
+                                     {{/gt}}
+                                </div>
+                            </div>
+                            <div id="add-beneficiaries" class="count-blocks floatLeft">
+                                <div class="count floatLeft">
+                                   {{data.countBeneficiaries}}
+                                </div>
+                                <div class="count-label floatLeft">
+                                     <p>Added <br> Beneficiaries</p>
+                                      {{#gt data.countBeneficiaries 0}}
+                                            <span><a href="view-all">view all</a> </span>
+                                     {{/gt}}
+                                </div>
+                            </div>
+                           {{else}}
+
+                                <!-- some error in service -->
+
+
+                           {{/isEqualTo}}
+
+

@@ -1,0 +1,14 @@
+label.firstname=First Name
+label.lastname=Last Name
+label.email=Email
+label.telephone=Telephone
+label.addcontact=Add Contact
+label.password = Password
+label.birthdate=Birth Date
+label.gender=Gender
+
+label.zipcode=Zip Code
+    
+label.menu=Menu
+label.title=User Manager
+label.footer=&copy;klark

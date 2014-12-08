@@ -1,0 +1,9 @@
+package com.klark.user.model;
+
+public class Contact {
+
+
+    private String firstname;
+
+
+}
